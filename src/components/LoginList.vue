@@ -15,7 +15,7 @@
 
     @Component({components: {Login}})
     export default class LoginList extends Vue {
-        @Prop(Array) private logins!: Array<{ label: string, userFriendlyId: string, id: string }>;
+        @Prop(Array) public logins!: Array<{ label: string, userFriendlyId: string, id: string }>;
 
         @Emit()
         // tslint:disable-next-line

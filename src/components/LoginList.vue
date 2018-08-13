@@ -1,10 +1,11 @@
 <template>
     <div class="login-list">
-        <div class="login-entry" v-for="login in logins" @click="loginSelected(login.id)">
-            <Login :user-friendly-id="login.userFriendlyId"
+        <div class="login-entry" v-for="login in logins" @click="loginSelected(login.id)" :key="login.id">
+            <Login :id="login.id"
                    :label="login.label"
-                   :id="login.id"
-                   :key="login.id"/>
+                   :numberAccounts="login.addresses.length + login.contracts.length"
+                   :type="login.type"
+                   :show-arrow="showArrows"/>
         </div>
     </div>
 </template>
@@ -15,26 +16,24 @@
 
     @Component({components: {Login}})
     export default class LoginList extends Vue {
-        @Prop(Array) public logins!: Array<{ label: string, userFriendlyId: string, id: string }>;
+        @Prop(Array) private logins!: { id: string, label: string, addresses: object[], contracts: object[], type: number }[];
+        @Prop({type: Boolean, default: false}) private showArrows!: boolean;
 
         @Emit()
-        // tslint:disable-next-line
         private loginSelected(id: string) {
         }
     }
 </script>
 
 <style scoped>
-
-    .login-list .login-entry {
-        padding: 0.3rem;
-        border: 2px dashed transparent;
-        cursor: pointer;
-        transition: background .2s;
+    .login-list {
+        flex-grow: 1;
+        overflow-y: auto;
     }
 
-    .login-list .login {
-        margin: 0 auto;
+    .login-list .login-entry {
+        cursor: pointer;
+        transition: background 300ms;
     }
 
     .login-list .login-entry:hover {

@@ -3,7 +3,7 @@
         <div class="login-entry" v-for="login in logins" @click="loginSelected(login.id)" :key="login.id">
             <Login :id="login.id"
                    :label="login.label"
-                   :numberAccounts="login.addresses.length + login.contracts.length"
+                   :numberAccounts="login.addresses.size + login.contracts.length"
                    :type="login.type"
                    :show-arrow="showArrows"/>
         </div>

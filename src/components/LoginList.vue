@@ -11,18 +11,19 @@
 </template>
 
 <script lang="ts">
-    import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
-    import Login from './Login.vue';
+import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
+import Login from './Login.vue';
 
-    @Component({components: {Login}})
-    export default class LoginList extends Vue {
-        @Prop(Array) private logins!: { id: string, label: string, addresses: object[], contracts: object[], type: number }[];
-        @Prop({type: Boolean, default: false}) private showArrows!: boolean;
+@Component({components: {Login}})
+export default class LoginList extends Vue {
+    @Prop(Array) private logins!:
+        Array<{ id: string, label: string, addresses: object[], contracts: object[], type: number }>;
+    @Prop({type: Boolean, default: false}) private showArrows!: boolean;
 
-        @Emit()
-        private loginSelected(id: string) {
-        }
-    }
+    @Emit()
+    // tslint:disable-next-line no-empty
+    private loginSelected(id: string) {}
+}
 </script>
 
 <style scoped>

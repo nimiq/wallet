@@ -31,12 +31,12 @@
         overflow-y: auto;
     }
 
-    .login-list .login-entry {
+    .login-entry {
         cursor: pointer;
         transition: background 300ms;
     }
 
-    .login-list .login-entry:hover {
+    .login-entry:hover {
         background-color: rgba(128, 128, 128, 0.1);
     }
 </style>

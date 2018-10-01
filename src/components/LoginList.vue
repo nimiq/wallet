@@ -27,10 +27,6 @@ export default class LoginList extends Vue {
 </script>
 
 <style scoped>
-    .login-list {
-        overflow-y: auto;
-    }
-
     .login-entry {
         cursor: pointer;
         transition: background 300ms;

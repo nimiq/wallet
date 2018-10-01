@@ -17,7 +17,7 @@ import Login from './Login.vue';
 @Component({components: {Login}})
 export default class LoginList extends Vue {
     @Prop(Array) private logins!:
-        Array<{ id: string, label: string, addresses: object[], contracts: object[], type: number }>;
+        Array<{ id: string, label: string, addresses: Map<string, any>, contracts: any[], type: number }>;
     @Prop({type: Boolean, default: false}) private showArrows!: boolean;
 
     @Emit()
@@ -28,7 +28,6 @@ export default class LoginList extends Vue {
 
 <style scoped>
     .login-list {
-        flex-grow: 1;
         overflow-y: auto;
     }
 

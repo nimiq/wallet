@@ -176,7 +176,7 @@ export default class LoginMenu extends Vue {
         letter-spacing: 0.017em;
         padding: 0 calc(1.5 * var(--nimiq-size, 8px));
         background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
-        color: #1F2348 /* var(--nimiq-blue) */;
+        color: var(--nimiq-blue, #1F2348);
         border-radius: calc(1.5 * var(--nimiq-size, 8px));
         opacity: 0.8;
         transition: color 150ms, background-color 150ms;

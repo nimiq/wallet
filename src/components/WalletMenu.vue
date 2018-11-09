@@ -1,29 +1,29 @@
 <template>
-    <div class="login-menu">
-        <div class="active-wallet" v-if="this.activeLoginId">
+    <div class="wallet-menu">
+        <div class="active-wallet" v-if="this.activeWalletId">
             <h2>Active wallet</h2>
-            <Login
-                :id="activeLogin.id"
-                :label="activeLogin.label"
-                :numberAccounts="activeLogin.addresses.size"
-                :type="activeLogin.type"
+            <Wallet
+                :id="activeWallet.id"
+                :label="activeWallet.label"
+                :numberAccounts="activeWallet.accounts.size"
+                :type="activeWallet.type"
             />
-            <div class="button-row" v-if="this.activeLoginId !== LEGACY_ID">
-                <div class="button-small-group" v-if="activeLogin.type !== 2 /* LEDGER */">
-                    <button @click="renameLogin(activeLogin.id)">Rename</button>
-                    <button @click="exportLogin(activeLogin.id)">Export</button>
+            <div class="button-row" v-if="this.activeWalletId !== LEGACY_ID">
+                <div class="button-small-group" v-if="activeWallet.type !== 2 /* LEDGER */">
+                    <button @click="renameWallet(activeWallet.id)">Rename</button>
+                    <button @click="exportWallet(activeWallet.id)">Export</button>
                 </div>
                 <div class="button-small-group" v-else>
-                    <button @click="renameLogin(activeLogin.id)">Rename</button>
+                    <button @click="renameWallet(activeWallet.id)">Rename</button>
                 </div>
 
                 <div class="button-small-group">
-                    <button class="red" @click="logoutLogin(activeLogin.id)">Logout</button>
+                    <button class="red" @click="logoutWallet(activeWallet.id)">Logout</button>
                 </div>
             </div>
         </div>
 
-        <LoginList :logins="selectableLogins" @login-selected="loginSelected"/>
+        <WalletList :wallets="selectableWallets" @wallet-selected="walletSelected"/>
 
         <div class="menu-footer">
             <button @click="create">New wallet</button>
@@ -34,45 +34,47 @@
 
 <script lang="ts">
 import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
-import Login from './Login.vue';
-import LoginList from './LoginList.vue';
+import Wallet from './Wallet.vue';
+import WalletList from './WalletList.vue';
 
-@Component({components: {Login, LoginList}})
-export default class LoginMenu extends Vue {
-    @Prop(Array) private logins!:
-        Array<{ id: string, label: string, addresses: Map<string, any>, contracts: object[], type: number }>;
-    @Prop(String) private activeLoginId!: string;
+@Component({components: {Wallet, WalletList}})
+export default class WalletMenu extends Vue {
+    @Prop(Array) private wallets!:
+        Array<{ id: string, label: string, accounts: Map<string, any>, contracts: object[], type: number }>;
+    @Prop(String) private activeWalletId!: string;
 
     private LEGACY_ID = 'LEGACY';
     private LEGACY_LABEL = 'Single-Account Wallets';
 
-    private get activeLogin() {
-        if (this.activeLoginId === this.LEGACY_ID) return this.legacyLogin;
-        return this.logins.find((login) => login.id === this.activeLoginId)!;
+    private get activeWallet() {
+        if (this.activeWalletId === this.LEGACY_ID) return this.legacyWallet;
+        return this.wallets.find((wallet) => wallet.id === this.activeWalletId)!;
     }
 
-    private get selectableLogins() {
-        // Filter out active login
-        const selectableLogins = this.logins.filter((login) => login.id !== this.activeLoginId && login.type !== 0);
-        if (this.activeLoginId !== this.LEGACY_ID && this.legacyAccountCount > 0) {
-            selectableLogins.push(this.legacyLogin);
+    private get selectableWallets() {
+        // Filter out active wallet
+        const selectableWallets = this.wallets.filter(
+            (wallet) => wallet.id !== this.activeWalletId && wallet.type !== 0,
+        );
+        if (this.activeWalletId !== this.LEGACY_ID && this.legacyAccountCount > 0) {
+            selectableWallets.push(this.legacyWallet);
         }
-        return selectableLogins;
+        return selectableWallets;
     }
 
     private get legacyAccountCount() {
-        const legacyLogins = this.logins.filter((login) => login.type === 0); // Filter legacy wallets
-        return legacyLogins.length;
+        const legacyWallets = this.wallets.filter((wallet) => wallet.type === 0); // Filter legacy wallets
+        return legacyWallets.length;
     }
 
-    private get legacyLogin() {
-        // Generate a dummy 'addresses' map, because the LoginList requires that to display the account count
-        const addresses = new Map();
-        for (let i = 0; i < this.legacyAccountCount; i++) addresses.set(i.toString(), 'dummy');
+    private get legacyWallet() {
+        // Generate a dummy 'accounts' map, because the WalletList requires that to display the account count
+        const accounts = new Map();
+        for (let i = 0; i < this.legacyAccountCount; i++) accounts.set(i.toString(), 'dummy');
         return {
             id: this.LEGACY_ID,
             label: this.LEGACY_LABEL,
-            addresses,
+            accounts,
             contracts: [],
             type: 0,
         };
@@ -80,19 +82,19 @@ export default class LoginMenu extends Vue {
 
     @Emit()
     // tslint:disable-next-line no-empty
-    private loginSelected(loginId: string) {}
+    private walletSelected(walletId: string) {}
 
     @Emit()
     // tslint:disable-next-line no-empty
-    private renameLogin(loginId: string) {}
+    private renameWallet(walletId: string) {}
 
     @Emit()
     // tslint:disable-next-line no-empty
-    private exportLogin(loginId: string) {}
+    private exportWallet(walletId: string) {}
 
     @Emit()
     // tslint:disable-next-line no-empty
-    private logoutLogin(loginId: string) {}
+    private logoutWallet(walletId: string) {}
 
     @Emit()
     // tslint:disable-next-line no-empty
@@ -105,7 +107,7 @@ export default class LoginMenu extends Vue {
 </script>
 
 <style scoped>
-    .login-menu {
+    .wallet-menu {
         --viewport-margin: calc(4 * var(--nimiq-size, 8px));
         width: calc(100vw - var(--viewport-margin));
         max-width: calc(42.5 * var(--nimiq-size, 8px));
@@ -137,19 +139,19 @@ export default class LoginMenu extends Vue {
         padding-bottom: calc(2.5 * var(--nimiq-size, 8px));
     }
 
-    .login-list {
+    .wallet-list {
         background: #fafafa;
         border-top: solid 1px #f2f2f2;
         border-bottom: solid 1px #f2f2f2;
         overflow: auto;
     }
 
-    .active-wallet >>> .login {
+    .active-wallet >>> .wallet {
         padding-left: 0;
         padding-right: 0;
     }
 
-    .login-list >>> .login {
+    .wallet-list >>> .wallet {
         padding-left: calc(3 * var(--nimiq-size, 8px));
         padding-right: calc(3 * var(--nimiq-size, 8px));
     }

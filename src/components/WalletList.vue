@@ -1,10 +1,10 @@
 <template>
-    <div class="login-list">
-        <div class="login-entry" v-for="login in logins" @click="loginSelected(login.id)" :key="login.id">
-            <Login :id="login.id"
-                   :label="login.label"
-                   :numberAccounts="login.addresses.size + login.contracts.length"
-                   :type="login.type"
+    <div class="wallet-list">
+        <div class="wallet-entry" v-for="wallet in wallets" @click="walletSelected(wallet.id)" :key="wallet.id">
+            <Wallet :id="wallet.id"
+                   :label="wallet.label"
+                   :numberAccounts="wallet.accounts.size + wallet.contracts.length"
+                   :type="wallet.type"
                    :show-arrow="showArrows"/>
         </div>
     </div>
@@ -12,27 +12,27 @@
 
 <script lang="ts">
 import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
-import Login from './Login.vue';
+import Wallet from './Wallet.vue';
 
-@Component({components: {Login}})
-export default class LoginList extends Vue {
-    @Prop(Array) private logins!:
-        Array<{ id: string, label: string, addresses: Map<string, any>, contracts: any[], type: number }>;
+@Component({components: {Wallet}})
+export default class WalletList extends Vue {
+    @Prop(Array) private wallets!:
+        Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number }>;
     @Prop({type: Boolean, default: false}) private showArrows!: boolean;
 
     @Emit()
     // tslint:disable-next-line no-empty
-    private loginSelected(id: string) {}
+    private walletSelected(id: string) {}
 }
 </script>
 
 <style scoped>
-    .login-entry {
+    .wallet-entry {
         cursor: pointer;
         transition: background 300ms;
     }
 
-    .login-entry:hover {
+    .wallet-entry:hover {
         background-color: rgba(128, 128, 128, 0.1);
     }
 </style>

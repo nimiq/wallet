@@ -5,6 +5,7 @@
                    :label="wallet.label"
                    :numberAccounts="wallet.accounts.size + wallet.contracts.length"
                    :type="wallet.type"
+                   :balance="wallet.balance"
                    :show-arrow="showArrows"/>
         </div>
     </div>
@@ -17,7 +18,7 @@ import Wallet from './Wallet.vue';
 @Component({components: {Wallet}})
 export default class WalletList extends Vue {
     @Prop(Array) private wallets!:
-        Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number }>;
+    Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;
     @Prop({type: Boolean, default: false}) private showArrows!: boolean;
 
     @Emit()

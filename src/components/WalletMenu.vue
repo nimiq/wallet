@@ -7,6 +7,7 @@
                 :label="activeWallet.label"
                 :numberAccounts="activeWallet.accounts.size"
                 :type="activeWallet.type"
+                :balance="activeWallet.balance"
             />
             <div class="button-row" v-if="this.activeWalletId !== LEGACY_ID">
                 <div class="button-small-group" v-if="activeWallet.type !== 2 /* LEDGER */">
@@ -40,7 +41,7 @@ import WalletList from './WalletList.vue';
 @Component({components: {Wallet, WalletList}})
 export default class WalletMenu extends Vue {
     @Prop(Array) private wallets!:
-        Array<{ id: string, label: string, accounts: Map<string, any>, contracts: object[], type: number }>;
+    Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;
     @Prop(String) private activeWalletId!: string;
 
     private LEGACY_ID = 'LEGACY';
@@ -62,9 +63,12 @@ export default class WalletMenu extends Vue {
         return selectableWallets;
     }
 
+    private get legacyWallets() {
+        return this.wallets.filter((wallet) => wallet.type === 0 /* LEGACY */);
+    }
+
     private get legacyAccountCount() {
-        const legacyWallets = this.wallets.filter((wallet) => wallet.type === 0); // Filter legacy wallets
-        return legacyWallets.length;
+        return this.legacyWallets.length;
     }
 
     private get legacyWallet() {
@@ -77,6 +81,7 @@ export default class WalletMenu extends Vue {
             accounts,
             contracts: [],
             type: 0,
+            balance: this.legacyWallets.reduce((sum, wallet) => sum + (wallet.balance || 0), 0),
         };
     }
 

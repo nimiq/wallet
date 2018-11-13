@@ -1,7 +1,7 @@
 <template>
     <div class="wallet-menu">
         <div class="active-wallet" v-if="this.activeWalletId">
-            <h2>Active wallet</h2>
+            <div class="nq-label">Active wallet</div>
             <Wallet
                 :id="activeWallet.id"
                 :label="activeWallet.label"
@@ -11,15 +11,15 @@
             />
             <div class="button-row" v-if="this.activeWalletId !== LEGACY_ID">
                 <div class="button-small-group" v-if="activeWallet.type !== 2 /* LEDGER */">
-                    <button @click="renameWallet(activeWallet.id)">Rename</button>
-                    <button @click="exportWallet(activeWallet.id)">Export</button>
+                    <button class="nq-button-s" @click="renameWallet(activeWallet.id)">Rename</button>
+                    <button class="nq-button-s" @click="exportWallet(activeWallet.id)">Export</button>
                 </div>
                 <div class="button-small-group" v-else>
-                    <button @click="renameWallet(activeWallet.id)">Rename</button>
+                    <button class="nq-button-s" @click="renameWallet(activeWallet.id)">Rename</button>
                 </div>
 
-                <div class="button-small-group">
-                    <button class="red" @click="logoutWallet(activeWallet.id)">Logout</button>
+                <div>
+                    <button class="nq-button-s red" @click="logoutWallet(activeWallet.id)">Logout</button>
                 </div>
             </div>
         </div>
@@ -27,8 +27,8 @@
         <WalletList :wallets="selectableWallets" @wallet-selected="walletSelected"/>
 
         <div class="menu-footer">
-            <button @click="create">New wallet</button>
-            <button @click="login" class="blue">Login</button>
+            <button class="nq-button-s" @click="create">New wallet</button>
+            <button class="nq-button-s light-blue" @click="login">Login</button>
         </div>
     </div>
 </template>
@@ -112,6 +112,76 @@ export default class WalletMenu extends Vue {
 </script>
 
 <style scoped>
+    /** Nimiq Style **/
+    .nq-label {
+        font-size: calc(1.75 * var(--nimiq-size, 8px));
+        line-height: calc(1.5 * var(--nimiq-size, 8px));
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.107em;
+        opacity: 0.7;
+    }
+
+    .nq-button-s {
+        display: inline-block;
+        font-size: calc(1.75 * var(--nimiq-size, 8px));
+        line-height: calc(2 * var(--nimiq-size, 8px));
+        height: calc(3.375 * var(--nimiq-size, 8px));
+        text-decoration: none;
+        font-weight: bold;
+        letter-spacing: 0.014em;
+        padding: 0 calc(1.5 * var(--nimiq-size, 8px));
+        background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
+        color: var(--nimiq-blue);
+        border-radius: calc(1.6875 * var(--nimiq-size, 8px));
+        transition: color 150ms, background-color 150ms;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        font-family: inherit;
+    }
+
+    .nq-button-s::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: calc(-2 * var(--nimiq-size, 8px));
+        top: calc(-2 * var(--nimiq-size, 8px));
+        right: calc(-2 * var(--nimiq-size, 8px));
+        bottom: calc(-2 * var(--nimiq-size, 8px));
+    }
+
+    .nq-button-s:hover,
+    .nq-button-s:active {
+        background-color: rgba(31, 35, 72, 0.12); /* Based on Nimiq Blue */
+    }
+
+    /* Color variations */
+
+    /* light blue */
+    .nq-button-s.light-blue {
+        color: var(--nimiq-light-blue);
+        background-color: rgba(5, 130, 202, 0.07); /* Based on Nimiq Light Blue */
+    }
+
+    .nq-button-s.light-blue:hover,
+    .nq-button-s.light-blue:active {
+        background-color: rgba(5, 130, 202, 0.12); /* Based on Nimiq Light Blue */
+    }
+
+    /* red */
+    .nq-button-s.red {
+        color: var(--nimiq-red);
+        background-color: rgba(216, 65, 51, 0.07); /* Based on Nimiq Red */
+    }
+
+    .nq-button-s.red:hover,
+    .nq-button-s.red:active {
+        background-color: rgba(216, 65, 51, 0.12); /* Based on Nimiq Red */
+    }
+    /** END Nimiq Style **/
+
+
     .wallet-menu {
         --viewport-margin: calc(4 * var(--nimiq-size, 8px));
         width: calc(100vw - var(--viewport-margin));
@@ -173,67 +243,8 @@ export default class WalletMenu extends Vue {
         padding: calc(3 * var(--nimiq-size, 8px));
     }
 
-    button {
-        display: inline-block;
-        font-size: calc(1.5 * var(--nimiq-size, 8px));
-        line-height: calc(3 * var(--nimiq-size, 8px));
-        height: calc(3 * var(--nimiq-size, 8px));
-        text-decoration: none;
-        font-weight: bold;
-        letter-spacing: 0.017em;
-        padding: 0 calc(1.5 * var(--nimiq-size, 8px));
-        background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
-        color: var(--nimiq-blue, #1F2348);
-        border-radius: calc(1.5 * var(--nimiq-size, 8px));
-        opacity: 0.8;
-        transition: color 150ms, background-color 150ms;
-        border: none;
-        cursor: pointer;
-        position: relative;
-        font-family: inherit;
-    }
-
-    button::after {
-        content: '';
-        display: block;
-        position: absolute;
-        left: calc(-2 * var(--nimiq-size, 8px));
-        top: calc(-2 * var(--nimiq-size, 8px));
-        right: calc(-2 * var(--nimiq-size, 8px));
-        bottom: calc(-2 * var(--nimiq-size, 8px));
-    }
-
-    button:hover,
-    button:active {
-        background-color: rgba(31, 35, 72, 0.12);
-    }
-
-    button.blue {
-        color: var(--nimiq-light-blue, #0582CA);
-        background-color: rgba(5, 130, 202, 0.07); /* Based on Nimiq Light Blue */
-    }
-
-    button.blue:hover,
-    button.blue:active {
-        background-color: rgba(5, 130, 202, 0.12);
-    }
-
-    button.red {
-        color: var(--nimiq-red, #D94432);
-        background-color: rgba(217, 68, 50, 0.07); /* Based on Nimiq Red */
-    }
-
-    button.red:hover,
-    button.red:active {
-        background-color: rgba(217, 68, 50, 0.12);
-    }
-
     .button-small-group {
         font-size: 0;
-    }
-
-    .button-small-group button {
-        border-radius: 0;
     }
 
     .button-small-group button::before {
@@ -252,8 +263,8 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:first-child {
-        border-top-left-radius: calc(1.5 * var(--nimiq-size, 8px));
-        border-bottom-left-radius: calc(1.5 * var(--nimiq-size, 8px));
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
     .button-small-group button:first-child::after {
@@ -261,8 +272,8 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:last-child {
-        border-top-right-radius: calc(1.5 * var(--nimiq-size, 8px));
-        border-bottom-right-radius: calc(1.5 * var(--nimiq-size, 8px));
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 
     .button-small-group button:last-child::before {

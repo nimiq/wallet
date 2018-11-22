@@ -159,7 +159,7 @@ export default class WalletMenu extends Vue {
         letter-spacing: 0.014em;
         padding: 0 calc(1.5 * var(--nimiq-size, 8px));
         background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
-        color: var(--nimiq-blue);
+        color: #1F2348;
         border-radius: calc(1.6875 * var(--nimiq-size, 8px));
         transition: color 150ms, background-color 150ms;
         border: none;
@@ -187,7 +187,7 @@ export default class WalletMenu extends Vue {
 
     /* light blue */
     .nq-button-s.light-blue {
-        color: var(--nimiq-light-blue);
+        color: #0582CA;
         background-color: rgba(5, 130, 202, 0.07); /* Based on Nimiq Light Blue */
     }
 
@@ -198,7 +198,7 @@ export default class WalletMenu extends Vue {
 
     /* red */
     .nq-button-s.red {
-        color: var(--nimiq-red);
+        color: #D94432;
         background-color: rgba(216, 65, 51, 0.07); /* Based on Nimiq Red */
     }
 

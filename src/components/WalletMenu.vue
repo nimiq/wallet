@@ -1,6 +1,6 @@
 <template>
     <div class="wallet-menu">
-        <div class="active-wallet" v-if="this.activeWalletId">
+        <div class="active-wallet" v-if="activeWalletId">
             <div class="nq-label">Active wallet</div>
             <Wallet
                 :id="activeWallet.id"
@@ -9,18 +9,36 @@
                 :type="activeWallet.type"
                 :balance="activeWallet.balance"
             />
-            <div class="button-row" v-if="this.activeWalletId !== LEGACY_ID">
-                <div class="button-small-group" v-if="activeWallet.type !== 2 /* LEDGER */">
-                    <button class="nq-button-s" @click="renameWallet(activeWallet.id)">Rename</button>
-                    <button class="nq-button-s" @click="exportWallet(activeWallet.id)">Export</button>
-                </div>
-                <div class="button-small-group" v-else>
-                    <button class="nq-button-s" @click="renameWallet(activeWallet.id)">Rename</button>
+            <div class="button-row" v-if="activeWalletId !== LEGACY_ID">
+                <div class="button-small-group" v-if="buttonRow === 1">
+                    <button
+                        class="nq-button-s"
+                        @click="exportWallet(activeWallet.id)"
+                        v-if="activeWallet.type !== 2 /* LEDGER */">Export</button>
+                    <button
+                        class="nq-button-s"
+                        @click="renameWallet(activeWallet.id)">Rename</button>
                 </div>
 
-                <div>
-                    <button class="nq-button-s red" @click="logoutWallet(activeWallet.id)">Logout</button>
+                <div class="button-small-group" v-else>
+                    <button
+                        class="nq-button-s"
+                        @click="changePassphraseWallet(activeWallet.id)"
+                        v-if="activeWallet.type !== 2 /* LEDGER */">Change passphrase</button>
+                    <button
+                        class="nq-button-s red"
+                        @click="logoutWallet(activeWallet.id)">Logout</button>
                 </div>
+
+
+                <button
+                    v-if="activeWalletId !== LEGACY_ID && activeWallet.type === 2 /* LEDGER */"
+                    class="nq-button-s red"
+                    @click="logoutWallet(activeWallet.id)">Logout</button>
+                <button
+                    v-else
+                    class="nq-button-s"
+                    @click="toggleButtonRow">&hellip;</button>
             </div>
         </div>
 
@@ -46,6 +64,7 @@ export default class WalletMenu extends Vue {
 
     private LEGACY_ID = 'LEGACY';
     private LEGACY_LABEL = 'Single-Account Wallets';
+    private buttonRow: number = 1;
 
     private get activeWallet() {
         if (this.activeWalletId === this.LEGACY_ID) return this.legacyWallet;
@@ -99,6 +118,10 @@ export default class WalletMenu extends Vue {
 
     @Emit()
     // tslint:disable-next-line no-empty
+    private changePassphraseWallet(walletId: string) {}
+
+    @Emit()
+    // tslint:disable-next-line no-empty
     private logoutWallet(walletId: string) {}
 
     @Emit()
@@ -108,6 +131,10 @@ export default class WalletMenu extends Vue {
     @Emit()
     // tslint:disable-next-line no-empty
     private login() {}
+
+    private toggleButtonRow() {
+        this.buttonRow = this.buttonRow === 1 ? 2 : 1;
+    }
 }
 </script>
 
@@ -247,6 +274,10 @@ export default class WalletMenu extends Vue {
         font-size: 0;
     }
 
+    .button-small-group button {
+        border-radius: 0;
+    }
+
     .button-small-group button::before {
         content: '';
         position: absolute;
@@ -263,8 +294,8 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:first-child {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        border-top-left-radius: calc(1.6875 * var(--nimiq-size, 8px));
+        border-bottom-left-radius: calc(1.6875 * var(--nimiq-size, 8px));
     }
 
     .button-small-group button:first-child::after {
@@ -272,8 +303,8 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:last-child {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+        border-top-right-radius: calc(1.6875 * var(--nimiq-size, 8px));
+        border-bottom-right-radius: calc(1.6875 * var(--nimiq-size, 8px));
     }
 
     .button-small-group button:last-child::before {

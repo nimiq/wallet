@@ -1,7 +1,7 @@
 <template>
     <div class="wallet-menu">
         <div class="active-wallet" v-if="activeWalletId">
-            <div class="nq-label">Active wallet</div>
+            <div class="nq-label">Active Account</div>
             <Wallet
                 :id="activeWallet.id"
                 :label="activeWallet.label"
@@ -24,7 +24,7 @@
                     <button
                         class="nq-button-s"
                         @click="changePassphraseWallet(activeWallet.id)"
-                        v-if="activeWallet.type !== 2 /* LEDGER */">Change passphrase</button>
+                        v-if="activeWallet.type !== 2 /* LEDGER */">Change password</button>
                     <button
                         class="nq-button-s red"
                         @click="logoutWallet(activeWallet.id)">Logout</button>
@@ -45,7 +45,7 @@
         <WalletList :wallets="selectableWallets" @wallet-selected="walletSelected"/>
 
         <div class="menu-footer">
-            <button class="nq-button-s" @click="create">New wallet</button>
+            <button class="nq-button-s" @click="create">New Account</button>
             <button class="nq-button-s light-blue" @click="login">Login</button>
         </div>
     </div>
@@ -63,7 +63,7 @@ export default class WalletMenu extends Vue {
     @Prop(String) private activeWalletId!: string;
 
     private LEGACY_ID = 'LEGACY';
-    private LEGACY_LABEL = 'Single-Account Wallets';
+    private LEGACY_LABEL = 'Single-Address Accounts';
     private buttonRow: number = 1;
 
     private get activeWallet() {

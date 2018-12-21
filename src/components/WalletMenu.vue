@@ -162,7 +162,8 @@ export default class WalletMenu extends Vue {
         background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
         color: #1F2348;
         border-radius: calc(1.6875 * var(--nimiq-size, 8px));
-        transition: color 150ms, background-color 150ms;
+        transition: color 300ms ease, background-color 300ms ease;
+        will-change: color, background-color;
         border: none;
         cursor: pointer;
         position: relative;
@@ -173,10 +174,10 @@ export default class WalletMenu extends Vue {
         content: '';
         display: block;
         position: absolute;
-        left: calc(-2 * var(--nimiq-size, 8px));
-        top: calc(-2 * var(--nimiq-size, 8px));
-        right: calc(-2 * var(--nimiq-size, 8px));
-        bottom: calc(-2 * var(--nimiq-size, 8px));
+        left: calc(-1.5 * var(--nimiq-size, 8px));
+        top: calc(-1.5 * var(--nimiq-size, 8px));
+        right: calc(-1.5 * var(--nimiq-size, 8px));
+        bottom: calc(-1.5 * var(--nimiq-size, 8px));
     }
 
     .nq-button-s:hover,
@@ -184,28 +185,36 @@ export default class WalletMenu extends Vue {
         background-color: rgba(31, 35, 72, 0.12); /* Based on Nimiq Blue */
     }
 
+    .nq-button-s:focus {
+        outline: none;
+        color: #0582CA;
+        background-color: rgba(5, 130, 202, 0.16); /* Based on Nimiq Light Blue */
+    }
+
     /* Color variations */
 
     /* light blue */
     .nq-button-s.light-blue {
         color: #0582CA;
-        background-color: rgba(5, 130, 202, 0.07); /* Based on Nimiq Light Blue */
+        background-color: rgba(5, 130, 202, 0.1); /* Based on Nimiq Light Blue */
     }
 
     .nq-button-s.light-blue:hover,
-    .nq-button-s.light-blue:active {
-        background-color: rgba(5, 130, 202, 0.12); /* Based on Nimiq Light Blue */
+    .nq-button-s.light-blue:active,
+    .nq-button-s.light-blue:focus {
+        background-color: rgba(5, 130, 202, 0.16); /* Based on Nimiq Light Blue */
     }
 
     /* red */
     .nq-button-s.red {
         color: #D94432;
-        background-color: rgba(216, 65, 51, 0.07); /* Based on Nimiq Red */
+        background-color: rgba(216, 65, 51, 0.1); /* Based on Nimiq Red */
     }
 
     .nq-button-s.red:hover,
-    .nq-button-s.red:active {
-        background-color: rgba(216, 65, 51, 0.12); /* Based on Nimiq Red */
+    .nq-button-s.red:active,
+    .nq-button-s.red:focus {
+        background-color: rgba(216, 65, 51, 0.16); /* Based on Nimiq Red */
     }
     /** END Nimiq Style **/
 
@@ -297,7 +306,7 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:first-child::after {
-        left: calc(-2 * var(--nimiq-size, 8px));
+        left: calc(-1.5 * var(--nimiq-size, 8px));
     }
 
     .button-small-group button:last-child {
@@ -310,6 +319,6 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:last-child::after {
-        right: calc(-2 * var(--nimiq-size, 8px));
+        right: calc(-1.5 * var(--nimiq-size, 8px));
     }
 </style>

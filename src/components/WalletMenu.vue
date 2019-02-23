@@ -140,27 +140,27 @@ export default class WalletMenu extends Vue {
 
 <style scoped>
     .wallet-menu {
-        --viewport-margin: calc(4 * var(--nimiq-size, 8px));
+        --viewport-margin: 4rem;
         width: calc(100vw - var(--viewport-margin));
-        max-width: calc(42.5 * var(--nimiq-size, 8px));
+        max-width: 42.5rem;
         background: white;
-        border-radius: calc(1 * var(--nimiq-size, 8px));
+        border-radius: 1rem;
         box-shadow: 0 4px 28px rgba(0, 0, 0, 0.111158);
-        min-height: calc(41.75 * var(--nimiq-size, 8px));
+        min-height: 41.75rem;
         max-height: 100vh;
         display: flex;
         flex-direction: column;
     }
 
     .active-wallet {
-        padding: calc(3 * var(--nimiq-size, 8px));
-        padding-bottom: calc(0.5 * var(--nimiq-size, 8px));
+        padding: 3rem;
+        padding-bottom: 0.5rem;
         flex-shrink: 0;
     }
 
     .active-wallet h2 {
         margin: 0;
-        font-size: calc(1.5 * var(--nimiq-size, 8px));
+        font-size: 1.5rem;
         text-transform: uppercase;
         letter-spacing: 0.143em;
         font-weight: 500;
@@ -168,7 +168,7 @@ export default class WalletMenu extends Vue {
     }
 
     .active-wallet .button-row {
-        padding-bottom: calc(2.5 * var(--nimiq-size, 8px));
+        padding-bottom: 2.5rem;
     }
 
     .wallet-list {
@@ -181,8 +181,8 @@ export default class WalletMenu extends Vue {
     }
 
     .wallet-list >>> .wallet {
-        padding-left: calc(3 * var(--nimiq-size, 8px));
-        padding-right: calc(3 * var(--nimiq-size, 8px));
+        padding-left: 3rem;
+        padding-right: 3rem;
     }
 
     .button-row,
@@ -194,7 +194,7 @@ export default class WalletMenu extends Vue {
     }
 
     .menu-footer {
-        padding: calc(3 * var(--nimiq-size, 8px));
+        padding: 3rem;
     }
 
     .button-small-group {
@@ -221,17 +221,17 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:first-child {
-        border-top-left-radius: calc(1.6875 * var(--nimiq-size, 8px));
-        border-bottom-left-radius: calc(1.6875 * var(--nimiq-size, 8px));
+        border-top-left-radius: 1.6875rem;
+        border-bottom-left-radius: 1.6875rem;
     }
 
     .button-small-group button:first-child::after {
-        left: calc(-1.5 * var(--nimiq-size, 8px));
+        left: -1.5rem;
     }
 
     .button-small-group button:last-child {
-        border-top-right-radius: calc(1.6875 * var(--nimiq-size, 8px));
-        border-bottom-right-radius: calc(1.6875 * var(--nimiq-size, 8px));
+        border-top-right-radius: 1.6875rem;
+        border-bottom-right-radius: 1.6875rem;
     }
 
     .button-small-group button:last-child::before {
@@ -239,6 +239,6 @@ export default class WalletMenu extends Vue {
     }
 
     .button-small-group button:last-child::after {
-        right: calc(-1.5 * var(--nimiq-size, 8px));
+        right: -1.5rem;
     }
 </style>

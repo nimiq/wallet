@@ -14,7 +14,7 @@
                     <button
                         class="nq-button-s"
                         @click="exportWallet(activeWallet.id)"
-                        v-if="activeWallet.type !== 2 /* LEDGER */">Export</button>
+                        v-if="activeWallet.type !== 3 /* LEDGER */">Export</button>
                     <button
                         class="nq-button-s"
                         @click="renameWallet(activeWallet.id)">Rename</button>
@@ -24,7 +24,7 @@
                     <button
                         class="nq-button-s"
                         @click="changePassphraseWallet(activeWallet.id)"
-                        v-if="activeWallet.type !== 2 /* LEDGER */">Change password</button>
+                        v-if="activeWallet.type !== 3 /* LEDGER */">Change password</button>
                     <button
                         class="nq-button-s red"
                         @click="logoutWallet(activeWallet.id)">Logout</button>
@@ -32,7 +32,7 @@
 
 
                 <button
-                    v-if="activeWalletId !== LEGACY_ID && activeWallet.type === 2 /* LEDGER */"
+                    v-if="activeWalletId !== LEGACY_ID && activeWallet.type === 3 /* LEDGER */"
                     class="nq-button-s red"
                     @click="logoutWallet(activeWallet.id)">Logout</button>
                 <button
@@ -74,7 +74,7 @@ export default class WalletMenu extends Vue {
     private get selectableWallets() {
         // Filter out active wallet
         const selectableWallets = this.wallets.filter(
-            (wallet) => wallet.id !== this.activeWalletId && wallet.type !== 0,
+            (wallet) => wallet.id !== this.activeWalletId && wallet.type !== 1 /* LEGACY */,
         );
         if (this.activeWalletId !== this.LEGACY_ID && this.legacyAccountCount > 0) {
             selectableWallets.push(this.legacyWallet);
@@ -83,7 +83,7 @@ export default class WalletMenu extends Vue {
     }
 
     private get legacyWallets() {
-        return this.wallets.filter((wallet) => wallet.type === 0 /* LEGACY */);
+        return this.wallets.filter((wallet) => wallet.type === 1 /* LEGACY */);
     }
 
     private get legacyAccountCount() {
@@ -99,7 +99,7 @@ export default class WalletMenu extends Vue {
             label: this.LEGACY_LABEL,
             accounts,
             contracts: [],
-            type: 0,
+            type: 1 /* LEGACY */,
             balance: this.legacyWallets.reduce((sum, wallet) => sum + (wallet.balance || 0), 0),
         };
     }

@@ -1,14 +1,11 @@
 <template>
     <div class="wallet-list">
-        <!-- <div class="nq-label">More wallets</div> -->
-        <div class="wallet-entry" v-for="wallet in wallets" @click="walletSelected(wallet.id)" :key="wallet.id">
-            <Wallet :id="wallet.id"
-                   :label="wallet.label"
-                   :numberAccounts="wallet.accounts.size + wallet.contracts.length"
-                   :type="wallet.type"
-                   :balance="wallet.balance"
-                   :show-arrow="showArrows"/>
-        </div>
+        <button v-for="wallet in wallets" :key="wallet.id"
+                @click="walletSelected(wallet.id)"
+                class="wallet-entry"
+                :class="{active: wallet.id === activeWalletId}">
+            <Wallet :wallet="wallet" v-on="$listeners"/>
+        </button>
     </div>
 </template>
 
@@ -19,22 +16,37 @@ import Wallet from './Wallet.vue';
 @Component({components: {Wallet}})
 export default class WalletList extends Vue {
     @Prop(Array) private wallets!:
-    Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;
-    @Prop({type: Boolean, default: false}) private showArrows!: boolean;
+    Array<{ id: string, label: string, addresses: string[], type: number, balance?: number }>;
+    @Prop(String) private activeWalletId?: string;
 
     @Emit()
-    // tslint:disable-next-line no-empty
-    private walletSelected(id: string) {}
+    private walletSelected(id: string) {} // tslint:disable-line no-empty
 }
 </script>
 
 <style scoped>
     .wallet-entry {
+        border: none;
+        padding: 0;
         cursor: pointer;
-        transition: background 300ms;
+        font-family: inherit;
+        text-align: left;
+        display: block;
+        width: 100%;
+        border-radius: .5rem;
+        background: rgba(123, 131, 199, 0); /* Based on Nimiq Blue */
+        opacity: .7;
+        transition: background .2s, opacity .2s;
     }
 
-    .wallet-entry:hover {
-        background-color: rgba(128, 128, 128, 0.1);
+    .wallet-entry:hover,
+    .wallet-entry:focus,
+    .wallet-entry:focus-within,
+    .wallet-entry.active {
+        opacity: 1;
+    }
+
+    .wallet-entry.active {
+        background: rgba(31, 35, 72, .06); /* Based on Nimiq Blue */
     }
 </style>

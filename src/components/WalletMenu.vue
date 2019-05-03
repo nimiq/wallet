@@ -1,244 +1,89 @@
 <template>
     <div class="wallet-menu">
-        <div class="active-wallet" v-if="activeWalletId">
-            <div class="nq-label">Active Account</div>
-            <Wallet
-                :id="activeWallet.id"
-                :label="activeWallet.label"
-                :numberAccounts="activeWallet.accounts.size"
-                :type="activeWallet.type"
-                :balance="activeWallet.balance"
-            />
-            <div class="button-row" v-if="activeWalletId !== LEGACY_ID">
-                <div class="button-small-group" v-if="buttonRow === 1">
-                    <button
-                        class="nq-button-s"
-                        @click="exportWallet(activeWallet.id)"
-                        v-if="activeWallet.type !== 3 /* LEDGER */">Export</button>
-                    <button
-                        class="nq-button-s"
-                        @click="renameWallet(activeWallet.id)">Rename</button>
-                </div>
-
-                <div class="button-small-group" v-else>
-                    <button
-                        class="nq-button-s"
-                        @click="changePassphraseWallet(activeWallet.id)"
-                        v-if="activeWallet.type !== 3 /* LEDGER */">Change password</button>
-                    <button
-                        class="nq-button-s red"
-                        @click="logoutWallet(activeWallet.id)">Logout</button>
-                </div>
-
-
-                <button
-                    v-if="activeWalletId !== LEGACY_ID && activeWallet.type === 3 /* LEDGER */"
-                    class="nq-button-s red"
-                    @click="logoutWallet(activeWallet.id)">Logout</button>
-                <button
-                    v-else
-                    class="nq-button-s"
-                    @click="toggleButtonRow">&hellip;</button>
-            </div>
-        </div>
-
-        <WalletList :wallets="selectableWallets" @wallet-selected="walletSelected"/>
+        <WalletList :wallets="wallets" :activeWalletId="activeWalletId" v-on="$listeners"/>
 
         <div class="menu-footer">
-            <button class="nq-button-s" @click="create">New Account</button>
-            <button class="nq-button-s light-blue" @click="login">Login</button>
+            <button class="nq-button-s settings" @click="$emit('settings')"><Icon name="gear"/><span>Settings</span></button>
+            <button class="nq-button-s add-account" @click="$emit('add-account')">Add Account</button>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
-import Wallet from './Wallet.vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import WalletList from './WalletList.vue';
+import Icon from './Icon.vue';
 
-@Component({components: {Wallet, WalletList}})
+@Component({components: {WalletList, Icon}})
 export default class WalletMenu extends Vue {
     @Prop(Array) private wallets!:
     Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;
     @Prop(String) private activeWalletId!: string;
-
-    private LEGACY_ID = 'LEGACY';
-    private LEGACY_LABEL = 'Single-Address Accounts';
-    private buttonRow: number = 1;
-
-    private get activeWallet() {
-        if (this.activeWalletId === this.LEGACY_ID) return this.legacyWallet;
-        return this.wallets.find((wallet) => wallet.id === this.activeWalletId)!;
-    }
-
-    private get selectableWallets() {
-        // Filter out active wallet
-        const selectableWallets = this.wallets.filter(
-            (wallet) => wallet.id !== this.activeWalletId && wallet.type !== 1 /* LEGACY */,
-        );
-        if (this.activeWalletId !== this.LEGACY_ID && this.legacyAccountCount > 0) {
-            selectableWallets.push(this.legacyWallet);
-        }
-        return selectableWallets;
-    }
-
-    private get legacyWallets() {
-        return this.wallets.filter((wallet) => wallet.type === 1 /* LEGACY */);
-    }
-
-    private get legacyAccountCount() {
-        return this.legacyWallets.length;
-    }
-
-    private get legacyWallet() {
-        // Generate a dummy 'accounts' map, because the WalletList requires that to display the account count
-        const accounts = new Map();
-        for (let i = 0; i < this.legacyAccountCount; i++) accounts.set(i.toString(), 'dummy');
-        return {
-            id: this.LEGACY_ID,
-            label: this.LEGACY_LABEL,
-            accounts,
-            contracts: [],
-            type: 1 /* LEGACY */,
-            balance: this.legacyWallets.reduce((sum, wallet) => sum + (wallet.balance || 0), 0),
-        };
-    }
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private walletSelected(walletId: string) {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private renameWallet(walletId: string) {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private exportWallet(walletId: string) {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private changePassphraseWallet(walletId: string) {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private logoutWallet(walletId: string) {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private create() {}
-
-    @Emit()
-    // tslint:disable-next-line no-empty
-    private login() {}
-
-    private toggleButtonRow() {
-        this.buttonRow = this.buttonRow === 1 ? 2 : 1;
-    }
 }
 </script>
 
 <style scoped>
     .wallet-menu {
-        --viewport-margin: 4rem;
-        width: calc(100vw - var(--viewport-margin));
+        width: calc(100vw - 4rem);
         max-width: 42.5rem;
         background: white;
         border-radius: 1rem;
         box-shadow: 0 4px 28px rgba(0, 0, 0, 0.111158);
-        min-height: 41.75rem;
-        max-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .active-wallet {
-        padding: 3rem;
-        padding-bottom: 0.5rem;
-        flex-shrink: 0;
-    }
-
-    .active-wallet h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.143em;
-        font-weight: 500;
-        opacity: 0.7;
-    }
-
-    .active-wallet .button-row {
-        padding-bottom: 2.5rem;
+        max-height: calc(100vh - 4rem);
     }
 
     .wallet-list {
         overflow: auto;
+        padding: 1rem;
+        padding-bottom: 0;
     }
 
-    .active-wallet >>> .wallet {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .wallet-list >>> .wallet {
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-
-    .button-row,
     .menu-footer {
         flex-shrink: 0;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
     }
 
-    .menu-footer {
-        padding: 3rem;
+    .settings {
+        height: unset;
+        padding: 1.75rem;
+        background: none;
+        font-size: 2.25rem;
+        line-height: 3rem;
     }
 
-    .button-small-group {
-        font-size: 0;
+    .settings .nq-icon {
+        vertical-align: bottom;
+        margin-right: 1.5rem;
+        opacity: .4;
+        font-size: 3rem;
+        transition: opacity .2s;
     }
 
-    .button-small-group button {
-        border-radius: 0;
+    .settings span {
+        opacity: .7;
+        transition: opacity .2s;
     }
 
-    .button-small-group button::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 1px;
-        height: 100%;
-        background: rgba(31, 35, 72, 0.07);
+    .settings:hover .nq-icon,
+    .settings:focus .nq-icon {
+        opacity: .6;
     }
 
-    .button-small-group button::after {
-        left: 0;
-        right: 0;
+    .settings:hover span,
+    .settings:focus span {
+        opacity: 1;
     }
 
-    .button-small-group button:first-child {
-        border-top-left-radius: 1.6875rem;
-        border-bottom-left-radius: 1.6875rem;
-    }
-
-    .button-small-group button:first-child::after {
-        left: -1.5rem;
-    }
-
-    .button-small-group button:last-child {
-        border-top-right-radius: 1.6875rem;
-        border-bottom-right-radius: 1.6875rem;
-    }
-
-    .button-small-group button:last-child::before {
-        display: none;
-    }
-
-    .button-small-group button:last-child::after {
-        right: -1.5rem;
+    .add-account {
+        font-size: 2rem;
+        /* line-height: 4rem; */
+        height: 4rem;
+        border-radius: 2rem;
+        padding: 0 2rem;
+        margin-right: 1.25rem;
     }
 </style>

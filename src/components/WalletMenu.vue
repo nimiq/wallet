@@ -33,7 +33,6 @@ export default class WalletMenu extends Vue {
     }
 
     .wallet-list {
-        overflow: auto;
         padding: 1rem;
         padding-bottom: 0;
     }

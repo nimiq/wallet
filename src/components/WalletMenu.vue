@@ -3,7 +3,7 @@
         <WalletList :wallets="wallets" :activeWalletId="activeWalletId" v-on="$listeners"/>
 
         <div class="menu-footer">
-            <button class="nq-button-s settings" @click="$emit('settings')"><Icon name="gear"/><span>Settings</span></button>
+            <button class="nq-button-s settings" @click="$emit('settings')"><GearIcon/><span>Settings</span></button>
             <button class="nq-button-s add-account" @click="$emit('add-account')">Add Account</button>
         </div>
     </div>
@@ -12,9 +12,9 @@
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import WalletList from './WalletList.vue';
-import Icon from './Icon.vue';
+import { GearIcon } from './Icons';
 
-@Component({components: {WalletList, Icon}})
+@Component({components: {WalletList, GearIcon}})
 export default class WalletMenu extends Vue {
     @Prop(Array) private wallets!:
     Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;

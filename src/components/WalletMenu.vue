@@ -30,11 +30,7 @@ export default class WalletMenu extends Vue {
         border-radius: 1rem;
         box-shadow: 0 4px 28px rgba(0, 0, 0, 0.111158);
         max-height: calc(100vh - 4rem);
-    }
-
-    .wallet-list {
         padding: 1rem;
-        padding-bottom: 0;
     }
 
     .menu-footer {
@@ -43,7 +39,8 @@ export default class WalletMenu extends Vue {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 1.25rem;
+        padding: .25rem;
+        padding-top: 1.25rem;
     }
 
     .settings {

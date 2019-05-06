@@ -30,20 +30,30 @@ export default class WalletList extends Vue {
         padding: 0;
         cursor: pointer;
         font-family: inherit;
+        color: inherit;
         text-align: left;
         display: block;
         width: 100%;
         border-radius: .5rem;
         background: rgba(123, 131, 199, 0); /* Based on Nimiq Blue */
-        opacity: .7;
-        transition: background .2s, opacity .2s;
+        transition: background .2s;
     }
 
-    .wallet-entry:hover,
-    .wallet-entry:focus,
-    .wallet-entry:focus-within,
-    .wallet-entry.active {
+    .wallet-entry .wallet,
+    .wallet-list:hover .wallet-entry.active:not(:hover) .wallet,
+    .wallet-list:focus-within .wallet-entry.active:not(:focus) .wallet {
+        opacity: .7;
+        transition: opacity .2s;
+    }
+
+    .wallet-entry:hover .wallet,
+    .wallet-entry:focus .wallet,
+    .wallet-entry.active .wallet {
         opacity: 1;
+    }
+
+    .wallet-entry:focus-within .wallet {
+        opacity: 1 !important;
     }
 
     .wallet-entry.active {

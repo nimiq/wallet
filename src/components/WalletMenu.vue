@@ -17,7 +17,15 @@ import { GearIcon } from './Icons';
 @Component({components: {WalletList, GearIcon}})
 export default class WalletMenu extends Vue {
     @Prop(Array) private wallets!:
-    Array<{ id: string, label: string, accounts: Map<string, any>, contracts: any[], type: number, balance?: number }>;
+    Array<{
+        id: string,
+        label: string,
+        accounts: any[],
+        type: number,
+        fileExported: boolean,
+        wordsExported: boolean,
+        balance?: number
+    }>;
     @Prop(String) private activeWalletId!: string;
 }
 </script>

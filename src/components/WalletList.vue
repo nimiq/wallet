@@ -16,7 +16,15 @@ import Wallet from './Wallet.vue';
 @Component({components: {Wallet}})
 export default class WalletList extends Vue {
     @Prop(Array) private wallets!:
-    Array<{ id: string, label: string, addresses: string[], type: number, balance?: number }>;
+    Array<{
+        id: string,
+        label: string,
+        accounts: any[],
+        type: number,
+        fileExported: boolean,
+        wordsExported: boolean,
+        balance?: number
+    }>;
     @Prop(String) private activeWalletId?: string;
 
     @Emit()

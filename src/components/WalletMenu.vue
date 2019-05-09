@@ -24,7 +24,7 @@ export default class WalletMenu extends Vue {
         type: number,
         fileExported: boolean,
         wordsExported: boolean,
-        balance?: number
+        balance?: number,
     }>;
     @Prop(String) private activeWalletId!: string;
 }

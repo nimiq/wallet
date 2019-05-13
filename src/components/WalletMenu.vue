@@ -53,15 +53,17 @@ export default class WalletMenu extends Vue {
         justify-content: space-between;
         align-items: center;
         padding: .25rem;
-        padding-top: 1.25rem;
+        padding-top: 2.5rem;
+        padding-bottom: 1.25rem;
     }
 
     .settings {
-        height: unset;
-        padding: 1.75rem;
+        height: 4rem;
         background: none;
         font-size: 2.25rem;
         line-height: 3rem;
+        padding-left: .5rem;
+        margin-left: 1.25rem;
     }
 
     .settings .nq-icon {

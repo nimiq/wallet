@@ -166,7 +166,8 @@
 
     .visual.account-menu {
         width: 18rem;
-        height: 48.25rem;
+        height: 49.75rem;
+        margin-right: -0.25rem;
     }
 
     .nq-button {

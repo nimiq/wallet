@@ -182,7 +182,6 @@
     }
 
     .nq-button {
-        width: 100%;
-        margin: 0 4.75rem 3rem;
+        margin-top: 0;
     }
 </style>

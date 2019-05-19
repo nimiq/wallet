@@ -109,15 +109,6 @@
 </script>
 
 <style scoped>
-    .page-footer {
-        display: flex;
-        flex-direction: row;
-        flex-shrink: 0;
-        align-items: center;
-        justify-content: flex-start;
-        box-sizing: border-box;
-    }
-
     .page-body {
         padding-top: 2rem !important;
         display: flex;
@@ -173,15 +164,15 @@
         width: 20.25rem;
         height: 34rem;
         margin-left: -7.25rem;
+        margin-top: -2rem;
     }
 
     .visual.account-menu {
-        width: 18rem;
-        height: 49.75rem;
-        margin-right: -0.25rem;
+        width: 20rem;
+        height: 48rem;
     }
 
     .nq-button {
-        margin-top: 0;
+        margin-top: 0 !important;
     }
 </style>

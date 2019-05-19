@@ -147,10 +147,20 @@
         width: 26rem;
     }
 
+    .nq-link {
+        text-decoration: none !important;
+    }
+
     .nq-link .nq-icon {
         margin-left: .375rem;
         font-size: 1.5rem;
         vertical-align: middle;
+        transition: transform 350ms cubic-bezier(.25, 0, 0, 1);
+    }
+
+    .nq-link:hover .nq-icon,
+    .nq-link:focus .nq-icon {
+        transform: translateX(.25rem);
     }
 
     .visual svg {

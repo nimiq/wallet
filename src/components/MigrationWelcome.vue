@@ -160,6 +160,10 @@
         margin-top: -1rem;
     }
 
+    .visual.address-ring {
+        width: 18rem;
+    }
+
     .visual.login-file {
         width: 20.25rem;
         height: 34rem;

@@ -8,7 +8,7 @@
         <PageBody v-if="page === 1" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    Handling multiple Address is now convenient and easy – with one password and shared login information.
+                    Handling multiple Addresses is now convenient and easy – with one password and shared login information.
                 </p>
                 <p class="nq-text">
                     <strong>Accounts</strong> hold, manage and aggregate Addresses.
@@ -28,7 +28,7 @@
                     The new Login Files are an easy and convenient way to gain access to your Account and its Addresses.
                 </p>
                 <p class="nq-text">
-                    Simply upload it to any browser and enter your password to login to Nimiq.
+                    Import it to any browser and enter your password to connect to Nimiq.
                 </p>
                 <p class="nq-text">
                     <strong><a :href="link" target="_blank" class="nq-link">Learn more here <ArrowRightSmallIcon/></a></strong>
@@ -79,7 +79,7 @@
             button: 'Continue',
         }, {
             title: 'Improved Accessibility',
-            notice: 'Log in to your devices with the new<br>Nimiq Login Files.',
+            notice: 'Log in on your devices with the new<br>Nimiq Login Files.',
             button: 'What else?',
         }, {
             title: 'Old and new Accounts',
@@ -137,6 +137,10 @@
         color: var(--nimiq-blue);
         margin-left: 2rem;
         margin-right: 2rem;
+        width: 27rem;
+    }
+
+    .left-aligned .nq-text {
         width: 26rem;
     }
 

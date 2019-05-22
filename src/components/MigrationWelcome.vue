@@ -31,7 +31,7 @@
                     Simply upload it to any browser and enter your password to login to Nimiq.
                 </p>
                 <p class="nq-text">
-                    <strong><a href="https://medium.com/nimiq-network" target="_blank" class="nq-link">Learn more here <ArrowRightSmallIcon/></a></strong>
+                    <strong><a :href="link" target="_blank" class="nq-link">Learn more here <ArrowRightSmallIcon/></a></strong>
                 </p>
             </div>
             <div class="visual login-file">
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from 'vue-property-decorator';
+    import {Component, Prop, Vue} from 'vue-property-decorator';
     import SmallPage from './SmallPage.vue';
     import PageHeader from './PageHeader.vue';
     import PageBody from './PageBody.vue';
@@ -69,6 +69,8 @@
 
     @Component({components: {SmallPage, PageHeader, PageBody, PageFooter, ArrowRightSmallIcon}})
     export default class MigrationWelcome extends Vue {
+        @Prop({type: String, default: 'https://medium.com/nimiq-network'}) public link!: string;
+
         private page = 1;
 
         private content = [{
@@ -168,11 +170,11 @@
         width: 20.25rem;
         height: 34rem;
         margin-left: -7.25rem;
-        margin-top: -2rem;
+        margin-top: -1rem;
     }
 
     .visual.account-menu {
-        width: 20rem;
+        width: 18rem;
         height: 48rem;
     }
 

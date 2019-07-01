@@ -1,6 +1,6 @@
 <template>
     <div class="contact-shortcuts">
-        <div class="open-contacts" @click="contactsOpened">
+        <div class="open-contacts" @click="contactsOpened" :class="{'disabled': contacts.length === 0}">
             <ContactsIcon/>
             <div class="label">Contacts</div>
         </div>
@@ -12,6 +12,12 @@
                     layout="column"
                     :address="contact.address"
                     :label="contact.label" />
+            </div>
+            <div class="account-entry disabled" v-for="contact in missingContacts" :key="contact">
+                <Account
+                    layout="column"
+                    address=""
+                    label="" />
             </div>
         </div>
     </div>
@@ -28,6 +34,10 @@ import { ContactsIcon } from './Icons';
 
         private get filteredContacts() {
             return this.contacts.slice(0, 3);
+        }
+
+        private get missingContacts() {
+            return (3 - this.contacts.length > 0) ? new Array(3 - this.contacts.length): [];
         }
 
         @Emit()
@@ -53,9 +63,14 @@ import { ContactsIcon } from './Icons';
         display: flex;
         align-items: center;
         justify-content: space-between;
+        cursor: pointer;
         flex-direction: column;
         padding: 2rem 1rem;
         width: 12.5rem;
+    }
+
+    .contact-shortcuts .open-contacts.disabled {
+        cursor: unset;
     }
 
     .contact-shortcuts .open-contacts svg {
@@ -75,6 +90,11 @@ import { ContactsIcon } from './Icons';
 
     .contact-shortcuts .contacts .account-entry {
         width: calc(100% / 3);
+        cursor: pointer;
+    }
+
+    .contact-shortcuts .contacts .account-entry.disabled {
+        cursor: unset;
     }
 
     .contact-shortcuts .contacts .identicon {

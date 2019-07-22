@@ -37,7 +37,7 @@ import { ContactsIcon } from './Icons';
         }
 
         private get missingContacts() {
-            return (3 - this.contacts.length > 0) ? new Array(3 - this.contacts.length): [];
+            return (3 - this.contacts.length > 0) ? new Array(3 - this.contacts.length) : [];
         }
 
         @Emit()

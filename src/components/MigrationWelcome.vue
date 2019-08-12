@@ -152,7 +152,7 @@
         margin-left: .375rem;
         font-size: 1.5rem;
         vertical-align: middle;
-        transition: transform 350ms cubic-bezier(.25, 0, 0, 1);
+        transition: transform 350ms var(--nimiq-ease);
     }
 
     .nq-link:hover .nq-icon,

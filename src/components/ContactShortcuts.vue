@@ -9,7 +9,7 @@
                 layout="column"
                 :address="contact.address"
                 :label="contact.label"
-                @click="contactSelected(contact.address, contact.label)" />
+                @click.native="contactSelected(contact.address, contact.label)" />
             <Account v-for="contact in missingContacts" class="disabled" :key="contact"
                 layout="column"
                 address=""
@@ -45,7 +45,7 @@ import { ContactsIcon } from './Icons';
     }
 </script>
 
-<style>
+<style scoped>
     .contact-shortcuts {
         display: flex;
         flex-direction: row;
@@ -54,7 +54,7 @@ import { ContactsIcon } from './Icons';
         width: 100%;
     }
 
-    .contact-shortcuts .open-contacts {
+    .open-contacts {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -64,7 +64,7 @@ import { ContactsIcon } from './Icons';
         width: 10rem;
     }
 
-    .contact-shortcuts .open-contacts.disabled {
+    .open-contacts.disabled {
         cursor: unset;
         opacity: 0.5;
     }
@@ -77,7 +77,7 @@ import { ContactsIcon } from './Icons';
         opacity: 0.6;
     }
 
-    .contact-shortcuts .open-contacts svg {
+    .open-contacts svg {
         width: 5rem;
         height: auto;
         margin-top: 0.5rem;
@@ -86,7 +86,7 @@ import { ContactsIcon } from './Icons';
         opacity: .4;
     }
 
-    .contact-shortcuts .contacts {
+    .contacts {
         display: flex;
         flex-direction: row;
         flex-grow: 1;
@@ -95,21 +95,21 @@ import { ContactsIcon } from './Icons';
         margin-right: -1.5rem;
     }
 
-    .contact-shortcuts .contacts .account {
+    .account {
         padding: 0.5rem 1.5rem;
         cursor: pointer;
     }
 
-    .contact-shortcuts .contacts .account.disabled {
+    .account.disabled {
         cursor: unset;
     }
 
-    .contact-shortcuts .contacts .identicon {
+    .account >>> .identicon {
         width: 8rem;
         height: auto;
     }
 
-    .contact-shortcuts .contacts .label {
+    .account >>> .label {
         max-height: 6em;
         overflow: hidden;
         max-width: 8rem;

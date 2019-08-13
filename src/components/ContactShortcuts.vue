@@ -50,6 +50,7 @@ import { ContactsIcon } from './Icons';
         display: flex;
         flex-direction: row;
         align-items: flex-start;
+        justify-content: center;
         font-size: 2rem;
         width: 100%;
     }
@@ -89,7 +90,6 @@ import { ContactsIcon } from './Icons';
     .contacts {
         display: flex;
         flex-direction: row;
-        flex-grow: 1;
         border-left: 1px solid rgba(30,30,30, 0.1);
         padding-left: 1rem;
         margin-right: -1.5rem;

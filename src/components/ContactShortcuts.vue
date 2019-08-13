@@ -5,20 +5,15 @@
             <div class="label">Contacts</div>
         </div>
         <div class="contacts">
-            <div href="javascript:void(0)" class="account-entry"
-                v-for="contact in filteredContacts" :key="contact.address"
-                @click="contactSelected(contact.address, contact.label)">
-                <Account
-                    layout="column"
-                    :address="contact.address"
-                    :label="contact.label" />
-            </div>
-            <div class="account-entry disabled" v-for="contact in missingContacts" :key="contact">
-                <Account
-                    layout="column"
-                    address=""
-                    label="" />
-            </div>
+            <Account v-for="contact in filteredContacts" :key="contact.address"
+                layout="column"
+                :address="contact.address"
+                :label="contact.label"
+                @click="contactSelected(contact.address, contact.label)" />
+            <Account v-for="contact in missingContacts" class="disabled" :key="contact"
+                layout="column"
+                address=""
+                label="" />
         </div>
     </div>
 </template>
@@ -37,7 +32,7 @@ import { ContactsIcon } from './Icons';
         }
 
         private get missingContacts() {
-            return (3 - this.contacts.length > 0) ? new Array(3 - this.contacts.length) : [];
+            return new Array(Math.max(0, 3 - this.contacts.length));
         }
 
         @Emit()
@@ -54,7 +49,7 @@ import { ContactsIcon } from './Icons';
     .contact-shortcuts {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         font-size: 2rem;
         width: 100%;
     }
@@ -65,18 +60,28 @@ import { ContactsIcon } from './Icons';
         justify-content: space-between;
         cursor: pointer;
         flex-direction: column;
-        padding: 2rem 1rem;
-        width: 12.5rem;
+        margin: 1rem 3rem 2rem 0;
+        width: 10rem;
     }
 
     .contact-shortcuts .open-contacts.disabled {
         cursor: unset;
+        opacity: 0.5;
+    }
+
+    .open-contacts.disabled .nq-icon {
+        opacity: 0.4;
+    }
+
+    .open-contacts.disabled .label {
+        opacity: 0.6;
     }
 
     .contact-shortcuts .open-contacts svg {
         width: 5rem;
         height: auto;
-        margin-bottom: 2.25rem;
+        margin-top: 0.5rem;
+        margin-bottom: 2.875rem;
         color: var(--nimiq-blue);
         opacity: .4;
     }
@@ -84,27 +89,29 @@ import { ContactsIcon } from './Icons';
     .contact-shortcuts .contacts {
         display: flex;
         flex-direction: row;
-        width: calc(100% - 12.5rem - 1px);
+        flex-grow: 1;
         border-left: 1px solid rgba(30,30,30, 0.1);
+        padding-left: 1rem;
+        margin-right: -1.5rem;
     }
 
-    .contact-shortcuts .contacts .account-entry {
-        width: calc(100% / 3);
+    .contact-shortcuts .contacts .account {
+        padding: 0.5rem 1.5rem;
         cursor: pointer;
     }
 
-    .contact-shortcuts .contacts .account-entry.disabled {
+    .contact-shortcuts .contacts .account.disabled {
         cursor: unset;
     }
 
     .contact-shortcuts .contacts .identicon {
-        width: 7rem;
+        width: 8rem;
         height: auto;
     }
 
     .contact-shortcuts .contacts .label {
-        height: 1.5em;
+        max-height: 6em;
         overflow: hidden;
-        max-width: 100%;
+        max-width: 8rem;
     }
 </style>

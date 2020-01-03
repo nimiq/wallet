@@ -10,7 +10,7 @@
                 :address="contact.address"
                 :label="contact.label"
                 @click.native="contactSelected(contact.address, contact.label)" />
-            <Account v-for="contact in missingContacts" class="disabled" :key="contact"
+            <Account v-for="n in missingContacts" class="disabled" :key="n"
                 layout="column"
                 address=""
                 label="" />
@@ -32,7 +32,7 @@ import { ContactsIcon } from './Icons';
         }
 
         private get missingContacts() {
-            return new Array(Math.max(0, 3 - this.contacts.length));
+            return Math.max(0, 3 - this.contacts.length);
         }
 
         @Emit()

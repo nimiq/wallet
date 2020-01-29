@@ -772,10 +772,15 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.3.tgz#f0a4de59394f210f2c2d9cda8ee35c716847d40e"
   integrity sha512-W66SS9n3ygYgD52r1GJr1WtYYOkcZsqdtMmDCEwDvkrmeARnHs2sAvj77Wt4PQG8JA7GwK5svIJr6rGccCaekw==
 
-"@nimiq/hub-api@^1.2.0-beta.7":
-  version "1.2.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.2.0-beta.7.tgz#14d8e5951e7aeccea026418e86f690ed6e468caf"
-  integrity sha512-WiwIuHbFObEONNPHHbVBGHWiKzFgfjuDjs14TywQPV6gSZTbFF7RtBGcl/Ov6qaWMoQZ0xwJxbW1E9ys5LYosA==
+"@nimiq/core-web@^1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.4.tgz#647e3f018b5a3245f1feb028ca77155a89528cb4"
+  integrity sha512-g08sY0afLC6u1zfWsS+vhNm90XpPU4bWI9k9qAiqicxXtF0sM+f7CyfXuUXRjeK6cEqeK3GLesygT4BM5kOhTQ==
+
+"@nimiq/hub-api@^1.2.0-beta.8":
+  version "1.2.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.2.0-beta.8.tgz#9612e95bfa6dfa97916e74941625301204863fae"
+  integrity sha512-5HWweoGptyXPy1SlPRlr8wHHFDPy9TvrTqyO1gc1r1A8B2AQnhmqjhLntQLTgRagrUqpAmKBVKpBzDeyxUNofg==
   dependencies:
     "@nimiq/core-web" "^1.5.3"
     "@nimiq/rpc" "^0.4.0"
@@ -6417,10 +6422,10 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pinia@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/pinia/-/pinia-0.0.2.tgz#df999264b41e007128086d6b81faa13345d1e043"
-  integrity sha512-Fqxw9jzRL27QwfevtpkMjp2udoZ10JIPP7BBaJ+hlRWiSS1P5Mv0y2niB/4BplgJLldEV5Z4emG9un1dKNZEig==
+pinia@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-0.0.4.tgz#8440d4a68bc92cc56d3e0bbdddd602f251a3a55e"
+  integrity sha512-e9HYsK+yooWE73en115Uj6maFKCyDbV4n5LkWfa/vqfcz0Z166THYQZg2kxRBs7xvdCjCGeXzg8VjSg8XB/mdw==
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
@@ -8730,7 +8735,7 @@ vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-template-compiler@^2.6.10:
+vue-template-compiler@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.6.11.tgz#c04704ef8f498b153130018993e56309d4698080"
   integrity sha512-KIq15bvQDrcCjpGjrAhx4mUlyyHfdmTaoNfeoATHLAiWB+MU3cx4lOzMwrnUh9cCxy0Lt1T11hAFY6TQgroUAA==
@@ -8743,7 +8748,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.6.10:
+vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==

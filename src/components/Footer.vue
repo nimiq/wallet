@@ -1,8 +1,8 @@
 <template>
-    <footer class="p-6 mt-16 mb-8 text-center text-sm">
-        <span class="mx-4 capitalize"><span class="mx-2 opacity-50 ">Consensus</span> {{ network$.consensus }}</span>
-        <span class="mx-4"><span class="mx-2 opacity-50">Peers</span> {{ network$.peerCount }}</span>
-        <span class="mx-4"><span class="mx-2 opacity-50">Height</span> #{{ network$.height }}</span>
+    <footer class="py-6 mt-16 mb-8 text-sm">
+        <span class="mr-8 capitalize"><span class="mx-2 opacity-50 ">Consensus</span> {{ network$.consensus }}</span>
+        <span class="mr-8"><span class="mx-2 opacity-50">Peers</span> {{ network$.peerCount }}</span>
+        <span class="mr-8"><span class="mx-2 opacity-50">Height</span> #{{ network$.height }}</span>
     </footer>
 </template>
 

@@ -8,20 +8,17 @@ export type Account = {
     walletId: string,
 }
 
-export const useAccountsStore = createStore(
-    // name of the store
-    // it is used in devtools and allows restoring state
-    'accounts',
-    // a function that returns a fresh state
-    () => ({
+export const useAccountsStore = createStore({
+    id: 'accounts',
+    state: () => ({
         accounts: {} as {[id: string]: Account},
         activeAccountId: null as string | null,
     }),
-    // optional getters
-    {
+    getters: {
         activeAddress: state => state.activeAccountId,
         activeAccount: state => state.activeAccountId && state.accounts[state.activeAccountId],
         // TODO: Only sum up balances of active wallet accounts
         walletBalance: state => Object.values(state.accounts).reduce((sum, acc) => sum + (acc.balance || 0), 0),
-    }
-)
+    },
+    actions: {},
+})

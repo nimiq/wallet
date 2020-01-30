@@ -6422,10 +6422,10 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pinia@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/pinia/-/pinia-0.0.4.tgz#8440d4a68bc92cc56d3e0bbdddd602f251a3a55e"
-  integrity sha512-e9HYsK+yooWE73en115Uj6maFKCyDbV4n5LkWfa/vqfcz0Z166THYQZg2kxRBs7xvdCjCGeXzg8VjSg8XB/mdw==
+pinia@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-0.0.5.tgz#e95fde7c3de5cdef1d4bd71fa0d9c3110862c641"
+  integrity sha512-EF3LpCYsA1VSm9EeCK87UHA66NFM/7++D0qnWTzSPgQ+UKoUQytWsXat777bj9WDzjNELxKlyP3Ifv44IURi2g==
 
 pinkie-promise@^2.0.0:
   version "2.0.1"

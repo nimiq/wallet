@@ -10,15 +10,12 @@ export const SYMBOLS = {
     [Currencies.USD]: '$',
 }
 
-export const useFiatStore = createStore(
-    // name of the store
-    // it is used in devtools and allows restoring state
-    'fiat',
-    // a function that returns a fresh state
-    () => ({
+export const useFiatStore = createStore({
+    id: 'fiat',
+    state: () => ({
         currency: Currencies.EUR,
         exchangeRate: 0.000275,
     }),
-    // optional getters
-    {}
-)
+    getters: {},
+    actions: {},
+})

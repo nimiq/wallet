@@ -1,18 +1,15 @@
 import { createStore } from 'pinia'
 
-export const useNetworkStore = createStore(
-    // name of the store
-    // it is used in devtools and allows restoring state
-    'network',
-    // a function that returns a fresh state
-    () => ({
+export const useNetworkStore = createStore({
+    id: 'network',
+    state: () => ({
         consensus: 'initializing',
         peerCount: 0,
         height: 0,
         fetchingTxHistory: 0,
     }),
-    // optional getters
-    {
+    getters: {
         isFetchingTxHistory: state => state.fetchingTxHistory > 0,
-    }
-)
+    },
+    actions: {},
+})

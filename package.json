@@ -19,7 +19,7 @@
     "@nimiq/utils": "^0.4.4",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.4.3",
-    "pinia": "^0.0.4",
+    "pinia": "^0.0.5",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.11"
   },

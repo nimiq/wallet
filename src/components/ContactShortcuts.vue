@@ -20,8 +20,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
-import Account from './Account.vue';
-import { ContactsIcon } from './Icons';
+import { Account, ContactsIcon } from '@nimiq/vue-components';
 
 @Component({components: {Account, ContactsIcon}})
     export default class ContactShortcuts extends Vue {

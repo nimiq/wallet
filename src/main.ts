@@ -10,6 +10,7 @@ import router from './router';
 import '@/assets/css/tailwind.css'
 // import '@nimiq/style/nimiq-style.min.css'
 import '@/assets/css/main.css'
+import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 
 Vue.config.productionTip = false
 

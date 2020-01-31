@@ -61,11 +61,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
-    import SmallPage from './SmallPage.vue';
-    import PageHeader from './PageHeader.vue';
-    import PageBody from './PageBody.vue';
-    import PageFooter from './PageFooter.vue';
-    import { ArrowRightSmallIcon } from './Icons';
+    import {SmallPage, PageHeader, PageBody, PageFooter, ArrowRightSmallIcon} from '@nimiq/vue-components';
 
     @Component({components: {SmallPage, PageHeader, PageBody, PageFooter, ArrowRightSmallIcon}})
     export default class MigrationWelcome extends Vue {

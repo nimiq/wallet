@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {GearIcon} from '@nimiq/vue-components';
 import WalletList from './WalletList.vue';
-import { GearIcon } from './Icons';
 
 @Component({components: {WalletList, GearIcon}})
 export default class WalletMenu extends Vue {

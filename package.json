@@ -17,6 +17,7 @@
     "@nimiq/network-client": "^0.3.3",
     "@nimiq/style": "^0.7.6",
     "@nimiq/utils": "^0.4.4",
+    "@nimiq/vue-components": "https://github.com/nimiq/vue-components.git#build/master",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.4.3",
     "pinia": "^0.0.5",

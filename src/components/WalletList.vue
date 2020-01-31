@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
-import Wallet from './Wallet.vue';
+import {Wallet} from '@nimiq/vue-components';
 
 @Component({components: {Wallet}})
 export default class WalletList extends Vue {

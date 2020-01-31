@@ -12,6 +12,16 @@ import '@/assets/css/tailwind.css'
 import '@/assets/css/main.css'
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 
+declare global {
+  interface Window {
+    NIMIQ_IQONS_SVG_PATH: string;
+  }
+}
+
+// Specify where the svg asset for the Nimiq identicons is located. The file gets copied to this location via
+// the copy-webpack-plugin as specified in vue.config.js
+window.NIMIQ_IQONS_SVG_PATH = '/img/iqons.min.svg';
+
 Vue.config.productionTip = false
 
 Vue.use(VueCompositionApi);

@@ -33,8 +33,7 @@ import { createComponent } from '@vue/composition-api'
 import { useAccountsStore } from '../stores/Accounts'
 import { chooseAddress } from '../hub'
 
-import Identicon from '@/components/Identicon.vue'
-import { Amount } from '@nimiq/vue-components';
+import { Identicon, Amount } from '@nimiq/vue-components';
 import FiatAmount from './FiatAmount.vue';
 
 export default createComponent({
@@ -60,6 +59,8 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
-
+<style scoped lang="scss">
+    .identicon {
+        width: 3rem !important;
+    }
 </style>

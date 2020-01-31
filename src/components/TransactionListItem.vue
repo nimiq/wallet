@@ -49,8 +49,7 @@ import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 
-import Identicon from '@/components/Identicon.vue'
-import { Amount } from '@nimiq/vue-components'
+import { Identicon, Amount } from '@nimiq/vue-components'
 import FiatAmount from '@/components/FiatAmount.vue'
 
 export default createComponent({
@@ -126,6 +125,8 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
-
+<style scoped lang="scss">
+    .identicon {
+        display: inline;
+    }
 </style>

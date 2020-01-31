@@ -65,9 +65,9 @@ import { createComponent } from '@vue/composition-api'
 import { useAccountsStore } from './stores/Accounts'
 import { chooseAddress } from './hub'
 
+import { Identicon } from '@nimiq/vue-components';
 import WalletBalance from '@/components/WalletBalance.vue'
 import AccountList from '@/components/AccountList.vue'
-import Identicon from '@/components/Identicon.vue'
 import TransactionList from '@/components/TransactionList.vue'
 import Footer from '@/components/Footer.vue'
 
@@ -91,6 +91,8 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
-
+<style scoped lang="scss">
+    .identicon {
+        width: 6rem !important;
+    }
 </style>

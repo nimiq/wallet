@@ -29,8 +29,7 @@
             <span class="flex flex-row flex-no-wrap font-bold" :class="isIncoming ? 'text-green-500' : 'opacity-75'">
                 <span v-if="isIncoming">+</span>
                 <!--<span v-else>-</span>-->
-                <Amount
-                    :amount="transaction.value"/>
+                <Amount :amount="transaction.value" :maxDecimals="2"/>
             </span>
             <span class="flex flex-row flex-no-wrap justify-end text-sm font-semibold opacity-50">
                 <span v-if="isIncoming">+</span>
@@ -51,7 +50,7 @@ import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 
 import Identicon from '@/components/Identicon.vue'
-import Amount from '@/components/Amount.vue'
+import { Amount } from '@nimiq/vue-components'
 import FiatAmount from '@/components/FiatAmount.vue'
 
 export default createComponent({

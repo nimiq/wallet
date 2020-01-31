@@ -12,7 +12,8 @@
                 <Amount
                     class="block font-bold leading-tight group-hover:text-green-500"
                     :class="activeAccount.address === account.address && 'text-green-500'"
-                    :amount="account.balance"/>
+                    :amount="account.balance"
+                    :maxDecimals="2"/>
                 <FiatAmount
                     v-if="activeAccount.address === account.address"
                     class="block text-sm font-semibold opacity-50 leading-tight"
@@ -33,7 +34,7 @@ import { useAccountsStore } from '../stores/Accounts'
 import { chooseAddress } from '../hub'
 
 import Identicon from '@/components/Identicon.vue'
-import Amount from '@/components/Amount.vue'
+import { Amount } from '@nimiq/vue-components';
 import FiatAmount from '@/components/FiatAmount.vue'
 
 export default createComponent({

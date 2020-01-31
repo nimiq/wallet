@@ -43,6 +43,7 @@ html {
     /* Special colors */
     --nimiq-highlight-bg: rgba(31, 35, 72, 0.06); /* Based on Nimiq Blue */
     --nimiq-card-bg: white;
+    font-size: 8px;
 }
 
 body {

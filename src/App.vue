@@ -34,11 +34,11 @@
                                 <div class="text-2xl font-semibold">{{ activeAccount.label }}</div>
                                 <div class="text-lg font-mono opacity-50">{{ activeAccount.address }}</div>
                             </div>
-                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2 opacity-25 cursor-not-allowed" disabled>
+                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2" @click="$router.push('/send').catch(error => {})">
                                 <div class="w-1 h-8 bg-blue-600 rounded"></div>
                                 <span class="font-bold opacity-75 mt-2">Send</span>
                             </button>
-                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2 opacity-25 cursor-not-allowed" disabled>
+                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2" @click="$router.push('/receive').catch(error => {})">
                                 <div class="w-1 h-8 bg-blue-600 rounded"></div>
                                 <span class="font-bold opacity-75 mt-2">Receive</span>
                             </button>
@@ -56,6 +56,7 @@
                 </div><!-- .right-column -->
             </div><!-- .right-background -->
         </main>
+        <router-view/>
     </div><!-- #app -->
 </template>
 
@@ -73,12 +74,12 @@ import Footer from '@/components/Footer.vue'
 export default createComponent({
     name: 'app',
     setup() {
-        const { activeAccount } = useAccountsStore()
+        const { activeAccount } = useAccountsStore();
 
         return {
             activeAccount,
             chooseAddress,
-        }
+        };
     },
     components: {
         WalletBalance,

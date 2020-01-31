@@ -10,7 +10,7 @@
                     </header>
 
                     <WalletBalance />
-                    <AccountList :accounts="accounts" />
+                    <AccountList :accounts="[]" />
                 </div>
                 <!-- .left-column -->
             </div>
@@ -83,13 +83,8 @@ import Footer from '@/components/Footer.vue'
 export default createComponent({
     name: 'app',
     setup() {
-        const { activeAccount, accounts } = useAccountsStore();
-        const accountsArray: Account[] = [];
-        Object.keys(accounts).forEach((value) => {
-            accountsArray[value] = accounts[value];
-        });
+        const { activeAccount } = useAccountsStore();
         return {
-            accounts: accountsArray,
             activeAccount,
             chooseAddress,
         };

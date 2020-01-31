@@ -1,8 +1,8 @@
 <template>
-    <footer class="py-6 mt-16 mb-8 text-sm">
-        <span class="mr-8 capitalize"><span class="mx-2 opacity-50 ">Consensus</span> {{ network$.consensus }}</span>
-        <span class="mr-8"><span class="mx-2 opacity-50">Peers</span> {{ network$.peerCount }}</span>
-        <span class="mr-8"><span class="mx-2 opacity-50">Height</span> #{{ network$.height }}</span>
+    <footer class="footer nq-text-s">
+        <span class="consensus"><span>Consensus</span> {{ network$.consensus }}</span>
+        <span><span>Peers</span> {{ network$.peerCount }}</span>
+        <span><span>Height</span> #{{ network$.height }}</span>
     </footer>
 </template>
 
@@ -22,5 +22,15 @@ export default createComponent({
 </script>
 
 <style lang="scss">
-
+.footer {
+    margin: 4rem auto 2rem  auto;
+    padding: auto 1.5rem;
+    > * {
+        margin-right: 3rem;
+        opacity: .5;
+    }
+    > .consensus {
+        text-transform: uppercase;
+    }
+}
 </style>

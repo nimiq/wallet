@@ -1,0 +1,41 @@
+.nq-icon {
+    width: 1em;
+    height: 1em;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    background-size: 100%;
+    background-size: contain;
+}
+
+.nq-icon.nimiq-logo {
+    background-image: url('data:image/svg+xml,<svg width="27" height="24" viewBox="0 0 27 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M26.7 10.88l-5.63-9.76A2.25 2.25 0 0 0 19.12 0H7.87c-.8 0-1.54.43-1.94 1.13L.3 10.88c-.4.7-.4 1.55 0 2.24l5.63 9.76c.4.7 1.14 1.12 1.94 1.12h11.25c.8 0 1.55-.43 1.95-1.13l5.63-9.75c.4-.7.4-1.55 0-2.24z" fill="url(%23paint0_radial)"/><defs><radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-26.9977 0 0 -24 27 24)"><stop stop-color="%23EC991C"/><stop offset="1" stop-color="%23E9B213"/></radialGradient></defs></svg>');
+}
+
+.logo {
+    --signet-width: 3.5rem;
+    height: var(--signet-width);
+    box-sizing: border-box;
+    font-size: calc(0.75 * var(--signet-width));
+    display: flex;
+    align-items: center;
+    color: var(--nimiq-blue);
+}
+
+.logo .nimiq-logo {
+    height: var(--signet-width);
+    width: var(--signet-width);
+    margin-right: calc(0.382 * var(--signet-width)); /* 0.382 times the signet width following the style guide */
+}
+
+.logo .logo-wordmark {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-left: -0.09em; /* subtract small margin before letter N present in font */
+}
+
+/* Subtitle (e.g. NIMIQ Checkout) */
+.logo .logo-subtitle {
+    margin-left: 0.35em;
+}

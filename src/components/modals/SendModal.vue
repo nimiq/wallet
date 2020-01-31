@@ -9,17 +9,15 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
+import { createComponent } from '@vue/composition-api';
 import Modal from './Modal.vue';
 
 export default createComponent({
     name: 'send-modal',
     components: {
         Modal,
-    }
-})
+    },
+});
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

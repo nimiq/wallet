@@ -1,96 +1,197 @@
 <template>
     <div id="app" class="font-sans">
-        <main class="flex flex-row justify-around items-start">
-            <div class="left-background w-2/5">
-                <div class="left-column ml-auto mr-6 w-1/2">
-                    <header class="brand flex flex-row text-xl items-center pl-4 pt-6 pb-12">
-                        <svg class="nq-icon text-2xl text-orange-400"><use xlink:href="/img/nimiq-style.icons.svg#nq-hexagon"/></svg>
-                        <span class="nimiq ml-2 tracking-wider font-bold">NIMIQ</span>
-                        <span class="safe ml-1">Safe</span>
+        <main>
+            <div class="left">
+                <div>
+                    <header class="logo">
+                        <span class="nq-icon nimiq-logo"></span>
+                        <span class="logo-wordmark">Nimiq</span>
+                        <span class="logo-subtitle">Safe</span>
                     </header>
 
-                    <WalletBalance class="pl-4"/>
-                    <AccountList class="mt-12"/>
-                </div><!-- .left-column -->
-            </div><!-- .left-background -->
+                    <WalletBalance />
+                    <AccountList />
+                </div>
+                <!-- .left-column -->
+            </div>
+            <!-- .left-background -->
 
-            <div class="right-background bg-white w-3/5">
-                <div class="right-column ml-6 mr-auto w-2/3">
-                    <nav class="links flex flex-row justify-end items-center pt-6 pr-4 pb-12">
-                        <a href="https://nimiq.com/exchanges" target="_blank" class="flex flex-row items-center font-bold opacity-75 mx-4 hover:text-blue-500 hover:opacity-100">
-                            <svg class="nq-icon mr-2 text-xl"><use xlink:href="/img/nimiq-style.icons.svg#nq-transfer"/></svg> Get NIM
+            <div class="right">
+                <div>
+                    <nav class="links">
+                        <a href="https://nimiq.com/exchanges" target="_blank" class="nq-link">
+                            <TransferIcon /> Get NIM
                         </a>
-                        <a href="https://nimiq.com/apps" target="_blank" class="flex flex-row items-center font-bold opacity-75 mx-4 hover:text-blue-500 hover:opacity-100">
-                            <svg class="nq-icon mr-2"><use xlink:href="/img/nimiq-style.icons.svg#nq-login"/></svg> Apps
+                        <a href="https://nimiq.com/apps" target="_blank" class="nq-link">
+                            <LoginIcon /> Apps
                         </a>
 
-                        <div class="wallet-menu ml-4 opacity-25 cursor-not-allowed">Wallet Menu</div>
+                        <div class="wallet-menu">Wallet Menu</div>
                     </nav>
 
-                    <div v-if="activeAccount" class="">
-                        <div class="flex flex-row items-center p-4">
-                            <Identicon :address="activeAccount.address" class="w-24 h-24 flex-shrink-0"/>
-                            <div class="flex-grow overflow-hidden whitespace-no-wrap ml-6">
-                                <div class="text-2xl font-semibold">{{ activeAccount.label }}</div>
-                                <div class="text-lg font-mono opacity-50">{{ activeAccount.address }}</div>
-                            </div>
-                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2" @click="$router.push('/send').catch(error => {})">
-                                <div class="w-1 h-8 bg-blue-600 rounded"></div>
-                                <span class="font-bold opacity-75 mt-2">Send</span>
+                    <div v-if="activeAccount" class="active-account">
+                        <div>
+                            <Account layout="row"
+                                :address="activeAccount.address"
+                                :label="activeAccount.label"
+                                :balance="activeAccount.balance" />
+                            <button class="send nq-button inverse" @click="$router.push('/send').catch(error => {})">
+                                <div class="icon"></div>
                             </button>
-                            <button class="w-16 flex flex-col flex-shrink-0 items-center m-2" @click="$router.push('/receive').catch(error => {})">
-                                <div class="w-1 h-8 bg-blue-600 rounded"></div>
-                                <span class="font-bold opacity-75 mt-2">Receive</span>
+                            <button class="receive nq-button inverse" @click="$router.push('/receive').catch(error => {})">
+                                <div class="icon"></div>
                             </button>
                         </div>
 
-                        <TransactionList/>
+                        <TransactionList />
                     </div>
-                    <div v-else class="py-24 text-center">
-                        <img src="https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/To_the_stars_qhyy.svg" class="w-2/5 mx-auto mb-8">
+                    <div v-else class="no-account">
+                        <img
+                        src="https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/To_the_stars_qhyy.svg"
+                        />
                         <span class="opacity-75">Connect your first account:</span>
-                        <button @click="chooseAddress" class="block mx-auto px-6 py-2 bg-green-500 text-white rounded-full mt-4 uppercase font-semibold text-lg tracking-wider hover:bg-green-600">Connect</button>
+                        <button class="nq-button" @click="chooseAddress">Connect</button>
                     </div>
 
-                    <Footer/>
-                </div><!-- .right-column -->
-            </div><!-- .right-background -->
+                    <Footer />
+                </div>
+                <!-- .right-column -->
+            </div>
+        <!-- .right-background -->
         </main>
-        <router-view/>
-    </div><!-- #app -->
+        <router-view />
+    </div>
+  <!-- #app -->
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api'
+import {
+    Account,
+    Identicon,
+    LoginIcon,
+    TransferIcon,
+} from '@nimiq/vue-components';
 import { useAccountsStore } from './stores/Accounts'
 import { chooseAddress } from './hub'
 
 import WalletBalance from '@/components/WalletBalance.vue'
 import AccountList from '@/components/AccountList.vue'
-import Identicon from '@/components/Identicon.vue'
 import TransactionList from '@/components/TransactionList.vue'
 import Footer from '@/components/Footer.vue'
 
 export default createComponent({
     name: 'app',
     setup() {
-        const { activeAccount } = useAccountsStore();
+        const { activeAccount, accounts } = useAccountsStore();
 
         return {
+            accounts,
             activeAccount,
             chooseAddress,
         };
     },
     components: {
-        WalletBalance,
+        Account,
         AccountList,
-        Identicon,
-        TransactionList,
         Footer,
+        Identicon,
+        LoginIcon,
+        TransactionList,
+        TransferIcon,
+        WalletBalance,
     },
 });
 </script>
 
 <style lang="scss">
-
+main {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    > .left {
+        display: flex;
+        width: 40%;
+        > div {
+            width: 50%;
+            margin-left: auto;
+            margin-right: 3rem;
+            > .logo  {
+                padding: 3rem 2rem 4rem 2rem;
+                font-size: 3rem;
+            }
+        }
+    }
+    > .right {
+        display: flex;
+        width: 60%;
+        background: white;
+        > div {
+            margin-right: auto;
+            margin-left: 3rem;
+            width: calc(200% / 3);
+            flex-direction: column;
+            > .links {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                padding-top: 3rem;
+                padding-right: 2rem;
+                padding-bottom: 6rem;
+                > a {
+                    display: flex;
+                    justify-content: baseline;
+                    align-items: center;
+                    margin: 0 2rem;
+                    > svg {
+                        margin-right: 1rem;
+                    }
+                }
+                > .wallet-menu {
+                    margin-left: 2rem;
+                }
+            }
+            .active-account {
+                display: flex;
+                flex-direction: column;
+                > div {
+                    padding: 2rem;
+                    display: flex;
+                    align-items: center;
+                    > .nq-button {
+                        width: 7.5rem;
+                        height: 7.5rem;
+                        min-width: auto;
+                        padding:0;
+                        margin: 0 2rem;
+                        color: var(--nimiq-blue);
+                        > .icon {
+                            width: 100%;
+                            height: 100%;
+                            background-size: 45% 45%;
+                            background-position: center !important;
+                            background-repeat: no-repeat !important;
+                        }
+                    }
+                    > .send > .icon {
+                        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%230582CA" viewBox="0 0 8 19"><path d="M4 18.2c.8 0 1.5-.7 1.5-1.5V7v-.2H7c.4 0 .7-.2.9-.5a1 1 0 0 0 0-1L4.9.5A1 1 0 0 0 4 0a1 1 0 0 0-.9.5l-3 4.8a1 1 0 0 0 0 1c.2.3.5.4.9.4h1.2c.2 0 .3.2.3.3v9.7c0 .8.7 1.5 1.5 1.5z"/></svg>');
+                    }
+                    > .receive > .icon {
+                        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%230582CA" viewBox="0 0 8 19"><path d="M4 0c-.8 0-1.5.6-1.5 1.4v10H1a1 1 0 0 0-.9.5 1 1 0 0 0 0 1l3 4.8c.2.3.5.5.9.5s.7-.2.9-.5l3-4.8a1 1 0 0 0 0-1 1 1 0 0 0-.9-.5H5.8a.2.2 0 0 1-.3-.2V1.4C5.5.6 4.8 0 4 0z"/></svg>');
+                    }
+                }
+            }
+            > .no-account {
+                padding: 6rem 0;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                > img {
+                    width: 40%;
+                    margin: 0 auto 2rem;
+                }
+            }
+        }
+    }
+}
 </style>

@@ -1,14 +1,11 @@
 <template>
-    <span class="whitespace-no-wrap">
-        {{ formattedAmount }}
-        <span>{{ symbol }}</span>
-    </span>
+    <VueComponentsFiatAmount :amount="fiatAmount" :currency="fiatCurrency"/>
 </template>
 
 <script lang="ts">
+import { FiatAmount as VueComponentsFiatAmount } from '@nimiq/vue-components';
 import { createComponent, computed } from '@vue/composition-api'
-import { useFiatStore, SYMBOLS } from '../stores/Fiat'
-import { formatted } from '../lib/NumberFormatting'
+import { useFiatStore } from '../stores/Fiat'
 
 export default createComponent({
     name: 'FiatAmount',
@@ -23,14 +20,14 @@ export default createComponent({
         const { state: fiat$ } = useFiatStore()
 
         const fiatAmount = computed(() => props.amount / 1e5 * fiat$.exchangeRate)
-        const formattedAmount = computed(() => formatted(fiatAmount.value, 2, 2))
-        const symbol = computed(() => SYMBOLS[fiat$.currency])
+        const fiatCurrency = computed(() => fiat$.currency);
 
         return {
-            formattedAmount,
-            symbol,
+            fiatAmount,
+            fiatCurrency,
         }
     },
+    components: { VueComponentsFiatAmount }
 })
 </script>
 

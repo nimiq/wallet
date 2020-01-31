@@ -10,7 +10,7 @@
 import { createComponent } from '@vue/composition-api'
 import { useAccountsStore } from '../stores/Accounts'
 import { Amount } from '@nimiq/vue-components'
-import FiatAmount from '@/components/FiatAmount.vue'
+import FiatAmount from './FiatAmount.vue';
 
 export default createComponent({
     name: 'WalletBalance',

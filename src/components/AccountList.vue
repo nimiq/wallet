@@ -35,7 +35,7 @@ import { chooseAddress } from '../hub'
 
 import Identicon from '@/components/Identicon.vue'
 import { Amount } from '@nimiq/vue-components';
-import FiatAmount from '@/components/FiatAmount.vue'
+import FiatAmount from './FiatAmount.vue';
 
 export default createComponent({
     setup() {

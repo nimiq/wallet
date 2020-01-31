@@ -10,7 +10,7 @@
                     </header>
 
                     <WalletBalance />
-                    <AccountList />
+                    <AccountList :accounts="accounts" />
                 </div>
                 <!-- .left-column -->
             </div>
@@ -68,6 +68,7 @@
 import { createComponent } from '@vue/composition-api'
 import {
     Account,
+    AccountList,
     Identicon,
     LoginIcon,
     TransferIcon,
@@ -76,7 +77,6 @@ import { useAccountsStore } from './stores/Accounts'
 import { chooseAddress } from './hub'
 
 import WalletBalance from '@/components/WalletBalance.vue'
-import AccountList from '@/components/AccountList.vue'
 import TransactionList from '@/components/TransactionList.vue'
 import Footer from '@/components/Footer.vue'
 
@@ -84,9 +84,12 @@ export default createComponent({
     name: 'app',
     setup() {
         const { activeAccount, accounts } = useAccountsStore();
-
+        const accountsArray: Account[] = [];
+        Object.keys(accounts).forEach((value) => {
+            accountsArray[value] = accounts[value];
+        });
         return {
-            accounts,
+            accounts: accountsArray,
             activeAccount,
             chooseAddress,
         };

@@ -19,6 +19,7 @@ export const useAccountsStore = createStore({
         activeAccount: state => state.activeAccountId && state.accounts[state.activeAccountId],
         // TODO: Only sum up balances of active wallet accounts
         walletBalance: state => Object.values(state.accounts).reduce((sum, acc) => sum + (acc.balance || 0), 0),
+        accounts: state => state.accounts,
     },
     actions: {},
 })

@@ -1,16 +1,19 @@
 <template>
-    <div>
-        <span class="block opacity-50 text-xl">Total Balance</span>
-        <Amount class="block font-bold leading-tight text-3xl" :amount="walletBalance"/>
-        <FiatAmount class="block opacity-50" :amount="walletBalance"/>
+    <div class="wallet-balance">
+        <h2 class="nq-h1">Total Balance</h2>
+        <div class="amount nq-light-blue">
+            <Amount :amount="walletBalance" />
+        </div>
+        <div class="fiat-amount">
+            <FiatAmount :amount="123.76" currency="USD" />
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api'
 import { useAccountsStore } from '../stores/Accounts'
-import Amount from '@/components/Amount.vue'
-import FiatAmount from '@/components/FiatAmount.vue'
+import { FiatAmount, Amount } from '@nimiq/vue-components';
 
 export default createComponent({
     name: 'WalletBalance',
@@ -29,5 +32,15 @@ export default createComponent({
 </script>
 
 <style lang="scss">
+.wallet-balance {
+    > span,
+    > .fiat-amount > span  {
+        opacity: .5;
+    }
+    > .amount {
+        font-size: 4rem;
+        font-weight: bold;
+    }
 
+}
 </style>

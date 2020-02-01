@@ -40,7 +40,7 @@ export async function launchNetwork() {
 
     client.on(NetworkClient.Events.PEER_COUNT, peerCount => network$.peerCount = peerCount)
 
-    function transactionListener(plain: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
+    function transactionListener(plain: Transaction) {
         transactions$.transactions = {
             ...transactions$.transactions,
             [plain.transactionHash]: plain,

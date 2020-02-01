@@ -1,6 +1,6 @@
 import { createStore } from 'pinia'
 
-export type Transaction = ReturnType<Nimiq.Client.TransactionDetails["toPlain"]>
+export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails["toPlain"]>
 
 export const useTransactionsStore = createStore({
     id: 'transactions',

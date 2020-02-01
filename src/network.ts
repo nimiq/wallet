@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api'
+import { NetworkClient } from '@nimiq/network-client'
 
 import { useAccountsStore } from './stores/Accounts'
 import { useTransactionsStore, Transaction } from './stores/Transactions'
@@ -11,57 +12,43 @@ export async function launchNetwork() {
     if (isLaunched) return
     isLaunched = true
 
-    await Nimiq.WasmHelper.doImport()
-    Nimiq.GenesisConfig.main()
-
-    const config = Nimiq.Client.Configuration.builder()
-    config.volatile()
-    const client = config.instantiateClient()
+    const client = NetworkClient.createInstance()
+    await client.init()
 
     const { state: network$ } = useNetworkStore()
     const transactionsStore = useTransactionsStore()
     const { state: transactions$ } = transactionsStore
     const { activeAddress, state: accounts$ } = useAccountsStore()
 
-    function updateBalances(addresses: string[]) {
-        if (!addresses.length) return
-        console.debug('Updating balances for', addresses)
-        client.getAccounts(addresses).then(accounts => {
-            for (let i = 0; i < addresses.length; i++) {
-                accounts$.accounts[addresses[i]] = {
-                    ...accounts$.accounts[addresses[i]],
-                    ...accounts[i].toPlain(),
-                }
+    function balancesListener(balances: Map<string, number>) {
+        console.debug('Got new balances for', [...balances.keys()])
+        for (const [address, balance] of balances) {
+            accounts$.accounts[address] = {
+                ...accounts$.accounts[address],
+                balance,
             }
-        })
-    }
-
-    // @ts-ignore Return value of listeners is not yet typed as <any>
-    client.addConsensusChangedListener(consensus => network$.consensus = consensus)
-
-    client.addHeadChangedListener(() => {
-        client.getHeadHeight().then(height => {
-            console.debug('Head change to', height)
-            network$.height = height
-        })
-
-        if (network$.consensus === Nimiq.Client.ConsensusState.ESTABLISHED) {
-            updateBalances(Object.keys(accounts$.accounts))
         }
+    }
+    client.on(NetworkClient.Events.BALANCES, balancesListener)
+
+    client.on(NetworkClient.Events.CONSENSUS, consensus => network$.consensus = consensus)
+
+    client.on(NetworkClient.Events.HEAD_HEIGHT, height => {
+        console.debug('Head is now at', height)
+        network$.height = height
     })
 
-    // Update peer count every second
-    setInterval(() => client.network.getStatistics().then(({totalPeerCount}) => network$.peerCount = totalPeerCount), 1000)
+    client.on(NetworkClient.Events.PEER_COUNT, peerCount => network$.peerCount = peerCount)
 
-    function transactionListener(transaction: Nimiq.ClientTransactionDetails) {
-        const plain = transaction.toPlain()
+    function transactionListener(plain: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
         transactions$.transactions = {
             ...transactions$.transactions,
             [plain.transactionHash]: plain,
         }
     }
+    client.on(NetworkClient.Events.TRANSACTION, transactionListener)
 
-    // Subscribe to addresses for new transactions
+    // Subscribe to new addresses (for balance updates and transactions)
     const subscribedAddresses = new Set<string>()
     watch(() => {
         const newAddresses: string[] = []
@@ -72,13 +59,8 @@ export async function launchNetwork() {
         }
         if (!newAddresses.length) return
 
-        if (network$.consensus === Nimiq.Client.ConsensusState.ESTABLISHED) {
-            console.debug('Fetching balances for', newAddresses)
-            updateBalances(newAddresses)
-        }
-
         console.debug('Subscribing addresses', newAddresses)
-        client.addTransactionListener(transactionListener, newAddresses)
+        client.subscribe(newAddresses)
     })
 
     // Fetch transactions for active account
@@ -93,22 +75,19 @@ export async function launchNetwork() {
             .filter(tx => tx.sender === address || tx.recipient === address)
 
         network$.fetchingTxHistory++
-        client.waitForConsensusEstablished().then(() => {
-            console.debug('Fetching transaction history for', address, knownTxDetails)
-            // @ts-ignore `knownTransactionDetails` argument is missing plain type
-            client.getTransactionsByAddress(address, 0, knownTxDetails, 10).then(txDetails => {
-                const txs: {[hash: string]: Transaction} = {}
-                for (const txDetail of txDetails) {
-                    const plain = txDetail.toPlain()
-                    txs[plain.transactionHash] = plain
-                }
 
-                transactions$.transactions = {
-                    ...transactions$.transactions,
-                    ...txs,
-                }
-            })
-            .finally(() => network$.fetchingTxHistory--)
+        console.debug('Fetching transaction history for', address, knownTxDetails)
+        client.getTransactionsByAddress(address, 0, knownTxDetails, 100).then(txDetails => {
+            const txs: {[hash: string]: Transaction} = {}
+            for (const plain of txDetails) {
+                txs[plain.transactionHash] = plain
+            }
+
+            transactions$.transactions = {
+                ...transactions$.transactions,
+                ...txs,
+            }
         })
+        .finally(() => network$.fetchingTxHistory--)
     })
 }

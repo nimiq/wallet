@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
-import { chooseAddress } from './hub';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
@@ -28,7 +27,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;

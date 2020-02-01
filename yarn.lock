@@ -786,13 +786,6 @@
     "@nimiq/rpc" "^0.4.0"
     big-integer "^1.6.48"
 
-"@nimiq/iqons@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@nimiq/iqons/-/iqons-1.5.2.tgz#e5a104c99472c948be7cb82049ece19c4eeb96c9"
-  integrity sha512-K/6Kq9UoiwM3OeLwUhnGC78MRbe3wNyb+gk8jRC18QovM8I3wDCPxb8x8688/vx/8W9Fp8oNVlcnABdfKT92lw==
-  dependencies:
-    dom-parser "^0.1.5"
-
 "@nimiq/network-client@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.4.0.tgz#05383c707384a59e44c905acf0684bfded0ffa26"
@@ -832,7 +825,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components.git#build/master":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components.git#6b2ed9bc074429f09ac9766da705bd0001279675"
+  resolved "https://github.com/nimiq/vue-components.git#9f9019a86688d06457d704ddc482e5d80b3d59a4"
   dependencies:
     "@nimiq/style" "^0.7.5"
     big-integer "^1.6.44"
@@ -3123,11 +3116,6 @@ dom-converter@^0.2:
   integrity sha512-gd3ypIPfOMr9h5jIKq8E3sHOTCjeirnl0WK5ZdS1AW0Odt0b1PaWaHdJ4Qk4klv+YB9aJBS7mESXjFoDQPu6DA==
   dependencies:
     utila "~0.4"
-
-dom-parser@^0.1.5:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/dom-parser/-/dom-parser-0.1.6.tgz#696c633b535ab3291424eb5bf58ee426f64632ca"
-  integrity sha512-3nVRKbLEwmGfghLoeT1dxlK/0votalnOfasP+8VCHYDfDuCETY4LeMblfOeqww6XZk2ymZ1Uewy/hVad6Dy3yw==
 
 dom-serializer@0:
   version "0.2.2"

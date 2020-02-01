@@ -27,8 +27,7 @@
         </div>
         <div class="amounts" :class="{isIncoming}">
             <span class="amount">
-                <Amount
-                    :amount="transaction.value"/>
+                <Amount :amount="transaction.value" :maxDecimals="2"/>
             </span>
             <span class="fiat-amount">
                 <FiatAmount
@@ -47,8 +46,7 @@ import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 
-import Identicon from '@/components/Identicon.vue'
-import Amount from '@/components/Amount.vue'
+import { Identicon, Amount } from '@nimiq/vue-components'
 import FiatAmount from '@/components/FiatAmount.vue'
 
 export default createComponent({
@@ -125,7 +123,7 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .transaction {
     display: flex;
     align-items: center;
@@ -160,6 +158,7 @@ export default createComponent({
     }
 
     .identicon {
+        display: inline;
         position: relative;
         height: 6rem;
 

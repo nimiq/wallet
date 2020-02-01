@@ -1,13 +1,8 @@
 import { createStore } from 'pinia'
 
 export enum Currencies {
-    EUR,
-    USD,
-}
-
-export const SYMBOLS = {
-    [Currencies.EUR]: '€',
-    [Currencies.USD]: '$',
+    EUR = 'eur',
+    USD = 'usd',
 }
 
 export const useFiatStore = createStore({

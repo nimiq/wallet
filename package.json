@@ -12,7 +12,6 @@
   "main": "src/main.ts",
   "dependencies": {
     "@nimiq/hub-api": "^1.2.0-beta.8",
-    "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.4.0",
     "@nimiq/style": "^0.7.6",
     "@nimiq/utils": "^0.4.4",

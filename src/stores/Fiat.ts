@@ -5,6 +5,11 @@ export enum Currencies {
     USD = 'usd',
 }
 
+export const SYMBOLS = {
+    [Currencies.EUR]: '€',
+    [Currencies.USD]: '$',
+}
+
 export const useFiatStore = createStore({
     id: 'fiat',
     state: () => ({

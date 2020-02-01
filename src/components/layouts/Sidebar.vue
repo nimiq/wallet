@@ -5,7 +5,7 @@
             <span class="logo-wordmark">Nimiq</span>
             <span class="logo-subtitle"></span>
         </header>
-        <PriceChart currency="nim" class="graph"  />
+        <PriceChart currency="nim" class="graph" />
         <PriceChart currency="btc" class="graph" />
         <button class="nq-button inverse" @click="$router.push('/trade')">Buy/Sell</button>
         <div class="grow"></div>
@@ -52,7 +52,7 @@ export default createComponent({
 
     .graph {
         display: flex;
-        height: 11rem;
+        height: 14rem;
         width: 100%;
         flex-grow: 0;
     }

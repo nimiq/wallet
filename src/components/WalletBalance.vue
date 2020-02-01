@@ -1,46 +1,40 @@
 <template>
     <div class="wallet-balance">
-        <h2 class="nq-h1">Total Balance</h2>
-        <div class="amount nq-light-blue">
-            <Amount :amount="walletBalance" />
-        </div>
+        <h2 class="nq-label">Total Balance</h2>
         <div class="fiat-amount">
-            <FiatAmount :amount="123.76" currency="USD" />
+            <FiatAmount :amount="walletBalance" />
         </div>
+        <BalanceDistribution />
     </div>
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
-import { useAccountsStore } from '../stores/Accounts'
-import { FiatAmount, Amount } from '@nimiq/vue-components';
+import { createComponent } from '@vue/composition-api';
+import { useAccountsStore } from '../stores/Accounts';
+import FiatAmount from './FiatAmount.vue';
+import BalanceDistribution from './BalanceDistribution.vue';
 
 export default createComponent({
     name: 'WalletBalance',
     setup() {
-        const { walletBalance } = useAccountsStore()
+        const { walletBalance } = useAccountsStore();
 
         return {
             walletBalance,
         }
     },
     components: {
-        Amount,
+        BalanceDistribution,
         FiatAmount,
     },
-})
+});
 </script>
 
 <style lang="scss">
 .wallet-balance {
-    > span,
-    > .fiat-amount > span  {
-        opacity: .5;
+    .fiat-amount {
+        font-size: 8rem;
+        margin-bottom: 1rem;
     }
-    > .amount {
-        font-size: 4rem;
-        font-weight: bold;
-    }
-
 }
 </style>

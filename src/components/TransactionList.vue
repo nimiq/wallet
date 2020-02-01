@@ -20,19 +20,19 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api'
-import { useAccountsStore } from '../stores/Accounts'
+import { useAddressStore } from '../stores/Address'
 import { useTransactionsStore } from '../stores/Transactions'
 import { useNetworkStore } from '../stores/Network'
 import TransactionListItem from '@/components/TransactionListItem.vue'
 
 export default createComponent({
     setup() {
-        const { state: accounts$ } = useAccountsStore()
+        const { activeAddress } = useAddressStore()
         const { state: transactions$ } = useTransactionsStore()
         const { isFetchingTxHistory } = useNetworkStore()
 
         const transactions = computed(() => Object.values(transactions$.transactions)
-            .filter(tx => tx.sender === accounts$.activeAccountId || tx.recipient === accounts$.activeAccountId)
+            .filter(tx => tx.sender === activeAddress.value || tx.recipient === activeAddress.value)
             .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER))
         )
 

@@ -1,10 +1,10 @@
 <template>
-    <div class="address-overview" :class="{noAccounts: !activeAccount}">
-        <template v-if="activeAccount">
+    <div class="address-overview" :class="{noAccounts: !activeAddressInfo}">
+        <template v-if="activeAddressInfo">
             <div class="active-address">
                 <Account layout="row"
-                    :address="activeAccount.address"
-                    :label="activeAccount.label" />
+                    :address="activeAddressInfo.address"
+                    :label="activeAddressInfo.label" />
                 <div class="send-receive">
                     <button class="send nq-button" @click="$router.push('/send').catch(error => {})">
                         <div class="icon"></div>
@@ -34,15 +34,15 @@ import { createComponent } from '@vue/composition-api';
 import { Account } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
-import { useAccountsStore } from '../../stores/Accounts';
+import { useAddressStore } from '../../stores/Address';
 import { chooseAddress } from '../../hub';
 
 export default createComponent({
     name: 'address-overview',
     setup() {
-        const { activeAccount } = useAccountsStore();
+        const { activeAddressInfo } = useAddressStore();
         return {
-            activeAccount,
+            activeAddressInfo,
             chooseAddress,
         };
     },

@@ -1,23 +1,20 @@
 import HubApi from '@nimiq/hub-api'
-import { useAccountsStore } from './stores/Accounts'
+import { useAddressStore } from './stores/Address'
 
-const hubApi = new HubApi('https://hub.nimiq.com')
+const hubApi = new HubApi('https://hub.nimiq-testnet.com')
 
 export async function chooseAddress() {
     try {
         const addressInfo = await hubApi.chooseAddress({appName: 'Safe NXT'})
 
-        const { state: accounts$ } = useAccountsStore()
-        accounts$.accounts = {
-            ...accounts$.accounts,
-            [addressInfo.address]: {
-                ...addressInfo,
-                type: 'basic',
-                balance: null,
-                walletId: 'none',
-            },
-        }
-        accounts$.activeAccountId = addressInfo.address
+        const addressStore = useAddressStore()
+        addressStore.addAddressInfos([{
+            ...addressInfo,
+            type: 'basic',
+            balance: null,
+            accountId: 'none',
+        }])
+        addressStore.selectAddress(addressInfo.address)
     } catch(e) {
         // Ignore
     }

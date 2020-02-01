@@ -2,7 +2,7 @@
 import { watch } from '@vue/composition-api'
 import { NetworkClient } from '@nimiq/network-client'
 
-import { useAccountsStore } from './stores/Accounts'
+import { useAddressStore } from './stores/Address'
 import { useTransactionsStore, Transaction } from './stores/Transactions'
 import { useNetworkStore } from './stores/Network'
 
@@ -18,15 +18,12 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore()
     const transactionsStore = useTransactionsStore()
     const { state: transactions$ } = transactionsStore
-    const { activeAddress, state: accounts$ } = useAccountsStore()
+    const addressStore = useAddressStore()
 
     function balancesListener(balances: Map<string, number>) {
         console.debug('Got new balances for', [...balances.keys()])
         for (const [address, balance] of balances) {
-            accounts$.accounts[address] = {
-                ...accounts$.accounts[address],
-                balance,
-            }
+            addressStore.updateBalance(address, balance)
         }
     }
     client.on(NetworkClient.Events.BALANCES, balancesListener)
@@ -50,9 +47,9 @@ export async function launchNetwork() {
 
     // Subscribe to new addresses (for balance updates and transactions)
     const subscribedAddresses = new Set<string>()
-    watch(() => {
+    watch(addressStore.addressInfos, () => {
         const newAddresses: string[] = []
-        for (const address in accounts$.accounts) {
+        for (const address in addressStore.addressInfos.value) { // Using for...in to iterate over the object's keys
             if (subscribedAddresses.has(address)) continue
             subscribedAddresses.add(address)
             newAddresses.push(address)
@@ -63,10 +60,10 @@ export async function launchNetwork() {
         client.subscribe(newAddresses)
     })
 
-    // Fetch transactions for active account
+    // Fetch transactions for active address
     const fetchedAddresses = new Set<string>()
-    watch(activeAddress, () => {
-        const address = activeAddress.value
+    watch(addressStore.activeAddress, () => {
+        const address = addressStore.activeAddress.value
 
         if (!address || fetchedAddresses.has(address)) return
         fetchedAddresses.add(address)

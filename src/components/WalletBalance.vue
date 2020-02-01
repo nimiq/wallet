@@ -2,7 +2,7 @@
     <div class="wallet-balance">
         <h2 class="nq-label">Total Balance</h2>
         <div class="fiat-amount">
-            <FiatAmount :amount="walletBalance" />
+            <FiatAmount :amount="accountBalance" />
         </div>
         <BalanceDistribution />
     </div>
@@ -10,17 +10,17 @@
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
-import { useAccountsStore } from '../stores/Accounts';
+import { useAddressStore } from '../stores/Address';
 import FiatAmount from './FiatAmount.vue';
 import BalanceDistribution from './BalanceDistribution.vue';
 
 export default createComponent({
     name: 'WalletBalance',
     setup() {
-        const { walletBalance } = useAccountsStore();
+        const { accountBalance } = useAddressStore();
 
         return {
-            walletBalance,
+            accountBalance,
         }
     },
     components: {

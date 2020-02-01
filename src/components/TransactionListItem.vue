@@ -41,7 +41,7 @@
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api'
 import { CashlinkIcon } from '@nimiq/vue-components';
-import { useAccountsStore } from '../stores/Accounts'
+import { useAddressStore } from '../stores/Address'
 import { Transaction } from '../stores/Transactions'
 import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
@@ -61,16 +61,16 @@ export default createComponent({
     setup(props) {
         const tx = props.transaction as Transaction
 
-        const { activeAddress, state: accounts$ } = useAccountsStore()
+        const { activeAddress, addressInfos } = useAddressStore()
 
         const isIncoming = computed(() => tx.recipient === activeAddress.value)
 
         // Peer
         const peerAddress = computed(() => isIncoming.value ? tx.sender : tx.recipient)
         const peerLabel = computed(() => {
-            // Search other accounts
-            const ownedAccount = accounts$.accounts[peerAddress.value]
-            if (ownedAccount) return ownedAccount.label
+            // Search other stored addresses
+            const ownedAddressInfo = addressInfos.value[peerAddress.value]
+            if (ownedAddressInfo) return ownedAddressInfo.label
 
             // TODO: Search contacts
 

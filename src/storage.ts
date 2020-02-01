@@ -1,8 +1,8 @@
 import { useTransactionsStore, Transaction } from './stores/Transactions'
-import { useAccountsStore, Account} from './stores/Accounts'
+import { useAddressStore, AddressState } from './stores/Address'
 
 const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions'
-const ACCOUNTS_STORAGE_KEY = 'safe-next_accounts'
+const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses'
 
 export function initStorage() {
     /**
@@ -29,18 +29,17 @@ export function initStorage() {
     /**
      * ACCOUNTS
      */
-    const accountsStore = useAccountsStore()
+    const addressStore = useAddressStore()
 
     // Load accounts from storage
-    const storedAccountsState = localStorage.getItem(ACCOUNTS_STORAGE_KEY)
-    if (storedAccountsState) {
-        const accountsState: Account[] = JSON.parse(storedAccountsState)
-        // @ts-ignore Some weird error about a type missmatch
-        accountsStore.patch(accountsState)
+    const storedAddressState = localStorage.getItem(ADDRESSINFOS_STORAGE_KEY)
+    if (storedAddressState) {
+        const addressState: AddressState = JSON.parse(storedAddressState)
+        addressStore.patch(addressState)
     }
 
     // Write accounts to storage when updated
-    accountsStore.subscribe(() => {
-        localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accountsStore.state))
+    addressStore.subscribe(() => {
+        localStorage.setItem(ADDRESSINFOS_STORAGE_KEY, JSON.stringify(addressStore.state))
     })
 }

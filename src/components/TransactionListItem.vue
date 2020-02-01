@@ -1,49 +1,46 @@
 <template>
-    <button class="group flex flex-row w-full text-left items-center p-4 my-1 rounded hover:bg-gray-200">
-        <div v-if="dateDay" class="mr-4 text-center leading-tight opacity-50 flex-shrink-0">
-            <span class="font-bold">{{ dateDay }}</span><br>
-            <span class="text-sm font-semibold">{{ dateMonth }}</span>
+    <div class="transaction" @click="$router.push('/transaction')">
+        <div v-if="dateDay" class="date">
+            <span class="day">{{ dateDay }}</span><br>
+            <span class="month">{{ dateMonth }}</span>
         </div>
-        <svg v-else class="nq-icon text-3xl opacity-25 mr-4 flex-shrink-0">
+        <svg v-else class="date">
             <use xlink:href="/img/nimiq-style.icons.svg#nq-stopwatch"/>
         </svg>
-        <div class="w-12 h-12 flex-shrink-0 relative">
+        <div class="identicon">
             <Identicon :address="peerAddress"/>
-            <svg v-if="isCashlink" class="nq-icon absolute right-0 bottom-0 text-white bg-blue-900 rounded-full text-lg border-white border-solid border">
-                <use xlink:href="/img/nimiq-style.icons.svg#nq-cashlink-xsmall"/>
-            </svg>
-        </div>
-        <div class="flex-grow overflow-hidden whitespace-no-wrap ml-4">
-            <div v-if="peerLabel" class="font-semibold">{{ peerLabel }}</div>
-            <div v-else class="font-mono">
-                <span class="font-medium">{{ peerAddress.substring(0, 9) }}</span>
-                <span class="opacity-50">{{ peerAddress.substring(9) }}</span>
-            </div>
-            <div class="opacity-50 text-sm font-semibold">
-                <span v-if="dateTime">{{ dateTime }}</span>
-                <span v-else class="uppercase tracking-wider">pending</span>
-                <span class="ml-3">{{ data }}</span>
+            <div v-if="isCashlink" class="cashlink">
+                <CashlinkIcon/>
             </div>
         </div>
-        <div class="text-right flex-shrink-0">
-            <span class="flex flex-row flex-no-wrap font-bold" :class="isIncoming ? 'text-green-500' : 'opacity-75'">
-                <span v-if="isIncoming">+</span>
-                <!--<span v-else>-</span>-->
+        <div class="data">
+            <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
+            <div v-else class="address">
+                <span class="bold">{{ peerAddress.substring(0, 9) }}</span>
+                <span>{{ peerAddress.substring(9) }}</span>
+            </div>
+            <div class="time-and-message">
+                <span v-if="dateTime" class="time">{{ dateTime }}</span>
+                <span v-else class="time">pending</span>
+                <span class="message">{{ data }}</span>
+            </div>
+        </div>
+        <div class="amounts" :class="{isIncoming}">
+            <span class="amount">
                 <Amount
                     :amount="transaction.value"/>
             </span>
-            <span class="flex flex-row flex-no-wrap justify-end text-sm font-semibold opacity-50">
-                <span v-if="isIncoming">+</span>
-                <!--<span v-else>-</span>-->
+            <span class="fiat-amount">
                 <FiatAmount
                     :amount="transaction.value"/>
             </span>
         </div>
-    </button>
+    </div>
 </template>
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api'
+import { CashlinkIcon } from '@nimiq/vue-components';
 import { useAccountsStore } from '../stores/Accounts'
 import { Transaction } from '../stores/Transactions'
 import { twoDigit } from '../lib/NumberFormatting'
@@ -120,13 +117,138 @@ export default createComponent({
         }
     },
     components: {
-        Identicon,
         Amount,
+        CashlinkIcon,
+        Identicon,
         FiatAmount,
     },
 })
 </script>
 
 <style lang="scss">
+.transaction {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 2rem 1rem;
+    border: 0;
+    background: transparent;
+    border-radius: .5rem;
 
+    &:hover {
+        background: var(--nimiq-highlight-bg);
+    }
+
+    > * {
+        margin: 0rem 1rem;
+    }
+
+    .date {
+        font-size: 2rem;
+        text-transform: uppercase;
+        opacity: .4;
+        text-align: center;
+
+        > .day {
+            font-weight: 600;
+        }
+
+        > .month {
+            font-weight: 500;
+        }
+    }
+
+    .identicon {
+        position: relative;
+        height: 6rem;
+
+        > img {
+            height: 100%
+        }
+
+        > .cashlink {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            color: white;
+            background: var(--nimiq-blue-bg);
+            border-radius: 1rem;
+            height: 2rem;
+            width: 2rem;
+        }
+    }
+
+    .data {
+        flex-grow: 1;
+
+        .address {
+            font-size: 2rem;
+
+            .bold {
+                font-weight: 600;
+            }
+
+            :not(.bold) {
+                opacity: .5;
+            }
+        }
+
+        .time-and-message {
+            font-size: 1.75rem;
+            opacity: .5;
+
+            .message {
+                margin-left: 1.5rem;
+            }
+        }
+    }
+
+    .amounts {
+        display: flex;
+        flex-direction: column;
+        justify-self: right;
+
+        .amount {
+            font-size: 2rem;
+        }
+
+        .fiat-amount{
+            font-size: 1.75rem;
+            opacity: .5;
+        }
+
+        > * {
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        > *:before {
+            display: inline;
+        }
+
+        &:not(.isIncoming) {
+            .amount {
+                color: var(--nimiq-red);
+            }
+
+            > *:before {
+                content: '-';
+            }
+        }
+
+        &.isIncoming {
+            .amount {
+                color: var(--nimiq-green);
+            }
+
+            > *:before {
+                content: '+';
+            }
+        }
+    }
+}
 </style>

@@ -1,7 +1,5 @@
 <template>
-    <div class="relative">
-        <!-- <input type="text" placeholder="Search..." class="w-full px-4 py-2"> -->
-        <hr class="mb-4">
+    <div class="transaction-list">
         <div v-if="isFetchingTxHistory" class="absolute top-0 right-0 px-3 py-1 bg-blue-500 text-white inline-block rounded">Updating...</div>
         <div>
             <TransactionListItem v-for="transaction in transactions" :transaction="transaction" :key="transaction.transactionHash"/>
@@ -67,5 +65,11 @@ export default createComponent({
 </script>
 
 <style lang="scss">
-
+@import '../scss/mixins.scss';
+.transaction-list {
+    @include flex-full-height;
+    max-height: 100%;
+    flex-direction: column;
+    overflow: scroll;
+}
 </style>

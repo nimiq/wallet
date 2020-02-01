@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="account-list">
         <button
             v-for="account in Object.values(accounts$.accounts)" :key="account.address"
             class="group flex flex-row w-full text-left items-center p-4 my-1 rounded opacity-50 hover:opacity-100 hover:bg-gray-300"
@@ -20,17 +20,12 @@
             </div>
             <div v-else>???</div>
         </button>
-        <button class="group flex flex-row w-full text-left items-center p-4 my-1 rounded opacity-50 hover:opacity-100 hover:bg-gray-300" @click="chooseAddress">
-            <svg class="nq-icon inline text-5xl opacity-25"><use xlink:href="/img/nimiq-style.icons.svg#nq-hexagon"/></svg>
-            <span class="font-bold ml-4 flex-grow">Add Account</span>
-        </button>
     </div>
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api'
 import { useAccountsStore } from '../stores/Accounts'
-import { chooseAddress } from '../hub'
 
 import Identicon from '@/components/Identicon.vue'
 import Amount from '@/components/Amount.vue'
@@ -48,7 +43,6 @@ export default createComponent({
             accounts$,
             activeAccount,
             selectAccount,
-            chooseAddress,
         }
     },
     components: {
@@ -60,5 +54,8 @@ export default createComponent({
 </script>
 
 <style lang="scss">
-
+    .account-list {
+        display: flex;
+        flex-direction: column;
+    }
 </style>

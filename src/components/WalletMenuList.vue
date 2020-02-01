@@ -1,5 +1,5 @@
 <template>
-    <div class="wallet-list">
+    <div class="wallet-menu-list">
         <button v-for="wallet in wallets" :key="wallet.id"
                 @click="walletSelected(wallet.id)"
                 class="wallet-entry"
@@ -14,7 +14,7 @@ import {Component, Emit, Prop, Vue} from 'vue-property-decorator';
 import {Wallet} from '@nimiq/vue-components';
 
 @Component({components: {Wallet}})
-export default class WalletList extends Vue {
+export default class WalletMenuList extends Vue {
     @Prop(Array) private wallets!:
     Array<{
         id: string,
@@ -48,8 +48,8 @@ export default class WalletList extends Vue {
     }
 
     .wallet-entry .wallet,
-    .wallet-list:hover .wallet-entry.active:not(:hover) .wallet,
-    .wallet-list:focus-within .wallet-entry.active:not(:focus) .wallet {
+    .wallet-menu-list:hover .wallet-entry.active:not(:hover) .wallet,
+    .wallet-menu-list:focus-within .wallet-entry.active:not(:focus) .wallet {
         opacity: .7;
         transition: opacity .2s;
     }

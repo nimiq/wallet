@@ -17,7 +17,6 @@ export async function launchNetwork() {
 
     const { state: network$ } = useNetworkStore()
     const transactionsStore = useTransactionsStore()
-    const { state: transactions$ } = transactionsStore
     const addressStore = useAddressStore()
 
     function balancesListener(balances: Map<string, number>) {
@@ -38,10 +37,7 @@ export async function launchNetwork() {
     client.on(NetworkClient.Events.PEER_COUNT, peerCount => network$.peerCount = peerCount)
 
     function transactionListener(plain: Transaction) {
-        transactions$.transactions = {
-            ...transactions$.transactions,
-            [plain.transactionHash]: plain,
-        }
+        transactionsStore.addTransactions([plain])
     }
     client.on(NetworkClient.Events.TRANSACTION, transactionListener)
 
@@ -68,22 +64,14 @@ export async function launchNetwork() {
         if (!address || fetchedAddresses.has(address)) return
         fetchedAddresses.add(address)
 
-        const knownTxDetails = Object.values(transactions$.transactions)
+        const knownTxDetails = Object.values(transactionsStore.state.transactions)
             .filter(tx => tx.sender === address || tx.recipient === address)
 
         network$.fetchingTxHistory++
 
         console.debug('Fetching transaction history for', address, knownTxDetails)
         client.getTransactionsByAddress(address, 0, knownTxDetails, 100).then(txDetails => {
-            const txs: {[hash: string]: Transaction} = {}
-            for (const plain of txDetails) {
-                txs[plain.transactionHash] = plain
-            }
-
-            transactions$.transactions = {
-                ...transactions$.transactions,
-                ...txs,
-            }
+            transactionsStore.addTransactions(txDetails)
         })
         .finally(() => network$.fetchingTxHistory--)
     })

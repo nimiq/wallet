@@ -35,10 +35,5 @@ export default createComponent({
         @include flex-full-height;
         flex-direction: row;
     }
-
-    .grow {
-        display: flex;
-        flex-grow: 1;
-    }
 }
 </style>

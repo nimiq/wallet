@@ -14,8 +14,6 @@
             <button class="nq-button-s inverse" @click="$router.push('/sell')">Sell</button>
         </div>
 
-        <div class="grow"></div>
-
         <WalletList />
 
         <a class="settings" href="#" @click.prevent="$router.push('/settings')">
@@ -53,26 +51,36 @@ export default createComponent({
     > * {
         margin: 1rem 0;
     }
-}
 
-.logo {
-    color: white;
-    margin-bottom: 6rem;
-}
+    .logo {
+        color: white;
+        margin-bottom: 6rem;
+    }
 
-.graph {
-    display: flex;
-    height: 14rem;
-    width: 100%;
-    flex-grow: 0;
-}
+    .graph {
+        display: flex;
+        height: 14rem;
+        width: 100%;
+        flex-grow: 0;
+    }
 
-.nq-button-s {
-    margin: 0 1rem;
-}
+    .nq-button-s {
+        margin: 0 1rem;
+    }
 
-.grow {
-    flex-grow: 1;
+    .wallet-list {
+        align-self: center;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .settings {
+        @include flex-row;
+        justify-content: space-evenly;
+        width: 100%;
+        color: rgba(255, 255, 255, .7);
+        margin-top: 4rem;
+    }
 }
 
 .settings {

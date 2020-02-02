@@ -4,11 +4,11 @@
         <div>
             <TransactionListItem v-for="transaction in transactions" :transaction="transaction" :key="transaction.transactionHash"/>
             <div v-if="isFetchingTxHistory && !transactions.length" class="text-center my-12">
-                <img :src="loadingImageSrc" class="w-2/5 mx-auto mb-8">
+                <img :src="loadingImageSrc">
                 <span class="opacity-75">{{ $t('Fetching your transaction history...') }}</span>
             </div>
             <div v-else-if="!transactions.length" class="text-center my-12">
-                <img :src="getImage()" class="w-2/5 mx-auto mb-8">
+                <img :src="getImage()">
                 <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
             </div>
             <div v-else-if="transactions.length >= 10" class="text-center my-6">
@@ -64,9 +64,37 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../scss/mixins.scss';
 .transaction-list {
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+img {
+    max-width: 55rem;
+    margin: 0 20rem 4rem;
+    display: block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.my-6 {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.my-12 {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
 }
 </style>

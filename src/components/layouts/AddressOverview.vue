@@ -60,15 +60,12 @@ export default createComponent({
     @include flex-full-height;
     background: var(--nimiq-card-bg);
     flex-direction: column;
-    padding: 2.5rem 5rem;
-
-    > * {
-        margin: 2.5rem 0;
-    }
+    padding: 2.5rem 5rem 0 2.5rem;
 
     .active-address {
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 5rem;
 
         .account.row {
             width: unset !important;

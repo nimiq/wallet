@@ -2,7 +2,7 @@
     <div class="price-chart flex-column">
         <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none">
             <path
-                :d="`M ${path}`"
+                :d="`${path}`"
                 fill="none"
                 stroke="white"
                 opacity="0.5"
@@ -79,7 +79,42 @@ export default createComponent({
             // Draw
             // TODO: Apply bezier curves to make the path smoother
             const stepWidth = width / (prices.value.length - 1);
-            return invertedSeries.map((value, index) => `${index * stepWidth},${value}`).join(' ');
+
+            const lineFromIndexToIndex = (startIndex: number, endIndex: number) => {
+                if (startIndex >= 0 && endIndex >= 0
+                    && startIndex < invertedSeries.length && endIndex < invertedSeries.length) {
+                    const y = invertedSeries[startIndex] - invertedSeries[endIndex];
+                    const x = (endIndex - startIndex) * stepWidth;
+
+                    return {
+                        length: Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
+                        angle: Math.atan2(y, x),
+                    };
+                }
+                throw new Error(`Index out of bounds ${startIndex} ${endIndex}`);
+            }
+
+            const smoothingFactor = .2;
+
+            const controlPoint = (current: number, previous: number, next: number, end: boolean = false): {x: number, y: number}=> {
+                if (previous < 0) previous = current;
+                if (next >= invertedSeries.length) next = current;
+
+                const line = lineFromIndexToIndex(previous, next);
+
+                return {
+                    x: current * stepWidth + Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
+                    y: invertedSeries[current] - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
+                };
+            }
+
+            return `M 0 ${invertedSeries[0]} ${invertedSeries.map((value, index) => {
+                if (index === 0) return `M 0 ${invertedSeries[0]}`;
+                const {x: x1, y: y1} = controlPoint(index - 1, index - 2, index);
+                const {x: x2, y: y2} = controlPoint(index, index - 1, index + 1, true);
+                return `C `
+                    + `${x1} ${y1}, ${x2} ${y2}, ${index * stepWidth} ${value}`;
+            }).join(' ')}`;
         })
 
         return {

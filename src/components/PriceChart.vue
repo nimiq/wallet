@@ -4,7 +4,7 @@
             <path
                 :d="`${path}`"
                 fill="none"
-                stroke="white"
+                stroke="currentColor"
                 opacity="0.5"
                 :stroke-width="strokeWidth"
                 stroke-linecap="round"

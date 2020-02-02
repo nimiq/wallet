@@ -60,15 +60,13 @@ export default createComponent({
     },
     components: {
         TransactionListItem,
-    },
+    } as any,
 })
 </script>
 
 <style lang="scss">
 @import '../scss/mixins.scss';
 .transaction-list {
-    display: flex;
-    flex-direction: column;
     overflow: scroll;
 }
 </style>

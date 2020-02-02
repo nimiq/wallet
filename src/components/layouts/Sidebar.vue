@@ -14,7 +14,7 @@
             <button class="nq-button-s inverse" @click="$router.push('/sell')">Sell</button>
         </div>
 
-        <WalletList />
+        <WalletList class="account-list" />
 
         <a class="settings" href="#" @click.prevent="$router.push('/settings')">
             <GearIcon />
@@ -46,46 +46,38 @@ export default createComponent({
     background: var(--nimiq-blue-bg);
     flex-direction: column;
     align-items: center;
-    padding: 2rem 4rem;
+    padding: 2rem 1.5rem;
+    color: white;
+}
 
-    > * {
-        margin: 1rem 0;
-    }
+> * {
+    margin: 1rem 0;
+}
 
-    .logo {
-        color: white;
-        margin-bottom: 6rem;
-    }
+.logo {
+    color: white;
+    margin-bottom: 6rem;
+}
 
-    .graph {
-        display: flex;
-        height: 14rem;
-        width: 100%;
-        flex-grow: 0;
-    }
+.graph {
+    display: flex;
+    height: 14rem;
+    width: 100%;
+    padding: 1.5rem;
+    flex-grow: 0;
+}
 
-    .nq-button-s {
-        margin: 0 1rem;
-    }
+.nq-button-s {
+    margin: 0 1rem;
+}
 
-    .wallet-list {
-        align-self: center;
-        flex-grow: 1;
-        justify-content: flex-end;
-    }
-
-    .settings {
-        @include flex-row;
-        justify-content: space-evenly;
-        width: 100%;
-        color: rgba(255, 255, 255, .7);
-        margin-top: 4rem;
-    }
+.account-list {
+    flex-grow: 1;
+    justify-content: flex-end;
 }
 
 .settings {
-    display: flex;
-    flex-direction: row;
+    @include flex-row;
     justify-content: space-evenly;
     width: 100%;
     color: rgba(255, 255, 255, .7);

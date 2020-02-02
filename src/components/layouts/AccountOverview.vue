@@ -3,13 +3,13 @@
         <WalletBalance />
         <Staking />'
         <h2 class="nq-label">Addresses <button class="nq-button inverse" @click="chooseAddress">+</button></h2>
-        <AccountList />
+        <AddressList />
     </div>
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
-import AccountList from '../AccountList.vue';
+import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
 import Staking from '../Staking.vue';
 import { chooseAddress } from '../../hub';
@@ -22,7 +22,7 @@ export default createComponent({
         };
     },
     components: {
-        AccountList,
+        AddressList,
         Staking,
         WalletBalance,
     },

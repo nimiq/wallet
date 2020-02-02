@@ -2,7 +2,7 @@
     <div class="address-list">
         <button
             v-for="addressInfo in Object.values(addressInfos)" :key="addressInfo.address"
-            class="address-button flex-row"
+            class="address-button reset flex-row"
             :class="{'active': activeAddress === addressInfo.address}"
             @click="selectAddress(addressInfo.address)"
         >
@@ -44,7 +44,7 @@ export default createComponent({
         Identicon,
         Amount,
         FiatAmount,
-    },
+    } as any,
 })
 </script>
 
@@ -55,16 +55,9 @@ export default createComponent({
     }
 
     .address-button {
-        /* button reset */
-        background: rgba(31, 35, 72, 0); /* Based on Nimiq Blue */;
-        border: none;
-        font-family: inherit;
-        font-size: 2rem;
-        cursor: pointer;
-        outline: none;
-
         width: 100%;
-        text-align: left;
+        background: rgba(31, 35, 72, 0); /* Based on Nimiq Blue */;
+        font-size: 2rem;
         align-items: center;
         padding: 2rem;
         margin: 0.5rem 0;

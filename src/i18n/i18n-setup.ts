@@ -14,7 +14,6 @@ const loadedLanguages = ['en']; // our default language that is preloaded
 
 function setI18nLanguage (lang: string) {
   i18n.locale = lang;
-//   document.querySelector('html').setAttribute('lang', lang)
   return lang;
 }
 
@@ -37,4 +36,12 @@ export function loadLanguageAsync(lang: string) {
       return setI18nLanguage(lang);
     }
   );
+}
+
+export function autodetectLanguage() {
+  const langRaw = window.navigator.language;
+  const langParts = langRaw.replace('-', '_').split('_');
+  const language = langParts[0];
+
+  loadLanguageAsync(language);
 }

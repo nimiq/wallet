@@ -7,7 +7,7 @@ import './registerServiceWorker';
 import { initStorage } from './storage';
 import { launchNetwork } from './network';
 import router from './router';
-import { i18n, loadLanguageAsync } from '@/i18n/i18n-setup';
+import { i18n, autodetectLanguage } from '@/i18n/i18n-setup';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@/assets/css/main.css'
@@ -31,11 +31,10 @@ Vue.use(VueI18n);
 initStorage();
 
 new Vue({
-    router,
-    i18n,
+  router,
+  i18n,
   render: h => h(App),
 }).$mount('#app');
 
-// loadLanguageAsync('fr');
-
+autodetectLanguage();
 launchNetwork();

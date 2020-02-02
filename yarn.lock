@@ -891,9 +891,9 @@
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
 "@types/node@*":
-  version "12.12.21"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.21.tgz#aa44a6363291c7037111c47e4661ad210aded23f"
-  integrity sha512-8sRGhbpU+ck1n0PGAUgVrWrWdjSW2aqNeyC15W88GRsMpSwzv6RJGlLhE7s2RhVSOdyDmxbqlWSeThq4/7xqlA==
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.0.tgz#b417deda18cf8400f278733499ad5547ed1abec4"
+  integrity sha512-GnZbirvmqZUzMgkFn70c74OQpTTUcCzlhQliTzYjQMqg+hVKcDnxdL19Ne3UdYzdMA/+W3eb646FWn/ZaT1NfQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -8410,7 +8410,7 @@ tough-cookie@~2.4.3:
 
 "translation-key-extractor@https://github.com/Yukiioz/translation-key-extractor.git#master":
   version "0.1.0"
-  resolved "https://github.com/Yukiioz/translation-key-extractor.git#856c44d48d701246a8b3b48070b1e6400a8905ea"
+  resolved "https://github.com/Yukiioz/translation-key-extractor.git#5a73e8926545bd83339c7b157965fe3e81a62b9c"
   dependencies:
     gettext-extractor "^3.5.2"
     glob "^7.1.6"

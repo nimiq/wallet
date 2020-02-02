@@ -1,6 +1,6 @@
 <template>
     <div class="wallet-menu">
-        <WalletList :wallets="wallets" :activeWalletId="activeWalletId" v-on="$listeners"/>
+        <WalletMenuList :wallets="wallets" :activeWalletId="activeWalletId" v-on="$listeners"/>
 
         <div class="menu-footer">
             <button class="nq-button-s settings" @click="$emit('settings')"><GearIcon/><span>Settings</span></button>
@@ -12,9 +12,9 @@
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {GearIcon} from '@nimiq/vue-components';
-import WalletList from './WalletList.vue';
+import WalletMenuList from './WalletMenuList.vue';
 
-@Component({components: {WalletList, GearIcon}})
+@Component({components: {WalletMenuList, GearIcon}})
 export default class WalletMenu extends Vue {
     @Prop(Array) private wallets!:
     Array<{

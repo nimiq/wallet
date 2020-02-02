@@ -14,7 +14,7 @@
             <button class="nq-button-s inverse" @click="$router.push('/sell')">Sell</button>
         </div>
 
-        <WalletList class="account-list" />
+        <AccountList />
 
         <a class="settings" href="#" @click.prevent="$router.push('/settings')">
             <GearIcon />
@@ -26,7 +26,7 @@
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
 import { GearIcon } from '@nimiq/vue-components';
-import WalletList from '../WalletList.vue';
+import AccountList from '../AccountList.vue';
 import PriceChart from '../PriceChart.vue';
 
 export default createComponent({
@@ -34,7 +34,7 @@ export default createComponent({
     components: {
         GearIcon,
         PriceChart,
-        WalletList,
+        AccountList,
     },
 });
 </script>
@@ -73,7 +73,6 @@ export default createComponent({
 
 .account-list {
     flex-grow: 1;
-    justify-content: flex-end;
 }
 
 .settings {
@@ -81,6 +80,6 @@ export default createComponent({
     justify-content: space-evenly;
     width: 100%;
     color: rgba(255, 255, 255, .7);
-    margin-top: 4rem;
+    margin-top: 3rem;
 }
 </style>

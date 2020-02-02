@@ -22,7 +22,7 @@
             src="https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/To_the_stars_qhyy.svg"
             />
             <span class="opacity-75">{{ $t('Connect your first account:') }}</span>
-            <button class="nq-button" @click="chooseAddress">{{ $t('Connect') }}</button>
+            <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
 
         <!-- <TransactionList /> -->
@@ -35,7 +35,7 @@ import { Account } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
 import { useAddressStore } from '../../stores/Address';
-import { chooseAddress } from '../../hub';
+import { onboard } from '../../hub';
 
 export default createComponent({
     name: 'address-overview',
@@ -43,14 +43,14 @@ export default createComponent({
         const { activeAddressInfo } = useAddressStore();
         return {
             activeAddressInfo,
-            chooseAddress,
+            onboard,
         };
     },
     components: {
         Account,
         SearchBar,
         TransactionList,
-    },
+    } as any,
 });
 </script>
 

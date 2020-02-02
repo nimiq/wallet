@@ -5,6 +5,7 @@ import VueI18n from 'vue-i18n';
 import App from './App.vue';
 import './registerServiceWorker';
 import { initStorage } from './storage';
+import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import router from './router';
 import { i18n, autodetectLanguage } from '@/i18n/i18n-setup';
@@ -29,6 +30,7 @@ Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
 
 initStorage();
+syncFromHub();
 
 new Vue({
   router,

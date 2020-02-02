@@ -1,7 +1,9 @@
 import { useTransactionsStore, Transaction } from './stores/Transactions'
 import { useAddressStore, AddressState } from './stores/Address'
+import { useAccountStore, AccountState } from './stores/Account'
 
 const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions'
+const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts'
 const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses'
 
 export function initStorage() {
@@ -28,6 +30,24 @@ export function initStorage() {
 
     /**
      * ACCOUNTS
+     */
+    const accountStore = useAccountStore()
+
+    // Load accounts from storage
+    const storedAccountState = localStorage.getItem(ACCOUNTINFOS_STORAGE_KEY)
+    if (storedAccountState) {
+        const accountState: AccountState = JSON.parse(storedAccountState)
+        accountStore.patch(accountState)
+    }
+
+    // Write accounts to storage when updated
+    accountStore.subscribe(() => {
+        localStorage.setItem(ACCOUNTINFOS_STORAGE_KEY, JSON.stringify(accountStore.state))
+    })
+
+
+    /**
+     * ADDRESSES
      */
     const addressStore = useAddressStore()
 

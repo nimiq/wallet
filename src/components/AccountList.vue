@@ -1,7 +1,7 @@
 <template>
     <div class="account-list flex-column">
         <button
-            v-for="account in Object.values(accounts)" :key="account.id"
+            v-for="account in Object.values(accountInfos)" :key="account.id"
             class="account-item reset flex-row"
             :class="{'active': activeAccountId === account.id}"
             @click="selectAccount(account.id)"
@@ -19,28 +19,17 @@
 import { createComponent } from '@vue/composition-api';
 import getBackgroundClass from '../lib/AddressColor';
 
-import { AccountInfo, AccountType } from '../stores/Account';
+import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
 
 export default createComponent({
     name: 'account-list',
     setup() {
-        // TODO: Get accounts from store
-        const accounts: {[id: string]: AccountInfo} = {
-            'abc': {
-                id: 'abc',
-                type: AccountType.BIP39,
-                label: 'Blue Account',
-                fileExported: true,
-                wordsExported: true,
-                addresses: [
-                    'NQ67 3UA2 8YU5 BFC7 U38H F03V TKDG J5GG H6G2',
-                    'NQ26 2V33 BQX4 R3H2 QKJ6 HT41 RHPE NTFG YH9D',
-                ],
-            }
-        };
+        const accountStore = useAccountStore();
 
         return {
-            accounts,
+            accountInfos: accountStore.accountInfos,
+            activeAccountId: accountStore.activeAccountId,
+            selectAccount: accountStore.selectAccount,
             getBackgroundClass,
         }
     },
@@ -62,6 +51,7 @@ export default createComponent({
     align-items: center;
     font-weight: 600;
     font-size: 2rem;
+    margin: 0.25rem 0;
 
     transition: background-color 300ms var(--nimiq-ease), opacity 300ms var(--nimiq-ease);
 }

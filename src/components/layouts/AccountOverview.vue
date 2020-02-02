@@ -2,7 +2,7 @@
     <div class="account-overview">
         <WalletBalance />
         <Staking />
-        <h2 class="nq-label">{{ $t('Addresses') }} <button class="nq-button inverse" @click="chooseAddress">+</button></h2>
+        <h2 class="nq-label">{{ $t('Addresses') }} <button class="nq-button inverse" @click="addAddress">+</button></h2>
         <AddressList />
     </div>
 </template>
@@ -12,13 +12,13 @@ import { createComponent } from '@vue/composition-api';
 import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
 import Staking from '../Staking.vue';
-import { chooseAddress } from '../../hub';
+import { addAddress } from '../../hub';
 
 export default createComponent({
     name: 'account-overview',
     setup() {
         return {
-            chooseAddress,
+            addAddress,
         };
     },
     components: {

@@ -4,7 +4,7 @@
   "private": false,
   "author": "sisou <hello@soerenschwert.de>",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test": "echo 'No tests'",

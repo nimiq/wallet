@@ -1,7 +1,7 @@
 <template>
     <div class="address-list">
         <button
-            v-for="addressInfo in Object.values(addressInfos)" :key="addressInfo.address"
+            v-for="addressInfo in addressInfos" :key="addressInfo.address"
             class="address-button reset flex-row"
             :class="{'active': activeAddress === addressInfo.address}"
             @click="selectAddress(addressInfo.address)"

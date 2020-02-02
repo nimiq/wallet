@@ -59,7 +59,7 @@ export default createComponent({
     setup(props) {
         const tx = props.transaction as Transaction
 
-        const { activeAddress, addressInfos } = useAddressStore()
+        const { activeAddress, state: addresses$ } = useAddressStore()
 
         const isIncoming = computed(() => tx.recipient === activeAddress.value)
 
@@ -67,7 +67,7 @@ export default createComponent({
         const peerAddress = computed(() => isIncoming.value ? tx.sender : tx.recipient)
         const peerLabel = computed(() => {
             // Search other stored addresses
-            const ownedAddressInfo = addressInfos.value[peerAddress.value]
+            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value]
             if (ownedAddressInfo) return ownedAddressInfo.label
 
             // TODO: Search contacts
@@ -119,7 +119,7 @@ export default createComponent({
         CashlinkIcon,
         Identicon,
         FiatAmount,
-    },
+    } as any,
 })
 </script>
 

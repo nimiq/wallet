@@ -45,7 +45,7 @@ export async function launchNetwork() {
     const subscribedAddresses = new Set<string>()
     watch(addressStore.addressInfos, () => {
         const newAddresses: string[] = []
-        for (const address in addressStore.addressInfos.value) { // Using for...in to iterate over the object's keys
+        for (const address in addressStore.state.addressInfos) { // Using for...in to iterate over the object's keys
             if (subscribedAddresses.has(address)) continue
             subscribedAddresses.add(address)
             newAddresses.push(address)

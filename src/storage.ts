@@ -31,14 +31,14 @@ export function initStorage() {
      */
     const addressStore = useAddressStore()
 
-    // Load accounts from storage
+    // Load addresses from storage
     const storedAddressState = localStorage.getItem(ADDRESSINFOS_STORAGE_KEY)
     if (storedAddressState) {
         const addressState: AddressState = JSON.parse(storedAddressState)
         addressStore.patch(addressState)
     }
 
-    // Write accounts to storage when updated
+    // Write addresses to storage when updated
     addressStore.subscribe(() => {
         localStorage.setItem(ADDRESSINFOS_STORAGE_KEY, JSON.stringify(addressStore.state))
     })

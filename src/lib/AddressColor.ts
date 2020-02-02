@@ -6,10 +6,10 @@ export default function(address: string) {
 
     // Convert from public to CSS names
     if (color === 'yellow') color = 'gold';
-    if (color === 'indigo') color = 'blue';
-    if (color === 'blue') color = 'light-blue';
-    if (color === 'teal') color = 'green';
-    if (color === 'green') color = 'light-green';
+    else if (color === 'indigo') color = 'blue';
+    else if (color === 'blue') color = 'light-blue';
+    else if (color === 'teal') color = 'green';
+    else if (color === 'green') color = 'light-green';
 
     return `nq-${color}-bg`;
 }

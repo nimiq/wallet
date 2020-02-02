@@ -67,6 +67,6 @@ export default createComponent({
 <style lang="scss">
 @import '../scss/mixins.scss';
 .transaction-list {
-    overflow: scroll;
+    overflow-y: scroll;
 }
 </style>

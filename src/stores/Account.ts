@@ -63,7 +63,7 @@ export const useAccountStore = createStore({
             // If no account selected yet, or selected account does not exist anymore, select the first available.
             // TODO: Replace with account selection screen?
             if (!this.state.activeAccountId || !this.state.accountInfos[this.state.activeAccountId]) {
-                this.state.activeAccountId = accountInfos[0].id;
+                this.state.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
             }
         },
         updateLabel(accountId, newLabel) {

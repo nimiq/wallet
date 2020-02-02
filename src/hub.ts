@@ -2,31 +2,15 @@ import HubApi, { Account } from '@nimiq/hub-api'
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
 
-const hubApi = new HubApi()
+const hubApi = new HubApi();
 
-export async function syncFromHub() {
+function processAccounts(accounts: Account[]) {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
 
-    let listedAccounts: Account[];
-    try {
-        listedAccounts = await hubApi.list();
-    } catch (error) {
-        if (error.message === 'MIGRATION_REQUIRED') {
-            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type 'RequestBehavior<BehaviorType.POPUP>'.
-            hubApi.migrate(new HubApi.RedirectRequestBehavior());
-            return;
-        }
-
-        // TODO: Handle this case with a user notification
-        else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
-
-        else throw error;
-    }
-
     const addressStore = useAddressStore();
 
-    for (const account of listedAccounts) {
+    for (const account of accounts) {
         const addresses: string[] = [];
 
         for (const address of account.addresses) {
@@ -62,13 +46,61 @@ export async function syncFromHub() {
         });
     }
 
+    return { accountInfos, addressInfos };
+}
+
+export async function syncFromHub() {
+    let listedAccounts: Account[];
+    try {
+        listedAccounts = await hubApi.list();
+    } catch (error) {
+        if (error.message === 'MIGRATION_REQUIRED') {
+            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type 'RequestBehavior<BehaviorType.POPUP>'.
+            hubApi.migrate(new HubApi.RedirectRequestBehavior());
+            return;
+        }
+
+        // TODO: Handle this case with a user notification
+        else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
+
+        else throw error;
+    }
+
+    const { addressInfos, accountInfos } = processAccounts(listedAccounts);
+
+    const addressStore = useAddressStore();
     const accountStore = useAccountStore();
+
     accountStore.setAccountInfos(accountInfos);
     addressStore.setAddressInfos(addressInfos);
 }
 
 export async function onboard() {
-    alert('nope');
+    let listedAccounts: Account[];
+
+    try {
+        listedAccounts = await hubApi.onboard({ appName: "Safe NXT" });
+    } catch(error) {
+        if (error.message === 'MIGRATION_REQUIRED') {
+            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type 'RequestBehavior<BehaviorType.POPUP>'.
+            hubApi.migrate(new HubApi.RedirectRequestBehavior());
+            return;
+        }
+
+        // TODO: Handle this case with a user notification
+        else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
+
+        else throw error;
+    }
+
+    const { addressInfos, accountInfos } = processAccounts(listedAccounts);
+
+    const addressStore = useAddressStore();
+    const accountStore = useAccountStore();
+
+    accountStore.setAccountInfos(accountInfos);
+    addressStore.setAddressInfos(addressInfos);
+
 }
 
 export async function addAddress() {

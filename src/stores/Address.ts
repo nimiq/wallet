@@ -62,7 +62,7 @@ export const useAddressStore = createStore({
 
             // If no address selected yet, or selected address does not exist anymore, select the first available.
             if (!this.state.activeAddress || !this.state.addressInfos[this.state.activeAddress]) {
-                this.state.activeAddress = addressInfos[0].address;
+                this.state.activeAddress = addressInfos[0] ? addressInfos[0].address : null;
             }
 
             // TODO: Remove transactions that became obsolete because their address was removed?

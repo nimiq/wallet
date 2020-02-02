@@ -158,9 +158,11 @@ export default createComponent({
     }
 
     .identicon {
-        display: inline;
+        display: inline-block;
         position: relative;
+        width: 6rem;
         height: 6rem;
+        flex-shrink: 0;
 
         > img {
             height: 100%

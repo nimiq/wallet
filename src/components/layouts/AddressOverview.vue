@@ -1,11 +1,11 @@
 <template>
-    <div class="address-overview" :class="{noAccounts: !activeAddressInfo}">
+    <div class="address-overview" :class="{'noAccounts flex-column': !activeAddressInfo}">
         <template v-if="activeAddressInfo">
-            <div class="active-address">
+            <div class="active-address flex-row">
                 <Account layout="row"
                     :address="activeAddressInfo.address"
                     :label="activeAddressInfo.label" />
-                <div class="send-receive">
+                <div class="send-receive flex-row">
                     <button class="send nq-button" @click="$router.push('/send').catch(error => {})">
                         <div class="icon"></div>
                     </button>
@@ -67,13 +67,15 @@ export default createComponent({
     }
 
     .active-address {
-        display: flex;
-        flex-direction: row;
         justify-content: space-between;
         align-items: center;
+
+        .account.row {
+            width: unset !important;
+            flex-grow: 1;
+        }
+
         .send-receive {
-            display: flex;
-            flex-direction: row;
             flex-grow: 0;
             align-items: center;
 
@@ -107,8 +109,6 @@ export default createComponent({
     &.noAccounts {
         padding: 6rem 0;
         text-align: center;
-        display: flex;
-        flex-direction: column;
         img {
             width: 40%;
             margin: 0 auto 2rem;

@@ -67,9 +67,6 @@ export default createComponent({
 <style lang="scss">
 @import '../scss/mixins.scss';
 .transaction-list {
-    @include flex-full-height;
-    max-height: 100%;
-    flex-direction: column;
     overflow: scroll;
 }
 </style>

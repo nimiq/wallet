@@ -1,7 +1,7 @@
 <template>
     <div class="account-overview">
         <WalletBalance />
-        <Staking />'
+        <Staking />
         <h2 class="nq-label">Addresses <button class="nq-button inverse" @click="chooseAddress">+</button></h2>
         <AddressList />
     </div>
@@ -40,6 +40,7 @@ export default createComponent({
     > * {
         margin: 4rem 0;
     }
+
     > h2 {
         display: flex;
         align-items: center;

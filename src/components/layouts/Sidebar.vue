@@ -10,15 +10,15 @@
         <PriceChart currency="btc" class="graph" />
 
         <div>
-            <button class="nq-button-s inverse" @click="$router.push('/buy')">Buy</button>
-            <button class="nq-button-s inverse" @click="$router.push('/sell')">Sell</button>
+            <button class="nq-button-s inverse" @click="$router.push('/buy')">{{ $t('Buy') }}</button>
+            <button class="nq-button-s inverse" @click="$router.push('/sell')">{{ $t('Sell') }}</button>
         </div>
 
         <AccountList />
 
         <a class="settings" href="#" @click.prevent="$router.push('/settings')">
             <GearIcon />
-            <span>Settings</span>
+            <span>{{ $t('Settings') }}</span>
         </a>
     </div>
 </template>

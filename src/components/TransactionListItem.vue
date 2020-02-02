@@ -21,7 +21,7 @@
             </div>
             <div class="time-and-message">
                 <span v-if="dateTime" class="time">{{ dateTime }}</span>
-                <span v-else class="time">pending</span>
+                <span v-else class="time">{{ $t('pending') }}</span>
                 <span class="message">{{ data }}</span>
             </div>
         </div>

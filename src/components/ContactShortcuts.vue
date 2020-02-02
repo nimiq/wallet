@@ -2,7 +2,7 @@
     <div class="contact-shortcuts">
         <div class="open-contacts" @click="contactsOpened" :class="{'disabled': contacts.length === 0}">
             <ContactsIcon/>
-            <div class="label">Contacts</div>
+            <div class="label">{{ $t('Contacts') }}</div>
         </div>
         <div class="contacts">
             <Account v-for="contact in filteredContacts" :key="contact.address"

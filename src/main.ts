@@ -1,11 +1,13 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
-import './registerServiceWorker'
+import VueI18n from 'vue-i18n';
 
-import { initStorage } from './storage'
-import { launchNetwork } from './network'
+import App from './App.vue';
+import './registerServiceWorker';
+import { initStorage } from './storage';
+import { launchNetwork } from './network';
 import router from './router';
+import { i18n, autodetectLanguage } from '@/i18n/i18n-setup';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@/assets/css/main.css'
@@ -21,15 +23,18 @@ declare global {
 // the copy-webpack-plugin as specified in vue.config.js
 window.NIMIQ_IQONS_SVG_PATH = '/img/iqons.min.svg';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 Vue.use(VueCompositionApi);
+Vue.use(VueI18n);
 
-initStorage()
+initStorage();
 
 new Vue({
-    router,
+  router,
+  i18n,
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
 
-launchNetwork()
+autodetectLanguage();
+launchNetwork();

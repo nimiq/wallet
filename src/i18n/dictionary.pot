@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/components/MigrationWelcome.vue:14
+msgid "Accounts"
+msgstr ""
+
+#: src/components/WalletMenu.vue:7
+msgid "Add Account"
+msgstr ""
+
+#: src/components/layouts/AccountOverview.vue:5
+#: src/components/MigrationWelcome.vue:17
+msgid "Addresses"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:13
+msgid "Buy"
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:6
+#: src/components/modals/SendModal.vue:6
+msgid "close"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:25
+msgid "Connect"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:24
+msgid "Connect your first account:"
+msgstr ""
+
+#: src/components/Footer.vue:3
+msgid "Consensus"
+msgstr ""
+
+#: src/components/ContactShortcuts.vue:5
+msgid "Contacts"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:75
+msgid "Continue"
+msgstr ""
+
+#: src/components/TransactionList.vue:8
+msgid "Fetching your transaction history..."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:83
+msgid "Got it!"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:11
+msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
+msgstr ""
+
+#: src/components/Footer.vue:5
+msgid "Height"
+msgstr ""
+
+#: src/components/TransactionList.vue:15
+msgid "History is currently limited for performance."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:14
+msgid "hold, manage and aggregate Addresses."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:31
+msgid "Import it to any browser and enter your password to connect to Nimiq."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:77
+msgid "Improved Accessibility"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:34
+msgid "Learn more here"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:78
+msgid "Log in on your devices with the new<br>Nimiq Login Files."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:82
+msgid "Multiple Addresses and Login Files<br>are supported by new Accounts only."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:81
+msgid "Old and new Accounts"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:73
+msgid "One Account, many Addresses"
+msgstr ""
+
+#: src/components/Footer.vue:4
+msgid "Peers"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:24
+msgid "pending"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:14
+msgid "Sell"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:17
+msgid "send and receive transactions."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:21
+#: src/components/WalletMenu.vue:6
+msgid "Settings"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:74
+msgid "The new and improved Accounts<br>can have multiple Addresses."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:28
+msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
+msgstr ""
+
+#: src/components/TransactionList.vue:12
+msgid "This is a quiet place with no transactions."
+msgstr ""
+
+#: src/components/WalletBalance.vue:3
+msgid "Total Balance"
+msgstr ""
+
+#: src/components/TransactionList.vue:3
+msgid "Updating..."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:79
+msgid "What else?"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:45
+msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
+msgstr ""

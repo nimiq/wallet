@@ -3,8 +3,8 @@
         <WalletMenuList :wallets="wallets" :activeWalletId="activeWalletId" v-on="$listeners"/>
 
         <div class="menu-footer">
-            <button class="nq-button-s settings" @click="$emit('settings')"><GearIcon/><span>Settings</span></button>
-            <button class="nq-button-s add-account" @click="$emit('add-account')">Add Account</button>
+            <button class="nq-button-s settings" @click="$emit('settings')"><GearIcon/><span>{{ $t('Settings') }}</span></button>
+            <button class="nq-button-s add-account" @click="$emit('add-account')">{{ $t('Add Account') }}</button>
         </div>
     </div>
 </template>

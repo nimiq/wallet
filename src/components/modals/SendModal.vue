@@ -3,7 +3,7 @@
         <div class="send-tx">
             <!-- Put Send here -->
             <h1>Das ist das Modal</h1>
-            <button @click="$router.back()">close</button>
+            <button @click="$router.back()">{{ $t('close') }}</button>
         </div>
     </Modal>
 </template>

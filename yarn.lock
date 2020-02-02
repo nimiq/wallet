@@ -6524,7 +6524,7 @@ pkg-dir@^4.1.0:
 
 "po-loader@https://github.com/Yukiioz/po-loader.git#master":
   version "0.5.0"
-  resolved "https://github.com/Yukiioz/po-loader.git#0b74efb5daa5bdb4eb772ca7a01eecc3b98f6179"
+  resolved "https://github.com/Yukiioz/po-loader.git#869d0f00381d40d8c157c54e8c26cfb3377e4c54"
   dependencies:
     loader-utils "^1.2.3"
     po2json ">=0.4.5"

@@ -15,8 +15,13 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:10
-msgid "Buy/Sell"
+#: src/components/layouts/Sidebar.vue:13
+msgid "Buy"
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:6
+#: src/components/modals/SendModal.vue:6
+msgid "close"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:25
@@ -99,11 +104,15 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
+#: src/components/layouts/Sidebar.vue:14
+msgid "Sell"
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:17
 msgid "send and receive transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:15
+#: src/components/layouts/Sidebar.vue:21
 #: src/components/WalletMenu.vue:6
 msgid "Settings"
 msgstr ""

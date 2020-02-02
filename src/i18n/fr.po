@@ -22,9 +22,14 @@ msgstr "Ajouter un compte"
 msgid "Addresses"
 msgstr "Adresses"
 
-#: src/components/layouts/Sidebar.vue:10
-msgid "Buy/Sell"
-msgstr "Acheter/Vendre"
+#: src/components/layouts/Sidebar.vue:13
+msgid "Buy"
+msgstr "Acheter"
+
+#: src/components/modals/ReceiveModal.vue:6
+#: src/components/modals/SendModal.vue:6
+msgid "close"
+msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:25
 msgid "Connect"
@@ -52,7 +57,7 @@ msgstr "Récupération de l'historique de transactions"
 
 #: src/components/MigrationWelcome.vue:83
 msgid "Got it!"
-msgstr ""
+msgstr "Je l'ai !"
 
 #: src/components/MigrationWelcome.vue:11
 msgid ""
@@ -83,7 +88,7 @@ msgstr ""
 
 #: src/components/MigrationWelcome.vue:34
 msgid "Learn more here"
-msgstr ""
+msgstr "En apprendre plus"
 
 #: src/components/MigrationWelcome.vue:78
 msgid "Log in on your devices with the new<br>Nimiq Login Files."
@@ -100,7 +105,7 @@ msgstr ""
 
 #: src/components/MigrationWelcome.vue:73
 msgid "One Account, many Addresses"
-msgstr ""
+msgstr "Un Compte, plusieurs Adresses"
 
 #: src/components/Footer.vue:4
 msgid "Peers"
@@ -110,11 +115,15 @@ msgstr "Peers"
 msgid "pending"
 msgstr "en attente"
 
+#: src/components/layouts/Sidebar.vue:14
+msgid "Sell"
+msgstr "Vendre"
+
 #: src/components/MigrationWelcome.vue:17
 msgid "send and receive transactions."
-msgstr ""
+msgstr "envoyer et recevoir des transactions"
 
-#: src/components/layouts/Sidebar.vue:15 src/components/WalletMenu.vue:6
+#: src/components/layouts/Sidebar.vue:21 src/components/WalletMenu.vue:6
 msgid "Settings"
 msgstr "Réglages"
 

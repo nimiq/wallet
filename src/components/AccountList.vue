@@ -1,5 +1,6 @@
 <template>
     <div class="account-list flex-column">
+        <div class="flex-grow"></div>
         <button
             v-for="account in Object.values(accountInfos)" :key="account.id"
             class="account-item reset flex-row"
@@ -38,7 +39,12 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .account-list {
-    justify-content: flex-end;
+    // justify-content: flex-end;
+    overflow-y: auto;
+}
+
+.flex-grow {
+    flex-grow: 1;
 }
 
 .account-item {

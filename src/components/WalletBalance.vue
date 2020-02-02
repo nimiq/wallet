@@ -1,6 +1,6 @@
 <template>
     <div class="wallet-balance">
-        <h2 class="nq-label" translate>Total Balance</h2>
+        <h2 class="nq-label">{{ $t('Total Balance') }}</h2>
         <div class="fiat-amount">
             <FiatAmount :amount="accountBalance" />
         </div>

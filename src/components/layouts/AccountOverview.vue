@@ -2,7 +2,7 @@
     <div class="account-overview">
         <WalletBalance />
         <Staking />
-        <h2 class="nq-label">Addresses <button class="nq-button inverse" @click="chooseAddress">+</button></h2>
+        <h2 class="nq-label">{{ $t('Addresses') }} <button class="nq-button inverse" @click="chooseAddress">+</button></h2>
         <AddressList />
     </div>
 </template>

@@ -19,12 +19,6 @@ module.exports = {
                     .use('po-loader')
                         .loader('po-loader')
                         .end()
-                .end()
-            .rule('vue')
-                .test(/\.vue$/)
-                    .use('translation-loader')
-                        .loader('translation-loader')
-                        .end()
-                    .end();
+                .end();
     },
 }

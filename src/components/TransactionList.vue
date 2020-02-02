@@ -1,18 +1,18 @@
 <template>
     <div class="transaction-list">
-        <div v-if="isFetchingTxHistory" class="absolute top-0 right-0 px-3 py-1 bg-blue-500 text-white inline-block rounded" translate>Updating...</div>
+        <div v-if="isFetchingTxHistory" class="absolute top-0 right-0 px-3 py-1 bg-blue-500 text-white inline-block rounded">{{ $t('Updating...') }}</div>
         <div>
             <TransactionListItem v-for="transaction in transactions" :transaction="transaction" :key="transaction.transactionHash"/>
             <div v-if="isFetchingTxHistory && !transactions.length" class="text-center my-12">
                 <img :src="loadingImageSrc" class="w-2/5 mx-auto mb-8">
-                <span class="opacity-75" translate>Fetching your transaction history...</span>
+                <span class="opacity-75">{{ $t('Fetching your transaction history...') }}</span>
             </div>
             <div v-else-if="!transactions.length" class="text-center my-12">
                 <img :src="getImage()" class="w-2/5 mx-auto mb-8">
-                <span class="opacity-75" translate>This is a quiet place with no transactions.</span>
+                <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
             </div>
             <div v-else-if="transactions.length >= 10" class="text-center my-6">
-                <span class="opacity-50" translate>History is currently limited for performance.</span>
+                <span class="opacity-50">{{ $t('History is currently limited for performance.')}}</span>
             </div>
         </div>
     </div>

@@ -1,8 +1,8 @@
 <template>
     <footer class="footer nq-text-s">
-        <span class="consensus"><span>Consensus</span> {{ network$.consensus }}</span>
-        <span><span>Peers</span> {{ network$.peerCount }}</span>
-        <span><span>Height</span> #{{ network$.height }}</span>
+        <span class="consensus"><span>{{ $t('Consensus') }}</span> {{ network$.consensus }}</span>
+        <span><span>{{ $t('Peers') }}</span> {{ network$.peerCount }}</span>
+        <span><span>{{ $t('Height') }}</span> #{{ network$.height }}</span>
     </footer>
 </template>
 

@@ -8,13 +8,13 @@
         <PageBody v-if="page === 1" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    Handling multiple Addresses is now convenient and easy – with one password and shared login information.
+                    {{ $t('Handling multiple Addresses is now convenient and easy – with one password and shared login information.') }}
                 </p>
                 <p class="nq-text">
-                    <strong>Accounts</strong> hold, manage and aggregate Addresses.
+                    <strong>{{ $t('Accounts') }}</strong> {{ $t('hold, manage and aggregate Addresses.') }}
                 </p>
                 <p class="nq-text">
-                    <strong>Addresses</strong> send and receive transactions.
+                    <strong>{{ $t('Addresses') }}</strong> {{ $t('send and receive transactions.') }}
                 </p>
             </div>
             <div class="visual address-ring">
@@ -25,13 +25,13 @@
         <PageBody v-else-if="page === 2" class="left-aligned">
             <div class="text">
                 <p class="nq-text">
-                    The new Login Files are an easy and convenient way to gain access to your Account and its Addresses.
+                    {{ $t('The new Login Files are an easy and convenient way to gain access to your Account and its Addresses.') }}
                 </p>
                 <p class="nq-text">
-                    Import it to any browser and enter your password to connect to Nimiq.
+                    {{ $t('Import it to any browser and enter your password to connect to Nimiq.') }}
                 </p>
                 <p class="nq-text">
-                    <strong><a :href="link" target="_blank" class="nq-link">Learn more here <ArrowRightSmallIcon/></a></strong>
+                    <strong><a :href="link" target="_blank" class="nq-link">{{ $t('Learn more here') }} <ArrowRightSmallIcon/></a></strong>
                 </p>
             </div>
             <div class="visual login-file">
@@ -42,10 +42,10 @@
         <PageBody v-else-if="page === 3" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker.
+                    {{ $t('Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker.') }}
                 </p>
                 <p class="nq-text">
-                    Account creation was massively improved. Give<br>it a try and experience all new Nimiq features.
+                    {{ $t('Account creation was massively improved. Give<br>it a try and experience all new Nimiq features.') }}
                 </p>
             </div>
             <div class="visual account-menu">
@@ -70,17 +70,17 @@
         private page = 1;
 
         private content = [{
-            title: 'One Account, many Addresses',
-            notice: 'The new and improved Accounts<br>can have multiple Addresses.',
-            button: 'Continue',
+            title: this.$t('One Account, many Addresses'),
+            notice: this.$t('The new and improved Accounts<br>can have multiple Addresses.'),
+            button: this.$t('Continue'),
         }, {
-            title: 'Improved Accessibility',
-            notice: 'Log in on your devices with the new<br>Nimiq Login Files.',
-            button: 'What else?',
+            title: this.$t('Improved Accessibility'),
+            notice: this.$t('Log in on your devices with the new<br>Nimiq Login Files.'),
+            button: this.$t('What else?'),
         }, {
-            title: 'Old and new Accounts',
-            notice: 'Multiple Addresses and Login Files<br>are supported by new Accounts only.',
-            button: 'Got it!',
+            title: this.$t('Old and new Accounts'),
+            notice: this.$t('Multiple Addresses and Login Files<br>are supported by new Accounts only.'),
+            button: this.$t('Got it!'),
         }];
 
         public reset() {

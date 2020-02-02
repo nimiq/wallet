@@ -17,8 +17,7 @@
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
-// @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
-import { getBackgroundColorName } from '@nimiq/iqons';
+import getBackgroundClass from '../lib/AddressColor';
 
 import { AccountInfo, AccountType } from '../stores/Account';
 
@@ -39,19 +38,6 @@ export default createComponent({
                 ],
             }
         };
-
-        function getBackgroundClass(address: string) {
-            let color = getBackgroundColorName(address).toLowerCase() as string;
-
-            // Convert from public to CSS names
-            if (color === 'yellow') color = 'gold';
-            if (color === 'indigo') color = 'blue';
-            if (color === 'blue') color = 'light-blue';
-            if (color === 'teal') color = 'green';
-            if (color === 'green') color = 'light-green';
-
-            return `nq-${color}-bg`;
-        }
 
         return {
             accounts,

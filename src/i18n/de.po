@@ -1,0 +1,46 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: easygettext\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/components/AccountList.vue:24
+msgid "Add Account"
+msgstr ""
+
+#: src/App.vue:52
+msgid "Connect"
+msgstr ""
+
+#: src/App.vue:51
+msgid "Connect your account:"
+msgstr ""
+
+#: src/components/TransactionList.vue:9
+msgid "Fetching your transaction history..."
+msgstr ""
+
+#: src/components/TransactionList.vue:16
+msgid "History is currently limited for performance."
+msgstr ""
+
+#: src/components/TransactionListItem.vue:23
+msgid "pending"
+msgstr ""
+
+#: src/components/TransactionList.vue:13
+msgid "This is a quiet place with no transactions."
+msgstr ""
+
+#: src/components/WalletBalance.vue:2
+msgid "Total Balance"
+msgstr ""
+
+#: src/components/TransactionList.vue:4
+msgid "Updating..."
+msgstr ""

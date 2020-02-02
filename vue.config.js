@@ -9,5 +9,22 @@ module.exports = {
                 // { from: 'node_modules/@nimiq/core-web/worker*', to: 'nimiq', flatten: true },
                 { from: 'node_modules/@nimiq/vue-components/dist/img/iqons.min*.svg', to: 'img/iqons.min.svg' },
             ]]);
+
+        config.module
+            .rule('po')
+                .test(/\.pot?$/)
+                    .use('json-loader')
+                        .loader('json-loader')
+                        .end()
+                    .use('po-loader')
+                        .loader('po-loader')
+                        .end()
+                .end()
+            .rule('vue')
+                .test(/\.vue$/)
+                    .use('translation-loader')
+                        .loader('translation-loader')
+                        .end()
+                    .end();
     },
 }

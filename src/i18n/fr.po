@@ -1,0 +1,50 @@
+# Translators:
+# Matheo <matheo@nimiq.com>, 2020
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
+"Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/107022/fr/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: easygettext\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/components/AccountList.vue:24
+msgid "Add Account"
+msgstr "Ajouter un compte"
+
+#: src/App.vue:52
+msgid "Connect"
+msgstr "Connecter"
+
+#: src/App.vue:51
+msgid "Connect your account:"
+msgstr "Connecte ton compte:"
+
+#: src/components/TransactionList.vue:9
+msgid "Fetching your transaction history..."
+msgstr "Récupération de l'historique de transactions"
+
+#: src/components/TransactionList.vue:16
+msgid "History is currently limited for performance."
+msgstr ""
+"L'historique est actuellement limité pour des questions de performance "
+
+#: src/components/TransactionListItem.vue:23
+msgid "pending"
+msgstr "en attente"
+
+#: src/components/TransactionList.vue:13
+msgid "This is a quiet place with no transactions."
+msgstr "C'est un endroit silencieux et sans transactions."
+
+#: src/components/WalletBalance.vue:2
+msgid "Total Balance"
+msgstr "Balance totale"
+
+#: src/components/TransactionList.vue:4
+msgid "Updating..."
+msgstr "Mise à jour..."

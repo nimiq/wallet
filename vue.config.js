@@ -13,9 +13,6 @@ module.exports = {
         config.module
             .rule('po')
                 .test(/\.pot?$/)
-                    .use('json-loader')
-                        .loader('json-loader')
-                        .end()
                     .use('po-loader')
                         .loader('po-loader')
                         .end()

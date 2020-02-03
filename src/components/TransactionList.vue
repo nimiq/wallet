@@ -10,15 +10,9 @@
         <TransactionListItem :transaction="item"/>
     </RecycleScroller>
 
-    <div v-else class="transaction-list">
-        <div v-if="isFetchingTxHistory" class="text-center my-12">
-            <img :src="loadingImageSrc">
-            <span class="opacity-75">{{ $t('Fetching your transaction history...') }}</span>
-        </div>
-        <div v-else class="text-center my-12">
-            <img :src="getImage()">
-            <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
-        </div>
+    <div v-else class="transaction-list text-center my-12">
+        <img :src="getImage()">
+        <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
         <!-- <div v-else-if="transactions.length >= 10" class="text-center my-6">
             <span class="opacity-50">{{ $t('History is currently limited for performance.')}}</span>
         </div> -->

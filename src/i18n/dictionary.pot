@@ -134,7 +134,7 @@ msgid "Total Balance"
 msgstr ""
 
 #: src/components/TransactionList.vue:3
-msgid "Updating..."
+msgid "Updating transactions..."
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:79

@@ -4,13 +4,15 @@ import messages from "@/i18n/dictionary.pot";
 
 Vue.use(VueI18n);
 
+const DEFAULT_LANGUAGE = 'en';
+
 export const i18n = new VueI18n({
-  locale: 'en', // set locale
-  fallbackLocale: 'en',
-  messages, // set locale messages
+  locale: DEFAULT_LANGUAGE, // set locale
+  fallbackLocale: DEFAULT_LANGUAGE,
+  messages: { [DEFAULT_LANGUAGE]: messages }, // set locale messages
 });
 
-const loadedLanguages = ['en']; // our default language that is preloaded
+const loadedLanguages = [DEFAULT_LANGUAGE]; // our default language that is preloaded
 
 function setI18nLanguage (lang: string) {
   i18n.locale = lang;
@@ -30,7 +32,7 @@ export function loadLanguageAsync(lang: string) {
 
   // If the language hasn't been loaded yet
   return import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`).then(
-    messages => {
+    (messages) => {
       i18n.setLocaleMessage(lang, messages.default);
       loadedLanguages.push(lang);
       return setI18nLanguage(lang);

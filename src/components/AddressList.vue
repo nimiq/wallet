@@ -68,7 +68,7 @@ export default createComponent({
         z-index: 1;
     }
 
-    .address-list .active-box {
+    .active-box {
         width: 100%;
         height: #{$btnHeight}rem;
         position: absolute;
@@ -80,15 +80,15 @@ export default createComponent({
         transition: top 500ms var(--nimiq-ease);
     }
 
-    @for $i from 1 through 10 {
-        .address-list .address-button:nth-child(#{$i}).active ~ .active-box {
-            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
-        }
+    $states: ".active", ":focus", ":hover";
+    @mixin topVal($i) {
+        top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
     }
-    @for $i from 1 through 10 {
-        .address-list .address-button:nth-child(#{$i}):hover ~ .active-box,
-        .address-list .address-button:nth-child(#{$i}):focus ~ .active-box {
-            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
+    @each $state in $states {
+        @for $i from 1 through 10 {
+            .address-button:nth-child(#{$i})#{$state} ~ .active-box {
+                @include topVal($i);
+            }
         }
     }
 

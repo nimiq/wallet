@@ -48,6 +48,7 @@ export default createComponent({
     align-items: center;
     padding: 2rem 1.5rem;
     color: white;
+    min-width: 21rem;
 }
 
 > * {

@@ -22,7 +22,7 @@ export async function launchNetwork() {
     function balancesListener(balances: Map<string, number>) {
         console.debug('Got new balances for', [...balances.keys()])
         for (const [address, balance] of balances) {
-            addressStore.updateBalance(address, balance)
+            addressStore.patchAddress(address, { balance })
         }
     }
     client.on(NetworkClient.Events.BALANCES, balancesListener)

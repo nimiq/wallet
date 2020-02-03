@@ -66,8 +66,11 @@ export const useAccountStore = createStore({
                 this.state.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
             }
         },
-        updateLabel(accountId, newLabel) {
-            this.state.accountInfos[accountId].label = newLabel;
+        patchAccount(accountId, patch: Partial<AccountInfo>) {
+            this.state.accountInfos[accountId] = {
+                ...this.state.accountInfos[accountId],
+                ...patch,
+            };
         },
         addAddressToAccount(accountId: string, address: string) {
             if (this.state.accountInfos[accountId].addresses.includes(address)) return;

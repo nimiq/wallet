@@ -1,5 +1,5 @@
-import HubApi, { Account, Address } from '@nimiq/hub-api'
-import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
+import HubApi, { Account, ExportResult } from '@nimiq/hub-api'
+import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
 
 const hubApi = new HubApi();
@@ -34,7 +34,9 @@ function processAndStoreAccounts(accounts: Account[]): void {
 
             addressInfos.push({
                 ...contract,
-                balance: null,
+                balance: addressStore.state.addressInfos[contract.address]
+                ? addressStore.state.addressInfos[contract.address].balance
+                : null,
             });
         }
 
@@ -87,15 +89,8 @@ export async function onboard() {
     processAndStoreAccounts(listedAccounts);
 }
 
-export async function addAddress() {
-    const accountStore = useAccountStore();
-    const accountId = accountStore.state.activeAccountId;
-
-    // Should never occur, as the addAddress button should only be available when an account is selected
-    if (!accountId) return;
-
+export async function addAddress(accountId: string) {
     let addressInfo: AddressInfo;
-
     try {
         const addedAddress = await hubApi.addAddress({
             appName: APP_NAME,
@@ -117,5 +112,75 @@ export async function addAddress() {
     // Adding an AddressInfo automatically subscribes the address in the network
     addressStore.addAddressInfo(addressInfo, /* selectIt */ true);
 
+    const accountStore = useAccountStore();
     accountStore.addAddressToAccount(accountId, addressInfo.address);
+}
+
+export async function backup(accountId: string, options: { wordsOnly?: boolean, fileOnly?: boolean }) {
+    let exportResult: ExportResult;
+    try {
+        exportResult = await hubApi.export({
+            appName: APP_NAME,
+            accountId,
+            ...options,
+        });
+    } catch(error) {
+        // TODO: Handle error
+        throw error;
+    }
+
+    const accountStore = useAccountStore();
+    accountStore.patchAccount(accountId, exportResult);
+}
+
+export async function rename(accountId: string, address?: string) {
+    let account: Account;
+    try {
+        account = await hubApi.rename({
+            appName: APP_NAME,
+            accountId,
+            address,
+        });
+    } catch(error) {
+        // TODO: Handle error
+        throw error;
+    }
+
+    const accountStore = useAccountStore();
+    const addressStore = useAddressStore();
+
+    accountStore.patchAccount(accountId, { label: account.label });
+    for (const info of account.addresses.concat(account.contracts)) {
+        addressStore.patchAddress(info.address, { label: info.label });
+    }
+}
+
+export async function changePassword(accountId: string) {
+    try {
+        await hubApi.changePassword({
+            appName: APP_NAME,
+            accountId,
+        });
+    } catch(error) {
+        // TODO: Handle error
+        throw error;
+    }
+}
+
+export async function logout(accountId: string) {
+    alert('Logout is not yet possible');
+    return;
+
+    // eslint-disable-next-line no-unreachable
+    try {
+        await hubApi.logout({
+            appName: APP_NAME,
+            accountId,
+        });
+    } catch(error) {
+        // TODO: Handle error
+        throw error;
+    }
+
+    // TODO: Delete account, it's addresses, and their transactions
 }

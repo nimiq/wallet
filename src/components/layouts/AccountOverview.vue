@@ -4,7 +4,7 @@
         <Staking />
         <h2 class="nq-label">
             {{ $t('Addresses') }}
-            <button v-if="canHaveMultipleAddresses" class="nq-button inverse" @click="addAddress">+</button>
+            <button v-if="canHaveMultipleAddresses" class="nq-button inverse" @click="addAddress(activeAccountId)">+</button>
         </h2>
         <AddressList />
     </div>
@@ -21,7 +21,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 export default createComponent({
     name: 'account-overview',
     setup() {
-        const { activeAccountInfo } = useAccountStore();
+        const { activeAccountInfo, activeAccountId } = useAccountStore();
 
         const canHaveMultipleAddresses = computed(() => activeAccountInfo.value
             ? activeAccountInfo.value.type !== AccountType.LEGACY
@@ -30,6 +30,7 @@ export default createComponent({
         return {
             canHaveMultipleAddresses,
             addAddress,
+            activeAccountId,
         };
     },
     components: {

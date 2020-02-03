@@ -2,22 +2,33 @@
     <div class="account-overview">
         <WalletBalance />
         <Staking />
-        <h2 class="nq-label">{{ $t('Addresses') }} <button class="nq-button inverse" @click="addAddress">+</button></h2>
+        <h2 class="nq-label">
+            {{ $t('Addresses') }}
+            <button v-if="canHaveMultipleAddresses" class="nq-button inverse" @click="addAddress">+</button>
+        </h2>
         <AddressList />
     </div>
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, computed } from '@vue/composition-api';
 import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
 import Staking from '../Staking.vue';
 import { addAddress } from '../../hub';
+import { useAccountStore, AccountType } from '../../stores/Account';
 
 export default createComponent({
     name: 'account-overview',
     setup() {
+        const { activeAccountInfo } = useAccountStore();
+
+        const canHaveMultipleAddresses = computed(() => activeAccountInfo.value
+            ? activeAccountInfo.value.type !== AccountType.LEGACY
+            : false);
+
         return {
+            canHaveMultipleAddresses,
             addAddress,
         };
     },

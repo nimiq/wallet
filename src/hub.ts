@@ -4,10 +4,11 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
 
 const hubApi = new HubApi();
 
-function processAccounts(accounts: Account[]) {
+function processAndStoreAccounts(accounts: Account[]): void {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
 
+    const accountStore = useAccountStore();
     const addressStore = useAddressStore();
 
     for (const account of accounts) {
@@ -46,7 +47,8 @@ function processAccounts(accounts: Account[]) {
         });
     }
 
-    return { accountInfos, addressInfos };
+    accountStore.setAccountInfos(accountInfos);
+    addressStore.setAddressInfos(addressInfos);
 }
 
 export async function syncFromHub() {
@@ -63,16 +65,11 @@ export async function syncFromHub() {
         // TODO: Handle this case with a user notification
         else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
 
+        // TODO: Handle error
         else throw error;
     }
 
-    const { addressInfos, accountInfos } = processAccounts(listedAccounts);
-
-    const addressStore = useAddressStore();
-    const accountStore = useAccountStore();
-
-    accountStore.setAccountInfos(accountInfos);
-    addressStore.setAddressInfos(addressInfos);
+    processAndStoreAccounts(listedAccounts);
 }
 
 export async function onboard() {
@@ -81,26 +78,11 @@ export async function onboard() {
     try {
         listedAccounts = await hubApi.onboard({ appName: "Safe NXT" });
     } catch(error) {
-        if (error.message === 'MIGRATION_REQUIRED') {
-            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type 'RequestBehavior<BehaviorType.POPUP>'.
-            hubApi.migrate(new HubApi.RedirectRequestBehavior());
-            return;
-        }
-
-        // TODO: Handle this case with a user notification
-        else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
-
-        else throw error;
+        // TODO: Handle error
+        throw error;
     }
 
-    const { addressInfos, accountInfos } = processAccounts(listedAccounts);
-
-    const addressStore = useAddressStore();
-    const accountStore = useAccountStore();
-
-    accountStore.setAccountInfos(accountInfos);
-    addressStore.setAddressInfos(addressInfos);
-
+    processAndStoreAccounts(listedAccounts);
 }
 
 export async function addAddress() {

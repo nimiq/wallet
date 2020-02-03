@@ -11,20 +11,20 @@
         <!-- Submenu -->
         <div class="menu">
             <button v-if="canExportFile" class="item reset" @click="$emit('export-file', wallet.id)">
-                Save Login File
+                {{ $t('Save Login File') }}
             </button>
             <button v-if="canExportWords" class="item reset" @click="$emit('export-words', wallet.id)">
-                Create Backup
+                {{ $t('Create Backup') }}
             </button>
             <button class="item reset" @click="$emit('rename', wallet.id)">
-                Rename
+                {{ $t('Rename') }}
             </button>
             <button v-if="canChangePassword" class="item reset" @click="$emit('change-password', wallet.id)">
-                Change Password
+                {{ $t('Change Password') }}
             </button>
             <div class="separator"></div>
             <button class="item reset logout" @click="$emit('logout', wallet.id)">
-                <ArrowRightSmallIcon/>Logout
+                <ArrowRightSmallIcon/>{{ $t('Logout') }}
             </button>
         </div>
     </button>

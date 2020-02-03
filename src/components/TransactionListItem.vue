@@ -52,14 +52,15 @@ export default createComponent({
         },
     },
     setup(props) {
-        const tx = props.transaction as Transaction
+        // Only for typing of the prop
+        const tx = computed(() => props.transaction as Transaction);
 
         const { activeAddress, state: addresses$ } = useAddressStore()
 
-        const isIncoming = computed(() => tx.recipient === activeAddress.value)
+        const isIncoming = computed(() => tx.value.recipient === activeAddress.value)
 
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? tx.sender : tx.recipient)
+        const peerAddress = computed(() => isIncoming.value ? tx.value.sender : tx.value.recipient)
         const peerLabel = computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value]
@@ -75,15 +76,15 @@ export default createComponent({
         })
 
         // Date
-        const date = computed(() => tx.timestamp && new Date(tx.timestamp * 1000))
+        const date = computed(() => tx.value.timestamp && new Date(tx.value.timestamp * 1000))
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()))
         const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
         const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()])
         const dateTime = computed(() => date.value && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`)
 
         // Data
-        const dataBytes = computed(() => tx.data.raw
-            ? new Uint8Array(tx.data.raw.match(/.{1,2}/g)!.map(hex => parseInt(hex, 16)))
+        const dataBytes = computed(() => tx.value.data.raw
+            ? new Uint8Array(tx.value.data.raw.match(/.{1,2}/g)!.map(hex => parseInt(hex, 16)))
             : new Uint8Array(0)
         )
         const data = computed(() => {

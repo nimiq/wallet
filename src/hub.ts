@@ -1,8 +1,10 @@
-import HubApi, { Account } from '@nimiq/hub-api'
+import HubApi, { Account, Address } from '@nimiq/hub-api'
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
 
 const hubApi = new HubApi();
+
+const APP_NAME = 'Wallet 2.0';
 
 function processAndStoreAccounts(accounts: Account[]): void {
     const accountInfos: AccountInfo[] = [];
@@ -76,7 +78,7 @@ export async function onboard() {
     let listedAccounts: Account[];
 
     try {
-        listedAccounts = await hubApi.onboard({ appName: "Safe NXT" });
+        listedAccounts = await hubApi.onboard({ appName: APP_NAME });
     } catch(error) {
         // TODO: Handle error
         throw error;
@@ -86,5 +88,34 @@ export async function onboard() {
 }
 
 export async function addAddress() {
-    alert('nope');
+    const accountStore = useAccountStore();
+    const accountId = accountStore.state.activeAccountId;
+
+    // Should never occur, as the addAddress button should only be available when an account is selected
+    if (!accountId) return;
+
+    let addressInfo: AddressInfo;
+
+    try {
+        const addedAddress = await hubApi.addAddress({
+            appName: APP_NAME,
+            accountId,
+        });
+
+        addressInfo = {
+            address: addedAddress.address,
+            type: AddressType.BASIC,
+            label: addedAddress.label,
+            balance: null,
+        };
+    } catch(error) {
+        // TODO: Handle error
+        throw error;
+    }
+
+    const addressStore = useAddressStore();
+    // Adding an AddressInfo automatically subscribes the address in the network
+    addressStore.addAddressInfo(addressInfo, /* selectIt */ true);
+
+    accountStore.addAddressToAccount(accountId, addressInfo.address);
 }

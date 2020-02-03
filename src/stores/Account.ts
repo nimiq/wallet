@@ -69,5 +69,9 @@ export const useAccountStore = createStore({
         updateLabel(accountId, newLabel) {
             this.state.accountInfos[accountId].label = newLabel;
         },
+        addAddressToAccount(accountId: string, address: string) {
+            if (this.state.accountInfos[accountId].addresses.includes(address)) return;
+            this.state.accountInfos[accountId].addresses.push(address);
+        }
     },
 })

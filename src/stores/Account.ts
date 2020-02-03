@@ -67,7 +67,6 @@ export const useAccountStore = createStore({
             }
         },
         updateLabel(accountId, newLabel) {
-            console.log(accountId, newLabel);
             this.state.accountInfos[accountId].label = newLabel;
         },
     },

@@ -26,13 +26,8 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <span class="amount">
-                <Amount :amount="transaction.value" :maxDecimals="2"/>
-            </span>
-            <span class="fiat-amount">
-                <FiatAmount
-                    :amount="transaction.value"/>
-            </span>
+            <Amount :amount="transaction.value" :maxDecimals="2"/>
+            <FiatAmount :amount="transaction.value"/>
         </div>
     </div>
 </template>
@@ -185,9 +180,14 @@ export default createComponent({
 
     .data {
         flex-grow: 1;
+        overflow: hidden;
+        line-height: 1.4;
 
         .address {
-            font-size: 2rem;
+            font-size: 1.875rem;
+            font-family: monospace;
+            word-spacing: -0.1em;
+            white-space: nowrap;
 
             .bold {
                 font-weight: 600;
@@ -212,12 +212,14 @@ export default createComponent({
         display: flex;
         flex-direction: column;
         justify-self: right;
+        line-height: 1.4;
 
         .amount {
             font-size: 2rem;
+            font-weight: 600;
         }
 
-        .fiat-amount{
+        .fiat-amount {
             font-size: 1.75rem;
             opacity: .5;
         }
@@ -233,7 +235,7 @@ export default createComponent({
 
         &:not(.isIncoming) {
             .amount {
-                color: var(--nimiq-red);
+                // color: var(--nimiq-red);
             }
 
             > *:before {

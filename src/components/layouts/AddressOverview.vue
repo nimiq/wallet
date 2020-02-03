@@ -25,7 +25,7 @@
             <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
 
-        <!-- <TransactionList /> -->
+        <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
     </div>
 </template>
 
@@ -35,14 +35,18 @@ import { Account } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
 import { useAddressStore } from '../../stores/Address';
+import { useNetworkStore } from '../../stores/Network';
 import { onboard } from '../../hub';
 
 export default createComponent({
     name: 'address-overview',
     setup() {
         const { activeAddressInfo } = useAddressStore();
+        const { isFetchingTxHistory } = useNetworkStore();
+
         return {
             activeAddressInfo,
+            isFetchingTxHistory,
             onboard,
         };
     },
@@ -110,6 +114,19 @@ export default createComponent({
             width: 40%;
             margin: 0 auto 2rem;
         }
+    }
+
+    .history-loading-indicator {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0.5rem 1.5rem;
+        margin: 1rem;
+        background: var(--nimiq-light-blue);
+        color: white;
+        display: inline-block;
+        border-radius: 0.5rem;
+        font-size: 2rem;
     }
 }
 </style>

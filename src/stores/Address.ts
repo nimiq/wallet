@@ -67,12 +67,11 @@ export const useAddressStore = createStore({
 
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
-        updateBalance(address: string, balance: number) {
-            this.state.addressInfos[address].balance = balance
-            // this.state.addressInfos[address] = {
-            //     ...this.state.addressInfos[address],
-            //     balance,
-            // }
+        patchAddress(address: string, patch: Partial<AddressInfo>) {
+            this.state.addressInfos[address] = {
+                ...this.state.addressInfos[address],
+                ...patch,
+            };
         },
     },
 })

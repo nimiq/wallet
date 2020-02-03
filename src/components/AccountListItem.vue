@@ -10,20 +10,20 @@
 
         <!-- Submenu -->
         <div class="menu">
-            <button v-if="canExportFile" class="item reset" @click="$emit('export-file', wallet.id)">
+            <button v-if="canExportFile" class="item reset" @click="backup(account.id, { fileOnly: true })">
                 {{ $t('Save Login File') }}
             </button>
-            <button v-if="canExportWords" class="item reset" @click="$emit('export-words', wallet.id)">
+            <button v-if="canExportWords" class="item reset" @click="backup(account.id, { wordsOnly: true })">
                 {{ $t('Create Backup') }}
             </button>
-            <button class="item reset" @click="$emit('rename', wallet.id)">
+            <button class="item reset" @click="rename(account.id)">
                 {{ $t('Rename') }}
             </button>
-            <button v-if="canChangePassword" class="item reset" @click="$emit('change-password', wallet.id)">
+            <button v-if="canChangePassword" class="item reset" @click="changePassword(account.id)">
                 {{ $t('Change Password') }}
             </button>
             <div class="separator"></div>
-            <button class="item reset logout" @click="$emit('logout', wallet.id)">
+            <button class="item reset logout" @click="logout(account.id)" disabled>
                 <ArrowRightSmallIcon/>{{ $t('Logout') }}
             </button>
         </div>
@@ -36,6 +36,7 @@ import { ArrowRightSmallIcon } from '@nimiq/vue-components';
 
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
+import { backup, rename, changePassword, logout } from '../hub';
 
 export default createComponent({
     props: {
@@ -57,6 +58,10 @@ export default createComponent({
             canExportFile,
             canExportWords,
             canChangePassword,
+            backup,
+            rename,
+            changePassword,
+            logout,
         };
     },
     components: {
@@ -98,7 +103,7 @@ export default createComponent({
 }
 
 .icon.nq-blue-bg {
-    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
 }
 
 .label {
@@ -141,6 +146,11 @@ export default createComponent({
         background 300ms var(--nimiq-ease),
         box-shadow 300ms var(--nimiq-ease),
         color 300ms var(--nimiq-ease);
+}
+
+.menu .item:disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .menu .item:last-child {

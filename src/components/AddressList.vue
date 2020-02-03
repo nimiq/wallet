@@ -20,6 +20,7 @@
             </div>
             <div v-else>???</div>
         </button>
+        <div class="active-box"></div>
     </div>
 </template>
 
@@ -52,26 +53,39 @@ export default createComponent({
     .address-list {
         display: flex;
         flex-direction: column;
+        position: relative;
     }
 
+    $btnMargin: .5;
+    $btnHeight: 10;
     .address-button {
         width: 100%;
-        background: rgba(31, 35, 72, 0); /* Based on Nimiq Blue */;
         font-size: 2rem;
         align-items: center;
         padding: 2rem;
-        margin: 0.5rem 0;
+        margin: #{$btnMargin}rem 0;
         border-radius: 0.5rem;
-        opacity: 0.5;
-
-        transition: background-color 300ms var(--nimiq-ease), opacity 300ms var(--nimiq-ease);
+        z-index: 1;
     }
 
-    .address-button:hover,
-    .address-button:focus,
-    .address-button.active {
-        opacity: 1;
-        background: var(--nimiq-highlight-bg);
+    .address-list .active-box {
+        width: 100%;
+        height: #{$btnHeight}rem;
+        position: absolute;
+        top: #{$btnMargin}rem;
+        z-index: 0;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+        transition: top 500ms var(--nimiq-ease);
+    }
+
+    @for $i from 1 through 10 {
+        .address-list .address-button:nth-child(#{$i}):hover + .active-box,
+        .address-list .address-button:nth-child(#{$i}):focus + .active-box,
+        .address-list .address-button:nth-child(#{$i}).active + .active-box {
+            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin)}rem;
+        }
     }
 
     .identicon {

@@ -7,18 +7,26 @@ Vue.use(VueRouter);
 
 const routes: RouteConfig[] = [];
 
-const ReceiveModal         = () => import(/*webpackChunkName: "receive-modal"*/ './components/modals/ReceiveModal.vue');
+const SendModal         = () => import(/*webpackChunkName: "send-modal"*/ './components/modals/SendModal.vue');
 routes.push({
     path: '/send',
-    component: ReceiveModal,
+    component: SendModal,
     name: 'send',
 });
 
-const SendModal         = () => import(/*webpackChunkName: "send-modal"*/ './components/modals/SendModal.vue');
+const ReceiveModal         = () => import(/*webpackChunkName: "receive-modal"*/ './components/modals/ReceiveModal.vue');
 routes.push({
     path: '/receive',
-    component: SendModal,
+    component: ReceiveModal,
     name: 'receive',
+});
+
+const TransactionModal  = () => import(/*webpackChunkName: "transaction-modal"*/ './components/modals/TransactionModal.vue');
+routes.push({
+    path: '/transaction/:hash',
+    component: TransactionModal as any,
+    name: 'transaction',
+    props: true,
 });
 
 export default new VueRouter({

@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction" @click="$router.push('/transaction')">
+    <div class="transaction" @click="$router.push({name: 'transaction', params: {hash}}).catch((err)=> {})">
         <div v-if="dateDay" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
@@ -108,6 +108,7 @@ export default createComponent({
             dateTime,
             data,
             isCashlink,
+            hash: tx.value.transactionHash,
         }
     },
     components: {

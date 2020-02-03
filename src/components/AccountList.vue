@@ -63,7 +63,10 @@ export default createComponent({
 }
 
 .account-item:hover,
-.account-item:focus,
+.account-item:focus {
+    opacity: 1;
+}
+
 .account-item.active {
     background: rgba(255, 255, 255, 0.15);
     opacity: 1;
@@ -72,6 +75,10 @@ export default createComponent({
 .icon {
     border-radius: 0.5rem;
     flex-shrink: 0;
+}
+
+.icon.nq-blue-bg {
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.25);
 }
 
 .label {

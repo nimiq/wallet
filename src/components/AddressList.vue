@@ -81,10 +81,14 @@ export default createComponent({
     }
 
     @for $i from 1 through 10 {
-        .address-list .address-button:nth-child(#{$i}):hover + .active-box,
-        .address-list .address-button:nth-child(#{$i}):focus + .active-box,
-        .address-list .address-button:nth-child(#{$i}).active + .active-box {
-            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin)}rem;
+        .address-list .address-button:nth-child(#{$i}).active ~ .active-box {
+            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
+        }
+    }
+    @for $i from 1 through 10 {
+        .address-list .address-button:nth-child(#{$i}):hover ~ .active-box,
+        .address-list .address-button:nth-child(#{$i}):focus ~ .active-box {
+            top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
         }
     }
 

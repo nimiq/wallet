@@ -142,15 +142,17 @@ export default createComponent({
     .date {
         font-size: 2rem;
         text-transform: uppercase;
-        opacity: .4;
+        opacity: 0.4;
         text-align: center;
+        margin-right: 1.25rem;
 
         > .day {
-            font-weight: 600;
+            font-weight: bold;
         }
 
         > .month {
-            font-weight: 500;
+            font-size: 1.625rem;
+            font-weight: 600;
         }
     }
 
@@ -184,15 +186,19 @@ export default createComponent({
         flex-grow: 1;
         overflow: hidden;
         line-height: 1.4;
+        font-size: 2rem;
+
+        .label {
+            font-weight: 600;
+        }
 
         .address {
-            font-size: 1.875rem;
-            font-family: monospace;
+            font-family: 'Fira Mono', monospace;
             word-spacing: -0.1em;
             white-space: nowrap;
 
             .bold {
-                font-weight: 600;
+                font-weight: 500;
             }
 
             :not(.bold) {
@@ -218,12 +224,13 @@ export default createComponent({
 
         .amount {
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: bold;
         }
 
         .fiat-amount {
             font-size: 1.75rem;
-            opacity: .5;
+            font-weight: 600;
+            opacity: 0.4;
         }
 
         > * {
@@ -231,13 +238,9 @@ export default createComponent({
             text-align: right;
         }
 
-        > *:before {
-            display: inline;
-        }
-
         &:not(.isIncoming) {
             .amount {
-                // color: var(--nimiq-red);
+                opacity: 0.6;
             }
 
             > *:before {
@@ -248,6 +251,10 @@ export default createComponent({
         &.isIncoming {
             .amount {
                 color: var(--nimiq-green);
+                background: rgba(33, 188, 165, 0.1);
+                border-radius: 0.5rem;
+                padding: 0.25rem 0.75rem;
+                margin-right: -0.75rem;
             }
 
             > *:before {

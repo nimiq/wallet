@@ -1,20 +1,23 @@
 <template>
-    <DynamicScroller
+
+    <div
         v-if="transactions.length"
         class="transaction-list"
-        :items="transactions"
-        key-field="transactionHash"
-        v-slot="{ item, index, active }"
-        :minItemSize="60"
+        ref="targetNode"
     >
-        <DynamicScrollerItem
-            :item="item"
-            :active="active"
+        <RecycleScroller
+            :items="transactions"
+            :item-size="80"
+            key-field="id"
+            v-slot="{ item, index, active }"
+            :buffer="200"
         >
-            <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
-            <TransactionListItem v-else :transaction="item"/>
-        </DynamicScrollerItem>
-    </DynamicScroller>
+            <div class="list-element fadein" :style="{}">
+                <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
+                <TransactionListItem v-else :transaction="item"/>
+            </div>
+        </RecycleScroller>
+    </div>
 
     <div v-else class="transaction-list text-center my-12">
         <img :src="getImage()">
@@ -26,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api'
+import { createComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
 import { useAddressStore } from '../stores/Address'
 import { useTransactionsStore } from '../stores/Transactions'
 import { useNetworkStore } from '../stores/Network'
@@ -129,7 +132,7 @@ export default createComponent({
                 n++;
             }
 
-            return transactionsWithMonths;
+            return transactionsWithMonths.map((tx: any, index: number) => (tx.id = index, tx));
         });
 
         function getImage() {
@@ -147,10 +150,56 @@ export default createComponent({
 
         const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg'
 
+        function el(element: any) {
+            let e = element as HTMLElement;
+
+            if (!e) {
+                throw new Error('element undefined');
+            }
+            if (e.querySelector('.list-element')) {
+                while (!e.classList.contains('list-element')) {
+                    e = e.childNodes[0] as HTMLElement;
+                }
+            } else if (!e.classList.contains('list-element')) {
+                while (!e.classList.contains('list-element')) {
+                    e = e.parentNode as HTMLElement;
+                }
+            }
+
+            return e;
+        }
+
+        let targetNode = ref(null);
+        // Options for the observer (which mutations to observe)
+        const config = { characterData: true, childList: true, subtree: true };
+
+        // Callback function to execute when mutations are observed
+        const callback = async function(mutationsList: MutationRecord[], observer: MutationObserver) {
+            // Use traditional 'for loops' for IE 11
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.target && !mutation.removedNodes.length)  {
+                    const element = el(mutation.target);
+                    element.classList.remove('fadein');
+                    requestAnimationFrame(() => element.classList.add('fadein'));
+                } else if (mutation.type === 'characterData' && mutation.target && mutation.target.parentNode) {
+                    const element = el(mutation.target.parentNode);
+                    element.classList.remove('fadein');
+                    requestAnimationFrame(() => element.classList.add('fadein'));
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        onMounted(() => observer.observe(targetNode.value!, config));
+        onBeforeUnmount(() => observer.disconnect());
+
         return {
             transactions,
             getImage,
             loadingImageSrc,
+            targetNode,
         }
     },
     components: {
@@ -166,42 +215,50 @@ export default createComponent({
     overflow-y: auto;
     width: 90rem;
 
-    @media (min-width: 426px) {
-        $nimiqBlue: #1f2348;
-
-        /* width */
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        /* Track */
-        &::-webkit-scrollbar-track {
-            background: rgba($nimiqBlue, 0.2);
-        }
-
-        /* Handle */
-        &::-webkit-scrollbar-thumb {
-            background: rgba($nimiqBlue, 0.6);
-            border-radius: 6px;
-        }
-
-        /* Handle on hover */
-        &::-webkit-scrollbar-thumb:hover {
-            background: rgba($nimiqBlue, 0.8);
-        }
-    }
-
     .month-label {
         color: var(--nimiq-blue);
         letter-spacing: 1.5px;
         font-size: 1.75rem;
-        height: 9rem;
-        line-height: 9rem;
+        height: 10rem;
+        line-height: 10rem;
         text-transform: uppercase;
         font-weight: bold;
         padding-left: 2rem;
         opacity: 0.4;
         user-select: none;
+    }
+
+    .vue-recycle-scroller {
+        height: 100%;
+    }
+
+    .list-element {
+        position: relative;
+        overflow: hidden;
+        background-color: white;
+
+        opacity: 0;
+        transform: translateX(-2rem);
+
+        &.fadein {
+            opacity: 1;
+            transform: translateX(0);
+
+            animation-name: fadein;
+            animation-duration: 250ms;
+            animation-iteration-count: 1;
+
+            @keyframes fadein {
+                0% {
+                    opacity: 0;
+                    transform: translateX(-2rem);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        }
     }
 }
 

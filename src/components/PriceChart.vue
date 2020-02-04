@@ -41,8 +41,9 @@ export default createComponent({
 
         // FIXME: Get live data
         const priceHistories = reactive<{[currency: string]: number[]}>({
-            'nim': [0.000402, 0.000418, 0.000454, 0.000465, 0.000464, 0.000509, 0.000573],
-            'btc': [8367.85, 8596.83, 8909.82, 9358.59, 9316.63, 9508.99, 9350.53],
+            'nim': [/*0.000402, 0.000418, 0.000454, */0.000465, 0.000464, 0.000509, 0.000573, 0.000572, 0.000570, 0.000570
+],
+            'btc': [/*8367.85, 8596.83, 8909.82, */9358.59, 9316.63, 9508.99, 9350.53, 9392.88, 9344.37, 9293.52],
         });
         const prices = computed(() => priceHistories[props.currency]);
 
@@ -58,10 +59,10 @@ export default createComponent({
 
         // Calculate SVG size
         const strokeWidth = 2;
-        const padding = strokeWidth / 2;
+        const padding = strokeWidth * 2;
         const width = 100; // Only used for calculcations, has no effect on display.
         const height = 50; // Only used for calculcations, has no effect on display.
-        const viewBox = `-${padding} -${padding} ${width + 2 * padding} ${height + 2 * padding}`;
+        const viewBox = `-${strokeWidth / 2} -${padding} ${width + strokeWidth} ${height + 2 * padding}`;
 
         // Calculate path
         const path = computed(() => {
@@ -171,6 +172,6 @@ svg * {
 }
 
 .change.negative::before {
-    content: '-';
+    // content: '-'; /* The number is negative and thus already has a minus sign. */
 }
 </style>

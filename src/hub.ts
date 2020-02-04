@@ -6,7 +6,7 @@ const hubApi = new HubApi();
 
 const APP_NAME = 'Wallet 2.0';
 
-function processAndStoreAccounts(accounts: Account[]): void {
+function processAndStoreAccounts(accounts: Account[], replaceState = false): void {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
 
@@ -51,8 +51,17 @@ function processAndStoreAccounts(accounts: Account[]): void {
         });
     }
 
-    accountStore.setAccountInfos(accountInfos);
-    addressStore.setAddressInfos(addressInfos);
+    if (replaceState) {
+        accountStore.setAccountInfos(accountInfos);
+        addressStore.setAddressInfos(addressInfos);
+    } else {
+        for (const accountInfo of accountInfos) {
+            accountStore.addAccountInfo(accountInfo);
+        }
+        for (const addressInfo of addressInfos) {
+            addressStore.addAddressInfo(addressInfo);
+        }
+    }
 }
 
 export async function syncFromHub() {
@@ -73,7 +82,7 @@ export async function syncFromHub() {
         else throw error;
     }
 
-    processAndStoreAccounts(listedAccounts);
+    processAndStoreAccounts(listedAccounts, true);
 }
 
 export async function onboard() {

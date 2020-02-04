@@ -43,7 +43,7 @@
                 />
             </div>
 
-            <button class="nq-button-s add-account">
+            <button class="nq-button-s add-account" @click="onboard">
                 Add Account
             </button>
         </div>
@@ -62,7 +62,7 @@ import LoginFileIcon from './icons/LoginFileIcon.vue';
 import AccountMenuItem from './AccountMenuItem.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
-import { backup, rename, changePassword, logout } from '../hub';
+import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
 
 export default createComponent({
@@ -105,6 +105,7 @@ export default createComponent({
             rename,
             changePassword,
             logout,
+            onboard,
         };
     },
     mounted () {

@@ -6,7 +6,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/WalletMenu.vue:7
+#: src/components/AccountMenu.vue:47
 msgid "Add Account"
 msgstr ""
 
@@ -20,6 +20,7 @@ msgid "Buy"
 msgstr ""
 
 #: src/components/AccountListItem.vue:23
+#: src/components/AccountMenu.vue:28
 msgid "Change Password"
 msgstr ""
 
@@ -28,11 +29,11 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:25
+#: src/components/layouts/AddressOverview.vue:29
 msgid "Connect"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:24
+#: src/components/layouts/AddressOverview.vue:28
 msgid "Connect your first account:"
 msgstr ""
 
@@ -49,6 +50,7 @@ msgid "Continue"
 msgstr ""
 
 #: src/components/AccountListItem.vue:17
+#: src/components/AccountMenu.vue:22
 msgid "Create Backup"
 msgstr ""
 
@@ -85,6 +87,7 @@ msgid "Log in on your devices with the new<br>Nimiq Login Files."
 msgstr ""
 
 #: src/components/AccountListItem.vue:27
+#: src/components/AccountMenu.vue:32
 msgid "Logout"
 msgstr ""
 
@@ -109,10 +112,12 @@ msgid "pending"
 msgstr ""
 
 #: src/components/AccountListItem.vue:20
+#: src/components/AccountMenu.vue:25
 msgid "Rename"
 msgstr ""
 
 #: src/components/AccountListItem.vue:14
+#: src/components/AccountMenu.vue:19
 msgid "Save Login File"
 msgstr ""
 
@@ -124,8 +129,7 @@ msgstr ""
 msgid "send and receive transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:21
-#: src/components/WalletMenu.vue:6
+#: src/components/layouts/Sidebar.vue:23
 msgid "Settings"
 msgstr ""
 
@@ -137,7 +141,7 @@ msgstr ""
 msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
 msgstr ""
 
-#: src/components/TransactionList.vue:15
+#: src/components/TransactionList.vue:21
 msgid "This is a quiet place with no transactions."
 msgstr ""
 
@@ -145,7 +149,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:28
+#: src/components/layouts/AddressOverview.vue:32
 msgid "Updating transactions..."
 msgstr ""
 

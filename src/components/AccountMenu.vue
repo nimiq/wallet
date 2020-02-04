@@ -44,7 +44,7 @@
             </div>
 
             <button class="nq-button-s add-account" @click="onboard">
-                Add Account
+                {{ $t('Add Account') }}
             </button>
         </div>
     </button>

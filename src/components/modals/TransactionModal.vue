@@ -34,12 +34,12 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
-import { ArrowRightSmallIcon, CloseButton, Identicon, PageBody, PageFooter, PageHeader, SmallPage } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, CloseButton, Identicon, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
 
 export default createComponent({
-    name: 'send-modal',
+    name: 'transaction-modal',
     props: {
         hash: {
             type: String,
@@ -62,7 +62,6 @@ export default createComponent({
         CloseButton,
         Identicon,
         PageBody,
-        PageFooter,
         PageHeader,
         SmallPage,
         Modal,

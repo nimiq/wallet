@@ -4,6 +4,11 @@ body {
     height: 100%;
 }
 
+body.inverted {
+    filter: invert(1);
+    background: var(--nimiq-blue-bg);
+}
+
 .nq-icon {
     width: 1em;
     height: 1em;

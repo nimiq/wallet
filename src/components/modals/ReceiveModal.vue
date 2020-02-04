@@ -1,23 +1,47 @@
 <template>
     <Modal>
-        <div class="receive-tx">
-            <!-- Put Receive here -->
-            <h1>Das ist das Modal</h1>
-            <button @click="$router.back()">{{ $t('close') }}</button>
-        </div>
+        <SmallPage class="receive-modal">
+            <PageHeader>Receive</PageHeader>
+            <PageBody>
+                <p>Nothing here yet</p>
+            </PageBody>
+            <CloseButton @click.prevent="$router.back()" class="close-button" />
+        </SmallPage>
     </Modal>
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
+import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 
 export default createComponent({
     name: 'receive-modal',
     components: {
+        CloseButton,
+        PageBody,
+        PageHeader,
+        SmallPage,
         Modal,
     },
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.receive-modal {
+    position: relative;
+    width: 52.5rem !important; /* 420px */
+
+    .page-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 2rem;
+        top: 2rem;
+    }
+}
+</style>

@@ -10,8 +10,8 @@
         <PriceChart currency="btc" class="graph" />
 
         <div>
-            <button class="nq-button-s inverse" @click="$router.push('/buy')">{{ $t('Buy') }}</button>
-            <button class="nq-button-s inverse" @click="$router.push('/sell')">{{ $t('Sell') }}</button>
+            <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">{{ $t('Buy') }}</button>
+            <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">{{ $t('Sell') }}</button>
         </div>
 
         <div class="flex-grow"></div>

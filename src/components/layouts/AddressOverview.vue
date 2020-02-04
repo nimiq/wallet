@@ -72,7 +72,7 @@ export default createComponent({
     @include flex-full-height;
     background: var(--nimiq-card-bg);
     flex-direction: column;
-    padding: 2.5rem 5rem 0 2.5rem;
+    padding: 2.5rem 5rem 0 5rem;
 
     > *:not(:last-child) {
         margin: 2.5rem 0;

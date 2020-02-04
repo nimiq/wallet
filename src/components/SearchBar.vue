@@ -47,6 +47,7 @@ export default createComponent({
         &:focus {
             outline: none;
         }
+
         &::placeholder {
             opacity: .5;
         }

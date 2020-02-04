@@ -5,7 +5,10 @@
             <AccountOverview />
             <AddressOverview />
         </main>
-        <router-view />
+
+        <transition name="fade">
+            <router-view />
+        </transition>
     </div>
   <!-- #app -->
 </template>
@@ -34,6 +37,27 @@ export default createComponent({
     main {
         @include flex-full-height;
         flex-direction: row;
+
+        .sidebar {
+            max-width: 21rem;
+        }
+
+        .account-overview {
+            max-width: 60rem;
+        }
+
+        .address-overview {
+            max-width: 100rem;
+        }
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .3s;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
     }
 }
 </style>

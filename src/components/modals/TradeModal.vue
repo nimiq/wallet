@@ -1,9 +1,9 @@
 <template>
     <Modal>
-        <SmallPage class="send-modal">
-            <PageHeader>Send</PageHeader>
+        <SmallPage class="trade-modal">
+            <PageHeader>Trade</PageHeader>
             <PageBody>
-                <p>Nothing here yet</p>
+                <p>A fast OASIS will suddenly appear here.</p>
             </PageBody>
             <CloseButton @click.prevent="$router.back()" class="close-button" />
         </SmallPage>
@@ -16,7 +16,7 @@ import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-compone
 import Modal from './Modal.vue';
 
 export default createComponent({
-    name: 'send-modal',
+    name: 'trade-modal',
     components: {
         CloseButton,
         PageBody,
@@ -28,7 +28,7 @@ export default createComponent({
 </script>
 
 <style lang="scss">
-.send-modal {
+.trade-modal {
     position: relative;
     width: 52.5rem !important; /* 420px */
 

@@ -1,9 +1,9 @@
 <template>
     <Modal>
-        <SmallPage class="send-modal">
-            <PageHeader>Send</PageHeader>
+        <SmallPage class="settings-modal">
+            <PageHeader>Settings</PageHeader>
             <PageBody>
-                <p>Nothing here yet</p>
+                <button class="nq-button" @click="lsdmode">Funky Mode</button>
             </PageBody>
             <CloseButton @click.prevent="$router.back()" class="close-button" />
         </SmallPage>
@@ -11,12 +11,18 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, computed } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 
 export default createComponent({
-    name: 'send-modal',
+    name: 'settings-modal',
+    setup() {
+        const lsdmode = () => {
+            document.body.classList.add('inverted');
+        };
+        return { lsdmode };
+    },
     components: {
         CloseButton,
         PageBody,
@@ -28,7 +34,7 @@ export default createComponent({
 </script>
 
 <style lang="scss">
-.send-modal {
+.settings-modal {
     position: relative;
     width: 52.5rem !important; /* 420px */
 

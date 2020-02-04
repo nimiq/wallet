@@ -12,7 +12,7 @@
         <div class="label">{{ activeAccountInfo.label }}</div>
 
         <!-- Submenu -->
-        <div class="menu">
+        <div class="menu flex-column">
             <div class="current-account">
                 <AccountMenuItem :id="activeAccountId"/>
                 <button v-if="canExportFile" class="item reset" @click="backup(activeAccountId, { fileOnly: true })">
@@ -33,13 +33,15 @@
                 </button>
             </div>
 
-            <AccountMenuItem
-                v-for="id of Object.keys(accountInfos)" :key="id"
-                :id="id"
-                tag="button"
-                class="reset"
-                @click.native="selectAccount(id); closeMenu()"
-            />
+            <div class="account-list">
+                <AccountMenuItem
+                    v-for="id of otherAccountIds" :key="id"
+                    :id="id"
+                    tag="button"
+                    class="reset"
+                    @click.native.prevent="selectAccount(id) && closeMenu()"
+                />
+            </div>
 
             <button class="nq-button-s add-account">
                 Add Account
@@ -84,8 +86,10 @@ export default createComponent({
 
         const backgroundColor = computed(() => !!activeAccountInfo.value && getBackgroundClass(activeAccountInfo.value.addresses[0]));
 
+        const otherAccountIds = computed(() => Object.keys(accountInfos.value).filter(id => id !== activeAccountId.value));
+
         return {
-            accountInfos,
+            otherAccountIds,
             activeAccountInfo,
             activeAccountId,
             backgroundColor,
@@ -168,6 +172,7 @@ export default createComponent({
     bottom: calc(100% + 2rem);
     background: white;
     width: 33rem;
+    max-height: calc(100vh - 20rem);
     padding: 1rem;
     border-radius: .75rem;
     color: var(--nimiq-blue);
@@ -179,14 +184,14 @@ export default createComponent({
 }
 
 .account-menu.active .menu {
-    display: block;
+    display: flex;
 }
 
 .current-account {
     padding: 1rem;
     background: var(--nimiq-highlight-bg);
     border-radius: 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .current-account .account-menu-item {
@@ -255,12 +260,28 @@ export default createComponent({
 //     opacity: .1;
 // }
 
-.menu > .account-menu-item {
+.account-list {
+    margin: 1rem 0;
+    overflow-y: auto;
+}
+
+.account-list .account-menu-item {
     padding: 1rem;
     width: 100%;
+    opacity: 0.7;
+
+    transition:
+        opacity 0.2s var(--nimiq-ease),
+        box-shadow 0.2s var(--nimiq-ease);
+}
+
+.account-list .account-menu-item:hover,
+.account-list .account-menu-item:focus {
+    opacity: 1;
 }
 
 .menu .add-account {
     margin: 1rem;
+    align-self: flex-start;
 }
 </style>

@@ -270,6 +270,7 @@ export default createComponent({
     padding: 1rem;
     width: 100%;
     opacity: 0.7;
+    border-radius: 0.5rem;
 
     transition:
         opacity 0.2s var(--nimiq-ease),
@@ -279,6 +280,10 @@ export default createComponent({
 .account-list .account-menu-item:hover,
 .account-list .account-menu-item:focus {
     opacity: 1;
+}
+
+.account-list .account-menu-item:focus {
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .menu .add-account {

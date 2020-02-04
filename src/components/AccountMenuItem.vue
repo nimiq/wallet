@@ -5,7 +5,7 @@
         </div>
         <div class="meta">
             <div class="label">{{ accountInfo.label }}</div>
-            <FiatAmount :amount="accountBalance"/>
+            <FiatConvertedAmount :amount="accountBalance"/>
         </div>
         <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
     </component>
@@ -16,7 +16,7 @@ import { createComponent, computed } from '@vue/composition-api';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
-import FiatAmount from './FiatAmount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
@@ -49,7 +49,7 @@ export default createComponent({
     },
     components: {
         LoginFileIcon,
-        FiatAmount,
+        FiatConvertedAmount,
         AlertTriangleIcon,
     },
 });

@@ -2,7 +2,7 @@
     <div class="wallet-balance">
         <h2 class="nq-label">{{ $t('Total Balance') }}</h2>
         <div class="fiat-amount">
-            <FiatAmount :amount="accountBalance" />
+            <FiatConvertedAmount :amount="accountBalance" />
         </div>
         <BalanceDistribution />
     </div>
@@ -11,7 +11,7 @@
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
-import FiatAmount from './FiatAmount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BalanceDistribution from './BalanceDistribution.vue';
 
 export default createComponent({
@@ -25,7 +25,7 @@ export default createComponent({
     },
     components: {
         BalanceDistribution,
-        FiatAmount,
+        FiatConvertedAmount,
     },
 });
 </script>

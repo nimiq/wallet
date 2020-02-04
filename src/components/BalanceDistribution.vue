@@ -12,7 +12,7 @@
                             <Identicon :address="account.addressInfo.address"/>
                             <div class="flex-column">
                                 <span class="nq-text-s">{{account.addressInfo.label}}</span>
-                                <FiatAmount :amount="account.addressInfo.balance" />
+                                <FiatConvertedAmount :amount="account.addressInfo.balance" />
                             </div>
                         </div>
                     </Tooltip>
@@ -36,7 +36,7 @@
                         <div :class="getBackgroundClass(account.addressInfo.address)" slot="icon" class="bar"></div>
                         <div class="flex-column">
                             <span class="nq-text-s">{{account.addressInfo.label}}</span>
-                            <FiatAmount :amount="account.addressInfo.balance" />
+                            <FiatConvertedAmount :amount="account.addressInfo.balance" />
                         </div>
                     </Tooltip>
                 </div>
@@ -49,7 +49,7 @@
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
 import getBackgroundClass from '../lib/AddressColor';
-import FiatAmount from './FiatAmount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import { Identicon, Tooltip, TransferIcon } from '@nimiq/vue-components';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 
@@ -100,7 +100,7 @@ export default createComponent({
         };
     },
     components: {
-        FiatAmount,
+        FiatConvertedAmount,
         Identicon,
         Tooltip,
         TransferIcon,

@@ -27,7 +27,7 @@
         </div>
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value" />
-            <FiatAmount :amount="transaction.value"/>
+            <FiatConvertedAmount :amount="transaction.value"/>
         </div>
     </div>
 </template>
@@ -41,7 +41,7 @@ import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 
-import FiatAmount from '@/components/FiatAmount.vue'
+import FiatConvertedAmount from './FiatConvertedAmount.vue'
 import Amount from './Amount.vue';
 
 export default createComponent({
@@ -115,7 +115,7 @@ export default createComponent({
         Amount,
         CashlinkIcon,
         Identicon,
-        FiatAmount,
+        FiatConvertedAmount,
     } as any,
 })
 </script>

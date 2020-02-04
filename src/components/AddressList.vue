@@ -16,7 +16,7 @@
                     <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
                     <Amount :amount="addressInfo.balance"/>
                 </span>
-                <FiatAmount
+                <FiatConvertedAmount
                     class="fiat-balance"
                     :amount="addressInfo.balance"/>
             </div>
@@ -33,7 +33,7 @@ import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address'
 import { useNetworkStore } from '../stores/Network';
 import Amount from './Amount.vue';
-import FiatAmount from './FiatAmount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
 
 export default createComponent({
@@ -67,7 +67,7 @@ export default createComponent({
     components: {
         Identicon,
         Amount,
-        FiatAmount,
+        FiatConvertedAmount,
         ClockIcon,
         LockLockedIcon,
     } as any,

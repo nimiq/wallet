@@ -1,14 +1,14 @@
 <template>
-    <VueComponentsFiatAmount :amount="fiatAmount" :currency="fiatCurrency"/>
+    <FiatAmount :amount="fiatAmount" :currency="fiatCurrency"/>
 </template>
 
 <script lang="ts">
-import { FiatAmount as VueComponentsFiatAmount } from '@nimiq/vue-components';
+import { FiatAmount } from '@nimiq/vue-components';
 import { createComponent, computed } from '@vue/composition-api'
 import { useFiatStore } from '../stores/Fiat'
 
 export default createComponent({
-    name: 'FiatAmount',
+    name: 'FiatConvertedAmount',
     props: {
         // Amount in luna
         amount: {
@@ -27,7 +27,7 @@ export default createComponent({
             fiatCurrency,
         }
     },
-    components: { VueComponentsFiatAmount } as any,
+    components: { FiatAmount }
 })
 </script>
 

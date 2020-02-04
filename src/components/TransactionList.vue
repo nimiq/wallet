@@ -1,14 +1,20 @@
 <template>
-    <RecycleScroller
+    <DynamicScroller
         v-if="transactions.length"
         class="transaction-list"
         :items="transactions"
-        :item-size="80"
         key-field="transactionHash"
-        v-slot="{ item }"
+        v-slot="{ item, index, active }"
+        :minItemSize="60"
     >
-        <TransactionListItem :transaction="item"/>
-    </RecycleScroller>
+        <DynamicScrollerItem
+            :item="item"
+            :active="active"
+        >
+            <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
+            <TransactionListItem v-else :transaction="item"/>
+        </DynamicScrollerItem>
+    </DynamicScroller>
 
     <div v-else class="transaction-list text-center my-12">
         <img :src="getImage()">
@@ -26,16 +32,92 @@ import { useTransactionsStore } from '../stores/Transactions'
 import { useNetworkStore } from '../stores/Network'
 import TransactionListItem from '@/components/TransactionListItem.vue'
 
+function processTimestamp(timestamp: number) {
+    const date: Date = new Date(timestamp);
+
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear(),
+        date,
+    };
+}
+
+function getLocaleMonthStringFromDate(
+    date: Date,
+    locale: string,
+    options: {
+        month?: string,
+        year?: string,
+    }
+) {
+    return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
 export default createComponent({
-    setup() {
-        const { activeAddress } = useAddressStore()
-        const { state: transactions$ } = useTransactionsStore()
+    setup(props, context) {
+        const { activeAddress } = useAddressStore();
+        const { state: transactions$ } = useTransactionsStore();
 
+        const transactions: any = computed(() => {
+            // filtering & sorting TX
+            const transactions = Object.values(transactions$.transactions)
+                .filter(tx => tx.sender === activeAddress.value || tx.recipient === activeAddress.value)
+                .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
 
-        const transactions = computed(() => Object.values(transactions$.transactions)
-            .filter(tx => tx.sender === activeAddress.value || tx.recipient === activeAddress.value)
-            .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER))
-        )
+            // add month labels / handle "This month" TX & pending TX
+            const transactionsWithMonths: any = [];
+            if (!transactions.length) return transactionsWithMonths;
+
+            let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
+            let n = 0;
+
+            if (!transactions[n].timestamp) {
+                transactionsWithMonths.push({ transactionHash: context.root.$t("Pending...") });
+                while (!transactions[n].timestamp) {
+                    transactionsWithMonths.push(transactions[n]);
+                    n++;
+                }
+            }
+
+            let { month: txMonth, year: txYear } = processTimestamp(transactions[n].timestamp!*1000);
+
+            if (txMonth === currentTxMonth && txYear === currentYear) {
+                transactionsWithMonths.push({ transactionHash: context.root.$t("This month") });
+            }
+
+            const len = transactions.length;
+            while (n < len) {
+                let {
+                    month: txMonth,
+                    year: txYear,
+                    date: txDate,
+                } = processTimestamp(transactions[n].timestamp!*1000);
+
+                if (txYear !== currentYear && txMonth !== currentTxMonth) {
+                    transactionsWithMonths.push({
+                        transactionHash: getLocaleMonthStringFromDate(
+                            txDate,
+                            context.root.$i18n.locale,
+                            { month: "long", year: "numeric" },
+                        ),
+                    });
+                } else if (txMonth !== currentTxMonth) {
+                    transactionsWithMonths.push({
+                        transactionHash: getLocaleMonthStringFromDate(
+                            txDate,
+                            context.root.$i18n.locale,
+                            { month: "long" },
+                        )
+                    });
+                }
+
+                currentTxMonth = txMonth;
+                transactionsWithMonths.push(transactions[n]);
+                n++;
+            }
+
+            return transactionsWithMonths;
+        });
 
         function getImage() {
             const images = [
@@ -66,9 +148,48 @@ export default createComponent({
 
 <style lang="scss" scoped>
 @import '../scss/mixins.scss';
+
 .transaction-list {
     overflow-y: auto;
     width: 90rem;
+
+    @media (min-width: 426px) {
+        $nimiqBlue: #1f2348;
+
+        /* width */
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: rgba($nimiqBlue, 0.2);
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: rgba($nimiqBlue, 0.6);
+            border-radius: 6px;
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgba($nimiqBlue, 0.8);
+        }
+    }
+
+    .month-label {
+        color: var(--nimiq-blue);
+        letter-spacing: 1.5px;
+        font-size: 1.75rem;
+        height: 9rem;
+        line-height: 9rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding-left: 2rem;
+        opacity: 0.4;
+        user-select: none;
+    }
 }
 
 img {

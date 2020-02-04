@@ -2,15 +2,19 @@
     <div class="address-overview" :class="{'noAccounts flex-column': !activeAddressInfo}">
         <template v-if="activeAddressInfo">
             <div class="active-address flex-row">
-                <Account layout="row"
-                    :address="activeAddressInfo.address"
-                    :label="activeAddressInfo.label" />
+                <div class="account flex-row">
+                    <Identicon :address="activeAddressInfo.address" />
+                    <div class="flex-column">
+                        <div class="label">{{activeAddressInfo.label}}</div>
+                        <div class="address nq-label">{{activeAddressInfo.address}}</div>
+                    </div>
+                </div>
                 <div class="send-receive flex-row">
-                    <button class="send nq-button" @click="$router.push('/send').catch(error => {})">
-                        <div class="icon"></div>
+                    <button class="send nq-button-pill" @click="$router.push('/send').catch(error => {})">
+                        <ArrowRightSmallIcon />Send
                     </button>
-                    <button class="receive nq-button" @click="$router.push('/receive').catch(error => {})">
-                        <div class="icon"></div>
+                    <button class="receive nq-button-s" @click="$router.push('/receive').catch(error => {})">
+                        <ArrowRightSmallIcon />Receive
                     </button>
                 </div>
             </div>
@@ -31,7 +35,7 @@
 
 <script lang="ts">
 import { createComponent, reactive } from '@vue/composition-api';
-import { Account } from '@nimiq/vue-components';
+import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
 import { useAddressStore } from '../../stores/Address';
@@ -54,7 +58,8 @@ export default createComponent({
         };
     },
     components: {
-        Account,
+        ArrowRightSmallIcon,
+        Identicon,
         SearchBar,
         TransactionList,
     } as any,
@@ -77,13 +82,21 @@ export default createComponent({
         justify-content: space-between;
         align-items: center;
 
-        .account.row {
-            width: unset !important;
+        .account {
             flex-grow: 1;
+            align-items: center;
+            overflow: hidden;
 
             .identicon {
                 height: 10rem;
                 width: auto;
+                flex-shrink: 0;
+            }
+
+            .address,
+            .label {
+                overflow: hidden;
+                white-space: nowrap;
             }
         }
 
@@ -91,30 +104,26 @@ export default createComponent({
             flex-grow: 0;
             align-items: center;
 
-            .nq-button {
-                width: 7.5rem;
-                height: 7.5rem;
-                min-width: auto;
-                padding:0;
+            .send, .receive {
                 margin: 0 2rem;
-                color: var(--nimiq-blue);
-                align-items: flex-end;
+                align-items: center;
+                display: flex;
+                flex-direction: row;
 
-                > .icon {
-                    width: 100%;
-                    height: 100%;
-                    background-size: 45% 45%;
-                    background-position: center !important;
-                    background-repeat: no-repeat !important;
+
+                > .nq-icon {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    margin-right: 1rem;
                 }
             }
 
-            .send > .icon {
-                background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%230582CA" viewBox="0 0 8 19"><path d="M4 18.2c.8 0 1.5-.7 1.5-1.5V7v-.2H7c.4 0 .7-.2.9-.5a1 1 0 0 0 0-1L4.9.5A1 1 0 0 0 4 0a1 1 0 0 0-.9.5l-3 4.8a1 1 0 0 0 0 1c.2.3.5.4.9.4h1.2c.2 0 .3.2.3.3v9.7c0 .8.7 1.5 1.5 1.5z"/></svg>');
+            .send > .nq-icon {
+                transform: rotateZ(-90deg);
             }
 
-            .receive > .icon {
-                background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%230582CA" viewBox="0 0 8 19"><path d="M4 0c-.8 0-1.5.6-1.5 1.4v10H1a1 1 0 0 0-.9.5 1 1 0 0 0 0 1l3 4.8c.2.3.5.5.9.5s.7-.2.9-.5l3-4.8a1 1 0 0 0 0-1 1 1 0 0 0-.9-.5H5.8a.2.2 0 0 1-.3-.2V1.4C5.5.6 4.8 0 4 0z"/></svg>');
+            .receive > .nq-icon {
+                transform: rotateZ(90deg);
             }
         }
     }

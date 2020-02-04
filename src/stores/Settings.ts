@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { Currencies } from './Fiat';
+import { FiatCurrency } from '../lib/Constants';
 import { autodetectLanguage } from '../i18n/i18n-setup';
 
 export enum ColorMode {
@@ -9,7 +9,7 @@ export enum ColorMode {
 
 export type SettingsState = {
     showDecimals: boolean,
-    currency: Currencies,
+    currency: FiatCurrency,
     language: string, // locale
     colorMode: ColorMode,
 };
@@ -18,13 +18,13 @@ export const useSettingsStore = createStore({
     id: 'settings',
     state: (): SettingsState => ({
         showDecimals: false,
-        currency: Currencies.USD,
+        currency: FiatCurrency.USD,
         language: autodetectLanguage(),
         colorMode: ColorMode.default,
     }),
     getters: {
         showDecimals: (state): Readonly<boolean> => state.showDecimals,
-        currency: (state): Readonly<Currencies> => state.currency,
+        currency: (state): Readonly<FiatCurrency> => state.currency,
         language: (state): Readonly<string> => state.language,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
     },
@@ -32,8 +32,8 @@ export const useSettingsStore = createStore({
         setShowDecimals(show?: boolean) {
             this.state.showDecimals = show || false;
         },
-        setCurrency(currency: Currencies) {
-            if (Object.values(Currencies).includes(currency)) {
+        setCurrency(currency: FiatCurrency) {
+            if (Object.values(FiatCurrency).includes(currency)) {
                 this.state.currency = currency;
             }
         },

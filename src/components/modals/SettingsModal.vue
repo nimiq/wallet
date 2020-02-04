@@ -14,7 +14,7 @@
                 <div class="flex-row">
                     <label for="currency" >Currency</label>
                     <select name="currency" id="currency" @input="setCurrency($event.target.value)">
-                        <option v-for="currencyOption of Currencies" :key="currencyOption" :value="currencyOption" :selected="currencyOption === currency" >{{currencyOption}}</option>
+                        <option v-for="currencyOption of FiatCurrency" :key="currencyOption" :value="currencyOption" :selected="currencyOption === currency" >{{currencyOption}}</option>
                     </select>
                 </div>
                 <div class="flex-row">
@@ -48,7 +48,7 @@ import { createComponent, computed } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
-import { Currencies } from '../../stores/Fiat';
+import { FiatCurrency } from '../../lib/Constants';
 
 export default createComponent({
     name: 'settings-modal',
@@ -61,7 +61,7 @@ export default createComponent({
             clearCache,
             ...settings,
             ColorMode,
-            Currencies,
+            FiatCurrency,
         };
     },
     components: {

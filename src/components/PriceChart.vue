@@ -26,7 +26,8 @@
 <script lang="ts">
 import { createComponent, reactive, ref, computed } from '@vue/composition-api';
 // import { FiatAmount } from '@nimiq/vue-components';
-import { useFiatStore, SYMBOLS } from '../stores/Fiat';
+import { useFiatStore } from '../stores/Fiat';
+import { FIAT_SYMBOLS } from '../lib/Constants';
 
 export default createComponent({
     name: 'price-chart',
@@ -123,7 +124,7 @@ export default createComponent({
             viewBox,
             path,
             endPrice,
-            fiatSymbol: SYMBOLS[fiat$.currency],
+            fiatSymbol: FIAT_SYMBOLS[fiat$.currency],
             priceChange,
             priceChangeClass,
         }

@@ -14,7 +14,9 @@
             <button class="nq-button-s inverse" @click="$router.push('/sell')">{{ $t('Sell') }}</button>
         </div>
 
-        <AccountList />
+        <div class="flex-grow"></div>
+
+        <AccountMenu />
 
         <a class="settings" href="#" @click.prevent="$router.push('/settings')">
             <GearIcon />
@@ -26,7 +28,7 @@
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
 import { GearIcon } from '@nimiq/vue-components';
-import AccountList from '../AccountList.vue';
+import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
 
 export default createComponent({
@@ -34,7 +36,7 @@ export default createComponent({
     components: {
         GearIcon,
         PriceChart,
-        AccountList,
+        AccountMenu,
     },
 });
 </script>

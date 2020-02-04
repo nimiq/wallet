@@ -54,15 +54,28 @@ function getLocaleMonthStringFromDate(
 }
 
 export default createComponent({
+    props: {
+        searchString: {
+            type: String,
+            default: '',
+        },
+    },
     setup(props, context) {
         const { activeAddress } = useAddressStore();
         const { state: transactions$ } = useTransactionsStore();
 
         const transactions: any = computed(() => {
             // filtering & sorting TX
-            const transactions = Object.values(transactions$.transactions)
+            let transactions = Object.values(transactions$.transactions)
                 .filter(tx => tx.sender === activeAddress.value || tx.recipient === activeAddress.value)
                 .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
+
+            if (props.searchString !== '') {
+                transactions = transactions.filter((tx) =>
+                    tx.recipient.toUpperCase().includes(props.searchString.toUpperCase())
+                );
+
+            }
 
             // add month labels / handle "This month" TX & pending TX
             const transactionsWithMonths: any = [];

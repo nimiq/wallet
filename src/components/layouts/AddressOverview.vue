@@ -14,8 +14,8 @@
                     </button>
                 </div>
             </div>
-            <SearchBar />
-            <TransactionList />
+            <SearchBar @input="search.searchString = $event.target.value"/>
+            <TransactionList :searchString="search.searchString" />
         </template>
         <template v-else>
             <img
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, reactive } from '@vue/composition-api';
 import { Account } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
@@ -44,7 +44,10 @@ export default createComponent({
         const { activeAddressInfo } = useAddressStore();
         const { isFetchingTxHistory } = useNetworkStore();
 
+        const search = reactive({ searchString: ''});
+
         return {
+            search,
             activeAddressInfo,
             isFetchingTxHistory,
             onboard,
@@ -66,14 +69,22 @@ export default createComponent({
     flex-direction: column;
     padding: 2.5rem 5rem 0 2.5rem;
 
+    > *:not(:last-child) {
+        margin: 2.5rem 0;
+    }
+
     .active-address {
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 5rem;
 
         .account.row {
             width: unset !important;
             flex-grow: 1;
+
+            .identicon {
+                height: 10rem;
+                width: auto;
+            }
         }
 
         .send-receive {
@@ -107,6 +118,7 @@ export default createComponent({
             }
         }
     }
+
     &.noAccounts {
         padding: 6rem 0;
         text-align: center;

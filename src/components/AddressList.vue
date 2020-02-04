@@ -14,7 +14,6 @@
                     :amount="addressInfo.balance"
                     :maxDecimals="2"/>
                 <FiatAmount
-                    v-if="activeAddress === addressInfo.address"
                     class="fiat-balance"
                     :amount="addressInfo.balance"/>
             </div>

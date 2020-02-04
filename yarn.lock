@@ -832,7 +832,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components.git#build/master":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components.git#9f9019a86688d06457d704ddc482e5d80b3d59a4"
+  resolved "https://github.com/nimiq/vue-components.git#4df538c120275c051c87dcad4c9fd2238fe3138a"
   dependencies:
     "@nimiq/style" "^0.7.5"
     big-integer "^1.6.44"

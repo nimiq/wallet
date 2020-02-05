@@ -7,9 +7,10 @@ Vue.use(VueI18n);
 const DEFAULT_LANGUAGE = 'en';
 
 export const i18n = new VueI18n({
-  locale: DEFAULT_LANGUAGE, // set locale
-  fallbackLocale: DEFAULT_LANGUAGE,
+  locale: DEFAULT_LANGUAGE, // set locale (2 letters format: 'en')
+  fallbackLocale: DEFAULT_LANGUAGE, // fallback locale if no translation found
   messages: { [DEFAULT_LANGUAGE]: messages }, // set locale messages
+  silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
 const loadedLanguages = [DEFAULT_LANGUAGE]; // our default language that is preloaded

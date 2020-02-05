@@ -14,6 +14,7 @@
         <div class="meta flex-row">
             <strong>{{currency.toUpperCase()}}</strong>
             <div class="price">
+                <!-- TODO: Adapt FiatAmount for this use case and use it here -->
                 <!-- FiatAmount cannot display more than 2 decimals, which is necessary for NIM. -->
                 <!-- <FiatAmount :amount="endPrice" :currency="fiatCurrency"/> -->
                 <div>{{ endPrice }} {{ fiatSymbol }}</div>
@@ -25,9 +26,9 @@
 
 <script lang="ts">
 import { createComponent, reactive, ref, computed } from '@vue/composition-api';
+import { CurrencyInfo } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '../stores/Fiat';
-import { FIAT_SYMBOLS } from '../lib/Constants';
 
 export default createComponent({
     name: 'price-chart',
@@ -119,12 +120,14 @@ export default createComponent({
             }).join(' ')}`;
         })
 
+        const fiatSymbol = computed(() => new CurrencyInfo(fiat$.currency).symbol);
+
         return {
             strokeWidth,
             viewBox,
             path,
             endPrice,
-            fiatSymbol: FIAT_SYMBOLS[fiat$.currency],
+            fiatSymbol,
             priceChange,
             priceChangeClass,
         }

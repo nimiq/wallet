@@ -1,7 +1,7 @@
 <template>
     <div class="balance-distribution">
         <div class="currency nim" :style="{width: balanceDistribution.nim * 80 + '%'}">
-            <span class="nq-label">nim</span>
+            <span class="nq-label">NIM</span>
             <div class="distribution" >
                 <div v-for="account of nimBalanceDistribution"
                     :key="account.address"
@@ -27,7 +27,7 @@
             <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})"><TransferIcon /></button>
         </div>
         <div class="currency btc" :style="{width: balanceDistribution.btc * 80 + '%'}">
-            <span class="nq-label">btc</span>
+            <span class="nq-label">BTC</span>
             <div class="distribution">
                 <div v-for="account of btcBalanceDistribution"
                     :key="account.addressInfo.address"
@@ -84,8 +84,8 @@ export default createComponent({
         const btcBalanceDistribution = computed((): Array<{addressInfo: BtcAccountInfo, percentage: number}> => {
             return [{
                 addressInfo: {
-                    label: 'btc-address',
-                    address: 'btc-address',
+                    label: 'Bitcoin',
+                    address: 'btc-address', // This string triggers the orange
                     balance: 0,
                 },
                 percentage: 1,
@@ -113,6 +113,10 @@ export default createComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    .nq-label {
+        font-weight: 600;
+    }
 
     .exchange {
         width: 20%;
@@ -143,9 +147,8 @@ export default createComponent({
             flex-direction: row;
             width: 100%;
 
-            > div {
-                padding: 0 .25rem;
-                display: flex;
+            > div:not(:last-child) {
+                padding-right: 0.5rem;
             }
 
             .tooltip {
@@ -161,20 +164,26 @@ export default createComponent({
                     color: var(--nimiq-blue);
                 }
 
+                .flex-row {
+                    align-items: center;
+                }
+
                 .identicon {
                     width: 4rem;
-                    height: auto;
+                    height: 4rem;
                     margin-right: 1rem;
                     flex-shrink: 0;
                 }
 
                 .nq-text-s {
                     white-space: nowrap;
+                    margin: 0 0 0.25rem;
                 }
 
                 .fiat-amount {
                     font-size: 1.5rem;
                     opacity: .6;
+                    font-weight: 600;
                 }
             }
 
@@ -189,6 +198,8 @@ export default createComponent({
         > span {
             font-size: 1.75rem;
             white-space: nowrap;
+            margin-left: 0.125rem;
+            margin-right: 0.125rem;
         }
 
         &.btc {

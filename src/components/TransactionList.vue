@@ -1,14 +1,10 @@
 <template>
-
-    <div
-        v-if="transactions.length"
-        class="transaction-list"
-        ref="targetNode"
-    >
+    <div class="transaction-list" ref="targetNode">
         <RecycleScroller
+            v-if="transactions.length"
             :items="transactions"
             :item-size="80"
-            key-field="id"
+            key-field="transactionHash"
             v-slot="{ item, index, active }"
             :buffer="200"
         >
@@ -17,15 +13,15 @@
                 <TransactionListItem v-else :transaction="item"/>
             </div>
         </RecycleScroller>
+        <div v-else class="text-center my-12">
+            <img :src="getImage()">
+            <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
+            <!-- <div v-else-if="transactions.length >= 10" class="text-center my-6">
+                <span class="opacity-50">{{ $t('History is currently limited for performance.')}}</span>
+            </div> -->
+        </div>
     </div>
 
-    <div v-else class="transaction-list text-center my-12">
-        <img :src="getImage()">
-        <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
-        <!-- <div v-else-if="transactions.length >= 10" class="text-center my-6">
-            <span class="opacity-50">{{ $t('History is currently limited for performance.')}}</span>
-        </div> -->
-    </div>
 </template>
 
 <script lang="ts">
@@ -34,6 +30,19 @@ import { useAddressStore } from '../stores/Address'
 import { useTransactionsStore } from '../stores/Transactions'
 import { useNetworkStore } from '../stores/Network'
 import TransactionListItem from '@/components/TransactionListItem.vue'
+
+function getImage() {
+    const images = [
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/contemplating_8t0x.svg',
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/mobile_user_7oqo.svg',
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/Tree_swing_646s.svg',
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/a_moment_to_relax_bbpa.svg',
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/yoga_248n.svg',
+        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/into_the_night_vumi.svg',
+    ]
+
+    return images[Math.floor(Math.random() * images.length)]
+}
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -54,6 +63,25 @@ function getLocaleMonthStringFromDate(
     }
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
+function getCloserElement(element: any, classToFind: string) {
+    let e = element as HTMLElement;
+
+    if (!e) {
+        throw new Error('element undefined');
+    }
+    if (e.querySelector('.' + classToFind)) {
+        while (!e.classList.contains(classToFind)) {
+            e = e.childNodes[0] as HTMLElement;
+        }
+    } else if (!e.classList.contains(classToFind)) {
+        while (!e.classList.contains(classToFind)) {
+            e = e.parentNode as HTMLElement;
+        }
+    }
+
+    return e;
 }
 
 export default createComponent({
@@ -132,68 +160,49 @@ export default createComponent({
                 n++;
             }
 
-            return transactionsWithMonths.map((tx: any, index: number) => (tx.id = index, tx));
+            return transactionsWithMonths;
         });
 
-        function getImage() {
-            const images = [
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/contemplating_8t0x.svg',
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/mobile_user_7oqo.svg',
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/Tree_swing_646s.svg',
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/a_moment_to_relax_bbpa.svg',
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/yoga_248n.svg',
-                'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/into_the_night_vumi.svg',
-            ]
+        const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg';
 
-            return images[Math.floor(Math.random() * images.length)]
-        }
+        let targetNode: Ref<null | HTMLElement> = ref(null);
+        (() => {
+            'use strict';
+            const config = { characterData: true, childList: true, subtree: true };
+            const callback = async function(mutationsList: MutationRecord[], observer: MutationObserver) {
+                if (!transactions.value.length) return;
 
-        const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg'
+                for (let mutation of mutationsList) {
+                    let element: null | HTMLElement = null;
 
-        function el(element: any) {
-            let e = element as HTMLElement;
+                    if (mutation.target) {
+                        if (
+                            mutation.type === 'childList' &&
+                            // !mutation.removedNodes.length &&
+                            !(mutation.target as HTMLElement).classList.contains('transaction-list') &&
+                            !(mutation.target as HTMLElement).classList.contains('resize-observer')
+                        ) {
+                            element = getCloserElement(mutation.target, 'list-element');
+                        } else if (
+                            mutation.type === 'characterData' &&
+                            mutation.target.parentNode
+                        ) {
+                            element = getCloserElement(mutation.target.parentNode, 'list-element');
+                        }
+                    }
 
-            if (!e) {
-                throw new Error('element undefined');
-            }
-            if (e.querySelector('.list-element')) {
-                while (!e.classList.contains('list-element')) {
-                    e = e.childNodes[0] as HTMLElement;
+                    if (element) {
+                        element.classList.remove('fadein');
+                        requestAnimationFrame(() => element!.classList.add('fadein'));
+                    }
                 }
-            } else if (!e.classList.contains('list-element')) {
-                while (!e.classList.contains('list-element')) {
-                    e = e.parentNode as HTMLElement;
-                }
-            }
+            };
 
-            return e;
-        }
+            const observer = new MutationObserver(callback);
 
-        let targetNode = ref(null);
-        // Options for the observer (which mutations to observe)
-        const config = { characterData: true, childList: true, subtree: true };
-
-        // Callback function to execute when mutations are observed
-        const callback = async function(mutationsList: MutationRecord[], observer: MutationObserver) {
-            // Use traditional 'for loops' for IE 11
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'childList' && mutation.target && !mutation.removedNodes.length)  {
-                    const element = el(mutation.target);
-                    element.classList.remove('fadein');
-                    requestAnimationFrame(() => element.classList.add('fadein'));
-                } else if (mutation.type === 'characterData' && mutation.target && mutation.target.parentNode) {
-                    const element = el(mutation.target.parentNode);
-                    element.classList.remove('fadein');
-                    requestAnimationFrame(() => element.classList.add('fadein'));
-                }
-            }
-        };
-
-        // Create an observer instance linked to the callback function
-        const observer = new MutationObserver(callback);
-
-        onMounted(() => observer.observe(targetNode.value!, config));
-        onBeforeUnmount(() => observer.disconnect());
+            onMounted(() => observer.observe(targetNode.value!, config));
+            onBeforeUnmount(() => observer.disconnect());
+        })();
 
         return {
             transactions,

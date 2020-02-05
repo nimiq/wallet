@@ -26,22 +26,24 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" />
-            <FiatConvertedAmount :amount="transaction.value"/>
+            <Amount :amount="transaction.value"/>
+            <template v-if="fiatValue !== undefined">
+                <FiatAmount v-if="fiatValue !== NaN" :amount="fiatValue" :currency="fiatCurrency"/>
+                <div v-else class="fiat-amount">Fiat value unavailable</div>
+            </template>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api'
-import { CashlinkIcon, Identicon } from '@nimiq/vue-components';
+import { CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { useAddressStore } from '../stores/Address'
+import { useFiatStore } from '../stores/Fiat';
 import { Transaction } from '../stores/Transactions'
 import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
-
-import FiatConvertedAmount from './FiatConvertedAmount.vue'
 import Amount from './Amount.vue';
 
 export default createComponent({
@@ -99,6 +101,11 @@ export default createComponent({
         })
         const isCashlink = computed(() => isFundingCashlink(dataBytes.value) || isClaimingCashlink(dataBytes.value))
 
+        // Fiat currency
+        const { state: fiat$ } = useFiatStore();
+        const fiatCurrency = computed(() => fiat$.currency);
+        const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
+
         return {
             isIncoming,
             peerAddress,
@@ -107,6 +114,8 @@ export default createComponent({
             dateMonth,
             dateTime,
             data,
+            fiatCurrency,
+            fiatValue,
             isCashlink,
             hash: tx.value.transactionHash,
         }
@@ -115,7 +124,7 @@ export default createComponent({
         Amount,
         CashlinkIcon,
         Identicon,
-        FiatConvertedAmount,
+        FiatAmount,
     } as any,
 })
 </script>

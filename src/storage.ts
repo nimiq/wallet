@@ -22,6 +22,7 @@ export function initStorage() {
             // @ts-ignore Some weird error about a type missmatch
             transactions: txs,
         })
+        transactionsStore.calculateFiatAmounts();
     }
 
     // Write transactions to storage when updated

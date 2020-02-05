@@ -30,7 +30,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wallet-balance {
     .nq-label {
         margin-bottom: 0.5rem;

@@ -14,7 +14,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .backdrop {
     position: fixed;
     top: 0;

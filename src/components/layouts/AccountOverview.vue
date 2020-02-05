@@ -41,7 +41,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../scss/mixins.scss';
 .account-overview {
     @include flex-full-height;

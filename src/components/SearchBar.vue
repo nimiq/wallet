@@ -22,7 +22,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .search-bar {
     display: flex;
     flex-direction: row;

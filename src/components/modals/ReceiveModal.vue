@@ -27,7 +27,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .receive-modal {
     position: relative;
     width: 52.5rem !important; /* 420px */

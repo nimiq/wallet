@@ -21,7 +21,7 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .footer {
     margin: 4rem auto 2rem  auto;
     padding: auto 1.5rem;

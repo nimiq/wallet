@@ -108,7 +108,7 @@ export default createComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .balance-distribution {
     display: flex;
     flex-direction: row;

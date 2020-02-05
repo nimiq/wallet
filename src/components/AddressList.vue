@@ -11,8 +11,7 @@
             <div v-if="addressInfo.balance !== null" class="balances">
                 <Amount
                     class="crypto-balance"
-                    :amount="addressInfo.balance"
-                    :maxDecimals="2"/>
+                    :amount="addressInfo.balance"/>
                 <FiatAmount
                     class="fiat-balance"
                     :amount="addressInfo.balance"/>
@@ -27,8 +26,10 @@
 import { createComponent } from '@vue/composition-api'
 import { useAddressStore } from '../stores/Address'
 
-import { Identicon, Amount } from '@nimiq/vue-components';
+import { Identicon } from '@nimiq/vue-components';
+import Amount from './Amount.vue';
 import FiatAmount from './FiatAmount.vue';
+import { useSettingsStore } from '../stores/Settings';
 
 export default createComponent({
     setup() {

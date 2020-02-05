@@ -1,10 +1,12 @@
 import { useTransactionsStore, Transaction } from './stores/Transactions'
 import { useAddressStore, AddressState } from './stores/Address'
 import { useAccountStore, AccountState } from './stores/Account'
+import { useSettingsStore, SettingsState } from './stores/Settings';
 
 const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions'
 const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts'
 const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses'
+const SETTINGS_STORAGE_KEY = 'safe-next_settings'
 
 export function initStorage() {
     /**
@@ -62,4 +64,19 @@ export function initStorage() {
     addressStore.subscribe(() => {
         localStorage.setItem(ADDRESSINFOS_STORAGE_KEY, JSON.stringify(addressStore.state))
     })
+
+    /**
+     * SETTINGS
+     */
+    const settingsStore = useSettingsStore();
+    // Load user settings from storage
+    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (storedSettings) {
+        const settingsState: SettingsState = JSON.parse(storedSettings);
+        settingsStore.patch(settingsState);
+    }
+    settingsStore.subscribe(() => {
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsStore.state))
+    })
+
 }

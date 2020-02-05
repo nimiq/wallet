@@ -41,6 +41,10 @@ export function loadLanguageAsync(lang: string) {
   );
 }
 
+export function validLanguageCode(code: string) {
+    return true;
+}
+
 export function autodetectLanguage() {
   const langRaw = window.navigator.language;
   const langParts = langRaw.replace('-', '_').split('_');

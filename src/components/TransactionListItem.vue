@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" :maxDecimals="2"/>
+            <Amount :amount="transaction.value" />
             <FiatAmount :amount="transaction.value"/>
         </div>
     </div>
@@ -34,15 +34,15 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api'
-import { CashlinkIcon } from '@nimiq/vue-components';
+import { CashlinkIcon, Identicon } from '@nimiq/vue-components';
 import { useAddressStore } from '../stores/Address'
 import { Transaction } from '../stores/Transactions'
 import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 
-import { Identicon, Amount } from '@nimiq/vue-components'
 import FiatAmount from '@/components/FiatAmount.vue'
+import Amount from './Amount.vue';
 
 export default createComponent({
     props: {

@@ -15,9 +15,21 @@ export enum AddressType {
 
 export type AddressInfo = {
     address: string,
-    type: AddressType,
     label: string,
     balance: number | null,
+} & (BasicAddressInfo | ContractAddressInfo);
+
+export type BasicAddressInfo = {
+    type: AddressType.BASIC,
+}
+
+export type ContractAddressInfo = {
+    type: AddressType.VESTING,
+    owner: string,
+    start: number,
+    stepAmount: number,
+    stepBlocks: number,
+    totalAmount: number,
 }
 
 export const useAddressStore = createStore({
@@ -68,6 +80,7 @@ export const useAddressStore = createStore({
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
         patchAddress(address: string, patch: Partial<AddressInfo>) {
+            // @ts-ignore
             this.state.addressInfos[address] = {
                 ...this.state.addressInfos[address],
                 ...patch,

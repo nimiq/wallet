@@ -27,7 +27,7 @@ export default createComponent({
             fiatCurrency,
         }
     },
-    components: { VueComponentsFiatAmount }
+    components: { VueComponentsFiatAmount } as any,
 })
 </script>
 

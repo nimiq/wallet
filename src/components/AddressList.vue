@@ -7,14 +7,15 @@
             @click="selectAddress(addressInfo.address)"
         >
             <div class="identicon-wrapper">
-                <Identicon :address="addressInfo.address" class=""/>
+                <Identicon :address="addressInfo.address"/>
                 <ClockIcon v-if="addressInfo.type === AddressType.VESTING"/>
             </div>
             <span class="label">{{ addressInfo.label }}</span>
             <div v-if="addressInfo.balance !== null" class="balances">
-                <Amount
-                    class="crypto-balance"
-                    :amount="addressInfo.balance"/>
+                <span class="crypto-balance">
+                    <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
+                    <Amount :amount="addressInfo.balance"/>
+                </span>
                 <FiatAmount
                     class="fiat-balance"
                     :amount="addressInfo.balance"/>
@@ -26,30 +27,49 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
-import { Identicon } from '@nimiq/vue-components';
+import { createComponent, computed } from '@vue/composition-api'
+import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
-import { useAddressStore, AddressType } from '../stores/Address'
+import { useAddressStore, AddressType, AddressInfo } from '../stores/Address'
+import { useNetworkStore } from '../stores/Network';
 import Amount from './Amount.vue';
 import FiatAmount from './FiatAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
 
 export default createComponent({
     setup() {
-        const { addressInfos, activeAddress, selectAddress } = useAddressStore()
+        const { addressInfos, activeAddress, selectAddress } = useAddressStore();
+        const { state: network$ } = useNetworkStore();
+
+        function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
+            if (addressInfo.type !== AddressType.VESTING) return false;
+
+            const numberVestingSteps = Math.ceil(addressInfo.totalAmount / addressInfo.stepAmount);
+
+            const passedBlocks = Math.max(0, height - addressInfo.start);
+            const passedSteps = Math.floor(passedBlocks / addressInfo.stepBlocks);
+
+            return passedSteps < numberVestingSteps;
+        }
+
+        const processedAddressInfos = computed(() => addressInfos.value.map(addressInfo => ({
+            ...addressInfo,
+            hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
+        })));
 
         return {
             selectAddress,
-            addressInfos,
+            addressInfos: processedAddressInfos,
             activeAddress,
             AddressType,
-        }
+        };
     },
     components: {
         Identicon,
         Amount,
         FiatAmount,
         ClockIcon,
+        LockLockedIcon,
     } as any,
 })
 </script>
@@ -108,17 +128,17 @@ export default createComponent({
 
     .identicon-wrapper {
         position: relative;
-    }
 
-    .identicon-wrapper svg {
-        position: absolute;
-        right: -1rem;
-        bottom: -0.5rem;
-        background: white;
-        padding: 0.375rem;
-        border-radius: 50%;
-        color: rgba(31, 35, 72, 0.8);
-        box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+        svg {
+            position: absolute;
+            right: -1rem;
+            bottom: -0.5rem;
+            padding: 0.375rem;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+            color: rgba(31, 35, 72, 0.7);
+        }
     }
 
     .label {
@@ -138,6 +158,10 @@ export default createComponent({
         display: block;
         font-weight: bold;
         transition: color 300ms var(--nimiq-ease);
+
+        .nq-icon {
+            font-size: 1.75rem;
+        }
     }
 
     .address-button:hover,

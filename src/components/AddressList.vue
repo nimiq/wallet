@@ -64,7 +64,10 @@ export default createComponent({
         padding: 2rem;
         margin: #{$btnMargin}rem 0;
         border-radius: 0.5rem;
+        opacity: 0.6;
         z-index: 1;
+
+        transition: opacity 500ms var(--nimiq-ease);
     }
 
     .active-box {
@@ -116,10 +119,16 @@ export default createComponent({
         transition: color 300ms var(--nimiq-ease);
     }
 
+    .address-button:hover,
+    .address-button:focus,
+    .address-button.active {
+        opacity: 1;
+    }
+
     .address-button:hover .crypto-balance,
     .address-button:focus .crypto-balance,
     .address-button.active .crypto-balance {
-        color: var(--nimiq-green);
+        color: var(--nimiq-light-blue);
     }
 
     .fiat-balance {

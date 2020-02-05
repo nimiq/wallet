@@ -32,9 +32,12 @@ export default createComponent({
 
 <style lang="scss">
 .wallet-balance {
+    .nq-label {
+        margin-bottom: 0.5rem;
+    }
+
     .fiat-amount {
         font-size: 8rem;
-        margin-bottom: 1rem;
     }
 }
 </style>

@@ -104,7 +104,7 @@ export default createComponent({
         Identicon,
         Tooltip,
         TransferIcon,
-    }
+    } as any,
 });
 </script>
 
@@ -181,7 +181,7 @@ export default createComponent({
                 width: 100%;
                 align-self: center;
                 border-radius: .5rem;
-                height: 1rem;
+                height: 0.5rem;
             }
         }
 

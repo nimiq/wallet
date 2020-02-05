@@ -6,7 +6,10 @@
             :class="{'active': activeAddress === addressInfo.address}"
             @click="selectAddress(addressInfo.address)"
         >
-            <Identicon :address="addressInfo.address" class=""/>
+            <div class="identicon-wrapper">
+                <Identicon :address="addressInfo.address" class=""/>
+                <ClockIcon v-if="addressInfo.type === AddressType.VESTING"/>
+            </div>
             <span class="label">{{ addressInfo.label }}</span>
             <div v-if="addressInfo.balance !== null" class="balances">
                 <Amount
@@ -24,12 +27,12 @@
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api'
-import { useAddressStore } from '../stores/Address'
-
 import { Identicon } from '@nimiq/vue-components';
+
+import { useAddressStore, AddressType } from '../stores/Address'
 import Amount from './Amount.vue';
 import FiatAmount from './FiatAmount.vue';
-import { useSettingsStore } from '../stores/Settings';
+import ClockIcon from './icons/ClockIcon.vue';
 
 export default createComponent({
     setup() {
@@ -39,12 +42,14 @@ export default createComponent({
             selectAddress,
             addressInfos,
             activeAddress,
+            AddressType,
         }
     },
     components: {
         Identicon,
         Amount,
         FiatAmount,
+        ClockIcon,
     } as any,
 })
 </script>
@@ -99,6 +104,21 @@ export default createComponent({
         width: 6rem !important;
         height: 6rem;
         flex-shrink: 0;
+    }
+
+    .identicon-wrapper {
+        position: relative;
+    }
+
+    .identicon-wrapper svg {
+        position: absolute;
+        right: -1rem;
+        bottom: -0.5rem;
+        background: white;
+        padding: 0.375rem;
+        border-radius: 50%;
+        color: rgba(31, 35, 72, 0.8);
+        box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
     }
 
     .label {

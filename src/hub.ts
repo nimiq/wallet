@@ -29,6 +29,19 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             });
         }
 
+        // For vesting contract testing
+        // FIXME: Remove when done.
+        if (account.accountId === 'c32d372d98b0') account.contracts.push({
+            address: 'NQ17 9A8N TXK7 S4KC CRJP Q46Q VPY7 32KL QPYD',
+            label: 'Vesting Contract',
+            type: AddressType.VESTING,
+            owner: 'NQ26 8MMT 8317 VD0D NNKE 3NVA GBVE UY1E 9YDF',
+            start: 1,
+            stepAmount: 50000e5,
+            stepBlocks: 800000,
+            totalAmount: 100000e5,
+        });
+
         for (const contract of account.contracts) {
             addresses.push(contract.address);
 

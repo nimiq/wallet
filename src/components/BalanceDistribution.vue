@@ -165,6 +165,7 @@ export default createComponent({
                     width: 4rem;
                     height: auto;
                     margin-right: 1rem;
+                    flex-shrink: 0;
                 }
 
                 .nq-text-s {

@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { Currencies } from './Fiat';
-import { validLanguageCode } from '../i18n/i18n-setup';
+import { autodetectLanguage } from '../i18n/i18n-setup';
 
 export enum ColorMode {
     default = 'default',
@@ -19,7 +19,7 @@ export const useSettingsStore = createStore({
     state: (): SettingsState => ({
         showDecimals: false,
         currency: Currencies.USD,
-        language: 'en',
+        language: autodetectLanguage(),
         colorMode: ColorMode.default,
     }),
     getters: {
@@ -38,9 +38,7 @@ export const useSettingsStore = createStore({
             }
         },
         setLanguage(language: string) {
-            if (validLanguageCode(language)) {
-                this.state.language = language;
-            }
+            this.state.language = language;
         },
         setColorMode(colorMode: ColorMode) {
             if (Object.values(ColorMode).includes(colorMode)) {

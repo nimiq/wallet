@@ -19,9 +19,15 @@ import { createComponent } from '@vue/composition-api';
 import Sidebar from './components/layouts/Sidebar.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
+import { useSettingsStore } from './stores/Settings';
+import { loadLanguageAsync } from './i18n/i18n-setup';
 
 export default createComponent({
     name: 'app',
+    setup() {
+        const { language } = useSettingsStore();
+        loadLanguageAsync(language.value);
+    },
     components: {
         Sidebar,
         AccountOverview,

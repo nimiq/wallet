@@ -19,7 +19,7 @@
                 </div>
                 <div class="flex-row">
                     <label for="language">Language</label>
-                    <select name="language" id="language" @input="setLanguage($event.target.value); loadLanguageAsync($event.target.value)">
+                    <select name="language" id="language" @input="setLanguage($event.target.value)">
                         <option value="de" :selected="language === 'de'">Deutsch</option>
                         <option value="en" :selected="language === 'en'">English</option>
                         <option value="fr" :selected="language === 'fr'">Français</option>
@@ -49,7 +49,6 @@ import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-compone
 import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { Currencies } from '../../stores/Fiat';
-import { loadLanguageAsync } from '../../i18n/i18n-setup';
 
 export default createComponent({
     name: 'settings-modal',
@@ -63,7 +62,6 @@ export default createComponent({
             ...settings,
             ColorMode,
             Currencies,
-            loadLanguageAsync,
         };
     },
     components: {

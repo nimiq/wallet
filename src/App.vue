@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, watch } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
@@ -26,7 +26,7 @@ export default createComponent({
     name: 'app',
     setup() {
         const { language } = useSettingsStore();
-        loadLanguageAsync(language.value);
+        watch(language, () => loadLanguageAsync(language.value));
     },
     components: {
         Sidebar,

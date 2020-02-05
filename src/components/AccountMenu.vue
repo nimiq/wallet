@@ -15,11 +15,13 @@
         <div class="menu flex-column">
             <div class="current-account">
                 <AccountMenuItem :id="activeAccountId"/>
-                <button v-if="canExportFile" class="item reset" @click="backup(activeAccountId, { fileOnly: true })">
+                <button v-if="canExportFile" class="item reset flex-row" @click="backup(activeAccountId, { fileOnly: true })">
                     {{ $t('Save Login File') }}
+                    <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
                 </button>
-                <button v-if="canExportWords" class="item reset" @click="backup(activeAccountId, { wordsOnly: true })">
+                <button v-if="canExportWords" class="item reset flex-row" @click="backup(activeAccountId, { wordsOnly: true })">
                     {{ $t('Create Backup') }}
+                    <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
                 </button>
                 <button class="item reset" @click="rename(activeAccountId)">
                     {{ $t('Rename') }}
@@ -52,7 +54,7 @@
 
 <script lang="ts">
 import { createComponent, computed, ref, onMounted } from '@vue/composition-api'
-import { ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 // @ts-ignore Could not find a declaration file for module 'vue-click-outside'.
 import VueClickOutside from 'vue-click-outside';
 // @ts-ignore Could not find a declaration file for module 'v-click-outside'.
@@ -116,6 +118,7 @@ export default createComponent({
     components: {
         LoginFileIcon,
         ArrowRightSmallIcon,
+        AlertTriangleIcon,
         AccountMenuItem,
     },
     directives: {
@@ -199,8 +202,11 @@ export default createComponent({
     margin-bottom: 2rem;
 }
 
+.current-account .account-menu-item ::v-deep .nq-icon {
+    display: none;
+}
+
 .menu .item {
-    display: block;
     line-height: 3.75rem;
     width: 100%;
     padding: 0.25rem 1rem;
@@ -215,6 +221,11 @@ export default createComponent({
         opacity 0.2s var(--nimiq-ease),
         box-shadow 0.2s var(--nimiq-ease),
         color 0.2s var(--nimiq-ease);
+}
+
+.menu .item.flex-row {
+    justify-content: space-between;
+    align-items: center;
 }
 
 .menu .item:disabled {
@@ -243,13 +254,15 @@ export default createComponent({
     color: white;
 }
 
-.menu .item .nq-icon {
-    vertical-align: middle;
-    margin-bottom: .25rem;
-    font-size: 1.5rem;
+.menu .item .nq-icon.alert {
+    font-size: 2.5rem;
+    color: var(--nimiq-orange);
 }
 
 .menu .logout .nq-icon {
+    vertical-align: middle;
+    margin-bottom: .25rem;
+    font-size: 1.5rem;
     margin-right: 1rem;
 }
 

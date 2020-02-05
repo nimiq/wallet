@@ -9,6 +9,7 @@ import './registerServiceWorker';
 import { initStorage } from './storage';
 import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
+import { useFiatStore } from './stores/Fiat';
 import router from './router';
 import { i18n, autodetectLanguage } from '@/i18n/i18n-setup';
 
@@ -35,6 +36,8 @@ Vue.use(VueVirtualScroller);
 
 initStorage();
 syncFromHub();
+useFiatStore().updateExchangeRates();
+setInterval(() => useFiatStore().updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
 
 new Vue({
   router,

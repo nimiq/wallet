@@ -3,12 +3,18 @@ import { getExchangeRates } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 
+export type FiatState = {
+    currency: FiatCurrency,
+    timestamp: number,
+    exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
+};
+
 export const useFiatStore = createStore({
     id: 'fiat',
-    state: () => ({
+    state: (): FiatState => ({
         currency: FiatCurrency.EUR,
         timestamp: 0,
-        exchangeRates: {} as { [crypto: string]: { [fiat: string]: number | undefined } },
+        exchangeRates: {},
     }),
     getters: {
         currency: (state) => state.currency,

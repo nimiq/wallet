@@ -3,7 +3,7 @@ import { useAddressStore, AddressState } from './stores/Address';
 import { useAccountStore, AccountState } from './stores/Account';
 import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore, ContactsState } from './stores/Contacts';
-import { useFiatStore } from './stores/Fiat';
+import { useFiatStore, FiatState } from './stores/Fiat';
 
 const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions';
 const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts';
@@ -102,7 +102,7 @@ export function initStorage() {
     const fiatStore = useFiatStore();
     const storedRates = localStorage.getItem(FIAT_STORAGE_KEY);
     if (storedRates) {
-        const fiatState = JSON.parse(storedRates);
+        const fiatState: FiatState = JSON.parse(storedRates);
         if (fiatState.timestamp > fiatStore.state.timestamp) {
             fiatStore.patch(fiatState);
         }

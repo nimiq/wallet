@@ -1,8 +1,8 @@
 <template>
-    <div class="price-chart flex-column">
+    <div v-if="history && history.length" class="price-chart flex-column">
         <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none">
             <path
-                :d="`${path}`"
+                :d="path"
                 fill="none"
                 stroke="currentColor"
                 opacity="0.5"
@@ -17,7 +17,7 @@
                 <!-- TODO: Adapt FiatAmount for this use case and use it here -->
                 <!-- FiatAmount cannot display more than 2 decimals, which is necessary for NIM. -->
                 <!-- <FiatAmount :amount="endPrice" :currency="fiatCurrency"/> -->
-                <div>{{ endPrice }} {{ fiatSymbol }}</div>
+                <div>{{ endPrice.toFixed(4) }} {{ fiatSymbol }}</div>
                 <div class="change" :class="priceChangeClass">{{ (priceChange * 100).toFixed(1) }}%</div>
             </div>
         </div>
@@ -25,9 +25,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, ref, computed } from '@vue/composition-api';
-import { CurrencyInfo } from '@nimiq/utils';
+import { createComponent, reactive, computed } from '@vue/composition-api';
+import { CurrencyInfo, getHistoricExchangeRatesByRange } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
+import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
 export default createComponent({
@@ -36,28 +37,30 @@ export default createComponent({
         currency: {
             type: String,
             required: true,
+            validator: (currency) => Object.values(CryptoCurrency).includes(currency),
         },
     },
-    setup(props) {
+    setup(props: any) {
         const { state: fiat$ } = useFiatStore();
 
-        // FIXME: Get live data
-        const priceHistories = reactive<{[currency: string]: number[]}>({
-            'nim': [/*0.000402, 0.000418, 0.000454, */0.000465, 0.000464, 0.000509, 0.000573, 0.000572, 0.000570, 0.000570
-],
-            'btc': [/*8367.85, 8596.83, 8909.82, */9358.59, 9316.63, 9508.99, 9350.53, 9392.88, 9344.37, 9293.52],
-        });
-        const prices = computed(() => priceHistories[props.currency]);
+        const priceHistories = reactive<{[currency: string]: Array<[/*timestamp*/number, /*price*/number]>}>(
+            Object.values(CryptoCurrency).reduce((history, currency) => ({ ...history, [currency]: [] }), {}),
+        );
+        const history = computed(() => priceHistories[props.currency]);
 
         // Calculate price change
-        const startPrice = computed(() => prices.value[0]);
-        const endPrice = computed(() => prices.value[prices.value.length - 1]);
-        const priceChange = computed(() => (endPrice.value - startPrice.value) / startPrice.value);
-        const priceChangeClass = computed(() => priceChange.value > 0
-            ? 'positive'
-            : priceChange.value < 0
-                ? 'negative'
-                : 'none');
+        const startPrice = computed(() => history.value?.[0]?.[1]);
+        const endPrice = computed(() => history.value?.[history.value.length - 1]?.[1]);
+        const priceChange = computed(() => endPrice.value !== undefined && startPrice.value !== undefined
+            ? (endPrice.value - startPrice.value) / startPrice.value
+            : undefined);
+        const priceChangeClass = computed(() => priceChange.value === undefined
+            ? 'none'
+            : priceChange.value > 0
+                ? 'positive'
+                : priceChange.value < 0
+                    ? 'negative'
+                    : 'none');
 
         // Calculate SVG size
         const strokeWidth = 2;
@@ -68,29 +71,34 @@ export default createComponent({
 
         // Calculate path
         const path = computed(() => {
-            // Normalize data points to the SVG's Y axis
-            const min = Math.min.apply(Math, prices.value as number[]);
-            const max = Math.max.apply(Math, prices.value as number[]);
-            const spread = max - min;
-            const scale = height / spread;
+            if (!history.value || history.value.length < 2) return '';
 
-            const normalizedSeries = prices.value.map(value => (value - min) * scale);
+            // Normalize data points to the SVG's X and Y axis
+            const minTimestamp = history.value[0][0];
+            const maxTimestamp = history.value[history.value.length - 1][0];
+            const xScaleFactor = width / (maxTimestamp - minTimestamp);
+            const [minPrice, maxPrice] = history.value.reduce((result, [timestamp, price]) => {
+                // Could be written as one-liner by destructuring + constructing of new array but is more wasteful
+                result[0] = Math.min(result[0], price);
+                result[1] = Math.max(result[1], price);
+                return result;
+            }, [Number.MAX_VALUE, Number.MIN_VALUE]);
+            const yScaleFactor = height / (maxPrice - minPrice || 1);
 
-            // Invert values (SVG coordinate system has 0 on top)
-            const invertedSeries = normalizedSeries.map(value => -value + height);
+            const dataPoints = history.value.map(([timestamp, price]) => [
+                (timestamp - minTimestamp) * xScaleFactor,
+                height - (price - minPrice) * yScaleFactor, // subtracted from height as in SVG 0 on y-axis is on top
+            ]);
 
             // Draw
-            // TODO: Apply bezier curves to make the path smoother
-            const stepWidth = width / (prices.value.length - 1);
-
             const lineFromIndexToIndex = (startIndex: number, endIndex: number) => {
                 if (startIndex >= 0 && endIndex >= 0
-                    && startIndex < invertedSeries.length && endIndex < invertedSeries.length) {
-                    const y = invertedSeries[startIndex] - invertedSeries[endIndex];
-                    const x = (endIndex - startIndex) * stepWidth;
+                    && startIndex < dataPoints.length && endIndex < dataPoints.length) {
+                    const x = dataPoints[startIndex][0] - dataPoints[endIndex][0];
+                    const y = dataPoints[startIndex][1] - dataPoints[endIndex][1];
 
                     return {
-                        length: Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
+                        length: Math.sqrt(x ** 2 + y ** 2),
                         angle: Math.atan2(y, x),
                     };
                 }
@@ -99,28 +107,46 @@ export default createComponent({
 
             const smoothingFactor = .2;
 
-            const controlPoint = (current: number, previous: number, next: number, end: boolean = false): {x: number, y: number}=> {
+            const controlPoint = (
+                current: number,
+                previous: number,
+                next: number,
+                end: boolean = false,
+            ): {x: number, y: number}=> {
                 if (previous < 0) previous = current;
-                if (next >= invertedSeries.length) next = current;
+                if (next >= dataPoints.length) next = current;
 
                 const line = lineFromIndexToIndex(previous, next);
 
                 return {
-                    x: current * stepWidth + Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
-                    y: invertedSeries[current] - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
+                    x: dataPoints[current][0]
+                        + Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
+                    y: dataPoints[current][1]
+                        - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
                 };
             }
 
-            return `M 0 ${invertedSeries[0]} ${invertedSeries.map((value, index) => {
-                if (index === 0) return `M 0 ${invertedSeries[0]}`;
+            return `${dataPoints.map(([x, y], index) => {
+                if (index === 0) return `M 0 ${y}`;
                 const {x: x1, y: y1} = controlPoint(index - 1, index - 2, index);
                 const {x: x2, y: y2} = controlPoint(index, index - 1, index + 1, true);
                 return `C `
-                    + `${x1} ${y1}, ${x2} ${y2}, ${index * stepWidth} ${value}`;
+                    + `${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
             }).join(' ')}`;
         })
 
         const fiatSymbol = computed(() => new CurrencyInfo(fiat$.currency).symbol);
+
+        // TODO has to react to fiat or crypto currency change
+        const now = Date.now();
+        getHistoricExchangeRatesByRange(
+            props.currency as CryptoCurrency,
+            fiat$.currency,
+            now - 7 * 24 * 60 * 60 * 1000, // one week before
+            now,
+        ).then(
+            (history) => priceHistories[props.currency] = history,
+        );
 
         return {
             strokeWidth,
@@ -128,6 +154,7 @@ export default createComponent({
             path,
             endPrice,
             fiatSymbol,
+            history,
             priceChange,
             priceChangeClass,
         }

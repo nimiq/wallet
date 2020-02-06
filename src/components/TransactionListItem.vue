@@ -45,6 +45,7 @@ import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 import Amount from './Amount.vue';
+import { useContactsStore } from '../stores/Contacts';
 
 export default createComponent({
     props: {
@@ -57,7 +58,8 @@ export default createComponent({
         // Only for typing of the prop
         const tx = computed(() => props.transaction as Transaction);
 
-        const { activeAddress, state: addresses$ } = useAddressStore()
+        const { activeAddress, state: addresses$ } = useAddressStore();
+        const { label } = useContactsStore();
 
         const isIncoming = computed(() => tx.value.recipient === activeAddress.value)
 
@@ -66,9 +68,9 @@ export default createComponent({
         const peerLabel = computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value]
-            if (ownedAddressInfo) return ownedAddressInfo.label
-
-            // TODO: Search contacts
+            if (ownedAddressInfo) return ownedAddressInfo.label;
+            // search contacts
+            if (label.value(peerAddress.value)) return label.value(peerAddress.value);
 
             // Search global address book
             const globalLabel = AddressBook.getLabel(peerAddress.value)

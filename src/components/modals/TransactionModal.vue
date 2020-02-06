@@ -8,14 +8,21 @@
                     <ArrowRightSmallIcon />
                     <Identicon :address="recipient" />
                 </div>
+                <Amount :amount="value" />
                 <div class="flex-column">
                     <div class="flex-row">
                         <label class="nq-label">from</label>
-                        <div class="nq-label">{{sender}}</div>
+                        <div class="flex-column">
+                            <Contact :address="sender" />
+                            <div class="nq-label">{{sender}}</div>
+                        </div>
                     </div>
                     <div class="flex-row">
                         <label class="nq-label">to</label>
-                        <div class="nq-label">{{recipient}}</div>
+                        <div class="flex-column">
+                            <Contact :address="recipient" />
+                            <div class="nq-label">{{recipient}}</div>
+                        </div>
                     </div>
                     <div class="flex-row">
                         <label class="nq-label">date</label>
@@ -34,7 +41,16 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
-import { ArrowRightSmallIcon, CloseButton, Identicon, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
+import {
+    ArrowRightSmallIcon,
+    CloseButton,
+    Identicon,
+    PageBody,
+    PageHeader,
+    SmallPage
+} from '@nimiq/vue-components';
+import Amount from '../Amount.vue';
+import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
 
@@ -58,8 +74,10 @@ export default createComponent({
         };
     },
     components: {
+        Amount,
         ArrowRightSmallIcon,
         CloseButton,
+        Contact,
         Identicon,
         PageBody,
         PageHeader,
@@ -83,6 +101,10 @@ export default createComponent({
     .sender-recipient {
         align-items: center;
         justify-content: space-evenly;
+    }
+
+    .amount {
+        align-self: center;
     }
 
     label {

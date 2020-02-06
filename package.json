@@ -19,7 +19,7 @@
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.4.0",
     "@nimiq/style": "^0.7.6",
-    "@nimiq/utils": "^0.4.5",
+    "@nimiq/utils": "^0.4.6",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components.git#build/master",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.4.3",

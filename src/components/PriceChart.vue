@@ -41,8 +41,6 @@ export default createComponent({
         },
     },
     setup(props: any) {
-        const { state: fiat$ } = useFiatStore();
-
         const priceHistories = reactive<{[currency: string]: Array<[/*timestamp*/number, /*price*/number]>}>(
             Object.values(CryptoCurrency).reduce((history, currency) => ({ ...history, [currency]: [] }), {}),
         );
@@ -135,13 +133,14 @@ export default createComponent({
             }).join(' ')}`;
         })
 
-        const fiatSymbol = computed(() => new CurrencyInfo(fiat$.currency).symbol);
+        const fiatStore = useFiatStore();
+        const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
         // TODO has to react to fiat or crypto currency change
         const now = Date.now();
         getHistoricExchangeRatesByRange(
             props.currency as CryptoCurrency,
-            fiat$.currency,
+            fiatStore.currency.value,
             now - 7 * 24 * 60 * 60 * 1000, // one week before
             now,
         ).then(

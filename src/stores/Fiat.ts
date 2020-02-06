@@ -9,12 +9,11 @@ export const useFiatStore = createStore({
         currency: FiatCurrency.EUR,
         exchangeRates: {} as { [crypto: string]: { [fiat: string]: number | undefined } },
     }),
-    getters: {},
+    getters: {
+        currency: (state) => state.currency,
+        exchangeRates: (state) => state.exchangeRates,
+    },
     actions: {
-        // TODO This is likely not the way to do this. We would like the store to react whenever the currency changes
-        // in the state, not be forced to update the state only via an action. Additionally, there is currently a
-        // mutual dependency between the transaction store and the fiat store which should be avoided according to
-        // the pinia documentation.
         setCurrency(currency: FiatCurrency) {
             this.state.currency = currency;
             useTransactionsStore().calculateFiatAmounts();

@@ -35,7 +35,7 @@ export const useTransactionsStore = createStore({
 
         async calculateFiatAmounts() {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = useFiatStore().state.currency;
+            const fiatCurrency = useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && (!tx.fiatValue || !(fiatCurrency in tx.fiatValue)),
             );

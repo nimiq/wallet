@@ -18,12 +18,10 @@ export default createComponent({
         },
     },
     setup(props) {
-        const { state: fiat$ } = useFiatStore()
+        const fiatStore = useFiatStore();
 
-        const fiatCurrency = computed(() => fiat$.currency);
-        const exchangeRate = computed(() => fiat$.exchangeRates[CryptoCurrency.NIM]
-            ? fiat$.exchangeRates[CryptoCurrency.NIM][fiatCurrency.value]
-            : undefined);
+        const fiatCurrency = computed(() => fiatStore.currency.value);
+        const exchangeRate = computed(() => fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const fiatAmount = computed(() => exchangeRate.value !== undefined
             ? props.amount / 1e5 * exchangeRate.value
             : undefined

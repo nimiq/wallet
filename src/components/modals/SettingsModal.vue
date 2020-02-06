@@ -49,19 +49,24 @@ import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-compone
 import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
+import { useFiatStore } from '../../stores/Fiat';
 
 export default createComponent({
     name: 'settings-modal',
     setup() {
         const settings = useSettingsStore();
 
+        const {currency, setCurrency} = useFiatStore();
+
         const clearCache = () => ({});
 
         return {
             clearCache,
-            ...settings,
             ColorMode,
+            currency,
             FiatCurrency,
+            setCurrency,
+            ...settings,
         };
     },
     components: {

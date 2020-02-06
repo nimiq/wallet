@@ -1,14 +1,23 @@
 <template>
     <div class="transaction-list" ref="targetNode">
         <RecycleScroller
-            v-if="transactions.length"
+            v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
             :item-size="80"
             key-field="transactionHash"
             v-slot="{ item, index, active }"
             :buffer="200"
         >
-            <div class="list-element fadein" :style="{}">
+            <div class="list-element loading" v-if="item.loading">
+                <div class="date">
+                    <div class="placeholder"></div>
+                    <div class="placeholder"></div>
+                </div>
+                <div class="identicon placeholder">
+                </div>
+                <div class="data placeholder"></div>
+            </div>
+            <div class="list-element fadein" v-else>
                 <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
                 <TransactionListItem v-else :transaction="item"/>
             </div>
@@ -16,12 +25,8 @@
         <div v-else class="text-center my-12">
             <img :src="getImage()">
             <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
-            <!-- <div v-else-if="transactions.length >= 10" class="text-center my-6">
-                <span class="opacity-50">{{ $t('History is currently limited for performance.')}}</span>
-            </div> -->
         </div>
     </div>
-
 </template>
 
 <script lang="ts">
@@ -94,21 +99,28 @@ export default createComponent({
     setup(props, context) {
         const { activeAddress } = useAddressStore();
         const { state: transactions$ } = useTransactionsStore();
+        const { isFetchingTxHistory } = useNetworkStore();
 
+        let oldActiveAddress = activeAddress.value;
         const transactions: any = computed(() => {
             // filtering & sorting TX
             let transactions = Object.values(transactions$.transactions)
-                .filter(tx => tx.sender === activeAddress.value || tx.recipient === activeAddress.value)
+                .filter(tx => {
+                    let bool = (tx.sender === activeAddress.value || tx.recipient === activeAddress.value);
+
+                    if (props.searchString !== '') {
+                        bool = bool && tx.recipient.toUpperCase().includes(props.searchString.toUpperCase());
+                    }
+                    return bool;
+                })
                 .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
 
-            if (props.searchString !== '') {
-                transactions = transactions.filter((tx) =>
-                    tx.recipient.toUpperCase().includes(props.searchString.toUpperCase())
-                );
-
+            // loading transactions
+            if (!transactions.length && isFetchingTxHistory.value) {
+                return [...new Array(20)].map((item, index) => ({ transactionHash: index, loading: true }));
             }
 
-            // add month labels / handle "This month" TX & pending TX
+            // add month / "This month" / pending TX labels
             const transactionsWithMonths: any = [];
             if (!transactions.length) return transactionsWithMonths;
 
@@ -165,6 +177,7 @@ export default createComponent({
 
         const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg';
 
+        // listening for DOM changes for animations in the virtual scroll
         let targetNode: Ref<null | HTMLElement> = ref(null);
         (() => {
             'use strict';
@@ -177,23 +190,27 @@ export default createComponent({
 
                     if (mutation.target) {
                         if (
-                            mutation.type === 'childList' &&
-                            // !mutation.removedNodes.length &&
-                            !(mutation.target as HTMLElement).classList.contains('transaction-list') &&
-                            !(mutation.target as HTMLElement).classList.contains('resize-observer')
+                            mutation.type === 'childList'
+                            && !(mutation.target as HTMLElement).classList.contains('transaction-list')
+                            && !(mutation.target as HTMLElement).classList.contains('resize-observer')
                         ) {
                             element = getCloserElement(mutation.target, 'list-element');
                         } else if (
-                            mutation.type === 'characterData' &&
-                            mutation.target.parentNode
+                            mutation.type === 'characterData'
+                            && mutation.target.parentNode
                         ) {
                             element = getCloserElement(mutation.target.parentNode, 'list-element');
                         }
                     }
 
                     if (element) {
-                        element.classList.remove('fadein');
-                        requestAnimationFrame(() => element!.classList.add('fadein'));
+                        // console.log('animation on element: ', element);
+                        element!.style.visibility = 'hidden';
+                        requestAnimationFrame(() => {
+                            element!.classList.remove('fadein');
+                            element!.style.visibility = '';
+                            requestAnimationFrame(() => element!.classList.add('fadein'));
+                        });
                     }
                 }
             };
@@ -209,6 +226,7 @@ export default createComponent({
             getImage,
             loadingImageSrc,
             targetNode,
+            isFetchingTxHistory,
         }
     },
     components: {
@@ -243,11 +261,12 @@ export default createComponent({
 
     .list-element {
         position: relative;
-        overflow: hidden;
         background-color: white;
 
-        opacity: 0;
-        transform: translateX(-2rem);
+        &:not(.loading) {
+            opacity: 0;
+            transform: translateX(-2rem);
+        }
 
         &.fadein {
             opacity: 1;
@@ -268,6 +287,64 @@ export default createComponent({
                 }
             }
         }
+
+        &.loading {
+            cursor: progress;
+            height: 10rem;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            .placeholder {
+                background-color: var(--nimiq-gray);
+                border-radius: 1rem;
+
+                animation-name: loading;
+                animation-duration: 1s;
+                animation-iteration-count: infinite;
+
+                @keyframes loading {
+                    0% { opacity: 1 }
+                    50% { opacity: .6 }
+                    100% { opacity: 1 }
+                }
+            }
+
+            .date {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                margin-left: 1rem;
+                margin-right: 1.25rem;
+                height: 5rem;
+
+                .placeholder {
+                    height: 2rem;
+                    width: 3rem;
+                }
+            }
+            .identicon {
+                margin: 0 1rem;
+                height: 6rem;
+                width: 6rem;
+            }
+            .data {
+                flex-grow: 1;
+                margin: 0 1rem;
+                height: 22px;
+                align-self: flex-start;
+                max-width: 50%;
+            }
+        }
+    }
+
+    @for $i from 1 through 20 {
+        .vue-recycle-scroller__item-view:nth-child(#{$i}) .placeholder {
+            animation-delay: #{$i * 100}ms;
+        }
     }
 }
 
@@ -281,21 +358,8 @@ img {
     text-align: center;
 }
 
-.opacity-50 {
-    opacity: 0.5;
-}
-
 .opacity-75 {
     opacity: 0.75;
 }
 
-.my-6 {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-}
-
-.my-12 {
-    margin-top: 6rem;
-    margin-bottom: 6rem;
-}
 </style>

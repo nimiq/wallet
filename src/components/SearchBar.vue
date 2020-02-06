@@ -24,12 +24,37 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .search-bar {
+    $borderTickness: .125rem;
+    $borderColor: #1F2348; // nimiq blue
+
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
     width: 100%;
-    border-bottom: .125rem solid rgba(31, 35, 72, .1);
+    cursor: text;
+    border-bottom: $borderTickness solid rgba($borderColor, .1);
     padding-bottom: 1.5rem;
+
+    &:after {
+        content: '';
+        height: $borderTickness;
+        width: 100%;
+        background-color: rgba($borderColor, .3);
+        position: absolute;
+        bottom: -1px;
+        transform-origin: center;
+        transform: scaleX(0);
+        transition: transform 250ms var(--nimiq-ease);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        &:after {
+            transform: scaleX(1);
+        }
+    }
 
     svg {
         justify-self: left;

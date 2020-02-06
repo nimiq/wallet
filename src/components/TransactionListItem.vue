@@ -141,6 +141,8 @@ export default createComponent({
     border: 0;
     background: transparent;
     border-radius: .5rem;
+    cursor: pointer;
+    transition: background 500ms var(--nimiq-ease);
 
     &:hover {
         background: var(--nimiq-highlight-bg);

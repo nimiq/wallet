@@ -36,8 +36,21 @@ Vue.use(VueVirtualScroller);
 
 initStorage();
 syncFromHub();
-useFiatStore().updateExchangeRates();
-setInterval(() => useFiatStore().updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+const {timestamp, updateExchangeRates} = useFiatStore();
+if (timestamp.value < Date.now() - 2 * 60 * 1000 ) {
+    // update immediately as data is older than 2 minutes
+    updateExchangeRates();
+    setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+} else {
+    // delay data acquisition, since it is fairly new already
+    window.setTimeout(
+        () => {
+            updateExchangeRates();
+            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+        },
+        Date.now() - timestamp.value + 2 * 60 * 1000,
+    );
+}
 
 new Vue({
   router,

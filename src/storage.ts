@@ -3,12 +3,14 @@ import { useAddressStore, AddressState } from './stores/Address';
 import { useAccountStore, AccountState } from './stores/Account';
 import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore, ContactsState } from './stores/Contacts';
+import { useFiatStore } from './stores/Fiat';
 
 const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions';
 const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts';
 const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses';
 const SETTINGS_STORAGE_KEY = 'safe-next_settings';
 const CONTACTS_STORAGE_KEY = 'safe-next_contacts';
+const FIAT_STORAGE_KEY = 'safe-next_exchange-rates';
 
 export function initStorage() {
     /**
@@ -84,7 +86,6 @@ export function initStorage() {
      * Contacts
      */
     const contactsStore = useContactsStore();
-    // Load user settings from storage
     const storedContacts = localStorage.getItem(CONTACTS_STORAGE_KEY);
     if (storedContacts) {
         const contactsState: ContactsState = JSON.parse(storedContacts);
@@ -93,5 +94,20 @@ export function initStorage() {
     }
     contactsStore.subscribe(() => {
         localStorage.setItem(CONTACTS_STORAGE_KEY, JSON.stringify(contactsStore.state.contacts));
+    });
+
+    /**
+     * Fiat
+     */
+    const fiatStore = useFiatStore();
+    const storedRates = localStorage.getItem(FIAT_STORAGE_KEY);
+    if (storedRates) {
+        const fiatState = JSON.parse(storedRates);
+        if (fiatState.timestamp > fiatStore.state.timestamp) {
+            fiatStore.patch(fiatState);
+        }
+    }
+    fiatStore.subscribe(() => {
+        localStorage.setItem(FIAT_STORAGE_KEY, JSON.stringify(fiatStore.state));
     });
 }

@@ -89,6 +89,12 @@ export default createComponent({
             ]);
 
             // Draw
+
+            // how smooth the resulting curve will be.
+            const smoothingFactor = .2;
+            // how many data Points are supposed to not be drawn after every drawn one.
+            const skipDataPoints = Math.floor(dataPoints.length / 7 );
+
             const lineFromIndexToIndex = (startIndex: number, endIndex: number) => {
                 if (startIndex >= 0 && endIndex >= 0
                     && startIndex < dataPoints.length && endIndex < dataPoints.length) {
@@ -103,8 +109,6 @@ export default createComponent({
                 throw new Error(`Index out of bounds ${startIndex} ${endIndex}`);
             }
 
-            const smoothingFactor = .2;
-
             const controlPoint = (
                 current: number,
                 previous: number,
@@ -118,16 +122,18 @@ export default createComponent({
 
                 return {
                     x: dataPoints[current][0]
-                        + Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
+                        - Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
                     y: dataPoints[current][1]
                         - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
                 };
             }
 
+
             return `${dataPoints.map(([x, y], index) => {
                 if (index === 0) return `M 0 ${y}`;
-                const {x: x1, y: y1} = controlPoint(index - 1, index - 2, index);
-                const {x: x2, y: y2} = controlPoint(index, index - 1, index + 1, true);
+                if (index % skipDataPoints !== 0) return '';
+                const {x: x1, y: y1} = controlPoint(index - skipDataPoints, index - 2 * skipDataPoints, index);
+                const {x: x2, y: y2} = controlPoint(index, index - skipDataPoints, index + skipDataPoints, true);
                 return `C `
                     + `${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
             }).join(' ')}`;

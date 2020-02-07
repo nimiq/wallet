@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { createComponent, reactive, computed } from '@vue/composition-api';
-import { CurrencyInfo, getHistoricExchangeRatesByRange } from '@nimiq/utils';
+import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
@@ -92,8 +92,6 @@ export default createComponent({
 
             // how smooth the resulting curve will be.
             const smoothingFactor = .2;
-            // how many data Points are supposed to not be drawn after every drawn one.
-            const skipDataPoints = Math.floor(dataPoints.length / 7 );
 
             const lineFromIndexToIndex = (startIndex: number, endIndex: number) => {
                 if (startIndex >= 0 && endIndex >= 0
@@ -128,12 +126,10 @@ export default createComponent({
                 };
             }
 
-
             return `${dataPoints.map(([x, y], index) => {
                 if (index === 0) return `M 0 ${y}`;
-                if (index % skipDataPoints !== 0) return '';
-                const {x: x1, y: y1} = controlPoint(index - skipDataPoints, index - 2 * skipDataPoints, index);
-                const {x: x2, y: y2} = controlPoint(index, index - skipDataPoints, index + skipDataPoints, true);
+                const {x: x1, y: y1} = controlPoint(index - 1, index - 2, index);
+                const {x: x2, y: y2} = controlPoint(index, index - 1, index + 1, true);
                 return `C `
                     + `${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
             }).join(' ')}`;
@@ -143,14 +139,22 @@ export default createComponent({
         const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
         // TODO has to react to fiat or crypto currency change
-        const now = Date.now();
-        getHistoricExchangeRatesByRange(
+        const timespan = 7 * 24 * 60 * 60 * 1000; // one week
+        const sampleCount = 18;
+        const timestep = timespan / (sampleCount - 1);
+        const start = Date.now() - timespan;
+        const timestamps: number[] = [];
+        for (let i = 0; i < sampleCount; ++i) {
+            timestamps.push(start + i * timestep)
+        }
+
+        getHistoricExchangeRates(
             props.currency as CryptoCurrency,
             fiatStore.currency.value,
-            now - 7 * 24 * 60 * 60 * 1000, // one week before
-            now,
+            timestamps,
+            true, // disable minutely data
         ).then(
-            (history) => priceHistories[props.currency] = history,
+            (exchangeRates) => priceHistories[props.currency] = [...exchangeRates.entries()] as Array<[number, number]>,
         );
 
         return {

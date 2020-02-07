@@ -8475,7 +8475,7 @@ tough-cookie@~2.4.3:
 
 "translation-key-extractor@https://github.com/Yukiioz/translation-key-extractor.git#master":
   version "0.1.0"
-  resolved "https://github.com/Yukiioz/translation-key-extractor.git#5a73e8926545bd83339c7b157965fe3e81a62b9c"
+  resolved "https://github.com/Yukiioz/translation-key-extractor.git#e8a48f55585340b953609fcf62b530fc4cd53aae"
   dependencies:
     gettext-extractor "^3.5.2"
     glob "^7.1.6"

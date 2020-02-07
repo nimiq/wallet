@@ -1,21 +1,18 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import messages from "@/i18n/dictionary.pot";
 
 Vue.use(VueI18n);
 
 const DEFAULT_LANGUAGE = 'en';
+const loadedLanguages: string[] = []; // our default language that is preloaded, if any
 
 export const i18n = new VueI18n({
   locale: DEFAULT_LANGUAGE, // set locale (2 letters format: 'en')
   fallbackLocale: DEFAULT_LANGUAGE, // fallback locale if no translation found
-  messages: { [DEFAULT_LANGUAGE]: messages }, // set locale messages
   silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
-const loadedLanguages = [DEFAULT_LANGUAGE]; // our default language that is preloaded
-
-function setI18nLanguage (lang: string) {
+function setI18nLanguage(lang: string) {
   i18n.locale = lang;
   return lang;
 }

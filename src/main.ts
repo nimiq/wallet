@@ -11,7 +11,7 @@ import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { useFiatStore } from './stores/Fiat';
 import router from './router';
-import { i18n, autodetectLanguage } from '@/i18n/i18n-setup';
+import { i18n } from '@/i18n/i18n-setup';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';

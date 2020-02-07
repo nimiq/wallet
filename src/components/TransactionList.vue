@@ -17,7 +17,7 @@
                 </div>
                 <div class="data placeholder"></div>
             </div>
-            <div class="list-element fadein" v-else>
+            <div class="list-element" v-else>
                 <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
                 <TransactionListItem v-else :transaction="item"/>
             </div>
@@ -182,6 +182,10 @@ export default createComponent({
         (() => {
             'use strict';
             const config = { characterData: true, childList: true, subtree: true };
+            const onAnimationEnd = (e: any) => {
+                e.target!.removeEventListener('animationend', onAnimationEnd);
+                e.target!.classList.remove('fadein');
+            };
             const callback = async function(mutationsList: MutationRecord[], observer: MutationObserver) {
                 if (!transactions.value.length) return;
 
@@ -204,13 +208,8 @@ export default createComponent({
                     }
 
                     if (element) {
-                        // console.log('animation on element: ', element);
-                        element!.style.visibility = 'hidden';
-                        requestAnimationFrame(() => {
-                            element!.classList.remove('fadein');
-                            element!.style.visibility = '';
-                            requestAnimationFrame(() => element!.classList.add('fadein'));
-                        });
+                        element.classList.add('fadein');
+                        element.addEventListener('animationend', onAnimationEnd);
                     }
                 }
             };
@@ -257,21 +256,38 @@ export default createComponent({
 
     .vue-recycle-scroller {
         height: 100%;
+        @media (min-width: 426px) {
+            $nimiqBlue: #1f2348;
+
+            /* width */
+            &::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            /* Track */
+            &::-webkit-scrollbar-track {
+                background: rgba($nimiqBlue, 0.2);
+            }
+
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+                background: rgba($nimiqBlue, 0.6);
+                border-radius: 6px;
+            }
+
+            /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+                background: rgba($nimiqBlue, 0.8);
+            }
+        }
+
     }
 
     .list-element {
         position: relative;
         background-color: white;
 
-        &:not(.loading) {
-            opacity: 0;
-            transform: translateX(-2rem);
-        }
-
         &.fadein {
-            opacity: 1;
-            transform: translateX(0);
-
             animation-name: fadein;
             animation-duration: 250ms;
             animation-iteration-count: 1;
@@ -307,7 +323,7 @@ export default createComponent({
 
                 @keyframes loading {
                     0% { opacity: 1 }
-                    50% { opacity: .6 }
+                    50% { opacity: .5 }
                     100% { opacity: 1 }
                 }
             }

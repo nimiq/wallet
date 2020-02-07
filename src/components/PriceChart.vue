@@ -25,7 +25,8 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from '@vue/composition-api';
+import Vue from 'vue';
+import { createComponent, computed, ref, watch } from '@vue/composition-api';
 import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
@@ -41,14 +42,11 @@ export default createComponent({
         },
     },
     setup(props: any) {
-        const priceHistories = reactive<{[currency: string]: Array<[/*timestamp*/number, /*price*/number]>}>(
-            Object.values(CryptoCurrency).reduce((history, currency) => ({ ...history, [currency]: [] }), {}),
-        );
-        const history = computed(() => priceHistories[props.currency]);
+        const history = ref<Array<[/*timestamp*/number, /*price*/number]>>([]);
 
         // Calculate price change
-        const startPrice = computed(() => history.value?.[0]?.[1]);
-        const endPrice = computed(() => history.value?.[history.value.length - 1]?.[1]);
+        const startPrice = computed(() => history.value[0]?.[1]);
+        const endPrice = computed(() => history.value[history.value.length - 1]?.[1]);
         const priceChange = computed(() => endPrice.value !== undefined && startPrice.value !== undefined
             ? (endPrice.value - startPrice.value) / startPrice.value
             : undefined);
@@ -69,7 +67,7 @@ export default createComponent({
 
         // Calculate path
         const path = computed(() => {
-            if (!history.value || history.value.length < 2) return '';
+            if (history.value.length < 2) return '';
 
             // Normalize data points to the SVG's X and Y axis
             const minTimestamp = history.value[0][0];
@@ -138,24 +136,31 @@ export default createComponent({
         const fiatStore = useFiatStore();
         const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
-        // TODO has to react to fiat or crypto currency change
-        const timespan = 7 * 24 * 60 * 60 * 1000; // one week
-        const sampleCount = 18;
-        const timestep = timespan / (sampleCount - 1);
-        const start = Date.now() - timespan;
-        const timestamps: number[] = [];
-        for (let i = 0; i < sampleCount; ++i) {
-            timestamps.push(start + i * timestep)
-        }
+        watch(() => {
+            // update on changes to props.currency or fiatStore.currency
+            const timespan = 7 * 24 * 60 * 60 * 1000; // one week
+            const sampleCount = 18;
+            const timestep = timespan / (sampleCount - 1);
+            const start = Date.now() - timespan;
+            const timestamps: number[] = [];
+            for (let i = 0; i < sampleCount; ++i) {
+                timestamps.push(start + i * timestep)
+            }
 
-        getHistoricExchangeRates(
-            props.currency as CryptoCurrency,
-            fiatStore.currency.value,
-            timestamps,
-            true, // disable minutely data
-        ).then(
-            (exchangeRates) => priceHistories[props.currency] = [...exchangeRates.entries()] as Array<[number, number]>,
-        );
+            // Reset old data.
+            // Using nextTick here to avoid that history.value is executed within the watcher and becomes a dependency
+            // of the watcher which would lead to an endless loop.
+            Vue.nextTick(() => history.value = []);
+
+            getHistoricExchangeRates(
+                props.currency as CryptoCurrency,
+                fiatStore.currency.value,
+                timestamps,
+                true, // disable minutely data
+            ).then(
+                (exchangeRates) => history.value = [...exchangeRates.entries()] as Array<[number, number]>,
+            );
+        });
 
         return {
             strokeWidth,

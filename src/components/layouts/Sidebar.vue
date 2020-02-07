@@ -118,7 +118,7 @@ export default createComponent({
 
 .graph {
     display: flex;
-    height: 14rem;
+    height: 15rem;
     width: 100%;
     padding: 1.5rem;
     flex-grow: 0;

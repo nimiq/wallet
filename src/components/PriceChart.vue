@@ -1,31 +1,39 @@
 <template>
-    <div v-if="history && history.length" class="price-chart flex-column">
-        <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none">
-            <path
+    <div class="price-chart flex-column">
+        <svg ref="$svg" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none"
+            :style="{ opacity: history.length >= 2 ? 1 : 0 }">
+            <path ref="$path"
                 :d="path"
                 fill="none"
                 stroke="currentColor"
                 opacity="0.5"
                 :stroke-width="strokeWidth"
                 stroke-linecap="round"
-                stroke-linejoin="round" />
+                stroke-linejoin="round"
+            />
         </svg>
 
         <div class="meta flex-row">
             <strong>{{currency.toUpperCase()}}</strong>
             <div class="price">
-                <!-- TODO: Adapt FiatAmount for this use case and use it here -->
-                <!-- FiatAmount cannot display more than 2 decimals, which is necessary for NIM. -->
-                <!-- <FiatAmount :amount="endPrice" :currency="fiatCurrency"/> -->
-                <div>{{ endPrice.toFixed(4) }} {{ fiatSymbol }}</div>
-                <div class="change" :class="priceChangeClass">{{ (priceChange * 100).toFixed(1) }}%</div>
+                <transition name="fade">
+                    <!-- TODO: Adapt FiatAmount for this use case and use it here -->
+                    <!-- FiatAmount cannot display more than 2 decimals, which is necessary for NIM. -->
+                    <!-- <FiatAmount :amount="endPrice" :currency="fiatCurrency"/> -->
+                    <div v-if="endPrice !== undefined">{{ endPrice.toFixed(4) }} {{ fiatSymbol }}</div>
+                </transition>
+                <transition name="fade">
+                    <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
+                        {{ (priceChange * 100).toFixed(1) }}%
+                    </div>
+                </transition>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, watch } from '@vue/composition-api';
+import { createComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
@@ -41,7 +49,33 @@ export default createComponent({
         },
     },
     setup(props: any) {
+        const $svg = ref<SVGElement|null>(null);
+        const $path = ref<SVGPathElement|null>(null);
         const history = ref<Array<[/*timestamp*/number, /*price*/number]>>([]);
+
+        // Calculate SVG size
+        const strokeWidth = 2.5;
+        const padding = strokeWidth * 2;
+        const width = ref<number>(120);
+        const height = ref<number>(52);
+        // Calculate the view box from the actual size in the dom to avoid stretching the strokeWidth. While
+        // vector-effect: non-scaling-stroke exists for this purpose, it unfortunately also affects the rendered path
+        // length, which leads to render errors when assigning a stroke-dashoffset calculated from getTotalLength() or
+        // even explicitly specified pathLength.
+        const viewBox = computed(
+            () => `-${strokeWidth / 2} -${padding} ${width.value + strokeWidth} ${height.value + 2 * padding}`,
+        );
+        const onResize = () => requestAnimationFrame(() => {
+            if (!$svg.value) return;
+            const svgBoundingBox = $svg.value.getBoundingClientRect();
+            width.value = svgBoundingBox.width;
+            height.value = svgBoundingBox.height;
+        });
+        onMounted(() => {
+            window.addEventListener('resize', onResize);
+            onResize();
+        });
+        onUnmounted(() => window.removeEventListener('resize', onResize));
 
         // Calculate price change
         const startPrice = computed(() => history.value[0]?.[1]);
@@ -57,13 +91,6 @@ export default createComponent({
                     ? 'negative'
                     : 'none');
 
-        // Calculate SVG size
-        const strokeWidth = 2;
-        const padding = strokeWidth * 2;
-        const width = 100; // Only used for calculcations, has no effect on display.
-        const height = 50; // Only used for calculcations, has no effect on display.
-        const viewBox = `-${strokeWidth / 2} -${padding} ${width + strokeWidth} ${height + 2 * padding}`;
-
         // Calculate path
         const path = computed(() => {
             if (history.value.length < 2) return '';
@@ -71,18 +98,18 @@ export default createComponent({
             // Normalize data points to the SVG's X and Y axis
             const minTimestamp = history.value[0][0];
             const maxTimestamp = history.value[history.value.length - 1][0];
-            const xScaleFactor = width / (maxTimestamp - minTimestamp);
+            const xScaleFactor = width.value / (maxTimestamp - minTimestamp);
             const [minPrice, maxPrice] = history.value.reduce((result, [timestamp, price]) => {
                 // Could be written as one-liner by destructuring + constructing of new array but is more wasteful
                 result[0] = Math.min(result[0], price);
                 result[1] = Math.max(result[1], price);
                 return result;
             }, [Number.MAX_VALUE, Number.MIN_VALUE]);
-            const yScaleFactor = height / (maxPrice - minPrice || 1);
+            const yScaleFactor = height.value / (maxPrice - minPrice || 1);
 
             const dataPoints = history.value.map(([timestamp, price]) => [
                 (timestamp - minTimestamp) * xScaleFactor,
-                height - (price - minPrice) * yScaleFactor, // subtracted from height as in SVG 0 on y-axis is on top
+                height.value - (price - minPrice) * yScaleFactor, // subtract from height as in SVG y-axis 0 is on top
             ]);
 
             // Draw
@@ -158,7 +185,23 @@ export default createComponent({
             );
         });
 
+        watch(async () => {
+            if (!$path.value) return;
+            // animate the chart line
+            if (history.value.length) {
+                const pathLength = $path.value.getTotalLength();
+                $path.value.style.strokeDasharray = `0 ${pathLength}`;
+                await new Promise((resolve) => requestAnimationFrame(resolve)); // strokeDasharray gets applied
+                await new Promise((resolve) => requestAnimationFrame(resolve)); // ready to update strokeDasharray again
+                $path.value.style.strokeDasharray = `${pathLength} 0`;
+            } else {
+                $path.value.style.strokeDasharray = '';
+            }
+        });
+
         return {
+            $svg,
+            $path,
             strokeWidth,
             viewBox,
             path,
@@ -178,14 +221,15 @@ export default createComponent({
 <style lang="scss" scoped>
 svg {
     flex-grow: 1;
+    transition: opacity .3s var(--nimiq-ease);
 }
 
-svg * {
-    /* Required to be able to scale the SVG dynamically without having to change the viewBox. */
-    vector-effect: non-scaling-stroke;
+svg path {
+    transition: stroke-dasharray 1.5s linear;
 }
 
 .meta {
+    min-height: 4.5rem; // to avoid jumping of UI when children are hidden via v-if
     justify-content: space-between;
     color: rgba(255, 255, 255, 0.6);
     font-size: 1.75rem;
@@ -210,9 +254,5 @@ svg * {
 
 .change.negative {
     color: var(--nimiq-red);
-}
-
-.change.negative::before {
-    // content: '-'; /* The number is negative and thus already has a minus sign. */
 }
 </style>

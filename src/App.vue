@@ -40,6 +40,7 @@ export default createComponent({
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;
+
     main {
         @include flex-full-height;
         flex-direction: row;
@@ -56,14 +57,16 @@ export default createComponent({
             max-width: 100rem;
         }
     }
+}
+</style>
 
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .3s;
-    }
+<style>
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+}
 
-    .fade-enter,
-    .fade-leave-to {
-        opacity: 0;
-    }
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

@@ -25,7 +25,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { createComponent, computed, ref, watch } from '@vue/composition-api';
 import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
@@ -136,8 +135,7 @@ export default createComponent({
         const fiatStore = useFiatStore();
         const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
-        watch(() => {
-            // update on changes to props.currency or fiatStore.currency
+        watch(() => [props.currency, fiatStore.currency.value], ([cryptoCurrency, fiatCurrency]) => {
             const timespan = 7 * 24 * 60 * 60 * 1000; // one week
             const sampleCount = 18;
             const timestep = timespan / (sampleCount - 1);
@@ -148,13 +146,11 @@ export default createComponent({
             }
 
             // Reset old data.
-            // Using nextTick here to avoid that history.value is executed within the watcher and becomes a dependency
-            // of the watcher which would lead to an endless loop.
-            Vue.nextTick(() => history.value = []);
+            history.value = [];
 
             getHistoricExchangeRates(
-                props.currency as CryptoCurrency,
-                fiatStore.currency.value,
+                cryptoCurrency,
+                fiatCurrency,
                 timestamps,
                 true, // disable minutely data
             ).then(

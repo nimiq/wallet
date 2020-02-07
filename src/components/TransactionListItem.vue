@@ -106,6 +106,7 @@ export default createComponent({
         // Fiat currency
         const fiatStore = useFiatStore();
         const fiatCurrency = computed(() => fiatStore.currency.value);
+        const hash = computed(() => tx.value.transactionHash);
         const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
 
         return {
@@ -119,7 +120,7 @@ export default createComponent({
             fiatCurrency,
             fiatValue,
             isCashlink,
-            hash: tx.value.transactionHash,
+            hash,
         }
     },
     components: {

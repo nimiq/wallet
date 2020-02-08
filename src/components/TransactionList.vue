@@ -3,12 +3,12 @@
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
-            :item-size="80"
+            :item-size="itemSize"
             key-field="transactionHash"
             v-slot="{ item, index, active }"
-            :buffer="200"
+            :buffer="scrollerBuffer"
         >
-            <div class="list-element loading" v-if="item.loading">
+            <div class="list-element loading" v-if="item.loading" :style="{ animationDelay: `${index * .1}s` }">
                 <div class="date">
                     <div class="placeholder"></div>
                     <div class="placeholder"></div>
@@ -101,6 +101,9 @@ export default createComponent({
         const { state: transactions$ } = useTransactionsStore();
         const { isFetchingTxHistory } = useNetworkStore();
 
+        const scrollerBuffer = 300;
+        const itemSize = 80;
+
         let oldActiveAddress = activeAddress.value;
         const transactions: any = computed(() => {
             // filtering & sorting TX
@@ -117,7 +120,11 @@ export default createComponent({
 
             // loading transactions
             if (!transactions.length && isFetchingTxHistory.value) {
-                return [...new Array(20)].map((item, index) => ({ transactionHash: index, loading: true }));
+                // create just as many placeholders that the scroller doesn't start recycling them because the loading
+                // animation breaks for recycled entries due to the animation delay being off.
+                const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
+                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize);
+                return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
             }
 
             // add month / "This month" / pending TX labels
@@ -221,6 +228,8 @@ export default createComponent({
         })();
 
         return {
+            scrollerBuffer,
+            itemSize,
             transactions,
             getImage,
             loadingImageSrc,
@@ -321,6 +330,7 @@ export default createComponent({
                 animation-name: loading;
                 animation-duration: 1s;
                 animation-iteration-count: infinite;
+                animation-delay: inherit;
 
                 @keyframes loading {
                     0% { opacity: 1 }
@@ -355,12 +365,6 @@ export default createComponent({
                 align-self: flex-start;
                 max-width: 50%;
             }
-        }
-    }
-
-    @for $i from 1 through 20 {
-        .vue-recycle-scroller__item-view:nth-child(#{$i}) .placeholder {
-            animation-delay: #{$i * 100}ms;
         }
     }
 }

@@ -1,11 +1,12 @@
 <template>
-    <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency"/>
+    <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="language"/>
 </template>
 
 <script lang="ts">
 import { FiatAmount } from '@nimiq/vue-components';
 import { createComponent, computed } from '@vue/composition-api'
 import { useFiatStore } from '../stores/Fiat'
+import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from '../lib/Constants';
 
 export default createComponent({
@@ -27,9 +28,12 @@ export default createComponent({
             : undefined
         );
 
+        const language = useSettingsStore().language;
+
         return {
             fiatAmount,
             fiatCurrency,
+            language,
         }
     },
     components: { FiatAmount }

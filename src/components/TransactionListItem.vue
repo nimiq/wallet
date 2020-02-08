@@ -35,7 +35,7 @@
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
                     Fiat value unavailable
                 </div>
-                <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency"/>
+                <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
             </transition>
         </div>
     </div>
@@ -46,6 +46,7 @@ import { createComponent, computed } from '@vue/composition-api'
 import { CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { useAddressStore } from '../stores/Address'
 import { useFiatStore } from '../stores/Fiat';
+import { useSettingsStore } from '../stores/Settings';
 import { Transaction } from '../stores/Transactions'
 import { twoDigit } from '../lib/NumberFormatting'
 import { AddressBook, Utf8Tools } from '@nimiq/utils'
@@ -118,19 +119,22 @@ export default createComponent({
         const hash = computed(() => tx.value.transactionHash);
         const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
 
+        const language = useSettingsStore().language;
+
         return {
             constants,
-            isIncoming,
-            peerAddress,
-            peerLabel,
             dateDay,
             dateMonth,
             dateTime,
             data,
             fiatCurrency,
             fiatValue,
-            isCashlink,
             hash,
+            isCashlink,
+            isIncoming,
+            language,
+            peerAddress,
+            peerLabel,
         }
     },
     components: {

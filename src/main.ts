@@ -10,8 +10,9 @@ import { initStorage } from './storage';
 import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { useFiatStore } from './stores/Fiat';
+import { useSettingsStore } from './stores/Settings';
 import router from './router';
-import { i18n } from '@/i18n/i18n-setup';
+import { i18n, loadLanguageAsync } from './i18n/i18n-setup';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -37,6 +38,7 @@ Vue.use(VueVirtualScroller);
 initStorage();
 syncFromHub();
 const {timestamp: lastExchangeRateUpdateTime, updateExchangeRates} = useFiatStore();
+
 // Update exchange rates every 2 minutes. If the last update was less than 2 minutes ago, wait the remaining time first.
 window.setTimeout(
     () => {
@@ -45,6 +47,10 @@ window.setTimeout(
     },
     Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
 );
+
+// fetch language file
+const { language } = useSettingsStore();
+loadLanguageAsync(language.value);
 
 new Vue({
   router,

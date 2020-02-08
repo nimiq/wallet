@@ -1,11 +1,11 @@
 <template>
-    <div class="transaction-list" ref="targetNode">
+    <div class="transaction-list" ref="$el">
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
             :item-size="itemSize"
             key-field="transactionHash"
-            v-slot="{ item, index, active }"
+            v-slot="{ item, index }"
             :buffer="scrollerBuffer"
         >
             <div class="list-element loading" v-if="item.loading" :style="{ animationDelay: `${index * .1}s` }">
@@ -78,7 +78,7 @@ function getCloserElement(element: any, classToFind: string) {
     }
     if (e.querySelector('.' + classToFind)) {
         while (!e.classList.contains(classToFind)) {
-            e = e.childNodes[0] as HTMLElement;
+            e = e.children[0] as HTMLElement;
         }
     } else if (!e.classList.contains(classToFind)) {
         while (!e.classList.contains(classToFind)) {
@@ -185,18 +185,19 @@ export default createComponent({
         const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg';
 
         // listening for DOM changes for animations in the virtual scroll
-        let targetNode: Ref<null | HTMLElement> = ref(null);
+        // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
+        // doesn't rerun on fiatValue update.
+        let $el: Ref<null | HTMLElement> = ref(null);
         (() => {
-            'use strict';
             const config = { characterData: true, childList: true, subtree: true };
             const onAnimationEnd = (e: any) => {
                 e.target!.removeEventListener('animationend', onAnimationEnd);
                 e.target!.classList.remove('fadein');
             };
-            const callback = async function(mutationsList: MutationRecord[], observer: MutationObserver) {
+            const callback = async function(mutationsList: MutationRecord[]) {
                 if (!transactions.value.length) return;
 
-                for (let mutation of mutationsList) {
+                for (const mutation of mutationsList) {
                     let element: null | HTMLElement = null;
 
                     if (mutation.target) {
@@ -223,7 +224,7 @@ export default createComponent({
 
             const observer = new MutationObserver(callback);
 
-            onMounted(() => observer.observe(targetNode.value!, config));
+            onMounted(() => observer.observe($el.value!, config));
             onBeforeUnmount(() => observer.disconnect());
         })();
 
@@ -233,7 +234,7 @@ export default createComponent({
             transactions,
             getImage,
             loadingImageSrc,
-            targetNode,
+            $el,
             isFetchingTxHistory,
         }
     },

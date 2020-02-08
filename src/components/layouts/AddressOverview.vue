@@ -11,7 +11,8 @@
                     </div>
                 </div>
                 <div class="send-receive flex-row">
-                    <button class="send nq-button-pill" @click="$router.push('/send').catch(error => {})">
+                    <button class="send nq-button-pill"
+                        @click="$router.push({name: 'send', params: {senderAddress}}).catch(error => {})">
                         <ArrowRightSmallIcon />Send
                     </button>
                     <button class="receive nq-button-s" @click="$router.push('/receive').catch(error => {})">
@@ -33,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive } from '@vue/composition-api';
+import { createComponent, reactive, computed } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import TransactionList from './../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
@@ -48,8 +49,10 @@ export default createComponent({
         const { isFetchingTxHistory } = useNetworkStore();
 
         const search = reactive({ searchString: ''});
+        const senderAddress = computed(() => activeAddressInfo!.value!.address!);
 
         return {
+            senderAddress,
             search,
             activeAddressInfo,
             isFetchingTxHistory,

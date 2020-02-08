@@ -46,7 +46,7 @@ export const useAddressStore = createStore({
                 : [];
         },
         activeAddress: state => state.activeAddress,
-        activeAddressInfo: state => state.activeAddress && state.addressInfos[state.activeAddress],
+        activeAddressInfo: state => state.activeAddress ? state.addressInfos[state.activeAddress] : null,
         accountBalance: (state, { addressInfos }) => (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + (acc.balance || 0), 0),
     },
     actions: {

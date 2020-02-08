@@ -10,6 +10,8 @@ export const useContactsStore = createStore({
         ({contacts: {}} as ContactsState),
     getters: {
         contacts: (state): Readonly<{ [address: string]: string }> => state.contacts,
+        contactsArray: (state): Readonly<Array<{address: string, label: string}>> =>
+            Object.keys(state.contacts).map( (address) => ({address, label: state.contacts[address]})),
         label: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> => state.contacts[address],
     },
     actions: {

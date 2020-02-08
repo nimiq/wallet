@@ -5,6 +5,7 @@ import { NetworkClient } from '@nimiq/network-client'
 import { useAddressStore } from './stores/Address'
 import { useTransactionsStore, Transaction } from './stores/Transactions'
 import { useNetworkStore } from './stores/Network'
+import { SignedTransaction } from '@nimiq/hub-api';
 
 let isLaunched = false
 
@@ -75,4 +76,12 @@ export async function launchNetwork() {
         })
         .finally(() => network$.fetchingTxHistory--)
     })
+}
+
+export async function sendTransaction(tx: SignedTransaction) {
+    launchNetwork();
+
+    const client = NetworkClient.Instance;
+
+    return client.sendTransaction(tx.serializedTx as any);
 }

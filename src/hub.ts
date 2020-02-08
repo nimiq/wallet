@@ -1,6 +1,7 @@
 import HubApi, { Account, ExportResult } from '@nimiq/hub-api'
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
+import { sendTransaction as sendTx } from './network';
 
 const hubApi = new HubApi();
 
@@ -153,6 +154,29 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
 
     const accountStore = useAccountStore();
     accountStore.patchAccount(accountId, exportResult);
+}
+
+export async function sendTransaction(tx: {
+    sender: string,
+    recipient: string,
+    recipientType: 0 | 1 | 2 | undefined,
+    recipientLabel: string,
+    value: number,
+    fee: number,
+    extraData: Uint8Array,
+    validityStartHeight: number,
+}) {
+    try {
+        const signedTransaction = await hubApi.signTransaction({
+            appName: APP_NAME,
+            ...tx,
+        });
+        await sendTx(signedTransaction);
+    } catch (error) {
+        throw error;
+    }
+
+    return true;
 }
 
 export async function rename(accountId: string, address?: string) {

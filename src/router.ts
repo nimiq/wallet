@@ -9,9 +9,10 @@ const routes: RouteConfig[] = [];
 
 const SendModal         = () => import(/*webpackChunkName: "send-modal"*/ './components/modals/SendModal.vue');
 routes.push({
-    path: '/send',
+    path: '/send/:senderAddress',
     component: SendModal,
     name: 'send',
+    props: true,
 });
 
 const ReceiveModal         = () => import(/*webpackChunkName: "receive-modal"*/ './components/modals/ReceiveModal.vue');

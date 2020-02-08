@@ -4,9 +4,12 @@
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
         </div>
-        <svg v-else class="date">
-            <use xlink:href="/img/nimiq-style.icons.svg#nq-stopwatch"/>
-        </svg>
+        <div v-else class="pending">
+            <svg width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity=".3" d="M4 2.5A7.49 7.49 0 1014.5 13" stroke="#1F2348" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 8.5A7.5 7.5 0 008.5 1" stroke="#0582CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
         <div class="identicon">
             <Identicon :address="peerAddress"/>
             <div v-if="isCashlink" class="cashlink">
@@ -166,6 +169,7 @@ export default createComponent({
         opacity: 0.4;
         text-align: center;
         margin-right: 1.25rem;
+        flex-grow: 0;
 
         > .day {
             font-weight: bold;
@@ -174,6 +178,26 @@ export default createComponent({
         > .month {
             font-size: 1.625rem;
             font-weight: 600;
+        }
+    }
+
+    .pending {
+        flex-grow: 0;
+        height: 5rem;
+        display: flex;
+        align-items: center;
+        justify-items: space-around;
+        > * {
+            animation: rotate 2s 0s linear infinite;
+
+            @keyframes rotate {
+                0% {
+                    transform: rotateZ(0deg);
+                }
+                100% {
+                    transform: rotateZ(360deg);
+                }
+            }
         }
     }
 

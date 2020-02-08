@@ -62,11 +62,11 @@ export default createComponent({
 
 <style>
 .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s;
+    transition: opacity .3s var(--nimiq-ease);
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0;
+    opacity: 0 !important;
 }
 </style>

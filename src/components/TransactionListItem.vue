@@ -27,10 +27,13 @@
         </div>
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value"/>
-            <template v-if="fiatValue !== undefined">
-                <FiatAmount v-if="fiatValue !== constants.FIAT_PRICE_UNAVAILABLE" :amount="fiatValue" :currency="fiatCurrency"/>
-                <div v-else class="fiat-amount">Fiat value unavailable</div>
-            </template>
+            <transition name="fade">
+                <div v-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
+                <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
+                    Fiat value unavailable
+                </div>
+                <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency"/>
+            </transition>
         </div>
     </div>
 </template>
@@ -235,9 +238,10 @@ export default createComponent({
     }
 
     .amounts {
+        --fiat-amount-height: 2.5rem;
         display: flex;
         flex-direction: column;
-        justify-self: right;
+        align-items: flex-end;
         line-height: 1.4;
 
         .amount {
@@ -245,10 +249,21 @@ export default createComponent({
             font-weight: bold;
         }
 
-        .fiat-amount {
+        .fiat-amount,
+        .fiat-amount-loading,
+        .fiat-amount-unavailable {
             font-size: 1.75rem;
             font-weight: 600;
             opacity: 0.4;
+
+            &.fade-enter-active {
+                position: relative;
+                top: calc(-1 * var(--fiat-amount-height));
+            }
+        }
+
+        .fiat-amount-loading {
+            min-height: var(--fiat-amount-height); // to avoid jumping when fiat value loaded
         }
 
         > * {
@@ -261,7 +276,8 @@ export default createComponent({
                 opacity: 0.6;
             }
 
-            > *:before {
+            > .amount::before,
+            > .fiat-amount::before {
                 content: '-';
             }
         }
@@ -273,9 +289,11 @@ export default createComponent({
                 border-radius: 0.5rem;
                 padding: 0.25rem 0.75rem;
                 margin-right: -0.75rem;
+                margin-bottom: .375rem;
             }
 
-            > *:before {
+            > .amount::before,
+            > .fiat-amount::before {
                 content: '+';
             }
         }

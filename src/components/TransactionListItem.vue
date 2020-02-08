@@ -28,7 +28,7 @@
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value"/>
             <template v-if="fiatValue !== undefined">
-                <FiatAmount v-if="fiatValue !== NaN" :amount="fiatValue" :currency="fiatCurrency"/>
+                <FiatAmount v-if="fiatValue !== constants.FIAT_PRICE_UNAVAILABLE" :amount="fiatValue" :currency="fiatCurrency"/>
                 <div v-else class="fiat-amount">Fiat value unavailable</div>
             </template>
         </div>
@@ -46,6 +46,7 @@ import { AddressBook, Utf8Tools } from '@nimiq/utils'
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
 import Amount from './Amount.vue';
 import { useContactsStore } from '../stores/Contacts';
+import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
 export default createComponent({
     props: {
@@ -55,6 +56,8 @@ export default createComponent({
         },
     },
     setup(props) {
+        const constants = { FIAT_PRICE_UNAVAILABLE };
+
         // Only for typing of the prop
         const tx = computed(() => props.transaction as Transaction);
 
@@ -110,6 +113,7 @@ export default createComponent({
         const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
 
         return {
+            constants,
             isIncoming,
             peerAddress,
             peerLabel,

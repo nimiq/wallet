@@ -238,8 +238,9 @@ export default createComponent({
 @import '../scss/mixins.scss';
 
 .transaction-list {
-    overflow-y: auto;
     width: 90rem;
+    display: flex; // ensure the scroller does not extend over our height but scrolls instead
+    flex-direction: column;
 
     .month-label {
         color: var(--nimiq-blue);

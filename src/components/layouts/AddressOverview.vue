@@ -81,6 +81,7 @@ export default createComponent({
     }
 
     .active-address {
+        flex-shrink: 0;
         justify-content: space-between;
         align-items: center;
 
@@ -128,6 +129,10 @@ export default createComponent({
                 transform: rotateZ(90deg);
             }
         }
+    }
+
+    .search-bar {
+        flex-shrink: 0;
     }
 
     &.noAccounts {

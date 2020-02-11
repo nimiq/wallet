@@ -63,6 +63,8 @@ export default createComponent({
     }
 
     input {
+        font-family: inherit;
+        color: inherit;
         justify-self: right;
         flex-grow: 1;
         border: 0;

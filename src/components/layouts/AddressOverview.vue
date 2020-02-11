@@ -5,19 +5,21 @@
             <div class="active-address flex-row">
                 <div class="account flex-row">
                     <Identicon :address="activeAddressInfo.address" />
-                    <div class="flex-column">
-                        <div class="label">{{activeAddressInfo.label}}</div>
+                    <div class="meta flex-column">
+                        <div class="label-and-buttons flex-row">
+                            <div class="label">{{activeAddressInfo.label}}</div>
+                            <div class="send-receive flex-row">
+                                <button class="send nq-button-pill"
+                                    @click="$router.push({name: 'send', params: {senderAddress}}).catch(error => {})">
+                                    <ArrowRightSmallIcon />Send
+                                </button>
+                                <button class="receive nq-button-s" @click="$router.push('/receive').catch(error => {})">
+                                    <ArrowRightSmallIcon />Receive
+                                </button>
+                            </div>
+                        </div>
                         <div class="address nq-label">{{activeAddressInfo.address}}</div>
                     </div>
-                </div>
-                <div class="send-receive flex-row">
-                    <button class="send nq-button-pill"
-                        @click="$router.push({name: 'send', params: {senderAddress}}).catch(error => {})">
-                        <ArrowRightSmallIcon />Send
-                    </button>
-                    <button class="receive nq-button-s" @click="$router.push('/receive').catch(error => {})">
-                        <ArrowRightSmallIcon />Receive
-                    </button>
                 </div>
             </div>
             <SearchBar @input="search.searchString = $event.target.value"/>
@@ -90,16 +92,37 @@ export default createComponent({
             align-items: center;
             overflow: hidden;
 
+            .meta {
+                flex-grow: 1;
+            }
+
             .identicon {
                 height: 10rem;
-                width: auto;
+                width: 10rem;
+                margin-left: 1rem;
+                margin-right: 2.5rem;
                 flex-shrink: 0;
+            }
+
+            .label-and-buttons {
+                justify-content: space-between;
             }
 
             .address,
             .label {
                 overflow: hidden;
                 white-space: nowrap;
+            }
+
+            .label {
+                font-weight: 600;
+            }
+
+            .address {
+                word-spacing: -0.1em;
+                font-family: "Fira Mono", monospace;
+                font-weight: 500;
+                font-size: 2rem;
             }
         }
 
@@ -108,7 +131,7 @@ export default createComponent({
             align-items: center;
 
             .send, .receive {
-                margin: 0 2rem;
+                margin: 0 1rem;
                 align-items: center;
                 display: flex;
                 flex-direction: row;

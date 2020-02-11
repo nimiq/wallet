@@ -249,8 +249,8 @@ export default createComponent({
 
 .transaction-list {
     width: 90rem;
-    display: flex; // ensure the scroller does not extend over our height but scrolls instead
-    flex-direction: column;
+    overflow: auto;
+
 
     .month-label {
         color: var(--nimiq-blue);

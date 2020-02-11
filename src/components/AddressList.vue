@@ -151,11 +151,11 @@ export default createComponent({
     .balances {
         text-align: right;
         flex-shrink: 0;
-        line-height: 1.2;
     }
 
     .crypto-balance {
         display: block;
+        line-height: 1.2;
         font-weight: bold;
         transition: color 300ms var(--nimiq-ease);
 

@@ -1,5 +1,8 @@
 <template>
-    <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="language"/>
+    <transition name="fade" mode="out-in">
+        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="language"/>
+        <div v-else class="fiat-amount placeholder"></div>
+    </transition>
 </template>
 
 <script lang="ts">
@@ -40,6 +43,9 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss">
-
+<style scoped lang="scss">
+.placeholder {
+    min-height: calc(1em * 1.25);
+    transition-duration: 0s;
+}
 </style>

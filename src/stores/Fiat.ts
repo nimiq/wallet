@@ -58,6 +58,7 @@ export const useFiatStore = createStore({
     actions: {
         setCurrency(currency: FiatCurrency) {
             this.state.currency = currency;
+            this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
         },
 
@@ -65,7 +66,7 @@ export const useFiatStore = createStore({
             try {
                 this.state.exchangeRates = await getExchangeRates(
                     Object.values(CryptoCurrency) as CryptoCurrency[],
-                    Object.values(FiatCurrency) as FiatCurrency[],
+                    [this.state.currency],
                 );
                 this.state.timestamp = Date.now();
             } catch (e) {

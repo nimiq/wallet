@@ -27,10 +27,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api'
+import { createComponent, computed } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
-import { useAddressStore, AddressType, AddressInfo } from '../stores/Address'
+import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
@@ -52,7 +52,7 @@ export default createComponent({
             return passedSteps < numberVestingSteps;
         }
 
-        const processedAddressInfos = computed(() => addressInfos.value.map(addressInfo => ({
+        const processedAddressInfos = computed(() => addressInfos.value.map((addressInfo) => ({
             ...addressInfo,
             hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
         })));
@@ -71,7 +71,7 @@ export default createComponent({
         ClockIcon,
         LockLockedIcon,
     } as any,
-})
+});
 </script>
 
 <style scoped lang="scss">

@@ -6,8 +6,10 @@
         </div>
         <div v-else class="pending">
             <svg width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path opacity=".3" d="M4 2.5A7.49 7.49 0 1014.5 13" stroke="#1F2348" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 8.5A7.5 7.5 0 008.5 1" stroke="#0582CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path opacity=".3" d="M4 2.5A7.49 7.49 0 1014.5 13" stroke="#1F2348" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 8.5A7.5 7.5 0 008.5 1" stroke="#0582CA" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
         <div class="identicon">
@@ -42,15 +44,15 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api'
+import { createComponent, computed } from '@vue/composition-api';
 import { CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
-import { useAddressStore } from '../stores/Address'
+import { AddressBook, Utf8Tools } from '@nimiq/utils';
+import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction } from '../stores/Transactions'
-import { twoDigit } from '../lib/NumberFormatting'
-import { AddressBook, Utf8Tools } from '@nimiq/utils'
-import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection'
+import { Transaction } from '../stores/Transactions';
+import { twoDigit } from '../lib/NumberFormatting';
+import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection';
 import Amount from './Amount.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -71,47 +73,47 @@ export default createComponent({
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { label } = useContactsStore();
 
-        const isIncoming = computed(() => tx.value.recipient === activeAddress.value)
+        const isIncoming = computed(() => tx.value.recipient === activeAddress.value);
 
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? tx.value.sender : tx.value.recipient)
+        const peerAddress = computed(() => isIncoming.value ? tx.value.sender : tx.value.recipient);
         const peerLabel = computed(() => {
             // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value]
+            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
             // search contacts
             if (label.value(peerAddress.value)) return label.value(peerAddress.value);
 
             // Search global address book
-            const globalLabel = AddressBook.getLabel(peerAddress.value)
-            if (globalLabel) return globalLabel
+            const globalLabel = AddressBook.getLabel(peerAddress.value);
+            if (globalLabel) return globalLabel;
 
-            return false
-        })
+            return false;
+        });
 
         // Date
-        const date = computed(() => tx.value.timestamp && new Date(tx.value.timestamp * 1000))
-        const dateDay = computed(() => date.value && twoDigit(date.value.getDate()))
-        const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-        const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()])
-        const dateTime = computed(() => date.value && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`)
+        const date = computed(() => tx.value.timestamp && new Date(tx.value.timestamp * 1000));
+        const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
+        const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()]);
+        const dateTime = computed(() => date.value
+            && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Data
         const dataBytes = computed(() => tx.value.data.raw
-            ? new Uint8Array(tx.value.data.raw.match(/.{1,2}/g)!.map(hex => parseInt(hex, 16)))
-            : new Uint8Array(0)
-        )
+            ? new Uint8Array(tx.value.data.raw.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16)))
+            : new Uint8Array(0));
         const data = computed(() => {
-            if (!dataBytes.value.length) return ''
+            if (!dataBytes.value.length) return '';
 
-            if (isFundingCashlink(dataBytes.value)) return 'Funding Cashlink'
-            if (isClaimingCashlink(dataBytes.value)) return 'Claiming Cashlink'
+            if (isFundingCashlink(dataBytes.value)) return 'Funding Cashlink';
+            if (isClaimingCashlink(dataBytes.value)) return 'Claiming Cashlink';
 
             // @ts-ignore Readonly<Uint8Array> is not assignable to Utf8Tools functions
-            if (Utf8Tools.isValidUtf8(dataBytes.value)) return Utf8Tools.utf8ByteArrayToString(dataBytes.value)
-            else return '<DATA>'
-        })
-        const isCashlink = computed(() => isFundingCashlink(dataBytes.value) || isClaimingCashlink(dataBytes.value))
+            if (Utf8Tools.isValidUtf8(dataBytes.value)) return Utf8Tools.utf8ByteArrayToString(dataBytes.value);
+            return '<DATA>';
+        });
+        const isCashlink = computed(() => isFundingCashlink(dataBytes.value) || isClaimingCashlink(dataBytes.value));
 
         // Fiat currency
         const fiatStore = useFiatStore();
@@ -119,7 +121,7 @@ export default createComponent({
         const hash = computed(() => tx.value.transactionHash);
         const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
 
-        const language = useSettingsStore().language;
+        const { language } = useSettingsStore();
 
         return {
             constants,
@@ -135,7 +137,7 @@ export default createComponent({
             language,
             peerAddress,
             peerLabel,
-        }
+        };
     },
     components: {
         Amount,
@@ -143,7 +145,7 @@ export default createComponent({
         Identicon,
         FiatAmount,
     } as any,
-})
+});
 </script>
 
 <style scoped lang="scss">

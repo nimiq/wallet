@@ -13,7 +13,8 @@
                                     @click="$router.push({name: 'send', params: {senderAddress}}).catch(error => {})">
                                     <ArrowRightSmallIcon />Send
                                 </button>
-                                <button class="receive nq-button-s" @click="$router.push('/receive').catch(error => {})">
+                                <button class="receive nq-button-s"
+                                    @click="$router.push('/receive').catch(error => {})">
                                     <ArrowRightSmallIcon />Receive
                                 </button>
                             </div>
@@ -26,9 +27,8 @@
             <TransactionList :searchString="search.searchString" />
         </template>
         <template v-else>
-            <img
-            src="https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/To_the_stars_qhyy.svg"
-            />
+            <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
+                + 'illustrations/To_the_stars_qhyy.svg'"/>
             <span class="opacity-75">{{ $t('Connect your first account:') }}</span>
             <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
@@ -38,7 +38,7 @@
 <script lang="ts">
 import { createComponent, reactive, computed } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
-import TransactionList from './../TransactionList.vue';
+import TransactionList from '../TransactionList.vue';
 import SearchBar from '../SearchBar.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -50,7 +50,7 @@ export default createComponent({
         const { activeAddressInfo } = useAddressStore();
         const { isFetchingTxHistory } = useNetworkStore();
 
-        const search = reactive({ searchString: ''});
+        const search = reactive({ searchString: '' });
         const senderAddress = computed(() => activeAddressInfo!.value!.address!);
 
         return {

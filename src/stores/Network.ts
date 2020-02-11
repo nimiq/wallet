@@ -1,4 +1,4 @@
-import { createStore } from 'pinia'
+import { createStore } from 'pinia';
 
 export const useNetworkStore = createStore({
     id: 'network',
@@ -9,7 +9,7 @@ export const useNetworkStore = createStore({
         fetchingTxHistory: 0,
     }),
     getters: {
-        isFetchingTxHistory: state => state.fetchingTxHistory > 0,
+        isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
     },
     actions: {},
-})
+});

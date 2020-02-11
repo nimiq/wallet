@@ -15,11 +15,13 @@
         <div class="menu flex-column">
             <div class="current-account">
                 <AccountMenuItem :id="activeAccountId"/>
-                <button v-if="canExportFile" class="item reset flex-row" @click="backup(activeAccountId, { fileOnly: true })">
+                <button v-if="canExportFile" class="item reset flex-row"
+                    @click="backup(activeAccountId, { fileOnly: true })">
                     {{ $t('Save Login File') }}
                     <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
                 </button>
-                <button v-if="canExportWords" class="item reset flex-row" @click="backup(activeAccountId, { wordsOnly: true })">
+                <button v-if="canExportWords" class="item reset flex-row"
+                    @click="backup(activeAccountId, { wordsOnly: true })">
                     {{ $t('Create Backup') }}
                     <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
                 </button>
@@ -53,22 +55,20 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, onMounted } from '@vue/composition-api'
+import { createComponent, computed, ref } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-// @ts-ignore Could not find a declaration file for module 'vue-click-outside'.
-import VueClickOutside from 'vue-click-outside';
 // @ts-ignore Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import AccountMenuItem from './AccountMenuItem.vue';
 import getBackgroundClass from '../lib/AddressColor';
-import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
+import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
 
 export default createComponent({
-    setup(_, context) {
+    setup() {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { accountBalance } = useAddressStore();
 
@@ -82,13 +82,17 @@ export default createComponent({
             menuOpen.value = false;
         }
 
-        const canExportFile = computed(() => !!activeAccountInfo.value && activeAccountInfo.value.type === AccountType.BIP39);
-        const canExportWords = computed(() => !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
-        const canChangePassword = computed(() => !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
+        const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
+        const isNotLedger = computed(() =>
+            !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
+        const canExportWords = isNotLedger;
+        const canChangePassword = isNotLedger;
 
-        const backgroundColor = computed(() => !!activeAccountInfo.value && getBackgroundClass(activeAccountInfo.value.addresses[0]));
+        const backgroundColor = computed(() => !!activeAccountInfo.value
+            && getBackgroundClass(activeAccountInfo.value.addresses[0]));
 
-        const otherAccountIds = computed(() => Object.keys(accountInfos.value).filter(id => id !== activeAccountId.value));
+        const otherAccountIds = computed(() => Object.keys(accountInfos.value)
+            .filter((id) => id !== activeAccountId.value));
 
         return {
             otherAccountIds,
@@ -110,7 +114,7 @@ export default createComponent({
             onboard,
         };
     },
-    mounted () {
+    mounted() {
         // prevent click outside event with popupItem.
         // @ts-ignore
         this.popupItem = this.$el;
@@ -124,7 +128,7 @@ export default createComponent({
     directives: {
         ClickOutside: vClickOutside.directive,
     },
-})
+});
 </script>
 
 <style lang="scss" scoped>

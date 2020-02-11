@@ -1,5 +1,5 @@
-import VueRouter, {RouteConfig} from 'vue-router';
-import Vue, {VueConstructor} from 'vue';
+import VueRouter, { RouteConfig } from 'vue-router';
+import Vue from 'vue';
 
 import { provide, inject } from '@vue/composition-api';
 
@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 
 const routes: RouteConfig[] = [];
 
-const SendModal         = () => import(/*webpackChunkName: "send-modal"*/ './components/modals/SendModal.vue');
+const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 routes.push({
     path: '/send/:senderAddress',
     component: SendModal,
@@ -15,14 +15,15 @@ routes.push({
     props: true,
 });
 
-const ReceiveModal         = () => import(/*webpackChunkName: "receive-modal"*/ './components/modals/ReceiveModal.vue');
+const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 routes.push({
     path: '/receive',
     component: ReceiveModal,
     name: 'receive',
 });
 
-const TransactionModal  = () => import(/*webpackChunkName: "transaction-modal"*/ './components/modals/TransactionModal.vue');
+const TransactionModal = () =>
+    import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 routes.push({
     path: '/transaction/:hash',
     component: TransactionModal as any,
@@ -30,14 +31,14 @@ routes.push({
     props: true,
 });
 
-const SettingsModal  = () => import(/*webpackChunkName: "transaction-modal"*/ './components/modals/SettingsModal.vue');
+const SettingsModal = () => import(/* webpackChunkName: "transaction-modal" */ './components/modals/SettingsModal.vue');
 routes.push({
     path: '/settings',
     component: SettingsModal,
     name: 'settings',
 });
 
-const TradeModal  = () => import(/*webpackChunkName: "transaction-modal"*/ './components/modals/TradeModal.vue');
+const TradeModal = () => import(/* webpackChunkName: "transaction-modal" */ './components/modals/TradeModal.vue');
 routes.push({
     path: '/trade',
     component: TradeModal,
@@ -50,7 +51,7 @@ export default new VueRouter({
     routes,
 });
 
-const RouterSymbol = Symbol();
+const RouterSymbol = Symbol('router');
 
 export function provideRouter(router: VueRouter) {
     provide(RouterSymbol, router);

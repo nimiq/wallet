@@ -21,28 +21,28 @@ export default createComponent({
     props: {
         address: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     setup(props) {
         const addresses = useAddressStore();
         const { label, setContact } = useContactsStore();
 
-        const addressLabel = computed(() =>
-            addresses.state.addressInfos[props.address]
+        const addressLabel = computed(
+            () => addresses.state.addressInfos[props.address]
                 ? addresses.state.addressInfos[props.address].label
-                : undefined
+                : undefined,
         );
         const contactLabel = computed(() =>
-            !addressLabel.value ? label.value(props.address) : undefined
+            !addressLabel.value ? label.value(props.address) : undefined,
         );
 
         return {
             addressLabel,
             contactLabel,
-            setContact
+            setContact,
         };
-    }
+    },
 });
 </script>
 
@@ -64,4 +64,3 @@ export default createComponent({
     }
 }
 </style>
-

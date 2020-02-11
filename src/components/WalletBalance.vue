@@ -21,7 +21,7 @@ export default createComponent({
 
         return {
             accountBalance,
-        }
+        };
     },
     components: {
         BalanceDistribution,

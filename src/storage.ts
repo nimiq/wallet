@@ -25,7 +25,7 @@ export function initStorage() {
         transactionsStore.patch({
             // @ts-ignore Some weird error about a type missmatch
             transactions: txs,
-        })
+        });
         transactionsStore.calculateFiatAmounts();
     }
 
@@ -90,7 +90,7 @@ export function initStorage() {
     if (storedContacts) {
         const contactsState: ContactsState = JSON.parse(storedContacts);
         // @ts-ignore Some weird error about a type missmatch
-        contactsStore.patch({contacts: contactsState});
+        contactsStore.patch({ contacts: contactsState });
     }
     contactsStore.subscribe(() => {
         localStorage.setItem(CONTACTS_STORAGE_KEY, JSON.stringify(contactsStore.state.contacts));

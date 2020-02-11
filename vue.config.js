@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -11,10 +12,10 @@ module.exports = {
 
         config.module
             .rule('po')
-                .test(/\.pot?$/)
-                    .use('po-loader')
-                        .loader('po-loader')
-                        .end()
-                .end();
+            .test(/\.pot?$/)
+            .use('po-loader')
+            .loader('po-loader')
+            .end()
+            .end();
     },
-}
+};

@@ -1,7 +1,7 @@
-import { createStore } from 'pinia'
+import { createStore } from 'pinia';
 import { getExchangeRates } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
-import { useTransactionsStore } from './Transactions';
+import { useTransactionsStore } from './Transactions'; // eslint-disable-line import/no-cycle
 
 export type FiatState = {
     currency: FiatCurrency,
@@ -13,7 +13,8 @@ function guessUserCurrency() {
     const currencies = Object.values(FiatCurrency);
 
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1
-    const languageRegex = new RegExp('^'
+    const languageRegex = new RegExp(
+        '^'
         + '(\\w+)' // obligatory language
         + '(?:-\\w{3,4})*' // non-capturing group for optional extlang or script subtags which are 3 to 4 chars long
         + '(?:-(\\w{2})\\b)?', // region tag which is exactly 2 chars long
@@ -77,7 +78,6 @@ export const useFiatStore = createStore({
                     throw e;
                 }
             }
-        }
+        },
     },
-})
-
+});

@@ -40,15 +40,15 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
 function roundToSignificant(number: number, places = 1) {
-  const roundingFactor = number < 0.001
-    ? 10 ** (3 + places)
-    : number < 0.01
-        ? 10 ** (2 + places)
-        : number < 0.1
-            ? 10 ** (1 + places)
-            : number < 10
-                ? 10 ** (places)
-                : 10 ** (places - 1);
+    const roundingFactor = number < 0.001
+        ? 10 ** (3 + places)
+        : number < 0.01
+            ? 10 ** (2 + places)
+            : number < 0.1
+                ? 10 ** (1 + places)
+                : number < 10
+                    ? 10 ** (places)
+                    : 10 ** (places - 1);
 
     return Math.round(number * roundingFactor) / roundingFactor;
 }
@@ -65,7 +65,7 @@ export default createComponent({
     setup(props: any) {
         const $svg = ref<SVGElement|null>(null);
         const $path = ref<SVGPathElement|null>(null);
-        const history = ref<Array<[/*timestamp*/number, /*price*/number]>>([]);
+        const history = ref<Array<[/* timestamp */number, /* price */number]>>([]);
 
         // Calculate SVG size
         const strokeWidth = 2.5;
@@ -114,7 +114,7 @@ export default createComponent({
             const minTimestamp = history.value[0][0];
             const maxTimestamp = history.value[history.value.length - 1][0];
             const xScaleFactor = width.value / (maxTimestamp - minTimestamp);
-            const [minPrice, maxPrice] = history.value.reduce((result, [timestamp, price]) => {
+            const [minPrice, maxPrice] = history.value.reduce((result, [, price]) => {
                 // Could be written as one-liner by destructuring + constructing of new array but is more wasteful
                 result[0] = Math.min(result[0], price);
                 result[1] = Math.max(result[1], price);
@@ -144,14 +144,14 @@ export default createComponent({
                     };
                 }
                 throw new Error(`Index out of bounds ${startIndex} ${endIndex}`);
-            }
+            };
 
             const controlPoint = (
                 current: number,
                 previous: number,
                 next: number,
-                end: boolean = false,
-            ): {x: number, y: number}=> {
+                end = false,
+            ): {x: number, y: number} => {
                 if (previous < 0) previous = current;
                 if (next >= dataPoints.length) next = current;
 
@@ -163,16 +163,16 @@ export default createComponent({
                     y: dataPoints[current][1]
                         - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
                 };
-            }
+            };
 
             return `${dataPoints.map(([x, y], index) => {
                 if (index === 0) return `M 0 ${y}`;
-                const {x: x1, y: y1} = controlPoint(index - 1, index - 2, index);
-                const {x: x2, y: y2} = controlPoint(index, index - 1, index + 1, true);
-                return `C `
+                const { x: x1, y: y1 } = controlPoint(index - 1, index - 2, index);
+                const { x: x2, y: y2 } = controlPoint(index, index - 1, index + 1, true);
+                return 'C '
                     + `${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
             }).join(' ')}`;
-        })
+        });
 
         const fiatStore = useFiatStore();
         const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
@@ -184,7 +184,7 @@ export default createComponent({
             const start = Date.now() - timespan;
             const timestamps: number[] = [];
             for (let i = 0; i < sampleCount; ++i) {
-                timestamps.push(start + i * timestep)
+                timestamps.push(start + i * timestep);
             }
 
             // Reset old data.
@@ -225,7 +225,7 @@ export default createComponent({
             history,
             priceChange,
             priceChangeClass,
-        }
+        };
     },
     components: {
         // FiatAmount,

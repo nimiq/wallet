@@ -13,7 +13,7 @@
 import { createComponent } from '@vue/composition-api';
 
 import AccountListItem from './AccountListItem.vue';
-import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
+import { useAccountStore } from '../stores/Account';
 
 export default createComponent({
     name: 'account-list',

@@ -40,19 +40,19 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { createComponent } from '@vue/composition-api';
 import {
     ArrowRightSmallIcon,
     CloseButton,
     Identicon,
     PageBody,
     PageHeader,
-    SmallPage
+    SmallPage,
 } from '@nimiq/vue-components';
 import Amount from '../Amount.vue';
 import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
-import { Transaction, useTransactionsStore } from '../../stores/Transactions';
+import { useTransactionsStore } from '../../stores/Transactions';
 
 export default createComponent({
     name: 'transaction-modal',

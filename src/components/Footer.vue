@@ -7,18 +7,18 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
-import { useNetworkStore } from '../stores/Network'
+import { createComponent } from '@vue/composition-api';
+import { useNetworkStore } from '../stores/Network';
 
 export default createComponent({
     setup() {
-        const { state: network$ } = useNetworkStore()
+        const { state: network$ } = useNetworkStore();
 
         return {
             network$,
-        }
+        };
     },
-})
+});
 </script>
 
 <style lang="scss" scoped>

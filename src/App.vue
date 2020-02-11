@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, watch } from '@vue/composition-api';
+import { createComponent } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';

@@ -48,31 +48,27 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
+import { Identicon, Tooltip, TransferIcon } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import { Identicon, Tooltip, TransferIcon } from '@nimiq/vue-components';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 
 export default createComponent({
     name: 'balance-distribution',
-    setup(props, context) {
-        const { addressInfos, activeAddress, selectAddress, accountBalance } = useAddressStore();
+    setup() {
+        const { addressInfos, accountBalance } = useAddressStore();
 
-        const balanceDistribution = computed((): { btc: number, nim: number }  => {
-            return {
-                nim: .9,
-                btc: .1,
-            };
-        });
+        const balanceDistribution = computed((): { btc: number, nim: number } => ({
+            nim: .9,
+            btc: .1,
+        }));
 
-        const nimBalanceDistribution = computed((): Array<{addressInfo: AddressInfo, percentage: number}> => {
-            return Object.values(addressInfos.value).map((value, index) => {
-                return {
-                    percentage: accountBalance.value === 0 ? 0 : (value.balance || 0) / accountBalance.value,
-                    addressInfo: value,
-                };
-            });
-        });
+        const nimBalanceDistribution = computed((): Array<{addressInfo: AddressInfo, percentage: number}> =>
+            Object.values(addressInfos.value).map((value) => ({
+                percentage: accountBalance.value === 0 ? 0 : (value.balance || 0) / accountBalance.value,
+                addressInfo: value,
+            })),
+        );
 
         // TODO move this to a proper place and actually define the properties
         type BtcAccountInfo = {
@@ -81,16 +77,14 @@ export default createComponent({
             balance: number,
         };
 
-        const btcBalanceDistribution = computed((): Array<{addressInfo: BtcAccountInfo, percentage: number}> => {
-            return [{
-                addressInfo: {
-                    label: 'Bitcoin',
-                    address: 'btc-address', // This string triggers the orange
-                    balance: 0,
-                },
-                percentage: 1,
-            }];
-        });
+        const btcBalanceDistribution = computed((): Array<{addressInfo: BtcAccountInfo, percentage: number}> => [{
+            addressInfo: {
+                label: 'Bitcoin',
+                address: 'btc-address', // This string triggers the orange
+                balance: 0,
+            },
+            percentage: 1,
+        }]);
 
         return {
             getBackgroundClass,

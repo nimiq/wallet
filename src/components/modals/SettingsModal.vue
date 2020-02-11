@@ -14,7 +14,11 @@
                 <div class="flex-row">
                     <label for="currency" >Currency</label>
                     <select name="currency" id="currency" @input="setCurrency($event.target.value)">
-                        <option v-for="currencyOption of FiatCurrency" :key="currencyOption" :value="currencyOption" :selected="currencyOption === currency" >{{currencyOption}}</option>
+                        <option v-for="currencyOption of FiatCurrency"
+                            :key="currencyOption"
+                            :value="currencyOption"
+                            :selected="currencyOption === currency"
+                        >{{currencyOption}}</option>
                     </select>
                 </div>
                 <div class="flex-row">
@@ -28,7 +32,11 @@
                 <div class="flex-row">
                     <label for="theme">Theme</label>
                     <select name="theme" iod="theme" @input="setColorMode($event.target.value)">
-                        <option v-for="colorModeOption of ColorMode" :key="colorModeOption" :value="colorMode" :selected="colorModeOption === colorMode" >{{colorModeOption}}</option>
+                        <option v-for="colorModeOption of ColorMode"
+                            :key="colorModeOption"
+                            :value="colorMode"
+                            :selected="colorModeOption === colorMode"
+                        >{{colorModeOption}}</option>
                     </select>
                 </div>
                 <div class="flex-row">
@@ -44,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { createComponent } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
@@ -56,7 +64,7 @@ export default createComponent({
     setup() {
         const settings = useSettingsStore();
 
-        const {currency, setCurrency} = useFiatStore();
+        const { currency, setCurrency } = useFiatStore();
 
         const clearCache = () => ({});
 

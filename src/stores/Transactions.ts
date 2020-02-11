@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { createStore } from 'pinia'
-import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { createStore } from 'pinia';
+import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
-export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails["toPlain"]> & {
+export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
 };
 
@@ -18,9 +18,9 @@ export const useTransactionsStore = createStore({
     },
     actions: {
         addTransactions(txs: Transaction[]) {
-            const newTxs: { [hash: string]: Transaction } = {}
+            const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txs) {
-                newTxs[plain.transactionHash] = plain
+                newTxs[plain.transactionHash] = plain;
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection.
@@ -28,7 +28,7 @@ export const useTransactionsStore = createStore({
             this.state.transactions = {
                 ...this.state.transactions,
                 ...newTxs,
-            }
+            };
 
             this.calculateFiatAmounts();
         },
@@ -49,9 +49,8 @@ export const useTransactionsStore = createStore({
                 if (!tx.fiatValue) Vue.set(tx, 'fiatValue', {});
                 Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined
                     ? Math.round(exchangeRate * tx.value) / 1e5 // rounded to 5 decimals
-                    : FIAT_PRICE_UNAVAILABLE,
-                );
+                    : FIAT_PRICE_UNAVAILABLE);
             }
         },
     },
-})
+});

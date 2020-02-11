@@ -37,7 +37,7 @@ export default createComponent({
         const { state: addressState } = useAddressStore();
 
         const accountInfo = computed(() => accountInfos.value[props.id]);
-        const addressInfos = computed(() => accountInfo.value.addresses.map(addr => addressState.addressInfos[addr]));
+        const addressInfos = computed(() => accountInfo.value.addresses.map((addr) => addressState.addressInfos[addr]));
         const backgroundClass = computed(() => getBackgroundClass(addressInfos.value[0].address));
         const accountBalance = computed(() => addressInfos.value.reduce((sum, acc) => sum + (acc.balance || 0), 0));
 

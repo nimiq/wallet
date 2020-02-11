@@ -1,6 +1,6 @@
-import HubApi, { Account, ExportResult } from '@nimiq/hub-api'
+import HubApi, { Account } from '@nimiq/hub-api';
 import { useAccountStore, AccountInfo } from './stores/Account';
-import { useAddressStore, AddressInfo, AddressType } from './stores/Address'
+import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { sendTransaction as sendTx } from './network';
 
 const hubApi = new HubApi();
@@ -32,16 +32,18 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         // For vesting contract testing
         // FIXME: Remove when done.
-        if (account.accountId === 'c32d372d98b0') account.contracts.push({
-            address: 'NQ17 9A8N TXK7 S4KC CRJP Q46Q VPY7 32KL QPYD',
-            label: 'Vesting Contract',
-            type: AddressType.VESTING,
-            owner: 'NQ26 8MMT 8317 VD0D NNKE 3NVA GBVE UY1E 9YDF',
-            start: 1,
-            stepAmount: 50000e5,
-            stepBlocks: 800000,
-            totalAmount: 100000e5,
-        });
+        if (account.accountId === 'c32d372d98b0') {
+            account.contracts.push({
+                address: 'NQ17 9A8N TXK7 S4KC CRJP Q46Q VPY7 32KL QPYD',
+                label: 'Vesting Contract',
+                type: AddressType.VESTING,
+                owner: 'NQ26 8MMT 8317 VD0D NNKE 3NVA GBVE UY1E 9YDF',
+                start: 1,
+                stepAmount: 50000e5,
+                stepBlocks: 800000,
+                totalAmount: 100000e5,
+            });
+        }
 
         for (const contract of account.contracts) {
             addresses.push(contract.address);
@@ -49,8 +51,8 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             addressInfos.push({
                 ...contract,
                 balance: addressStore.state.addressInfos[contract.address]
-                ? addressStore.state.addressInfos[contract.address].balance
-                : null,
+                    ? addressStore.state.addressInfos[contract.address].balance
+                    : null,
             });
         }
 
@@ -84,13 +86,14 @@ export async function syncFromHub() {
         listedAccounts = await hubApi.list();
     } catch (error) {
         if (error.message === 'MIGRATION_REQUIRED') {
-            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type 'RequestBehavior<BehaviorType.POPUP>'.
+            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type
+            // 'RequestBehavior<BehaviorType.POPUP>'.
             hubApi.migrate(new HubApi.RedirectRequestBehavior());
             return;
         }
 
         // TODO: Handle this case with a user notification
-        else if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
+        if (error.message === 'ACCOUNTS_LOST') listedAccounts = [];
 
         // TODO: Handle error
         else throw error;
@@ -100,36 +103,25 @@ export async function syncFromHub() {
 }
 
 export async function onboard() {
-    let listedAccounts: Account[];
-
-    try {
-        listedAccounts = await hubApi.onboard({ appName: APP_NAME });
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    // TODO: Handle error
+    const listedAccounts = await hubApi.onboard({ appName: APP_NAME });
 
     processAndStoreAccounts(listedAccounts);
 }
 
 export async function addAddress(accountId: string) {
-    let addressInfo: AddressInfo;
-    try {
-        const addedAddress = await hubApi.addAddress({
-            appName: APP_NAME,
-            accountId,
-        });
+    // TODO: Handle error
+    const addedAddress = await hubApi.addAddress({
+        appName: APP_NAME,
+        accountId,
+    });
 
-        addressInfo = {
-            address: addedAddress.address,
-            type: AddressType.BASIC,
-            label: addedAddress.label,
-            balance: null,
-        };
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    const addressInfo: AddressInfo = {
+        address: addedAddress.address,
+        type: AddressType.BASIC,
+        label: addedAddress.label,
+        balance: null,
+    };
 
     const addressStore = useAddressStore();
     // Adding an AddressInfo automatically subscribes the address in the network
@@ -140,17 +132,12 @@ export async function addAddress(accountId: string) {
 }
 
 export async function backup(accountId: string, options: { wordsOnly?: boolean, fileOnly?: boolean }) {
-    let exportResult: ExportResult;
-    try {
-        exportResult = await hubApi.export({
-            appName: APP_NAME,
-            accountId,
-            ...options,
-        });
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    // TODO: Handle error
+    const exportResult = await hubApi.export({
+        appName: APP_NAME,
+        accountId,
+        ...options,
+    });
 
     const accountStore = useAccountStore();
     accountStore.patchAccount(accountId, exportResult);
@@ -166,31 +153,23 @@ export async function sendTransaction(tx: {
     extraData: Uint8Array,
     validityStartHeight: number,
 }) {
-    try {
-        const signedTransaction = await hubApi.signTransaction({
-            appName: APP_NAME,
-            ...tx,
-        });
-        await sendTx(signedTransaction);
-    } catch (error) {
-        throw error;
-    }
+    // TODO: Handle error
+    const signedTransaction = await hubApi.signTransaction({
+        appName: APP_NAME,
+        ...tx,
+    });
+    await sendTx(signedTransaction);
 
     return true;
 }
 
 export async function rename(accountId: string, address?: string) {
-    let account: Account;
-    try {
-        account = await hubApi.rename({
-            appName: APP_NAME,
-            accountId,
-            address,
-        });
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    // TODO: Handle error
+    const account = await hubApi.rename({
+        appName: APP_NAME,
+        accountId,
+        address,
+    });
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
@@ -202,31 +181,23 @@ export async function rename(accountId: string, address?: string) {
 }
 
 export async function changePassword(accountId: string) {
-    try {
-        await hubApi.changePassword({
-            appName: APP_NAME,
-            accountId,
-        });
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    // TODO: Handle error
+    await hubApi.changePassword({
+        appName: APP_NAME,
+        accountId,
+    });
 }
 
 export async function logout(accountId: string) {
-    alert('Logout is not yet possible');
+    alert('Logout is not yet possible'); // eslint-disable-line no-alert
     return;
 
     // eslint-disable-next-line no-unreachable
-    try {
-        await hubApi.logout({
-            appName: APP_NAME,
-            accountId,
-        });
-    } catch(error) {
-        // TODO: Handle error
-        throw error;
-    }
+    // TODO: Handle error
+    await hubApi.logout({
+        appName: APP_NAME,
+        accountId,
+    });
 
     // TODO: Delete account, it's addresses, and their transactions
 }

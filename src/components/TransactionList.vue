@@ -30,23 +30,24 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
-import { useAddressStore } from '../stores/Address'
-import { useTransactionsStore } from '../stores/Transactions'
-import { useNetworkStore } from '../stores/Network'
-import TransactionListItem from '@/components/TransactionListItem.vue'
+import { createComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import TransactionListItem from '@/components/TransactionListItem.vue';
+import { useAddressStore } from '../stores/Address';
+import { useTransactionsStore } from '../stores/Transactions';
+import { useNetworkStore } from '../stores/Network';
 
 function getImage() {
+    const basePath = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/';
     const images = [
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/contemplating_8t0x.svg',
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/mobile_user_7oqo.svg',
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/Tree_swing_646s.svg',
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/a_moment_to_relax_bbpa.svg',
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/yoga_248n.svg',
-        'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/into_the_night_vumi.svg',
-    ]
+        `${basePath}contemplating_8t0x.svg`,
+        `${basePath}mobile_user_7oqo.svg`,
+        `${basePath}Tree_swing_646s.svg`,
+        `${basePath}a_moment_to_relax_bbpa.svg`,
+        `${basePath}yoga_248n.svg`,
+        `${basePath}into_the_night_vumi.svg`,
+    ];
 
-    return images[Math.floor(Math.random() * images.length)]
+    return images[Math.floor(Math.random() * images.length)];
 }
 
 function processTimestamp(timestamp: number) {
@@ -65,7 +66,7 @@ function getLocaleMonthStringFromDate(
     options: {
         month?: string,
         year?: string,
-    }
+    },
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
@@ -76,7 +77,7 @@ function getCloserElement(element: any, classToFind: string) {
     if (!e) {
         throw new Error('element undefined');
     }
-    if (e.querySelector('.' + classToFind)) {
+    if (e.querySelector(`.${classToFind}`)) {
         while (!e.classList.contains(classToFind)) {
             e = e.children[0] as HTMLElement;
         }
@@ -104,11 +105,10 @@ export default createComponent({
         const scrollerBuffer = 300;
         const itemSize = 80;
 
-        let oldActiveAddress = activeAddress.value;
         const transactions: any = computed(() => {
             // filtering & sorting TX
-            let transactions = Object.values(transactions$.transactions)
-                .filter(tx => {
+            const txs = Object.values(transactions$.transactions)
+                .filter((tx) => {
                     let bool = (tx.sender === activeAddress.value || tx.recipient === activeAddress.value);
 
                     if (props.searchString !== '') {
@@ -119,7 +119,7 @@ export default createComponent({
                 .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
 
             // loading transactions
-            if (!transactions.length && isFetchingTxHistory.value) {
+            if (!txs.length && isFetchingTxHistory.value) {
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
@@ -129,39 +129,36 @@ export default createComponent({
 
             // add month / "This month" / pending TX labels
             const transactionsWithMonths: any = [];
-            if (!transactions.length) return transactionsWithMonths;
+            if (!txs.length) return transactionsWithMonths;
 
             let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
 
-            if (!transactions[n].timestamp) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t("Pending...") });
-                while (!transactions[n].timestamp) {
-                    transactionsWithMonths.push(transactions[n]);
+            if (!txs[n].timestamp) {
+                transactionsWithMonths.push({ transactionHash: context.root.$t('Pending...') });
+                while (!txs[n].timestamp) {
+                    transactionsWithMonths.push(txs[n]);
                     n++;
                 }
             }
 
-            let { month: txMonth, year: txYear } = processTimestamp(transactions[n].timestamp!*1000);
+            let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
+            let txDate: Date;
 
             if (txMonth === currentTxMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t("This month") });
+                transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
             }
 
-            const len = transactions.length;
+            const len = txs.length;
             while (n < len) {
-                let {
-                    month: txMonth,
-                    year: txYear,
-                    date: txDate,
-                } = processTimestamp(transactions[n].timestamp!*1000);
+                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
 
                 if (txYear !== currentYear && txMonth !== currentTxMonth) {
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
                             context.root.$i18n.locale,
-                            { month: "long", year: "numeric" },
+                            { month: 'long', year: 'numeric' },
                         ),
                     });
                 } else if (txMonth !== currentTxMonth) {
@@ -169,32 +166,33 @@ export default createComponent({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
                             context.root.$i18n.locale,
-                            { month: "long" },
-                        )
+                            { month: 'long' },
+                        ),
                     });
                 }
 
                 currentTxMonth = txMonth;
-                transactionsWithMonths.push(transactions[n]);
+                transactionsWithMonths.push(txs[n]);
                 n++;
             }
 
             return transactionsWithMonths;
         });
 
-        const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/loading_frh4.svg';
+        const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
+            + 'illustrations/loading_frh4.svg';
 
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
         // doesn't rerun on fiatValue update.
-        let $el: Ref<null | HTMLElement> = ref(null);
+        const $el: Ref<null | HTMLElement> = ref(null);
         (() => {
             const config = { characterData: true, childList: true, subtree: true };
             const onAnimationEnd = (e: any) => {
                 e.target!.removeEventListener('animationend', onAnimationEnd);
                 e.target!.classList.remove('fadein');
             };
-            const callback = async function(mutationsList: MutationRecord[]) {
+            const callback = async function mutationCallback(mutationsList: MutationRecord[]) {
                 if (!transactions.value.length) return;
 
                 for (const mutation of mutationsList) {
@@ -236,12 +234,12 @@ export default createComponent({
             loadingImageSrc,
             $el,
             isFetchingTxHistory,
-        }
+        };
     },
     components: {
         TransactionListItem,
     } as any,
-})
+});
 </script>
 
 <style lang="scss" scoped>

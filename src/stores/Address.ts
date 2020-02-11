@@ -1,5 +1,5 @@
-import { createStore } from 'pinia'
-import { useAccountStore } from './Account'
+import { createStore } from 'pinia';
+import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
 
 export type AddressState = {
     addressInfos: {[id: string]: AddressInfo},
@@ -42,16 +42,17 @@ export const useAddressStore = createStore({
         addressInfos: (state): AddressInfo[] => {
             const accountStore = useAccountStore();
             return accountStore.activeAccountInfo.value
-                ? accountStore.activeAccountInfo.value.addresses.map(addr => state.addressInfos[addr])
+                ? accountStore.activeAccountInfo.value.addresses.map((addr) => state.addressInfos[addr])
                 : [];
         },
-        activeAddress: state => state.activeAddress,
-        activeAddressInfo: state => state.activeAddress ? state.addressInfos[state.activeAddress] : null,
-        accountBalance: (state, { addressInfos }) => (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + (acc.balance || 0), 0),
+        activeAddress: (state) => state.activeAddress,
+        activeAddressInfo: (state) => state.activeAddress ? state.addressInfos[state.activeAddress] : null,
+        accountBalance: (state, { addressInfos }) =>
+            (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + (acc.balance || 0), 0),
     },
     actions: {
         selectAddress(address: string) {
-            this.state.activeAddress = address
+            this.state.activeAddress = address;
         },
         addAddressInfo(addressInfo: AddressInfo, selectIt = true) {
             // Need to re-assign the whole object in Vue 2 for change detection.
@@ -64,10 +65,10 @@ export const useAddressStore = createStore({
             if (selectIt) this.state.activeAddress = addressInfo.address;
         },
         setAddressInfos(addressInfos: AddressInfo[]) {
-            const newAddressInfos: {[address: string]: AddressInfo} = {}
+            const newAddressInfos: {[address: string]: AddressInfo} = {};
 
             for (const addressInfo of addressInfos) {
-                newAddressInfos[addressInfo.address] = addressInfo
+                newAddressInfos[addressInfo.address] = addressInfo;
             }
 
             this.state.addressInfos = newAddressInfos;
@@ -87,4 +88,4 @@ export const useAddressStore = createStore({
             };
         },
     },
-})
+});

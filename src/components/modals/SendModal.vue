@@ -38,7 +38,7 @@ export default createComponent({
     },
     setup(props: {senderAddress: string}) {
         const { activeAccountInfo } = useAccountStore();
-        const { state: addressesStore$, addressInfos } =  useAddressStore();
+        const { state: addressesStore$, addressInfos } = useAddressStore();
         const { contactsArray, setContact } = useContactsStore();
         const $router = useRouter();
 
@@ -49,9 +49,9 @@ export default createComponent({
 
         // create WalletInfo out of existing information.
         // TODO refactor vue-component's sendTx to no longer require a WalletInfo prop.
-        let accounts: Array<[string, AddressInfo]> = [];
-        let contracts: Array<ContractAddressInfo> = [];
-        activeAccountInfo!.value!.addresses.forEach( (address) => {
+        const accounts: Array<[string, AddressInfo]> = [];
+        const contracts: Array<ContractAddressInfo> = [];
+        activeAccountInfo!.value!.addresses.forEach((address) => {
             const addressInfo = addressesStore$.addressInfos[address];
             if (addressInfo.type === AddressType.BASIC) {
                 accounts.push([address, addressInfo]);
@@ -73,7 +73,7 @@ export default createComponent({
         // TODO change either setContact or the contact-added event of SendTx
         const addContact = (contact: {address: string, label?: string}) => {
             setContact(contact.address, contact.label);
-        }
+        };
 
         // create sender object.
         // sender.address will be null oif no prop is given thus not preselecting a sender.
@@ -85,12 +85,12 @@ export default createComponent({
 
         // very basic hub invokation.
         // TODO error handling, success animation if desired.
-        const  sendTx = async (tx: any) => {
+        const sendTx = async (tx: any) => {
             const result = await sendTransaction(tx);
             if (result) {
                 $router.back();
             }
-        }
+        };
 
         return {
             addContact,
@@ -101,7 +101,7 @@ export default createComponent({
             sender,
             sendTx,
             walletInfo,
-        }
+        };
     },
     components: {
         CloseButton,

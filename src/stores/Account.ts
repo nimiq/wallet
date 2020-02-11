@@ -1,6 +1,6 @@
-import { createStore } from 'pinia'
+import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
-import { useAddressStore } from './Address';
+import { useAddressStore } from './Address'; // eslint-disable-line import/no-cycle
 
 export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
@@ -27,9 +27,9 @@ export const useAccountStore = createStore({
         activeAccountId: 'abc',
     } as AccountState),
     getters: {
-        accountInfos: state => state.accountInfos,
-        activeAccountId: state => state.activeAccountId,
-        activeAccountInfo: state => state.activeAccountId
+        accountInfos: (state) => state.accountInfos,
+        activeAccountId: (state) => state.activeAccountId,
+        activeAccountInfo: (state) => state.activeAccountId
             ? state.accountInfos[state.activeAccountId]
             : null,
     },
@@ -39,7 +39,7 @@ export const useAccountStore = createStore({
             const { selectAddress } = useAddressStore();
 
             // FIXME: Instead of always selecting the first address, store which address was selected per account.
-            selectAddress(this.activeAccountInfo.value!.addresses[0])
+            selectAddress(this.activeAccountInfo.value!.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to re-assign the whole object in Vue 2 for change detection.
@@ -52,10 +52,10 @@ export const useAccountStore = createStore({
             if (selectIt) this.state.activeAccountId = accountInfo.id;
         },
         setAccountInfos(accountInfos: AccountInfo[]) {
-            const newAccountInfos: {[id: string]: AccountInfo} = {}
+            const newAccountInfos: {[id: string]: AccountInfo} = {};
 
             for (const accountInfo of accountInfos) {
-                newAccountInfos[accountInfo.id] = accountInfo
+                newAccountInfos[accountInfo.id] = accountInfo;
             }
 
             this.state.accountInfos = newAccountInfos;
@@ -75,6 +75,6 @@ export const useAccountStore = createStore({
         addAddressToAccount(accountId: string, address: string) {
             if (this.state.accountInfos[accountId].addresses.includes(address)) return;
             this.state.accountInfos[accountId].addresses.push(address);
-        }
+        },
     },
-})
+});

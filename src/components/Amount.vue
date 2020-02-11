@@ -3,36 +3,35 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api'
-import { useSettingsStore } from '../stores/Settings'
+import { createComponent, computed } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
+import { useSettingsStore } from '../stores/Settings';
 
 export default createComponent({
     name: 'amount',
     props: {
         amount: {
             type: Number,
-            required: true
+            required: true,
         },
         currency: {
             type: String,
             required: false,
         },
     },
-    setup(props) {
+    setup() {
         const { showDecimals } = useSettingsStore();
-        const maxDecimals = computed(() => {
+        const maxDecimals = computed(() =>
             // for BTC add condition here
-            return showDecimals.value ? 5 : 2;
-        });
+            showDecimals.value ? 5 : 2);
         return {
             maxDecimals,
         };
     },
     components: {
         Amount,
-    }
-})
+    },
+});
 </script>
 
 <style lang="scss">

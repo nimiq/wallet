@@ -1,4 +1,4 @@
-declare module "*.po" {
+declare module '*.po' {
     const content: any;
     export default content;
 }

@@ -22,8 +22,8 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import { Account, ContactsIcon } from '@nimiq/vue-components';
 
-@Component({components: {Account, ContactsIcon}})
-    export default class ContactShortcuts extends Vue {
+@Component({ components: { Account, ContactsIcon } })
+export default class ContactShortcuts extends Vue {
         @Prop(Array) public contacts!: Array<{address: string, label: string}>;
 
         private get filteredContacts() {
@@ -35,13 +35,13 @@ import { Account, ContactsIcon } from '@nimiq/vue-components';
         }
 
         @Emit()
-        // tslint:disable-next-line no-empty
+        // eslint-disable-next-line @typescript-eslint/no-empty-function, class-methods-use-this
         public contactsOpened() {}
 
         @Emit()
-        // tslint:disable-next-line no-empty
-        public contactSelected(address: string, label: string) {}
-    }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+        public contactSelected(address: string, label: string) {} // eslint-disable-line class-methods-use-this
+}
 </script>
 
 <style scoped>

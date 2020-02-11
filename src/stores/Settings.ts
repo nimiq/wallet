@@ -36,6 +36,6 @@ export const useSettingsStore = createStore({
             if (Object.values(ColorMode).includes(colorMode)) {
                 this.state.colorMode = colorMode;
             }
-        }
-    }
+        },
+    },
 });

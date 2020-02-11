@@ -37,7 +37,7 @@ Vue.use(VueVirtualScroller);
 
 initStorage();
 syncFromHub();
-const {timestamp: lastExchangeRateUpdateTime, updateExchangeRates} = useFiatStore();
+const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
 
 // Update exchange rates every 2 minutes. If the last update was less than 2 minutes ago, wait the remaining time first.
 window.setTimeout(
@@ -53,9 +53,9 @@ const { language } = useSettingsStore();
 loadLanguageAsync(language.value);
 
 new Vue({
-  router,
-  i18n,
-  render: h => h(App),
+    router,
+    i18n,
+    render: (h) => h(App),
 }).$mount('#app');
 
 launchNetwork();

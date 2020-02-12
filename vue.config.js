@@ -8,6 +8,7 @@ module.exports = {
             .use(CopyWebpackPlugin, [[
                 { from: 'node_modules/@nimiq/style/nimiq-style.icons.svg', to: 'img' },
                 { from: 'node_modules/@nimiq/vue-components/dist/img/iqons.min*.svg', to: 'img/iqons.min.svg' },
+                { from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.js', to: 'js/qr-scanner-worker.min.js' },
             ]]);
 
         config.module

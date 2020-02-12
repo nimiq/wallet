@@ -7,19 +7,23 @@
                 :wallet="walletInfo"
                 :sender="sender"
                 :validityStartHeight="height"
+                :recipient="recipientWithLabel"
+                :value="amount || undefined"
+                :message="message || undefined"
                 @send-tx="sendTx"
                 @contact-added="addContact"
                 @create-cashlink="()=>{}"
                 @login="onboard"
-                @scan-qr="()=>{}" />
+                @scan-qr="$router.replace('/scan').catch((err)=>{})" />
             <CloseButton @click.prevent="$router.back()" class="close-button" />
         </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { createComponent, computed, ref, Ref } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage, SendTx } from '@nimiq/vue-components';
+import { parseRequestLink } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useContactsStore } from '../../stores/Contacts';
@@ -35,12 +39,34 @@ export default createComponent({
             type: String,
             required: false,
         },
+        requestUri: {
+            type: String,
+            required: false,
+        },
     },
-    setup(props: {senderAddress: string}) {
+    setup(props: any) {
         const { activeAccountInfo } = useAccountStore();
-        const { state: addressesStore$, addressInfos } = useAddressStore();
-        const { contactsArray, setContact } = useContactsStore();
+        const { state: addressesStore$, addressInfos, activeAddress } = useAddressStore();
+        const { contactsArray, setContact, label } = useContactsStore();
         const $router = useRouter();
+
+        const recipientWithLabel: Ref<{address: string, label: string}> | undefined = ref(undefined);
+        const amount: Ref<number | undefined> = ref(undefined);
+        const message: Ref<string | undefined> = ref(undefined);
+        if (props.requestUri) {
+            const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
+            if (parsedRequestLink) {
+                let recipient: string | undefined;
+                ({ recipient, amount: amount.value, message: message.value } = parsedRequestLink);
+                if (recipient) {
+                    recipientWithLabel.value = {
+                        address: recipient,
+                        label: addressInfos.value.find((addressInfo) => addressInfo.address === recipient)?.label
+                            || label.value(recipient) || '',
+                    };
+                }
+            }
+        }
 
         // blockchainHeight as consensus indicator
         // TODO add proper consenus listeners
@@ -79,25 +105,32 @@ export default createComponent({
         // sender.address will be null oif no prop is given thus not preselecting a sender.
         const sender = {
             walletId: activeAccountInfo!.value!.id,
-            address: props.senderAddress,
+            address: props.senderAddress || activeAddress.value,
         };
-
 
         // very basic hub invokation.
         // TODO error handling, success animation if desired.
         const sendTx = async (tx: any) => {
-            const result = await sendTransaction(tx);
-            if (result) {
-                $router.back();
+            try {
+                const result = await sendTransaction(tx);
+
+                if (result) {
+                    $router.back();
+                }
+            } catch (error) {
+                // TODO
             }
         };
 
         return {
             addContact,
             addresses: addressInfos.value,
+            amount,
             contactsArray,
             height,
+            message,
             onboard,
+            recipientWithLabel,
             sender,
             sendTx,
             walletInfo,

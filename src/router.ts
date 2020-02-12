@@ -45,20 +45,36 @@ routes.push({
     name: 'trade',
 });
 
-export default new VueRouter({
+const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+routes.push({
+    path: '/scan',
+    component: ScanQrModal,
+    name: 'scan',
+});
+
+routes.push({
+    path: '/nimiq\\::requestUri',
+    component: SendModal,
+    name: 'send-via-uri',
+    props: (route) => ({ requestUri: route.fullPath.substr(1) }),
+});
+
+const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes,
 });
 
+export default router;
+
 const RouterSymbol = Symbol('router');
 
-export function provideRouter(router: VueRouter) {
-    provide(RouterSymbol, router);
+export function provideRouter(providedRouter: VueRouter) {
+    provide(RouterSymbol, providedRouter);
 }
 
 export function useRouter(): VueRouter {
-    const router = inject(RouterSymbol) as VueRouter;
-    if (!router) throw new Error('Router was not provided.');
-    return router;
+    const injectedRouter = inject(RouterSymbol) as VueRouter;
+    if (!injectedRouter) throw new Error('Router was not provided.');
+    return injectedRouter;
 }

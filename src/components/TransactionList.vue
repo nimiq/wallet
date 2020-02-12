@@ -246,9 +246,7 @@ export default createComponent({
 @import '../scss/mixins.scss';
 
 .transaction-list {
-    width: 90rem;
-    overflow: auto;
-
+    position: relative;
 
     .month-label {
         color: var(--nimiq-blue);
@@ -264,6 +262,10 @@ export default createComponent({
     }
 
     .vue-recycle-scroller {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
         height: 100%;
         @media (min-width: 426px) {
             $nimiqBlue: #1f2348;

@@ -158,6 +158,11 @@ export default createComponent({
         flex-shrink: 0;
     }
 
+    .transaction-list {
+        width: 90rem;
+        flex-grow: 1;
+    }
+
     &.noAccounts {
         padding: 6rem 0;
         text-align: center;

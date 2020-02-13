@@ -1,36 +1,44 @@
 <template>
     <div class="sidebar">
-        <header class="logo">
-            <span class="nq-icon nimiq-logo"></span>
-            <span class="logo-wordmark">Nimiq</span>
-            <span class="logo-subtitle"></span>
-        </header>
+        <div class="padding flex-column">
+            <header class="logo">
+                <span class="nq-icon nimiq-logo"></span>
+                <span class="logo-wordmark">Nimiq</span>
+                <span class="logo-subtitle"></span>
+            </header>
 
-        <div v-if="activeAccountInfo && !activeAccountInfo.fileExported" class="backup-warning nq-orange-bg">
-            <AlertTriangleIcon class="alert-icon"/>
-            <h2>Secure<br>your Account</h2>
-            <p>Download your Login File to secure access to your Account.</p>
-            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)">
-                Login File<ArrowRightSmallIcon/>
-            </button>
+            <div v-if="activeAccountInfo && !activeAccountInfo.fileExported" class="backup-warning nq-orange-bg">
+                <AlertTriangleIcon class="alert-icon"/>
+                <h2>Secure<br>your Account</h2>
+                <p>Download your Login File to secure access to your Account.</p>
+                <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)">
+                    Login File<ArrowRightSmallIcon/>
+                </button>
+            </div>
+
+            <PriceChart currency="nim" class="graph" />
+            <PriceChart currency="btc" class="graph" />
+
+            <div class="trade-actions">
+                <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">
+                    {{ $t('Buy') }}
+                </button>
+                <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">
+                    {{ $t('Sell') }}
+                </button>
+            </div>
+
+            <div class="flex-grow"></div>
+
+            <AccountMenu />
+
+            <a class="settings" href="#" @click.prevent="$router.push('/settings')">
+                <GearIcon />
+                <span>{{ $t('Settings') }}</span>
+            </a>
         </div>
 
-        <PriceChart currency="nim" class="graph" />
-        <PriceChart currency="btc" class="graph" />
-
-        <div class="trade-actions">
-            <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">{{ $t('Buy') }}</button>
-            <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">{{ $t('Sell') }}</button>
-        </div>
-
-        <div class="flex-grow"></div>
-
-        <AccountMenu />
-
-        <a class="settings" href="#" @click.prevent="$router.push('/settings')">
-            <GearIcon />
-            <span>{{ $t('Settings') }}</span>
-        </a>
+        <ConsensusIndicator/>
     </div>
 </template>
 
@@ -40,6 +48,7 @@ import { GearIcon, ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-com
 
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
+import ConsensusIndicator from '../ConsensusIndicator.vue';
 import { useAccountStore } from '../../stores/Account';
 import { backup } from '../../hub';
 
@@ -59,6 +68,7 @@ export default createComponent({
         AlertTriangleIcon,
         PriceChart,
         AccountMenu,
+        ConsensusIndicator,
     },
 });
 </script>
@@ -67,12 +77,17 @@ export default createComponent({
 @import '../../scss/mixins.scss';
 .sidebar {
     @include flex-full-height;
-    background: var(--nimiq-blue-bg);
     flex-direction: column;
-    align-items: center;
-    padding: 2rem 1.5rem;
+    background: var(--nimiq-blue-bg);
     color: white;
     min-width: 21rem;
+}
+
+.padding {
+    width: 100%;
+    flex-grow: 1;
+    padding: 2rem 1.5rem;
+    align-items: center;
 }
 
 > * {

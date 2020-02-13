@@ -5,12 +5,7 @@
             <span class="month">{{ dateMonth }}</span>
         </div>
         <div v-else class="pending">
-            <svg width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path opacity=".3" d="M4 2.5A7.49 7.49 0 1014.5 13" stroke="#1F2348" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 8.5A7.5 7.5 0 008.5 1" stroke="#0582CA" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <CircleSpinner/>
         </div>
         <div class="identicon">
             <Identicon :address="peerAddress"/>
@@ -45,7 +40,7 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
-import { CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
+import { CircleSpinner, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { AddressBook, Utf8Tools } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
@@ -140,6 +135,7 @@ export default createComponent({
         };
     },
     components: {
+        CircleSpinner,
         Amount,
         CashlinkIcon,
         Identicon,
@@ -188,23 +184,11 @@ export default createComponent({
     }
 
     .pending {
-        flex-grow: 0;
-        height: 5rem;
-        display: flex;
-        align-items: center;
-        justify-items: space-around;
-        > * {
-            animation: rotate 2s 0s linear infinite;
+        margin: 0 1.5rem;
+    }
 
-            @keyframes rotate {
-                0% {
-                    transform: rotateZ(0deg);
-                }
-                100% {
-                    transform: rotateZ(360deg);
-                }
-            }
-        }
+    /deep/ .circle-spinner {
+        display: block;
     }
 
     .identicon {

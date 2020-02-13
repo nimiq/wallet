@@ -8,6 +8,16 @@ export type Transaction = ReturnType<import('@nimiq/core-web').Client.Transactio
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
 };
 
+// Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.
+export enum TransactionState {
+    NEW = 'new',
+    PENDING = 'pending',
+    MINED = 'mined',
+    INVALIDATED = 'invalidated',
+    EXPIRED = 'expired',
+    CONFIRMED = 'confirmed',
+}
+
 export const useTransactionsStore = createStore({
     id: 'transactions',
     state: () => ({

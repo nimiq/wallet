@@ -1,11 +1,20 @@
 <template>
-    <div class="transaction" @click="$router.push({name: 'transaction', params: {hash}}).catch((err)=> {})">
-        <div v-if="dateDay" class="date">
+    <div class="transaction" :class="state" @click="$router.push({name: 'transaction', params: {hash}})">
+        <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
         </div>
-        <div v-else class="pending">
+        <div v-else-if="state === TransactionState.PENDING" class="pending">
             <CircleSpinner/>
+        </div>
+        <div
+            v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
+            class="invalid nq-red"
+        >
+            <CrossIcon/>
+        </div>
+        <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
+            <AlertTriangleIcon/>
         </div>
         <div class="identicon">
             <Identicon :address="peerAddress"/>
@@ -20,9 +29,15 @@
                 <span>{{ peerAddress.substring(9) }}</span>
             </div>
             <div class="time-and-message">
-                <span v-if="dateTime" class="time">{{ dateTime }}</span>
-                <span v-else class="time">{{ $t('pending') }}</span>
-                <span class="message">{{ data }}</span>
+                <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
+                <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
+                <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
+                <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
+                <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+
+                <span v-if="data" class="message">
+                    <strong class="dot">&middot;</strong>{{ data }}
+                </span>
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
@@ -40,15 +55,16 @@
 
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
-import { CircleSpinner, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
+import { CircleSpinner, AlertTriangleIcon, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { AddressBook, Utf8Tools } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction } from '../stores/Transactions';
+import { Transaction, TransactionState } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection';
 import Amount from './Amount.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
@@ -67,6 +83,8 @@ export default createComponent({
 
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { label } = useContactsStore();
+
+        const state = computed(() => tx.value.state);
 
         const isIncoming = computed(() => tx.value.recipient === activeAddress.value);
 
@@ -120,6 +138,8 @@ export default createComponent({
 
         return {
             constants,
+            state,
+            TransactionState,
             dateDay,
             dateMonth,
             dateTime,
@@ -136,6 +156,8 @@ export default createComponent({
     },
     components: {
         CircleSpinner,
+        CrossIcon,
+        AlertTriangleIcon,
         Amount,
         CashlinkIcon,
         Identicon,
@@ -145,6 +167,10 @@ export default createComponent({
 </script>
 
 <style scoped lang="scss">
+svg {
+    display: block;
+}
+
 .transaction {
     display: flex;
     align-items: center;
@@ -245,8 +271,8 @@ export default createComponent({
             font-size: 1.75rem;
             opacity: .5;
 
-            .message {
-                margin-left: 1.5rem;
+            .dot {
+                margin: 0 0.875rem;
             }
         }
     }
@@ -310,6 +336,23 @@ export default createComponent({
             > .fiat-amount::before {
                 content: '+';
             }
+        }
+    }
+
+    &.expired,
+    &.invalidated {
+        .identicon {
+            filter: saturate(0);
+            opacity: 0.75;
+        }
+
+        .data,
+        .amounts {
+            opacity: 0.5;
+        }
+
+        .amounts {
+            text-decoration: line-through;
         }
     }
 }

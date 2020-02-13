@@ -18,7 +18,7 @@
                             :key="currencyOption"
                             :value="currencyOption"
                             :selected="currencyOption === currency"
-                        >{{currencyOption}}</option>
+                        >{{currencyOption.toUpperCase()}}</option>
                     </select>
                 </div>
                 <div class="flex-row">
@@ -83,7 +83,7 @@ export default createComponent({
         PageHeader,
         SmallPage,
         Modal,
-    },
+    } as any,
 });
 </script>
 

@@ -9,12 +9,12 @@
                         <div class="label-and-buttons flex-row">
                             <div class="label">{{activeAddressInfo.label}}</div>
                             <div class="send-receive flex-row">
-                                <button class="send nq-button-pill"
-                                    @click="$router.push({name: 'send', params: {senderAddress}}).catch(error => {})">
+                                <button class="send nq-button-pill light-blue"
+                                    @click="$router.push({name: 'send', params: {senderAddress}})">
                                     <ArrowRightSmallIcon />Send
                                 </button>
                                 <button class="receive nq-button-s"
-                                    @click="$router.push('/receive').catch(error => {})">
+                                    @click="$router.push('/receive')">
                                     <ArrowRightSmallIcon />Receive
                                 </button>
                             </div>
@@ -100,12 +100,13 @@ export default createComponent({
                 height: 10rem;
                 width: 10rem;
                 margin-left: 1rem;
-                margin-right: 2.5rem;
+                margin-right: 4rem;
                 flex-shrink: 0;
             }
 
             .label-and-buttons {
                 justify-content: space-between;
+                margin-bottom: 0.75rem;
             }
 
             .address,
@@ -115,14 +116,16 @@ export default createComponent({
             }
 
             .label {
+                font-size: 3rem;
                 font-weight: 600;
             }
 
             .address {
                 word-spacing: -0.1em;
+                letter-spacing: 0.005em;
                 font-family: "Fira Mono", monospace;
-                font-weight: 500;
-                font-size: 2rem;
+                font-weight: normal;
+                font-size: 2.5rem;
             }
         }
 

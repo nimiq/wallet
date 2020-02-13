@@ -20,10 +20,10 @@
             <PriceChart currency="btc" class="graph" />
 
             <div class="trade-actions">
-                <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">
+                <button class="nq-button-s inverse" @click="$router.push('/trade')">
                     {{ $t('Buy') }}
                 </button>
-                <button class="nq-button-s inverse" @click="$router.push('/trade').catch(()=>{})">
+                <button class="nq-button-s inverse" @click="$router.push('/trade')">
                     {{ $t('Sell') }}
                 </button>
             </div>
@@ -32,10 +32,10 @@
 
             <AccountMenu />
 
-            <a class="settings" href="#" @click.prevent="$router.push('/settings')">
-                <GearIcon />
-                <span>{{ $t('Settings') }}</span>
-            </a>
+            <button class="settings reset flex-row" href="#" @click.prevent="$router.push('/settings')">
+                <GearIcon/>
+                <span class="settings-label">{{ $t('Settings') }}</span>
+            </button>
         </div>
 
         <ConsensusIndicator/>
@@ -86,7 +86,7 @@ export default createComponent({
 .padding {
     width: 100%;
     flex-grow: 1;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 1.5rem;
     align-items: center;
 }
 
@@ -152,10 +152,36 @@ export default createComponent({
 }
 
 .settings {
-    @include flex-row;
-    justify-content: space-evenly;
+    align-items: center;
     width: 100%;
+    color: rgba(255, 255, 255, .3);
+    margin-top: 1rem;
+    padding: 1.75rem 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+
+    transition:
+        background 0.2s var(--nimiq-ease),
+        color 0.2s var(--nimiq-ease);
+}
+
+.settings:hover,
+.settings:focus {
+    background: rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, .5);
+}
+
+.settings-label {
+    margin-left: 2rem;
     color: rgba(255, 255, 255, .7);
-    margin-top: 3rem;
+    font-size: 2rem;
+
+    transition: color 0.2s var(--nimiq-ease);
+}
+
+.settings:hover .settings-label,
+.settings:focus .settings-label {
+    color: rgba(255, 255, 255, 1);
 }
 </style>

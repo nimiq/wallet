@@ -24,11 +24,11 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:30
+#: src/components/layouts/AddressOverview.vue:33
 msgid "Connect"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:29
+#: src/components/layouts/AddressOverview.vue:32
 msgid "Connect your first account:"
 msgstr ""
 
@@ -102,11 +102,11 @@ msgstr ""
 msgid "Peers"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:24
+#: src/components/TransactionListItem.vue:27
 msgid "pending"
 msgstr ""
 
-#: src/components/TransactionList.vue:131
+#: src/components/TransactionList.vue:138
 msgid "Pending..."
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr ""
 msgid "This is a quiet place with no transactions."
 msgstr ""
 
-#: src/components/TransactionList.vue:141
+#: src/components/TransactionList.vue:148
 msgid "This month"
 msgstr ""
 

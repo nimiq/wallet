@@ -1,7 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
 module.exports = {
+    configureWebpack: {
+        plugins: [
+            new PoLoaderOptimizer(),
+        ],
+        devtool: 'source-map', // TEMP: needed by webpack-i18-tools
+    },
     chainWebpack(config) {
         config
             .plugin('copy-webpack-plugin')
@@ -13,10 +20,10 @@ module.exports = {
 
         config.module
             .rule('po')
-            .test(/\.pot?$/)
-            .use('po-loader')
-            .loader('po-loader')
-            .end()
-            .end();
+                .test(/\.pot?$/)
+                    .use('po-loader')
+                        .loader('webpack-i18n-tools')
+                        .end()
+                .end();
     },
 };

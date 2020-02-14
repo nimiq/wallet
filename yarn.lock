@@ -941,7 +941,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components.git#build/master":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components.git#79e572221d3c7325e49f049e2c10110c89c166fb"
+  resolved "https://github.com/nimiq/vue-components.git#b50040fa1802919e6f7e07e2ded03527f8cf06a3"
   dependencies:
     "@nimiq/style" "^0.7.6"
     big-integer "^1.6.44"
@@ -1000,9 +1000,9 @@
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
 "@types/node@*":
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.0.tgz#b417deda18cf8400f278733499ad5547ed1abec4"
-  integrity sha512-GnZbirvmqZUzMgkFn70c74OQpTTUcCzlhQliTzYjQMqg+hVKcDnxdL19Ne3UdYzdMA/+W3eb646FWn/ZaT1NfQ==
+  version "13.7.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.1.tgz#238eb34a66431b71d2aaddeaa7db166f25971a0d"
+  integrity sha512-Zq8gcQGmn4txQEJeiXo/KiLpon8TzAl0kmKH4zdWctPj05nWwp1ClMdAVEloqrQKfaC48PNLdgN/aVaLqUrluA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -6978,14 +6978,7 @@ pnp-webpack-plugin@^1.6.0:
   dependencies:
     ts-pnp "^1.1.2"
 
-"po-loader@https://github.com/Yukiioz/po-loader.git#master":
-  version "0.5.0"
-  resolved "https://github.com/Yukiioz/po-loader.git#b4b45641b7e297fca7e46c34d59ffe888e834252"
-  dependencies:
-    loader-utils "^1.2.3"
-    po2json ">=0.4.5"
-
-po2json@>=0.4.5:
+po2json@^0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/po2json/-/po2json-0.4.5.tgz#47bb2952da32d58a1be2f256a598eebc0b745118"
   integrity sha1-R7spUtoy1Yob4vJWpZjuvAt0URg=
@@ -8941,16 +8934,6 @@ tough-cookie@~2.4.3:
     psl "^1.1.24"
     punycode "^1.4.1"
 
-"translation-key-extractor@https://github.com/Yukiioz/translation-key-extractor.git#master":
-  version "0.1.0"
-  resolved "https://github.com/Yukiioz/translation-key-extractor.git#e8a48f55585340b953609fcf62b530fc4cd53aae"
-  dependencies:
-    gettext-extractor "^3.5.2"
-    glob "^7.1.6"
-    loader-utils "^1.2.3"
-    parse5 "^4.*.*"
-    queue "^6.0.1"
-
 trim-newlines@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-1.0.0.tgz#5887966bb582a4503a41eb524f7d35011815a613"
@@ -9312,9 +9295,9 @@ vm-browserify@^1.0.1:
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
 vue-class-component@^7.1.0:
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.2.tgz#aecc6d28801f64c61eb04407cf3a5476da26b0c0"
-  integrity sha512-QjVfjRffux0rUBNtxr1hvUxDrfifDvk9q/OSdB/sKIlfxAudDF2E1YTeiEC+qOYIOOBGWkgSKQSnast6H+S38w==
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.3.tgz#a5b1abd53513a72ad51098752e2dedd499807cca"
+  integrity sha512-oEqYpXKaFN+TaXU+mRLEx8dX0ah85aAJEe61mpdoUrq0Bhe/6sWhyZX1JjMQLhVsHAkncyhedhmCdDVSasUtDw==
 
 vue-eslint-parser@^7.0.0:
   version "7.0.0"
@@ -9505,6 +9488,17 @@ webpack-dev-server@^3.10.2:
     webpack-log "^2.0.0"
     ws "^6.2.1"
     yargs "12.0.5"
+
+"webpack-i18n-tools@https://github.com/Yukiioz/webpack-i18n-tools.git#master":
+  version "0.0.1"
+  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#ccb427326623df442edc2952e84f9c78393984af"
+  dependencies:
+    gettext-extractor "^3.5.2"
+    glob "^7.1.6"
+    loader-utils "^1.2.3"
+    parse5 "^4.*.*"
+    po2json "^0.4.5"
+    queue "^6.0.1"
 
 webpack-log@^2.0.0:
   version "2.0.0"

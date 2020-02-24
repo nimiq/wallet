@@ -180,7 +180,7 @@ export default createComponent({
     bottom: calc(100% + 2rem);
     background: white;
     width: 33rem;
-    max-height: calc(100vh - 20rem);
+    max-height: calc(100vh - 27rem);
     padding: 1rem;
     border-radius: .75rem;
     color: var(--nimiq-blue);

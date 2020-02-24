@@ -129,7 +129,10 @@ export default createComponent({
         const fiatStore = useFiatStore();
         const fiatCurrency = computed(() => fiatStore.currency.value);
         const hash = computed(() => props.transaction.transactionHash);
-        const fiatValue = computed(() => props.transaction.fiatValue ? props.transaction.fiatValue[fiatCurrency.value] : undefined);
+        const fiatValue = computed(() => props.transaction.fiatValue
+            ? props.transaction.fiatValue[fiatCurrency.value]
+            : undefined,
+        );
 
         const { language } = useSettingsStore();
 

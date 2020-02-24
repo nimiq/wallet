@@ -39,7 +39,7 @@ export default createComponent({
             language,
         };
     },
-    components: { FiatAmount },
+    components: { FiatAmount } as any,
 });
 </script>
 

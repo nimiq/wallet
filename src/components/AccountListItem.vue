@@ -42,16 +42,16 @@ import { backup, rename, changePassword, logout } from '../hub';
 export default createComponent({
     props: {
         account: {
-            type: Object,
+            type: Object as () => AccountInfo,
             required: true,
         },
     },
     setup(props) {
         const accountStore = useAccountStore();
 
-        const canExportFile = computed(() => (props.account as AccountInfo).type === AccountType.BIP39);
-        const canExportWords = computed(() => (props.account as AccountInfo).type !== AccountType.LEDGER);
-        const canChangePassword = computed(() => (props.account as AccountInfo).type !== AccountType.LEDGER);
+        const canExportFile = computed(() => props.account.type === AccountType.BIP39);
+        const canExportWords = computed(() => props.account.type !== AccountType.LEDGER);
+        const canChangePassword = computed(() => props.account.type !== AccountType.LEDGER);
 
         return {
             getBackgroundClass,

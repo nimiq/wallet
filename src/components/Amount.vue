@@ -30,7 +30,7 @@ export default createComponent({
     },
     components: {
         Amount,
-    },
+    } as any,
 });
 </script>
 

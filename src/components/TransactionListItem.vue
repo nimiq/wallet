@@ -71,25 +71,22 @@ import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 export default createComponent({
     props: {
         transaction: {
-            type: Object,
+            type: Object as () => Transaction,
             required: true,
         },
     },
     setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
-        // Only for typing of the prop
-        const tx = computed(() => props.transaction as Transaction);
-
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { label } = useContactsStore();
 
-        const state = computed(() => tx.value.state);
+        const state = computed(() => props.transaction.state);
 
-        const isIncoming = computed(() => tx.value.recipient === activeAddress.value);
+        const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? tx.value.sender : tx.value.recipient);
+        const peerAddress = computed(() => isIncoming.value ? props.transaction.sender : props.transaction.recipient);
         const peerLabel = computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
@@ -105,7 +102,7 @@ export default createComponent({
         });
 
         // Date
-        const date = computed(() => tx.value.timestamp && new Date(tx.value.timestamp * 1000));
+        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
         const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()]);
@@ -113,8 +110,8 @@ export default createComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Data
-        const dataBytes = computed(() => tx.value.data.raw
-            ? new Uint8Array(tx.value.data.raw.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16)))
+        const dataBytes = computed(() => props.transaction.data.raw
+            ? new Uint8Array(props.transaction.data.raw.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16)))
             : new Uint8Array(0));
         const data = computed(() => {
             if (!dataBytes.value.length) return '';
@@ -131,8 +128,8 @@ export default createComponent({
         // Fiat currency
         const fiatStore = useFiatStore();
         const fiatCurrency = computed(() => fiatStore.currency.value);
-        const hash = computed(() => tx.value.transactionHash);
-        const fiatValue = computed(() => tx.value.fiatValue ? tx.value.fiatValue[fiatCurrency.value] : undefined);
+        const hash = computed(() => props.transaction.transactionHash);
+        const fiatValue = computed(() => props.transaction.fiatValue ? props.transaction.fiatValue[fiatCurrency.value] : undefined);
 
         const { language } = useSettingsStore();
 

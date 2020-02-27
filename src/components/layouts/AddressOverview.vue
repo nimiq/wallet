@@ -2,28 +2,29 @@
     <div class="address-overview" :class="{'noAccounts flex-column': !activeAddressInfo}">
         <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
         <template v-if="activeAddressInfo">
-            <div class="active-address flex-row">
-                <div class="account flex-row">
-                    <Identicon :address="activeAddressInfo.address" />
-                    <div class="meta flex-column">
-                        <div class="label-and-buttons flex-row">
-                            <div class="label">{{activeAddressInfo.label}}</div>
-                            <div class="send-receive flex-row">
-                                <button class="send nq-button-pill light-blue"
-                                    @click="$router.push({name: 'send', params: {senderAddress}})">
-                                    <ArrowRightSmallIcon />Send
-                                </button>
-                                <button class="receive nq-button-s"
-                                    @click="$router.push('/receive')">
-                                    <ArrowRightSmallIcon />Receive
-                                </button>
-                            </div>
-                        </div>
-                        <div class="address nq-label">{{activeAddressInfo.address}}</div>
-                    </div>
+            <button class="reset active-address flex-row">
+                <Identicon :address="activeAddressInfo.address" />
+                <div class="meta flex-column">
+                    <div class="label">{{activeAddressInfo.label}}</div>
+                    <div class="address">{{activeAddressInfo.address}}</div>
                 </div>
+                <div class="balance flex-column">
+                    <Amount :amount="activeAddressInfo.balance"/>
+                    <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
+                </div>
+            </button>
+            <div class="actions flex-row">
+                <SearchBar @input="search.searchString = $event.target.value"/>
+
+                <button class="send nq-button-pill light-blue"
+                    @click="$router.push({name: 'send', params: {senderAddress}})">
+                    <ArrowRightSmallIcon />Send
+                </button>
+                <button class="receive nq-button-s"
+                    @click="$router.push('/receive')">
+                    <ArrowRightSmallIcon />Receive
+                </button>
             </div>
-            <SearchBar @input="search.searchString = $event.target.value"/>
             <TransactionList :searchString="search.searchString" />
         </template>
         <template v-else>
@@ -38,8 +39,12 @@
 <script lang="ts">
 import { createComponent, reactive, computed } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
-import TransactionList from '../TransactionList.vue';
+
+import Amount from '../Amount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
+import TransactionList from '../TransactionList.vue';
+
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { onboard } from '../../hub';
@@ -64,6 +69,8 @@ export default createComponent({
     components: {
         ArrowRightSmallIcon,
         Identicon,
+        Amount,
+        FiatConvertedAmount,
         SearchBar,
         TransactionList,
     } as any,
@@ -76,38 +83,27 @@ export default createComponent({
     @include flex-full-height;
     background: var(--nimiq-card-bg);
     flex-direction: column;
-    padding: 2.5rem 5rem 0 5rem;
-
-    > *:not(:last-child) {
-        margin: 2.5rem 0;
-    }
+    padding: 4rem 4rem 0 4rem;
 
     .active-address {
         flex-shrink: 0;
-        justify-content: space-between;
         align-items: center;
+        padding: 2rem 4rem 2rem 2rem;
+        border-radius: 0.5rem;
+        transition: background 400ms var(--nimiq-ease);
 
-        .account {
+        .identicon {
+            height: 11.25rem;
+            width: 11.25rem;
+            margin: -0.625rem 4rem -0.625rem 0; // Negative margin above and below to size identicon to be 90x80 px
+            flex-shrink: 0;
+        }
+
+        .meta {
             flex-grow: 1;
-            align-items: center;
-            overflow: hidden;
-
-            .meta {
-                flex-grow: 1;
-            }
-
-            .identicon {
-                height: 10rem;
-                width: 10rem;
-                margin-left: 1rem;
-                margin-right: 4rem;
-                flex-shrink: 0;
-            }
-
-            .label-and-buttons {
-                justify-content: space-between;
-                margin-bottom: 0.75rem;
-            }
+            min-width: 0;
+            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+            margin-right: 4rem;
 
             .address,
             .label {
@@ -118,51 +114,77 @@ export default createComponent({
             .label {
                 font-size: 3rem;
                 font-weight: 600;
+                margin-top: 0.25rem;
+                margin-bottom: 1rem;
             }
 
             .address {
                 word-spacing: -0.1em;
                 letter-spacing: 0.005em;
-                font-family: "Fira Mono", monospace;
-                font-weight: normal;
+                font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
                 font-size: 2.5rem;
+                color: rgba(31, 35, 72, 0.5);
             }
         }
 
-        .send-receive {
-            flex-grow: 0;
-            align-items: center;
+        .balance {
+            flex-shrink: 0;
+            text-align: right;
 
-            .send, .receive {
-                margin: 0 1rem;
-                align-items: center;
-                display: flex;
-                flex-direction: row;
-
-
-                > .nq-icon {
-                    width: 1.5rem;
-                    height: 1.5rem;
-                    margin-right: 1rem;
-                }
+            .amount {
+                font-size: 3rem;
+                font-weight: bold;
+                margin-top: 0.25rem;
+                margin-bottom: 0.75rem;
             }
 
-            .send > .nq-icon {
-                transform: rotateZ(-90deg);
+            .fiat-amount {
+                font-size: 2.5rem;
+                font-weight: 600;
+                color: rgba(31, 35, 72, 0.5);
             }
+        }
 
-            .receive > .nq-icon {
-                transform: rotateZ(90deg);
-            }
+        &:hover,
+        &:focus {
+            background: var(--nimiq-highlight-bg);
         }
     }
 
-    .search-bar {
-        flex-shrink: 0;
+    .actions {
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        align-items: center;
+        margin: 4rem 0 2rem;
+        padding: 0 3rem 0 2rem;
+
+        .send, .receive {
+            margin: 0 1rem;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+
+            > .nq-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-right: 1rem;
+            }
+        }
+
+        .send {
+            margin-left: 5rem;
+        }
+
+        .send > .nq-icon {
+            transform: rotateZ(-90deg);
+        }
+
+        .receive > .nq-icon {
+            transform: rotateZ(90deg);
+        }
     }
 
     .transaction-list {
-        width: 90rem;
         flex-grow: 1;
     }
 

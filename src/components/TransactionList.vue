@@ -103,7 +103,7 @@ export default createComponent({
         const { isFetchingTxHistory } = useNetworkStore();
 
         const scrollerBuffer = 300;
-        const itemSize = 80;
+        const itemSize = 72;
 
         const transactions: any = computed(() => {
             // filtering & sorting TX
@@ -247,13 +247,15 @@ export default createComponent({
 
 .transaction-list {
     position: relative;
+    margin: 0 2rem;
 
     .month-label {
         color: var(--nimiq-blue);
         letter-spacing: 1.5px;
         font-size: 1.75rem;
-        height: 10rem;
-        line-height: 10rem;
+        padding-top: 5rem; // Padding-top +
+        line-height: 2rem; // Line-height +
+        padding-bottom: 2rem; // Padding-bottom = 9rem, equal to a transaction height
         text-transform: uppercase;
         font-weight: bold;
         padding-left: 2rem;

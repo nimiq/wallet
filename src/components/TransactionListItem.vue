@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction" :class="state" @click="$router.push({name: 'transaction', params: {hash}})">
+    <button class="reset transaction" :class="state" @click="$router.push({name: 'transaction', params: {hash}})">
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
@@ -50,7 +50,7 @@
                 <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
             </transition>
         </div>
-    </div>
+    </button>
 </template>
 
 <script lang="ts">
@@ -176,14 +176,15 @@ svg {
     align-items: center;
     flex-direction: row;
     width: 100%;
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
     border: 0;
     background: transparent;
     border-radius: .5rem;
     cursor: pointer;
-    transition: background 500ms var(--nimiq-ease);
+    transition: background 400ms var(--nimiq-ease);
 
-    &:hover {
+    &:hover,
+    &:focus {
         background: var(--nimiq-highlight-bg);
     }
 
@@ -193,19 +194,18 @@ svg {
 
     .date {
         font-size: 2rem;
+        font-weight: bold;
         text-transform: uppercase;
         opacity: 0.4;
         text-align: center;
-        margin-right: 1.25rem;
+        margin: 0 1.25rem;
         flex-grow: 0;
-
-        > .day {
-            font-weight: bold;
-        }
+        letter-spacing: 0.0125em;
+        line-height: 1;
 
         > .month {
-            font-size: 1.625rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            letter-spacing: 0.0667em;
         }
     }
 
@@ -271,8 +271,13 @@ svg {
             font-size: 1.75rem;
             opacity: .5;
 
+            .time {
+                font-weight: 600;
+            }
+
             .dot {
                 margin: 0 0.875rem;
+                opacity: 0.6;
             }
         }
     }
@@ -319,6 +324,7 @@ svg {
             > .amount::before,
             > .fiat-amount::before {
                 content: '-';
+                margin-right: -0.1em;
             }
         }
 
@@ -335,6 +341,7 @@ svg {
             > .amount::before,
             > .fiat-amount::before {
                 content: '+';
+                margin-right: -0.1em;
             }
         }
     }

@@ -1,5 +1,9 @@
 <template>
-    <button class="reset transaction" :class="state" @click="$router.push({name: 'transaction', params: {hash}})">
+    <button
+        class="reset transaction"
+        :class="state"
+        @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
+    >
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
@@ -128,7 +132,6 @@ export default defineComponent({
         // Fiat currency
         const fiatStore = useFiatStore();
         const fiatCurrency = computed(() => fiatStore.currency.value);
-        const hash = computed(() => props.transaction.transactionHash);
         const fiatValue = computed(() => props.transaction.fiatValue
             ? props.transaction.fiatValue[fiatCurrency.value]
             : undefined,
@@ -146,7 +149,6 @@ export default defineComponent({
             data,
             fiatCurrency,
             fiatValue,
-            hash,
             isCashlink,
             isIncoming,
             language,

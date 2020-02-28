@@ -15,7 +15,7 @@
                 @create-cashlink="()=>{}"
                 @login="onboard"
                 @scan-qr="$router.replace('/scan').catch((err)=>{})" />
-            <CloseButton @click.prevent="$router.back()" class="close-button" />
+            <CloseButton @click.prevent="$router.back()" class="top-right" />
         </div>
     </Modal>
 </template>
@@ -143,7 +143,7 @@ export default createComponent({
         SendTx,
         SmallPage,
         Modal,
-    },
+    } as any,
 });
 
 /*
@@ -167,12 +167,6 @@ export default createComponent({
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
-    }
-
-    .close-button {
-        position: absolute;
-        right: 2rem;
-        top: 2rem;
     }
 }
 </style>

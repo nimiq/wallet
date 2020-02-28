@@ -58,7 +58,7 @@ export default createComponent({
         QrScanner,
         SmallPage,
         Modal,
-    },
+    } as any,
 });
 </script>
 
@@ -82,12 +82,6 @@ export default createComponent({
             align-items: center;
             flex-grow: 1;
         }
-    }
-
-    .close-button {
-        position: absolute;
-        right: 2rem;
-        top: 2rem;
     }
 }
 </style>

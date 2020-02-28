@@ -46,7 +46,7 @@
                     </button>
                 </div>
             </PageBody>
-            <CloseButton @click.prevent="$router.back()" class="close-button" />
+            <CloseButton @click.prevent="$router.back()" class="top-right" />
         </SmallPage>
     </Modal>
 </template>
@@ -127,12 +127,6 @@ export default createComponent({
                 }
             }
         }
-    }
-
-    .close-button {
-        position: absolute;
-        right: 2rem;
-        top: 2rem;
     }
 }
 </style>

@@ -26,7 +26,7 @@ export default defineComponent({
     },
     setup(props) {
         const addresses = useAddressStore();
-        const { label, setContact } = useContactsStore();
+        const { getLabel, setContact } = useContactsStore();
 
         const addressLabel = computed(
             () => addresses.state.addressInfos[props.address]
@@ -34,7 +34,7 @@ export default defineComponent({
                 : undefined,
         );
         const contactLabel = computed(() =>
-            !addressLabel.value ? label.value(props.address) : undefined,
+            !addressLabel.value ? getLabel.value(props.address) : undefined,
         );
 
         return {

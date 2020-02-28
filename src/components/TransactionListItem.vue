@@ -79,7 +79,7 @@ export default defineComponent({
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
-        const { label } = useContactsStore();
+        const { getLabel } = useContactsStore();
 
         const state = computed(() => props.transaction.state);
 
@@ -92,7 +92,7 @@ export default defineComponent({
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
             // search contacts
-            if (label.value(peerAddress.value)) return label.value(peerAddress.value);
+            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
 
             // Search global address book
             const globalLabel = AddressBook.getLabel(peerAddress.value);

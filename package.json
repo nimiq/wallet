@@ -3,16 +3,15 @@
   "version": "0.1.0",
   "private": false,
   "author": "sisou <hello@soerenschwert.de>",
-  "license": "Apache-2.0",
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --no-fix",
-    "test": "echo 'No tests'",
     "i18n:extract": "node ./node_modules/webpack-i18n-tools/index.js ./src/i18n/en.po",
-    "i18n:push": "tx push --source",
     "i18n:pull": "tx pull --all --parallel --no-interactive",
-    "i18n:sync": "yarn i18n:extract && yarn i18n:push ; yarn i18n:pull"
+    "i18n:push": "tx push --source",
+    "i18n:sync": "yarn i18n:extract && yarn i18n:push ; yarn i18n:pull",
+    "test": "echo 'No tests'"
   },
   "main": "src/main.ts",
   "dependencies": {
@@ -40,11 +39,11 @@
     "@nimiq/core-web": "^1.5.4",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.19.2",
-    "@vue/cli-plugin-babel": "^4.2.2",
-    "@vue/cli-plugin-eslint": "^4.2.2",
-    "@vue/cli-plugin-pwa": "^4.2.2",
-    "@vue/cli-plugin-typescript": "^4.2.2",
-    "@vue/cli-service": "^4.2.2",
+    "@vue/cli-plugin-babel": "~4.2.3",
+    "@vue/cli-plugin-eslint": "~4.2.3",
+    "@vue/cli-plugin-pwa": "~4.2.3",
+    "@vue/cli-plugin-typescript": "~4.2.3",
+    "@vue/cli-service": "~4.2.3",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^5.0.1",
     "copy-webpack-plugin": "^5.1.1",
@@ -53,7 +52,8 @@
     "eslint-plugin-vue": "^6.1.2",
     "node-sass": "^4.13.1",
     "sass-loader": "^8.0.2",
-    "typescript": "^3.7.5",
+    "typescript": "~3.7.5",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "license": "Apache-2.0"
 }

@@ -1,7 +1,10 @@
 <template>
     <Modal>
         <SmallPage class="address-info-modal">
-            <PageBody class="flex-column">
+            <PageBody class="flex-column" :class="{blurred: qrCodeOverlayOpened}">
+                <button @click="qrCodeOverlayOpened = true" class="reset qr-button">
+                    <QrCodeIcon/>
+                </button>
                 <Identicon :address="addressInfo.address"/>
                 <span class="label">{{ addressInfo.label }}</span>
                 <Amount :amount="addressInfo.balance"/>
@@ -10,13 +13,26 @@
                     <AddressDisplay :address="addressInfo.address"/>
                 </Copyable>
             </PageBody>
-            <CloseButton @click.prevent="$router.back()" class="top-right" />
+
+            <transition name="fade">
+                <PageBody v-if="qrCodeOverlayOpened" class="overlay flex-column">
+                    <CloseButton @click.prevent="qrCodeOverlayOpened = false" class="top-right" />
+                    <div class="flex-spacer"></div>
+                    <QrCode
+                        :data="addressInfo.address"
+                        :size="520"
+                        :fill="'#1F2348' /* nimiq-blue */"
+                        class="qr-code"
+                    />
+                    <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
+                </PageBody>
+            </transition>
         </SmallPage>
     </Modal>
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, ref } from '@vue/composition-api';
 import {
     CloseButton,
     PageBody,
@@ -42,11 +58,13 @@ export default createComponent({
         },
     },
     setup(props) {
-        console.log(props.address);
         const addressInfo = useAddressStore().state.addressInfos[props.address];
+
+        const qrCodeOverlayOpened = ref(false);
 
         return {
             addressInfo,
+            qrCodeOverlayOpened,
         };
     },
     components: {
@@ -69,10 +87,29 @@ export default createComponent({
 .address-info-modal {
     position: relative;
     width: 52.5rem !important; /* 420px */
+    overflow: hidden;
 
     .page-body {
         justify-content: center;
         align-items: center;
+
+        .qr-button {
+            position: absolute;
+            right: 3rem;
+            top: 3rem;
+            font-size: 4rem;
+            opacity: 0.4;
+            transition: opacity 250ms var(--nimiq-ease);
+
+            svg {
+                display: block;
+            }
+        }
+
+        .qr-button:hover,
+        .qr-button:focus {
+            opacity: 0.8;
+        }
 
         .identicon {
             width: 18rem;
@@ -109,6 +146,41 @@ export default createComponent({
 
         .copyable {
             margin-bottom: 0;
+        }
+
+        &.blurred {
+            filter: blur(2rem);
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background:rgba(255,255,255, 0.9);
+        justify-content: space-evenly;
+
+        .flex-spacer {
+            height: 2rem;
+        }
+
+        .qr-code {
+            // The QrCode is rendered at 2x size and then scaled to half its size,
+            // to be sharp on retina displays:
+            // 2 x 260px = 560px
+            // But now we need to make it behave as half its size as well, that's
+            // why we use negative margins on all sides (130px = 260px / 2).
+            transform: scale(0.5);
+            margin: -130px;
+        }
+
+        .qr-info-text {
+            font-size: 2.5rem;
+            font-weight: 600;
+            white-space: pre;
+            text-align: center;
         }
     }
 }

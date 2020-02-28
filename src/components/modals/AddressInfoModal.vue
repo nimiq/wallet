@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import {
     CloseButton,
     PageBody,
@@ -49,7 +49,7 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 
 import { useAddressStore } from '../../stores/Address';
 
-export default createComponent({
+export default defineComponent({
     name: 'address-info-modal',
     props: {
         address: {

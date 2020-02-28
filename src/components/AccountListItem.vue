@@ -32,14 +32,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon } from '@nimiq/vue-components';
 
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountInfo, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout } from '../hub';
 
-export default createComponent({
+export default defineComponent({
     props: {
         account: {
             type: Object as () => AccountInfo,

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
@@ -21,7 +21,7 @@ import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 
-export default createComponent({
+export default defineComponent({
     props: {
         id: {
             type: String,

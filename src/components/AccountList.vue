@@ -10,12 +10,12 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 import AccountListItem from './AccountListItem.vue';
 import { useAccountStore } from '../stores/Account';
 
-export default createComponent({
+export default defineComponent({
     name: 'account-list',
     setup() {
         const accountStore = useAccountStore();

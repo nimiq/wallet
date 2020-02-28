@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from '@vue/composition-api';
+import { defineComponent, reactive, computed } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 
 import Amount from '../Amount.vue';
@@ -52,7 +52,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { onboard } from '../../hub';
 
-export default createComponent({
+export default defineComponent({
     name: 'address-overview',
     setup() {
         const { activeAddressInfo } = useAddressStore();

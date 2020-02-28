@@ -47,13 +47,13 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, Tooltip, TransferIcon } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 
-export default createComponent({
+export default defineComponent({
     name: 'balance-distribution',
     setup() {
         const { addressInfos, accountBalance } = useAddressStore();

@@ -8,13 +8,13 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage, QrScanner } from '@nimiq/vue-components';
 import { parseRequestLink, createNimiqRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useRouter } from '../../router';
 
-export default createComponent({
+export default defineComponent({
     name: 'scan-qr-modal',
     setup() {
         const router = useRouter();

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, Ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage, SendTx } from '@nimiq/vue-components';
 import { parseRequestLink } from '@nimiq/utils';
 import Modal from './Modal.vue';
@@ -32,7 +32,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { onboard, sendTransaction } from '../../hub';
 import { useRouter } from '../../router';
 
-export default createComponent({
+export default defineComponent({
     name: 'send-modal',
     props: {
         senderAddress: {

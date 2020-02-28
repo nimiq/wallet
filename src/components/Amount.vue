@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
 
-export default createComponent({
+export default defineComponent({
     name: 'amount',
     props: {
         amount: {

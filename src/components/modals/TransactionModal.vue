@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import {
     ArrowRightSmallIcon,
     CloseButton,
@@ -54,7 +54,7 @@ import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
 import { useTransactionsStore } from '../../stores/Transactions';
 
-export default createComponent({
+export default defineComponent({
     name: 'transaction-modal',
     props: {
         hash: {

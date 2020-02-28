@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { AddressBook, Utf8Tools } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
@@ -68,7 +68,7 @@ import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
-export default createComponent({
+export default defineComponent({
     props: {
         transaction: {
             type: Object as () => Transaction,

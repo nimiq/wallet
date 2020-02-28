@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 
-export default createComponent({
+export default defineComponent({
     name: 'trade-modal',
     components: {
         CloseButton,

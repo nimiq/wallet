@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import { useAddressStore } from '../stores/Address';
 import { useTransactionsStore } from '../stores/Transactions';
@@ -90,7 +90,7 @@ function getCloserElement(element: any, classToFind: string) {
     return e;
 }
 
-export default createComponent({
+export default defineComponent({
     props: {
         searchString: {
             type: String,

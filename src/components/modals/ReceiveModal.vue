@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, Ref, ref } from '@vue/composition-api';
+import { defineComponent, computed, Ref, ref } from '@vue/composition-api';
 import {
     AmountInput,
     CloseButton,
@@ -46,7 +46,7 @@ import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Cur
 import Modal from './Modal.vue';
 import { useAddressStore } from '../../stores/Address';
 
-export default createComponent({
+export default defineComponent({
     name: 'receive-modal',
     setup() {
         const amount: Ref<string> = ref(0);

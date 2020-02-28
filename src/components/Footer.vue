@@ -7,10 +7,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { useNetworkStore } from '../stores/Network';
 
-export default createComponent({
+export default defineComponent({
     setup() {
         const { state: network$ } = useNetworkStore();
 

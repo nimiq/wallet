@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { GearIcon, ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 
 import AccountMenu from '../AccountMenu.vue';
@@ -52,7 +52,7 @@ import ConsensusIndicator from '../ConsensusIndicator.vue';
 import { useAccountStore } from '../../stores/Account';
 import { backup } from '../../hub';
 
-export default createComponent({
+export default defineComponent({
     name: 'sidebar',
     setup() {
         const { activeAccountInfo } = useAccountStore();

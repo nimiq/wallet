@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
 // import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
@@ -53,7 +53,7 @@ function roundToSignificant(number: number, places = 1) {
     return Math.round(number * roundingFactor) / roundingFactor;
 }
 
-export default createComponent({
+export default defineComponent({
     name: 'price-chart',
     props: {
         currency: {

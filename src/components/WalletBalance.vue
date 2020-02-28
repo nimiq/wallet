@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BalanceDistribution from './BalanceDistribution.vue';
 
-export default createComponent({
+export default defineComponent({
     name: 'WalletBalance',
     setup() {
         const { accountBalance } = useAddressStore();

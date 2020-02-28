@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 // @ts-ignore Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
@@ -67,7 +67,7 @@ import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
 
-export default createComponent({
+export default defineComponent({
     setup() {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { accountBalance } = useAddressStore();

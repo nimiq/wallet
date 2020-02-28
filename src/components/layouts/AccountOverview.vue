@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
 import Staking from '../Staking.vue';
 import { addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 
-export default createComponent({
+export default defineComponent({
     name: 'account-overview',
     setup() {
         const { activeAccountInfo, activeAccountId } = useAccountStore();

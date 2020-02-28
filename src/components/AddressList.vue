@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -36,7 +36,7 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
 
-export default createComponent({
+export default defineComponent({
     setup() {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { state: network$ } = useNetworkStore();

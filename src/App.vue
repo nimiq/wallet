@@ -14,14 +14,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
 import router, { provideRouter } from './router';
 
-export default createComponent({
+export default defineComponent({
     name: 'app',
     setup() {
         provideRouter(router);

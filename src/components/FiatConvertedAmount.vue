@@ -7,12 +7,12 @@
 
 <script lang="ts">
 import { FiatAmount } from '@nimiq/vue-components';
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from '../lib/Constants';
 
-export default createComponent({
+export default defineComponent({
     name: 'FiatConvertedAmount',
     props: {
         // Amount in luna

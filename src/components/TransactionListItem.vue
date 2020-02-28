@@ -47,7 +47,8 @@
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value"/>
             <transition name="fade">
-                <div v-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
+                <div v-else-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
                     Fiat value unavailable
                 </div>
@@ -68,6 +69,7 @@ import { Transaction, TransactionState } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { isFundingCashlink, isClaimingCashlink } from '../lib/CashlinkDetection';
 import Amount from './Amount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -161,6 +163,7 @@ export default defineComponent({
         CrossIcon,
         AlertTriangleIcon,
         Amount,
+        FiatConvertedAmount,
         CashlinkIcon,
         Identicon,
         FiatAmount,

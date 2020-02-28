@@ -65,8 +65,8 @@ export default createComponent({
     setup(props) {
         const transaction = useTransactionsStore().state.transactions[props.hash];
 
-
-        const date = new Date(transaction!.timestamp! * 1000);
+        // FIXME: For pending transactions, timestamp is undefined!
+        const date = new Date(transaction.timestamp! * 1000);
 
         return {
             ...transaction,
@@ -83,7 +83,7 @@ export default createComponent({
         PageHeader,
         SmallPage,
         Modal,
-    },
+    } as any,
 });
 </script>
 

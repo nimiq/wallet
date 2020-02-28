@@ -31,14 +31,14 @@ routes.push({
     props: true,
 });
 
-const SettingsModal = () => import(/* webpackChunkName: "transaction-modal" */ './components/modals/SettingsModal.vue');
+const SettingsModal = () => import(/* webpackChunkName: "settings-modal" */ './components/modals/SettingsModal.vue');
 routes.push({
     path: '/settings',
     component: SettingsModal,
     name: 'settings',
 });
 
-const TradeModal = () => import(/* webpackChunkName: "transaction-modal" */ './components/modals/TradeModal.vue');
+const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 routes.push({
     path: '/trade',
     component: TradeModal,

@@ -2,7 +2,10 @@
     <div class="address-overview" :class="{'noAccounts flex-column': !activeAddressInfo}">
         <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
         <template v-if="activeAddressInfo">
-            <button class="reset active-address flex-row">
+            <button
+                class="reset active-address flex-row"
+                @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
+            >
                 <Identicon :address="activeAddressInfo.address" />
                 <div class="meta flex-column">
                     <div class="label">{{activeAddressInfo.label}}</div>

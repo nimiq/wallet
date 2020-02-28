@@ -52,6 +52,15 @@ routes.push({
     name: 'scan',
 });
 
+const AddressInfoModal = () =>
+    import(/* webpackChunkName: "address-info-modal" */ './components/modals/AddressInfoModal.vue');
+routes.push({
+    path: '/address/:address',
+    component: AddressInfoModal,
+    name: 'address',
+    props: true,
+});
+
 routes.push({
     path: '/nimiq\\::requestUri',
     component: SendModal,

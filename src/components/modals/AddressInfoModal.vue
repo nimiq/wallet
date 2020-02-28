@@ -2,7 +2,11 @@
     <Modal>
         <SmallPage class="address-info-modal">
             <PageBody class="flex-column" :class="{blurred: qrCodeOverlayOpened}">
-                <button @click="qrCodeOverlayOpened = true" class="reset qr-button">
+                <button
+                    v-if="addressInfo.type === AddressType.BASIC"
+                    @click="qrCodeOverlayOpened = true"
+                    class="reset qr-button"
+                >
                     <QrCodeIcon/>
                 </button>
                 <Identicon :address="addressInfo.address"/>
@@ -47,7 +51,7 @@ import Modal from './Modal.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 
-import { useAddressStore } from '../../stores/Address';
+import { useAddressStore, AddressType } from '../../stores/Address';
 
 export default defineComponent({
     name: 'address-info-modal',
@@ -65,6 +69,7 @@ export default defineComponent({
         return {
             addressInfo,
             qrCodeOverlayOpened,
+            AddressType,
         };
     },
     components: {

@@ -31,7 +31,15 @@
                 <div v-if="isIncoming" class="flex-row sender-recipient">
                     <div class="address-info flex-column">
                         <Identicon :address="peerAddress"/>
-                        <span class="label">{{ peerLabel || peerAddress.substring(0, 9) }}</span>
+                        <LabelInput
+                            v-if="peerIsContact || !peerLabel"
+                            :maxBytes="64"
+                            :placeholder="$t('Add contact')"
+                            :vanishing="true"
+                            :value="peerLabel || ''"
+                            @input="label => setContact(peerAddress, label)"
+                        />
+                        <span v-else class="label">{{ peerLabel }}</span>
                         <Copyable :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
@@ -56,7 +64,15 @@
                     <ArrowRightIcon/>
                     <div class="address-info flex-column">
                         <Identicon :address="peerAddress"/>
-                        <span class="label">{{ peerLabel || peerAddress.substring(0, 9) }}</span>
+                        <LabelInput
+                            v-if="peerIsContact || !peerLabel"
+                            :maxBytes="64"
+                            :placeholder="$t('Add contact')"
+                            :vanishing="true"
+                            :value="peerLabel || ''"
+                            @input="label => setContact(peerAddress, label)"
+                        />
+                        <span v-else class="label">{{ peerLabel }}</span>
                         <Copyable :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
@@ -111,6 +127,7 @@ import {
     Tooltip,
     InfoCircleIcon,
     CircleSpinner,
+    LabelInput,
 } from '@nimiq/vue-components';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -140,7 +157,7 @@ export default defineComponent({
         const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
 
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
-        const { getLabel } = useContactsStore();
+        const { getLabel, setContact } = useContactsStore();
 
         const state = computed(() => transaction.value.state);
 
@@ -161,6 +178,7 @@ export default defineComponent({
 
             return false;
         });
+        const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
@@ -203,6 +221,8 @@ export default defineComponent({
             peerLabel,
             activeAddressInfo,
             confirmations,
+            peerIsContact,
+            setContact,
         };
     },
     components: {
@@ -222,6 +242,7 @@ export default defineComponent({
         InfoCircleIcon,
         CircleSpinner,
         CrossIcon,
+        LabelInput,
     } as any,
 });
 </script>
@@ -302,7 +323,28 @@ export default defineComponent({
         overflow: hidden;
         width: 100%;
         text-align: center;
-        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    }
+
+    .label-input {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 1.25rem 0 0.25rem;
+        min-width: 100%;
+    }
+
+    .label-input /deep/ .nq-input {
+        padding: 0.5rem 1rem;
+        min-width: 100%;
+        text-align: center;
+    }
+
+    .label-input /deep/ .nq-input:not(:focus):not(:hover) {
+        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+    }
+
+    .label-input /deep/ .width-finder {
+        padding: 0 1.25rem;
     }
 
     .copyable {

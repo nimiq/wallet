@@ -121,8 +121,7 @@ export default defineComponent({
         const isCashlink = computed(() => isCashlinkBytes(dataBytes.value));
 
         // Fiat currency
-        const fiatStore = useFiatStore();
-        const fiatCurrency = computed(() => fiatStore.currency.value);
+        const { currency: fiatCurrency } = useFiatStore();
         const fiatValue = computed(() => props.transaction.fiatValue
             ? props.transaction.fiatValue[fiatCurrency.value]
             : undefined,

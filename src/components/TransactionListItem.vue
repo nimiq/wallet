@@ -343,7 +343,7 @@ svg {
     &.invalidated {
         .identicon {
             filter: saturate(0);
-            opacity: 0.75;
+            opacity: 0.5;
         }
 
         .data,

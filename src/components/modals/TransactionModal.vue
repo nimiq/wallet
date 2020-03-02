@@ -1,14 +1,26 @@
 <template>
     <Modal>
-        <SmallPage class="transaction-modal">
+        <SmallPage class="transaction-modal" :class="state">
             <PageHeader>
                 Transaction
                 {{ isIncoming ? $t('from') : $t('to') }}
                 {{ peerLabel || peerAddress.substring(0, 14) }}
 
-                <span v-if="state === TransactionState.PENDING" slot="more" class="nq-light-blue flex-row">
+                <span
+                    v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
+                    slot="more"
+                    class="nq-light-blue flex-row"
+                >
                     <CircleSpinner/>
                     {{ $t('Pending...') }}
+                </span>
+                <span
+                    v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
+                    slot="more"
+                    class="nq-red failed flex-row"
+                >
+                    <CrossIcon/>
+                    {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
                 </span>
                 <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                     {{ isIncoming ? $t('received') : $t('sent') }}
@@ -55,8 +67,9 @@
 
                 <div class="amount-and-message flex-column">
                     <Amount :amount="transaction.value" :class="{
-                        'nq-light-blue': state === TransactionState.PENDING,
-                        'nq-green': state !== TransactionState.PENDING && isIncoming,
+                        'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
+                        'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
+                            && isIncoming,
                     }"/>
                     <transition name="fade">
                         <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
@@ -103,6 +116,7 @@ import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
+import CrossIcon from '../icons/CrossIcon.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -207,6 +221,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleIcon,
         CircleSpinner,
+        CrossIcon,
     } as any,
 });
 </script>
@@ -230,8 +245,13 @@ export default defineComponent({
             align-items: center;
             justify-content: center;
 
-            /deep/ .circle-spinner {
+            /deep/ .circle-spinner,
+            &.failed svg {
                 margin-right: 1rem;
+            }
+
+            &.failed svg { // The cross icon for expired or invalidated transactions
+                margin-bottom: -0.125rem;
             }
         }
     }
@@ -368,6 +388,26 @@ export default defineComponent({
             display: block;
             font-size: 1.625rem;
             opacity: 0.6;
+        }
+    }
+
+    &.expired,
+    &.invalidated {
+        .identicon {
+            filter: saturate(0);
+            opacity: 0.5;
+        }
+
+        .label {
+            opacity: 0.5;
+        }
+
+        .address-display {
+            opacity: 0.3;
+        }
+
+        .amount-and-message {
+            opacity: 0.4;
         }
     }
 }

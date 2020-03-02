@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { AddressBook, Utf8Tools } from '@nimiq/utils';
+import { AddressBook } from '@nimiq/utils';
 import {
     SmallPage,
     PageHeader,
@@ -109,8 +109,8 @@ import { useContactsStore } from '../../stores/Contacts';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
-import { isFundingCashlink, isClaimingCashlink } from '../../lib/CashlinkDetection';
 import { twoDigit } from '../../lib/NumberFormatting';
+import { hex2Bytes, parseDataBytes, isCashlinkBytes } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
 
 export default defineComponent({
@@ -155,20 +155,9 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Data
-        const dataBytes = computed(() => transaction.value.data.raw
-            ? new Uint8Array(transaction.value.data.raw.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16)))
-            : new Uint8Array(0));
-        const data = computed(() => {
-            if (!dataBytes.value.length) return '';
-
-            if (isFundingCashlink(dataBytes.value)) return 'Funding Cashlink';
-            if (isClaimingCashlink(dataBytes.value)) return 'Claiming Cashlink';
-
-            // @ts-ignore Readonly<Uint8Array> is not assignable to Utf8Tools functions
-            if (Utf8Tools.isValidUtf8(dataBytes.value)) return Utf8Tools.utf8ByteArrayToString(dataBytes.value);
-            return '<DATA>';
-        });
-        const isCashlink = computed(() => isFundingCashlink(dataBytes.value) || isClaimingCashlink(dataBytes.value));
+        const dataBytes = computed(() => hex2Bytes(transaction.value.data.raw));
+        const data = computed(() => parseDataBytes(dataBytes.value));
+        const isCashlink = computed(() => isCashlinkBytes(dataBytes.value));
 
         // Fiat currency
         const fiatStore = useFiatStore();

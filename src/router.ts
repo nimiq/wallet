@@ -52,11 +52,11 @@ routes.push({
     name: 'scan',
 });
 
-const AddressInfoModal = () =>
-    import(/* webpackChunkName: "address-info-modal" */ './components/modals/AddressInfoModal.vue');
+const AddressModal = () =>
+    import(/* webpackChunkName: "address-modal" */ './components/modals/AddressModal.vue');
 routes.push({
     path: '/address/:address',
-    component: AddressInfoModal,
+    component: AddressModal,
     name: 'address',
     props: true,
 });

@@ -34,7 +34,7 @@ export const useTransactionsStore = createStore({
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection.
-            // TODO: Simply assign transaction in Vue 3.
+            // TODO: Simply assign transactions in Vue 3.
             this.state.transactions = {
                 ...this.state.transactions,
                 ...newTxs,

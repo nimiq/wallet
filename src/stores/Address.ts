@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
 
@@ -55,12 +56,9 @@ export const useAddressStore = createStore({
             this.state.activeAddress = address;
         },
         addAddressInfo(addressInfo: AddressInfo, selectIt = true) {
-            // Need to re-assign the whole object in Vue 2 for change detection.
-            // TODO: Only add new addressInfo in Vue 3.
-            this.state.addressInfos = {
-                ...this.state.addressInfos,
-                [addressInfo.address]: addressInfo,
-            };
+            // Need to use Vue.set() in Vue 2 for change detection of new addresses.
+            // TODO: Simply set new addressInfo in Vue 3.
+            Vue.set(this.state.addressInfos, addressInfo.address, addressInfo);
 
             if (selectIt) this.state.activeAddress = addressInfo.address;
         },

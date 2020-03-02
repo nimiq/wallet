@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
 import { useAddressStore } from './Address'; // eslint-disable-line import/no-cycle
@@ -42,12 +43,9 @@ export const useAccountStore = createStore({
             selectAddress(this.activeAccountInfo.value!.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
-            // Need to re-assign the whole object in Vue 2 for change detection.
-            // TODO: Only add new accountInfo in Vue 3.
-            this.state.accountInfos = {
-                ...this.state.accountInfos,
-                [accountInfo.id]: accountInfo,
-            };
+            // Need use Vue.set() in Vue 2 for change detection of new accounts.
+            // TODO: Simply set new accountInfo in Vue 3.
+            Vue.set(this.state.accountInfos, accountInfo.id, accountInfo);
 
             if (selectIt) this.state.activeAccountId = accountInfo.id;
         },

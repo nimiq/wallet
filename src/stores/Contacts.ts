@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { createStore } from 'pinia';
 
 export type ContactsState = {
@@ -15,12 +16,10 @@ export const useContactsStore = createStore({
             state.contacts[address],
     },
     actions: {
-        setContact(address, label) {
-            // Not exactly great, see useTransactionStore in Transactions.ts
-            this.state.contacts = {
-                ...this.state.contacts,
-                [address]: label,
-            };
+        setContact(address: string, label: string) {
+            // Need to use Vue.set() in Vue 2 for change detection of new contacts.
+            // TODO: Simply set new contact in Vue 3.
+            Vue.set(this.state.contacts, address, label);
         },
     },
 });

@@ -98,6 +98,7 @@ export default defineComponent({
         // wrap setContact to accept an object instead of 2
         // TODO change either setContact or the contact-added event of SendTx
         const addContact = (contact: {address: string, label?: string}) => {
+            if (!contact.label) return;
             setContact(contact.address, contact.label);
         };
 

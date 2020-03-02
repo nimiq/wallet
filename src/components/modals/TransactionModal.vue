@@ -2,8 +2,7 @@
     <Modal>
         <SmallPage class="transaction-modal" :class="state">
             <PageHeader>
-                Transaction
-                {{ isIncoming ? $t('from') : $t('to') }}
+                {{ isIncoming ? $t('Transaction from') : $t('Transaction to') }}
                 {{ peerLabel || peerAddress.substring(0, 14) }}
 
                 <span
@@ -23,8 +22,8 @@
                     {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
                 </span>
                 <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                    {{ isIncoming ? $t('received') : $t('sent') }}
-                    at {{ datum }} {{ time }}
+                    {{ isIncoming ? $t('received at') : $t('sent at') }}
+                    {{ datum }} {{ time }}
                 </span>
             </PageHeader>
             <PageBody class="flex-column">

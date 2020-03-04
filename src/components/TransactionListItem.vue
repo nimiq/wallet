@@ -23,7 +23,7 @@
         <div class="identicon">
             <Identicon :address="peerAddress"/>
             <div v-if="isCashlink" class="cashlink">
-                <CashlinkIcon/>
+                <CashlinkXSmallIcon/>
             </div>
         </div>
         <div class="data">
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { CircleSpinner, AlertTriangleIcon, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
+import { CircleSpinner, AlertTriangleIcon, CashlinkXSmallIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
@@ -175,7 +175,7 @@ export default defineComponent({
         AlertTriangleIcon,
         Amount,
         FiatConvertedAmount,
-        CashlinkIcon,
+        CashlinkXSmallIcon,
         Identicon,
         FiatAmount,
     } as any,
@@ -234,17 +234,16 @@ svg {
     }
 
     .identicon {
-        display: inline-block;
         position: relative;
         width: 6rem;
         height: 6rem;
         flex-shrink: 0;
 
-        > img {
+        img {
             height: 100%
         }
 
-        > .cashlink {
+        .cashlink {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -253,9 +252,10 @@ svg {
             right: 0;
             color: white;
             background: var(--nimiq-blue-bg);
-            border-radius: 1rem;
+            border-radius: 2rem;
             height: 2rem;
             width: 2rem;
+            font-size: 2rem;
         }
     }
 

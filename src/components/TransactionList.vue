@@ -184,7 +184,7 @@ export default defineComponent({
 
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
-        // doesn't rerun on fiatValue update.
+        // only runs on transaction hash change.
         const $el: Ref<null | HTMLElement> = ref(null);
         (() => {
             const config = { characterData: true, childList: true, subtree: true };

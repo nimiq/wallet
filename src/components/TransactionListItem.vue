@@ -65,7 +65,7 @@ import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction, TransactionState } from '../stores/Transactions';
+import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
@@ -82,7 +82,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
@@ -92,13 +92,40 @@ export default defineComponent({
 
         const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
+        // Data
+        const data = computed(() => parseData(props.transaction.data.raw));
+        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
+
+        // Related Transaction
+        const { state: transactions$ } = useTransactionsStore();
+        const relatedTx = computed(() => {
+            if (!props.transaction.relatedTransactionHash) return null;
+            return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
+        });
+
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? props.transaction.sender : props.transaction.recipient);
+        const peerAddress = computed(() => isCashlink.value
+            ? relatedTx.value
+                ? isIncoming.value
+                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
+                : 'cashlink' // No related tx yet, show placeholder
+            : isIncoming.value
+                ? props.transaction.sender
+                : props.transaction.recipient);
         const peerLabel = computed(() => {
+            // Label cashlinks
+            if (peerAddress.value === 'cashlink') {
+                return isIncoming.value
+                    ? context.root.$t('Cashlink')
+                    : context.root.$t('Unclaimed Cashlink');
+            }
+
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
-            // search contacts
+
+            // Search contacts
             if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
 
             // Search global address book
@@ -115,10 +142,6 @@ export default defineComponent({
         const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()]);
         const dateTime = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Data
-        const data = computed(() => parseData(props.transaction.data.raw));
-        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();

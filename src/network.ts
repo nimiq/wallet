@@ -80,19 +80,19 @@ export async function launchNetwork() {
             .finally(() => network$.fetchingTxHistory--);
     });
 
-    // Fetch transactions for claimed cashlinks
+    // Fetch transactions for cashlinks
     const cashlinkStore = useCashlinkStore();
     const fetchedCashlinks = new Set<string>();
-    watch(cashlinkStore.claimed, () => {
+    watch(() => cashlinkStore.funded.value.concat(cashlinkStore.claimed.value), (cashlinks) => {
         const newAddresses: string[] = [];
-        for (const address of cashlinkStore.state.claimed) {
+        for (const address of cashlinks) {
             if (fetchedCashlinks.has(address)) continue;
             fetchedCashlinks.add(address);
             newAddresses.push(address);
         }
         if (!newAddresses.length) return;
 
-        console.debug(`Fetching history for ${newAddresses.length} claimed cashlink(s)`);
+        console.debug(`Fetching history for ${newAddresses.length} cashlink(s)`);
 
         for (const address of newAddresses) {
             const knownTxDetails = Object.values(transactionsStore.state.transactions)
@@ -103,35 +103,10 @@ export async function launchNetwork() {
             console.debug('Fetching transaction history for', address, knownTxDetails);
             client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
                 .then((txDetails) => {
-                    transactionsStore.addTransactions(txDetails);
-                })
-                .catch(() => fetchedCashlinks.delete(address))
-                .finally(() => network$.fetchingTxHistory--);
-        }
-    });
-
-    // Fetch transactions and subscribe for funded cashlinks
-    watch(cashlinkStore.funded, () => {
-        const newAddresses: string[] = [];
-        for (const address of cashlinkStore.state.funded) {
-            if (fetchedCashlinks.has(address)) continue;
-            fetchedCashlinks.add(address);
-            newAddresses.push(address);
-        }
-        if (!newAddresses.length) return;
-
-        console.debug(`Fetching history for ${newAddresses.length} funded cashlink(s)`);
-
-        for (const address of newAddresses) {
-            const knownTxDetails = Object.values(transactionsStore.state.transactions)
-                .filter((tx) => tx.sender === address || tx.recipient === address);
-
-            network$.fetchingTxHistory++;
-
-            console.debug('Fetching transaction history for', address, knownTxDetails);
-            client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
-                .then((txDetails) => {
-                    if (!txDetails.find((tx) => tx.sender === address)) {
+                    if (
+                        cashlinkStore.funded.value.includes(address)
+                        && !txDetails.find((tx) => tx.sender === address)
+                    ) {
                         // No claiming transactions found, subscribe address instead
                         client.subscribe(address);
                     }

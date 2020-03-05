@@ -6,8 +6,8 @@ import { useCashlinkStore } from '@/stores/Cashlink';
 // const FUNDING_CASHLINK = new Uint8Array([0, 130, 128, 146, 135]);
 // const CLAIMING_CASHLINK = new Uint8Array([0, 139, 136, 141, 138]);
 
-export const FUNDING_CASHLINK_HEX = '0082809287';
-export const CLAIMING_CASHLINK_HEX = '008b888d8a';
+const FUNDING_CASHLINK_HEX = '0082809287';
+const CLAIMING_CASHLINK_HEX = '008b888d8a';
 
 export function isFundingCashlink(data: string | Readonly<string>) {
     return data.toLowerCase() === FUNDING_CASHLINK_HEX;
@@ -21,70 +21,45 @@ export function isCashlinkData(data: string | Readonly<string>): boolean {
     return isFundingCashlink(data) || isClaimingCashlink(data);
 }
 
-export function handleFundingCashlinkTransaction(
-    plain: Transaction,
-    transactions: {[id: string]: Transaction},
-): Transaction[] {
-    const cashlinkAddress = plain.recipient;
-    // Check if the related claiming tx is already known
+export function handleCashlinkTransaction(tx: Transaction, knownTransactions: Transaction[]): Transaction[] {
+    const isFunding = isFundingCashlink(tx.data.raw);
+
+    const cashlinkAddress = isFunding ? tx.recipient : tx.sender;
+
+    // Check if the related tx is already known.
     // This can be the case when I send cashlinks between two of my own addresses,
     // or when the transaction that is added right now is triggered by the cashlink's
-    // transaction-history getting.
+    // transaction-history or subscription.
 
-    const { removeClaimedCashlink, addFundedCashlink } = useCashlinkStore();
+    const { addFundedCashlink, addClaimedCashlink, removeFundedCashlink, removeClaimedCashlink } = useCashlinkStore();
 
-    // Find related claiming transaction
-    // TODO: Use filter() to find multiple claiming txs?
-    const claimingTx = Object.values(transactions)
-        .find((tx) => tx.sender === cashlinkAddress);
+    // Find related transaction
+    // TODO: Use filter() to find multiple related txs?
+    const relatedTx = knownTransactions.find((knownTx) =>
+        (isFunding ? knownTx.sender : knownTx.recipient) === cashlinkAddress);
 
-    if (!claimingTx) {
-        // Check blockchain for claiming tx, otherwise subscribe for future txs
-        addFundedCashlink(cashlinkAddress);
+    if (!relatedTx) {
+        if (isFunding) {
+            // Check blockchain for related tx, otherwise subscribe for future txs
+            addFundedCashlink(cashlinkAddress);
+        } else {
+            // Check blockchain for related tx
+            addClaimedCashlink(cashlinkAddress);
+        }
 
-        return [plain];
+        return [tx];
     }
 
-    if (claimingTx.state === TransactionState.CONFIRMED) {
-        removeClaimedCashlink(cashlinkAddress);
+    if (relatedTx.state === TransactionState.CONFIRMED) {
+        if (isFunding) {
+            removeClaimedCashlink(cashlinkAddress);
+        } else {
+            removeFundedCashlink(cashlinkAddress);
+        }
     }
 
     return [
-        { ...plain, relatedTransactionHash: claimingTx.transactionHash },
-        { ...claimingTx, relatedTransactionHash: plain.transactionHash },
-    ];
-}
-
-export function handleClaimingCashlinkTransaction(
-    plain: Transaction,
-    transactions: {[id: string]: Transaction},
-): Transaction[] {
-    const cashlinkAddress = plain.sender;
-    // Check if the related funding tx is already known
-    // This can be the case when I send cashlinks between two of my own addresses,
-    // or when the transaction that is added right now is triggered by the cashlink's
-    // transaction-history getting or subscription.
-
-    const { removeFundedCashlink, addClaimedCashlink } = useCashlinkStore();
-
-    // Find related funding transaction
-    // TODO: Use filter() to find multiple funding txs?
-    const fundingTx = Object.values(transactions)
-        .find((tx) => tx.recipient === cashlinkAddress);
-
-    if (!fundingTx) {
-        // Check blockchain for funding tx
-        addClaimedCashlink(cashlinkAddress);
-        return [plain];
-    }
-
-
-    if (fundingTx.state === TransactionState.CONFIRMED) {
-        removeFundedCashlink(cashlinkAddress);
-    }
-
-    return [
-        { ...plain, relatedTransactionHash: fundingTx.transactionHash },
-        { ...fundingTx, relatedTransactionHash: plain.transactionHash },
+        { ...tx, relatedTransactionHash: relatedTx.transactionHash },
+        { ...relatedTx, relatedTransactionHash: tx.transactionHash },
     ];
 }

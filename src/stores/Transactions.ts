@@ -6,10 +6,8 @@ import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import {
-    CLAIMING_CASHLINK_HEX,
-    FUNDING_CASHLINK_HEX,
-    handleFundingCashlinkTransaction,
-    handleClaimingCashlinkTransaction,
+    isCashlinkData,
+    handleCashlinkTransaction,
 } from '../lib/CashlinkDetection';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
@@ -42,27 +40,14 @@ export const useTransactionsStore = createStore({
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txs) {
                 // Detect cashlinks and observe them for tx-history and new incoming tx
-                if (plain.data.raw === FUNDING_CASHLINK_HEX) {
-                    const cashlinkTxs = handleFundingCashlinkTransaction(plain, {
+                if (isCashlinkData(plain.data.raw)) {
+                    const cashlinkTxs = handleCashlinkTransaction(plain, Object.values({
                         ...this.state.transactions,
                         // Need to pass processed transactions from this batch in as well,
                         // as two related txs can be added in the same batch, and the store
                         // is only updated after this loop finished.
                         ...newTxs,
-                    });
-                    for (const tx of cashlinkTxs) {
-                        newTxs[tx.transactionHash] = tx;
-                    }
-                    continue;
-                }
-                if (plain.data.raw === CLAIMING_CASHLINK_HEX) {
-                    const cashlinkTxs = handleClaimingCashlinkTransaction(plain, {
-                        ...this.state.transactions,
-                        // Need to pass processed transactions from this batch in as well,
-                        // as two related txs can be added in the same batch, and the store
-                        // is only updated after this loop finished.
-                        ...newTxs,
-                    });
+                    }));
                     for (const tx of cashlinkTxs) {
                         newTxs[tx.transactionHash] = tx;
                     }

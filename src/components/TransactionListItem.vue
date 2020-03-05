@@ -67,12 +67,13 @@ import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
-import { hex2Bytes, parseDataBytes, isCashlinkBytes } from '../lib/DataFormatting';
+import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { isCashlinkData } from '../lib/CashlinkDetection';
 
 export default defineComponent({
     props: {
@@ -116,9 +117,8 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Data
-        const dataBytes = computed(() => hex2Bytes(props.transaction.data.raw));
-        const data = computed(() => parseDataBytes(dataBytes.value));
-        const isCashlink = computed(() => isCashlinkBytes(dataBytes.value));
+        const data = computed(() => parseData(props.transaction.data.raw));
+        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();

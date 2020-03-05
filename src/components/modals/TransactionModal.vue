@@ -140,8 +140,9 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { hex2Bytes, parseDataBytes, isCashlinkBytes } from '../../lib/DataFormatting';
+import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
+import { isCashlinkData } from '../../lib/CashlinkDetection';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -186,9 +187,8 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Data
-        const dataBytes = computed(() => hex2Bytes(transaction.value.data.raw));
-        const data = computed(() => parseDataBytes(dataBytes.value));
-        const isCashlink = computed(() => isCashlinkBytes(dataBytes.value));
+        const data = computed(() => parseData(transaction.value.data.raw));
+        const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();

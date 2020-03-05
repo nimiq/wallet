@@ -6,6 +6,7 @@ import { SignedTransaction } from '@nimiq/hub-api';
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, Transaction } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
+import { useCashlinkStore } from './stores/Cashlink';
 
 let isLaunched = false;
 
@@ -77,6 +78,68 @@ export async function launchNetwork() {
             })
             .catch(() => fetchedAddresses.delete(address))
             .finally(() => network$.fetchingTxHistory--);
+    });
+
+    // Fetch transactions for claimed cashlinks
+    const cashlinkStore = useCashlinkStore();
+    const fetchedCashlinks = new Set<string>();
+    watch(cashlinkStore.claimed, () => {
+        const newAddresses: string[] = [];
+        for (const address of cashlinkStore.state.claimed) {
+            if (fetchedCashlinks.has(address)) continue;
+            fetchedCashlinks.add(address);
+            newAddresses.push(address);
+        }
+        if (!newAddresses.length) return;
+
+        console.debug(`Fetching history for ${newAddresses.length} claimed cashlink(s)`);
+
+        for (const address of newAddresses) {
+            const knownTxDetails = Object.values(transactionsStore.state.transactions)
+                .filter((tx) => tx.sender === address || tx.recipient === address);
+
+            network$.fetchingTxHistory++;
+
+            console.debug('Fetching transaction history for', address, knownTxDetails);
+            client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
+                .then((txDetails) => {
+                    transactionsStore.addTransactions(txDetails);
+                })
+                .catch(() => fetchedCashlinks.delete(address))
+                .finally(() => network$.fetchingTxHistory--);
+        }
+    });
+
+    // Fetch transactions and subscribe for funded cashlinks
+    watch(cashlinkStore.funded, () => {
+        const newAddresses: string[] = [];
+        for (const address of cashlinkStore.state.funded) {
+            if (fetchedCashlinks.has(address)) continue;
+            fetchedCashlinks.add(address);
+            newAddresses.push(address);
+        }
+        if (!newAddresses.length) return;
+
+        console.debug(`Fetching history for ${newAddresses.length} funded cashlink(s)`);
+
+        for (const address of newAddresses) {
+            const knownTxDetails = Object.values(transactionsStore.state.transactions)
+                .filter((tx) => tx.sender === address || tx.recipient === address);
+
+            network$.fetchingTxHistory++;
+
+            console.debug('Fetching transaction history for', address, knownTxDetails);
+            client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
+                .then((txDetails) => {
+                    if (!txDetails.find((tx) => tx.sender === address)) {
+                        // No claiming transactions found, subscribe address instead
+                        client.subscribe(address);
+                    }
+                    transactionsStore.addTransactions(txDetails);
+                })
+                .catch(() => fetchedCashlinks.delete(address))
+                .finally(() => network$.fetchingTxHistory--);
+        }
     });
 }
 

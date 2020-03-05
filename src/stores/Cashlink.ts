@@ -12,8 +12,7 @@ export const useCashlinkStore = createStore({
         funded: [],
     }),
     getters: {
-        claimed: (state): Readonly<string[]> => state.claimed,
-        funded: (state): Readonly<string[]> => state.funded,
+        allCashlinks: (state): Readonly<string[]> => state.claimed.concat(state.funded),
     },
     actions: {
         addClaimedCashlink(address: string) {

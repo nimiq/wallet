@@ -83,7 +83,7 @@ export async function launchNetwork() {
     // Fetch transactions for cashlinks
     const cashlinkStore = useCashlinkStore();
     const fetchedCashlinks = new Set<string>();
-    watch(() => cashlinkStore.funded.value.concat(cashlinkStore.claimed.value), (cashlinks) => {
+    watch(cashlinkStore.allCashlinks, (cashlinks) => {
         const newAddresses: string[] = [];
         for (const address of cashlinks) {
             if (fetchedCashlinks.has(address)) continue;
@@ -104,7 +104,7 @@ export async function launchNetwork() {
             client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
                 .then((txDetails) => {
                     if (
-                        cashlinkStore.funded.value.includes(address)
+                        cashlinkStore.state.funded.includes(address)
                         && !txDetails.find((tx) => tx.sender === address)
                     ) {
                         // No claiming transactions found, subscribe address instead

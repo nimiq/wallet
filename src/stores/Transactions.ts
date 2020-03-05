@@ -28,6 +28,8 @@ export const useTransactionsStore = createStore({
     },
     actions: {
         addTransactions(txs: Transaction[]) {
+            if (!txs.length) return;
+
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txs) {
                 newTxs[plain.transactionHash] = plain;

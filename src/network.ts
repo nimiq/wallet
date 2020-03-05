@@ -71,9 +71,11 @@ export async function launchNetwork() {
         network$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        client.getTransactionsByAddress(address, 0, knownTxDetails, 100).then((txDetails) => {
-            transactionsStore.addTransactions(txDetails);
-        })
+        client.getTransactionsByAddress(address, 0, knownTxDetails, 100)
+            .then((txDetails) => {
+                transactionsStore.addTransactions(txDetails);
+            })
+            .catch(() => fetchedAddresses.delete(address))
             .finally(() => network$.fetchingTxHistory--);
     });
 }

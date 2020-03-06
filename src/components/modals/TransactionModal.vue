@@ -4,7 +4,7 @@
             <PageHeader>
                 {{
                     peerAddress === constants.CASHLINK_ADDRESS
-                        ? '' // Use the peerLabel below only, without prefix
+                        ? '' /* Use the peerLabel below only, without prefix */
                         : isCashlink
                             ? isIncoming
                                 ? $t('Cashlink from')

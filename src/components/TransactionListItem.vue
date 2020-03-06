@@ -72,7 +72,7 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
 
 export default defineComponent({
@@ -83,7 +83,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { getLabel } = useContactsStore();
@@ -109,13 +109,13 @@ export default defineComponent({
                 ? isIncoming.value
                     ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
                     : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : 'cashlink' // No related tx yet, show placeholder
+                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
             : isIncoming.value
                 ? props.transaction.sender
                 : props.transaction.recipient);
         const peerLabel = computed(() => {
             // Label cashlinks
-            if (peerAddress.value === 'cashlink') {
+            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
                     ? context.root.$t('Cashlink')
                     : context.root.$t('Unclaimed Cashlink');

@@ -3,8 +3,8 @@
         <SmallPage class="transaction-modal" :class="state">
             <PageHeader>
                 {{
-                    peerAddress === 'cashlink'
-                        ? ''
+                    peerAddress === constants.CASHLINK_ADDRESS
+                        ? '' // Use the peerLabel below only, without prefix
                         : isCashlink
                             ? isIncoming
                                 ? $t('Cashlink from')
@@ -54,7 +54,7 @@
                             @input="label => setContact(peerAddress, label)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable v-if="peerAddress !== 'cashlink'" :text="peerAddress">
+                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
                     </div>
@@ -92,7 +92,7 @@
                             @input="label => setContact(peerAddress, label)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable v-if="peerAddress !== 'cashlink'" :text="peerAddress">
+                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
                     </div>
@@ -162,7 +162,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 
 export default defineComponent({
@@ -174,7 +174,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
         const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
 
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
@@ -201,13 +201,13 @@ export default defineComponent({
                 ? isIncoming.value
                     ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
                     : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : 'cashlink' // No related tx yet, show placeholder
+                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
             : isIncoming.value
                 ? transaction.value.sender
                 : transaction.value.recipient);
         const peerLabel = computed(() => {
             // Label cashlinks
-            if (peerAddress.value === 'cashlink') {
+            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
                     ? context.root.$t('Cashlink')
                     : context.root.$t('Unclaimed Cashlink');

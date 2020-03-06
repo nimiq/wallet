@@ -4,3 +4,4 @@ export {
 } from '@nimiq/utils';
 
 export const FIAT_PRICE_UNAVAILABLE = null;
+export const CASHLINK_ADDRESS = 'cashlink';

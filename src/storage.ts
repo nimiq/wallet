@@ -120,7 +120,10 @@ export function initStorage() {
     const storedCashlinkState = localStorage.getItem(CASHLINK_STORAGE_KEY);
     if (storedCashlinkState) {
         const cashlinkState: CashlinkState = JSON.parse(storedCashlinkState);
-        cashlinkStore.patch(cashlinkState);
+        cashlinkStore.patch({
+            ...cashlinkState,
+            networkTrigger: 0,
+        });
     }
     cashlinkStore.subscribe(() => {
         localStorage.setItem(CASHLINK_STORAGE_KEY, JSON.stringify(cashlinkStore.state));

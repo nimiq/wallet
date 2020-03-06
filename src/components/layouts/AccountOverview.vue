@@ -1,5 +1,28 @@
 <template>
     <div class="account-overview">
+        <div
+            v-if="activeAccountInfo && activeAccountInfo.type === AccountType.BIP39 && !activeAccountInfo.fileExported"
+            class="backup-warning file nq-orange-bg flex-row"
+        >
+            <AlertTriangleIcon class="alert-icon"/>
+            <span class="alert-text">Placeholder File warning</span>
+            <div class="flex-grow"></div>
+            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)">
+                Login File<ArrowRightSmallIcon/>
+            </button>
+        </div>
+        <div
+            v-else-if="activeAccountInfo && !activeAccountInfo.wordsExported"
+            class="backup-warning words nq-orange flex-row"
+        >
+            <AlertTriangleIcon class="alert-icon"/>
+            <span class="alert-text">Placeholder warning</span>
+            <div class="flex-grow"></div>
+            <button class="nq-button-pill orange" @click="backup(activeAccountInfo.id, { wordsOnly: true })">
+                Recovery Words<ArrowRightSmallIcon/>
+            </button>
+        </div>
+
         <WalletBalance />
         <Staking />
         <h2 class="nq-label">
@@ -12,10 +35,11 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
 import Staking from '../Staking.vue';
-import { addAddress } from '../../hub';
+import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 
 export default defineComponent({
@@ -28,12 +52,17 @@ export default defineComponent({
             : false);
 
         return {
+            activeAccountInfo,
+            AccountType,
+            backup,
             canHaveMultipleAddresses,
             addAddress,
             activeAccountId,
         };
     },
     components: {
+        ArrowRightSmallIcon,
+        AlertTriangleIcon,
         AddressList,
         Staking,
         WalletBalance,
@@ -45,12 +74,39 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 .account-overview {
     @include flex-full-height;
+    width: 60rem;
     max-height: 100%;
     flex-direction: column;
     padding: 4rem 6rem;
 
     > * {
         margin: 2rem 0;
+    }
+
+    .backup-warning {
+        align-items: center;
+        padding: 1.25rem 1.25rem 1.25rem 1.75rem;
+        border-radius: 0.5rem;
+        font-size: 2rem;
+    }
+
+    .backup-warning .alert-icon {
+        margin-right: 1rem;
+    }
+
+    .backup-warning .alert-text {
+        font-weight: bold;
+    }
+
+    .backup-warning button .nq-icon {
+        font-size: 1.25rem;
+        vertical-align: middle;
+        margin-bottom: 0.25rem;
+        margin-left: 0.625rem;
+    }
+
+    .backup-warning.words {
+        border: 2px solid rgba(31, 35, 72, 0.05);
     }
 
     .wallet-balance {

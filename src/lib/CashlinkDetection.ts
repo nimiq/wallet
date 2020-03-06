@@ -2,6 +2,7 @@
 
 import { Transaction, TransactionState } from '@/stores/Transactions';
 import { useCashlinkStore } from '@/stores/Cashlink';
+import { useAddressStore } from '@/stores/Address';
 
 // const FUNDING_CASHLINK = new Uint8Array([0, 130, 128, 146, 135]);
 // const CLAIMING_CASHLINK = new Uint8Array([0, 139, 136, 141, 138]);
@@ -31,7 +32,7 @@ export function handleCashlinkTransaction(tx: Transaction, knownTransactions: Tr
     // or when the transaction that is added right now is triggered by the cashlink's
     // transaction-history or subscription.
 
-    const { addFundedCashlink, addClaimedCashlink, removeFundedCashlink, removeClaimedCashlink } = useCashlinkStore();
+    const { addFundedCashlink, addClaimedCashlink, removeCashlink } = useCashlinkStore();
 
     // Find related transaction
     // TODO: Use filter() to find multiple related txs?
@@ -40,22 +41,39 @@ export function handleCashlinkTransaction(tx: Transaction, knownTransactions: Tr
 
     if (!relatedTx) {
         if (isFunding) {
-            // Check blockchain for related tx, otherwise subscribe for future txs
+            // Store cashlink, which triggers checking for related tx, or subscribing for future txs
             addFundedCashlink(cashlinkAddress);
         } else {
-            // Check blockchain for related tx
+            // Store cashlink, which triggers checking for related tx
             addClaimedCashlink(cashlinkAddress);
         }
 
         return [tx];
     }
 
-    if (relatedTx.state === TransactionState.CONFIRMED) {
+    // Check if either one of the cashlink transactions is both
+    // - not yet confirmed
+    // - does not belong to any of our addresses, which means we would not get network updates about it
+    let needToSubscribeToCashlink = false;
+    if (tx.state !== TransactionState.CONFIRMED) {
+        const { state: addresses$ } = useAddressStore();
+        needToSubscribeToCashlink = !addresses$.addressInfos[isFunding ? tx.sender : tx.recipient];
+    }
+    if (!needToSubscribeToCashlink && relatedTx.state !== TransactionState.CONFIRMED) {
+        const { state: addresses$ } = useAddressStore();
+        needToSubscribeToCashlink = !addresses$.addressInfos[isFunding ? relatedTx.recipient : relatedTx.sender];
+    }
+
+    if (needToSubscribeToCashlink) {
         if (isFunding) {
-            removeClaimedCashlink(cashlinkAddress);
+            // Store cashlink, which triggers checking for related tx, or subscribing for future txs
+            addFundedCashlink(cashlinkAddress);
         } else {
-            removeFundedCashlink(cashlinkAddress);
+            // Store cashlink, which triggers checking for related tx
+            addClaimedCashlink(cashlinkAddress);
         }
+    } else {
+        removeCashlink(cashlinkAddress);
     }
 
     return [

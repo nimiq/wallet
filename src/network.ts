@@ -4,7 +4,7 @@ import { NetworkClient } from '@nimiq/network-client';
 
 import { SignedTransaction } from '@nimiq/hub-api';
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, Transaction } from './stores/Transactions';
+import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useCashlinkStore } from './stores/Cashlink';
 
@@ -83,10 +83,19 @@ export async function launchNetwork() {
     // Fetch transactions for cashlinks
     const cashlinkStore = useCashlinkStore();
     const fetchedCashlinks = new Set<string>();
-    watch(cashlinkStore.allCashlinks, (cashlinks) => {
+    const subscribedCashlinks = new Set<string>();
+    watch(cashlinkStore.networkTrigger, () => {
         const newAddresses: string[] = [];
-        for (const address of cashlinks) {
-            if (fetchedCashlinks.has(address)) continue;
+        for (const address of cashlinkStore.allCashlinks.value) {
+            if (fetchedCashlinks.has(address)) {
+                // In case a funding cashlink is added, but the cashlink is already known from
+                // a prior claiming cashlink tx, we need to subscribe the cashlink anyway.
+                if (cashlinkStore.state.funded.includes(address) && !subscribedCashlinks.has(address)) {
+                    subscribedCashlinks.add(address);
+                    client.subscribe(address);
+                }
+                continue;
+            }
             fetchedCashlinks.add(address);
             newAddresses.push(address);
         }
@@ -105,9 +114,12 @@ export async function launchNetwork() {
                 .then((txDetails) => {
                     if (
                         cashlinkStore.state.funded.includes(address)
-                        && !txDetails.find((tx) => tx.sender === address)
+                        && !subscribedCashlinks.has(address)
+                        && !txDetails.find((tx) => tx.sender === address && tx.state === TransactionState.CONFIRMED)
                     ) {
-                        // No claiming transactions found, subscribe address instead
+                        // No claiming transactions found, or the claiming tx is not yet
+                        // confirmed, so we need to subscribe for updates.
+                        subscribedCashlinks.add(address);
                         client.subscribe(address);
                     }
                     transactionsStore.addTransactions(txDetails);

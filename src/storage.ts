@@ -6,13 +6,13 @@ import { useContactsStore, ContactsState } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
 import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 
-const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions';
+const TRANSACTIONS_STORAGE_KEY = 'wallet_transactions_v01';
 const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts';
 const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses';
 const SETTINGS_STORAGE_KEY = 'safe-next_settings';
 const CONTACTS_STORAGE_KEY = 'safe-next_contacts';
 const FIAT_STORAGE_KEY = 'safe-next_exchange-rates';
-const CASHLINK_STORAGE_KEY = 'safe-next_cashlinks';
+const CASHLINK_STORAGE_KEY = 'wallet_cashlinks_v01';
 
 export function initStorage() {
     /**

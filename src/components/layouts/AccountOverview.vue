@@ -77,7 +77,7 @@ export default defineComponent({
     width: 60rem;
     max-height: 100%;
     flex-direction: column;
-    padding: 4rem 6rem;
+    padding: 4rem 6rem 0 6rem;
 
     > * {
         margin: 2rem 0;
@@ -131,6 +131,10 @@ export default defineComponent({
             border-radius: 50%;
             color: rgba(31, 35, 72, 0.6);
         }
+    }
+
+    .address-list {
+        margin-bottom: 0;
     }
 }
 </style>

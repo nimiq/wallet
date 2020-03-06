@@ -79,6 +79,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         position: relative;
+        overflow-y: auto;
     }
 
     $btnMargin: .5;

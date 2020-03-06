@@ -4,8 +4,9 @@ import { NetworkClient } from '@nimiq/network-client';
 
 import { SignedTransaction } from '@nimiq/hub-api';
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, Transaction } from './stores/Transactions';
+import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
+import { useCashlinkStore } from './stores/Cashlink';
 
 let isLaunched = false;
 
@@ -77,6 +78,59 @@ export async function launchNetwork() {
             })
             .catch(() => fetchedAddresses.delete(address))
             .finally(() => network$.fetchingTxHistory--);
+    });
+
+    // Fetch transactions for cashlinks
+    const cashlinkStore = useCashlinkStore();
+    const fetchedCashlinks = new Set<string>();
+    const subscribedCashlinks = new Set<string>();
+    watch(cashlinkStore.networkTrigger, () => {
+        const newAddresses: string[] = [];
+        for (const address of cashlinkStore.allCashlinks.value) {
+            if (fetchedCashlinks.has(address)) {
+                // In case a funding cashlink is added, but the cashlink is already known from
+                // a prior claiming cashlink tx, we need to subscribe the cashlink anyway.
+                if (
+                    !subscribedCashlinks.has(address)
+                    && cashlinkStore.state.funded.includes(address)
+                    && cashlinkStore.state.claimed.includes(address)
+                ) {
+                    subscribedCashlinks.add(address);
+                    client.subscribe(address);
+                }
+                continue;
+            }
+            fetchedCashlinks.add(address);
+            newAddresses.push(address);
+        }
+        if (!newAddresses.length) return;
+
+        console.debug(`Fetching history for ${newAddresses.length} cashlink(s)`);
+
+        for (const address of newAddresses) {
+            const knownTxDetails = Object.values(transactionsStore.state.transactions)
+                .filter((tx) => tx.sender === address || tx.recipient === address);
+
+            network$.fetchingTxHistory++;
+
+            console.debug('Fetching transaction history for', address, knownTxDetails);
+            client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
+                .then((txDetails) => {
+                    if (
+                        cashlinkStore.state.funded.includes(address)
+                        && !subscribedCashlinks.has(address)
+                        && !txDetails.find((tx) => tx.sender === address && tx.state === TransactionState.CONFIRMED)
+                    ) {
+                        // No claiming transactions found, or the claiming tx is not yet
+                        // confirmed, so we need to subscribe for updates.
+                        subscribedCashlinks.add(address);
+                        client.subscribe(address);
+                    }
+                    transactionsStore.addTransactions(txDetails);
+                })
+                .catch(() => fetchedCashlinks.delete(address))
+                .finally(() => network$.fetchingTxHistory--);
+        }
     });
 }
 

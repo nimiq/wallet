@@ -4,13 +4,15 @@ import { useAccountStore, AccountState } from './stores/Account';
 import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore, ContactsState } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
+import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 
-const TRANSACTIONS_STORAGE_KEY = 'safe-next_transactions';
+const TRANSACTIONS_STORAGE_KEY = 'wallet_transactions_v01';
 const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts';
 const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses';
 const SETTINGS_STORAGE_KEY = 'safe-next_settings';
 const CONTACTS_STORAGE_KEY = 'safe-next_contacts';
 const FIAT_STORAGE_KEY = 'safe-next_exchange-rates';
+const CASHLINK_STORAGE_KEY = 'wallet_cashlinks_v01';
 
 export function initStorage() {
     /**
@@ -83,21 +85,21 @@ export function initStorage() {
     });
 
     /**
-     * Contacts
+     * CONTACTS
      */
     const contactsStore = useContactsStore();
     const storedContacts = localStorage.getItem(CONTACTS_STORAGE_KEY);
     if (storedContacts) {
-        const contactsState: ContactsState = JSON.parse(storedContacts);
+        const contacts: ContactsState = JSON.parse(storedContacts);
         // @ts-ignore Some weird error about a type missmatch
-        contactsStore.patch({ contacts: contactsState });
+        contactsStore.patch({ contacts });
     }
     contactsStore.subscribe(() => {
         localStorage.setItem(CONTACTS_STORAGE_KEY, JSON.stringify(contactsStore.state.contacts));
     });
 
     /**
-     * Fiat
+     * FIAT
      */
     const fiatStore = useFiatStore();
     const storedRates = localStorage.getItem(FIAT_STORAGE_KEY);
@@ -109,5 +111,21 @@ export function initStorage() {
     }
     fiatStore.subscribe(() => {
         localStorage.setItem(FIAT_STORAGE_KEY, JSON.stringify(fiatStore.state));
+    });
+
+    /**
+     * CASHLINKS
+     */
+    const cashlinkStore = useCashlinkStore();
+    const storedCashlinkState = localStorage.getItem(CASHLINK_STORAGE_KEY);
+    if (storedCashlinkState) {
+        const cashlinkState: CashlinkState = JSON.parse(storedCashlinkState);
+        cashlinkStore.patch({
+            ...cashlinkState,
+            networkTrigger: 0,
+        });
+    }
+    cashlinkStore.subscribe(() => {
+        localStorage.setItem(CASHLINK_STORAGE_KEY, JSON.stringify(cashlinkStore.state));
     });
 }

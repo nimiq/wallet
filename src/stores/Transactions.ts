@@ -1,11 +1,19 @@
+/* eslint-disable import/no-cycle */
+
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import {
+    isCashlinkData,
+    handleCashlinkTransaction,
+} from '../lib/CashlinkDetection';
+import { useCashlinkStore } from './Cashlink';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
+    relatedTransactionHash?: string,
 };
 
 // Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.
@@ -30,8 +38,25 @@ export const useTransactionsStore = createStore({
         addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
+            let foundCashlinks = false;
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txs) {
+                // Detect cashlinks and observe them for tx-history and new incoming tx
+                if (isCashlinkData(plain.data.raw)) {
+                    foundCashlinks = true;
+                    const cashlinkTxs = handleCashlinkTransaction(plain, Object.values({
+                        ...this.state.transactions,
+                        // Need to pass processed transactions from this batch in as well,
+                        // as two related txs can be added in the same batch, and the store
+                        // is only updated after this loop.
+                        ...newTxs,
+                    }));
+                    for (const tx of cashlinkTxs) {
+                        newTxs[tx.transactionHash] = tx;
+                    }
+                    continue;
+                }
+
                 newTxs[plain.transactionHash] = plain;
             }
 
@@ -43,6 +68,11 @@ export const useTransactionsStore = createStore({
             };
 
             this.calculateFiatAmounts();
+
+            if (foundCashlinks) {
+                const cashlinkStore = useCashlinkStore();
+                cashlinkStore.triggerNetwork();
+            }
         },
 
         async calculateFiatAmounts() {

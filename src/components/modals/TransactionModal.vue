@@ -2,7 +2,17 @@
     <Modal>
         <SmallPage class="transaction-modal" :class="state">
             <PageHeader>
-                {{ isIncoming ? $t('Transaction from') : $t('Transaction to') }}
+                {{
+                    peerAddress === constants.CASHLINK_ADDRESS
+                        ? '' // Use the peerLabel below only, without prefix
+                        : isCashlink
+                            ? isIncoming
+                                ? $t('Cashlink from')
+                                : $t('Cashlink to')
+                            : isIncoming
+                                ? $t('Transaction from')
+                                : $t('Transaction to')
+                }}
                 {{ peerLabel || peerAddress.substring(0, 14) }}
 
                 <span
@@ -29,7 +39,12 @@
             <PageBody class="flex-column">
                 <div v-if="isIncoming" class="flex-row sender-recipient">
                     <div class="address-info flex-column">
-                        <Identicon :address="peerAddress"/>
+                        <div class="identicon">
+                            <Identicon :address="peerAddress"/>
+                            <div v-if="isCashlink" class="cashlink">
+                                <CashlinkSmallIcon/>
+                            </div>
+                        </div>
                         <LabelInput
                             v-if="peerIsContact || !peerLabel"
                             :maxBytes="64"
@@ -39,11 +54,11 @@
                             @input="label => setContact(peerAddress, label)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable :text="peerAddress">
+                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
                     </div>
-                    <ArrowRightIcon/>
+                    <ArrowRightIcon class="arrow"/>
                     <div class="address-info flex-column">
                         <Identicon :address="activeAddressInfo.address"/>
                         <span class="label">{{ activeAddressInfo.label }}</span>
@@ -60,9 +75,14 @@
                             <AddressDisplay :address="activeAddressInfo.address"/>
                         </Copyable>
                     </div>
-                    <ArrowRightIcon/>
+                    <ArrowRightIcon class="arrow"/>
                     <div class="address-info flex-column">
-                        <Identicon :address="peerAddress"/>
+                        <div class="identicon">
+                            <Identicon :address="peerAddress"/>
+                            <div v-if="isCashlink" class="cashlink">
+                                <CashlinkSmallIcon/>
+                            </div>
+                        </div>
                         <LabelInput
                             v-if="peerIsContact || !peerLabel"
                             :maxBytes="64"
@@ -72,7 +92,7 @@
                             @input="label => setContact(peerAddress, label)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable :text="peerAddress">
+                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
                     </div>
@@ -127,6 +147,7 @@ import {
     InfoCircleIcon,
     CircleSpinner,
     LabelInput,
+    CashlinkSmallIcon,
 } from '@nimiq/vue-components';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -141,7 +162,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 
 export default defineComponent({
@@ -152,8 +173,8 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+    setup(props, context) {
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
         const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
 
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
@@ -163,13 +184,40 @@ export default defineComponent({
 
         const isIncoming = computed(() => transaction.value.recipient === activeAddressInfo.value!.address);
 
+        // Data
+        const data = computed(() => parseData(transaction.value.data.raw));
+        const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
+
+        // Related Transaction
+        const { state: transactions$ } = useTransactionsStore();
+        const relatedTx = computed(() => {
+            if (!transaction.value.relatedTransactionHash) return null;
+            return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
+        });
+
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? transaction.value.sender : transaction.value.recipient);
+        const peerAddress = computed(() => isCashlink.value
+            ? relatedTx.value
+                ? isIncoming.value
+                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
+                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
+            : isIncoming.value
+                ? transaction.value.sender
+                : transaction.value.recipient);
         const peerLabel = computed(() => {
+            // Label cashlinks
+            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
+                return isIncoming.value
+                    ? context.root.$t('Cashlink')
+                    : context.root.$t('Unclaimed Cashlink');
+            }
+
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
-            // search contacts
+
+            // Search contacts
             if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
 
             // Search global address book
@@ -185,10 +233,6 @@ export default defineComponent({
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Data
-        const data = computed(() => parseData(transaction.value.data.raw));
-        const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();
@@ -242,6 +286,7 @@ export default defineComponent({
         CircleSpinner,
         CrossIcon,
         LabelInput,
+        CashlinkSmallIcon,
     } as any,
 });
 </script>
@@ -291,7 +336,7 @@ export default defineComponent({
         width: 100%;
         padding: 0 1rem;
 
-        .nq-icon {
+        .arrow {
             font-size: 3rem;
             margin-top: 2.5rem;
             opacity: 0.4;
@@ -305,12 +350,33 @@ export default defineComponent({
     }
 
     .identicon {
+        position: relative;
         width: 9rem;
         height: 9rem;
         margin: -0.5rem 0; // Identicon should be 72x63
 
+        > .identicon {
+            margin: 0;
+        }
+
         img {
             display: block;
+            height: 100%
+        }
+
+        .cashlink {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            color: white;
+            background: var(--nimiq-blue-bg);
+            border-radius: 3rem;
+            height: 3rem;
+            width: 3rem;
+            font-size: 3rem;
         }
     }
 

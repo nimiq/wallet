@@ -23,7 +23,7 @@
         <div class="identicon">
             <Identicon :address="peerAddress"/>
             <div v-if="isCashlink" class="cashlink">
-                <CashlinkIcon/>
+                <CashlinkXSmallIcon/>
             </div>
         </div>
         <div class="data">
@@ -60,19 +60,19 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { CircleSpinner, AlertTriangleIcon, CashlinkIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
+import { CircleSpinner, AlertTriangleIcon, CashlinkXSmallIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction, TransactionState } from '../stores/Transactions';
+import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import CrossIcon from './icons/CrossIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
 
 export default defineComponent({
@@ -82,8 +82,8 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+    setup(props, context) {
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { getLabel } = useContactsStore();
@@ -92,13 +92,40 @@ export default defineComponent({
 
         const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
+        // Data
+        const data = computed(() => parseData(props.transaction.data.raw));
+        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
+
+        // Related Transaction
+        const { state: transactions$ } = useTransactionsStore();
+        const relatedTx = computed(() => {
+            if (!props.transaction.relatedTransactionHash) return null;
+            return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
+        });
+
         // Peer
-        const peerAddress = computed(() => isIncoming.value ? props.transaction.sender : props.transaction.recipient);
+        const peerAddress = computed(() => isCashlink.value
+            ? relatedTx.value
+                ? isIncoming.value
+                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
+                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
+            : isIncoming.value
+                ? props.transaction.sender
+                : props.transaction.recipient);
         const peerLabel = computed(() => {
+            // Label cashlinks
+            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
+                return isIncoming.value
+                    ? context.root.$t('Cashlink')
+                    : context.root.$t('Unclaimed Cashlink');
+            }
+
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
-            // search contacts
+
+            // Search contacts
             if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
 
             // Search global address book
@@ -115,10 +142,6 @@ export default defineComponent({
         const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()]);
         const dateTime = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Data
-        const data = computed(() => parseData(props.transaction.data.raw));
-        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();
@@ -152,7 +175,7 @@ export default defineComponent({
         AlertTriangleIcon,
         Amount,
         FiatConvertedAmount,
-        CashlinkIcon,
+        CashlinkXSmallIcon,
         Identicon,
         FiatAmount,
     } as any,
@@ -211,17 +234,16 @@ svg {
     }
 
     .identicon {
-        display: inline-block;
         position: relative;
         width: 6rem;
         height: 6rem;
         flex-shrink: 0;
 
-        > img {
+        img {
             height: 100%
         }
 
-        > .cashlink {
+        .cashlink {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -230,9 +252,10 @@ svg {
             right: 0;
             color: white;
             background: var(--nimiq-blue-bg);
-            border-radius: 1rem;
+            border-radius: 2rem;
             height: 2rem;
             width: 2rem;
+            font-size: 2rem;
         }
     }
 

@@ -90,7 +90,11 @@ export async function launchNetwork() {
             if (fetchedCashlinks.has(address)) {
                 // In case a funding cashlink is added, but the cashlink is already known from
                 // a prior claiming cashlink tx, we need to subscribe the cashlink anyway.
-                if (cashlinkStore.state.funded.includes(address) && !subscribedCashlinks.has(address)) {
+                if (
+                    !subscribedCashlinks.has(address)
+                    && cashlinkStore.state.funded.includes(address)
+                    && cashlinkStore.state.claimed.includes(address)
+                ) {
                     subscribedCashlinks.add(address);
                     client.subscribe(address);
                 }

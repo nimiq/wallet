@@ -47,14 +47,13 @@
                     <small><i>{{ $t('Make a clean slate and reload everything from the Hub and network.') }}</i></small>
                 </div>
             </PageBody>
-            <CloseButton @click.prevent="$router.back()" class="top-right" />
         </SmallPage>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
+import { PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
@@ -85,7 +84,6 @@ export default defineComponent({
         };
     },
     components: {
-        CloseButton,
         PageBody,
         PageHeader,
         SmallPage,

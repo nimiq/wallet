@@ -5,20 +5,18 @@
             <PageBody>
                 <p>A fast OASIS will suddenly appear here.</p>
             </PageBody>
-            <CloseButton @click.prevent="$router.back()" class="top-right" />
         </SmallPage>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { CloseButton, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
+import { PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'trade-modal',
     components: {
-        CloseButton,
         PageBody,
         PageHeader,
         SmallPage,

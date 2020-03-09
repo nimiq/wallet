@@ -15,14 +15,13 @@
                 @create-cashlink="()=>{}"
                 @login="onboard"
                 @scan-qr="$router.replace('/scan').catch((err)=>{})" />
-            <CloseButton @click.prevent="$router.back()" class="top-right" />
         </div>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from '@vue/composition-api';
-import { CloseButton, PageBody, PageHeader, SmallPage, SendTx } from '@nimiq/vue-components';
+import { PageBody, PageHeader, SmallPage, SendTx } from '@nimiq/vue-components';
 import { parseRequestLink } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -138,7 +137,6 @@ export default defineComponent({
         };
     },
     components: {
-        CloseButton,
         PageBody,
         PageHeader,
         SendTx,

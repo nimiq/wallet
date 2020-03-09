@@ -1,16 +1,41 @@
 <template>
-    <div class="backdrop" @click="$router.back()">
+    <div class="backdrop" @click="close">
         <div class="modal" @click.stop>
             <slot />
         </div>
+        <CloseButton class="top-right inverse"/>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { CloseButton } from '@nimiq/vue-components';
 
 export default defineComponent({
-    name: 'modal',
+    setup(props, context) {
+        function close() {
+            context.root.$router.back();
+        }
+
+        const onEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                close();
+            }
+        };
+
+        document.addEventListener('keydown', onEscape);
+
+        onUnmounted(() => {
+            document.removeEventListener('keydown', onEscape);
+        });
+
+        return {
+            close,
+        };
+    },
+    components: {
+        CloseButton,
+    },
 });
 </script>
 
@@ -22,9 +47,20 @@ export default defineComponent({
     z-index: 3;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(21, 24, 51, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
+
+    // .close-button /deep/ .nq-icon
+    button /deep/ .nq-icon {
+        opacity: 0.4;
+    }
+
+    // .close-button /deep/ .nq-icon
+    button:hover /deep/ .nq-icon,
+    button:focus /deep/ .nq-icon {
+        opacity: 0.8;
+    }
 }
 </style>

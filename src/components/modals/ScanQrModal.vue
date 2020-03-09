@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { CloseButton, PageBody, PageHeader, SmallPage, QrScanner } from '@nimiq/vue-components';
+import { PageBody, PageHeader, SmallPage, QrScanner } from '@nimiq/vue-components';
 import { parseRequestLink, createNimiqRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useRouter } from '../../router';
@@ -52,7 +52,6 @@ export default defineComponent({
         };
     },
     components: {
-        CloseButton,
         PageBody,
         PageHeader,
         QrScanner,

@@ -7,8 +7,10 @@
                 <span class="logo-subtitle"></span>
             </header>
 
-            <PriceChart currency="nim" class="graph" />
-            <PriceChart currency="btc" class="graph" />
+            <AnnouncementBox/>
+
+            <PriceChart currency="nim" class="graph"/>
+            <PriceChart currency="btc" class="graph"/>
 
             <div class="trade-actions">
                 <button class="nq-button-s inverse" @click="$router.push('/trade')">
@@ -21,7 +23,7 @@
 
             <div class="flex-grow"></div>
 
-            <AccountMenu />
+            <AccountMenu/>
 
             <button class="settings reset flex-row" href="#" @click.prevent="$router.push('/settings')">
                 <GearIcon/>
@@ -37,6 +39,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { GearIcon } from '@nimiq/vue-components';
 
+import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
 import ConsensusIndicator from '../ConsensusIndicator.vue';
@@ -44,6 +47,7 @@ import ConsensusIndicator from '../ConsensusIndicator.vue';
 export default defineComponent({
     name: 'sidebar',
     components: {
+        AnnouncementBox,
         GearIcon,
         PriceChart,
         AccountMenu,
@@ -65,7 +69,7 @@ export default defineComponent({
 .padding {
     width: 100%;
     flex-grow: 1;
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 2.75rem 1.5rem 1.5rem;
     align-items: center;
 }
 
@@ -75,7 +79,11 @@ export default defineComponent({
 
 .logo {
     color: white;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
+}
+
+.announcement-box {
+    margin-bottom: 2.5rem;
 }
 
 .graph {

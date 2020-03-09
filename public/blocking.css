@@ -45,8 +45,3 @@ body.inverted {
     letter-spacing: 0.08em;
     margin-left: -0.09em; /* subtract small margin before letter N present in font */
 }
-
-/* Subtitle (e.g. NIMIQ Checkout) */
-.logo .logo-subtitle {
-    margin-left: 0.35em;
-}

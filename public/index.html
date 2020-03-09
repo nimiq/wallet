@@ -14,8 +14,41 @@
 
 <body>
     <noscript>
-      <strong>We're sorry but Nimiq Safe NXT doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but Nimiq Wallet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+
+    <style>
+      #mobile-notice {
+        display: none;
+        text-align: center;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+        padding: 4rem 0;
+      }
+
+      #mobile-notice .logo {
+        display: inline-flex;
+      }
+
+      #mobile-notice main {
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem;
+      }
+    </style>
+    <div id="mobile-notice">
+      <header class="logo">
+        <span class="nq-icon nimiq-logo"></span>
+        <span class="logo-wordmark">Nimiq</span>
+      </header>
+      <main>
+        <strong>Nimiq Wallet Preview</strong> is not yet available for small screens. Please open this website in a desktop browser.
+      </main>
+      <div class="flex-spacer"></div>
+    </div>
+
     <div id="app"></div>
     <!-- built files will be auto injected -->
 </body>

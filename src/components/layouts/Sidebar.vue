@@ -4,7 +4,6 @@
             <header class="logo">
                 <span class="nq-icon nimiq-logo"></span>
                 <span class="logo-wordmark">Nimiq</span>
-                <span class="logo-subtitle"></span>
             </header>
 
             <AnnouncementBox/>

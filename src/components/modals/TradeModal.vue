@@ -2,7 +2,7 @@
     <Modal>
         <SmallPage class="trade-modal">
             <PageHeader>Trade</PageHeader>
-            <PageBody>
+            <PageBody class="flex-column">
                 <p>A fast OASIS will suddenly appear here.</p>
             </PageBody>
         </SmallPage>
@@ -27,13 +27,11 @@ export default defineComponent({
 
 <style lang="scss">
 .trade-modal {
-    position: relative;
     width: 52.5rem !important; /* 420px */
 
     .page-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>

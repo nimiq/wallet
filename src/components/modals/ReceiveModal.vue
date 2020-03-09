@@ -11,7 +11,7 @@
                 </button>
                 <div v-else class="inputs">
                     <AmountInput v-model="amount" :maxFontSize="5"/>
-                    <CloseButton class="close-button top-right" @click="isInputsOpen = false/*, amount = 0*/"/>
+                    <CloseButton class="close-button top-right" @click="isInputsOpen = false, amount = 0"/>
                 </div>
                 <!-- <AmountInput v-model="amount" />
                 <labelInput v-model="message" placeholder="add a message" /> -->

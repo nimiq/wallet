@@ -7,10 +7,21 @@
         @click="toggleMenu"
         @keydown.esc="closeMenu"
     >
-        <div class="icon" :class="backgroundColor">
+        <div v-if="activeAccountInfo.type === AccountType.BIP39" class="icon" :class="backgroundColor">
             <LoginFileIcon/>
         </div>
-        <div class="label">{{ activeAccountInfo.label }}</div>
+        <div v-else-if="activeAccountInfo.type === AccountType.LEGACY" class="icon">
+            <Identicon :address="firstAddressInfo.address"/>
+        </div>
+        <div v-else-if="activeAccountInfo.type === AccountType.LEDGER" class="icon">
+            <LedgerIcon/>
+        </div>
+        <div class="label">
+            {{ activeAccountInfo.type === AccountType.LEGACY
+                ? firstAddressInfo.label
+                : activeAccountInfo.label
+            }}
+        </div>
 
         <!-- Submenu -->
         <div class="menu flex-column">
@@ -57,11 +68,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, AlertTriangleIcon, Identicon } from '@nimiq/vue-components';
 // @ts-ignore Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
+import LedgerIcon from './icons/LedgerIcon.vue';
 import AccountMenuItem from './AccountMenuItem.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
@@ -71,7 +83,7 @@ import { useAddressStore } from '../stores/Address';
 export default defineComponent({
     setup() {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
-        const { accountBalance } = useAddressStore();
+        const { state: addressState, accountBalance } = useAddressStore();
 
         const menuOpen = ref(false);
         function toggleMenu(event: Event) {
@@ -91,6 +103,9 @@ export default defineComponent({
 
         const backgroundColor = computed(() => !!activeAccountInfo.value
             && getBackgroundClass(activeAccountInfo.value.addresses[0]));
+
+        const firstAddressInfo = computed(() => activeAccountInfo.value
+            && addressState.addressInfos[activeAccountInfo.value.addresses[0]]);
 
         const otherAccountIds = computed(() => Object.keys(accountInfos.value)
             .filter((id) => id !== activeAccountId.value));
@@ -113,6 +128,8 @@ export default defineComponent({
             changePassword,
             logout,
             onboard,
+            AccountType,
+            firstAddressInfo,
         };
     },
     mounted() {
@@ -122,9 +139,11 @@ export default defineComponent({
     },
     components: {
         LoginFileIcon,
+        LedgerIcon,
         ArrowRightSmallIcon,
         AlertTriangleIcon,
         AccountMenuItem,
+        Identicon,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -145,17 +164,32 @@ export default defineComponent({
     font-size: 2rem;
     margin: 0.25rem 0;
 
-    transition: background-color 300ms var(--nimiq-ease);
-}
+    transition: background-color 0.2s var(--nimiq-ease);
 
-.account-menu.active {
-    background: rgba(255, 255, 255, 0.15);
+    &:hover,
+    &:focus,
+    &.active {
+        background: rgba(255, 255, 255, 0.15);
+    }
 }
 
 .icon {
     border-radius: 0.5rem;
     flex-shrink: 0;
     margin-right: 1.5rem;
+    width: 3.375rem;
+
+    .identicon {
+        width: 100%;
+
+        /deep/ img {
+            display: block;
+        }
+    }
+
+    svg {
+        display: block;
+    }
 }
 
 .icon.nq-blue-bg {

@@ -1,5 +1,6 @@
 <template>
     <button
+        v-if="activeAccountInfo"
         class="account-menu reset flex-row"
         :class="{'active': menuOpen}"
         v-click-outside="closeMenu"

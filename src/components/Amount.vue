@@ -1,5 +1,5 @@
 <template>
-    <Amount :decimals="maxDecimals" :amount="amount" :currency="currency" />
+    <Amount v-if="typeof amount === 'number'" :decimals="maxDecimals" :amount="amount" :currency="currency" />
 </template>
 
 <script lang="ts">
@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'amount',
     props: {
         amount: {
-            type: Number,
+            default: null,
             required: true,
         },
         currency: {

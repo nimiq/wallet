@@ -17,7 +17,6 @@ export default defineComponent({
     props: {
         // Amount in luna
         amount: {
-            type: Number,
             required: true,
         },
     },
@@ -26,7 +25,7 @@ export default defineComponent({
 
         const fiatCurrency = computed(() => fiatStore.currency.value);
         const exchangeRate = computed(() => fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
-        const fiatAmount = computed(() => exchangeRate.value !== undefined
+        const fiatAmount = computed(() => exchangeRate.value !== undefined && typeof props.amount === 'number'
             ? (props.amount / 1e5) * exchangeRate.value
             : undefined,
         );

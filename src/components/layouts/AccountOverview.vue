@@ -81,6 +81,7 @@ export default defineComponent({
 .account-overview {
     @include flex-full-height;
     width: 60rem;
+    flex-shrink: 0;
     max-height: 100%;
     flex-direction: column;
     padding: 4rem 6rem 0 6rem;

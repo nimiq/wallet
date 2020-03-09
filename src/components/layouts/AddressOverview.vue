@@ -1,5 +1,5 @@
 <template>
-    <div class="address-overview" :class="{'noAccounts flex-column': !activeAddressInfo}">
+    <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
         <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
         <template v-if="activeAddressInfo">
             <button
@@ -33,7 +33,7 @@
         <template v-else>
             <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
                 + 'illustrations/To_the_stars_qhyy.svg'"/>
-            <span class="opacity-75">{{ $t('Connect your first account:') }}</span>
+            <span class="opacity-75">{{ $t('Let\'s get started! Connect your first account:') }}</span>
             <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
     </div>
@@ -191,12 +191,14 @@ export default defineComponent({
         flex-grow: 1;
     }
 
-    &.noAccounts {
+    &.no-accounts {
         padding: 6rem 0;
+        justify-content: center;
         text-align: center;
+
         img {
-            width: 40%;
-            margin: 0 auto 2rem;
+            width: 50%;
+            margin: 0 auto 4rem;
         }
     }
 

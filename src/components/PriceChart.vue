@@ -24,7 +24,7 @@
                 </transition>
                 <transition name="fade">
                     <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
-                        {{ (priceChange * 100).toFixed(1) }}%
+                        {{ (priceChange * 100).toFixed(1) }}% (24h)
                     </div>
                 </transition>
             </div>
@@ -178,8 +178,8 @@ export default defineComponent({
         const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
         watch(() => [props.currency, fiatStore.currency.value], ([cryptoCurrency, fiatCurrency]) => {
-            const timespan = 7 * 24 * 60 * 60 * 1000; // one week
-            const sampleCount = 18;
+            const timespan = 24 * 60 * 60 * 1000; // 24 hours
+            const sampleCount = 24;
             const timestep = timespan / (sampleCount - 1);
             const start = Date.now() - timespan;
             const timestamps: number[] = [];

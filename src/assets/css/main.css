@@ -22,6 +22,10 @@ button.reset {
     cursor: pointer;
 }
 
+button.reset:disabled {
+    cursor: auto;
+}
+
 /* Nimiq Style overwrites */
 
 .nq-label {

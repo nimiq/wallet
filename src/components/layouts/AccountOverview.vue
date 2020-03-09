@@ -24,7 +24,15 @@
         </div>
 
         <WalletBalance />
-        <Staking />
+
+        <button class="reset nimiq-2-preview-box flex-row" disabled>
+            <div class="icon"></div>
+            <div class="text">
+                <strong>Nimiq 2.0</strong>
+                <span>Placeholder text about what's coming.</span>
+            </div>
+        </button>
+
         <h2 class="nq-label">
             {{ $t('Addresses') }}
             <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
@@ -36,9 +44,8 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-import AddressList from '../AddressList.vue';
 import WalletBalance from '../WalletBalance.vue';
-import Staking from '../Staking.vue';
+import AddressList from '../AddressList.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 
@@ -63,9 +70,8 @@ export default defineComponent({
     components: {
         ArrowRightSmallIcon,
         AlertTriangleIcon,
-        AddressList,
-        Staking,
         WalletBalance,
+        AddressList,
     },
 });
 </script>
@@ -81,36 +87,6 @@ export default defineComponent({
 
     > * {
         margin: 2rem 0;
-    }
-
-    .backup-warning {
-        align-items: center;
-        padding: 1.25rem 1.25rem 1.25rem 1.75rem;
-        border-radius: 0.5rem;
-        font-size: 2rem;
-    }
-
-    .backup-warning .alert-icon {
-        margin-right: 1rem;
-    }
-
-    .backup-warning .alert-text {
-        font-weight: bold;
-    }
-
-    .backup-warning button .nq-icon {
-        font-size: 1.25rem;
-        vertical-align: middle;
-        margin-bottom: 0.25rem;
-        margin-left: 0.625rem;
-    }
-
-    .backup-warning.words {
-        border: 2px solid rgba(31, 35, 72, 0.05);
-    }
-
-    .wallet-balance {
-        padding: 0 2rem;
     }
 
     > h2 {
@@ -132,9 +108,66 @@ export default defineComponent({
             color: rgba(31, 35, 72, 0.6);
         }
     }
+}
 
-    .address-list {
-        margin-bottom: 0;
+.wallet-balance {
+    padding: 0 2rem;
+}
+
+.backup-warning {
+    align-items: center;
+    padding: 1.25rem 1.25rem 1.25rem 1.75rem;
+    border-radius: 0.5rem;
+    font-size: 2rem;
+
+    .alert-icon {
+        margin-right: 1rem;
     }
+
+    .alert-text {
+        font-weight: bold;
+    }
+
+    button .nq-icon {
+        font-size: 1.25rem;
+        vertical-align: middle;
+        margin-bottom: 0.25rem;
+        margin-left: 0.625rem;
+    }
+
+    &.words {
+        border: 2px solid rgba(31, 35, 72, 0.05);
+    }
+}
+
+.nimiq-2-preview-box {
+    align-items: center;
+    background: var(--nimiq-highlight-bg);
+    border-radius: 0.75rem;
+    padding: 2rem;
+
+    .icon {
+        width: 4.5rem;
+        height: 5.5rem;
+        background: var(--nimiq-highlight-bg);
+        border-radius: 0.5rem;
+        margin-right: 2rem;
+    }
+
+    strong {
+        font-weight: 600;
+        font-size: 2rem;
+        display: block;
+    }
+
+    span {
+        font-weight: 600;
+        font-size: 1.75rem;
+        opacity: 0.4;
+    }
+}
+
+.address-list {
+    margin-bottom: 0;
 }
 </style>

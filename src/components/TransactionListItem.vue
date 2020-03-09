@@ -21,7 +21,8 @@
             <AlertTriangleIcon/>
         </div>
         <div class="identicon">
-            <Identicon :address="peerAddress"/>
+            <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
+            <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink">
                 <CashlinkXSmallIcon/>
             </div>
@@ -71,6 +72,7 @@ import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import CrossIcon from './icons/CrossIcon.vue';
+import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
@@ -178,6 +180,7 @@ export default defineComponent({
         CashlinkXSmallIcon,
         Identicon,
         FiatAmount,
+        UnclaimedCashlinkIcon,
     } as any,
 });
 </script>
@@ -241,6 +244,11 @@ svg {
 
         img {
             height: 100%
+        }
+
+        svg {
+            height: 100%;
+            width: 100%;
         }
 
         .cashlink {

@@ -78,7 +78,8 @@
                     <ArrowRightIcon class="arrow"/>
                     <div class="address-info flex-column">
                         <div class="identicon">
-                            <Identicon :address="peerAddress"/>
+                            <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
+                            <Identicon v-else :address="peerAddress"/>
                             <div v-if="isCashlink" class="cashlink">
                                 <CashlinkSmallIcon/>
                             </div>
@@ -154,6 +155,7 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
 import CrossIcon from '../icons/CrossIcon.vue';
+import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -287,6 +289,7 @@ export default defineComponent({
         CrossIcon,
         LabelInput,
         CashlinkSmallIcon,
+        UnclaimedCashlinkIcon,
     } as any,
 });
 </script>
@@ -362,6 +365,11 @@ export default defineComponent({
         img {
             display: block;
             height: 100%
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
         }
 
         .cashlink {

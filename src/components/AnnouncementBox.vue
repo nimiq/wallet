@@ -23,7 +23,7 @@ export default defineComponent({
         // Feedback
         const text = context.root.$t('Have ideas, suggestions, or problems?');
         const cta = context.root.$t('Give feedback');
-        const action = () => context.root.$router.push('/settings');
+        const action = () => window.open('https://forum.nimiq.community');
 
         return {
             text,

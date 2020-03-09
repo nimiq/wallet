@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <WalletBalance />
+        <AccountBalance />
 
         <button class="reset nimiq-2-preview-box flex-row" disabled>
             <div class="icon"></div>
@@ -44,7 +44,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-import WalletBalance from '../WalletBalance.vue';
+import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
@@ -70,7 +70,7 @@ export default defineComponent({
     components: {
         ArrowRightSmallIcon,
         AlertTriangleIcon,
-        WalletBalance,
+        AccountBalance,
         AddressList,
     },
 });
@@ -111,7 +111,7 @@ export default defineComponent({
     }
 }
 
-.wallet-balance {
+.account-balance {
     padding: 0 2rem;
 }
 

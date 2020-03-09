@@ -1,5 +1,5 @@
 <template>
-    <div class="wallet-balance">
+    <div class="account-balance">
         <h2 class="nq-label">{{ $t('Total Balance') }}</h2>
         <div class="fiat-amount">
             <FiatConvertedAmount :amount="accountBalance" />
@@ -15,7 +15,6 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BalanceDistribution from './BalanceDistribution.vue';
 
 export default defineComponent({
-    name: 'WalletBalance',
     setup() {
         const { accountBalance } = useAddressStore();
 
@@ -31,13 +30,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.wallet-balance {
-    .nq-label {
-        margin-bottom: 0.5rem;
-    }
+.nq-label {
+    margin-bottom: 0.5rem;
+}
 
-    .fiat-amount {
-        font-size: 8rem;
-    }
+.fiat-amount {
+    font-size: 8rem;
 }
 </style>

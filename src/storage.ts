@@ -6,13 +6,20 @@ import { useContactsStore, ContactsState } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
 import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 
-const TRANSACTIONS_STORAGE_KEY = 'wallet_transactions_v01';
-const ACCOUNTINFOS_STORAGE_KEY = 'safe-next_accounts';
-const ADDRESSINFOS_STORAGE_KEY = 'safe-next_addresses';
-const SETTINGS_STORAGE_KEY = 'safe-next_settings';
-const CONTACTS_STORAGE_KEY = 'safe-next_contacts';
-const FIAT_STORAGE_KEY = 'safe-next_exchange-rates';
-const CASHLINK_STORAGE_KEY = 'wallet_cashlinks_v01';
+const StorageKeys = {
+    TRANSACTIONS: 'wallet_transactions_v01',
+    ACCOUNTINFOS: 'safe-next_accounts',
+    ADDRESSINFOS: 'safe-next_addresses',
+    SETTINGS: 'safe-next_settings',
+    FIAT: 'safe-next_exchange-rates',
+    CASHLINKS: 'wallet_cashlinks_v01',
+};
+
+const PersistentStorageKeys = {
+    CONTACTS: 'safe-next_contacts',
+};
+
+const unsubscriptions: (() => void)[] = [];
 
 export function initStorage() {
     /**
@@ -21,7 +28,7 @@ export function initStorage() {
     const transactionsStore = useTransactionsStore();
 
     // Load transactions from storage
-    const storedTxs = localStorage.getItem(TRANSACTIONS_STORAGE_KEY);
+    const storedTxs = localStorage.getItem(StorageKeys.TRANSACTIONS);
     if (storedTxs) {
         const txs: Transaction[] = JSON.parse(storedTxs);
         transactionsStore.patch({
@@ -31,10 +38,12 @@ export function initStorage() {
         transactionsStore.calculateFiatAmounts();
     }
 
-    // Write transactions to storage when updated
-    transactionsStore.subscribe(() => {
-        localStorage.setItem(TRANSACTIONS_STORAGE_KEY, JSON.stringify(transactionsStore.state.transactions));
-    });
+    unsubscriptions.push(
+        // Write transactions to storage when updated
+        transactionsStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.TRANSACTIONS, JSON.stringify(transactionsStore.state.transactions));
+        }),
+    );
 
     /**
      * ACCOUNTS
@@ -42,16 +51,18 @@ export function initStorage() {
     const accountStore = useAccountStore();
 
     // Load accounts from storage
-    const storedAccountState = localStorage.getItem(ACCOUNTINFOS_STORAGE_KEY);
+    const storedAccountState = localStorage.getItem(StorageKeys.ACCOUNTINFOS);
     if (storedAccountState) {
         const accountState: AccountState = JSON.parse(storedAccountState);
         accountStore.patch(accountState);
     }
 
-    // Write accounts to storage when updated
-    accountStore.subscribe(() => {
-        localStorage.setItem(ACCOUNTINFOS_STORAGE_KEY, JSON.stringify(accountStore.state));
-    });
+    unsubscriptions.push(
+        // Write accounts to storage when updated
+        accountStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.ACCOUNTINFOS, JSON.stringify(accountStore.state));
+        }),
+    );
 
     /**
      * ADDRESSES
@@ -59,65 +70,76 @@ export function initStorage() {
     const addressStore = useAddressStore();
 
     // Load addresses from storage
-    const storedAddressState = localStorage.getItem(ADDRESSINFOS_STORAGE_KEY);
+    const storedAddressState = localStorage.getItem(StorageKeys.ADDRESSINFOS);
     if (storedAddressState) {
         const addressState: AddressState = JSON.parse(storedAddressState);
         addressStore.patch(addressState);
     }
 
-    // Write addresses to storage when updated
-    addressStore.subscribe(() => {
-        localStorage.setItem(ADDRESSINFOS_STORAGE_KEY, JSON.stringify(addressStore.state));
-    });
+    unsubscriptions.push(
+        // Write addresses to storage when updated
+        addressStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.ADDRESSINFOS, JSON.stringify(addressStore.state));
+        }),
+    );
 
     /**
      * SETTINGS
      */
     const settingsStore = useSettingsStore();
     // Load user settings from storage
-    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    const storedSettings = localStorage.getItem(StorageKeys.SETTINGS);
     if (storedSettings) {
         const settingsState: SettingsState = JSON.parse(storedSettings);
         settingsStore.patch(settingsState);
     }
-    settingsStore.subscribe(() => {
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsStore.state));
-    });
+
+    unsubscriptions.push(
+        settingsStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.SETTINGS, JSON.stringify(settingsStore.state));
+        }),
+    );
 
     /**
      * CONTACTS
      */
     const contactsStore = useContactsStore();
-    const storedContacts = localStorage.getItem(CONTACTS_STORAGE_KEY);
+    const storedContacts = localStorage.getItem(PersistentStorageKeys.CONTACTS);
     if (storedContacts) {
         const contacts: ContactsState = JSON.parse(storedContacts);
         // @ts-ignore Some weird error about a type missmatch
         contactsStore.patch({ contacts });
     }
-    contactsStore.subscribe(() => {
-        localStorage.setItem(CONTACTS_STORAGE_KEY, JSON.stringify(contactsStore.state.contacts));
-    });
+
+    unsubscriptions.push(
+        contactsStore.subscribe(() => {
+            localStorage.setItem(PersistentStorageKeys.CONTACTS, JSON.stringify(contactsStore.state.contacts));
+        }),
+    );
 
     /**
      * FIAT
      */
     const fiatStore = useFiatStore();
-    const storedRates = localStorage.getItem(FIAT_STORAGE_KEY);
+    const storedRates = localStorage.getItem(StorageKeys.FIAT);
     if (storedRates) {
         const fiatState: FiatState = JSON.parse(storedRates);
         if (fiatState.timestamp > fiatStore.state.timestamp) {
             fiatStore.patch(fiatState);
         }
     }
-    fiatStore.subscribe(() => {
-        localStorage.setItem(FIAT_STORAGE_KEY, JSON.stringify(fiatStore.state));
-    });
+
+    unsubscriptions.push(
+        fiatStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.FIAT, JSON.stringify(fiatStore.state));
+        }),
+    );
 
     /**
      * CASHLINKS
      */
     const cashlinkStore = useCashlinkStore();
-    const storedCashlinkState = localStorage.getItem(CASHLINK_STORAGE_KEY);
+    const storedCashlinkState = localStorage.getItem(StorageKeys.CASHLINKS);
     if (storedCashlinkState) {
         const cashlinkState: CashlinkState = JSON.parse(storedCashlinkState);
         cashlinkStore.patch({
@@ -125,7 +147,19 @@ export function initStorage() {
             networkTrigger: 0,
         });
     }
-    cashlinkStore.subscribe(() => {
-        localStorage.setItem(CASHLINK_STORAGE_KEY, JSON.stringify(cashlinkStore.state));
-    });
+
+    unsubscriptions.push(
+        cashlinkStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.CASHLINKS, JSON.stringify(cashlinkStore.state));
+        }),
+    );
+}
+
+export function clearStorage() {
+    for (const unsub of unsubscriptions) {
+        unsub();
+    }
+    for (const key of Object.values(StorageKeys)) {
+        localStorage.removeItem(key);
+    }
 }

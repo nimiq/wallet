@@ -1,10 +1,10 @@
 <template>
     <Modal>
         <SmallPage class="settings-modal">
-            <PageHeader>Settings</PageHeader>
+            <PageHeader>{{ $t('Settings') }}</PageHeader>
             <PageBody>
                 <div class="flex-row">
-                    <label for="show-decimals">Show all deicmals</label>
+                    <label for="show-decimals">{{ $t('Show all decimals') }}</label>
                     <input id="show-decimals"
                         type="checkbox"
                         value="true"
@@ -12,7 +12,7 @@
                         @change="setShowDecimals($event.target.checked)" />
                 </div>
                 <div class="flex-row">
-                    <label for="currency" >Currency</label>
+                    <label for="currency">{{ $t('Currency') }}</label>
                     <select name="currency" id="currency" @input="setCurrency($event.target.value)">
                         <option v-for="currencyOption of FiatCurrency"
                             :key="currencyOption"
@@ -22,7 +22,7 @@
                     </select>
                 </div>
                 <div class="flex-row">
-                    <label for="language">Language</label>
+                    <label for="language">{{ $t('Language') }}</label>
                     <select name="language" id="language" @input="setLanguage($event.target.value)">
                         <option value="de" :selected="language === 'de'">Deutsch</option>
                         <option value="en" :selected="language === 'en'">English</option>
@@ -30,8 +30,8 @@
                     </select>
                 </div>
                 <div class="flex-row">
-                    <label for="theme">Theme</label>
-                    <select name="theme" iod="theme" @input="setColorMode($event.target.value)">
+                    <label for="theme">{{ $t('Theme') }}</label>
+                    <select name="theme" iod="theme" @input="setColorMode($event.target.value)" disabled>
                         <option v-for="colorModeOption of ColorMode"
                             :key="colorModeOption"
                             :value="colorMode"
@@ -39,11 +39,12 @@
                         >{{colorModeOption}}</option>
                     </select>
                 </div>
-                <div class="flex-row">
-                    <button @click="clearCache">
-                        <h2 class="nq-h2">Clear all Cached Data</h2>
-                        <p>This will reset the wallet to an empty state</p>
-                    </button>
+                <div class="flex-column">
+                    <div class="flex-row">
+                        <label>{{ $t('Clear Cache') }}</label>
+                        <button @click="clearCache">{{ $t('Clear') }}</button>
+                    </div>
+                    <small><i>{{ $t('Make a clean slate and reload everything from the Hub and network.') }}</i></small>
                 </div>
             </PageBody>
             <CloseButton @click.prevent="$router.back()" class="top-right" />
@@ -58,6 +59,7 @@ import Modal from './Modal.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
+import { clearStorage } from '../../storage';
 
 export default defineComponent({
     name: 'settings-modal',
@@ -66,7 +68,12 @@ export default defineComponent({
 
         const { currency, setCurrency } = useFiatStore();
 
-        const clearCache = () => ({});
+        function clearCache() {
+            /* eslint-disable-next-line no-restricted-globals, no-alert */
+            if (!confirm('Really clear cache?')) return;
+            clearStorage();
+            window.location.reload();
+        }
 
         return {
             clearCache,
@@ -97,35 +104,48 @@ export default defineComponent({
         flex-direction: column;
         justify-content: space-evenly;
 
-        .flex-row {
-            align-content: center;
-            justify-content: space-between;
+        .flex-row,
+        .flex-column {
+            padding: 2rem;
+            border-radius: 0.5rem;
 
             &:hover {
                 background: var(--nimiq-highlight-bg);
             }
+        }
+
+        .flex-row {
+            align-items: center;
+            justify-content: space-between;
 
             label {
                 flex-grow: 1;
-                padding: 2rem;
+                display: block; /* Otherwise the padding will not be applied to other lines than the first */
             }
 
             input,
-            select {
-                margin: 2rem;
+            select,
+            button {
+                margin-left: 2rem;
                 font-size: 2rem;
             }
+        }
 
-            button {
-                border: 0;
-                flex-grow: 1;
-                background: transparent;
-                padding: 1rem 2rem;
+        .flex-column {
 
-                > * {
-                    margin: 1rem 0;
-                }
+            .flex-row {
+                padding: 0;
             }
+
+            .flex-row:hover {
+                background: none;
+            }
+        }
+
+        small {
+            display: block;
+            font-size: 0.7em;
+            margin-top: 1rem;
         }
     }
 }

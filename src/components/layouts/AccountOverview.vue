@@ -170,5 +170,6 @@ export default defineComponent({
 
 .address-list {
     margin-bottom: 0;
+    flex-grow: 1;
 }
 </style>

@@ -18,11 +18,6 @@ function setI18nLanguage(lang: string) {
 }
 
 export function loadLanguageAsync(lang: string) {
-    // If the same language
-    if (i18n.locale === lang) {
-        return Promise.resolve(setI18nLanguage(lang));
-    }
-
     // If the language was already loaded
     if (loadedLanguages.includes(lang)) {
         return Promise.resolve(setI18nLanguage(lang));

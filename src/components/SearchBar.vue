@@ -11,7 +11,7 @@
             ref="searchBarInput"
             type="text"
             placeholder="Search Transactions by Address"
-            @input="$emit('input',$event)" />
+            @input="$emit('input', $event)" />
     </div>
 </template>
 

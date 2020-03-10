@@ -31,10 +31,13 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore } from '../stores/Transactions';
+import { useTransactionsStore, Transaction } from '../stores/Transactions';
+import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
+import { parseData } from '../lib/DataFormatting';
 
 function getImage() {
     const basePath = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/';
@@ -98,25 +101,58 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddress } = useAddressStore();
+        const { activeAddress, state: addresses$ } = useAddressStore();
         const { state: transactions$ } = useTransactionsStore();
         const { isFetchingTxHistory } = useNetworkStore();
+        const { getLabel } = useContactsStore();
 
         const scrollerBuffer = 300;
         const itemSize = 72;
 
-        const transactions: any = computed(() => {
-            // filtering & sorting TX
-            const txs = Object.values(transactions$.transactions)
-                .filter((tx) => {
-                    let bool = (tx.sender === activeAddress.value || tx.recipient === activeAddress.value);
+        const txForActiveAddress = computed(() =>
+            Object.values(transactions$.transactions)
+                .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value),
+        );
 
-                    if (props.searchString !== '') {
-                        bool = bool && tx.recipient.toUpperCase().includes(props.searchString.toUpperCase());
-                    }
-                    return bool;
-                })
-                .sort((a, b) => (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
+        const transactions = computed(() => {
+            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
+
+            // // filtering & sorting TX
+            let txs = (txForActiveAddress.value as Transaction[]);
+            if (props.searchString !== '') {
+                txs = txs.filter((tx) => {
+                    const senderLabel = addresses$.addressInfos[tx.sender]
+                        ? addresses$.addressInfos[tx.sender]
+                            ? addresses$.addressInfos[tx.sender].label
+                            : ''
+                        : getLabel.value(tx.sender)
+                            ? getLabel.value(tx.sender)
+                            : AddressBook.getLabel(tx.sender)
+                                ? AddressBook.getLabel(tx.sender)
+                                : '';
+
+                    const recipientLabel = addresses$.addressInfos[tx.recipient]
+                        ? addresses$.addressInfos[tx.recipient]
+                            ? addresses$.addressInfos[tx.recipient].label
+                            : ''
+                        : getLabel.value(tx.recipient)
+                            ? getLabel.value(tx.recipient)
+                            : AddressBook.getLabel(tx.recipient)
+                                ? AddressBook.getLabel(tx.recipient)
+                                : '';
+
+                    const concatenatedTxStrings = `
+                        ${tx.sender.replace(/\s/g, '')}
+                        ${tx.recipient.replace(/\s/g, '')}
+                        ${senderLabel ? senderLabel.toUpperCase() : ''}
+                        ${recipientLabel ? recipientLabel.toUpperCase() : ''}
+                        ${parseData(tx.data.raw).toUpperCase()}
+                    `;
+                    return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
+                });
+            }
+            txs = txs.sort((a, b) =>
+                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
 
             // loading transactions
             if (!txs.length && isFetchingTxHistory.value) {

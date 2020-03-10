@@ -23,7 +23,7 @@ module.exports = {
             .use('eslint-loader')
                 .loader('eslint-loader')
                 .tap(options => {
-                    options.emitWarning = true;
+                    options.emitWarning = process.env.NODE_ENV === 'production' ? false : true;
                     return options;
                 });
 

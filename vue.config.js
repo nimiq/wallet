@@ -19,6 +19,15 @@ module.exports = {
             ]]);
 
         config.module
+            .rule('eslint')
+            .use('eslint-loader')
+                .loader('eslint-loader')
+                .tap(options => {
+                    options.emitWarning = true;
+                    return options;
+                });
+
+        config.module
             .rule('po')
                 .test(/\.pot?$/)
                     .use('po-loader')

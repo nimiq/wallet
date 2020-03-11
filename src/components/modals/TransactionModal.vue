@@ -245,7 +245,7 @@ export default defineComponent({
 
         const { state: network$ } = useNetworkStore();
         const confirmations = computed(() =>
-            transaction.value.blockHeight && (network$.height - transaction.value.blockHeight));
+            transaction.value.blockHeight && (network$.height - transaction.value.blockHeight + 1));
 
         const { language } = useSettingsStore();
 

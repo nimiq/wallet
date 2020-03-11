@@ -211,11 +211,11 @@ export default defineComponent({
 .menu {
     display: none;
     position: absolute;
-    left: 0;
-    bottom: calc(100% + 2rem);
+    left: calc(100% + 1rem);
+    bottom: 0;
     background: white;
     width: 33rem;
-    max-height: calc(100vh - 27rem);
+    max-height: calc(100vh - 16rem);
     padding: 1rem;
     border-radius: .75rem;
     color: var(--nimiq-blue);
@@ -223,7 +223,7 @@ export default defineComponent({
     font-weight: 600;
     z-index: 100;
     cursor: auto;
-    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
 }
 
 .account-menu.active .menu {

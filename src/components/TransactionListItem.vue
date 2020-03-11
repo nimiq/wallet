@@ -298,6 +298,8 @@ svg {
         .time-and-message {
             font-size: 1.75rem;
             opacity: .5;
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
 
             .time {
                 font-weight: 600;

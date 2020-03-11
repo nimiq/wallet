@@ -163,15 +163,17 @@ export default defineComponent({
                 return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
             }
 
-            // add month / "This month" / pending TX labels
+            // add month / "This month" TX labels
             const transactionsWithMonths: any = [];
             if (!txs.length) return transactionsWithMonths;
 
             let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
+            let hasThisMonthLabel = false;
 
             if (!txs[n].timestamp) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('Pending...') });
+                transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
+                hasThisMonthLabel = true;
                 while (!txs[n].timestamp) {
                     transactionsWithMonths.push(txs[n]);
                     n++;
@@ -181,7 +183,7 @@ export default defineComponent({
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 
-            if (txMonth === currentTxMonth && txYear === currentYear) {
+            if (!hasThisMonthLabel && txMonth === currentTxMonth && txYear === currentYear) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
             }
 

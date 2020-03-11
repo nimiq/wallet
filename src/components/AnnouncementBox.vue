@@ -1,5 +1,5 @@
 <template>
-    <div class="announcement-box nq-green-bg">
+    <div v-if="text" class="announcement-box nq-green-bg">
         <!-- eslint-disable-next-line max-len -->
         <svg class="background-icon" width="30" height="33" viewBox="0 0 30 33" fill="none" stroke="#fff" stroke-width="2" opacity=".5" xmlns="http://www.w3.org/2000/svg"><g stroke-linecap="round"><path d="M7 27h10M12 22l-0 10"/></g><circle cx="6.5" cy="6.5" r="5.5"/><rect x="22" y="5" width="10" height="11" rx="2"/></svg>
 
@@ -12,18 +12,19 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { LocaleMessage } from 'vue-i18n';
 
 export default defineComponent({
-    setup(props, context) {
-        // // Dark Mode
-        // const text = context.root.$t('View your Wallet in the Dark Mode!');
-        // const cta = context.root.$t('Check it out');
-        // const action = () => context.root.$router.push('/settings');
+    setup(/* props, context */) {
+        /* eslint-disable */
+        let text: LocaleMessage = '';
+        let cta: LocaleMessage = '';
+        let action = () => {};
 
-        // Feedback
-        const text = context.root.$t('Have ideas, suggestions, or problems?');
-        const cta = context.root.$t('Give feedback');
-        const action = () => window.open('https://forum.nimiq.community');
+        // // Dark Mode
+        // text = context.root.$t('View your Wallet in the Dark Mode!');
+        // cta = context.root.$t('Check it out');
+        // action = () => context.root.$router.push('/settings');
 
         return {
             text,

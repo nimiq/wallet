@@ -93,10 +93,6 @@ export default defineComponent({
     flex-grow: 0;
 }
 
-.graph:first-of-type {
-    margin-top: 2rem;
-}
-
 .trade-actions .nq-button-s {
     margin: 0 1rem;
 }

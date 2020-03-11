@@ -179,7 +179,7 @@ export default defineComponent({
 
         watch(() => [props.currency, fiatStore.currency.value], ([cryptoCurrency, fiatCurrency]) => {
             const timespan = 24 * 60 * 60 * 1000; // 24 hours
-            const sampleCount = 24;
+            const sampleCount = 18; // 18 is the number of points determined to look good
             const timestep = timespan / (sampleCount - 1);
             const start = Date.now() - timespan;
             const timestamps: number[] = [];

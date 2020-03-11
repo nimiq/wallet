@@ -4,7 +4,6 @@
         <div class="fiat-amount">
             <FiatConvertedAmount :amount="accountBalance" />
         </div>
-        <BalanceDistribution />
     </div>
 </template>
 
@@ -12,7 +11,8 @@
 import { defineComponent } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import BalanceDistribution from './BalanceDistribution.vue';
+// re add <BalanceDistribution /> once Bitcoin is avalable
+// import BalanceDistribution from './BalanceDistribution.vue';
 
 export default defineComponent({
     setup() {
@@ -23,7 +23,7 @@ export default defineComponent({
         };
     },
     components: {
-        BalanceDistribution,
+        // BalanceDistribution,
         FiatConvertedAmount,
     },
 });

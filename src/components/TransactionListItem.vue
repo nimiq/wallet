@@ -229,7 +229,11 @@ svg {
     }
 
     .pending {
-        margin: 0 1.5rem;
+        margin: 0 2rem;
+    }
+
+    .invalid {
+        margin: 0 2.125rem;
     }
 
     /deep/ .circle-spinner {

@@ -216,8 +216,6 @@ svg {
         font-weight: bold;
         text-transform: uppercase;
         opacity: 0.4;
-        text-align: center;
-        margin: 0 1.25rem;
         flex-grow: 0;
         letter-spacing: 0.0125em;
         line-height: 1;
@@ -228,12 +226,20 @@ svg {
         }
     }
 
-    .pending {
-        margin: 0 2rem;
+    .date,
+    .pending,
+    .new,
+    .invalid {
+        width: 3.75rem;
+        text-align: center;
     }
 
+    .pending,
+    .new,
     .invalid {
-        margin: 0 2.125rem;
+        /deep/ svg {
+            margin: 0 auto;
+        }
     }
 
     /deep/ .circle-spinner {

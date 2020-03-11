@@ -349,8 +349,7 @@ svg {
                 opacity: 0.6;
             }
 
-            > .amount::before,
-            > .fiat-amount::before {
+            .amount::before {
                 content: '-';
                 margin-right: -0.1em;
             }
@@ -366,8 +365,7 @@ svg {
                 margin-bottom: .375rem;
             }
 
-            > .amount::before,
-            > .fiat-amount::before {
+            .amount::before {
                 content: '+';
                 margin-right: -0.1em;
             }

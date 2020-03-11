@@ -29,8 +29,9 @@
                 <span class="settings-label">{{ $t('Settings') }}</span>
             </button>
         </div>
-
-        <ConsensusIndicator/>
+        <span @click.prevent="$router.push('/network')">
+            <ConsensusIndicator />
+        </span>
     </div>
 </template>
 

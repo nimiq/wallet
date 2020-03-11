@@ -2,8 +2,9 @@
     <div id="app">
         <main>
             <Sidebar />
-            <AccountOverview />
-            <AddressOverview />
+            <router-view name="accountOverview" />
+            <router-view name="fullpage" />
+            <router-view name="addressOverview" />
         </main>
 
         <transition name="fade">

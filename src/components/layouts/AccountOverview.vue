@@ -38,6 +38,13 @@
             <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
         </h2>
         <AddressList />
+
+        <div class="bitcoin-teaser flex-row">
+            <BitcoinIcon/>
+            Bitcoin
+            <div class="flex-grow"></div>
+            <label>{{ $t('Coming soon') }}</label>
+        </div>
     </div>
 </template>
 
@@ -46,6 +53,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 
@@ -72,6 +80,7 @@ export default defineComponent({
         AlertTriangleIcon,
         AccountBalance,
         AddressList,
+        BitcoinIcon,
     },
 });
 </script>
@@ -138,6 +147,7 @@ export default defineComponent({
 
     &.words {
         border: 2px solid rgba(31, 35, 72, 0.05);
+        padding: 1rem 1.25rem 1rem 1.75rem
     }
 }
 
@@ -169,7 +179,33 @@ export default defineComponent({
 }
 
 .address-list {
-    margin-bottom: 0;
     flex-grow: 1;
+    margin-bottom: 1rem;
+}
+
+.bitcoin-teaser {
+    height: 15rem;
+    border-top: 0.25rem solid rgba(31, 35, 72, 0.1);
+    align-items: center;
+    color: rgba(31, 35, 72, 0.4);
+    font-size: 2rem;
+    font-weight: 600;
+    padding: 4rem;
+    margin: 0 -2rem;
+
+    svg {
+        color: rgba(31, 35, 72, 0.2); // Bitcoin color is #F7931A
+        margin-right: 2rem;
+    }
+
+    label {
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        font-weight: bold;
+        letter-spacing: 0.06em;
+        padding: 0.75rem 1.75rem;
+        border: 0.25rem solid rgba(31, 35, 72, 0.1);
+        border-radius: 500px;
+    }
 }
 </style>

@@ -22,7 +22,7 @@
                 <TransactionListItem v-else :transaction="item"/>
             </div>
         </RecycleScroller>
-        <div v-else class="empty-state flex-column">
+        <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
             <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
@@ -30,6 +30,9 @@
                 {{ $t('Receive free NIM') }}
             </a>
             <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
+        </div>
+        <div v-else class="empty-state flex-column">
+            <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
         </div>
     </div>
 </template>
@@ -109,8 +112,9 @@ export default defineComponent({
         const transactions = computed(() => {
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
-            // // filtering & sorting TX
+            // filtering & sorting TX
             let txs = (txForActiveAddress.value as Transaction[]);
+
             if (props.searchString !== '') {
                 txs = txs.filter((tx) => {
                     const senderLabel = addresses$.addressInfos[tx.sender]
@@ -427,6 +431,10 @@ img {
     .testnet-faucet,
     > .nq-button {
         margin-top: 4.5rem;
+    }
+
+    .no-search-results {
+        opacity: 0.4;
     }
 }
 

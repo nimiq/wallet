@@ -303,6 +303,8 @@ export default defineComponent({
         top: 0;
         width: 100%;
         height: 100%;
+        padding-bottom: 5rem;
+
         @media (min-width: 426px) {
             $nimiqBlue: #1f2348;
 

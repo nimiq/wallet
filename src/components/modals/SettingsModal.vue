@@ -4,12 +4,12 @@
             <PageHeader>{{ $t('Settings') }}</PageHeader>
             <PageBody>
                 <div class="flex-row">
-                    <label for="show-decimals">{{ $t('Show all decimals') }}</label>
-                    <input id="show-decimals"
-                        type="checkbox"
-                        value="true"
-                        :checked="showDecimals"
-                        @change="setShowDecimals($event.target.checked)" />
+                    <label>{{ $t('Number of decimals') }}</label>
+                    <span class="button-group">
+                        <button @click="setDecimals(0)">0</button>
+                        <button @click="setDecimals(2)">2</button>
+                        <button @click="setDecimals(5)">5</button>
+                    </span>
                 </div>
                 <div class="flex-row">
                     <label for="currency">{{ $t('Currency') }}</label>
@@ -126,6 +126,14 @@ export default defineComponent({
             button {
                 margin-left: 2rem;
                 font-size: 2rem;
+            }
+
+            .button-group {
+                margin-left: 2rem;
+
+                button {
+                    margin-left: 0;
+                }
             }
         }
 

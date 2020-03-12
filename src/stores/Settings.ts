@@ -7,7 +7,7 @@ export enum ColorMode {
 }
 
 export type SettingsState = {
-    showDecimals: boolean,
+    decimals: 0 | 2 | 5,
     language: string, // locale
     colorMode: ColorMode,
 };
@@ -15,18 +15,18 @@ export type SettingsState = {
 export const useSettingsStore = createStore({
     id: 'settings',
     state: (): SettingsState => ({
-        showDecimals: false,
+        decimals: 0,
         language: autodetectLanguage(),
         colorMode: ColorMode.default,
     }),
     getters: {
-        showDecimals: (state): Readonly<boolean> => state.showDecimals,
+        decimals: (state): Readonly<number> => state.decimals,
         language: (state): Readonly<string> => state.language,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
     },
     actions: {
-        setShowDecimals(show?: boolean) {
-            this.state.showDecimals = show || false;
+        setDecimals(num: 0 | 2 | 5 = 0) {
+            this.state.decimals = num;
         },
         setLanguage(language: string) {
             loadLanguageAsync(language);

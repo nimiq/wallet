@@ -1,5 +1,5 @@
 <template>
-    <div class="address-list">
+    <div class="address-list" :class="{'has-scrollbar': scrollbarVisible}" ref="root">
         <button
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             class="address-button reset flex-row"
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -66,7 +66,17 @@ export default defineComponent({
         }
         watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));
 
+        const root = ref<HTMLElement>(null);
+        const scrollbarVisible = ref(false);
+        onMounted(() => {
+            watch(addressInfos, () => {
+                scrollbarVisible.value = root.value!.offsetWidth > root.value!.scrollWidth;
+            });
+        });
+
         return {
+            root,
+            scrollbarVisible,
             selectAddress,
             addressInfos: processedAddressInfos,
             activeAddress,
@@ -90,10 +100,38 @@ export default defineComponent({
         flex-direction: column;
         position: relative;
         overflow-y: auto;
+        padding-bottom: 1rem;
+        padding-right: 6rem;
+        margin-right: -6rem !important;
+
+        @media (min-width: 426px) {
+            $nimiqBlue: #1f2348;
+
+            /* width */
+            &::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            /* Track */
+            &::-webkit-scrollbar-track {
+                background: rgba($nimiqBlue, 0.2);
+            }
+
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+                background: rgba($nimiqBlue, 0.6);
+                border-radius: 6px;
+            }
+
+            /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+                background: rgba($nimiqBlue, 0.8);
+            }
+        }
     }
 
     $btnMargin: .5;
-    $btnHeight: 10;
+    $btnHeight: 9;
     .address-button {
         width: 100%;
         font-size: 2rem;
@@ -105,10 +143,15 @@ export default defineComponent({
         z-index: 1;
 
         transition: opacity 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
+
+        .has-scrollbar & {
+            width: calc(100% + 6px);
+        }
     }
 
+
     .active-box {
-        width: 100%;
+        width: calc(100% - 6rem);
         height: #{$btnHeight}rem;
         position: absolute;
         left: 0;
@@ -120,12 +163,17 @@ export default defineComponent({
 
         will-change: transform;
         transition: transform 400ms var(--nimiq-ease);
+
+        .has-scrollbar & {
+            width: calc(100% - 6rem + 6px);
+        }
     }
 
     .identicon {
-        width: 6rem !important;
-        height: 6rem;
+        width: 5.75rem !important;
+        height: 5.75rem;
         flex-shrink: 0;
+        margin: -0.375rem 0 -0.375rem;
     }
 
     .identicon-wrapper {

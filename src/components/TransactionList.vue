@@ -174,7 +174,7 @@ export default defineComponent({
             if (!txs[n].timestamp) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
                 hasThisMonthLabel = true;
-                while (!txs[n].timestamp) {
+                while (txs[n] && !txs[n].timestamp) {
                     transactionsWithMonths.push(txs[n]);
                     n++;
                 }

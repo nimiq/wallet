@@ -5,3 +5,5 @@ export {
 
 export const FIAT_PRICE_UNAVAILABLE = null;
 export const CASHLINK_ADDRESS = 'cashlink';
+
+export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';

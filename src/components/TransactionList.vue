@@ -22,9 +22,14 @@
                 <TransactionListItem v-else :transaction="item"/>
             </div>
         </RecycleScroller>
-        <div v-else class="text-center my-12">
-            <img :src="getImage()">
-            <span class="opacity-75">{{ $t('This is a quiet place with no transactions.') }}</span>
+        <div v-else class="empty-state flex-column">
+            <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
+            <span>{{ $t('Receive some free NIM to get started.') }}</span>
+
+            <a v-if="isMainnet" href="https://getsome.nimiq.com" class="nq-button light-blue">
+                {{ $t('Receive free NIM') }}
+            </a>
+            <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
         </div>
     </div>
 </template>
@@ -33,25 +38,13 @@
 import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
+import TestnetFaucet from './TestnetFaucet.vue';
 import { useAddressStore } from '../stores/Address';
 import { useTransactionsStore, Transaction } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
-
-function getImage() {
-    const basePath = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/';
-    const images = [
-        `${basePath}contemplating_8t0x.svg`,
-        `${basePath}mobile_user_7oqo.svg`,
-        `${basePath}Tree_swing_646s.svg`,
-        `${basePath}a_moment_to_relax_bbpa.svg`,
-        `${basePath}yoga_248n.svg`,
-        `${basePath}into_the_night_vumi.svg`,
-    ];
-
-    return images[Math.floor(Math.random() * images.length)];
-}
+import { MAINNET_ORIGIN } from '../lib/Constants';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -74,22 +67,21 @@ function getLocaleMonthStringFromDate(
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-function getCloserElement(element: any, classToFind: string) {
+function getCloserElement(element: any, classToFind: string): HTMLElement {
     let e = element as HTMLElement;
 
-    if (!e) {
-        throw new Error('element undefined');
-    }
-    if (e.querySelector(`.${classToFind}`)) {
-        while (!e.classList.contains(classToFind)) {
-            e = e.children[0] as HTMLElement;
-        }
-    } else if (!e.classList.contains(classToFind)) {
-        while (!e.classList.contains(classToFind)) {
-            e = e.parentNode as HTMLElement;
-        }
-    }
+    if (!e) throw new Error('element undefined');
 
+    const selector = `.${classToFind}`;
+
+    if (e.matches(selector)) return e;
+
+    const child = e.querySelector(`.${classToFind}`) as HTMLElement;
+    if (child) return child;
+
+    while (e && !e.matches(selector)) {
+        e = e.parentNode as HTMLElement;
+    }
     return e;
 }
 
@@ -217,9 +209,6 @@ export default defineComponent({
             return transactionsWithMonths;
         });
 
-        const loadingImageSrc = 'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
-            + 'illustrations/loading_frh4.svg';
-
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
         // only runs on transaction hash change.
@@ -264,19 +253,22 @@ export default defineComponent({
             onBeforeUnmount(() => observer.disconnect());
         })();
 
+        const isMainnet = window.location.origin === MAINNET_ORIGIN;
+
         return {
+            activeAddress,
             scrollerBuffer,
             itemSize,
             transactions,
-            getImage,
-            loadingImageSrc,
             $el,
             isFetchingTxHistory,
+            isMainnet,
         };
     },
     components: {
         TransactionListItem,
-    } as any,
+        TestnetFaucet,
+    },
 });
 </script>
 
@@ -416,12 +408,26 @@ img {
     display: block;
 }
 
-.text-center {
-    text-align: center;
-}
+.empty-state {
+    height: 100%;
+    justify-content: center;
+    align-items: center;
 
-.opacity-75 {
-    opacity: 0.75;
+    .nq-h1 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    span {
+        font-size: 2rem;
+        font-weight: 600;
+        opacity: 0.6;
+    }
+
+    .testnet-faucet,
+    > .nq-button {
+        margin-top: 4.5rem;
+    }
 }
 
 </style>

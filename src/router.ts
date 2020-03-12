@@ -28,7 +28,11 @@ routes.push({
         default: SendModal,
     },
     name: 'send',
-    props: true,
+    props: {
+        accountOverview: false,
+        addressOverview: false,
+        default: true,
+    },
 });
 
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
@@ -52,7 +56,11 @@ routes.push({
         default: TransactionModal,
     },
     name: 'transaction',
-    props: true,
+    props: {
+        accountOverview: false,
+        addressOverview: false,
+        default: true,
+    },
 });
 
 const SettingsModal = () => import(/* webpackChunkName: "settings-modal" */ './components/modals/SettingsModal.vue');

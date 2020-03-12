@@ -61,7 +61,7 @@ export default defineComponent({
 .sidebar {
     @include flex-full-height;
     flex-direction: column;
-    background: var(--nimiq-blue-bg);
+    background: var(--nimiq-blue);
     color: white;
     min-width: 21rem;
 }

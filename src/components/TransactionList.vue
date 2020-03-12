@@ -281,7 +281,7 @@ export default defineComponent({
 
 .transaction-list {
     position: relative;
-    margin: 0 2rem;
+    margin: 0 calc(2rem - 6rem) 0 2rem;
 
     .month-label {
         color: var(--nimiq-blue);
@@ -303,32 +303,10 @@ export default defineComponent({
         top: 0;
         width: 100%;
         height: 100%;
+        padding-right: calc(6rem - 6px);
         padding-bottom: 5rem;
 
-        @media (min-width: 426px) {
-            $nimiqBlue: #1f2348;
-
-            /* width */
-            &::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            /* Track */
-            &::-webkit-scrollbar-track {
-                background: rgba($nimiqBlue, 0.2);
-            }
-
-            /* Handle */
-            &::-webkit-scrollbar-thumb {
-                background: rgba($nimiqBlue, 0.6);
-                border-radius: 6px;
-            }
-
-            /* Handle on hover */
-            &::-webkit-scrollbar-thumb:hover {
-                background: rgba($nimiqBlue, 0.8);
-            }
-        }
+        @extend %custom-scrollbar;
 
     }
 

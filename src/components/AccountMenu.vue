@@ -152,6 +152,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/mixins.scss';
+
 .account-menu {
     position: relative;
     width: 100%;
@@ -316,6 +318,8 @@ export default defineComponent({
 .account-list {
     margin: 1rem 0;
     overflow-y: auto;
+
+    @extend %custom-scrollbar;
 }
 
 .account-list .account-menu-item {

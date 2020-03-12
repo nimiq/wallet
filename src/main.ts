@@ -65,3 +65,9 @@ if (window.innerWidth >= 1024 && window.innerHeight >= 560) {
 } else {
     document.getElementById('mobile-notice')!.style.display = 'flex';
 }
+
+declare module '@vue/composition-api/dist/component/component' {
+    interface SetupContext {
+        readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
+    }
+}

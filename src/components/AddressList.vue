@@ -5,6 +5,7 @@
             class="address-button reset flex-row"
             :class="{'active': activeAddress === addressInfo.address}"
             @click="selectAddress(addressInfo.address)"
+            :ref="`address-button-${addressInfo.address}`"
         >
             <div class="identicon-wrapper">
                 <Identicon :address="addressInfo.address"/>
@@ -22,12 +23,12 @@
             </div>
             <div v-else>???</div>
         </button>
-        <div class="active-box"></div>
+        <div class="active-box" :style="`transform: translateY(${backgroundYOffset}px);`"></div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -37,7 +38,7 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { state: network$ } = useNetworkStore();
 
@@ -57,11 +58,20 @@ export default defineComponent({
             hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
         })));
 
+        const backgroundYOffset = ref(4); // px - Top margin of the address-buttons is 0.5rem
+        function adjustBackgroundOffset(address: string) {
+            // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
+            const el = (context.refs[`address-button-${address}`] as Element[])[0] as HTMLElement;
+            backgroundYOffset.value = el.offsetTop;
+        }
+        watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));
+
         return {
             selectAddress,
             addressInfos: processedAddressInfos,
             activeAddress,
             AddressType,
+            backgroundYOffset,
         };
     },
     components: {
@@ -90,35 +100,26 @@ export default defineComponent({
         align-items: center;
         padding: 2rem;
         margin: #{$btnMargin}rem 0;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         opacity: 0.6;
         z-index: 1;
 
-        transition: opacity 500ms var(--nimiq-ease);
+        transition: opacity 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
     }
 
     .active-box {
         width: 100%;
         height: #{$btnHeight}rem;
         position: absolute;
-        top: #{$btnMargin}rem;
+        left: 0;
+        top: 0;
         z-index: 0;
-        border-radius: 8px;
-        background-color: white;
-        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
-        transition: top 500ms var(--nimiq-ease);
-    }
+        border-radius: 0.75rem;
+        background: white;
+        box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.08);
 
-    $states: ".active", ":focus", ":hover";
-    @mixin topVal($i) {
-        top: #{$btnMargin + ($i - 1) * ($btnHeight + $btnMargin * 2)}rem;
-    }
-    @each $state in $states {
-        @for $i from 1 through 10 {
-            .address-button:nth-child(#{$i})#{$state} ~ .active-box {
-                @include topVal($i);
-            }
-        }
+        will-change: transform;
+        transition: transform 400ms var(--nimiq-ease);
     }
 
     .identicon {
@@ -169,6 +170,11 @@ export default defineComponent({
     .address-button:focus,
     .address-button.active {
         opacity: 1;
+    }
+
+    .address-button:not(.active):hover,
+    .address-button:not(.active):focus {
+        background: var(--nimiq-highlight-bg);
     }
 
     .address-button:hover .crypto-balance,

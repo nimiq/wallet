@@ -198,7 +198,7 @@ svg {
     padding: 1.5rem 1rem;
     border: 0;
     background: transparent;
-    border-radius: .5rem;
+    border-radius: .75rem;
     cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
 

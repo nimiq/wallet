@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import NetworkMap from './NetworkMap.vue';
-import NetworkStats from './NetworkStats.vue';
+import NetworkMap from '../NetworkMap.vue';
+import NetworkStats from '../NetworkStats.vue';
 
 export default defineComponent({
     components: {

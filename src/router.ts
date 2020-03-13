@@ -121,11 +121,11 @@ routes.push({
 });
 
 const Network = () =>
-    import(/* webpackChunkName: "network" */ './components/Network.vue');
+    import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
 routes.push({
     path: '/network',
     components: {
-        fullpage: Network as any,
+        fullpage: Network,
     },
     name: 'network',
 });

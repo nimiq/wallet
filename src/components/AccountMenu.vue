@@ -87,7 +87,7 @@ export default defineComponent({
 
         const menuOpen = ref(false);
         function toggleMenu(event: Event) {
-            if (context.root.$router.currentRoute.name !== 'root') {
+            if (context.root.$route.name !== 'root') {
                 context.root.$router.push('/');
                 return;
             }

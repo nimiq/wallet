@@ -1,18 +1,16 @@
 <template>
-    <div class="network">
+    <div class="network nq-blue-bg">
         <div class="background"></div>
-        <div class="network-inner">
-            <h1>Coming soon!</h1>
-            <div class="world-map">
-                <NetworkMap />
-            </div>
-            <NetworkStats />
+        <div class="network-inner flex-column">
+            <NetworkMap/>
+            <h1 class="coming-soon">Coming soon</h1>
+            <NetworkStats/>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import NetworkMap from './NetworkMap.vue';
 import NetworkStats from './NetworkStats.vue';
 
@@ -26,15 +24,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .network {
-    background: var(--nimiq-blue-bg);
-    color: white;
+    position: relative;
 
     .background {
         position: absolute;
         top: 0;
+        right: 0;
+        bottom: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
         z-index: -1;
         background: var(--nimiq-blue);
         opacity: 0;
@@ -49,26 +46,34 @@ export default defineComponent({
     }
 
     .network-inner {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: space-between;
         height: 100%;
     }
 
-    h1 {
-        display: flex;
+    .coming-soon {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        font-size: 10rem;
+        line-height: 1;
+        margin-top: -12rem;
         text-align: center;
+        opacity: 0.4;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
     }
 
-    .world-map {
-        display: flex;
-        text-align: center;
-        margin: 0rem 5rem;
+    .network-map {
+        width: 100%;
+        flex-grow: 1;
+        padding: 7rem;
     }
 
     .network-stats {
-        flex-grow: 0;
+        flex-shrink: 0;
+        padding: 0 2.5rem 5rem;
     }
 }
 </style>

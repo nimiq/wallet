@@ -20,7 +20,7 @@ export default defineComponent({
 
         const consensus = computed(() => {
             console.log('Consensus:', $network.consensus);
-            return $network.consensus
+            return $network.consensus;
         });
 
         return {
@@ -36,6 +36,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.consensus-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
 :hover > .established,
 :focus > .established,
 .active > .established {

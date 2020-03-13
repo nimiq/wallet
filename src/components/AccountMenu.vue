@@ -81,12 +81,16 @@ import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { state: addressState, accountBalance } = useAddressStore();
 
         const menuOpen = ref(false);
         function toggleMenu(event: Event) {
+            if (context.root.$route.name !== 'root') {
+                context.root.$router.push('/');
+                return;
+            }
             if (!event.target) return;
             if ((event.target as Element).matches('.menu, .menu *')) return;
             menuOpen.value = !menuOpen.value;

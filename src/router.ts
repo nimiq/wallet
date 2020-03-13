@@ -63,13 +63,11 @@ routes.push({
     },
 });
 
-const SettingsModal = () => import(/* webpackChunkName: "settings-modal" */ './components/modals/SettingsModal.vue');
+const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
 routes.push({
     path: '/settings',
     components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: SettingsModal,
+        fullpage: Settings,
     },
     name: 'settings',
 });

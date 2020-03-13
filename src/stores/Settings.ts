@@ -2,7 +2,7 @@ import { createStore } from 'pinia';
 import { autodetectLanguage, loadLanguageAsync } from '../i18n/i18n-setup';
 
 export enum ColorMode {
-    default = 'default',
+    light = 'light',
     dark = 'dark',
 }
 
@@ -17,7 +17,7 @@ export const useSettingsStore = createStore({
     state: (): SettingsState => ({
         decimals: 0,
         language: autodetectLanguage(),
-        colorMode: ColorMode.default,
+        colorMode: ColorMode.light,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,

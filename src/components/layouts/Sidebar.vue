@@ -1,37 +1,36 @@
 <template>
-    <div class="sidebar">
-        <div class="padding flex-column">
-            <header class="logo">
-                <span class="nq-icon nimiq-logo"></span>
-                <span class="logo-wordmark">Nimiq</span>
-            </header>
+    <div class="sidebar padding flex-column">
+        <header class="logo">
+            <span class="nq-icon nimiq-logo"></span>
+            <span class="logo-wordmark">Nimiq</span>
+        </header>
 
-            <AnnouncementBox/>
+        <AnnouncementBox/>
 
-            <PriceChart currency="nim" class="graph"/>
-            <PriceChart currency="btc" class="graph"/>
+        <PriceChart currency="nim" class="graph"/>
+        <PriceChart currency="btc" class="graph"/>
 
-            <div class="trade-actions">
-                <button class="nq-button-s inverse" @click="$router.push('/trade')">
-                    {{ $t('Buy') }}
-                </button>
-                <button class="nq-button-s inverse" @click="$router.push('/trade')">
-                    {{ $t('Sell') }}
-                </button>
-            </div>
-
-            <div class="flex-grow"></div>
-
-            <AccountMenu/>
-
-            <button class="settings reset flex-row" href="#" @click.prevent="$router.push('/settings')">
-                <GearIcon/>
-                <span class="settings-label">{{ $t('Settings') }}</span>
+        <div class="trade-actions">
+            <button class="nq-button-s inverse" @click="$router.push('/trade')">
+                {{ $t('Buy') }}
+            </button>
+            <button class="nq-button-s inverse" @click="$router.push('/trade')">
+                {{ $t('Sell') }}
             </button>
         </div>
-        <span @click.prevent="$router.push('/network')">
-            <ConsensusIndicator />
-        </span>
+
+        <div class="flex-grow"></div>
+
+        <AccountMenu/>
+
+        <button class="network reset flex-row" @click="$router.push('/network')">
+            <ConsensusIcon/>
+            <span class="label">{{ $t('Network') }}</span>
+        </button>
+        <button class="settings reset flex-row" @click="$router.push('/settings')">
+            <GearIcon/>
+            <span class="label">{{ $t('Settings') }}</span>
+        </button>
     </div>
 </template>
 
@@ -42,7 +41,7 @@ import { GearIcon } from '@nimiq/vue-components';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
-import ConsensusIndicator from '../ConsensusIndicator.vue';
+import ConsensusIcon from '../ConsensusIcon.vue';
 
 export default defineComponent({
     name: 'sidebar',
@@ -51,7 +50,7 @@ export default defineComponent({
         GearIcon,
         PriceChart,
         AccountMenu,
-        ConsensusIndicator,
+        ConsensusIcon,
     },
 });
 </script>
@@ -60,17 +59,11 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 .sidebar {
     @include flex-full-height;
-    flex-direction: column;
+    align-items: center;
     background: var(--nimiq-blue);
     color: white;
     min-width: 21rem;
-}
-
-.padding {
-    width: 100%;
-    flex-grow: 1;
     padding: 2.75rem 1.5rem 1.5rem;
-    align-items: center;
 }
 
 > * {
@@ -102,7 +95,8 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-.settings {
+.settings,
+.network {
     align-items: center;
     width: 100%;
     color: rgba(255, 255, 255, .3);
@@ -115,24 +109,23 @@ export default defineComponent({
     transition:
         background 0.2s var(--nimiq-ease),
         color 0.2s var(--nimiq-ease);
-}
 
-.settings:hover,
-.settings:focus {
-    background: rgba(255, 255, 255, .1);
-    color: rgba(255, 255, 255, .5);
-}
+    .label {
+        margin-left: 2rem;
+        color: rgba(255, 255, 255, .7);
+        font-size: 2rem;
 
-.settings-label {
-    margin-left: 2rem;
-    color: rgba(255, 255, 255, .7);
-    font-size: 2rem;
+        transition: color 0.2s var(--nimiq-ease);
+    }
 
-    transition: color 0.2s var(--nimiq-ease);
-}
+    &:hover,
+    &:focus {
+        background: rgba(255, 255, 255, .1);
+        color: rgba(255, 255, 255, .5);
 
-.settings:hover .settings-label,
-.settings:focus .settings-label {
-    color: rgba(255, 255, 255, 1);
+        .label{
+            color: rgba(255, 255, 255, 1);
+        }
+    }
 }
 </style>

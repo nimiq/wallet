@@ -23,11 +23,19 @@
 
         <AccountMenu/>
 
-        <button class="network reset flex-row" @click="$router.push('/network')">
+        <button
+            class="network reset flex-row"
+            :class="{'active': $route.name === 'network'}"
+            @click="$router.push('/network').catch(() => {})"
+        >
             <ConsensusIcon/>
             <span class="label">{{ $t('Network') }}</span>
         </button>
-        <button class="settings reset flex-row" @click="$router.push('/settings')">
+        <button
+            class="settings reset flex-row"
+            :class="{'active': $route.name === 'settings'}"
+            @click="$router.push('/settings').catch(() => {})"
+        >
             <GearIcon/>
             <span class="label">{{ $t('Settings') }}</span>
         </button>
@@ -119,7 +127,8 @@ export default defineComponent({
     }
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         background: rgba(255, 255, 255, .1);
         color: rgba(255, 255, 255, .5);
 

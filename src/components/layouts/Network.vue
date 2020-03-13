@@ -35,12 +35,15 @@ export default defineComponent({
         z-index: -1;
         background: var(--nimiq-blue);
         opacity: 0;
+
+        transition: opacity 0.75s var(--nimiq-ease);
     }
 
-    &.delay-leave-active .background {
-        transition: opacity .75s var(--nimiq-ease);
+    &.delay-enter-to .background {
+        opacity: 0;
     }
 
+    &.delay-enter .background,
     &.delay-leave-to .background {
         opacity: 1;
     }

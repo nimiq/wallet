@@ -3,130 +3,102 @@ import Vue from 'vue';
 
 import { provide, inject } from '@vue/composition-api';
 
+// Start views
+import Groundfloor from './components/layouts/Groundfloor.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
 
-Vue.use(VueRouter);
-
-const routes: RouteConfig[] = [];
-
-routes.push({
-    path: '/',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-    },
-    name: 'root',
-});
-
-const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
-routes.push({
-    path: '/send/:senderAddress',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: SendModal,
-    },
-    name: 'send',
-    props: {
-        accountOverview: false,
-        addressOverview: false,
-        default: true,
-    },
-});
-
-const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
-routes.push({
-    path: '/receive',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: ReceiveModal,
-    },
-    name: 'receive',
-});
-
-const TransactionModal = () =>
-    import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
-routes.push({
-    path: '/transaction/:hash',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: TransactionModal,
-    },
-    name: 'transaction',
-    props: {
-        accountOverview: false,
-        addressOverview: false,
-        default: true,
-    },
-});
-
+// Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
-routes.push({
-    path: '/settings',
-    components: {
-        fullpage: Settings,
-    },
-    name: 'settings',
-});
-
-const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
-routes.push({
-    path: '/trade',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: TradeModal,
-    },
-    name: 'trade',
-});
-
-const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
-routes.push({
-    path: '/scan',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: ScanQrModal,
-    },
-    name: 'scan',
-});
-
-const AddressModal = () =>
-    import(/* webpackChunkName: "address-modal" */ './components/modals/AddressModal.vue');
-routes.push({
-    path: '/address/:address',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: AddressModal,
-    },
-    name: 'address',
-    props: true,
-});
-
-routes.push({
-    path: '/nimiq\\::requestUri',
-    components: {
-        accountOverview: AccountOverview,
-        addressOverview: AddressOverview,
-        default: SendModal,
-    },
-    name: 'send-via-uri',
-    props: (route) => ({ requestUri: route.fullPath.substr(1) }),
-});
-
 const Network = () =>
     import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
-routes.push({
+
+// Modals
+const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
+const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
+const TransactionModal = () =>
+    import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
+const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
+const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+const AddressModal = () =>
+    import(/* webpackChunkName: "address-modal" */ './components/modals/AddressModal.vue');
+
+Vue.use(VueRouter);
+
+const routes: RouteConfig[] = [{
+    path: '/',
+    components: {
+        groundfloor: Groundfloor,
+    },
+    children: [{
+        path: '',
+        components: {
+            accountOverview: AccountOverview,
+            addressOverview: AddressOverview,
+        },
+        name: 'root',
+        children: [{
+            path: '/send/:senderAddress',
+            components: {
+                modal: SendModal,
+            },
+            name: 'send',
+            props: true,
+        }, {
+            path: '/receive',
+            components: {
+                modal: ReceiveModal,
+            },
+            name: 'receive',
+        }, {
+            path: '/transaction/:hash',
+            components: {
+                modal: TransactionModal,
+            },
+            name: 'transaction',
+            props: true,
+        }, {
+            path: '/trade',
+            components: {
+                modal: TradeModal,
+            },
+            name: 'trade',
+            props: true,
+        }, {
+            path: '/scan',
+            components: {
+                modal: ScanQrModal,
+            },
+            name: 'scan',
+        }, {
+            path: '/address/:address',
+            components: {
+                modal: AddressModal,
+            },
+            name: 'address',
+            props: true,
+        }, {
+            path: '/nimiq\\::requestUri',
+            components: {
+                modal: SendModal,
+            },
+            name: 'send-via-uri',
+            props: (route) => ({ requestUri: route.fullPath.substr(1) }),
+        }],
+    }, {
+        path: '/settings',
+        components: {
+            settings: Settings,
+        },
+        name: 'settings',
+    }],
+}, {
     path: '/network',
     components: {
-        fullpage: Network,
+        basement: Network,
     },
     name: 'network',
-});
+}];
 
 const router = new VueRouter({
     mode: 'history',

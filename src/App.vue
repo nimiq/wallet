@@ -2,12 +2,19 @@
     <div id="app">
         <main>
             <Sidebar />
+
             <transition name="slide-right">
-                <router-view name="accountOverview" />
+                <keep-alive>
+                    <router-view name="accountOverview" />
+                </keep-alive>
             </transition>
+
             <transition name="slide-right">
-                <router-view name="addressOverview" />
+                <keep-alive>
+                    <router-view name="addressOverview" />
+                </keep-alive>
             </transition>
+
             <transition name="delay">
                 <router-view name="fullpage" />
             </transition>
@@ -41,13 +48,14 @@ export default defineComponent({
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;
+    overflow: hidden;
 
     main {
         @include flex-full-height;
         flex-direction: row;
 
         .sidebar {
-            max-width: 21rem;
+            width: 21rem;
         }
 
         .account-overview {
@@ -101,31 +109,31 @@ $transitionTime: 0.75;
 .network {
     &.delay-leave-active {
         /* the network can only disappear once the other transitions are finished so add a delay */
-        transition: left 0s #{$transitionTime}s linear;
+        transition: transform 0s #{$transitionTime}s linear;
     }
 }
 
 .slide-right-enter-active,
 .slide-right-leave-active {
-    transition: left #{$transitionTime}s var(--nimiq-ease);
+    transition: transform #{$transitionTime}s var(--nimiq-ease);
 }
 
 .slide-right-enter-to,
 .slide-right-leave {
-    left: 0;
+    transform: translate3d(0, 0, 0);
 }
 
 .account-overview {
     &.slide-right-enter,
     &.slide-right-leave-to {
-        left: 100vw;
+        transform: translate3d(calc(100vw - 21rem), 0, 0);
     }
 }
 
 .address-overview {
     &.slide-right-enter,
     &.slide-right-leave-to {
-        left: calc(100vw - 60rem);
+        transform: translate3d(calc(100vw - 60rem - 21rem), 0, 0);
     }
 }
 </style>

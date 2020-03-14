@@ -47,7 +47,7 @@ export default defineComponent({
     z-index: 5;
     width: 100%;
     height: 100%;
-    background: rgba(21, 24, 51, 0.8);
+    background: rgba(31, 35, 72, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;

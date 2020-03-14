@@ -18,10 +18,7 @@ export default defineComponent({
     setup() {
         const { state: $network } = useNetworkStore();
 
-        const consensus = computed(() => {
-            console.log('Consensus:', $network.consensus);
-            return $network.consensus;
-        });
+        const consensus = computed(() => $network.consensus);
 
         return {
             consensus,

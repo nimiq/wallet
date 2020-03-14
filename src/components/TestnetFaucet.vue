@@ -80,7 +80,7 @@ export default defineComponent({
 
                 return faucet;
             }).catch((error: Error) => {
-                console.error(error);
+                console.error(error); // eslint-disable-line no-console
                 unavailableMsg.value = `${context.root.$t('Faucet unavailable')} (${error.message})`;
                 canTap.value = false;
                 return null;
@@ -117,7 +117,7 @@ export default defineComponent({
 
                 return false;
             }).catch((error: Error) => {
-                console.error(error);
+                console.error(error); // eslint-disable-line no-console
                 errorMsg.value = `${context.root.$t('Request failed')}: ${error.message}`;
                 return false;
             });

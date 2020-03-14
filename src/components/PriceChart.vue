@@ -13,6 +13,8 @@
             />
         </svg>
 
+        <div class="timespan">24H</div>
+
         <div class="meta flex-row">
             <strong>{{currency.toUpperCase()}}</strong>
             <div class="price">
@@ -24,7 +26,7 @@
                 </transition>
                 <transition name="fade">
                     <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
-                        {{ (priceChange * 100).toFixed(1) }}% (24h)
+                        {{ (priceChange * 100).toFixed(1) }}%
                     </div>
                 </transition>
             </div>
@@ -234,6 +236,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.price-chart {
+    position: relative;
+}
+
 svg {
     flex-grow: 1;
     transition: opacity .3s var(--nimiq-ease);
@@ -241,6 +247,21 @@ svg {
 
 svg path {
     transition: stroke-dasharray 1.5s linear;
+}
+
+.timespan {
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 0.25rem;
+    padding: 0.375rem; // 3px
+    font-size: 1.375rem; // 11px
+    line-height: 1;
+    font-weight: bold;
+    color: var(--nimiq-blue);
+    letter-spacing: 0.055em;
 }
 
 .meta {

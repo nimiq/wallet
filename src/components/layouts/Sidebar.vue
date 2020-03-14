@@ -7,8 +7,8 @@
 
         <AnnouncementBox/>
 
-        <PriceChart currency="nim" class="graph"/>
-        <PriceChart currency="btc" class="graph"/>
+        <PriceChart currency="nim" class="nim"/>
+        <PriceChart currency="btc" class="btc"/>
 
         <div class="trade-actions">
             <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
@@ -87,12 +87,19 @@ export default defineComponent({
     margin-bottom: 2.5rem;
 }
 
-.graph {
-    display: flex;
+.price-chart {
     height: 15rem;
     width: 100%;
     padding: 1.5rem;
-    flex-grow: 0;
+
+    /deep/ .timespan {
+        left: 1.5rem;
+        top: 0.5rem;
+    }
+
+    &.btc /deep/ .timespan {
+        display: none;
+    }
 }
 
 .trade-actions .nq-button-s {

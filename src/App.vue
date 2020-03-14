@@ -13,10 +13,6 @@
                 </keep-alive>
             </transition>
         </main>
-
-        <transition name="fade">
-            <router-view name="modal"/>
-        </transition>
     </div><!-- #app -->
 </template>
 
@@ -95,6 +91,10 @@ $transitionTime: 0.75;
         position: absolute;
         left: 0;
         top: 0;
+    }
+
+    &.backdrop { // Modals
+        transition-duration: 0.4s;
     }
 }
 

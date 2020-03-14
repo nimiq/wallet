@@ -43,7 +43,7 @@ const routes: RouteConfig[] = [{
                 modal: SendModal,
             },
             name: 'send',
-            props: true,
+            props: { modal: true },
         }, {
             path: '/receive',
             components: {
@@ -56,14 +56,14 @@ const routes: RouteConfig[] = [{
                 modal: TransactionModal,
             },
             name: 'transaction',
-            props: true,
+            props: { modal: true },
         }, {
             path: '/trade',
             components: {
                 modal: TradeModal,
             },
             name: 'trade',
-            props: true,
+            props: { modal: true },
         }, {
             path: '/scan',
             components: {
@@ -76,7 +76,7 @@ const routes: RouteConfig[] = [{
                 modal: AddressModal,
             },
             name: 'address',
-            props: true,
+            props: { modal: true },
         }, {
             path: '/nimiq\\::requestUri',
             components: {

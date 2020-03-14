@@ -11,10 +11,10 @@
         <PriceChart currency="btc" class="graph"/>
 
         <div class="trade-actions">
-            <button class="nq-button-s inverse" @click="$router.push('/trade')">
+            <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
                 {{ $t('Buy') }}
             </button>
-            <button class="nq-button-s inverse" @click="$router.push('/trade')">
+            <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
                 {{ $t('Sell') }}
             </button>
         </div>

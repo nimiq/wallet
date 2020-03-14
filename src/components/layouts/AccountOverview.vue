@@ -94,7 +94,6 @@ export default defineComponent({
     max-height: 100%;
     flex-direction: column;
     padding: 4rem 6rem 0 6rem;
-    background: var(--nimiq-gray);
 
     > * {
         margin: 2rem 0;

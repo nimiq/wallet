@@ -1,6 +1,5 @@
 <template>
     <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
-        <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
         <template v-if="activeAddressInfo">
             <button
                 class="reset active-address flex-row"
@@ -36,6 +35,12 @@
             <span class="opacity-75">{{ $t('Let\'s get started! Connect your first account:') }}</span>
             <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
+
+        <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
+
+        <transition name="fade">
+            <router-view name="modal"/>
+        </transition>
     </div>
 </template>
 

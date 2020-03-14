@@ -1,30 +1,19 @@
 <template>
     <div id="app">
         <main>
-            <Sidebar />
-
-            <transition name="slide-right">
-                <keep-alive>
-                    <router-view name="accountOverview" />
-                </keep-alive>
-            </transition>
-
-            <transition name="slide-right">
-                <keep-alive>
-                    <router-view name="addressOverview" />
-                </keep-alive>
-            </transition>
+            <Sidebar/>
 
             <transition name="delay">
-                <router-view name="fullpage" />
+                <router-view name="basement"/>
+            </transition>
+
+            <transition name="slide-right">
+                <keep-alive>
+                    <router-view name="groundfloor"/>
+                </keep-alive>
             </transition>
         </main>
-
-        <transition name="fade">
-            <router-view />
-        </transition>
-    </div>
-  <!-- #app -->
+    </div><!-- #app -->
 </template>
 
 <script lang="ts">
@@ -48,47 +37,41 @@ export default defineComponent({
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;
-    overflow: hidden;
+    overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
     main {
         @include flex-full-height;
         flex-direction: row;
+        width: 100%;
+
+        $sidebarWidth: 21rem;
 
         .sidebar {
-            width: 21rem;
+            width: $sidebarWidth;
         }
 
-        .account-overview {
-            max-width: 60rem;
+        .groundfloor {
+            width: 100%;
             position: relative;
-            z-index: 3;
         }
 
-        .address-overview {
-            max-width: 100rem;
-            position: relative;
-            z-index: 4;
-        }
-
-        .address-overview::after {
-            content: ' ';
-            display: flex;
-            left: 100%;
-            top: 0;
-            position: absolute;
+        /deep/ .account-overview {
+            width: 60rem;
             z-index: 2;
-            width: calc(100vw - 181rem);
-            height: 100%;
-            background: var(--nimiq-gray);
+        }
+
+        /deep/ .address-overview {
+            width: 100rem;
+            z-index: 3;
         }
 
         .network {
             position: absolute;
             top: 0;
-            left: 21rem;
-            width: calc(100% - 21rem);
+            left: $sidebarWidth;
+            width: calc(100% - #{$sidebarWidth});
             height: 100%;
-            z-index: 1;
+            z-index: 0;
         }
     }
 }
@@ -98,7 +81,26 @@ export default defineComponent({
 $transitionTime: 0.75;
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s var(--nimiq-ease);
+    transition: opacity #{$transitionTime}s var(--nimiq-ease);
+
+    &.settings {
+        // The address-overview is flex-row positioned next to the account-overview.
+        // The settings view has a very different width than the account-overview,
+        // So to not disturb the relative positioning of the address-overview during
+        // the slide-right animation, the settings content must be positioned absolute.
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    &.backdrop { // Modals
+        transition-duration: 0.4s;
+    }
+}
+
+.fade-enter-active.account-overview,
+.fade-enter-active.settings {
+    transition-delay: #{$transitionTime / 2}s;
 }
 
 .fade-enter,
@@ -109,21 +111,16 @@ $transitionTime: 0.75;
 .network {
     &.delay-leave-active {
         /* the network can only disappear once the other transitions are finished so add a delay */
-        transition: transform 0s #{$transitionTime}s linear;
+        transition-delay: #{$transitionTime}s;
     }
 }
 
-.slide-right-enter-active,
-.slide-right-leave-active {
+.groundfloor,
+.address-overview {
     transition: transform #{$transitionTime}s var(--nimiq-ease);
 }
 
-.slide-right-enter-to,
-.slide-right-leave {
-    transform: translate3d(0, 0, 0);
-}
-
-.account-overview {
+.groundfloor {
     &.slide-right-enter,
     &.slide-right-leave-to {
         transform: translate3d(calc(100vw - 21rem), 0, 0);
@@ -134,6 +131,11 @@ $transitionTime: 0.75;
     &.slide-right-enter,
     &.slide-right-leave-to {
         transform: translate3d(calc(100vw - 60rem - 21rem), 0, 0);
+    }
+
+    .slide-right-enter &,
+    .slide-right-leave-to & {
+        transform: translate3d(-60rem, 0, 0);
     }
 }
 </style>

@@ -95,12 +95,13 @@ export default defineComponent({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 3rem 2rem 0.5rem;
+        margin: 2rem 2rem 0.5rem;
 
         > button {
             width: 4rem;
             height: 4rem;
             padding: 0;
+            padding-bottom: 0.125rem; // To move the plus sign up by one pixel, so it's more centered.
             margin: 0;
             min-width: 0;
             font-weight: bold;

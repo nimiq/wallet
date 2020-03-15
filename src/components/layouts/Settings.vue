@@ -49,7 +49,7 @@
                         {{ $t('Set the interface language.') }}
                     </p>
                 </div>
-                <select name="language" id="language" @input="setLanguage($event.target.value)">
+                <select name="language" id="language" @input="setLanguage($event.target.value)" disabled>
                     <option value="de" :selected="language === 'de'">Deutsch</option>
                     <option value="en" :selected="language === 'en'">English</option>
                     <option value="fr" :selected="language === 'fr'">Français</option>

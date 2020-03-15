@@ -25,14 +25,6 @@
 
         <AccountBalance />
 
-        <button class="reset nimiq-2-preview-box flex-row" disabled>
-            <div class="icon"></div>
-            <div class="text">
-                <strong>Nimiq 2.0</strong>
-                <span>Placeholder text about what's coming.</span>
-            </div>
-        </button>
-
         <h2 class="nq-label">
             {{ $t('Addresses') }}
             <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
@@ -155,33 +147,6 @@ export default defineComponent({
     &.words {
         border: 2px solid rgba(31, 35, 72, 0.05);
         padding: 1rem 1.25rem 1rem 1.75rem
-    }
-}
-
-.nimiq-2-preview-box {
-    align-items: center;
-    background: var(--nimiq-highlight-bg);
-    border-radius: 0.75rem;
-    padding: 2rem;
-
-    .icon {
-        width: 4.5rem;
-        height: 5.5rem;
-        background: var(--nimiq-highlight-bg);
-        border-radius: 0.5rem;
-        margin-right: 2rem;
-    }
-
-    strong {
-        font-weight: 600;
-        font-size: 2rem;
-        display: block;
-    }
-
-    span {
-        font-weight: 600;
-        font-size: 1.75rem;
-        opacity: 0.4;
     }
 }
 

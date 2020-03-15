@@ -12,7 +12,7 @@
                 :message="message || undefined"
                 @send-tx="sendTx"
                 @contact-added="addContact"
-                @create-cashlink="()=>{}"
+                @create-cashlink="onCreateCashlink"
                 @login="onboard"
                 @scan-qr="$router.replace('/scan').catch((err)=>{})" />
         </div>
@@ -28,7 +28,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore, AddressType, AddressInfo, ContractAddressInfo } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
-import { onboard, sendTransaction } from '../../hub';
+import { onboard, sendTransaction, createCashlink } from '../../hub';
 import { useRouter } from '../../router';
 
 export default defineComponent({
@@ -122,6 +122,10 @@ export default defineComponent({
             }
         };
 
+        function onCreateCashlink(senderObj: {address: string, label: string, walletId: string}) {
+            createCashlink(senderObj.address, addressesStore$.addressInfos[senderObj.address].balance || undefined);
+        }
+
         return {
             addContact,
             addresses: addressInfos.value,
@@ -130,6 +134,7 @@ export default defineComponent({
             height,
             message,
             onboard,
+            onCreateCashlink,
             recipientWithLabel,
             sender,
             sendTx,

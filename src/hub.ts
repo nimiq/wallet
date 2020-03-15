@@ -163,6 +163,19 @@ export async function sendTransaction(tx: {
     return true;
 }
 
+export async function createCashlink(senderAddress: string, senderBalance?: number) {
+    // TODO: Handle error
+    const cashlink = await hubApi.createCashlink({ // eslint-disable-line @typescript-eslint/no-unused-vars
+        appName: APP_NAME,
+        senderAddress,
+        senderBalance,
+    });
+
+    // TODO Handle cashlink
+
+    return true;
+}
+
 export async function rename(accountId: string, address?: string) {
     // TODO: Handle error
     const account = await hubApi.rename({

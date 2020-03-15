@@ -126,6 +126,7 @@ export default defineComponent({
                 /deep/ .nim {
                     font-size: 0.5em;
                     margin-left: 0.5rem;
+                    margin-right: calc(-1.9em - 0.5rem);
                 }
 
                 /deep/ .nq-input {

@@ -33,7 +33,7 @@
                 </span>
                 <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                     {{ isIncoming ? $t('received at') : $t('sent at') }}
-                    {{ datum }} {{ time }}
+                    {{ datum }} <strong>&middot;</strong> {{ time }}
                 </span>
             </PageHeader>
             <PageBody class="flex-column">
@@ -103,6 +103,7 @@
 
                 <div class="amount-and-message flex-column">
                     <Amount :amount="transaction.value" :class="{
+                        isIncoming,
                         'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
                         'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
                             && isIncoming,
@@ -453,16 +454,30 @@ export default defineComponent({
 
     .amount {
         font-size: 5rem;
-        line-height: 1.1;
+        line-height: 1;
+        margin-bottom: 0.25rem;
 
         /deep/ .currency {
             font-size: 0.5em;
             font-weight: bold;
+            margin-right: -1.9em;
+        }
+
+        &:not(.isIncoming)::before {
+            content: '-';
+            margin-right: -0.1em;
+            margin-left: -0.4em;
+        }
+
+        &.isIncoming::before {
+            content: '+';
+            margin-right: -0.1em;
+            margin-left: -0.6em;
         }
     }
 
     .fiat-amount {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 600;
         color: rgba(31, 35, 72, 0.5);
     }

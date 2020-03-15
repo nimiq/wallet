@@ -5,10 +5,10 @@
             class="backup-warning file nq-orange-bg flex-row"
         >
             <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">Placeholder File warning</span>
+            <span class="alert-text">{{ $t('Your Account is not safe yet!') }}</span>
             <div class="flex-grow"></div>
             <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)">
-                Login File<ArrowRightSmallIcon/>
+                {{ $t('Save now') }}<ArrowRightSmallIcon/>
             </button>
         </div>
         <div
@@ -16,10 +16,10 @@
             class="backup-warning words nq-orange flex-row"
         >
             <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">Placeholder warning</span>
+            <span class="alert-text">{{ $t('There is no ‘forgot password’') }}</span>
             <div class="flex-grow"></div>
             <button class="nq-button-pill orange" @click="backup(activeAccountInfo.id, { wordsOnly: true })">
-                Recovery Words<ArrowRightSmallIcon/>
+                {{ $t('Backup') }}<ArrowRightSmallIcon/>
             </button>
         </div>
 
@@ -143,6 +143,13 @@ export default defineComponent({
         vertical-align: middle;
         margin-bottom: 0.25rem;
         margin-left: 0.625rem;
+
+        transition: transform 0.25s var(--nimiq-ease);
+    }
+
+    button:hover .nq-icon,
+    button:focus .nq-icon {
+        transform: translateX(0.25rem);
     }
 
     &.words {

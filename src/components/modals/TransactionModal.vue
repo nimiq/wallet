@@ -127,6 +127,7 @@
                     <InfoCircleIcon slot="icon"/>
                     <span class="block">Block #{{ transaction.blockHeight }}</span>
                     <span v-if="confirmations" class="confirmations">{{ confirmations }} Confirmations</span>
+                    <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
                 </Tooltip>
             </PageBody>
         </SmallPage>
@@ -450,29 +451,29 @@ export default defineComponent({
     .amount-and-message {
         align-items: center;
         margin-top: 3.5rem; // Same as .copyable margin-bottom
-    }
 
-    .amount {
-        font-size: 5rem;
-        line-height: 1;
-        margin-bottom: 0.25rem;
+        .amount {
+            font-size: 5rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
 
-        /deep/ .currency {
-            font-size: 0.5em;
-            font-weight: bold;
-            margin-right: -1.9em;
-        }
+            /deep/ .currency {
+                font-size: 0.5em;
+                font-weight: bold;
+                margin-right: -1.9em;
+            }
 
-        &:not(.isIncoming)::before {
-            content: '-';
-            margin-right: -0.1em;
-            margin-left: -0.4em;
-        }
+            &:not(.isIncoming)::before {
+                content: '-';
+                margin-right: -0.1em;
+                margin-left: -0.4em;
+            }
 
-        &.isIncoming::before {
-            content: '+';
-            margin-right: -0.1em;
-            margin-left: -0.6em;
+            &.isIncoming::before {
+                content: '+';
+                margin-right: -0.1em;
+                margin-left: -0.6em;
+            }
         }
     }
 
@@ -508,16 +509,18 @@ export default defineComponent({
             white-space: nowrap;
             text-align: right;
             line-height: 1.3;
-        }
-
-        .block {
             font-weight: 600;
         }
 
         .confirmations {
             display: block;
-            font-size: 1.625rem;
+            font-size: 1.5rem;
             opacity: 0.6;
+        }
+
+        .fee {
+            display: inline-block;
+            margin-top: 1.25rem;
         }
     }
 

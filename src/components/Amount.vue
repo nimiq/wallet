@@ -27,8 +27,8 @@ export default defineComponent({
 
             if (props.amount === null) return 0;
 
-            if (props.amount < 0.01 * 1e5) return 5;
-            if (props.amount < 1 * 1e5) return Math.max(decimals.value, 2);
+            if (props.amount > 0 && props.amount < 0.01 * 1e5) return 5;
+            if (props.amount > 0 && props.amount < 1 * 1e5) return Math.max(decimals.value, 2);
             return decimals.value;
         });
 

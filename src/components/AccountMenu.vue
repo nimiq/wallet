@@ -218,10 +218,10 @@ export default defineComponent({
     display: none;
     position: absolute;
     left: calc(100% + 1rem);
-    bottom: 0;
+    bottom: -13.75rem;
     background: white;
     width: 33rem;
-    max-height: calc(100vh - 16rem);
+    max-height: calc(100vh - 4rem);
     padding: 1rem;
     border-radius: .75rem;
     color: var(--nimiq-blue);

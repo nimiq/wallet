@@ -176,6 +176,8 @@ export default defineComponent({
                 }
             }
 
+            if (!txs[n]) return transactionsWithMonths; // Address has only pending txs
+
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 

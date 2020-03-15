@@ -1,6 +1,6 @@
 <template>
     <div class="consensus-icon" :class="consensus">
-        <WorldIcon v-if="consensus === 'initializing' || consensus === 'syncing'"/>
+        <WorldIcon v-if="consensus === 'connecting' || consensus === 'syncing'"/>
         <WorldCheckIcon v-else-if="consensus === 'established'"/>
         <WorldAlertIcon v-else-if="consensus === 'lost'"/>
     </div>
@@ -54,7 +54,7 @@ svg {
     display: block;
 }
 
-.initializing,
+.connecting,
 .syncing {
     animation: consensus-indicator-spin 1s linear infinite;
 }

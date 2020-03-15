@@ -7,8 +7,8 @@
 
         <AnnouncementBox/>
 
-        <PriceChart currency="nim" class="nim"/>
-        <PriceChart currency="btc" class="btc"/>
+        <PriceChart currency="nim"/>
+        <PriceChart currency="btc" :showTimespanLabel="false"/>
 
         <div class="trade-actions">
             <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
@@ -95,10 +95,6 @@ export default defineComponent({
     /deep/ .timespan {
         left: 1.5rem;
         top: 0.5rem;
-    }
-
-    &.btc /deep/ .timespan {
-        display: none;
     }
 }
 

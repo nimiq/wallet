@@ -13,7 +13,7 @@
             />
         </svg>
 
-        <div class="timespan">24H</div>
+        <div v-if="showTimespanLabel" class="timespan">24H</div>
 
         <div class="meta flex-row">
             <strong>{{currency.toUpperCase()}}</strong>
@@ -62,6 +62,10 @@ export default defineComponent({
             type: String,
             required: true,
             validator: (currency) => Object.values(CryptoCurrency).includes(currency),
+        },
+        showTimespanLabel: {
+            type: Boolean,
+            default: true,
         },
     },
     setup(props: any) {
@@ -254,8 +258,10 @@ svg path {
     left: 0;
     top: 0;
     text-transform: uppercase;
-    background: rgba(255, 255, 255, 0.35);
-    border-radius: 0.25rem;
+    background: rgb(109, 112, 135); // A background of rgba(255, 255, 255, 0.35) on Nimiq Blue
+    border: 0.25rem solid var(--nimiq-blue);
+    margin: -0.25rem;
+    border-radius: calc(0.25rem + 0.25rem); // border-width + effective border-radius of the label
     padding: 0.375rem; // 3px
     font-size: 1.375rem; // 11px
     line-height: 1;

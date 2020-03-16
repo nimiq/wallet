@@ -12,9 +12,19 @@ import { defineComponent, onUnmounted } from '@vue/composition-api';
 import { CloseButton } from '@nimiq/vue-components';
 
 export default defineComponent({
+    props: {
+        emitClose: {
+            type: Boolean,
+            default: false,
+        },
+    },
     setup(props, context) {
         function close() {
-            context.root.$router.back();
+            if (props.emitClose) {
+                context.emit('close');
+            } else {
+                context.root.$router.back();
+            }
         }
 
         const onEscape = (e: KeyboardEvent) => {

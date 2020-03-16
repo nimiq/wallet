@@ -13,22 +13,35 @@
                 </keep-alive>
             </transition>
         </main>
+
+        <transition name="fade">
+            <PreviewNoticeModal v-if="showPreviewNotice" :emitClose="true" @close="showPreviewNotice = false"/>
+        </transition>
     </div><!-- #app -->
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
+import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
 import router, { provideRouter } from './router';
+import { TESTNET_ORIGIN } from './lib/Constants';
 
 export default defineComponent({
     name: 'app',
     setup() {
         provideRouter(router);
+
+        const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
+
+        return {
+            showPreviewNotice,
+        };
     },
     components: {
         Sidebar,
+        PreviewNoticeModal,
     },
 });
 </script>

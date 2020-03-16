@@ -154,6 +154,10 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+#: src/components/modals/PreviewNoticeModal.vue:10
+msgid "Got it"
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:94
 msgid "Got it!"
 msgstr ""
@@ -196,6 +200,10 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:35
 msgid "Let's get started! Connect your first account:"
+msgstr ""
+
+#: src/components/modals/PreviewNoticeModal.vue:9
+msgid "Let's hear your feedback!"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:43
@@ -337,6 +345,10 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr ""
 
+#: src/components/modals/PreviewNoticeModal.vue:8
+msgid "This is a very early version of the new Nimiq Wallet, optimized for screens larger than 1450x700px."
+msgstr ""
+
 #: src/components/TransactionList.vue:171
 #: src/components/TransactionList.vue:185
 msgid "This month"
@@ -361,6 +373,10 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:39
 msgid "Updating transactions..."
+msgstr ""
+
+#: src/components/modals/PreviewNoticeModal.vue:7
+msgid "Welcome to the Wallet Preview!"
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:90

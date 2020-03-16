@@ -18,7 +18,7 @@ const SendModal = () => import(/* webpackChunkName: "send-modal" */ './component
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
-const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
+// const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
 const AddressModal = () =>
     import(/* webpackChunkName: "address-modal" */ './components/modals/AddressModal.vue');
@@ -57,13 +57,13 @@ const routes: RouteConfig[] = [{
             },
             name: 'transaction',
             props: { modal: true },
-        }, {
-            path: '/trade',
-            components: {
-                modal: TradeModal,
-            },
-            name: 'trade',
-            props: { modal: true },
+        // }, {
+        //     path: '/trade',
+        //     components: {
+        //         modal: TradeModal,
+        //     },
+        //     name: 'trade',
+        //     props: { modal: true },
         }, {
             path: '/scan',
             components: {

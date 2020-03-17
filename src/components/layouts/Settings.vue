@@ -124,13 +124,12 @@ export default defineComponent({
 .settings {
     padding: 2.25rem 4rem;
     flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: flex-start;
 }
 
 section {
     box-sizing: content-box;
     width: 48rem;
+    height: 37rem;
     padding: 3.75rem 4rem;
     border-right: 0.25rem solid rgba(31, 35, 72, 0.1);
     border-bottom: 0.25rem solid rgba(31, 35, 72, 0.1);

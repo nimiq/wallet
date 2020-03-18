@@ -69,10 +69,14 @@ export async function launchNetwork() {
         const knownTxDetails = Object.values(transactionsStore.state.transactions)
             .filter((tx) => tx.sender === address || tx.recipient === address);
 
+        const lastConfirmedHeight = knownTxDetails
+            .filter((tx) => tx.state === TransactionState.CONFIRMED)
+            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+
         network$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        client.getTransactionsByAddress(address, 0, knownTxDetails, 100)
+        client.getTransactionsByAddress(address, lastConfirmedHeight - 10, knownTxDetails, 100)
             .then((txDetails) => {
                 transactionsStore.addTransactions(txDetails);
             })

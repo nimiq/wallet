@@ -8,7 +8,11 @@
             v-slot="{ item, index }"
             :buffer="scrollerBuffer"
         >
-            <div class="list-element loading" v-if="item.loading" :style="{ animationDelay: `${index * .1}s` }">
+            <div
+                class="list-element loading"
+                v-if="item.loading"
+                :style="{ animationDelay: `${index * .1}s` }"
+            >
                 <div class="date">
                     <div class="placeholder"></div>
                     <div class="placeholder"></div>
@@ -17,7 +21,7 @@
                 </div>
                 <div class="data placeholder"></div>
             </div>
-            <div class="list-element" v-else>
+            <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
                 <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
                 <TransactionListItem v-else :transaction="item"/>
             </div>
@@ -220,13 +224,11 @@ export default defineComponent({
         // only runs on transaction hash change.
         const $el: Ref<null | HTMLElement> = ref(null);
         (() => {
+            let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
             const config = { characterData: true, childList: true, subtree: true };
-            const onAnimationEnd = (e: any) => {
-                e.target!.removeEventListener('animationend', onAnimationEnd);
-                e.target!.classList.remove('fadein');
-            };
             const callback = async function mutationCallback(mutationsList: MutationRecord[]) {
                 if (!transactions.value.length) return;
+                const changedIndexes: string[] = [];
 
                 for (const mutation of mutationsList) {
                     let element: null | HTMLElement = null;
@@ -246,11 +248,20 @@ export default defineComponent({
                         }
                     }
 
-                    if (element) {
-                        element.classList.add('fadein');
-                        element.addEventListener('animationend', onAnimationEnd);
+                    if (element && !changedIndexes.includes(element.dataset.id!)) {
+                        changedIndexes.push(element.dataset.id!);
+
+                        const changedTxHash = element.dataset.hash as string;
+
+                        if (!txHashList.includes(changedTxHash + activeAddress.value)) { // added element
+                            txHashList.push(changedTxHash + activeAddress.value);
+                            element.classList.remove('fadein');
+                            requestAnimationFrame(() => element!.classList.add('fadein'));
+                        }
                     }
                 }
+
+                txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
             };
 
             const observer = new MutationObserver(callback);
@@ -309,7 +320,6 @@ export default defineComponent({
         padding-bottom: 5rem;
 
         @extend %custom-scrollbar;
-
     }
 
     .list-element {

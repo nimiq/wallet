@@ -64,9 +64,16 @@ module.exports = {
         */
     },
     overrides: [{
-        files: ['src/components/icons/*', 'src/components/NetworkMap.vue'],
-        rules: {
-            'max-len': 'off',
+            files: ['src/components/icons/*'],
+            rules: {
+                'max-len': 'off',
+            },
         },
-    }],
+        {
+            files: ['src/lib/NetworkMap.ts'],
+            rules: {
+                'max-classes-per-file': 'off',
+            },
+        },
+    ],
 };

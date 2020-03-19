@@ -3,7 +3,7 @@
         <div class="background"></div>
         <div class="network-inner flex-column">
             <NetworkMap/>
-            <h1 class="coming-soon">Coming soon</h1>
+            <h1 class="coming-soon">Coming soon<small>Currently all Points are chosen randomly!</small></h1>
             <NetworkStats/>
         </div>
     </div>
@@ -66,12 +66,16 @@ export default defineComponent({
         opacity: 0.4;
         text-transform: uppercase;
         letter-spacing: 0.1em;
+
+        > small {
+            display: block;
+            font-size: 25%;
+        }
     }
 
     .network-map {
-        width: 100%;
         flex-grow: 1;
-        padding: 7rem;
+        flex-shrink: 1;
     }
 
     .network-stats {

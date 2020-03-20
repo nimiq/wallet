@@ -1,5 +1,16 @@
 <template>
-    <div class="sidebar padding flex-column">
+    <div class="sidebar padding flex-column" ref="sidebar">
+        <div class="testnet-notice flex-row">
+            <StreetconeIcon/>
+            <span class="nq-label">Testnet</span>
+            <div class="flex-grow"></div>
+            <Tooltip :reference="{$el: $refs.sidebar}">
+                <InfoCircleIcon slot="icon"/>
+                <p>You are connecting to the Nimiq Testnet.</p>
+                <p>Please do not use your Mainnet accounts!</p>
+            </Tooltip>
+        </div>
+
         <header class="logo">
             <span class="nq-icon nimiq-logo"></span>
             <span class="logo-wordmark">Nimiq</span>
@@ -44,12 +55,13 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { GearIcon } from '@nimiq/vue-components';
+import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
+import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
 export default defineComponent({
     name: 'sidebar',
@@ -59,6 +71,9 @@ export default defineComponent({
         PriceChart,
         AccountMenu,
         ConsensusIcon,
+        Tooltip,
+        InfoCircleIcon,
+        StreetconeIcon,
     },
 });
 </script>
@@ -71,7 +86,49 @@ export default defineComponent({
     background: var(--nimiq-blue);
     color: white;
     min-width: 21rem;
-    padding: 2.75rem 1.5rem 1.5rem;
+    padding: 3rem 1.5rem 1.5rem;
+}
+
+.testnet-notice {
+    align-items: center;
+    width: calc(100% + 3rem);
+    margin: -3rem -1.5rem 3rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, .07);
+
+    .nq-label {
+        color: var(--nimiq-orange);
+        margin: 0.25rem 0 0 1rem;
+    }
+
+    .nq-icon {
+        color: rgba(255, 255, 255, .5);
+        font-size: 1.75rem;
+        stroke-width: 1.5px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.3;
+
+        & + p {
+            margin-top: 1rem;
+        }
+    }
+
+    .tooltip {
+        /deep/ > a::after {
+            border-bottom-color: white !important;
+        }
+
+        /deep/ .tooltip-box {
+        z-index: 1000;
+            background: white;
+            color: var(--nimiq-blue);
+        }
+    }
 }
 
 > * {

@@ -103,8 +103,8 @@ export default defineComponent({
         position: relative;
         overflow-y: auto;
         padding-bottom: 1rem;
-        padding-right: 6rem;
-        margin-right: -6rem !important;
+        padding-right: var(--padding-sides);
+        margin-right: calc(-1 * var(--padding-sides)) !important;
 
         @extend %custom-scrollbar;
     }
@@ -130,7 +130,7 @@ export default defineComponent({
 
 
     .active-box {
-        width: calc(100% - 6rem);
+        width: calc(100% - var(--padding-sides));
         height: #{$btnHeight}rem;
         position: absolute;
         left: 0;
@@ -144,7 +144,7 @@ export default defineComponent({
         transition: transform 400ms var(--nimiq-ease);
 
         .has-scrollbar & {
-            width: calc(100% - 6rem + 6px);
+            width: calc(100% - var(--padding-sides) + 6px);
         }
     }
 

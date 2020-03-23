@@ -91,7 +91,17 @@ export default defineComponent({
     @include flex-full-height;
     background: var(--nimiq-card-bg);
     flex-direction: column;
-    padding: 4rem 4rem 0 4rem;
+
+    --padding-top: 4rem;
+    --padding-sides: 4rem;
+    --padding-bottom: 0;
+
+    @media (min-width: 2048px) {
+        --padding-top: 11rem;
+        --padding-sides: 11rem;
+    }
+
+    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 
     .active-address {
         flex-shrink: 0;

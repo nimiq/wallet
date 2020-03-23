@@ -85,15 +85,25 @@ export default defineComponent({
     align-items: center;
     background: var(--nimiq-blue);
     color: white;
-    min-width: 21rem;
-    padding: 3rem 1.5rem 1.5rem;
+
+    --padding-top: 3rem;
+    --padding-sides: 1.5rem;
+    --padding-bottom: 1.5rem;
+
+    @media (min-width: 2048px) {
+        --padding-top: 5rem;
+        --padding-sides: 4rem;
+        --padding-bottom: 4rem;
+    }
+
+    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 }
 
 .testnet-notice {
     align-items: center;
-    width: calc(100% + 3rem);
-    margin: -3rem -1.5rem 3rem;
-    padding: 1.5rem;
+    width: calc(100% + calc(2 * var(--padding-sides)));
+    margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);
+    padding: calc(max(var(--padding-sides) / 1.5, 1.5rem)) var(--padding-sides);
     background: rgba(255, 255, 255, .07);
 
     .nq-label {
@@ -138,6 +148,11 @@ export default defineComponent({
 .logo {
     color: white;
     margin-bottom: 3.5rem;
+
+    @media (min-width: 2048px) {
+        align-self: flex-start;
+        margin-left: 1.5rem;
+    }
 }
 
 .announcement-box {
@@ -169,7 +184,7 @@ export default defineComponent({
     width: 100%;
     color: rgba(255, 255, 255, .3);
     margin-top: 1rem;
-    padding: 1.75rem 1.5rem;
+    padding: 1.75rem 1.25rem;
     font-size: 2.5rem;
     font-weight: 600;
     border-radius: 0.5rem;

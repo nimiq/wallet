@@ -81,21 +81,32 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 .account-overview {
     @include flex-full-height;
-    width: 60rem;
-    flex-shrink: 0;
     max-height: 100%;
     flex-direction: column;
-    padding: 4rem 6rem 0 6rem;
+
+    --padding-top: 4rem;
+    --padding-sides: 6rem;
+    --padding-bottom: 0;
+
+    @media (min-width: 2048px) {
+        --padding-top: 8rem;
+        --padding-sides: 12rem;
+        --padding-bottom: 6rem;
+    }
+
+    --item-margin: calc(var(--padding-top) / 2);
+
+    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 
     > * {
-        margin: 2rem 0;
+        margin: var(--item-margin) 0;
     }
 
     > h2 {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 2rem 2rem 0.5rem;
+        margin: var(--item-margin) 2rem calc(var(--item-margin) / 2);
 
         > button {
             width: 4rem;

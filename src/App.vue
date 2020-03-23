@@ -52,15 +52,24 @@ export default defineComponent({
     @include flex-full-height;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
+    --sidebar-width: 21rem;
+    --account-column-width: 60rem;
+    --address-column-width: 100rem;
+
+    @media (min-width: 2048px) {
+        --sidebar-width: 32rem;
+        --account-column-width: 86rem;
+        --address-column-width: 132rem;
+    }
+
     main {
         @include flex-full-height;
         flex-direction: row;
         width: 100%;
 
-        $sidebarWidth: 21rem;
-
         .sidebar {
-            width: $sidebarWidth;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
         }
 
         .groundfloor {
@@ -69,20 +78,21 @@ export default defineComponent({
         }
 
         /deep/ .account-overview {
-            width: 60rem;
+            width: var(--account-column-width);
+            flex-shrink: 0;
             z-index: 2;
         }
 
         /deep/ .address-overview {
-            width: 100rem;
+            width: var(--address-column-width);
             z-index: 3;
         }
 
         .network {
             position: absolute;
             top: 0;
-            left: $sidebarWidth;
-            width: calc(100% - #{$sidebarWidth});
+            left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
             height: 100%;
             z-index: 0;
         }
@@ -136,19 +146,19 @@ $transitionTime: 0.75;
 .groundfloor {
     &.slide-right-enter,
     &.slide-right-leave-to {
-        transform: translate3d(calc(100vw - 21rem), 0, 0);
+        transform: translate3d(calc(100vw - var(--sidebar-width)), 0, 0);
     }
 }
 
 .address-overview {
     &.slide-right-enter,
     &.slide-right-leave-to {
-        transform: translate3d(calc(100vw - 60rem - 21rem), 0, 0);
+        transform: translate3d(calc(100vw - var(--account-column-width) - var(--sidebar-width)), 0, 0);
     }
 
     .slide-right-enter &,
     .slide-right-leave-to & {
-        transform: translate3d(-60rem, 0, 0);
+        transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
     }
 }
 </style>

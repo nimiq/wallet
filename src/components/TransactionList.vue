@@ -294,7 +294,7 @@ export default defineComponent({
 
 .transaction-list {
     position: relative;
-    margin: 0 calc(2rem - 6rem) 0 2rem;
+    margin: 0 calc(-1 * var(--padding-sides)) 0 2rem;
 
     .month-label {
         color: var(--nimiq-blue);
@@ -316,8 +316,8 @@ export default defineComponent({
         top: 0;
         width: 100%;
         height: 100%;
-        padding-right: calc(6rem - 6px);
-        padding-bottom: 5rem;
+        padding-right: calc(2rem + var(--padding-sides) - 6px);
+        padding-bottom: var(--padding-top, 4rem);
 
         @extend %custom-scrollbar;
     }

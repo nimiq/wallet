@@ -161,14 +161,12 @@ export default defineComponent({
 .account-menu {
     position: relative;
     width: 100%;
-    max-width: 17.5rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0);
     border-radius: 0.5rem;
     align-items: center;
     font-weight: 600;
     font-size: 2rem;
-    margin: 0.25rem 0;
 
     transition: background-color 0.2s var(--nimiq-ease);
 

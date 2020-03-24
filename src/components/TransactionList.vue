@@ -103,59 +103,44 @@ export default defineComponent({
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { state: transactions$ } = useTransactionsStore();
         const { isFetchingTxHistory } = useNetworkStore();
-        const { getLabel } = useContactsStore();
+        const { getLabel: getContactLabel } = useContactsStore();
 
         const scrollerBuffer = 300;
         const itemSize = 72;
 
-        const txForActiveAddress = computed(() =>
-            Object.values(transactions$.transactions)
-                .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value),
-        );
+        // Get all transactions for the active address
+        const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
+            .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
 
-        const transactions = computed(() => {
+        // Apply search filter
+        const filteredTxs = computed(() => {
+            if (!props.searchString) return txsForActiveAddress.value;
+
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
-            // filtering & sorting TX
-            let txs = (txForActiveAddress.value as Transaction[]);
+            return txsForActiveAddress.value.filter((tx) => {
+                const senderLabel = addresses$.addressInfos[tx.sender]
+                    ? addresses$.addressInfos[tx.sender].label
+                    : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
 
-            if (props.searchString !== '') {
-                txs = txs.filter((tx) => {
-                    const senderLabel = addresses$.addressInfos[tx.sender]
-                        ? addresses$.addressInfos[tx.sender]
-                            ? addresses$.addressInfos[tx.sender].label
-                            : ''
-                        : getLabel.value(tx.sender)
-                            ? getLabel.value(tx.sender)
-                            : AddressBook.getLabel(tx.sender)
-                                ? AddressBook.getLabel(tx.sender)
-                                : '';
+                const recipientLabel = addresses$.addressInfos[tx.recipient]
+                    ? addresses$.addressInfos[tx.recipient].label
+                    : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
 
-                    const recipientLabel = addresses$.addressInfos[tx.recipient]
-                        ? addresses$.addressInfos[tx.recipient]
-                            ? addresses$.addressInfos[tx.recipient].label
-                            : ''
-                        : getLabel.value(tx.recipient)
-                            ? getLabel.value(tx.recipient)
-                            : AddressBook.getLabel(tx.recipient)
-                                ? AddressBook.getLabel(tx.recipient)
-                                : '';
+                const concatenatedTxStrings = `
+                    ${tx.sender.replace(/\s/g, '')}
+                    ${tx.recipient.replace(/\s/g, '')}
+                    ${senderLabel ? senderLabel.toUpperCase() : ''}
+                    ${recipientLabel ? recipientLabel.toUpperCase() : ''}
+                    ${parseData(tx.data.raw).toUpperCase()}
+                `;
+                return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
+            });
+        });
 
-                    const concatenatedTxStrings = `
-                        ${tx.sender.replace(/\s/g, '')}
-                        ${tx.recipient.replace(/\s/g, '')}
-                        ${senderLabel ? senderLabel.toUpperCase() : ''}
-                        ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-                        ${parseData(tx.data.raw).toUpperCase()}
-                    `;
-                    return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
-                });
-            }
-            txs = txs.sort((a, b) =>
-                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
-
-            // loading transactions
-            if (!txs.length && isFetchingTxHistory.value) {
+        const transactions = computed(() => {
+            // Display loading transactions
+            if (!filteredTxs.value.length && isFetchingTxHistory.value) {
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
@@ -163,9 +148,14 @@ export default defineComponent({
                 return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
             }
 
-            // add month / "This month" TX labels
+            if (!filteredTxs.value.length) return [];
+
+            // Sort transactions by descending timestamp
+            const txs = filteredTxs.value.slice(0).sort((a, b) =>
+                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
+
+            // Inject "This month" label
             const transactionsWithMonths: any = [];
-            if (!txs.length) return transactionsWithMonths;
 
             let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
@@ -182,6 +172,7 @@ export default defineComponent({
 
             if (!txs[n]) return transactionsWithMonths; // Address has only pending txs
 
+            // Inject month + year labels
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 

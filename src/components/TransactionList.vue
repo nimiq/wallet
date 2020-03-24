@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount, watch } from '@vue/composition-api';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -52,6 +52,7 @@ import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
 import { MAINNET_ORIGIN } from '../lib/Constants';
+import { isFundingCashlink } from '../lib/CashlinkDetection';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -111,6 +112,15 @@ export default defineComponent({
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
             .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
+
+        // Count unclaimed cashlinks
+        watch(() => {
+            const count = txsForActiveAddress.value
+                .filter((tx) =>
+                    tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw))
+                .length;
+            context.emit('unclaimed-cashlink-count', count);
+        });
 
         // Apply search filter
         const filteredTxs = computed(() => {
@@ -414,5 +424,4 @@ img {
         opacity: 0.4;
     }
 }
-
 </style>

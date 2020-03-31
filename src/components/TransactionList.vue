@@ -5,27 +5,41 @@
             :items="transactions"
             :item-size="itemSize"
             key-field="transactionHash"
-            v-slot="{ item, index }"
             :buffer="scrollerBuffer"
         >
-            <div
-                class="list-element loading"
-                v-if="item.loading"
-                :style="{ animationDelay: `${index * .1}s` }"
-            >
-                <div class="date">
-                    <div class="placeholder"></div>
-                    <div class="placeholder"></div>
+            <template v-if="showUnclaimedCashlinkList" v-slot:before>
+                <div class="unclaimed-cashlink-list">
+                    <CloseButton class="top-right" @click="$emit('close-unclaimed-cashlink-list')"/>
+                    <div class="month-label nq-orange">{{ $t('Pending cashlinks') }}</div>
+                    <TransactionListItem
+                        v-for="tx in unclaimedCashlinkTxs"
+                        :transaction="tx"
+                        :key="tx.transactionHash"
+                    />
                 </div>
-                <div class="identicon placeholder">
+            </template>
+
+            <template v-slot:default="{ item, index }">
+                <div
+                    class="list-element loading"
+                    v-if="item.loading"
+                    :style="{ animationDelay: `${index * .1}s` }"
+                >
+                    <div class="date">
+                        <div class="placeholder"></div>
+                        <div class="placeholder"></div>
+                    </div>
+                    <div class="identicon placeholder">
+                    </div>
+                    <div class="data placeholder"></div>
                 </div>
-                <div class="data placeholder"></div>
-            </div>
-            <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
-                <TransactionListItem v-else :transaction="item"/>
-            </div>
+                <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
+                    <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
+                    <TransactionListItem v-else :transaction="item"/>
+                </div>
+            </template>
         </RecycleScroller>
+
         <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
             <span>{{ $t('Receive some free NIM to get started.') }}</span>
@@ -43,6 +57,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount, watch } from '@vue/composition-api';
+import { CloseButton } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -99,6 +114,10 @@ export default defineComponent({
             type: String,
             default: '',
         },
+        showUnclaimedCashlinkList: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props, context) {
         const { activeAddress, state: addresses$ } = useAddressStore();
@@ -113,12 +132,12 @@ export default defineComponent({
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
             .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
 
+        const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value.filter((tx) =>
+            tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw)));
+
         // Count unclaimed cashlinks
         watch(() => {
-            const count = txsForActiveAddress.value
-                .filter((tx) =>
-                    tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw))
-                .length;
+            const count = unclaimedCashlinkTxs.value.length;
             context.emit('unclaimed-cashlink-count', count);
         });
 
@@ -281,11 +300,13 @@ export default defineComponent({
             $el,
             isFetchingTxHistory,
             isMainnet,
+            unclaimedCashlinkTxs,
         };
     },
     components: {
         TransactionListItem,
         TestnetFaucet,
+        CloseButton,
     },
 });
 </script>
@@ -321,6 +342,19 @@ export default defineComponent({
         padding-bottom: var(--padding-top, 4rem);
 
         @extend %custom-scrollbar;
+    }
+
+    .unclaimed-cashlink-list {
+        border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
+        border-radius: 0.5rem;
+        padding: 2rem;
+        position: relative;
+        margin: 0 -2rem;
+
+        .month-label {
+            opacity: 1;
+            padding-top: 1rem;
+        }
     }
 
     .list-element {
@@ -391,12 +425,6 @@ export default defineComponent({
             }
         }
     }
-}
-
-img {
-    max-width: 55rem;
-    margin: 0 20rem 4rem;
-    display: block;
 }
 
 .empty-state {

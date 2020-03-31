@@ -18,7 +18,12 @@
             <div class="actions flex-row">
                 <SearchBar @input="search.searchString = $event.target.value"/>
 
-                <button v-if="unclaimedCashlinkCount" class="nq-button-s orange unclaimed-cashlinks">
+                <button
+                    v-if="unclaimedCashlinkCount"
+                    class="nq-button-s orange unclaimed-cashlinks"
+                    :class="{'active': showUnclaimedCashlinkList}"
+                    @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
+                >
                     {{ $tc(
                         '{count} pending Cashlink | {count} pending Cashlinks',
                         unclaimedCashlinkCount,
@@ -36,7 +41,9 @@
             </div>
             <TransactionList
                 :searchString="search.searchString"
-                @unclaimedCashlinkCount="setUnclaimedCashlinkCount"
+                :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
+                @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
             />
         </template>
         <template v-else>
@@ -55,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from '@vue/composition-api';
+import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 
 import Amount from '../Amount.vue';
@@ -77,9 +84,18 @@ export default defineComponent({
         const senderAddress = computed(() => activeAddressInfo!.value!.address!);
 
         const unclaimedCashlinkCount = ref(0);
+        const showUnclaimedCashlinkList = ref(false);
+
+        function hideUnclaimedCashlinkList() {
+            showUnclaimedCashlinkList.value = false;
+        }
+
         function setUnclaimedCashlinkCount(count: number) {
             unclaimedCashlinkCount.value = count;
+            if (!count) hideUnclaimedCashlinkList();
         }
+
+        watch(senderAddress, hideUnclaimedCashlinkList);
 
         return {
             senderAddress,
@@ -89,6 +105,8 @@ export default defineComponent({
             onboard,
             unclaimedCashlinkCount,
             setUnclaimedCashlinkCount,
+            showUnclaimedCashlinkList,
+            hideUnclaimedCashlinkList,
         };
     },
     components: {

@@ -125,7 +125,10 @@ export default defineComponent({
         const { isFetchingTxHistory } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
 
+        // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
+
+        // Height of items in pixel
         const itemSize = 72;
 
         // Get all transactions for the active address

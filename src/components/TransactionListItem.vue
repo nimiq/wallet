@@ -275,13 +275,14 @@ svg {
             align-items: center;
             justify-content: center;
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: -0.375rem;
+            right: -0.125rem;
             color: white;
             background: var(--nimiq-blue-bg);
+            border: 0.25rem solid white;
             border-radius: 2rem;
-            height: 2rem;
-            width: 2rem;
+            height: 2.5rem;
+            width: 2.5rem;
             font-size: 2rem;
         }
     }

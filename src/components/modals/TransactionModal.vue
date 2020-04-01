@@ -431,13 +431,14 @@ export default defineComponent({
             align-items: center;
             justify-content: center;
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: -0.675rem;
+            right: -0.25rem;
             color: white;
             background: var(--nimiq-blue-bg);
+            border: 0.375rem solid white;
             border-radius: 3rem;
-            height: 3rem;
-            width: 3rem;
+            height: 3.75rem;
+            width: 3.75rem;
             font-size: 3rem;
         }
     }

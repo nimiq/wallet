@@ -545,6 +545,7 @@ export default defineComponent({
         text-align: center;
         font-size: 2rem;
         line-height: 1.375;
+        word-break: break-word;
     }
 
     .tooltip {

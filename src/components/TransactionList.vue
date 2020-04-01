@@ -135,8 +135,11 @@ export default defineComponent({
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
             .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
 
-        const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value.filter((tx) =>
-            tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw)));
+        const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
+            .filter((tx) =>
+                tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw))
+            .slice(0).sort((a, b) =>
+                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER)));
 
         // Count unclaimed cashlinks
         watch(() => {

@@ -76,6 +76,7 @@ import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
+import { useCashlinkStore } from '../stores/Cashlink';
 
 export default defineComponent({
     props: {
@@ -95,8 +96,16 @@ export default defineComponent({
         const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
         // Data
-        const data = computed(() => parseData(props.transaction.data.raw));
         const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
+        const data = computed(() => {
+            if (isCashlink.value) {
+                const { state: cashlinks$ } = useCashlinkStore();
+                const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
+                const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
+                return hubCashlink ? hubCashlink.message : '';
+            }
+            return parseData(props.transaction.data.raw);
+        });
 
         // Related Transaction
         const { state: transactions$ } = useTransactionsStore();

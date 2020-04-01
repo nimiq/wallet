@@ -96,6 +96,10 @@
                         <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                             <AddressDisplay :address="peerAddress"/>
                         </Copyable>
+                        <button
+                            v-else-if="hubCashlink && hubCashlink.value"
+                            class="nq-button-s manage-cashlink"
+                            @click="manageCashlink(hubCashlink.address)">Show Link</button>
                     </div>
                 </div>
 
@@ -136,7 +140,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { AddressBook } from '@nimiq/utils';
+import { AddressBook, BrowserDetection } from '@nimiq/utils';
 import {
     SmallPage,
     PageHeader,
@@ -168,6 +172,8 @@ import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
+import { useCashlinkStore } from '../../stores/Cashlink';
+import { manageCashlink } from '../../hub';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -188,9 +194,53 @@ export default defineComponent({
 
         const isIncoming = computed(() => transaction.value.recipient === activeAddressInfo.value!.address);
 
-        // Data
-        const data = computed(() => parseData(transaction.value.data.raw));
+        // Data & Cashlink Data
         const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
+        const hubCashlink = computed(() => {
+            if (!isCashlink.value) return null;
+
+            const { state: cashlinks$ } = useCashlinkStore();
+            const cashlinkAddress = isIncoming.value ? transaction.value.sender : transaction.value.recipient;
+            const cashlink = cashlinks$.hubCashlinks[cashlinkAddress];
+
+            if (cashlink) return cashlink;
+
+            /**
+             * In all browsers in iOS and also in Safari for Mac, we are unable to access
+             * stored cashlinks from the Hub, because those browsers deny access to
+             * IndexedDB in iframes (and we can't store the cashlinks in cookies like we
+             * do for accounts & addresses, as that would occupy valuable cookie space,
+             * which is limited to 4kb).
+             * What we do instead in those browsers is to always show the "Show Link" button
+             * as long as we are uncertain if the Hub has this cashlink or not. Because
+             * when the user clicks the button and opens the Hub, we get one of three results:
+             * 1. The Hub errors, and we know that the Hub DOES NOT have the cashlink.
+             *    This is handled in the hub interface (/hub.ts) in the manageCashlink() method,
+             *    by storing a dummy cashlink object with a value of 0 (explained below).
+             * 2. The Hub returns a cashlink object, which we can store and now know that the
+             *    Hub DOES have the cashlink data.
+             * 3. The user closes the popup with the window controls instead of with the "Done"
+             *    button in the Hub, which gives us no info and does not change anything.
+             *
+             * # Why set the value to 0?
+             * To identify which cashlinks are stored in the Hub and which aren't, we are
+             * using the cashlink value, since for real cashlinks this cannot be 0. So when
+             * the cashlink's value is 0, we know this is a not-stored cashlink.
+             */
+            if (BrowserDetection.isIOS() || BrowserDetection.isSafari()) {
+                return {
+                    address: cashlinkAddress,
+                    message: '',
+                    value: 1,
+                };
+            }
+
+            return null;
+        });
+        const data = computed(() => {
+            if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
+            return parseData(transaction.value.data.raw);
+        });
 
         // Related Transaction
         const { state: transactions$ } = useTransactionsStore();
@@ -270,6 +320,8 @@ export default defineComponent({
             confirmations,
             peerIsContact,
             setContact,
+            hubCashlink,
+            manageCashlink,
         };
     },
     components: {
@@ -439,6 +491,10 @@ export default defineComponent({
 
     .address-display /deep/ .chunk {
         margin: 0.5rem 0;
+    }
+
+    .manage-cashlink {
+        margin-top: 3rem;
     }
 
     hr {

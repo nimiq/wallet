@@ -1,6 +1,7 @@
 import HubApi, { Account } from '@nimiq/hub-api';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
+import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
 
 const hubApi = new HubApi();
@@ -82,8 +83,14 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
 export async function syncFromHub() {
     let listedAccounts: Account[];
+    let listedCashlinks: Cashlink[] = [];
     try {
+        // Cannot trigger both requests at the same time with Promise.all,
+        // because the first call triggers a HubApi-internal init() call,
+        // which is not resolved when the second call is done at the same time,
+        // throwing a "Must call init() first" error (which then fails both requests).
         listedAccounts = await hubApi.list();
+        listedCashlinks = await hubApi.cashlinks();
     } catch (error) {
         if (error.message === 'MIGRATION_REQUIRED') {
             // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type
@@ -100,6 +107,11 @@ export async function syncFromHub() {
     }
 
     processAndStoreAccounts(listedAccounts, true);
+
+    if (listedCashlinks.length) {
+        const cashlinkStore = useCashlinkStore();
+        cashlinkStore.setHubCashlinks(listedCashlinks);
+    }
 }
 
 export async function onboard() {
@@ -165,13 +177,38 @@ export async function sendTransaction(tx: {
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
     // TODO: Handle error
-    const cashlink = await hubApi.createCashlink({ // eslint-disable-line @typescript-eslint/no-unused-vars
+    const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,
         senderAddress,
         senderBalance,
     });
 
-    // TODO Handle cashlink
+    // Handle cashlink
+    const cashlinkStore = useCashlinkStore();
+    cashlinkStore.addHubCashlink(cashlink);
+
+    return true;
+}
+
+export async function manageCashlink(cashlinkAddress: string) {
+    // TODO: Handle error
+    const cashlink = await hubApi.manageCashlink({
+        appName: APP_NAME,
+        cashlinkAddress,
+    }).catch((error) => {
+        if (error.message.startsWith('Could not find Cashlink for address')) {
+            return {
+                address: cashlinkAddress,
+                message: '',
+                value: 0, // To signal this cashlink is not stored in the Hub
+            };
+        }
+        throw error;
+    });
+
+    // Handle cashlink
+    const cashlinkStore = useCashlinkStore();
+    cashlinkStore.addHubCashlink(cashlink);
 
     return true;
 }

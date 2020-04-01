@@ -1,9 +1,17 @@
+import Vue from 'vue';
 import { createStore } from 'pinia';
 
 export type CashlinkState = {
     claimed: string[],
     funded: string[],
     networkTrigger: number,
+    hubCashlinks: {[address: string]: Cashlink},
+};
+
+export type Cashlink = {
+    address: string,
+    message: string,
+    value: number,
 };
 
 export const useCashlinkStore = createStore({
@@ -12,6 +20,7 @@ export const useCashlinkStore = createStore({
         claimed: [], // TODO: Use Sets in Vue 3
         funded: [],
         networkTrigger: 0,
+        hubCashlinks: {},
     }),
     getters: {
         allCashlinks: (state): Readonly<string[]> => state.claimed.concat(state.funded),
@@ -35,6 +44,20 @@ export const useCashlinkStore = createStore({
         },
         triggerNetwork() {
             this.state.networkTrigger++;
+        },
+        addHubCashlink(cashlink: Cashlink) {
+            // Need to use Vue.set() in Vue 2 for change detection of new addresses.
+            // TODO: Simply set new addressInfo in Vue 3.
+            Vue.set(this.state.hubCashlinks, cashlink.address, cashlink);
+        },
+        setHubCashlinks(cashlinks: Cashlink[]) {
+            const newCashlinks: {[address: string]: Cashlink} = {};
+
+            for (const cashlink of cashlinks) {
+                newCashlinks[cashlink.address] = cashlink;
+            }
+
+            this.state.hubCashlinks = newCashlinks;
         },
     },
 });

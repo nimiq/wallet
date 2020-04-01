@@ -6,6 +6,10 @@ msgstr ""
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:22
+msgid "{count} pending Cashlink | {count} pending Cashlinks"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:31
 msgid "0"
 msgstr ""

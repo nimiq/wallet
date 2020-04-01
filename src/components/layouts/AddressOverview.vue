@@ -18,16 +18,33 @@
             <div class="actions flex-row">
                 <SearchBar @input="search.searchString = $event.target.value"/>
 
-                <button class="send nq-button-pill light-blue"
+                <button
+                    v-if="unclaimedCashlinkCount"
+                    class="nq-button-s orange unclaimed-cashlinks"
+                    :class="{'active': showUnclaimedCashlinkList}"
+                    @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
+                >
+                    {{ $tc(
+                        '{count} pending Cashlink | {count} pending Cashlinks',
+                        unclaimedCashlinkCount,
+                    ) }}
+                </button>
+
+                <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push({name: 'send', params: {senderAddress}})">
                     <ArrowRightSmallIcon />Send
                 </button>
-                <button class="receive nq-button-s"
+                <button class="receive nq-button-s flex-row"
                     @click="$router.push('/receive')">
                     <ArrowRightSmallIcon />Receive
                 </button>
             </div>
-            <TransactionList :searchString="search.searchString" />
+            <TransactionList
+                :searchString="search.searchString"
+                :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
+                @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
+            />
         </template>
         <template v-else>
             <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
@@ -45,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from '@vue/composition-api';
+import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 
 import Amount from '../Amount.vue';
@@ -66,12 +83,30 @@ export default defineComponent({
         const search = reactive({ searchString: '' });
         const senderAddress = computed(() => activeAddressInfo!.value!.address!);
 
+        const unclaimedCashlinkCount = ref(0);
+        const showUnclaimedCashlinkList = ref(false);
+
+        function hideUnclaimedCashlinkList() {
+            showUnclaimedCashlinkList.value = false;
+        }
+
+        function setUnclaimedCashlinkCount(count: number) {
+            unclaimedCashlinkCount.value = count;
+            if (!count) hideUnclaimedCashlinkList();
+        }
+
+        watch(senderAddress, hideUnclaimedCashlinkList);
+
         return {
             senderAddress,
             search,
             activeAddressInfo,
             isFetchingTxHistory,
             onboard,
+            unclaimedCashlinkCount,
+            setUnclaimedCashlinkCount,
+            showUnclaimedCashlinkList,
+            hideUnclaimedCashlinkList,
         };
     },
     components: {
@@ -101,12 +136,13 @@ export default defineComponent({
         --padding-sides: 11rem;
     }
 
-    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
+    padding: var(--padding-top) 0 var(--padding-bottom);
 
     .active-address {
         flex-shrink: 0;
         align-items: center;
         padding: 2rem 4rem 2rem 2rem;
+        margin: 0 var(--padding-sides);
         border-radius: 0.5rem;
         transition: background 400ms var(--nimiq-ease);
 
@@ -173,31 +209,39 @@ export default defineComponent({
         justify-content: space-between;
         margin-bottom: 0.75rem;
         align-items: center;
-        margin: 4rem 0 2rem;
+        margin: 4rem var(--padding-sides) 2rem;
         padding: 0 3rem 0 2rem;
+
+        .search-bar {
+            margin-right: 5rem;
+        }
+
+        .unclaimed-cashlinks {
+            flex-shrink: 0;
+            margin-right: 1rem;
+
+            &:not(.active) {
+                background: none;
+                box-shadow: inset 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
+            }
+        }
 
         .send, .receive {
             margin: 0 1rem;
             align-items: center;
-            display: flex;
-            flex-direction: row;
 
-            > .nq-icon {
+            .nq-icon {
                 width: 1.5rem;
                 height: 1.5rem;
                 margin-right: 1rem;
             }
         }
 
-        .send {
-            margin-left: 5rem;
-        }
-
-        .send > .nq-icon {
+        .send .nq-icon {
             transform: rotateZ(-90deg);
         }
 
-        .receive > .nq-icon {
+        .receive .nq-icon {
             transform: rotateZ(90deg);
         }
     }

@@ -136,12 +136,13 @@ export default defineComponent({
         --padding-sides: 11rem;
     }
 
-    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
+    padding: var(--padding-top) 0 var(--padding-bottom);
 
     .active-address {
         flex-shrink: 0;
         align-items: center;
         padding: 2rem 4rem 2rem 2rem;
+        margin: 0 var(--padding-sides);
         border-radius: 0.5rem;
         transition: background 400ms var(--nimiq-ease);
 
@@ -208,7 +209,7 @@ export default defineComponent({
         justify-content: space-between;
         margin-bottom: 0.75rem;
         align-items: center;
-        margin: 4rem 0 2rem;
+        margin: 4rem var(--padding-sides) 2rem;
         padding: 0 3rem 0 2rem;
 
         .search-bar {

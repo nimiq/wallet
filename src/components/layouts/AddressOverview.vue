@@ -219,10 +219,10 @@ export default defineComponent({
         .unclaimed-cashlinks {
             flex-shrink: 0;
             margin-right: 1rem;
-            box-shadow: 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
 
             &:not(.active) {
                 background: none;
+                box-shadow: inset 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
             }
         }
 

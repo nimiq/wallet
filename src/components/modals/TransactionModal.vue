@@ -1,7 +1,7 @@
 <template>
     <Modal>
         <SmallPage class="transaction-modal" :class="state">
-            <PageHeader>
+            <PageHeader :class="{'inline-header': !peerLabel}">
                 {{
                     peerAddress === constants.CASHLINK_ADDRESS
                         ? '' /* Use the peerLabel below only, without prefix */
@@ -13,7 +13,7 @@
                                 ? $t('Transaction from')
                                 : $t('Transaction to')
                 }}
-                {{ peerLabel || peerAddress.substring(0, 14) }}
+                {{ peerLabel || peerAddress.substring(0, 9) }}
 
                 <span
                     v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
@@ -351,6 +351,8 @@ export default defineComponent({
 
     .page-header {
         /deep/ .nq-h1 {
+            margin-left: 1rem;
+            margin-right: 1rem;
             white-space: nowrap;
             overflow: hidden;
             margin-bottom: 1rem;
@@ -358,6 +360,7 @@ export default defineComponent({
         }
 
         span {
+            display: block;
             font-size: 2rem;
             font-weight: 600;
             align-items: center;
@@ -370,6 +373,15 @@ export default defineComponent({
 
             &.failed svg { // The cross icon for expired or invalidated transactions
                 margin-bottom: -0.125rem;
+            }
+        }
+
+        &.inline-header {
+            display: flex;
+            flex-direction: column;
+
+            /deep/ .nq-h1 {
+                align-self: center;
             }
         }
     }

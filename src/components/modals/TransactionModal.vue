@@ -126,7 +126,9 @@
                 <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom left">
                     <InfoCircleSmallIcon slot="trigger"/>
                     <span class="block">Block #{{ transaction.blockHeight }}</span>
-                    <span v-if="confirmations" class="confirmations">{{ confirmations }} Confirmations</span>
+                    <span v-if="confirmations" class="confirmations">
+                        {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
+                    </span>
                     <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
                 </Tooltip>
             </PageBody>
@@ -368,11 +370,15 @@ export default defineComponent({
 
             /deep/ .circle-spinner,
             &.failed svg {
-                margin-right: 1rem;
+                margin-right: 0.5rem;
+            }
+
+            /deep/ .circle-spinner {
+                margin-bottom: -0.375rem;
             }
 
             &.failed svg { // The cross icon for expired or invalidated transactions
-                margin-bottom: -0.125rem;
+                margin-bottom: -0.25rem;
             }
         }
 

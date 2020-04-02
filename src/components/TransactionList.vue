@@ -38,6 +38,21 @@
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
+
+            <template v-if="transactions.length === 2 /* 1 label + 1 tx */" v-slot:after>
+                <div class="after-first-tx">
+                    <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
+                    <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
+                    <p class="nq-text">
+                        {{ $t('Invite a friend with a') }}
+                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('cashlink') }}</a>
+                        {{ $t('or visit an exchange and get more.') }}
+                    </p>
+                    <a href="https://nimiq.com/exchanges" target="_blank" class="nq-button light-blue">
+                        {{ $t('Buy NIM') }}
+                    </a>
+                </div>
+            </template>
         </RecycleScroller>
 
         <div v-else-if="!searchString" class="empty-state flex-column">
@@ -68,6 +83,7 @@ import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
 import { MAINNET_ORIGIN } from '../lib/Constants';
 import { isFundingCashlink } from '../lib/CashlinkDetection';
+import { createCashlink } from '../hub';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -120,7 +136,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddress, state: addresses$ } = useAddressStore();
+        const { activeAddress, state: addresses$, activeAddressInfo } = useAddressStore();
         const { state: transactions$ } = useTransactionsStore();
         const { isFetchingTxHistory } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
@@ -190,7 +206,7 @@ export default defineComponent({
                 (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
 
             // Inject "This month" label
-            const transactionsWithMonths: any = [];
+            const transactionsWithMonths: any[] = [];
 
             let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
@@ -298,6 +314,10 @@ export default defineComponent({
 
         const isMainnet = window.location.origin === MAINNET_ORIGIN;
 
+        function onCreateCashlink() {
+            createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);
+        }
+
         return {
             activeAddress,
             scrollerBuffer,
@@ -307,6 +327,7 @@ export default defineComponent({
             isFetchingTxHistory,
             isMainnet,
             unclaimedCashlinkTxs,
+            onCreateCashlink,
         };
     },
     components: {
@@ -334,7 +355,6 @@ export default defineComponent({
         font-weight: bold;
         padding-left: 2rem;
         opacity: 0.4;
-        user-select: none;
     }
 
     .vue-recycle-scroller {
@@ -428,6 +448,29 @@ export default defineComponent({
                 height: 22px;
                 align-self: flex-start;
                 max-width: 50%;
+            }
+        }
+    }
+
+    .after-first-tx {
+        width: 37rem;
+        max-width: 100%;
+        margin: 16rem auto 0;
+        text-align: center;
+
+        .nq-h1:nth-child(2) {
+            margin-top: -2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nq-text {
+            color: rgba(31, 35, 72, 0.6);
+            font-weight: 600;
+            margin-bottom: 1rem;
+
+            a {
+                color: inherit;
+                text-decoration: underline;
             }
         }
     }

@@ -14,9 +14,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref } from '@vue/composition-api';
-import { CircleSpinner } from '@nimiq/vue-components';
+import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
-import CrossIcon from './icons/CrossIcon.vue';
 import { MAINNET_ORIGIN } from '../lib/Constants';
 
 type FaucetInfoResponse = {

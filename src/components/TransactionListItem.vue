@@ -61,7 +61,14 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { CircleSpinner, AlertTriangleIcon, CashlinkXSmallIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
+import {
+    CircleSpinner,
+    AlertTriangleIcon,
+    CashlinkXSmallIcon,
+    Identicon,
+    FiatAmount,
+    CrossIcon,
+} from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
@@ -71,7 +78,6 @@ import { twoDigit } from '../lib/NumberFormatting';
 import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import CrossIcon from './icons/CrossIcon.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';

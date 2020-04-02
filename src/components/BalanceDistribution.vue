@@ -6,7 +6,7 @@
                 <div v-for="account of nimBalanceDistribution"
                     :key="account.address"
                     :style="{width: account.percentage * 100 + '%'}">
-                    <Tooltip>
+                    <Tooltip preferredPosition="top right">
                         <div :class="getBackgroundClass(account.addressInfo.address)" slot="icon" class="bar"></div>
                         <div class="flex-row">
                             <Identicon :address="account.addressInfo.address"/>
@@ -32,7 +32,7 @@
                 <div v-for="account of btcBalanceDistribution"
                     :key="account.addressInfo.address"
                     :style="{width: account.percentage * 100 + '%'}">
-                    <Tooltip>
+                    <Tooltip preferredPosition="top right">
                         <div :class="getBackgroundClass(account.addressInfo.address)" slot="icon" class="bar"></div>
                         <div class="flex-column">
                             <span class="nq-text-s">{{account.addressInfo.label}}</span>

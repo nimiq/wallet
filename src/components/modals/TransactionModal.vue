@@ -127,8 +127,8 @@
                 <!-- <button class="nq-button-s">Send more</button> -->
                 <div class="flex-spacer"></div>
 
-                <Tooltip v-if="transaction.blockHeight">
-                    <InfoCircleIcon slot="icon"/>
+                <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom left">
+                    <InfoCircleSmallIcon slot="trigger"/>
                     <span class="block">Block #{{ transaction.blockHeight }}</span>
                     <span v-if="confirmations" class="confirmations">{{ confirmations }} Confirmations</span>
                     <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
@@ -151,16 +151,16 @@ import {
     AddressDisplay,
     FiatAmount,
     Tooltip,
-    InfoCircleIcon,
+    InfoCircleSmallIcon,
     CircleSpinner,
     LabelInput,
     CashlinkSmallIcon,
+    CrossIcon,
 } from '@nimiq/vue-components';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
-import CrossIcon from '../icons/CrossIcon.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
@@ -338,7 +338,7 @@ export default defineComponent({
         AddressDisplay,
         FiatAmount,
         Tooltip,
-        InfoCircleIcon,
+        InfoCircleSmallIcon,
         CircleSpinner,
         CrossIcon,
         LabelInput,

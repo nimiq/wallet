@@ -4,8 +4,8 @@
             <StreetconeIcon/>
             <span class="nq-label">Testnet</span>
             <div class="flex-grow"></div>
-            <Tooltip :reference="{$el: $refs.sidebar}">
-                <InfoCircleIcon slot="icon"/>
+            <Tooltip preferredPosition="bottom left" theme="inverse">
+                <InfoCircleIcon slot="trigger"/>
                 <p>You are connecting to the Nimiq Testnet.</p>
                 <p>Please do not use your Mainnet accounts!</p>
             </Tooltip>
@@ -128,16 +128,8 @@ export default defineComponent({
         }
     }
 
-    .tooltip {
-        /deep/ > a::after {
-            border-bottom-color: white !important;
-        }
-
-        /deep/ .tooltip-box {
-        z-index: 1000;
-            background: white;
-            color: var(--nimiq-blue);
-        }
+    .tooltip /deep/ .tooltip-box {
+        width: 20rem;
     }
 }
 

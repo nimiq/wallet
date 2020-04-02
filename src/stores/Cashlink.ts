@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { createStore } from 'pinia';
 
 export type CashlinkState = {
@@ -46,9 +45,12 @@ export const useCashlinkStore = createStore({
             this.state.networkTrigger++;
         },
         addHubCashlink(cashlink: Cashlink) {
-            // Need to use Vue.set() in Vue 2 for change detection of new addresses.
+            // Need to assign whole object for change detection of new cashlinks.
             // TODO: Simply set new addressInfo in Vue 3.
-            Vue.set(this.state.hubCashlinks, cashlink.address, cashlink);
+            this.state.hubCashlinks = {
+                ...this.state.hubCashlinks,
+                [cashlink.address]: cashlink,
+            };
         },
         setHubCashlinks(cashlinks: Cashlink[]) {
             const newCashlinks: {[address: string]: Cashlink} = {};

@@ -101,10 +101,18 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-$transitionTime: 0.75;
+:root {
+    --transition-time: 0.75s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --transition-time: 0s;
+    }
+}
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity #{$transitionTime}s var(--nimiq-ease);
+    transition: opacity var(--transition-time) var(--nimiq-ease);
 
     &.settings {
         // The address-overview is flex-row positioned next to the account-overview.
@@ -123,7 +131,7 @@ $transitionTime: 0.75;
 
 .fade-enter-active.account-overview,
 .fade-enter-active.settings {
-    transition-delay: #{$transitionTime / 2}s;
+    transition-delay: calc(var(--transition-time) / 2);
 }
 
 .fade-enter,
@@ -134,13 +142,13 @@ $transitionTime: 0.75;
 .network {
     &.delay-leave-active {
         /* the network can only disappear once the other transitions are finished so add a delay */
-        transition-delay: #{$transitionTime}s;
+        transition-delay: var(--transition-time);
     }
 }
 
 .groundfloor,
 .address-overview {
-    transition: transform #{$transitionTime}s var(--nimiq-ease);
+    transition: transform var(--transition-time) var(--nimiq-ease);
 }
 
 .groundfloor {

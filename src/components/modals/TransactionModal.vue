@@ -45,13 +45,11 @@
                                 <CashlinkSmallIcon/>
                             </div>
                         </div>
-                        <LabelInput
+                        <input type="text" class="nq-input-s vanishing"
                             v-if="peerIsContact || !peerLabel"
-                            :maxBytes="64"
                             :placeholder="$t('Add contact')"
-                            :vanishing="true"
                             :value="peerLabel || ''"
-                            @input="label => setContact(peerAddress, label)"
+                            @input="setContact(peerAddress, $event.target.value)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
                         <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
@@ -84,13 +82,11 @@
                                 <CashlinkSmallIcon/>
                             </div>
                         </div>
-                        <LabelInput
+                        <input type="text" class="nq-input-s vanishing"
                             v-if="peerIsContact || !peerLabel"
-                            :maxBytes="64"
                             :placeholder="$t('Add contact')"
-                            :vanishing="true"
                             :value="peerLabel || ''"
-                            @input="label => setContact(peerAddress, label)"
+                            @input="setContact(peerAddress, $event.target.value)"
                         />
                         <span v-else class="label">{{ peerLabel }}</span>
                         <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
@@ -454,25 +450,16 @@ export default defineComponent({
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
     }
 
-    .label-input {
+    .nq-input-s {
         font-size: 2rem;
         font-weight: 600;
-        margin: 1.25rem 0 0.25rem;
-        min-width: 100%;
-    }
-
-    .label-input /deep/ .nq-input {
-        padding: 0.5rem 1rem;
-        min-width: 100%;
+        margin: 1.25rem 0 0.375rem;
+        max-width: 100%;
         text-align: center;
     }
 
-    .label-input /deep/ .nq-input:not(:focus):not(:hover) {
+    .nq-input-s:not(:focus):not(:hover) {
         mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
-    }
-
-    .label-input /deep/ .width-finder {
-        padding: 0 1.25rem;
     }
 
     .copyable {

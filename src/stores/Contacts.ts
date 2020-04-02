@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { createStore } from 'pinia';
 
 export type ContactsState = {
@@ -17,9 +16,20 @@ export const useContactsStore = createStore({
     },
     actions: {
         setContact(address: string, label: string) {
-            // Need to use Vue.set() in Vue 2 for change detection of new contacts.
+            if (!label) {
+                // Remove contact
+                const contacts = { ...this.state.contacts };
+                delete contacts[address];
+                this.state.contacts = contacts;
+                return;
+            }
+
+            // Need to assign whole object for change detection of new contacts.
             // TODO: Simply set new contact in Vue 3.
-            Vue.set(this.state.contacts, address, label);
+            this.state.contacts = {
+                ...this.state.contacts,
+                [address]: label,
+            };
         },
     },
 });

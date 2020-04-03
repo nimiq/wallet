@@ -6,13 +6,15 @@
                 @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
             >
                 <Identicon :address="activeAddressInfo.address" />
-                <div class="meta flex-column">
-                    <div class="label">{{activeAddressInfo.label}}</div>
-                    <div class="address">{{activeAddressInfo.address}}</div>
-                </div>
-                <div class="balance flex-column">
-                    <Amount :amount="activeAddressInfo.balance"/>
-                    <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
+                <div class="meta">
+                    <div class="flex-row">
+                        <div class="label">{{activeAddressInfo.label}}</div>
+                        <Amount :amount="activeAddressInfo.balance"/>
+                    </div>
+                    <div class="flex-row">
+                        <div class="address">{{activeAddressInfo.address}}</div>
+                        <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
+                    </div>
                 </div>
             </button>
             <div class="actions flex-row">
@@ -156,46 +158,56 @@ export default defineComponent({
         .meta {
             flex-grow: 1;
             min-width: 0;
-            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
-            margin-right: 4rem;
+
+            > .flex-row {
+                align-items: center;
+            }
 
             .address,
             .label {
+                flex-grow: 1;
                 overflow: hidden;
                 white-space: nowrap;
+                mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+                margin-right: 4rem;
+            }
+
+            .label,
+            .amount {
+                font-size: 3rem;
+                margin-top: 0.25rem;
+            }
+
+            .address,
+            .fiat-amount {
+                font-size: 2.5rem;
+                color: rgba(31, 35, 72, 0.5);
             }
 
             .label {
-                font-size: 3rem;
                 font-weight: 600;
-                margin-top: 0.25rem;
                 margin-bottom: 1rem;
             }
 
             .address {
-                word-spacing: -0.1em;
+                word-spacing: -0.15em;
                 letter-spacing: 0.005em;
                 font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
-                font-size: 2.5rem;
-                color: rgba(31, 35, 72, 0.5);
             }
-        }
 
-        .balance {
-            flex-shrink: 0;
-            text-align: right;
+            .amount,
+            .fiat-amount {
+                flex-shrink: 0;
+            }
 
             .amount {
-                font-size: 3rem;
                 font-weight: bold;
-                margin-top: 0.25rem;
                 margin-bottom: 0.75rem;
             }
 
             .fiat-amount {
-                font-size: 2.5rem;
                 font-weight: 600;
-                color: rgba(31, 35, 72, 0.5);
+                line-height: 1;
             }
         }
 

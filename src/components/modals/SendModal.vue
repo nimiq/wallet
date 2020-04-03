@@ -45,7 +45,7 @@ export default defineComponent({
     },
     setup(props: any) {
         const { activeAccountInfo } = useAccountStore();
-        const { state: addressesStore$, addressInfos, activeAddress } = useAddressStore();
+        const { state: addressesStore$, activeAddress } = useAddressStore();
         const { contactsArray, setContact, getLabel } = useContactsStore();
         const $router = useRouter();
 
@@ -60,8 +60,10 @@ export default defineComponent({
                 if (recipient) {
                     recipientWithLabel.value = {
                         address: recipient,
-                        label: addressInfos.value.find((addressInfo) => addressInfo.address === recipient)?.label
-                            || getLabel.value(recipient) || '',
+                        label: Object.values(addressesStore$.addressInfos)
+                            .find((addressInfo) => addressInfo.address === recipient)?.label
+                            || getLabel.value(recipient)
+                            || '',
                     };
                 }
             }
@@ -128,7 +130,7 @@ export default defineComponent({
 
         return {
             addContact,
-            addresses: addressInfos.value,
+            addresses: Object.values(addressesStore$.addressInfos),
             amount,
             contactsArray,
             height,

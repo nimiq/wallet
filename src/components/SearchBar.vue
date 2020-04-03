@@ -10,16 +10,48 @@
         <input
             ref="searchBarInput"
             type="text"
-            placeholder="Search Transactions by Address"
+            :placeholder="fullWidth ? $t('Search Transactions by Contact, Address, etc.') : $t('Search Transactions')"
             @input="$emit('input', $event)" />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
 
 export default defineComponent({
     name: 'search-bar',
+    setup() {
+        const searchBarInput = ref<HTMLInputElement | null>(null);
+        const fullWidth = ref(true);
+
+        // FIXME: Remove when Typescript supports ResizeObserver
+        type ResizeObserver = any;
+
+        let observer: ResizeObserver;
+
+        onMounted(() => {
+            if ('ResizeObserver' in window && searchBarInput.value) {
+                // @ts-ignore ResizeObserver not supported by Typescript yet
+                observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+                    const entry = entries[0];
+                    const width = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
+                    fullWidth.value = width > 340;
+                });
+                observer.observe(searchBarInput.value);
+            }
+        });
+
+        onUnmounted(() => {
+            if (observer && searchBarInput.value) {
+                observer.unobserve(searchBarInput.value);
+            }
+        });
+
+        return {
+            searchBarInput,
+            fullWidth,
+        };
+    },
 });
 </script>
 

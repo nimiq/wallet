@@ -13,9 +13,9 @@
                 <select name="theme" id="theme" @input="setColorMode($event.target.value)" disabled>
                     <option v-for="colorModeOption of ColorMode"
                         :key="colorModeOption"
-                        :value="colorMode"
+                        :value="colorModeOption"
                         :selected="colorModeOption === colorMode"
-                    >{{colorModeOption}}</option>
+                    >{{ colorModeOption }}</option>
                 </select>
             </div>
             <div class="setting">
@@ -131,12 +131,17 @@ section {
     width: 48rem;
     height: 37rem;
     padding: 3.75rem 4rem;
-    border-right: 0.25rem solid rgba(31, 35, 72, 0.1);
-    border-bottom: 0.25rem solid rgba(31, 35, 72, 0.1);
+    border-right: 0.25rem solid var(--text-10);
+    border-bottom: 0.25rem solid var(--text-10);
 }
 
 .nq-label {
     margin: 0 0 6rem;
+    color: var(--text-40);
+}
+
+.nq-text {
+    color: var(--text-70);
 }
 
 .setting {
@@ -157,7 +162,7 @@ section {
 
     .button-group button {
         border-radius: 0;
-        border-right: 0.125rem solid rgba(31, 35, 72, 0.1);
+        border-right: 0.125rem solid var(--text-10);
 
         &::before {
             display: none;
@@ -182,8 +187,8 @@ select {
     line-height: inherit;
     color: inherit;
 
-    background: none;
-    border: 0.25rem solid rgba(31, 35, 72, 0.1);
+    background: var(--bg-base);
+    border: 0.25rem solid var(--text-10);
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
     font-weight: bold;

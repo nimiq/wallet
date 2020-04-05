@@ -19,8 +19,6 @@
 
 %custom-scrollbar {
     @media (min-width: 426px) {
-        $nimiqBlue: #1f2348;
-
         /* width */
         &::-webkit-scrollbar {
             width: 6px;
@@ -28,18 +26,18 @@
 
         /* Track */
         &::-webkit-scrollbar-track {
-            background: rgba($nimiqBlue, 0.2);
+            background: var(--text-20);
         }
 
         /* Handle */
         &::-webkit-scrollbar-thumb {
-            background: rgba($nimiqBlue, 0.6);
+            background: var(--text-60);
             border-radius: 6px;
         }
 
         /* Handle on hover */
         &::-webkit-scrollbar-thumb:hover {
-            background: rgba($nimiqBlue, 0.8);
+            background: var(--text-80);
         }
     }
 }

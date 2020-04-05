@@ -285,7 +285,7 @@ svg {
             right: -0.125rem;
             color: white;
             background: var(--nimiq-blue-bg);
-            border: 0.25rem solid white;
+            border: 0.25rem solid var(--bg-primary);
             border-radius: 2rem;
             height: 2.5rem;
             width: 2.5rem;

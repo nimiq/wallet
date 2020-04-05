@@ -83,7 +83,7 @@ export default defineComponent({
 .sidebar {
     @include flex-full-height;
     align-items: center;
-    background: var(--nimiq-blue);
+    background: var(--bg-secondary);
     color: white;
 
     --padding-top: 3rem;

@@ -345,7 +345,6 @@ export default defineComponent({
     position: relative;
 
     .month-label {
-        color: var(--nimiq-blue);
         letter-spacing: 1.5px;
         font-size: 1.75rem;
         padding-top: 5rem; // Padding-top +
@@ -385,7 +384,6 @@ export default defineComponent({
 
     .list-element {
         position: relative;
-        background-color: white;
 
         &.fadein {
             animation-name: fadein;
@@ -408,7 +406,7 @@ export default defineComponent({
             align-items: center;
 
             .placeholder {
-                background-color: var(--nimiq-gray);
+                background-color: var(--text-10);
                 border-radius: 1rem;
 
                 animation-name: loading;
@@ -464,7 +462,7 @@ export default defineComponent({
         }
 
         .nq-text {
-            color: rgba(31, 35, 72, 0.6);
+            color: var(--text-60);
             font-weight: 600;
             margin-bottom: 1rem;
 

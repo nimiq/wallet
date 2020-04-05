@@ -28,7 +28,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .groundfloor {
-    background: var(--nimiq-gray);
+    background: var(--bg-base);
     width: 100%;
     height: 100%;
     position: relative;

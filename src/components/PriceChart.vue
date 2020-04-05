@@ -259,14 +259,14 @@ svg path {
     top: 0;
     text-transform: uppercase;
     background: rgb(109, 112, 135); // A background of rgba(255, 255, 255, 0.35) on Nimiq Blue
-    border: 0.25rem solid var(--nimiq-blue);
+    border: 0.25rem solid var(--bg-secondary);
     margin: -0.25rem;
     border-radius: calc(0.25rem + 0.25rem); // border-width + effective border-radius of the label
     padding: 0.375rem; // 3px
     font-size: 1.375rem; // 11px
     line-height: 1;
     font-weight: bold;
-    color: var(--nimiq-blue);
+    color: var(--bg-secondary);
     letter-spacing: 0.055em;
 }
 

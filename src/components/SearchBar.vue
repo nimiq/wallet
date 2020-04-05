@@ -64,7 +64,7 @@ export default defineComponent({
     align-items: center;
     width: 100%;
     cursor: text;
-    border-bottom: 0.25rem solid rgba(31, 35, 72, 0.1);
+    border-bottom: 0.25rem solid var(--text-10);
     padding-bottom: 1.5rem;
 
     transition: color 0.2s var(--nimiq-ease), border 0.2s var(--nimiq-ease);
@@ -86,6 +86,7 @@ export default defineComponent({
         line-height: 2.75rem;
         font-size: 2rem;
         padding-right: 2rem;
+        background: none;
 
         &:focus {
             outline: none;
@@ -93,7 +94,7 @@ export default defineComponent({
 
         &::placeholder {
             font-weight: normal;
-            color: var(--nimiq-blue);
+            color: inherit;
             opacity: 0.5;
 
             transition: color 0.2s var(--nimiq-ease);
@@ -101,7 +102,7 @@ export default defineComponent({
     }
 
     &:hover {
-        border-color: rgba(31, 35, 72, 0.14); // Based on Nimiq Light Blue
+        border-color: var(--text-14);
     }
 
     &:hover,
@@ -114,7 +115,7 @@ export default defineComponent({
 
     &:focus-within {
         color: var(--nimiq-light-blue);
-        border-color: rgba(5, 130, 202, 0.2); // Based on Nimiq Light Blue
+        border-color: var(--light-blue-20);
     }
 }
 </style>

@@ -18,6 +18,7 @@ import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import '@/assets/css/main.css';
+import '@/scss/themes.scss';
 
 declare global {
     interface Window {

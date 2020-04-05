@@ -103,6 +103,7 @@ export default defineComponent({
     }
 
     > h2 {
+        color: var(--text-40);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -119,7 +120,7 @@ export default defineComponent({
             font-size: 2.75rem;
             line-height: 4rem;
             border-radius: 50%;
-            color: rgba(31, 35, 72, 0.6);
+            color: var(--text-60);
         }
     }
 }
@@ -157,7 +158,7 @@ export default defineComponent({
     }
 
     &.words {
-        border: 2px solid rgba(31, 35, 72, 0.05);
+        border: 2px solid var(--text-6);
         padding: 1rem 1.25rem 1rem 1.75rem
     }
 }
@@ -169,16 +170,16 @@ export default defineComponent({
 
 .bitcoin-teaser {
     height: 15rem;
-    border-top: 0.25rem solid rgba(31, 35, 72, 0.1);
+    border-top: 0.25rem solid var(--text-10);
     align-items: center;
-    color: rgba(31, 35, 72, 0.4);
+    color: var(--text-40);
     font-size: 2rem;
     font-weight: 600;
     padding: 4rem;
     margin: 0 -2rem;
 
     svg {
-        color: rgba(31, 35, 72, 0.2); // Bitcoin color is #F7931A
+        color: var(--text-20); // Bitcoin color is #F7931A
         margin-right: 2rem;
     }
 
@@ -188,7 +189,7 @@ export default defineComponent({
         font-weight: bold;
         letter-spacing: 0.06em;
         padding: 0.75rem 1.75rem;
-        border: 0.25rem solid rgba(31, 35, 72, 0.1);
+        border: 0.25rem solid var(--text-10);
         border-radius: 500px;
     }
 }

@@ -126,7 +126,7 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 .address-overview {
     @include flex-full-height;
-    background: var(--nimiq-card-bg);
+    background: var(--bg-primary);
     flex-direction: column;
 
     --padding-top: 4rem;
@@ -181,7 +181,7 @@ export default defineComponent({
             .address,
             .fiat-amount {
                 font-size: 2.5rem;
-                color: rgba(31, 35, 72, 0.5);
+                opacity: 0.5;
             }
 
             .label {

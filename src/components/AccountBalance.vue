@@ -32,6 +32,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .nq-label {
     margin-bottom: 0.5rem;
+    color: var(--text-40);
 }
 
 .fiat-amount {

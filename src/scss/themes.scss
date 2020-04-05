@@ -1,0 +1,25 @@
+@mixin defaults {
+    --bg-base: var(--nimiq-gray); /* Groundfloor */
+    --bg-primary: var(--nimiq-white); /* Account column */
+    --bg-secondary: var(--nimiq-blue); /* Sidebar */
+
+    --text-100:rgba(31, 35, 72, 1);
+    --text-80: rgba(31, 35, 72, 0.8);
+    --text-70: rgba(31, 35, 72, 0.7);
+    --text-60: rgba(31, 35, 72, 0.6);
+    --text-40: rgba(31, 35, 72, 0.4);
+    --text-20: rgba(31, 35, 72, 0.2);
+    --text-14: rgba(31, 35, 72, 0.14);
+    --text-10: rgba(31, 35, 72, 0.1);
+
+    --bg-card: var(--bg-primary);
+    --light-blue-20: rgba(5, 130, 202, 0.2); /* Based on Nimiq Light Blue */
+}
+
+/**
+ * APPLY MIXINS
+ */
+
+:root {
+    @include defaults;
+}

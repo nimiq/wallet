@@ -2,14 +2,14 @@
     <div class="network-map" ref="container">
         <canvas class="map" ref="network"></canvas>
         <canvas class="overlay" ref="overlay"></canvas>
-        <div class="nodes" :style="`transform: translate(-50%, -50%) scale(${scale});`">
+        <div class="nodes" :style="`width: ${width}px; height: ${height}px;`">
             <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
                 theme="inverse"
-                :style="`transform: translate(${node.x}px, ${node.y}px);`"
+                :style="`transform: translate(${node.x * scale}px, ${node.y * scale}px);`"
                 :class=" [{'connected': node.isConnected}, `count-${Math.min(node.nodeCount, 4)}`]"
             >
-                <HexagonIcon slot="trigger"/>
+                <div :style="`font-size: ${scale}em;`" slot="trigger"><HexagonIcon/></div>
                 Nodes in this area: {{ node.nodeCount }}
             </Tooltip>
         </div>
@@ -30,18 +30,26 @@ export default defineComponent({
     setup(props, context) {
         const nodes = ref<any[]>([]);
         const scale = ref(1);
+        const width = ref(WIDTH);
+        const height = ref(HEIGHT);
 
         function updateScale() {
             // Update scale
             const container = context.refs.container as HTMLDivElement;
 
-            const width = container.offsetWidth;
-            const height = container.offsetHeight;
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
 
-            if (height * (WIDTH / HEIGHT) > width) {
-                scale.value = width / WIDTH;
+            if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
+                // Container is not wide enough
+                scale.value = containerWidth / WIDTH;
+                width.value = containerWidth;
+                height.value = containerWidth / (WIDTH / HEIGHT);
             } else {
-                scale.value = height / HEIGHT;
+                // Container is not high enough
+                scale.value = containerHeight / HEIGHT;
+                width.value = containerHeight * (WIDTH / HEIGHT);
+                height.value = containerHeight;
             }
         }
 
@@ -81,6 +89,8 @@ export default defineComponent({
         return {
             nodes,
             scale,
+            width,
+            height,
         };
     },
     components: {
@@ -109,11 +119,6 @@ export default defineComponent({
     transform: translate(-50%, -50%);
 }
 
-.nodes {
-    width: 2164px;
-    height: 1004px;
-}
-
 .node {
     position: absolute;
     left: 0;
@@ -122,6 +127,7 @@ export default defineComponent({
 
     /deep/ .trigger {
         color: inherit;
+        transform-origin: top left;
     }
 
     /deep/ .tooltip-box {

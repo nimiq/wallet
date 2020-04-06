@@ -7,7 +7,7 @@
                 class="node"
                 theme="inverse"
                 :style="`transform: translate(${node.x * scale}px, ${node.y * scale}px);`"
-                :class=" [{'connected': node.isConnected}, `count-${Math.min(node.nodeCount, 4)}`]"
+                :class=" [{'connected': node.isConnected, 'self': node.isSelf}, `count-${Math.min(node.nodeCount, 4)}`]"
             >
                 <div :style="`font-size: ${scale}em;`" slot="trigger"><HexagonIcon/></div>
                 Nodes in this area: {{ node.nodeCount }}
@@ -143,6 +143,11 @@ export default defineComponent({
 
 .node.connected .nq-icon {
     color: var(--nimiq-light-blue);
+    opacity: 1;
+}
+
+.node.self {
+    color: var(--nimiq-gold);
     opacity: 1;
 }
 </style>

@@ -146,6 +146,10 @@ class SelfHexagon extends Hexagon {
     private static ANIMATION_TIME = 1000;
     private _animation = 0;
 
+    public isSelf = true;
+
+    public nodeCount = 'YOU!';
+
     public draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
         this._animation = Math.min(this._animation + timeDelta / SelfHexagon.ANIMATION_TIME, 1);
 
@@ -370,7 +374,7 @@ export default class NetworkMap {
     public constructor(
         private _mapCanvas: HTMLCanvasElement,
         private _overlayCanvas: HTMLCanvasElement,
-        private _updateCallback?: (nodes: NodeHexagon[]) => any,
+        private _updateCallback?: (nodes: Hexagon[]) => any,
     ) {
         if (!_mapCanvas.parentElement
             || !_overlayCanvas.parentElement
@@ -536,12 +540,13 @@ export default class NetworkMap {
         this._overlayDc.clearRect(0, 0, 2 * WIDTH, 2 * HEIGHT);
         if (this._self) {
             let animating = false;
-            animating = this._self.draw(this._overlayDc, timeDelta) || animating;
+            // animating = this._self.draw(this._overlayDc, timeDelta) || animating;
 
             // Connecting splines need to be drawn separately, as they  need to draw over hexagons
             const connectedNodes: NodeHexagon[] = [];
 
-            const nodes = Array.from(this._nodeHexagons.values()).flatMap((foo) => Array.from(foo.values()));
+            const nodes: Hexagon[] = Array.from(this._nodeHexagons.values()).flatMap((foo) => Array.from(foo.values()));
+            nodes.push(this._self);
             if (this._updateCallback) this._updateCallback(nodes);
 
             // Draw hexagons

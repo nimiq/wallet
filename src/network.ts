@@ -9,13 +9,22 @@ import { useNetworkStore } from './stores/Network';
 import { useCashlinkStore } from './stores/Cashlink';
 
 let isLaunched = false;
+let clientPromise: Promise<NetworkClient>;
+
+export async function getNetworkClient() {
+    clientPromise = clientPromise || new Promise((resolve) => {
+        const client = NetworkClient.createInstance();
+        client.init().then(() => resolve(client));
+    });
+
+    return clientPromise;
+}
 
 export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
 
-    const client = NetworkClient.createInstance();
-    await client.init();
+    const client = await getNetworkClient();
 
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();

@@ -3,7 +3,7 @@
         <div class="background"></div>
         <div class="network-inner flex-column">
             <NetworkMap/>
-            <h1 class="coming-soon">Coming soon<small>Currently all Points are chosen randomly!</small></h1>
+            <h1 class="coming-soon">Work in progress</h1>
             <NetworkStats/>
         </div>
     </div>

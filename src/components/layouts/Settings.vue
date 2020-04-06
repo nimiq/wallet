@@ -64,7 +64,8 @@
                 <div class="description">
                     <label class="nq-h2">{{ $t('Clear Cache') }}</label>
                     <p class="nq-text">
-                        {{ $t('Make a clean slate and reload everything from the Hub and network.') }}
+                        {{ $t('Clear locally stored transaction history and balances. ' +
+                            'Reload them from the decentralized network.') }}
                     </p>
                 </div>
                 <button class="nq-button-s" @click="clearCache">{{ $t('Clear') }}</button>

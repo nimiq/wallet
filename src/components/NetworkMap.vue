@@ -3,18 +3,22 @@
         <canvas class="map" ref="network"></canvas>
         <canvas class="overlay" ref="overlay"></canvas>
         <div class="nodes" :style="`transform: translate(-50%, -50%) scale(${scale});`">
-            <div v-for="(node, index) in nodes" :key="'node-' + index"
+            <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
+                theme="inverse"
                 :style="`transform: translate(${node.x}px, ${node.y}px);`"
                 :class=" [{'connected': node.isConnected}, `count-${Math.min(node.nodeCount, 4)}`]"
-                ><HexagonIcon/></div>
+            >
+                <HexagonIcon slot="trigger"/>
+                Nodes in this area: {{ node.nodeCount }}
+            </Tooltip>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
-import { HexagonIcon } from '@nimiq/vue-components';
+import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
 import NetworkMap from '../lib/NetworkMap';
@@ -80,6 +84,7 @@ export default defineComponent({
         };
     },
     components: {
+        Tooltip,
         HexagonIcon,
     },
 });
@@ -114,15 +119,23 @@ export default defineComponent({
     left: 0;
     top: 0;
     transition: color 0.3s var(--nimiq-ease), opacity 0.3s var(--nimiq-ease);
+
+    /deep/ .trigger {
+        color: inherit;
+    }
+
+    /deep/ .tooltip-box {
+        white-space: nowrap;
+    }
 }
 
-.node.count-1 { opacity: 0.2; }
-.node.count-2 { opacity: 0.4; }
-.node.count-3 { opacity: 0.6; }
-.node.count-4 { opacity: 0.8; }
-.node.count-5 { opacity: 1; }
+.node.count-1 .nq-icon { opacity: 0.2; }
+.node.count-2 .nq-icon { opacity: 0.4; }
+.node.count-3 .nq-icon { opacity: 0.6; }
+.node.count-4 .nq-icon { opacity: 0.8; }
+.node.count-5 .nq-icon { opacity: 1; }
 
-.node.connected {
+.node.connected .nq-icon {
     color: var(--nimiq-light-blue);
     opacity: 1;
 }

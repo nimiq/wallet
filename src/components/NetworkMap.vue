@@ -6,35 +6,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch } from '@vue/composition-api';
-import { useNetworkStore } from '../stores/Network';
+import { defineComponent, onMounted } from '@vue/composition-api';
+import { NetworkClient } from '@nimiq/network-client';
+import { getNetworkClient } from '../network';
 import NetworkMap from '../lib/NetworkMap';
-
 
 export default defineComponent({
     setup(props, context) {
-        onMounted(() => {
-            const { state: $network } = useNetworkStore();
-
+        onMounted(async () => {
+            await getNetworkClient();
             const mapCanvas = (context.refs.network as HTMLCanvasElement)!;
             const overlayCanvas = (context.refs.overlay as HTMLCanvasElement)!;
 
             const networkMap = new NetworkMap(mapCanvas, overlayCanvas);
 
-            watch(() => $network.peerCount, (newPeers) => {
-                // TODO connect to the correct peers.
-                if (networkMap.peerCount > newPeers) {
-                    networkMap.removePeer('');
-                } else if (networkMap.peerCount < newPeers) {
-                    networkMap.addPeer('');
+            let askForAddressesTimeout = 0;
+
+            const updateKnownAddresses = async () => {
+                if (!askForAddressesTimeout) {
+                    askForAddressesTimeout = window.setTimeout(async () => {
+                        const newKnownAddresses = await NetworkClient.Instance.getKnownAddresses();
+                        if (networkMap.updateNodes(newKnownAddresses)) {
+                            networkMap.draw();
+                        }
+                        askForAddressesTimeout = 0;
+                    }, 500);
                 }
-            });
+            };
+
+            NetworkClient.Instance.on(NetworkClient.Events.ADDRESSES_ADDED, updateKnownAddresses);
+            NetworkClient.Instance.on(NetworkClient.Events.PEERS_CHANGED, updateKnownAddresses);
+
+            // if no consensus is establiched one of the other events will trigger the update
+            if (NetworkClient.Instance.consensusState === 'established') {
+                updateKnownAddresses();
+            }
         });
 
         return { };
     },
 });
-
 </script>
 
 <style lang="scss" scoped>

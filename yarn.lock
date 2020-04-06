@@ -902,10 +902,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/network-client@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.4.0.tgz#05383c707384a59e44c905acf0684bfded0ffa26"
-  integrity sha512-qgg9c2Qiln+BRsFXs85xgYQ6SSelMd67It+O1nVH4O4n18anJq+AY610TGIR+B1CsQg3nAe0KG392apZ16A5KQ==
+"@nimiq/network-client@^0.5.0-beta.1":
+  version "0.5.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.5.0-beta.1.tgz#c2a03267522bde2c0722773882d3f08b8eaa2b4a"
+  integrity sha512-q23gIt5lMp67XQEdcI5qXSgQgTfpysBNST9eCAX/RbPZZdhWNbzBKT8HzCR8XJg2EDvOUpm/mcgcu0cIczBZDw==
   dependencies:
     "@nimiq/core-web" "1.5.3"
     "@nimiq/rpc-events" "^0.0.8"
@@ -941,7 +941,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components.git#build/master":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components.git#c5b54e6cda4794a7cb32918fcd14be1808b797b0"
+  resolved "https://github.com/nimiq/vue-components.git#4aafb0a1b803dc7870e982457636f25446a1b3e2"
   dependencies:
     "@nimiq/style" "^0.8.0"
     big-integer "^1.6.44"

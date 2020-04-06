@@ -30,28 +30,29 @@ export default class GeoIP {
     }
 
     static retrieve(callback: (response: {location: {longitude: number, latitude: number}}) => void, host: string) {
-        const response = GeoIP._cached(host);
-        if (response) {
-            callback(response);
+        const cachedResponse = GeoIP._cached(host);
+        if (cachedResponse) {
+            callback(cachedResponse);
             return;
         }
 
         if (window.location.origin.indexOf('miner.localhost') !== -1) return;
 
-        const xmlhttp = new XMLHttpRequest();
-        const url = `https://geoip.nimiq-network.com:8443/v1/locate'${(
+        // const xmlhttp = new XMLHttpRequest();
+        const url = `https://geoip.nimiq-network.com:8443/v1/locate${(
             host && host.length > 0
                 ? `?host=${host}`
                 : '')}`;
 
-        xmlhttp.onreadystatechange = function readyStateChange() {
-            if (this.readyState === 4 && this.status === 200) {
-                const xmlHttpResponse = JSON.parse(this.responseText);
-                GeoIP._cache(host, xmlHttpResponse);
-                callback(xmlHttpResponse);
-            }
-        };
-        xmlhttp.open('GET', url, true);
-        xmlhttp.send();
+        fetch(url).then(
+            (res) => res.json().then(
+                (response: {location: {longitude: number, latitude: number}}) => {
+                    GeoIP._cache(host, response);
+                    callback(response);
+                },
+            ),
+        ).catch(() => {
+            // do nothing for now
+        });
     }
 }

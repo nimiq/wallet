@@ -5,21 +5,6 @@
 
             <div class="setting">
                 <div class="description">
-                    <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
-                    <p class="nq-text">
-                        {{ $t('Select the color scheme for the Nimiq Wallet.') }}
-                    </p>
-                </div>
-                <select name="theme" id="theme" @input="setColorMode($event.target.value)" disabled>
-                    <option v-for="colorModeOption of ColorMode"
-                        :key="colorModeOption"
-                        :value="colorModeOption"
-                        :selected="colorModeOption === colorMode"
-                    >{{ colorModeOption }}</option>
-                </select>
-            </div>
-            <div class="setting">
-                <div class="description">
                     <label class="nq-h2">{{ $t('Shown Decimals') }}</label>
                     <p class="nq-text">
                         {{ $t('Control how many decimals are shown for NIM values.') }}

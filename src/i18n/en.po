@@ -10,15 +10,15 @@ msgstr ""
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:22
+#: src/components/layouts/AddressOverview.vue:29
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:31
+#: src/components/layouts/Settings.vue:16
 msgid "0"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:34
+#: src/components/layouts/Settings.vue:19
 msgid "2"
 msgstr ""
 
@@ -30,8 +30,8 @@ msgstr ""
 msgid "Add Account"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:51
-#: src/components/modals/TransactionModal.vue:90
+#: src/components/modals/TransactionModal.vue:50
+#: src/components/modals/TransactionModal.vue:87
 msgid "Add contact"
 msgstr ""
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:22
 msgid "all"
 msgstr ""
 
@@ -52,12 +52,13 @@ msgstr ""
 msgid "Block height"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:15
-msgid "Buy"
+#: src/components/TransactionList.vue:52
+msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:216
-#: src/components/TransactionListItem.vue:122
+#: src/components/modals/TransactionModal.vue:264
+#: src/components/TransactionList.vue:48
+#: src/components/TransactionListItem.vue:137
 msgid "Cashlink"
 msgstr ""
 
@@ -73,23 +74,31 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:62
+#: src/components/layouts/Settings.vue:47
 msgid "Choose your reference government currency."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:85
+#: src/components/layouts/Settings.vue:71
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:80
+#: src/components/layouts/Settings.vue:65
 msgid "Clear Cache"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:67
+msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:38
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:36
+#: src/components/TransactionList.vue:44
+msgid "Congrats"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:55
 msgid "Connect"
 msgstr ""
 
@@ -110,7 +119,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:25
+#: src/components/layouts/Settings.vue:10
 msgid "Control how many decimals are shown for NIM values."
 msgstr ""
 
@@ -118,11 +127,11 @@ msgstr ""
 msgid "Create Backup"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:60
+#: src/components/layouts/Settings.vue:45
 msgid "Currency"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:76
+#: src/components/layouts/Settings.vue:61
 msgid "Developer"
 msgstr ""
 
@@ -138,23 +147,23 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:113
+#: src/components/TestnetFaucet.vue:112
 msgid "Faucet error - please try again"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:72
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:69
+#: src/components/TestnetFaucet.vue:68
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -190,15 +199,15 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:8
-msgid "Interface Theme"
-msgstr ""
-
 #: src/components/TransactionListItem.vue:40
 msgid "invalid"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/TransactionList.vue:47
+msgid "Invite a friend with a"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:32
 msgid "Language"
 msgstr ""
 
@@ -206,7 +215,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:35
+#: src/components/layouts/AddressOverview.vue:54
 msgid "Let's get started! Connect your first account:"
 msgstr ""
 
@@ -214,7 +223,7 @@ msgstr ""
 msgid "Let's hear your feedback!"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:43
+#: src/components/layouts/Settings.vue:28
 msgid "Localization"
 msgstr ""
 
@@ -226,19 +235,15 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:82
-msgid "Make a clean slate and reload everything from the Hub and network."
-msgstr ""
-
 #: src/components/MigrationWelcome.vue:93
 msgid "Multiple Addresses and Login Files<br>are supported by new Accounts only."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:32
+#: src/components/layouts/Sidebar.vue:43
 msgid "Network"
 msgstr ""
 
-#: src/components/TransactionList.vue:35
+#: src/components/TransactionList.vue:68
 msgid "No transactions found"
 msgstr ""
 
@@ -254,6 +259,10 @@ msgstr ""
 msgid "One Account, many Addresses"
 msgstr ""
 
+#: src/components/TransactionList.vue:49
+msgid "or visit an exchange and get more."
+msgstr ""
+
 #: src/components/Footer.vue:4
 msgid "Peers"
 msgstr ""
@@ -262,12 +271,16 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
+#: src/components/TransactionList.vue:13
+msgid "Pending Cashlinks"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:24
 msgid "Pending..."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:7
-#: src/components/TransactionList.vue:30
+#: src/components/TransactionList.vue:63
 msgid "Receive free NIM"
 msgstr ""
 
@@ -275,7 +288,7 @@ msgstr ""
 msgid "Receive Money"
 msgstr ""
 
-#: src/components/TransactionList.vue:27
+#: src/components/TransactionList.vue:60
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -287,7 +300,7 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:121
+#: src/components/TestnetFaucet.vue:120
 msgid "Request failed"
 msgstr ""
 
@@ -305,12 +318,12 @@ msgid ""
 "money to this address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:10
-msgid "Select the color scheme for the Nimiq Wallet."
+#: src/components/SearchBar.vue:13
+msgid "Search Transactions"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:18
-msgid "Sell"
+#: src/components/SearchBar.vue:13
+msgid "Search Transactions by Contact, Address, etc."
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:18
@@ -325,11 +338,11 @@ msgstr ""
 msgid "Set Amount"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:49
+#: src/components/layouts/Settings.vue:34
 msgid "Set the interface language."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:40
+#: src/components/layouts/Sidebar.vue:51
 msgid "Settings"
 msgstr ""
 
@@ -337,7 +350,7 @@ msgstr ""
 msgid "Share the link or the QR code with the sender."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:23
+#: src/components/layouts/Settings.vue:8
 msgid "Shown Decimals"
 msgstr ""
 
@@ -357,8 +370,8 @@ msgstr ""
 msgid "This is a very early version of the new Nimiq Wallet, optimized for screens larger than 1450x700px."
 msgstr ""
 
-#: src/components/TransactionList.vue:171
-#: src/components/TransactionList.vue:185
+#: src/components/TransactionList.vue:216
+#: src/components/TransactionList.vue:231
 msgid "This month"
 msgstr ""
 
@@ -374,12 +387,12 @@ msgstr ""
 msgid "Transaction to"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:217
-#: src/components/TransactionListItem.vue:123
+#: src/components/modals/TransactionModal.vue:265
+#: src/components/TransactionListItem.vue:138
 msgid "Unclaimed Cashlink"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:39
+#: src/components/layouts/AddressOverview.vue:58
 msgid "Updating transactions..."
 msgstr ""
 
@@ -391,6 +404,10 @@ msgstr ""
 msgid "What else?"
 msgstr ""
 
+#: src/components/TransactionList.vue:45
+msgid "You now own crypto!"
+msgstr ""
+
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your Account is not safe yet!"
 msgstr ""
@@ -399,6 +416,6 @@ msgstr ""
 msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
 msgstr ""
 
-#: src/components/TransactionList.vue:26
+#: src/components/TransactionList.vue:59
 msgid "Your transactions will appear here"
 msgstr ""

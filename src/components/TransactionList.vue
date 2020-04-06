@@ -10,7 +10,7 @@
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
                     <CloseButton class="top-right" @click="$emit('close-unclaimed-cashlink-list')"/>
-                    <div class="month-label nq-orange">{{ $t('Pending cashlinks') }}</div>
+                    <div class="month-label nq-orange">{{ $t('Pending Cashlinks') }}</div>
                     <TransactionListItem
                         v-for="tx in unclaimedCashlinkTxs"
                         :transaction="tx"
@@ -45,7 +45,7 @@
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
                     <p class="nq-text">
                         {{ $t('Invite a friend with a') }}
-                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('cashlink') }}</a>
+                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
                         {{ $t('or visit an exchange and get more.') }}
                     </p>
                     <a href="https://nimiq.com/exchanges" target="_blank" class="nq-button light-blue">

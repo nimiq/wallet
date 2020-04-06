@@ -367,7 +367,11 @@ export default class NetworkMap {
     private _overlayDc: CanvasRenderingContext2D;
     private _container: HTMLElement;
 
-    public constructor(private _mapCanvas: HTMLCanvasElement, private _overlayCanvas: HTMLCanvasElement) {
+    public constructor(
+        private _mapCanvas: HTMLCanvasElement,
+        private _overlayCanvas: HTMLCanvasElement,
+        private _updateCallback?: (nodes: NodeHexagon[]) => any,
+    ) {
         if (!_mapCanvas.parentElement
             || !_overlayCanvas.parentElement
             || _overlayCanvas.parentElement !== _mapCanvas.parentElement) {
@@ -537,6 +541,9 @@ export default class NetworkMap {
             // Connecting splines need to be drawn separately, as they  need to draw over hexagons
             const connectedNodes: NodeHexagon[] = [];
 
+            const nodes = Array.from(this._nodeHexagons.values()).flatMap((foo) => Array.from(foo.values()));
+            if (this._updateCallback) this._updateCallback(nodes);
+
             // Draw hexagons
             for (const [, xHexagonMap] of this._nodeHexagons) {
                 for (const [, hexagon] of xHexagonMap) {
@@ -544,7 +551,7 @@ export default class NetworkMap {
                     if (hexagon.isConnected) {
                         connectedNodes.push(hexagon);
                     }
-                    animating = hexagon.draw(this._overlayDc, timeDelta) || animating;
+                    // animating = hexagon.draw(this._overlayDc, timeDelta) || animating;
                 }
             }
 

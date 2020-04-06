@@ -2,23 +2,51 @@
     <div class="network-map" ref="container">
         <canvas class="map" ref="network"></canvas>
         <canvas class="overlay" ref="overlay"></canvas>
+        <div class="nodes" :style="`transform: translate(-50%, -50%) scale(${scale});`">
+            <div v-for="(node, index) in nodes" :key="'node-' + index"
+                class="node"
+                :style="`transform: translate(${node.x}px, ${node.y}px);`"
+                :class=" [{'connected': node.isConnected}, `count-${Math.min(node.nodeCount, 4)}`]"
+                ><HexagonIcon/></div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
 import NetworkMap from '../lib/NetworkMap';
 
+const WIDTH = 2164;
+const HEIGHT = 1004;
+
 export default defineComponent({
     setup(props, context) {
+        const nodes = ref<any[]>([]);
+        const scale = ref(1);
+
+        function updateScale() {
+            // Update scale
+            const container = context.refs.container as HTMLDivElement;
+
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+
+            if (height * (WIDTH / HEIGHT) > width) {
+                scale.value = width / WIDTH;
+            } else {
+                scale.value = height / HEIGHT;
+            }
+        }
+
         onMounted(async () => {
             await getNetworkClient();
             const mapCanvas = (context.refs.network as HTMLCanvasElement)!;
             const overlayCanvas = (context.refs.overlay as HTMLCanvasElement)!;
 
-            const networkMap = new NetworkMap(mapCanvas, overlayCanvas);
+            const networkMap = new NetworkMap(mapCanvas, overlayCanvas, (n) => nodes.value = n);
 
             let askForAddressesTimeout = 0;
 
@@ -41,9 +69,18 @@ export default defineComponent({
             if (NetworkClient.Instance.consensusState === 'established') {
                 updateKnownAddresses();
             }
+
+            window.addEventListener('resize', updateScale);
+            updateScale();
         });
 
-        return { };
+        return {
+            nodes,
+            scale,
+        };
+    },
+    components: {
+        HexagonIcon,
     },
 });
 </script>
@@ -59,10 +96,34 @@ export default defineComponent({
 }
 
 .map,
-.overlay {
+.overlay,
+.nodes {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform:  translate3d(-50%, -50%,  0);
+    transform: translate(-50%, -50%);
+}
+
+.nodes {
+    width: 2164px;
+    height: 1004px;
+}
+
+.node {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: color 0.3s var(--nimiq-ease), opacity 0.3s var(--nimiq-ease);
+}
+
+.node.count-1 { opacity: 0.2; }
+.node.count-2 { opacity: 0.4; }
+.node.count-3 { opacity: 0.6; }
+.node.count-4 { opacity: 0.8; }
+.node.count-5 { opacity: 1; }
+
+.node.connected {
+    color: var(--nimiq-light-blue);
+    opacity: 1;
 }
 </style>

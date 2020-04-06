@@ -7,10 +7,14 @@
                 class="node"
                 theme="inverse"
                 :style="`transform: translate(${node.x * scale}px, ${node.y * scale}px);`"
-                :class=" [{'connected': node.isConnected, 'self': node.isSelf}, `count-${Math.min(node.nodeCount, 4)}`]"
             >
-                <div :style="`font-size: ${scale}em;`" slot="trigger"><HexagonIcon/></div>
-                Nodes in this area: {{ node.nodeCount }}
+                <div :style="`padding: ${scale}em;`" slot="trigger"></div>
+                <template v-if="node.isSelf">
+                    {{ $t('This is you!') }}
+                </template>
+                <template v-else>
+                    {{ $t('Nodes in this area:') }} {{ node.nodeCount }}
+                </template>
             </Tooltip>
         </div>
     </div>
@@ -122,32 +126,15 @@ export default defineComponent({
 .node {
     position: absolute;
     left: 0;
-    top: 0;
-    transition: color 0.3s var(--nimiq-ease), opacity 0.3s var(--nimiq-ease);
+    top: -1px;
 
     /deep/ .trigger {
-        color: inherit;
-        transform-origin: top left;
+        font-size: 1.125rem;
+        border-radius: 50%;
     }
 
     /deep/ .tooltip-box {
         white-space: nowrap;
     }
-}
-
-.node.count-1 .nq-icon { opacity: 0.2; }
-.node.count-2 .nq-icon { opacity: 0.4; }
-.node.count-3 .nq-icon { opacity: 0.6; }
-.node.count-4 .nq-icon { opacity: 0.8; }
-.node.count-5 .nq-icon { opacity: 1; }
-
-.node.connected .nq-icon {
-    color: var(--nimiq-light-blue);
-    opacity: 1;
-}
-
-.node.self {
-    color: var(--nimiq-gold);
-    opacity: 1;
 }
 </style>

@@ -540,7 +540,7 @@ export default class NetworkMap {
         this._overlayDc.clearRect(0, 0, 2 * WIDTH, 2 * HEIGHT);
         if (this._self) {
             let animating = false;
-            // animating = this._self.draw(this._overlayDc, timeDelta) || animating;
+            animating = this._self.draw(this._overlayDc, timeDelta) || animating;
 
             // Connecting splines need to be drawn separately, as they  need to draw over hexagons
             const connectedNodes: NodeHexagon[] = [];
@@ -556,7 +556,7 @@ export default class NetworkMap {
                     if (hexagon.isConnected) {
                         connectedNodes.push(hexagon);
                     }
-                    // animating = hexagon.draw(this._overlayDc, timeDelta) || animating;
+                    animating = hexagon.draw(this._overlayDc, timeDelta) || animating;
                 }
             }
 

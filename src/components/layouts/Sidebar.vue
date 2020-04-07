@@ -103,8 +103,12 @@ export default defineComponent({
     align-items: center;
     width: calc(100% + calc(2 * var(--padding-sides)));
     margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);
-    padding: calc(max(var(--padding-sides) / 1.5, 1.5rem)) var(--padding-sides);
+    padding: var(--padding-sides);
     background: rgba(255, 255, 255, .07);
+
+    @media (min-width: 2048px) {
+        padding: calc(var(--padding-sides) / 1.5) var(--padding-sides);
+    }
 
     .nq-label {
         color: var(--nimiq-orange);

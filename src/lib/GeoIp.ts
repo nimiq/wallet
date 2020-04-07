@@ -2,16 +2,25 @@
  * Created by pb on 02.06.17.
  */
 
+export type GeoIpResponse = {
+    location?: {
+        longitude?: number,
+        latitude?: number,
+    },
+    country?: string,
+    city?: string,
+}
+
 export default class GeoIP {
     private static CACHE_MAX_SIZE = 1000;
-    private static _cacheStore: {[host: string]: {location: {longitude: number, latitude: number}}} = {};
+    private static _cacheStore: {[host: string]: GeoIpResponse} = {};
     private static _cacheOrder: string[] = [];
 
     static _cached(host: string) {
         return GeoIP._cacheStore[host];
     }
 
-    static _cache(host: string, response: {location: {longitude: number, latitude: number}}) {
+    static _cache(host: string, response: GeoIpResponse) {
         // clear cache
         if (GeoIP._cacheOrder.length >= GeoIP.CACHE_MAX_SIZE) {
             const oldestHost = GeoIP._cacheOrder.shift()!;
@@ -25,11 +34,11 @@ export default class GeoIP {
         }
     }
 
-    static retrieveOwn(callback: (response: {location: {longitude: number, latitude: number}}) => void) {
+    static retrieveOwn(callback: (response: GeoIpResponse) => any) {
         GeoIP.retrieve(callback, '');
     }
 
-    static retrieve(callback: (response: {location: {longitude: number, latitude: number}}) => void, host: string) {
+    static retrieve(callback: (response: GeoIpResponse) => any, host: string) {
         const cachedResponse = GeoIP._cached(host);
         if (cachedResponse) {
             callback(cachedResponse);
@@ -46,7 +55,7 @@ export default class GeoIP {
 
         fetch(url).then(
             (res) => res.json().then(
-                (response: {location: {longitude: number, latitude: number}}) => {
+                (response: GeoIpResponse) => {
                     GeoIP._cache(host, response);
                     callback(response);
                 },

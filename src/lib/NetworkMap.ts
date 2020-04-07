@@ -35,11 +35,33 @@ const cubicEasing = (t: number) => t < .5 ? 4 * t ** 3 : 1 + (2 * t - 2) ** 3 / 
 // const quarticEasing = (t: number) => t < .5 ? 8 * t ** 4 : 1 - (2 * t - 2) ** 4 / 2;
 const sinEasing = (t: number) => (Math.sin(t * Math.PI - Math.PI / 2) / 2 + 0.5) ** 2;
 
+// TODO
+enum NodeType {
+    FULL_NODE,
+    LIGHT_NODE,
+}
+
+// TODO
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace NodeType {
+
+    // eslint-disable-next-line no-inner-declarations
+    export function fromServices(features: number) {
+        if (features === 4092) return NodeType.FULL_NODE;
+        return NodeType.LIGHT_NODE;
+    }
+}
+
 /**
  * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
  */
 type Node = PlainAddressInfo & {
     hexagon: NodeHexagon,
+    type: NodeType,
+    locationData: {
+        country?: string,
+        city?: string,
+    },
 }
 
 class Hexagon {
@@ -169,7 +191,7 @@ class SelfHexagon extends Hexagon {
         return this._animation !== 1;
     }
 }
-class NodeHexagon extends Hexagon {
+export class NodeHexagon extends Hexagon {
     private static HEXAGON_ANIMATION_TIME = 1000;
     private static SPLINE_ANIMATION_TIME = 1000;
 
@@ -186,14 +208,14 @@ class NodeHexagon extends Hexagon {
         connection: 1,
     };
 
-    private _nodes: Set<string> = new Set();
+    private _nodes: Set<Node> = new Set();
     private _connections: Set<string> = new Set();
     private _oldNodeCount = 0;
 
     public addNode(node: Node) {
-        if (this._nodes.has(node.peerId)) return false; // do not add existing nodes explicitly update their state
+        if (this._nodes.has(node)) return false; // do not add existing nodes explicitly update their state
         this._oldNodeCount = this._nodes.size;
-        if (this._nodes.size !== this._nodes.add(node.peerId).size) {
+        if (this._nodes.size !== this._nodes.add(node).size) {
             this._animation.hexagon = 0;
         } else {
             return false; // UNEXPECTED
@@ -212,7 +234,7 @@ class NodeHexagon extends Hexagon {
     }
 
     public updateState(node: Node) {
-        if (!this._nodes.has(node.peerId)) return false; // node is not present, do not update
+        if (!this._nodes.has(node)) return false; // node is not present, do not update
         let updated = false;
         if (node.state === 2) {
             if (this._connections.size === 0) {
@@ -238,7 +260,7 @@ class NodeHexagon extends Hexagon {
             }
         }
         this._oldNodeCount = this._nodes.size;
-        if (this._nodes.delete(node.peerId) && (!this.isConnected || this._nodes.size === 0)) {
+        if (this._nodes.delete(node) && (!this.isConnected || this._nodes.size === 0)) {
             updated = true;
             this._animation.hexagon = 0;
         }
@@ -363,6 +385,38 @@ class NodeHexagon extends Hexagon {
 
         return this._animation.connection !== 1;
     }
+
+    public get tooltipContent(): string {
+        let connected = '';
+        let available = '';
+        for (const node of this._nodes) {
+            let addTo = '';
+            addTo += `<h3>${node.state === 2
+                ? 'Connected'
+                : 'Available'
+            } ${node.type === NodeType.FULL_NODE
+                ? 'Full Node'
+                : 'Browser'
+            }</h3>`;
+            let location = '';
+            if (node.locationData.city) {
+                location += `${node.locationData.city}`;
+                if (node.locationData.country) {
+                    location += `, ${node.locationData.country}`;
+                }
+            }
+            if (location !== '') {
+                addTo += `<p>${location}</p>`;
+            }
+            if (node.state === 2) {
+                connected += addTo;
+            } else {
+                available += addTo;
+            }
+        }
+        console.error(connected, available);
+        return `${connected}${available}`;
+    }
 }
 
 export default class NetworkMap {
@@ -374,24 +428,14 @@ export default class NetworkMap {
     private _lastFrameTime = 0;
     private _mapDc: CanvasRenderingContext2D;
     private _overlayDc: CanvasRenderingContext2D;
-    private _container: HTMLElement;
 
     public constructor(
         _mapCanvas: HTMLCanvasElement,
         _overlayCanvas: HTMLCanvasElement,
-        private _updateCallback?: (nodes: Hexagon[]) => any,
+        private _updateCallback?: (nodes: NodeHexagon[]) => any,
     ) {
-        if (!_mapCanvas.parentElement
-            || !_overlayCanvas.parentElement
-            || _overlayCanvas.parentElement !== _mapCanvas.parentElement) {
-            throw new Error(
-                'NetworkMap.constructor: canvases need to have a parent and it needs to be the same for both',
-            );
-        }
-
         this._mapDc = _mapCanvas.getContext('2d') as CanvasRenderingContext2D;
         this._overlayDc = _overlayCanvas.getContext('2d') as CanvasRenderingContext2D;
-        this._container = _mapCanvas.parentElement;
 
         _mapCanvas.width = 2 * WIDTH;
         _mapCanvas.height = 2 * HEIGHT;
@@ -419,8 +463,8 @@ export default class NetworkMap {
         };
 
         // set up self location
-        GeoIp.retrieveOwn((response: {location: {longitude: number, latitude: number}}) => {
-            if (response && response.location && response.location.latitude) {
+        GeoIp.retrieveOwn((response) => {
+            if (response && response.location && response.location.latitude && response.location.longitude) {
                 const selfPosition = this._hexagonByCoordinate(response.location.latitude, response.location.longitude);
                 this._self = new SelfHexagon(selfPosition.x, selfPosition.y);
                 this.draw();
@@ -456,8 +500,8 @@ export default class NetworkMap {
             node.hexagon.updateState(node);
         } else if (nodeAddressInfo.peerAddress._host || nodeAddressInfo.peerAddress._netAddress._reliable) {
             GeoIp.retrieve(
-                (response: {location: {longitude: number, latitude: number}}) => {
-                    if (response && response.location && response.location.latitude) {
+                (response) => {
+                    if (response && response.location && response.location.latitude && response.location.longitude) {
                         const nodePosition = this._hexagonByCoordinate(
                             response.location.latitude,
                             response.location.longitude,
@@ -475,13 +519,24 @@ export default class NetworkMap {
                             this._nodeHexagons.get(nodePosition.x)!.set(nodePosition.y, hexagon);
                         }
 
-                        const node = Object.assign(nodeAddressInfo, { hexagon });
+                        const node: Node = Object.assign(nodeAddressInfo, {
+                            hexagon,
+                            type: NodeType.fromServices(nodeAddressInfo.peerAddress._services),
+                            locationData: {},
+                        });
+
+                        if (response.country) {
+                            node.locationData.country = response.country;
+                        }
+                        if (response.city) {
+                            node.locationData.city = response.city;
+                        }
+
                         hexagon.addNode(node);
                         this._nodes.set(nodeAddressInfo.peerId, node);
-                        // this._nodeHexagons.get(nodePosition.x)!.set(nodePosition.y, hexagon);
                     }
                 },
-                nodeAddressInfo.peerAddress._host,
+                nodeAddressInfo.peerAddress._host, // TODO WebRTC connections
             );
         }
         return true;
@@ -555,8 +610,10 @@ export default class NetworkMap {
             // Connecting splines need to be drawn separately, as they  need to draw over hexagons
             const connectedNodes: NodeHexagon[] = [];
 
-            const nodes: Hexagon[] = Array.from(this._nodeHexagons.values()).flatMap((foo) => Array.from(foo.values()));
-            nodes.push(this._self);
+            const nodes: NodeHexagon[] = Array.from(this._nodeHexagons.values()).flatMap((foo) =>
+                Array.from(foo.values()),
+            );
+            // nodes.push(this._self);
             if (this._updateCallback) this._updateCallback(nodes);
 
             // Draw hexagons

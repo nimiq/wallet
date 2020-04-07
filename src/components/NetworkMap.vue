@@ -13,7 +13,7 @@
                     {{ $t('This is you!') }}
                 </template>
                 <template v-else>
-                    {{ $t('Nodes in this area:') }} {{ node.nodeCount }}
+                    <span v-html="node.tooltipContent"/>
                 </template>
             </Tooltip>
         </div>
@@ -25,11 +25,11 @@ import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
-import NetworkMap, { WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/NetworkMap';
+import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/NetworkMap';
 
 export default defineComponent({
     setup(props, context) {
-        const nodes = ref<any[]>([]);
+        const nodes = ref<NodeHexagon[]>([]);
         const scale = ref(.95);
         const width = ref(2 * WIDTH);
         const height = ref(2 * HEIGHT);
@@ -141,6 +141,26 @@ export default defineComponent({
 
     /deep/ .tooltip-box {
         white-space: nowrap;
+
+        h3 {
+            color: var(--nimiq-blue);
+            opacity: .5;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            margin: 0;
+        }
+
+        p {
+            color: var(--nimiq-blue);
+            opacity: .8;
+            font-size: 2rem;
+            line-height: 2rem;
+            margin: .75rem 0 0;
+        }
+
+        P + h3 {
+            margin-top: 1rem;
+        }
     }
 }
 </style>

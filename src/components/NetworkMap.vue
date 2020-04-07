@@ -25,42 +25,20 @@ import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
-import NetworkMap from '../lib/NetworkMap';
-
-const WIDTH = 2164;
-const HEIGHT = 1004;
+import NetworkMap, { WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/NetworkMap';
 
 export default defineComponent({
     setup(props, context) {
         const nodes = ref<any[]>([]);
-        const scale = ref(1);
-        const width = ref(WIDTH);
-        const height = ref(HEIGHT);
-
-        function updateScale() {
-            // Update scale
-            const container = context.refs.container as HTMLDivElement;
-
-            const containerWidth = container.offsetWidth;
-            const containerHeight = container.offsetHeight;
-
-            if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
-                // Container is not wide enough
-                scale.value = containerWidth / WIDTH;
-                width.value = containerWidth;
-                height.value = containerWidth / (WIDTH / HEIGHT);
-            } else {
-                // Container is not high enough
-                scale.value = containerHeight / HEIGHT;
-                width.value = containerHeight * (WIDTH / HEIGHT);
-                height.value = containerHeight;
-            }
-        }
+        const scale = ref(.95);
+        const width = ref(2 * WIDTH);
+        const height = ref(2 * HEIGHT);
 
         onMounted(async () => {
             await getNetworkClient();
             const mapCanvas = (context.refs.network as HTMLCanvasElement)!;
             const overlayCanvas = (context.refs.overlay as HTMLCanvasElement)!;
+            const container = (context.refs.container as HTMLDivElement)!;
 
             const networkMap = new NetworkMap(mapCanvas, overlayCanvas, (n) => nodes.value = n);
 
@@ -78,6 +56,34 @@ export default defineComponent({
                 }
             };
 
+
+            const setDimensions = () => {
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+
+                if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
+                    const newHeight = containerWidth / (WIDTH / HEIGHT);
+
+                    mapCanvas.style.width = `${containerWidth}px`;
+                    mapCanvas.style.height = `${newHeight}px`;
+                    overlayCanvas.style.width = `${containerWidth}px`;
+                    overlayCanvas.style.height = `${newHeight}px`;
+                    width.value = containerWidth;
+                    height.value = newHeight;
+                    scale.value = (SCALING_FACTOR * containerWidth) / (2 * WIDTH);
+                } else {
+                    const newWidth = containerHeight * (WIDTH / HEIGHT);
+
+                    mapCanvas.style.width = `${newWidth}px`;
+                    mapCanvas.style.height = `${containerHeight}px`;
+                    overlayCanvas.style.width = `${newWidth}px`;
+                    overlayCanvas.style.height = `${containerHeight}px`;
+                    width.value = newWidth;
+                    height.value = containerHeight;
+                    scale.value = (SCALING_FACTOR * containerHeight) / (2 * HEIGHT);
+                }
+            };
+
             NetworkClient.Instance.on(NetworkClient.Events.ADDRESSES_ADDED, updateKnownAddresses);
             NetworkClient.Instance.on(NetworkClient.Events.PEERS_CHANGED, updateKnownAddresses);
 
@@ -86,8 +92,8 @@ export default defineComponent({
                 updateKnownAddresses();
             }
 
-            window.addEventListener('resize', updateScale);
-            updateScale();
+            window.addEventListener('resize', setDimensions);
+            setDimensions();
         });
 
         return {

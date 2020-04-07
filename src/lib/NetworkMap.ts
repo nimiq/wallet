@@ -17,9 +17,11 @@ const NETWORK_MAP_WIDTH = 129;
 const NETWORK_MAP_HEIGHT = 52;
 
 /** Map width in pixel */
-const WIDTH = 1082;
+export const WIDTH = 1082;
 /** Map height in pixel */
-const HEIGHT = 502;
+export const HEIGHT = 502;
+/** Map scaling factor */
+export const SCALING_FACTOR = .95;
 
 /** distance between 2 hexagons vertically in relation to its height */
 const VERTICAL_HEXAGON_DISTANCE = 1.142;
@@ -57,7 +59,8 @@ class Hexagon {
      * x coordinate of top left border of the bounding box
      */
     public get x() {
-        return this.position.x * Hexagon.SCALE * HORIZONTAL_HEXAGON_OVERLAP;
+        // 0.025% left padding
+        return this.position.x * Hexagon.SCALE * HORIZONTAL_HEXAGON_OVERLAP + (1 - SCALING_FACTOR) * WIDTH;
     }
 
     /**
@@ -65,7 +68,9 @@ class Hexagon {
      */
     public get y() {
         const off = this.position.x % 2 === 0 ? .5 : 0;
-        return (this.position.y + off) * Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE - .5 * Hexagon.SCALE;
+        return (this.position.y + off) * Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE
+            - .5 * Hexagon.SCALE
+            + 2 * (1 - SCALING_FACTOR) * HEIGHT;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -372,8 +377,8 @@ export default class NetworkMap {
     private _container: HTMLElement;
 
     public constructor(
-        private _mapCanvas: HTMLCanvasElement,
-        private _overlayCanvas: HTMLCanvasElement,
+        _mapCanvas: HTMLCanvasElement,
+        _overlayCanvas: HTMLCanvasElement,
         private _updateCallback?: (nodes: Hexagon[]) => any,
     ) {
         if (!_mapCanvas.parentElement
@@ -393,6 +398,10 @@ export default class NetworkMap {
 
         _overlayCanvas.width = 2 * WIDTH;
         _overlayCanvas.height = 2 * HEIGHT;
+
+        // Scale the map down to acomodate for 5% top padding, and 2.5% padding left and right.
+        this._mapDc.scale(SCALING_FACTOR, SCALING_FACTOR);
+        this._overlayDc.scale(SCALING_FACTOR, SCALING_FACTOR);
 
         this._overlayDc.lineCap = 'round';
 
@@ -524,6 +533,7 @@ export default class NetworkMap {
 
         const xHexagon = Math.floor(point.x / (Hexagon.SCALE * HORIZONTAL_HEXAGON_OVERLAP));
         const off = (xHexagon % 2 === 0 ? .5 : 0);
+
         return {
             x: xHexagon,
             y: Math.floor(
@@ -537,7 +547,7 @@ export default class NetworkMap {
      * @returns true if an animation is ongoing, false otherwise.
      */
     private _drawOverlay(timeDelta: number): boolean {
-        this._overlayDc.clearRect(0, 0, 2 * WIDTH, 2 * HEIGHT);
+        this._overlayDc.clearRect(0, 0, (2 * WIDTH) / .95, (2 * HEIGHT) / .95);
         if (this._self) {
             let animating = false;
             animating = this._self.draw(this._overlayDc, timeDelta) || animating;
@@ -575,34 +585,10 @@ export default class NetworkMap {
      * @param timeDelta time that passed since last animationFrame, or 0 if it is the first animation frame
      */
     private _drawMap(timeDelta: number) {
-        this._mapDc.clearRect(0, 0, 2 * WIDTH, 2 * HEIGHT);
+        this._mapDc.clearRect(0, 0, (2 * WIDTH) / .95, (2 * HEIGHT) / .95);
         this._mapDc.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         this._mapDc.fillStyle! = 'rgba(255, 255, 255, 0.1)';
         this._hexagons.forEach((hexagon) => hexagon.draw(this._mapDc, timeDelta));
-    }
-
-    /**
-     * update the scaling of the map according to the dimensions of the parent container.
-     */
-    private _setScale() {
-        const width = this._container.offsetWidth;
-        const height = this._container.offsetHeight;
-
-        if (height * (WIDTH / HEIGHT) > width) {
-            const newHeight = width / (WIDTH / HEIGHT);
-
-            this._mapCanvas.style.width = `${width}px`;
-            this._mapCanvas.style.height = `${newHeight}px`;
-            this._overlayCanvas.style.width = `${width}px`;
-            this._overlayCanvas.style.height = `${newHeight}px`;
-        } else {
-            const newWidth = height * (WIDTH / HEIGHT);
-
-            this._mapCanvas.style.width = `${newWidth}px`;
-            this._mapCanvas.style.height = `${height}px`;
-            this._overlayCanvas.style.width = `${newWidth}px`;
-            this._overlayCanvas.style.height = `${height}px`;
-        }
     }
 
     /**
@@ -617,7 +603,7 @@ export default class NetworkMap {
 
         const ft = this._frameTime();
 
-        this._setScale();
+        // this._setDomensions();
         this._drawMap(ft);
         if (this._drawOverlay(ft)) {
             // only redraw after timeout if there is actual change to be drawn

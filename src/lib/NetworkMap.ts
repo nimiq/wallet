@@ -37,6 +37,7 @@ const sinEasing = (t: number) => (Math.sin(t * Math.PI - Math.PI / 2) / 2 + 0.5)
 
 // TODO
 enum NodeType {
+    SELF,
     FULL_NODE,
     LIGHT_NODE,
 }
@@ -393,11 +394,16 @@ export class NodeHexagon extends Hexagon {
             let addTo = '';
             addTo += `<h3>${node.state === 2
                 ? 'Connected'
-                : 'Available'
+                : node.type === NodeType.SELF
+                    ? ''
+                    : 'Available'
             } ${node.type === NodeType.FULL_NODE
                 ? 'Full Node'
-                : 'Browser'
+                : node.type === NodeType.SELF
+                    ? 'You are here'
+                    : 'Browser'
             }</h3>`;
+
             let location = '';
             if (node.locationData.city) {
                 location += `${node.locationData.city}`;
@@ -408,7 +414,10 @@ export class NodeHexagon extends Hexagon {
             if (location !== '') {
                 addTo += `<p>${location}</p>`;
             }
-            if (node.state === 2) {
+
+            if (node.type === NodeType.SELF) {
+                connected = `${addTo}${connected}`;
+            } else if (node.state === 2) {
                 connected += addTo;
             } else {
                 available += addTo;
@@ -467,6 +476,36 @@ export default class NetworkMap {
             if (response && response.location && response.location.latitude && response.location.longitude) {
                 const selfPosition = this._hexagonByCoordinate(response.location.latitude, response.location.longitude);
                 this._self = new SelfHexagon(selfPosition.x, selfPosition.y);
+
+                // add a NodeHexagon for self as well which will not be drawn
+                // use dummy Node data for it, as it will not be used
+                const selfHexagon = new NodeHexagon(selfPosition.x, selfPosition.y);
+                selfHexagon.addNode({
+                    state: -1,
+                    peerId: '',
+                    peerAddress: {
+                        _protocol: 0,
+                        _services: 0,
+                        _timestamp: 0,
+                        _netAddress: { _type: 0, _ip: new Uint8Array(), _reliable: true },
+                        _publicKey: new Uint8Array(),
+                        _distance: 0,
+                        _signature: new Uint8Array(),
+                        _host: '',
+                        _port: 0,
+                    },
+                    hexagon: selfHexagon,
+                    locationData: {
+                        country: response.country,
+                        city: response.city,
+                    },
+                    type: NodeType.SELF,
+                });
+                if (!this._nodeHexagons.has(selfPosition.x)) {
+                    this._nodeHexagons.set(selfPosition.x, new Map<number, NodeHexagon>());
+                }
+                this._nodeHexagons.get(selfPosition.x)!.set(selfPosition.y, selfHexagon);
+
                 this.draw();
             } // TODO what to do when no response, or wrong response?
         });

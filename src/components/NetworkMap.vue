@@ -13,7 +13,7 @@
                     <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
                     <h3 v-else>
                         {{ peer.state === 2 ? $t('Connected') : $t('Available') }}
-                        {{ peer.type === 1 ? $t('Full Node') : $t('Browser') }}
+                        {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}
                     </h3>
                     <p v-if="peer.locationData.country"
                         :class="{'self': peer.type === 0 /* SELF */, 'connected': peer.state === 2 /* CONNECTED */}">

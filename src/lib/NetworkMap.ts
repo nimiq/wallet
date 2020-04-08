@@ -40,16 +40,25 @@ enum NodeType {
     SELF,
     FULL_NODE,
     LIGHT_NODE,
+    BROWSER,
+}
+
+// From Nimiq.Services
+enum Services {
+    PROVIDES_FULL = 4092,
+    PROVIDES_LIGHT = 3050,
+    PROVIDES_NANO = 65,
+    PROVIDES_PICO = 0,
 }
 
 // TODO
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace NodeType {
-
     // eslint-disable-next-line no-inner-declarations
     export function fromServices(features: number) {
-        if (features === 4092) return NodeType.FULL_NODE;
-        return NodeType.LIGHT_NODE;
+        if (features & Services.PROVIDES_FULL) return NodeType.FULL_NODE; // eslint-disable-line no-bitwise
+        if (features & Services.PROVIDES_LIGHT) return NodeType.LIGHT_NODE; // eslint-disable-line no-bitwise
+        return NodeType.BROWSER;
     }
 }
 

@@ -3,7 +3,6 @@
         <div class="background"></div>
         <div class="network-inner flex-column">
             <NetworkMap/>
-            <h1 class="coming-soon">Work in progress</h1>
             <NetworkStats/>
         </div>
     </div>
@@ -52,25 +51,6 @@ export default defineComponent({
         align-items: center;
         justify-content: space-between;
         height: 100%;
-    }
-
-    .coming-soon {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        font-size: 10rem;
-        line-height: 1;
-        margin-top: -12rem;
-        text-align: center;
-        opacity: 0.4;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-
-        > small {
-            display: block;
-            font-size: 25%;
-        }
     }
 
     .network-map {

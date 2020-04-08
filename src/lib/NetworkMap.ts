@@ -506,7 +506,7 @@ export default class NetworkMap {
             }
             node.state = nodeAddressInfo.state;
             node.hexagon.updateState(node);
-        } else if (nodeAddressInfo.peerAddress._host || nodeAddressInfo.peerAddress._netAddress._reliable) {
+        } else if (nodeAddressInfo.peerAddress._host || nodeAddressInfo.peerAddress._netAddress._ip) {
             GeoIp.retrieve(
                 (response) => {
                     if (response && response.location && response.location.latitude && response.location.longitude) {
@@ -544,7 +544,7 @@ export default class NetworkMap {
                         this._nodes.set(nodeAddressInfo.peerId, node);
                     }
                 },
-                nodeAddressInfo.peerAddress._host, // TODO WebRTC connections
+                nodeAddressInfo.peerAddress._host || Array.from(nodeAddressInfo.peerAddress._netAddress._ip).join('.'),
             );
         }
         return true;

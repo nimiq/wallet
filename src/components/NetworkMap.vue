@@ -9,12 +9,18 @@
                 :style="`transform: translate(${node.x * scale}px, ${node.y * scale}px);`"
             >
                 <div :style="`padding: ${scale}em;`" slot="trigger"></div>
-                <template v-if="node.isSelf">
-                    {{ $t('This is you!') }}
-                </template>
-                <template v-else>
-                    <span v-html="node.tooltipContent"/>
-                </template>
+                <span v-for="peer in node._nodes" :key="peer.peerId">
+                    <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
+                    <h3 v-else>
+                        {{ peer.state === 2 ? $t('Connected') : $t('Available') }}
+                        {{ peer.type === 1 ? $t('Full Node') : $t('Browser') }}
+                    </h3>
+                    <p v-if="peer.locationData.country"
+                        :class="{'self': peer.type === 0 /* SELF */, 'connected': peer.state === 2 /* CONNECTED */}">
+                        {{ peer.locationData.city ? `${peer.locationData.city},` : '' }}
+                        {{ peer.locationData.country }}
+                    </p>
+                </span>
             </Tooltip>
         </div>
     </div>
@@ -142,8 +148,12 @@ export default defineComponent({
     /deep/ .tooltip-box {
         white-space: nowrap;
 
+        span + span {
+            display: block;
+            margin-top: 1.5rem;
+        }
+
         h3 {
-            color: var(--nimiq-blue);
             opacity: .5;
             font-size: 1.5rem;
             line-height: 1.5rem;
@@ -151,15 +161,18 @@ export default defineComponent({
         }
 
         p {
-            color: var(--nimiq-blue);
             opacity: .8;
             font-size: 2rem;
             line-height: 2rem;
             margin: .75rem 0 0;
-        }
 
-        P + h3 {
-            margin-top: 1rem;
+            &.self {
+                color: var(--nimiq-gold-darkened);
+            }
+
+            &.connected {
+                color: var(--nimiq-light-blue-darkened);
+            }
         }
     }
 }

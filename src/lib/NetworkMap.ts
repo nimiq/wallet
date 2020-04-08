@@ -386,46 +386,6 @@ export class NodeHexagon extends Hexagon {
 
         return this._animation.connection !== 1;
     }
-
-    public get tooltipContent(): string {
-        let connected = '';
-        let available = '';
-        for (const node of this._nodes) {
-            let addTo = '';
-            addTo += `<h3>${node.state === 2
-                ? 'Connected'
-                : node.type === NodeType.SELF
-                    ? ''
-                    : 'Available'
-            } ${node.type === NodeType.FULL_NODE
-                ? 'Full Node'
-                : node.type === NodeType.SELF
-                    ? 'You are here'
-                    : 'Browser'
-            }</h3>`;
-
-            let location = '';
-            if (node.locationData.city) {
-                location += `${node.locationData.city}`;
-                if (node.locationData.country) {
-                    location += `, ${node.locationData.country}`;
-                }
-            }
-            if (location !== '') {
-                addTo += `<p>${location}</p>`;
-            }
-
-            if (node.type === NodeType.SELF) {
-                connected = `${addTo}${connected}`;
-            } else if (node.state === 2) {
-                connected += addTo;
-            } else {
-                available += addTo;
-            }
-        }
-        console.error(connected, available);
-        return `${connected}${available}`;
-    }
 }
 
 export default class NetworkMap {

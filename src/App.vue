@@ -65,6 +65,12 @@ export default defineComponent({
 
     @media (min-width: 1800px) {
         --sidebar-width: 25rem;
+        --account-column-width: 75rem; // 80.75rem for fullscreen design
+        --address-column-width: 110rem; // 134.25rem for fullscreen design
+    }
+
+    @media (min-width: 2000px) {
+        --sidebar-width: 25rem;
         --account-column-width: 85rem;
         --address-column-width: 139rem;
     }

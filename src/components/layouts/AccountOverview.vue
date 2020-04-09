@@ -96,6 +96,12 @@ export default defineComponent({
     }
 
     @media (min-width: 1800px) {
+        --padding-top: 8rem; // 9rem per design
+        --padding-sides: 8rem; // 9rem per design
+        --padding-bottom: 2rem;
+    }
+
+    @media (min-width: 2000px) {
         --padding-top: 11rem;
         --padding-sides: 11rem;
         --padding-bottom: 4rem;

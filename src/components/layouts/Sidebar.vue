@@ -86,15 +86,10 @@ export default defineComponent({
     background: var(--bg-secondary);
     color: white;
 
+    /* Default: 1440px */
     --padding-top: 3rem;
     --padding-sides: 1.5rem;
     --padding-bottom: 1.5rem;
-
-    @media (min-width: 2048px) {
-        --padding-top: 5rem;
-        --padding-sides: 4rem;
-        --padding-bottom: 4rem;
-    }
 
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 }
@@ -106,8 +101,8 @@ export default defineComponent({
     padding: var(--padding-sides);
     background: rgba(255, 255, 255, .07);
 
-    @media (min-width: 2048px) {
-        padding: calc(var(--padding-sides) / 1.5) var(--padding-sides);
+    @media (min-width: 1800px) {
+        padding: calc(var(--padding-sides) * 1.25) calc(var(--padding-sides) * 2);
     }
 
     .nq-label {
@@ -145,7 +140,7 @@ export default defineComponent({
     color: white;
     margin-bottom: 3.5rem;
 
-    @media (min-width: 2048px) {
+    @media (min-width: 1800px) {
         align-self: flex-start;
         margin-left: 1.5rem;
     }

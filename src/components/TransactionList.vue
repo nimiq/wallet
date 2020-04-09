@@ -362,9 +362,9 @@ export default defineComponent({
         top: 0;
         width: 100%;
         height: 100%;
-        padding-right: calc(2rem + var(--padding-sides) - 6px);
-        padding-left: calc(2rem + var(--padding-sides));
-        padding-bottom: var(--padding-top, 4rem);
+        padding-right: calc(2rem + var(--padding) - 6px);
+        padding-left: calc(2rem + var(--padding));
+        padding-bottom: var(--padding, 4rem);
 
         @extend %custom-scrollbar;
     }

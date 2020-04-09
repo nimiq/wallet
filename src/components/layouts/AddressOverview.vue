@@ -129,22 +129,24 @@ export default defineComponent({
     background: var(--bg-primary);
     flex-direction: column;
 
-    --padding-top: 4rem;
-    --padding-sides: 4rem;
-    --padding-bottom: 0;
+    /* Default: 1440px */
+    --padding: 4rem;
 
-    @media (min-width: 2048px) {
-        --padding-top: 11rem;
-        --padding-sides: 11rem;
+    @media (max-width: 1319px) {
+        --padding: 3rem;
     }
 
-    padding: var(--padding-top) 0 var(--padding-bottom);
+    @media (min-width: 1800px) {
+        --padding: 9rem;
+    }
+
+    padding: var(--padding) 0 0;
 
     .active-address {
         flex-shrink: 0;
         align-items: center;
         padding: 2rem 4rem 2rem 2rem;
-        margin: 0 var(--padding-sides);
+        margin: 0 var(--padding);
         border-radius: 0.5rem;
         transition: background 400ms var(--nimiq-ease);
 
@@ -221,7 +223,7 @@ export default defineComponent({
         justify-content: space-between;
         margin-bottom: 0.75rem;
         align-items: center;
-        margin: 4rem var(--padding-sides) 2rem;
+        margin: 4rem var(--padding) 2rem;
         padding: 0 3rem 0 2rem;
 
         .search-bar {

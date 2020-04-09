@@ -52,14 +52,21 @@ export default defineComponent({
     @include flex-full-height;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
+    /* Default: >= 1440px */
     --sidebar-width: 21rem;
     --account-column-width: 60rem;
-    --address-column-width: 100rem;
+    --address-column-width: 99rem;
 
-    @media (min-width: 2048px) {
-        --sidebar-width: 32rem;
-        --account-column-width: 86rem;
-        --address-column-width: 132rem;
+    @media (max-width: 1319px) {
+        --sidebar-width: 21rem;
+        --account-column-width: 46.5rem;
+        --address-column-width: 76.5rem;
+    }
+
+    @media (min-width: 1800px) {
+        --sidebar-width: 25rem;
+        --account-column-width: 85rem;
+        --address-column-width: 139rem;
     }
 
     main {
@@ -74,6 +81,7 @@ export default defineComponent({
 
         .groundfloor {
             width: 100%;
+            min-width: 0;
             position: relative;
         }
 
@@ -85,6 +93,7 @@ export default defineComponent({
 
         /deep/ .address-overview {
             width: var(--address-column-width);
+            min-width: 0;
             z-index: 3;
         }
 

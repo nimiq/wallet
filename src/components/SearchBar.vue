@@ -66,6 +66,7 @@ export default defineComponent({
     cursor: text;
     border-bottom: 0.25rem solid var(--text-10);
     padding-bottom: 1.5rem;
+    min-width: 0;
 
     transition: color 0.2s var(--nimiq-ease), border 0.2s var(--nimiq-ease);
 
@@ -74,6 +75,7 @@ export default defineComponent({
         flex-grow: 0;
         margin-left: 2rem;
         margin-right: 1rem;
+        flex-shrink: 0;
     }
 
     input {
@@ -87,6 +89,7 @@ export default defineComponent({
         font-size: 2rem;
         padding-right: 2rem;
         background: none;
+        min-width: 0;
 
         &:focus {
             outline: none;

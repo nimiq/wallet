@@ -84,14 +84,21 @@ export default defineComponent({
     max-height: 100%;
     flex-direction: column;
 
-    --padding-top: 4rem;
+    /* Default: 1440px */
+    --padding-top: 6rem;
     --padding-sides: 6rem;
     --padding-bottom: 0;
 
-    @media (min-width: 2048px) {
-        --padding-top: 8rem;
-        --padding-sides: 12rem;
-        --padding-bottom: 6rem;
+    @media (max-width: 1319px) {
+        --padding-top: 5rem;
+        --padding-sides: 4rem;
+        --padding-bottom: 0;
+    }
+
+    @media (min-width: 1800px) {
+        --padding-top: 11rem;
+        --padding-sides: 11rem;
+        --padding-bottom: 4rem;
     }
 
     --item-margin: calc(var(--padding-top) / 2);
@@ -99,7 +106,7 @@ export default defineComponent({
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 
     > * {
-        margin: var(--item-margin) 0;
+        margin-bottom: var(--item-margin);
     }
 
     > h2 {
@@ -107,7 +114,7 @@ export default defineComponent({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: var(--item-margin) 2rem calc(var(--item-margin) / 2);
+        margin: 0 2rem var(--item-margin);
 
         > button {
             width: 4rem;
@@ -177,6 +184,11 @@ export default defineComponent({
     font-weight: 600;
     padding: 4rem;
     margin: 0 -2rem;
+
+    @media (max-width: 1319px) {
+        padding: 3rem;
+        margin: 0 -1rem;
+    }
 
     svg {
         color: var(--text-20); // Bitcoin color is #F7931A

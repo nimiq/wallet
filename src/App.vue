@@ -57,10 +57,18 @@ export default defineComponent({
     --account-column-width: 60rem;
     --address-column-width: 99rem;
 
+    @media (max-width: 1369px) {
+        --account-column-width: 59rem;
+    }
+
     @media (max-width: 1319px) {
         --sidebar-width: 21rem;
-        --account-column-width: 46.5rem;
-        --address-column-width: 76.5rem;
+        --account-column-width: 52rem;
+        --address-column-width: 92rem;
+    }
+
+    @media (max-width: 1199px) {
+        --account-column-width: 47rem;
     }
 
     @media (min-width: 1800px) {

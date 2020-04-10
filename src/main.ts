@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
-import VueI18n from 'vue-i18n';
 // @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 
@@ -35,7 +34,6 @@ if (window.innerWidth >= 1024 && window.innerHeight >= 560) {
     Vue.config.productionTip = false;
 
     Vue.use(VueCompositionApi);
-    Vue.use(VueI18n);
     Vue.use(VueVirtualScroller);
 
     initStorage();

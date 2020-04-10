@@ -6,37 +6,125 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/components/MigrationWelcome.vue:14
+#: src/components/modals/TransactionModal.vue:130
+msgid "{count} Confirmation | {count} Confirmations"
+msgstr ""
+
+#: src/components/NetworkStats.vue:9
+msgid "{count} Peer | {count} Peers"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:29
+msgid "{count} pending Cashlink | {count} pending Cashlinks"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:16
+msgid "0"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:19
+msgid "2"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:15
 msgid "Accounts"
 msgstr ""
 
-#: src/components/WalletMenu.vue:7
+#: src/components/AccountMenu.vue:63
 msgid "Add Account"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:5
-#: src/components/MigrationWelcome.vue:17
+#: src/components/modals/TransactionModal.vue:50
+#: src/components/modals/TransactionModal.vue:87
+msgid "Add contact"
+msgstr ""
+
+#: src/components/layouts/AccountOverview.vue:29
+#: src/components/MigrationWelcome.vue:18
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:13
-msgid "Buy"
+#: src/components/layouts/Settings.vue:22
+msgid "all"
 msgstr ""
 
-#: src/components/modals/ReceiveModal.vue:6
-#: src/components/modals/SendModal.vue:6
-msgid "close"
+#: src/components/NetworkMap.vue:15
+msgid "Available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:25
+#: src/components/layouts/AccountOverview.vue:22
+msgid "Backup"
+msgstr ""
+
+#: src/components/NetworkStats.vue:12
+msgid "Block height"
+msgstr ""
+
+#: src/components/NetworkMap.vue:16
+msgid "Browser"
+msgstr ""
+
+#: src/components/TransactionList.vue:52
+msgid "Buy NIM"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:264
+#: src/components/TransactionList.vue:48
+#: src/components/TransactionListItem.vue:137
+msgid "Cashlink"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:10
+msgid "Cashlink from"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:11
+msgid "Cashlink to"
+msgstr ""
+
+#: src/components/AccountMenu.vue:44
+msgid "Change Password"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:47
+msgid "Choose your reference government currency."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:71
+msgid "Clear"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:65
+msgid "Clear Cache"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:67
+msgid ""
+"Clear locally stored transaction history and balances. Reload them from the "
+"decentralized network."
+msgstr ""
+
+#: src/components/layouts/AccountOverview.vue:38
+msgid "Coming soon"
+msgstr ""
+
+#: src/components/TransactionList.vue:44
+msgid "Congrats"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:55
 msgid "Connect"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:24
-msgid "Connect your first account:"
+#: src/components/NetworkMap.vue:15
+msgid "Connected"
 msgstr ""
 
-#: src/components/Footer.vue:3
+#: src/components/NetworkStats.vue:8
+msgid "Connected to"
+msgstr ""
+
+#: src/components/Footer.vue:3 src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr ""
 
@@ -44,15 +132,71 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:75
+#: src/components/MigrationWelcome.vue:86
 msgid "Continue"
 msgstr ""
 
-#: src/components/TransactionList.vue:8
-msgid "Fetching your transaction history..."
+#: src/components/layouts/Settings.vue:10
+msgid "Control how many decimals are shown for NIM values."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:83
+#: src/components/AccountMenu.vue:37
+msgid "Create Backup"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:45
+msgid "Currency"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:61
+msgid "Developer"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:39
+msgid "expired"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:32
+msgid "Expired"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:32
+msgid "Failed"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:112
+msgid "Faucet error - please try again"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:72
+msgid "Faucet is empty"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:76
+msgid "Faucet is not available from your location"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:83
+msgid "Faucet unavailable"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:68
+msgid "Faucet unavailable (wrong network)"
+msgstr ""
+
+#: src/components/NetworkMap.vue:16
+msgid "Full Node"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:4
+msgid "General"
+msgstr ""
+
+#: src/components/modals/PreviewNoticeModal.vue:10
+msgid "Got it"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:94
 msgid "Got it!"
 msgstr ""
 
@@ -66,91 +210,249 @@ msgstr ""
 msgid "Height"
 msgstr ""
 
-#: src/components/TransactionList.vue:15
-msgid "History is currently limited for performance."
-msgstr ""
-
-#: src/components/MigrationWelcome.vue:14
+#: src/components/MigrationWelcome.vue:15
 msgid "hold, manage and aggregate Addresses."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:31
+#: src/components/MigrationWelcome.vue:34
 msgid "Import it to any browser and enter your password to connect to Nimiq."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:77
+#: src/components/MigrationWelcome.vue:88
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:34
+#: src/components/TransactionListItem.vue:40
+msgid "invalid"
+msgstr ""
+
+#: src/components/TransactionList.vue:47
+msgid "Invite a friend with a"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:32
+msgid "Language"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:39
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:78
+#: src/components/layouts/AddressOverview.vue:54
+msgid "Let's get started! Connect your first account:"
+msgstr ""
+
+#: src/components/modals/PreviewNoticeModal.vue:9
+msgid "Let's hear your feedback!"
+msgstr ""
+
+#: src/components/NetworkMap.vue:16
+msgid "Light Node"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:28
+msgid "Localization"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:89
 msgid "Log in on your devices with the new<br>Nimiq Login Files."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:82
+#: src/components/AccountMenu.vue:48
+msgid "Logout"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:93
 msgid ""
 "Multiple Addresses and Login Files<br>are supported by new Accounts only."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:81
+#: src/components/layouts/Sidebar.vue:43
+msgid "Network"
+msgstr ""
+
+#: src/components/TransactionList.vue:68
+msgid "No transactions found"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:37
+msgid "not sent"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:92
 msgid "Old and new Accounts"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:73
+#: src/components/MigrationWelcome.vue:84
 msgid "One Account, many Addresses"
+msgstr ""
+
+#: src/components/TransactionList.vue:49
+msgid "or visit an exchange and get more."
 msgstr ""
 
 #: src/components/Footer.vue:4
 msgid "Peers"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:24
+#: src/components/TransactionListItem.vue:38
 msgid "pending"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:14
-msgid "Sell"
+#: src/components/TransactionList.vue:13
+msgid "Pending Cashlinks"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:17
+#: src/components/modals/TransactionModal.vue:24
+msgid "Pending..."
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:7 src/components/TransactionList.vue:63
+msgid "Receive free NIM"
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:5
+msgid "Receive Money"
+msgstr ""
+
+#: src/components/TransactionList.vue:60
+msgid "Receive some free NIM to get started."
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:35
+msgid "received at"
+msgstr ""
+
+#: src/components/AccountMenu.vue:41
+msgid "Rename"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:120
+msgid "Request failed"
+msgstr ""
+
+#: src/components/AccountMenu.vue:32
+msgid "Save Login File"
+msgstr ""
+
+#: src/components/layouts/AccountOverview.vue:11
+msgid "Save now"
+msgstr ""
+
+#: src/components/modals/AddressModal.vue:31
+msgid ""
+"Scan the code to send\n"
+"money to this address"
+msgstr ""
+
+#: src/components/SearchBar.vue:13
+msgid "Search Transactions"
+msgstr ""
+
+#: src/components/SearchBar.vue:13
+msgid "Search Transactions by Contact, Address, etc."
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:18
 msgid "send and receive transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:21 src/components/WalletMenu.vue:6
+#: src/components/modals/TransactionModal.vue:35
+msgid "sent at"
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:10
+msgid "Set Amount"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:34
+msgid "Set the interface language."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:51
 msgid "Settings"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:74
+#: src/components/modals/ReceiveModal.vue:6
+msgid "Share the link or the QR code with the sender."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:8
+msgid "Shown Decimals"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:85
 msgid "The new and improved Accounts<br>can have multiple Addresses."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:28
+#: src/components/MigrationWelcome.vue:30
 msgid ""
 "The new Login Files are an easy and convenient way to gain access to your "
 "Account and its Addresses."
 msgstr ""
 
-#: src/components/TransactionList.vue:12
-msgid "This is a quiet place with no transactions."
+#: src/components/layouts/AccountOverview.vue:19
+msgid "There is no ‘forgot password’"
 msgstr ""
 
-#: src/components/WalletBalance.vue:3
+#: src/components/modals/PreviewNoticeModal.vue:8
+msgid ""
+"This is a very early version of the new Nimiq Wallet, optimized for screens "
+"larger than 1450x700px."
+msgstr ""
+
+#: src/components/TransactionList.vue:216
+#: src/components/TransactionList.vue:231
+msgid "This month"
+msgstr ""
+
+#: src/components/AccountBalance.vue:3
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/TransactionList.vue:3
-msgid "Updating..."
+#: src/components/modals/TransactionModal.vue:13
+msgid "Transaction from"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:79
+#: src/components/modals/TransactionModal.vue:14
+msgid "Transaction to"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:265
+#: src/components/TransactionListItem.vue:138
+msgid "Unclaimed Cashlink"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:58
+msgid "Updating transactions..."
+msgstr ""
+
+#: src/components/modals/PreviewNoticeModal.vue:7
+msgid "Welcome to the Wallet Preview!"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:90
 msgid "What else?"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:45
+#: src/components/NetworkMap.vue:13
+msgid "You are here"
+msgstr ""
+
+#: src/components/TransactionList.vue:45
+msgid "You now own crypto!"
+msgstr ""
+
+#: src/components/layouts/AccountOverview.vue:8
+msgid "Your Account is not safe yet!"
+msgstr ""
+
+#: src/components/MigrationWelcome.vue:53
 msgid ""
 "Your Accounts are now legacy Accounts. Easily switch, edit and create "
 "Accounts with the new Account picker."
+msgstr ""
+
+#: src/components/TransactionList.vue:59
+msgid "Your transactions will appear here"
 msgstr ""

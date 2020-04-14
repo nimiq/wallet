@@ -2,7 +2,7 @@
   "name": "safe-next",
   "version": "0.1.0",
   "private": false,
-  "author": "sisou <hello@soerenschwert.de>",
+  "author": "Nimiq (https://www.nimiq.com)",
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",

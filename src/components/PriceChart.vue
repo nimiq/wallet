@@ -19,10 +19,11 @@
             <strong>{{currency.toUpperCase()}}</strong>
             <div class="price">
                 <transition name="fade">
-                    <!-- TODO: Adapt FiatAmount for this use case and use it here -->
-                    <!-- FiatAmount cannot display more than 2 decimals, which is necessary for NIM. -->
-                    <!-- <FiatAmount :amount="endPrice" :currency="fiatCurrency"/> -->
-                    <div v-if="displayPrice !== undefined">{{ displayPrice }} {{ fiatSymbol }}</div>
+                    <FiatAmount v-if="endPrice !== undefined"
+                        :amount="endPrice"
+                        :currency="fiatCurrency"
+                        :maxRelativeDeviation="0.001"
+                    />
                 </transition>
                 <transition name="fade">
                     <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
@@ -36,24 +37,10 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
-import { CurrencyInfo, getHistoricExchangeRates } from '@nimiq/utils';
-// import { FiatAmount } from '@nimiq/vue-components';
+import { getHistoricExchangeRates } from '@nimiq/utils';
+import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
-
-function roundToSignificant(number: number, places = 1) {
-    const roundingFactor = number < 0.001
-        ? 10 ** (3 + places)
-        : number < 0.01
-            ? 10 ** (2 + places)
-            : number < 0.1
-                ? 10 ** (1 + places)
-                : number < 10
-                    ? 10 ** (places)
-                    : 10 ** (places - 1);
-
-    return Math.round(number * roundingFactor) / roundingFactor;
-}
 
 export default defineComponent({
     name: 'price-chart',
@@ -110,7 +97,6 @@ export default defineComponent({
                 : priceChange.value < 0
                     ? 'negative'
                     : 'none');
-        const displayPrice = computed(() => endPrice.value && roundToSignificant(endPrice.value, 3));
 
         // Calculate path
         const path = computed(() => {
@@ -181,7 +167,6 @@ export default defineComponent({
         });
 
         const fiatStore = useFiatStore();
-        const fiatSymbol = computed(() => new CurrencyInfo(fiatStore.currency.value).symbol);
 
         watch(() => [props.currency, fiatStore.currency.value], ([cryptoCurrency, fiatCurrency]) => {
             const timespan = 24 * 60 * 60 * 1000; // 24 hours
@@ -226,15 +211,15 @@ export default defineComponent({
             strokeWidth,
             viewBox,
             path,
-            displayPrice,
-            fiatSymbol,
+            fiatCurrency: fiatStore.currency,
+            endPrice,
             history,
             priceChange,
             priceChangeClass,
         };
     },
     components: {
-        // FiatAmount,
+        FiatAmount,
     },
 });
 </script>

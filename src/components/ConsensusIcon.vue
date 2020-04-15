@@ -34,8 +34,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .consensus-icon {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.125rem;
 }
 
 :hover > .established,

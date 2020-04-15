@@ -198,9 +198,24 @@ export default defineComponent({
         background: rgba(255, 255, 255, .1);
         color: rgba(255, 255, 255, .5);
 
-        .label{
+        .label {
             color: rgba(255, 255, 255, 1);
         }
+    }
+}
+
+.network {
+    .consensus-icon {
+        color: white;
+        opacity: 0.3;
+
+        transition: color 0.2s var(--nimiq-ease), opacity 0.2s var(--nimiq-ease);
+    }
+
+    &:hover .consensus-icon,
+    &:focus .consensus-icon,
+    &.active .consensus-icon {
+        opacity: 0.5;
     }
 }
 </style>

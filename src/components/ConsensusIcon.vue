@@ -41,26 +41,18 @@ export default defineComponent({
 :hover > .established,
 :focus > .established,
 .active > .established {
-    color: var(--nimiq-green);
+    color: var(--nimiq-green) !important;
+    opacity: 1 !important;
 }
 
 :hover > .lost,
 :focus > .lost,
 .active > .lost {
-    color: var(--nimiq-orange);
+    color: var(--nimiq-orange) !important;
+    opacity: 1 !important;
 }
 
 svg {
     display: block;
-}
-
-.connecting,
-.syncing {
-    animation: consensus-indicator-spin 1s linear infinite;
-}
-
-@keyframes consensus-indicator-spin {
-    from { transform: rotateY(0deg) }
-    to   { transform: rotateY(360deg) }
 }
 </style>

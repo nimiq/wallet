@@ -90,7 +90,7 @@ export const useTransactionsStore = createStore({
                 // Set via Vue.set to let vue setup the reactivity. TODO this might be not necessary anymore with Vue3
                 if (!tx.fiatValue) Vue.set(tx, 'fiatValue', {});
                 Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined
-                    ? Math.round(exchangeRate * tx.value) / 1e5 // rounded to 5 decimals
+                    ? (exchangeRate * tx.value) / 1e5 // TODO adapt for BTC
                     : FIAT_PRICE_UNAVAILABLE);
             }
         },

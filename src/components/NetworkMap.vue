@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
@@ -48,11 +48,30 @@ export default defineComponent({
         const width = ref(2 * WIDTH);
         const height = ref(2 * HEIGHT);
 
+        const setDimensions = () => {
+            const container = (context.refs.container as HTMLDivElement);
+            if (!container) return;
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+
+            // Set width and height such that it fits the container. Restrict to even numbers, to avoid blurriness
+            // due to subpixel precision by centering via translate(-50%, -50%) and to avoid positioning tooltips
+            // at subpixel positions.
+            if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
+                width.value = Math.round(containerWidth / 2) * 2;
+                height.value = Math.round(containerWidth / (WIDTH / HEIGHT) / 2) * 2;
+                scale.value = (SCALING_FACTOR * width.value) / (2 * WIDTH);
+            } else {
+                width.value = Math.round((containerHeight * (WIDTH / HEIGHT)) / 2) * 2;
+                height.value = Math.round(containerHeight / 2) * 2;
+                scale.value = (SCALING_FACTOR * height.value) / (2 * HEIGHT);
+            }
+        };
+
         onMounted(async () => {
             await getNetworkClient();
             const mapCanvas = (context.refs.network as HTMLCanvasElement)!;
             const overlayCanvas = (context.refs.overlay as HTMLCanvasElement)!;
-            const container = (context.refs.container as HTMLDivElement)!;
 
             const networkMap = new NetworkMap(mapCanvas, overlayCanvas, (n) => nodes.value = n);
 
@@ -70,25 +89,6 @@ export default defineComponent({
                 }
             };
 
-
-            const setDimensions = () => {
-                const containerWidth = container.offsetWidth;
-                const containerHeight = container.offsetHeight;
-
-                // Set width and height such that it fits the container. Restrict to even numbers, to avoid blurriness
-                // due to subpixel precision by centering via translate(-50%, -50%) and to avoid positioning tooltips
-                // at subpixel positions.
-                if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
-                    width.value = Math.round(containerWidth / 2) * 2;
-                    height.value = Math.round(containerWidth / (WIDTH / HEIGHT) / 2) * 2;
-                    scale.value = (SCALING_FACTOR * width.value) / (2 * WIDTH);
-                } else {
-                    width.value = Math.round((containerHeight * (WIDTH / HEIGHT)) / 2) * 2;
-                    height.value = Math.round(containerHeight / 2) * 2;
-                    scale.value = (SCALING_FACTOR * height.value) / (2 * HEIGHT);
-                }
-            };
-
             NetworkClient.Instance.on(NetworkClient.Events.ADDRESSES_ADDED, updateKnownAddresses);
             NetworkClient.Instance.on(NetworkClient.Events.PEERS_CHANGED, updateKnownAddresses);
 
@@ -98,8 +98,10 @@ export default defineComponent({
             }
 
             window.addEventListener('resize', setDimensions);
-            setDimensions();
+            requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting
         });
+
+        onUnmounted(() => window.removeEventListener('resize', setDimensions));
 
         return {
             nodes,

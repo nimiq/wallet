@@ -7,7 +7,7 @@ module.exports = {
         plugins: [
             new PoLoaderOptimizer(),
         ],
-        devtool: 'source-map', // TEMP: needed by webpack-i18-tools
+        devtool: 'source-map', // TEMP: only 'source-map' allowed by webpack-i18-tools, will be fixed in future versions.
     },
     chainWebpack(config) {
         config

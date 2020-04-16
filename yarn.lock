@@ -2775,6 +2775,11 @@ convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
+convert-to-object@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/convert-to-object/-/convert-to-object-0.0.4.tgz#e42f59d87ebba7184f13bef537369c2bea3661bf"
+  integrity sha512-v9b0abfO/zft9YXqHthPjsqiP5GZFxG/GONStFd5EIzzW7o9BErnMuuvTSLOO1NYpDyJy7Dza20zOXdCsGIQUw==
+
 cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
@@ -9498,8 +9503,9 @@ webpack-dev-server@^3.10.2:
 
 "webpack-i18n-tools@https://github.com/Yukiioz/webpack-i18n-tools.git#master":
   version "0.0.1"
-  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#f6c264c80f1cf5add2943edb6a6bc02b7ada1a8e"
+  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#07ae85bd5f9194abbaeb23211d94c9580ad9e143"
   dependencies:
+    convert-to-object "^0.0.4"
     gettext-extractor "^3.5.2"
     glob "^7.1.6"
     loader-utils "^1.2.3"

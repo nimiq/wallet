@@ -429,6 +429,7 @@ export default defineComponent({
                 margin-left: 1rem;
                 margin-right: 1.25rem;
                 height: 5rem;
+                animation-delay: inherit;
 
                 .placeholder {
                     height: 2rem;

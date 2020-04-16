@@ -7,20 +7,28 @@
                 class="node"
                 theme="inverse"
                 :style="`transform: translate(${Math.round(node.x * scale)}px, ${Math.round(node.y * scale)}px);`"
+                :styles="{
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none',
+                }"
             >
-                <div :style="`padding: ${scale}em;`" slot="trigger"></div>
-                <span v-for="peer in node._nodes" :key="peer.peerId">
-                    <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
-                    <h3 v-else>
-                        {{ peer.state === 2 ? $t('Connected') : $t('Available') }}
-                        {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}
-                    </h3>
-                    <p v-if="peer.locationData.country"
-                        :class="{'self': peer.type === 0 /* SELF */, 'connected': peer.state === 2 /* CONNECTED */}">
-                        {{ peer.locationData.city ? `${peer.locationData.city},` : '' }}
-                        {{ peer.locationData.country }}
-                    </p>
-                </span>
+                <template v-slot:trigger>
+                    <div :style="`padding: ${scale}em;`"></div>
+                </template>
+                <template v-slot:default>
+                    <div v-for="peer in node._nodes" :key="peer.peerId">
+                        <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
+                        <h3 v-else>
+                            {{ peer.state === 2 ? $t('Connected') : $t('Available') }}
+                            {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}
+                        </h3>
+                        <p v-if="peer.locationData.country"
+                           :class="{'self': peer.type === 0 /* SELF */, 'connected': peer.state === 2 /* CONNECTED */}">
+                            {{ peer.locationData.city ? `${peer.locationData.city},` : '' }}
+                            {{ peer.locationData.country }}
+                        </p>
+                    </div>
+                </template>
             </Tooltip>
         </div>
     </div>
@@ -131,40 +139,31 @@ export default defineComponent({
     left: 0;
     top: -1px;
     line-height: 0;
+    font-size: 1.125rem;
 
-    /deep/ .trigger {
-        font-size: 1.125rem;
-        border-radius: 50%;
+    div + div {
+        margin-top: 1.5rem;
     }
 
-    /deep/ .tooltip-box {
-        white-space: nowrap;
+    h3 {
+        opacity: .5;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        margin: 0;
+    }
 
-        span + span {
-            display: block;
-            margin-top: 1.5rem;
+    p {
+        opacity: .8;
+        font-size: 2rem;
+        line-height: 2rem;
+        margin: .75rem 0 0;
+
+        &.self {
+            color: var(--nimiq-gold-darkened);
         }
 
-        h3 {
-            opacity: .5;
-            font-size: 1.5rem;
-            line-height: 1.5rem;
-            margin: 0;
-        }
-
-        p {
-            opacity: .8;
-            font-size: 2rem;
-            line-height: 2rem;
-            margin: .75rem 0 0;
-
-            &.self {
-                color: var(--nimiq-gold-darkened);
-            }
-
-            &.connected {
-                color: var(--nimiq-light-blue-darkened);
-            }
+        &.connected {
+            color: var(--nimiq-light-blue-darkened);
         }
     }
 }

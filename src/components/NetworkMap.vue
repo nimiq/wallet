@@ -1,11 +1,13 @@
 <template>
-    <div class="network-map" ref="container">
-        <canvas class="map" ref="network" :style="`width: ${width}px; height: ${height}px;`"></canvas>
-        <canvas class="overlay" ref="overlay" :style="`width: ${width}px; height: ${height}px;`"></canvas>
+    <div class="network-map" ref="$container">
+        <canvas class="map" ref="$network" :style="`width: ${width}px; height: ${height}px;`"></canvas>
+        <canvas class="overlay" ref="$overlay" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <div class="nodes" :style="`width: ${width}px; height: ${height}px;`">
             <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
                 theme="inverse"
+                :container="$container ? { $el: $container } : null"
+                :margin="{ left: 12, top: 12, right: 12, bottom: 12 }"
                 :style="`transform: translate(${Math.round(node.x * scale)}px, ${Math.round(node.y * scale)}px);`"
                 :styles="{
                     whiteSpace: 'nowrap',
@@ -42,17 +44,19 @@ import { getNetworkClient } from '../network';
 import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/NetworkMap';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const $container = ref<HTMLDivElement|null>(null);
+        const $network = ref<HTMLCanvasElement|null>(null);
+        const $overlay = ref<HTMLCanvasElement|null>(null);
         const nodes = ref<NodeHexagon[]>([]);
         const scale = ref(SCALING_FACTOR);
         const width = ref(2 * WIDTH);
         const height = ref(2 * HEIGHT);
 
         const setDimensions = () => {
-            const container = (context.refs.container as HTMLDivElement);
-            if (!container) return;
-            const containerWidth = container.offsetWidth;
-            const containerHeight = container.offsetHeight;
+            if (!$container.value) return;
+            const containerWidth = $container.value.offsetWidth;
+            const containerHeight = $container.value.offsetHeight;
 
             // Set width and height such that it fits the container. Restrict to even numbers, to avoid blurriness
             // due to subpixel precision by centering via translate(-50%, -50%) and to avoid positioning tooltips
@@ -70,10 +74,8 @@ export default defineComponent({
 
         onMounted(async () => {
             await getNetworkClient();
-            const mapCanvas = (context.refs.network as HTMLCanvasElement)!;
-            const overlayCanvas = (context.refs.overlay as HTMLCanvasElement)!;
 
-            const networkMap = new NetworkMap(mapCanvas, overlayCanvas, (n) => nodes.value = n);
+            const networkMap = new NetworkMap($network.value!, $overlay.value!, (n) => nodes.value = n);
 
             let askForAddressesTimeout = 0;
 
@@ -104,6 +106,9 @@ export default defineComponent({
         onUnmounted(() => window.removeEventListener('resize', setDimensions));
 
         return {
+            $container,
+            $network,
+            $overlay,
             nodes,
             scale,
             width,

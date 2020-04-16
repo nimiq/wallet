@@ -1,12 +1,12 @@
 <template>
     <div class="network-map" ref="container">
-        <canvas class="map" ref="network"></canvas>
-        <canvas class="overlay" ref="overlay"></canvas>
+        <canvas class="map" ref="network" :style="`width: ${width}px; height: ${height}px;`"></canvas>
+        <canvas class="overlay" ref="overlay" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <div class="nodes" :style="`width: ${width}px; height: ${height}px;`">
             <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
                 theme="inverse"
-                :style="`transform: translate(${node.x * scale}px, ${node.y * scale}px);`"
+                :style="`transform: translate(${Math.round(node.x * scale)}px, ${Math.round(node.y * scale)}px);`"
             >
                 <div :style="`padding: ${scale}em;`" slot="trigger"></div>
                 <span v-for="peer in node._nodes" :key="peer.peerId">
@@ -36,7 +36,7 @@ import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/N
 export default defineComponent({
     setup(props, context) {
         const nodes = ref<NodeHexagon[]>([]);
-        const scale = ref(.95);
+        const scale = ref(SCALING_FACTOR);
         const width = ref(2 * WIDTH);
         const height = ref(2 * HEIGHT);
 
@@ -67,26 +67,17 @@ export default defineComponent({
                 const containerWidth = container.offsetWidth;
                 const containerHeight = container.offsetHeight;
 
+                // Set width and height such that it fits the container. Restrict to even numbers, to avoid blurriness
+                // due to subpixel precision by centering via translate(-50%, -50%) and to avoid positioning tooltips
+                // at subpixel positions.
                 if (containerHeight * (WIDTH / HEIGHT) > containerWidth) {
-                    const newHeight = containerWidth / (WIDTH / HEIGHT);
-
-                    mapCanvas.style.width = `${containerWidth}px`;
-                    mapCanvas.style.height = `${newHeight}px`;
-                    overlayCanvas.style.width = `${containerWidth}px`;
-                    overlayCanvas.style.height = `${newHeight}px`;
-                    width.value = containerWidth;
-                    height.value = newHeight;
-                    scale.value = (SCALING_FACTOR * containerWidth) / (2 * WIDTH);
+                    width.value = Math.round(containerWidth / 2) * 2;
+                    height.value = Math.round(containerWidth / (WIDTH / HEIGHT) / 2) * 2;
+                    scale.value = (SCALING_FACTOR * width.value) / (2 * WIDTH);
                 } else {
-                    const newWidth = containerHeight * (WIDTH / HEIGHT);
-
-                    mapCanvas.style.width = `${newWidth}px`;
-                    mapCanvas.style.height = `${containerHeight}px`;
-                    overlayCanvas.style.width = `${newWidth}px`;
-                    overlayCanvas.style.height = `${containerHeight}px`;
-                    width.value = newWidth;
-                    height.value = containerHeight;
-                    scale.value = (SCALING_FACTOR * containerHeight) / (2 * HEIGHT);
+                    width.value = Math.round((containerHeight * (WIDTH / HEIGHT)) / 2) * 2;
+                    height.value = Math.round(containerHeight / 2) * 2;
+                    scale.value = (SCALING_FACTOR * height.value) / (2 * HEIGHT);
                 }
             };
 
@@ -119,7 +110,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 
 .network-map {
-    padding: 0rem;
+    padding: 0;
     display: flex;
     width: 100%;
     position: relative;
@@ -139,6 +130,7 @@ export default defineComponent({
     position: absolute;
     left: 0;
     top: -1px;
+    line-height: 0;
 
     /deep/ .trigger {
         font-size: 1.125rem;

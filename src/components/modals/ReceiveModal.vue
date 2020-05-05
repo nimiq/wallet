@@ -1,36 +1,33 @@
 <template>
-    <Modal>
-        <SmallPage class="receive-modal">
-            <PageHeader>
-                {{ $t('Receive Money') }}
-                <div slot="more">{{ $t('Share the link or the QR code with the sender.') }}</div>
-            </PageHeader>
-            <PageBody class="flex-column">
-                <button v-if="!isInputsOpen" class="nq-button-s" @click="isInputsOpen = true">
-                    {{ $t('Set Amount') }}
-                </button>
-                <div v-else class="inputs">
-                    <AmountInput v-model="amount" :maxFontSize="5"/>
-                    <CloseButton class="close-button top-right" @click="isInputsOpen = false, amount = 0"/>
-                </div>
-                <!-- <AmountInput v-model="amount" />
-                <labelInput v-model="message" placeholder="add a message" /> -->
-                <QrCode
-                    :data="requestLink"
-                    :size="400"
-                    :fill="'#1F2348' /* nimiq-blue */"
-                    class="qr-code"
-                />
-                <Copyable :class="{'big': !isInputsOpen}">{{ origin }}/{{ requestLink }}</Copyable>
-            </PageBody>
-        </SmallPage>
+    <Modal class="receive-modal">
+        <PageHeader>
+            {{ $t('Receive Money') }}
+            <div slot="more">{{ $t('Share the link or the QR code with the sender.') }}</div>
+        </PageHeader>
+        <PageBody class="flex-column">
+            <button v-if="!isInputsOpen" class="nq-button-s" @click="isInputsOpen = true">
+                {{ $t('Set Amount') }}
+            </button>
+            <div v-else class="inputs">
+                <AmountInput v-model="amount" :maxFontSize="5"/>
+                <CloseButton class="close-button top-right" @click="isInputsOpen = false, amount = 0"/>
+            </div>
+            <!-- <AmountInput v-model="amount" />
+            <labelInput v-model="message" placeholder="add a message" /> -->
+            <QrCode
+                :data="requestLink"
+                :size="400"
+                :fill="'#1F2348' /* nimiq-blue */"
+                class="qr-code"
+            />
+            <Copyable :class="{'big': !isInputsOpen}">{{ origin }}/{{ requestLink }}</Copyable>
+        </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, Ref, ref } from '@vue/composition-api';
 import {
-    SmallPage,
     PageHeader,
     PageBody,
     CloseButton,
@@ -72,7 +69,6 @@ export default defineComponent({
     },
     components: {
         Modal,
-        SmallPage,
         PageHeader,
         PageBody,
         CloseButton,
@@ -85,91 +81,86 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.receive-modal {
-    position: relative;
-    width: 52.5rem !important; /* 420px */
+.page-header {
+    padding-bottom: 2rem;
 
-    .page-header {
-        padding-bottom: 2rem;
+    div {
+        font-size: 2rem;
+        font-weight: 600;
+        opacity: 0.6;
+        margin-top: 2rem;
+    }
+}
 
-        div {
-            font-size: 2rem;
-            font-weight: 600;
-            opacity: 0.6;
-            margin-top: 2rem;
+.page-body {
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 2rem;
+    overflow: visible;
+
+    .nq-button-s {
+        flex-shrink: 0;
+        margin-bottom: 2rem;
+    }
+
+    .inputs {
+        width: calc(100% + 4rem);
+        border-top: 1px solid rgba(31, 35, 72, 0.1);
+        border-bottom: 1px solid rgba(31, 35, 72, 0.1);
+        margin: 2rem -2rem;
+        padding: 1.25rem 0 1.25rem;
+        position: relative;
+
+        .amount-input {
+            font-size: 5rem;
+
+            /deep/ .nim {
+                font-size: 0.5em;
+                margin-left: 0.5rem;
+                margin-right: calc(-1.9em - 0.5rem);
+            }
+
+            /deep/ .nq-input {
+                padding: 0;
+            }
+
+            /deep/ .width-finder {
+                padding: 0 1rem;
+            }
+        }
+
+        .close-button {
+            right: 1rem;
+            top: 1rem;
         }
     }
 
-    .page-body {
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 0;
-        padding-bottom: 2rem;
-        overflow: visible;
+    .qr-code {
+        flex-shrink: 1;
+        // min-height: 0;
 
-        .nq-button-s {
-            flex-shrink: 0;
-            margin-bottom: 2rem;
-        }
+        // The QrCode is rendered at 2x size and then scaled to half its size,
+        // to be sharp on retina displays:
+        // 2 x 200px = 400px
+        // But now we need to make it behave as half its size as well, that's
+        // why we use negative margins on all sides (100px = 200px / 2).
+        transform: scale(0.5);
+        margin: -100px;
+    }
 
-        .inputs {
-            width: calc(100% + 4rem);
-            border-top: 1px solid rgba(31, 35, 72, 0.1);
-            border-bottom: 1px solid rgba(31, 35, 72, 0.1);
-            margin: 2rem -2rem;
-            padding: 1.25rem 0 1.25rem;
-            position: relative;
+    .copyable {
+        flex-shrink: 0;
+        margin-top: 2rem;
+        max-width: 100%;
+        word-wrap: break-word;
+        color: rgba(31, 35, 72, 0.5);
+        text-align: center;
+        font-size: 2.25rem;
+    }
 
-            .amount-input {
-                font-size: 5rem;
-
-                /deep/ .nim {
-                    font-size: 0.5em;
-                    margin-left: 0.5rem;
-                    margin-right: calc(-1.9em - 0.5rem);
-                }
-
-                /deep/ .nq-input {
-                    padding: 0;
-                }
-
-                /deep/ .width-finder {
-                    padding: 0 1rem;
-                }
-            }
-
-            .close-button {
-                right: 1rem;
-                top: 1rem;
-            }
-        }
-
-        .qr-code {
-            flex-shrink: 1;
-            // min-height: 0;
-
-            // The QrCode is rendered at 2x size and then scaled to half its size,
-            // to be sharp on retina displays:
-            // 2 x 200px = 400px
-            // But now we need to make it behave as half its size as well, that's
-            // why we use negative margins on all sides (100px = 200px / 2).
-            transform: scale(0.5);
-            margin: -100px;
-        }
-
-        .copyable {
-            flex-shrink: 0;
-            margin-top: 2rem;
-            max-width: 100%;
-            word-wrap: break-word;
-            color: rgba(31, 35, 72, 0.5);
-            text-align: center;
-            font-size: 2.25rem;
-        }
-
-        .copyable.big {
-            font-size: 3rem;
-        }
+    .copyable.big {
+        font-size: 3rem;
     }
 }
 </style>

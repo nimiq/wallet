@@ -1,27 +1,25 @@
 <template>
     <Modal>
-        <div class="send-modal">
-            <SendTx
-                :addresses="addresses"
-                :contacts="contactsArray"
-                :wallet="walletInfo"
-                :sender="sender"
-                :validityStartHeight="height"
-                :recipient="recipientWithLabel"
-                :value="amount || undefined"
-                :message="message || undefined"
-                @send-tx="sendTx"
-                @contact-added="addContact"
-                @create-cashlink="onCreateCashlink"
-                @login="onboard"
-                @scan-qr="$router.replace('/scan').catch((err)=>{})" />
-        </div>
+        <SendTx
+        :addresses="addresses"
+        :contacts="contactsArray"
+        :wallet="walletInfo"
+        :sender="sender"
+        :validityStartHeight="height"
+        :recipient="recipientWithLabel"
+        :value="amount || undefined"
+        :message="message || undefined"
+        @send-tx="sendTx"
+        @contact-added="addContact"
+        @create-cashlink="onCreateCashlink"
+        @login="onboard"
+        @scan-qr="$router.replace('/scan').catch((err)=>{})" />
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from '@vue/composition-api';
-import { PageBody, PageHeader, SmallPage, SendTx } from '@nimiq/vue-components';
+import { PageHeader, PageBody, SendTx } from '@nimiq/vue-components';
 import { parseRequestLink } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -144,11 +142,10 @@ export default defineComponent({
         };
     },
     components: {
-        PageBody,
-        PageHeader,
-        SendTx,
-        SmallPage,
         Modal,
+        SendTx,
+        PageHeader,
+        PageBody,
     } as any,
 });
 
@@ -161,18 +158,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.send-modal {
-    position: relative;
-    width: 52.5rem !important; /* 420px */
-
-    .small-page {
-        margin: 0;
-    }
-
-    .page-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-    }
-}
 </style>

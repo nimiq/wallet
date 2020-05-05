@@ -1,15 +1,15 @@
 <template>
-    <Modal>
-        <SmallPage class="scan-qr-modal">
-            <PageHeader>Scan Qr Code</PageHeader>
-            <PageBody><QrScanner @result="checkResult" @cancel="$router.back()" /></PageBody>
-        </SmallPage>
+    <Modal class="scan-qr-modal">
+        <PageHeader>Scan Qr Code</PageHeader>
+        <PageBody>
+            <QrScanner @result="checkResult" @cancel="$router.back()" />
+        </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { PageBody, PageHeader, SmallPage, QrScanner } from '@nimiq/vue-components';
+import { PageHeader, PageBody, QrScanner } from '@nimiq/vue-components';
 import { parseRequestLink, createNimiqRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useRouter } from '../../router';
@@ -52,35 +52,24 @@ export default defineComponent({
         };
     },
     components: {
-        PageBody,
         PageHeader,
+        PageBody,
         QrScanner,
-        SmallPage,
         Modal,
     } as any,
 });
 </script>
 
 <style lang="scss" scoped>
-.scan-qr-modal {
-    position: relative;
-    width: 52.5rem !important; /* 420px */
-    padding: 2rem;
+.page-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0 1rem 1rem;
 
-    .page-body {
-
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-
-        .qr-scanner {
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            flex-grow: 1;
-        }
+    .qr-scanner {
+        border-radius: 0.5rem;
+        flex-grow: 1;
     }
 }
 </style>

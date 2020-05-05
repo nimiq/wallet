@@ -1,138 +1,136 @@
 <template>
-    <Modal>
-        <SmallPage class="transaction-modal" :class="state">
-            <PageHeader :class="{'inline-header': !peerLabel}">
-                {{
-                    peerAddress === constants.CASHLINK_ADDRESS
-                        ? '' /* Use the peerLabel below only, without prefix */
-                        : isCashlink
-                            ? isIncoming
-                                ? $t('Cashlink from')
-                                : $t('Cashlink to')
-                            : isIncoming
-                                ? $t('Transaction from')
-                                : $t('Transaction to')
-                }}
-                {{ peerLabel || peerAddress.substring(0, 9) }}
+    <Modal class="transaction-modal">
+        <PageHeader :class="{'inline-header': !peerLabel}">
+            {{
+                peerAddress === constants.CASHLINK_ADDRESS
+                    ? '' /* Use the peerLabel below only, without prefix */
+                    : isCashlink
+                        ? isIncoming
+                            ? $t('Cashlink from')
+                            : $t('Cashlink to')
+                        : isIncoming
+                            ? $t('Transaction from')
+                            : $t('Transaction to')
+            }}
+            {{ peerLabel || peerAddress.substring(0, 9) }}
 
-                <span
-                    v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
-                    slot="more"
-                    class="nq-light-blue flex-row"
-                >
-                    <CircleSpinner/>
-                    {{ $t('Pending...') }}
-                </span>
-                <span
-                    v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
-                    slot="more"
-                    class="nq-red failed flex-row"
-                >
-                    <CrossIcon/>
-                    {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
-                </span>
-                <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                    {{ isIncoming ? $t('received at') : $t('sent at') }}
-                    {{ datum }} <strong>&middot;</strong> {{ time }}
-                </span>
-            </PageHeader>
-            <PageBody class="flex-column">
-                <div v-if="isIncoming" class="flex-row sender-recipient">
-                    <div class="address-info flex-column">
-                        <div class="identicon">
-                            <Identicon :address="peerAddress"/>
-                            <div v-if="isCashlink" class="cashlink">
-                                <CashlinkSmallIcon/>
-                            </div>
+            <span
+                v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
+                slot="more"
+                class="nq-light-blue flex-row"
+            >
+                <CircleSpinner/>
+                {{ $t('Pending...') }}
+            </span>
+            <span
+                v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
+                slot="more"
+                class="nq-red failed flex-row"
+            >
+                <CrossIcon/>
+                {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
+            </span>
+            <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
+                {{ isIncoming ? $t('received at') : $t('sent at') }}
+                {{ datum }} <strong>&middot;</strong> {{ time }}
+            </span>
+        </PageHeader>
+        <PageBody class="flex-column" :class="state">
+            <div v-if="isIncoming" class="flex-row sender-recipient">
+                <div class="address-info flex-column">
+                    <div class="identicon">
+                        <Identicon :address="peerAddress"/>
+                        <div v-if="isCashlink" class="cashlink">
+                            <CashlinkSmallIcon/>
                         </div>
-                        <input type="text" class="nq-input-s vanishing"
-                            v-if="peerIsContact || !peerLabel"
-                            :placeholder="$t('Add contact')"
-                            :value="peerLabel || ''"
-                            @input="setContact(peerAddress, $event.target.value)"
-                        />
-                        <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                            <AddressDisplay :address="peerAddress"/>
-                        </Copyable>
                     </div>
-                    <ArrowRightIcon class="arrow"/>
-                    <div class="address-info flex-column">
-                        <Identicon :address="activeAddressInfo.address"/>
-                        <span class="label">{{ activeAddressInfo.label }}</span>
-                        <Copyable :text="activeAddressInfo.address">
-                            <AddressDisplay :address="activeAddressInfo.address"/>
-                        </Copyable>
-                    </div>
+                    <input type="text" class="nq-input-s vanishing"
+                        v-if="peerIsContact || !peerLabel"
+                        :placeholder="$t('Add contact')"
+                        :value="peerLabel || ''"
+                        @input="setContact(peerAddress, $event.target.value)"
+                    />
+                    <span v-else class="label">{{ peerLabel }}</span>
+                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
+                        <AddressDisplay :address="peerAddress"/>
+                    </Copyable>
                 </div>
-                <div v-else class="flex-row sender-recipient">
-                    <div class="address-info flex-column">
-                        <Identicon :address="activeAddressInfo.address"/>
-                        <span class="label">{{ activeAddressInfo.label }}</span>
-                        <Copyable :text="activeAddressInfo.address">
-                            <AddressDisplay :address="activeAddressInfo.address"/>
-                        </Copyable>
-                    </div>
-                    <ArrowRightIcon class="arrow"/>
-                    <div class="address-info flex-column">
-                        <div class="identicon">
-                            <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-                            <Identicon v-else :address="peerAddress"/>
-                            <div v-if="isCashlink" class="cashlink">
-                                <CashlinkSmallIcon/>
-                            </div>
+                <ArrowRightIcon class="arrow"/>
+                <div class="address-info flex-column">
+                    <Identicon :address="activeAddressInfo.address"/>
+                    <span class="label">{{ activeAddressInfo.label }}</span>
+                    <Copyable :text="activeAddressInfo.address">
+                        <AddressDisplay :address="activeAddressInfo.address"/>
+                    </Copyable>
+                </div>
+            </div>
+            <div v-else class="flex-row sender-recipient">
+                <div class="address-info flex-column">
+                    <Identicon :address="activeAddressInfo.address"/>
+                    <span class="label">{{ activeAddressInfo.label }}</span>
+                    <Copyable :text="activeAddressInfo.address">
+                        <AddressDisplay :address="activeAddressInfo.address"/>
+                    </Copyable>
+                </div>
+                <ArrowRightIcon class="arrow"/>
+                <div class="address-info flex-column">
+                    <div class="identicon">
+                        <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
+                        <Identicon v-else :address="peerAddress"/>
+                        <div v-if="isCashlink" class="cashlink">
+                            <CashlinkSmallIcon/>
                         </div>
-                        <input type="text" class="nq-input-s vanishing"
-                            v-if="peerIsContact || !peerLabel"
-                            :placeholder="$t('Add contact')"
-                            :value="peerLabel || ''"
-                            @input="setContact(peerAddress, $event.target.value)"
-                        />
-                        <span v-else class="label">{{ peerLabel }}</span>
-                        <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                            <AddressDisplay :address="peerAddress"/>
-                        </Copyable>
-                        <button
-                            v-else-if="hubCashlink && hubCashlink.value"
-                            class="nq-button-s manage-cashlink"
-                            @click="manageCashlink(hubCashlink.address)">Show Link</button>
                     </div>
+                    <input type="text" class="nq-input-s vanishing"
+                        v-if="peerIsContact || !peerLabel"
+                        :placeholder="$t('Add contact')"
+                        :value="peerLabel || ''"
+                        @input="setContact(peerAddress, $event.target.value)"
+                    />
+                    <span v-else class="label">{{ peerLabel }}</span>
+                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
+                        <AddressDisplay :address="peerAddress"/>
+                    </Copyable>
+                    <button
+                        v-else-if="hubCashlink && hubCashlink.value"
+                        class="nq-button-s manage-cashlink"
+                        @click="manageCashlink(hubCashlink.address)">Show Link</button>
                 </div>
+            </div>
 
-                <hr>
+            <hr>
 
-                <div class="amount-and-message flex-column">
-                    <Amount :amount="transaction.value" :class="{
-                        isIncoming,
-                        'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
-                        'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
-                            && isIncoming,
-                    }"/>
-                    <transition name="fade">
-                        <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
-                        <div v-else-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
-                        <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
-                            Fiat value unavailable
-                        </div>
-                        <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
-                    </transition>
+            <div class="amount-and-message flex-column">
+                <Amount :amount="transaction.value" :class="{
+                    isIncoming,
+                    'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
+                    'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
+                        && isIncoming,
+                }"/>
+                <transition name="fade">
+                    <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
+                    <div v-else-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
+                    <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
+                        Fiat value unavailable
+                    </div>
+                    <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                </transition>
 
-                    <div class="message">{{ data }}</div>
-                </div>
+                <div class="message">{{ data }}</div>
+            </div>
 
-                <!-- <button class="nq-button-s">Send more</button> -->
-                <div class="flex-spacer"></div>
+            <!-- <button class="nq-button-s">Send more</button> -->
+            <div class="flex-spacer"></div>
 
-                <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom left">
-                    <InfoCircleSmallIcon slot="trigger"/>
-                    <span class="block">Block #{{ transaction.blockHeight }}</span>
-                    <span v-if="confirmations" class="confirmations">
-                        {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
-                    </span>
-                    <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
-                </Tooltip>
-            </PageBody>
-        </SmallPage>
+            <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom right">
+                <InfoCircleSmallIcon slot="trigger"/>
+                <span class="block">{{ $t('Block #{height}', { height: transaction.blockHeight }) }}</span>
+                <span v-if="confirmations" class="confirmations">
+                    {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
+                </span>
+                <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
+            </Tooltip>
+        </PageBody>
     </Modal>
 </template>
 
@@ -140,7 +138,6 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { AddressBook, BrowserDetection } from '@nimiq/utils';
 import {
-    SmallPage,
     PageHeader,
     PageBody,
     Identicon,
@@ -330,7 +327,6 @@ export default defineComponent({
         Identicon,
         PageBody,
         PageHeader,
-        SmallPage,
         Modal,
         Copyable,
         AddressDisplay,
@@ -347,245 +343,51 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.transaction-modal {
-    position: relative;
-    width: 52.5rem !important; /* 420px */
-
-    .page-header {
-        /deep/ .nq-h1 {
-            margin-left: 1rem;
-            margin-right: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            margin-bottom: 1rem;
-            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
-        }
-
-        span {
-            display: block;
-            font-size: 2rem;
-            font-weight: 600;
-            align-items: center;
-            justify-content: center;
-
-            /deep/ .circle-spinner,
-            &.failed svg {
-                margin-right: 0.5rem;
-            }
-
-            /deep/ .circle-spinner {
-                margin-bottom: -0.375rem;
-            }
-
-            &.failed svg { // The cross icon for expired or invalidated transactions
-                margin-bottom: -0.25rem;
-            }
-        }
-
-        &.inline-header {
-            display: flex;
-            flex-direction: column;
-
-            /deep/ .nq-h1 {
-                align-self: center;
-            }
-        }
-    }
-
-    .page-body {
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 3rem;
-    }
-
-    .opacity-60 {
-        opacity: 0.6;
-    }
-
-    .sender-recipient {
-        justify-content: space-between;
-        width: 100%;
-        padding: 0 1rem;
-
-        .arrow {
-            font-size: 3rem;
-            margin-top: 2.5rem;
-            opacity: 0.4;
-            flex-shrink: 0;
-        }
-    }
-
-    .address-info {
-        align-items: center;
-        width: 19rem;
-    }
-
-    .identicon {
-        position: relative;
-        width: 9rem;
-        height: 9rem;
-        margin: -0.5rem 0; // Identicon should be 72x63
-
-        > .identicon {
-            margin: 0;
-        }
-
-        img {
-            display: block;
-            height: 100%
-        }
-
-        svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .cashlink {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            bottom: -0.675rem;
-            right: -0.25rem;
-            color: white;
-            background: var(--nimiq-blue-bg);
-            border: 0.375rem solid white;
-            border-radius: 3rem;
-            height: 3.75rem;
-            width: 3.75rem;
-            font-size: 3rem;
-        }
-    }
-
-    .label {
-        font-size: 2rem;
-        font-weight: 600;
-        margin: 2rem 0 1rem;
+.page-header {
+    /deep/ .nq-h1 {
+        margin-left: 1rem;
+        margin-right: 1rem;
         white-space: nowrap;
         overflow: hidden;
-        width: 100%;
-        text-align: center;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        margin-bottom: 1rem;
+        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
     }
 
-    .nq-input-s {
+    span {
+        display: block;
         font-size: 2rem;
         font-weight: 600;
-        margin: 1.25rem 0 0.375rem;
-        max-width: 100%;
-        text-align: center;
-    }
-
-    .nq-input-s:not(:focus):not(:hover) {
-        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
-    }
-
-    .copyable {
-        padding: 0rem;
-        margin-bottom: 3.5rem;
-
-        &::before,
-        &::after {
-            padding-top: 1.5rem;
-            padding-bottom: 0;
-        }
-    }
-
-    .address-display {
-        font-size: 2rem;
-    }
-
-    .address-display /deep/ .chunk {
-        margin: 0.5rem 0;
-    }
-
-    .manage-cashlink {
-        margin-top: 3rem;
-    }
-
-    hr {
-        border: none;
-        border-top: 1px solid rgba(31, 35, 72, 0.1);
-        margin: 0 -2rem;
-        width: calc(100% + 4rem);
-    }
-
-    .amount-and-message {
         align-items: center;
-        margin-top: 3.5rem; // Same as .copyable margin-bottom
+        justify-content: center;
 
-        .amount {
-            font-size: 5rem;
-            line-height: 1;
-            margin-bottom: 0.25rem;
+        /deep/ .circle-spinner,
+        &.failed svg {
+            margin-right: 0.5rem;
+        }
 
-            /deep/ .currency {
-                font-size: 0.5em;
-                font-weight: bold;
-                margin-right: -1.9em;
-            }
+        /deep/ .circle-spinner {
+            margin-bottom: -0.375rem;
+        }
 
-            &:not(.isIncoming)::before {
-                content: '-';
-                margin-right: -0.1em;
-                margin-left: -0.4em;
-            }
-
-            &.isIncoming::before {
-                content: '+';
-                margin-right: -0.1em;
-                margin-left: -0.6em;
-            }
+        &.failed svg { // The cross icon for expired or invalidated transactions
+            margin-bottom: -0.25rem;
         }
     }
 
-    .fiat-amount {
-        font-size: 1.75rem;
-        font-weight: 600;
-        color: rgba(31, 35, 72, 0.5);
-    }
+    &.inline-header {
+        display: flex;
+        flex-direction: column;
 
-    .message {
-        margin: 1rem 0;
-        text-align: center;
-        font-size: 2rem;
-        line-height: 1.375;
-        word-break: break-word;
-    }
-
-    .tooltip {
-        position: absolute;
-        right: 2rem;
-        top: 2rem;
-
-        /deep/ a {
-            color: rgba(31, 35, 72, 0.25);
-
-            &:hover,
-            &:focus {
-                color: rgba(31, 35, 72, 0.6);
-            }
-        }
-
-        /deep/ .tooltip-box {
-            font-size: 1.75rem;
-            white-space: nowrap;
-            text-align: right;
-            line-height: 1.3;
-            font-weight: 600;
-        }
-
-        .confirmations {
-            display: block;
-            font-size: 1.5rem;
-            opacity: 0.6;
-        }
-
-        .fee {
-            display: inline-block;
-            margin-top: 1.25rem;
+        /deep/ .nq-h1 {
+            align-self: center;
         }
     }
+}
+
+.page-body {
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 3rem;
 
     &.expired,
     &.invalidated {
@@ -605,6 +407,194 @@ export default defineComponent({
         .amount-and-message {
             opacity: 0.4;
         }
+    }
+}
+
+.opacity-60 {
+    opacity: 0.6;
+}
+
+.sender-recipient {
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 1rem;
+
+    .arrow {
+        font-size: 3rem;
+        margin-top: 2.5rem;
+        opacity: 0.4;
+        flex-shrink: 0;
+    }
+}
+
+.address-info {
+    align-items: center;
+    width: 19rem;
+}
+
+.identicon {
+    position: relative;
+    width: 9rem;
+    height: 9rem;
+    margin: -0.5rem 0; // Identicon should be 72x63
+
+    > .identicon {
+        margin: 0;
+    }
+
+    img {
+        display: block;
+        height: 100%
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .cashlink {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: -0.675rem;
+        right: -0.25rem;
+        color: white;
+        background: var(--nimiq-blue-bg);
+        border: 0.375rem solid white;
+        border-radius: 3rem;
+        height: 3.75rem;
+        width: 3.75rem;
+        font-size: 3rem;
+    }
+}
+
+.label {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.nq-input-s {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.375rem;
+    max-width: 100%;
+    text-align: center;
+}
+
+.nq-input-s:not(:focus):not(:hover) {
+    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+}
+
+.copyable {
+    padding: 0rem;
+    margin-bottom: 3.5rem;
+
+    &::before,
+    &::after {
+        padding-top: 1.5rem;
+        padding-bottom: 0;
+    }
+}
+
+.address-display {
+    font-size: 2rem;
+}
+
+.address-display /deep/ .chunk {
+    margin: 0.5rem 0;
+}
+
+.manage-cashlink {
+    margin-top: 3rem;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid rgba(31, 35, 72, 0.1);
+    margin: 0 -2rem;
+    width: calc(100% + 4rem);
+}
+
+.amount-and-message {
+    align-items: center;
+    margin-top: 3.5rem; // Same as .copyable margin-bottom
+
+    .amount {
+        font-size: 5rem;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+
+        /deep/ .currency {
+            font-size: 0.5em;
+            font-weight: bold;
+            margin-right: -1.9em;
+        }
+
+        &:not(.isIncoming)::before {
+            content: '-';
+            margin-right: -0.1em;
+            margin-left: -0.4em;
+        }
+
+        &.isIncoming::before {
+            content: '+';
+            margin-right: -0.1em;
+            margin-left: -0.6em;
+        }
+    }
+}
+
+.fiat-amount {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: rgba(31, 35, 72, 0.5);
+}
+
+.message {
+    margin: 1rem 0;
+    text-align: center;
+    font-size: 2rem;
+    line-height: 1.375;
+    word-break: break-word;
+}
+
+.tooltip {
+    position: absolute;
+    left: 2rem;
+    top: 2rem;
+
+    /deep/ a {
+        color: rgba(31, 35, 72, 0.25);
+
+        &:hover,
+        &:focus {
+            color: rgba(31, 35, 72, 0.6);
+        }
+    }
+
+    /deep/ .tooltip-box {
+        font-size: 1.75rem;
+        white-space: nowrap;
+        line-height: 1.3;
+        font-weight: 600;
+    }
+
+    .confirmations {
+        display: block;
+        font-size: 1.5rem;
+        opacity: 0.6;
+    }
+
+    .fee {
+        display: inline-block;
+        margin-top: 1.25rem;
     }
 }
 </style>

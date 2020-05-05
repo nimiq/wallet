@@ -1,11 +1,9 @@
 <template>
     <div class="search-bar" @click="$refs.searchBarInput.focus()">
-        <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g opacity=".4">
-                <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2"/>
-                <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
-                    fill="currentColor"/>
-            </g>
+        <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+                fill="currentColor"/>
         </svg>
         <input
             ref="searchBarInput"
@@ -57,25 +55,41 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .search-bar {
-    $borderTickness: .25rem;
+    $borderTickness: .1875rem; // 1.5px
 
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
     cursor: text;
-    border-bottom: 0.25rem solid var(--text-10);
-    padding-bottom: 1.5rem;
+    padding: 0.625rem 0;
     min-width: 0;
 
-    transition: color 0.2s var(--nimiq-ease), border 0.2s var(--nimiq-ease);
+    transition: color 0.2s var(--nimiq-ease);
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        box-shadow: 0 0 0 $borderTickness var(--text-16);
+        border-radius: 500px;
+
+        transition: box-shadow 0.2s var(--nimiq-ease);
+    }
 
     svg {
         justify-self: left;
         flex-grow: 0;
-        margin-left: 2rem;
+        margin-left: 1.75rem;
         margin-right: 1rem;
         flex-shrink: 0;
+        opacity: 0.4;
+        width: 1.75rem;
+        height: 1.75rem;
     }
 
     input {
@@ -98,27 +112,20 @@ export default defineComponent({
         &::placeholder {
             font-weight: normal;
             color: inherit;
-            opacity: 0.5;
-
-            transition: color 0.2s var(--nimiq-ease);
+            opacity: 0.4;
         }
     }
 
-    &:hover {
-        border-color: var(--text-14);
-    }
-
-    &:hover,
-    &:focus-within {
-        input::placeholder {
-            color: var(--nimiq-light-blue);
-            opacity: 0.6;
-        }
+    &:hover::after {
+        box-shadow: 0 0 0 $borderTickness var(--text-22);
     }
 
     &:focus-within {
         color: var(--nimiq-light-blue);
-        border-color: var(--light-blue-20);
+
+        &::after {
+        box-shadow: 0 0 0 $borderTickness var(--light-blue-30);
+        }
     }
 }
 </style>

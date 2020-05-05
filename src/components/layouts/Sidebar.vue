@@ -98,12 +98,8 @@ export default defineComponent({
     align-items: center;
     width: calc(100% + calc(2 * var(--padding-sides)));
     margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);
-    padding: var(--padding-sides);
+    padding: var(--padding-sides) calc(var(--padding-sides) * 2);
     background: rgba(255, 255, 255, .07);
-
-    @media (min-width: 1800px) {
-        padding: calc(var(--padding-sides) * 1.25) calc(var(--padding-sides) * 2);
-    }
 
     .nq-label {
         color: var(--nimiq-orange);
@@ -139,11 +135,8 @@ export default defineComponent({
 .logo {
     color: white;
     margin-bottom: 3.5rem;
-
-    @media (min-width: 1800px) {
-        align-self: flex-start;
-        margin-left: 1.5rem;
-    }
+    align-self: flex-start;
+    margin-left: 1.5rem;
 }
 
 .announcement-box {

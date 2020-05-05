@@ -53,7 +53,7 @@ export default defineComponent({
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
     /* Default: >= 1440px */
-    --sidebar-width: 21rem;
+    --sidebar-width: 23rem;
     --account-column-width: 60rem;
     --address-column-width: 99rem;
 
@@ -62,7 +62,6 @@ export default defineComponent({
     }
 
     @media (max-width: 1319px) {
-        --sidebar-width: 21rem;
         --account-column-width: 52rem;
         --address-column-width: 92rem;
     }
@@ -72,13 +71,11 @@ export default defineComponent({
     }
 
     @media (min-width: 1800px) {
-        --sidebar-width: 25rem;
         --account-column-width: 75rem; // 80.75rem for fullscreen design
         --address-column-width: 110rem; // 134.25rem for fullscreen design
     }
 
     @media (min-width: 2000px) {
-        --sidebar-width: 25rem;
         --account-column-width: 85rem;
         --address-column-width: 139rem;
     }

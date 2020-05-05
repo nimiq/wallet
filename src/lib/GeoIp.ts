@@ -56,6 +56,9 @@ export default class GeoIP {
         fetch(url).then(
             (res) => res.json().then(
                 (response: GeoIpResponse) => {
+                    if (response.country === 'N/A') response.country = undefined;
+                    if (response.city === 'N/A') response.city = undefined;
+
                     GeoIP._cache(host, response);
                     callback(response);
                 },

@@ -5,21 +5,19 @@
             <label>{{ $t('Contacts') }}</label>
         </button>
         <div class="separator"></div>
-        <button
+        <IdenticonButton
             v-for="contact in contacts"
             :key="contact.address"
-            class="reset contact-button flex-column"
             @click="$emit('contact-selected', contact)"
-        >
-            <Identicon :address="contact.address"/>
-            <label>{{ contact.label }}</label>
-        </button>
+            :address="contact.address"
+            :label="contact.label"/>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { ContactsIcon, Identicon } from '@nimiq/vue-components';
+import { ContactsIcon } from '@nimiq/vue-components';
+import IdenticonButton from './IdenticonButton.vue';
 
 export default defineComponent({
     props: {
@@ -30,7 +28,7 @@ export default defineComponent({
     },
     components: {
         ContactsIcon,
-        Identicon,
+        IdenticonButton,
     },
 });
 </script>
@@ -41,18 +39,11 @@ export default defineComponent({
         width: calc(100% + 2rem);
     }
 
-    button {
-        align-items: stretch;
-        border-radius: 0.75rem;
-        padding: 1rem;
+    button,
+    .identicon-button {
         margin-right: 0.5rem;
         width: 0;
         flex-grow: 1;
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-        }
 
         &:first-child,
         &:last-child {
@@ -61,10 +52,17 @@ export default defineComponent({
     }
 
     .contact-list-button {
+        align-items: stretch;
+        border-radius: 0.75rem;
         padding: 1rem 0.5rem;
         width: 13rem;
         flex-shrink: 0;
         flex-grow: 0;
+
+        &:hover,
+        &:focus {
+            background: var(--nimiq-highlight-bg);
+        }
     }
 
     .nq-icon {
@@ -76,25 +74,9 @@ export default defineComponent({
         margin: 0 auto 1.5rem;
     }
 
-    .identicon {
-        width: 8rem;
-        margin: 0 auto 1.5rem;
-
-        /deep/ img {
-            display: block;
-            margin: -0.5rem 0;
-        }
-    }
-
     label {
         text-align: center;
         cursor: pointer;
-    }
-
-    .contact-button label {
-        white-space: nowrap;
-        overflow: hidden;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
     }
 
     .separator {

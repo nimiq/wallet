@@ -89,12 +89,12 @@ export default defineComponent({
     .main {
         transition:
             transform var(--movement-duration) var(--nimiq-ease),
-            opacity var(--movement-duration) var(--nimiq-ease);
+            filter var(--movement-duration) var(--nimiq-ease);
         transform-origin: center bottom;
 
         &.smallen {
             transform: scale(0.942857143) translateY(1.5rem);
-            opacity: 0.5;
+            filter: brightness(0.6);
         }
     }
 

@@ -1,4 +1,4 @@
-import HubApi, { Account } from '@nimiq/hub-api';
+import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
@@ -155,24 +155,13 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
     accountStore.patchAccount(accountId, exportResult);
 }
 
-export async function sendTransaction(tx: {
-    sender: string,
-    recipient: string,
-    recipientType: 0 | 1 | 2 | undefined,
-    recipientLabel: string,
-    value: number,
-    fee: number,
-    extraData: Uint8Array,
-    validityStartHeight: number,
-}) {
+export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>) {
     // TODO: Handle error
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...tx,
     });
-    await sendTx(signedTransaction);
-
-    return true;
+    return sendTx(signedTransaction);
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

@@ -39,7 +39,7 @@
         </div>
 
         <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
-            <CloseButton class="top-right" @click="recipientDetailsOpened = false; resetRecipient();"/>
+            <CloseButton class="top-right" @click="closeRecipientDetails"/>
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <Identicon :address="recipientWithLabel.address"/>
@@ -65,25 +65,35 @@
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="identicon-section flex-row">
-                    <div class="identicon-stack">
+                    <button class="reset identicon-stack flex-column">
                         <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                         <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
-                    </div>
+                        <label>{{ activeAddressInfo.label }}</label>
+                    </button>
                     <div class="separator"></div>
-                    <Identicon class="recipient" :address="recipientWithLabel.address"/>
+                    <IdenticonButton
+                        :address="recipientWithLabel.address"
+                        :label="recipientWithLabel.label"
+                        @click="recipientDetailsOpened = true"/>
                 </section>
 
                 <section class="amount-section">
                     <AmountInput v-model="amount"/>
-                    <FiatConvertedAmount :amount="amount"/>
+                    <span class="secondary-amount">
+                        {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                    </span>
                 </section>
 
                 <section class="message-section">
-                    <LabelInput :placeholder="$t('Add a public message')"/>
+                    <LabelInput v-model="message" :placeholder="$t('Add a public message...')" vanishing/>
                 </section>
 
-                <button class="nq-button light-blue">{{ $t('Send Transaction') }}</button>
+                <button
+                    class="nq-button light-blue"
+                    :disabled="!hasHeight || !amount"
+                    @click="sign"
+                >{{ $t('Send Transaction') }}</button>
             </PageBody>
         </div>
     </Modal>
@@ -91,7 +101,7 @@
 }
 
 <script lang="ts">
-import { defineComponent, watch, computed, ref, isRef, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -107,32 +117,22 @@ import {
 import { parseRequestLink, AddressBook } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
+import IdenticonButton from '../IdenticonButton.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import { useAccountStore } from '../../stores/Account';
 import { useContactsStore } from '../../stores/Contacts';
-import { useAddressStore, AddressType, AddressInfo, ContractAddressInfo } from '../../stores/Address';
+import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { onboard, sendTransaction, createCashlink } from '../../hub';
-import { useRouter } from '../../router';
-
-// Will be in an upcoming release of the @vue/composition-api plugin: https://github.com/vuejs/composition-api/pull/309
-function unref<T>(ref: T): T extends Ref<infer V> ? V : T {
-    return isRef(ref) ? (ref.value as any) : ref;
-}
 
 export default defineComponent({
     name: 'send-modal',
     props: {
-        senderAddress: {
-            type: String,
-            required: false,
-        },
         requestUri: {
             type: String,
             required: false,
         },
     },
-    setup(props: any) {
+    setup(props, context) {
         enum Pages {
             RECIPIENT_INPUT,
             AMOUNT_INPUT,
@@ -145,30 +145,12 @@ export default defineComponent({
             GLOBAL_ADDRESS,
         }
 
-        // const { activeAccountInfo } = useAccountStore();
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
-        // const $router = useRouter();
+        const { state: network$ } = useNetworkStore();
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
-        // const message: Ref<string | undefined> = ref(undefined);
-        // if (props.requestUri) {
-        //     const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
-        //     if (parsedRequestLink) {
-        //         let recipient: string | undefined;
-        //         ({ recipient, amount: amount.value, message: message.value } = parsedRequestLink);
-        //         if (recipient) {
-        //             recipientWithLabel.value = {
-        //                 address: recipient,
-        //                 label: Object.values(addresses$.addressInfos)
-        //                     .find((addressInfo) => addressInfo.address === recipient)?.label
-        //                     || getLabel.value(recipient)
-        //                     || '',
-        //             };
-        //         }
-        //     }
-        // }
 
         watch(recipientWithLabel, (newVal, oldVal) => {
             if (newVal === null || oldVal === null) return;
@@ -224,11 +206,16 @@ export default defineComponent({
             recipientWithLabel.value = null;
         }
 
+        function closeRecipientDetails() {
+            recipientDetailsOpened.value = false;
+            if (page.value === Pages.RECIPIENT_INPUT) {
+                resetRecipient();
+            }
+        }
+
         function onCreateCashlink() {
             createCashlink(activeAddressInfo.value!.address, activeAddressInfo.value!.balance || undefined);
         }
-
-        const amount = ref(0);
 
         const backgroundAddresses = computed(() => { // eslint-disable-line arrow-body-style
             // TODO: Order by last used?
@@ -239,59 +226,54 @@ export default defineComponent({
                 .map((addressInfo) => addressInfo.address);
         });
 
-        // // blockchainHeight as consensus indicator
-        // // TODO add proper consenus listeners
-        // const height = computed(() => useNetworkStore().state.height);
 
-        // // create WalletInfo out of existing information.
-        // // TODO refactor vue-component's sendTx to no longer require a WalletInfo prop.
-        // const accounts: Array<[string, AddressInfo]> = [];
-        // const contracts: Array<ContractAddressInfo> = [];
-        // activeAccountInfo!.value!.addresses.forEach((address) => {
-        //     const addressInfo = addresses$.addressInfos[address];
-        //     if (addressInfo.type === AddressType.BASIC) {
-        //         accounts.push([address, addressInfo]);
-        //     } else {
-        //         contracts.push(addressInfo);
-        //     }
-        // });
+        const amount = ref(0);
+        const fee = ref(0);
+        const message = ref('');
 
-        // const walletInfo = {
-        //     id: activeAccountInfo!.value!.id,
-        //     label: activeAccountInfo!.value!.label,
-        //     accounts: new Map(accounts),
-        //     contracts,
-        //     type: activeAccountInfo!.value!.type,
-        //     keyMissing: false,
-        // };
+        const hasHeight = computed(() => !!network$.height);
 
-        // // wrap setContact to accept an object instead of 2
-        // // TODO change either setContact or the contact-added event of SendTx
-        // const addContact = (contact: {address: string, label?: string}) => {
-        //     if (typeof contact.label !== 'string') return;
-        //     setContact(contact.address, contact.label);
-        // };
-
-        // // create sender object.
-        // // sender.address will be null oif no prop is given thus not preselecting a sender.
-        // const sender = {
-        //     walletId: activeAccountInfo!.value!.id,
-        //     address: props.senderAddress || activeAddress.value,
-        // };
-
-        // // very basic hub invokation.
-        // // TODO error handling, success animation if desired.
-        // const sendTx = async (tx: any) => {
-        //     try {
-        //         const result = await sendTransaction(tx);
-
-        //         if (result) {
-        //             $router.back();
+        // if (props.requestUri) {
+        //     const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
+        //     if (parsedRequestLink) {
+        //         let recipient: string | undefined;
+        //         ({ recipient, amount: amount.value, message: message.value } = parsedRequestLink);
+        //         if (recipient) {
+        //             recipientWithLabel.value = {
+        //                 address: recipient,
+        //                 label: Object.values(addresses$.addressInfos)
+        //                     .find((addressInfo) => addressInfo.address === recipient)?.label
+        //                     || getLabel.value(recipient)
+        //                     || '',
+        //             };
         //         }
-        //     } catch (error) {
-        //         // TODO
         //     }
-        // };
+        // }
+
+        async function sign() {
+            // TODO: Show loading screen
+            try {
+                const plainTx = await sendTransaction({
+                    sender: activeAddressInfo.value!.address,
+                    recipient: recipientWithLabel.value!.address,
+                    // recipientType: 0 | 1 | 2 | undefined,
+                    recipientLabel: recipientWithLabel.value!.label,
+                    value: amount.value,
+                    fee: fee.value,
+                    extraData: message.value || undefined,
+                    validityStartHeight: network$.height,
+                });
+
+                if (plainTx) {
+                    // TODO: Show success screen
+
+                    // Close modal
+                    context.root.$router.back();
+                }
+            } catch (error) {
+                // TODO: Show error screen
+            }
+        }
 
         return {
             // General
@@ -309,22 +291,18 @@ export default defineComponent({
             onCreateCashlink,
             recipientDetailsOpened,
             recipientWithLabel,
-            resetRecipient,
+            closeRecipientDetails,
 
             // Amount Input
+            resetRecipient,
             activeAddressInfo,
             backgroundAddresses,
             amount,
-
-            // addContact,
-            // addresses: Object.values(addresses$.addressInfos),
-            // contactsArray,
-            // height,
-            // message,
+            fee,
+            message,
+            hasHeight,
+            sign,
             // onboard,
-            // sender,
-            // sendTx,
-            // walletInfo,
         };
     },
     components: {
@@ -339,6 +317,7 @@ export default defineComponent({
         LabelInput,
         Copyable,
         AddressDisplay,
+        IdenticonButton,
         AmountInput,
         FiatConvertedAmount,
     },
@@ -359,6 +338,11 @@ export default defineComponent({
         flex-grow: 1;
         font-size: 2rem;
         height: 100%;
+
+        .nq-button {
+            margin-top: 0;
+            width: calc(100% - 4rem);
+        }
     }
 
     .page-body {
@@ -372,6 +356,10 @@ export default defineComponent({
     .page__amount-input {
         // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
         padding: 0.375rem 3rem 3rem;
+    }
+
+    .page__amount-input {
+        padding-bottom: 4rem;
     }
 
     .address-section {
@@ -428,10 +416,6 @@ export default defineComponent({
         .identicon {
             width: 5.75rem;
             margin: -0.3125rem 0; // 0.3125 = 2.5px
-
-            /deep/ img {
-                display: block;
-            }
         }
 
         label {
@@ -475,28 +459,19 @@ export default defineComponent({
                 padding-top: 1.5rem;
             }
         }
-
-        .nq-button {
-            margin-top: 0;
-            width: calc(100% - 4rem);
-        }
     }
 
     .identicon-section {
         justify-content: center;
-        align-items: center;
         align-self: stretch;
-        padding-top: 0.5rem;
+        margin-bottom: 3.5rem;
 
-        .identicon {
-            width: 9rem;
+        .identicon-button {
+            width: 14rem;
 
-            /deep/ img {
-                display: block;
-            }
-
-            &.recipient {
-                margin: 0 1.5rem;
+            /deep/ .identicon {
+                width: 9rem;
+                height: 9rem;
             }
         }
 
@@ -505,34 +480,87 @@ export default defineComponent({
             background: var(--text-14);
             border-radius: 500px;
             flex-grow: 1;
-            margin: 0 2rem;
+            margin: 5rem 2rem 0;
             max-width: 8rem;
         }
     }
 
     .identicon-stack {
+        align-items: stretch;
+        border-radius: 0.75rem;
+        padding: 1rem;
         position: relative;
-        width: 12rem;
+        width: 14rem;
 
         .primary {
-            margin: auto;
             position: relative;
+            width: 9rem;
+            height: 9rem;
+            margin: -0.5rem auto 1rem;
         }
 
         .secondary {
             width: 7.5rem;
             position: absolute;
-            top: 50%;
-            margin-top: -3.75rem;
+            top: 1.375rem;
             opacity: 0.4;
 
+            transition: transform var(--movement-duration) var(--nimiq-ease);
+
             &:first-child {
-                left: 0;
+                left: 1rem;
             }
 
             &:nth-child(2) {
-                right: 0;
+                right: 1rem;
             }
+        }
+
+        &:hover,
+        &:focus {
+            background: var(--nimiq-highlight-bg);
+
+            .secondary:first-child {
+                transform: translateX(-0.375rem);
+            }
+
+            .secondary:nth-child(2) {
+                transform: translateX(0.375rem);
+            }
+        }
+
+        label {
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+    }
+
+    .amount-section {
+        text-align: center;
+        align-self: stretch;
+
+        .amount-input {
+            margin-bottom: 1rem;
+
+            /deep/ input {
+                padding-top: 0;
+                padding-bottom: 0;
+                // height: 8.75rem; // 70px
+            }
+        }
+
+        .secondary-amount {
+            font-weight: 600;
+            opacity: 0.5;
+        }
+    }
+
+    .message-section {
+        .label-input {
+            font-size: 2.5rem;
         }
     }
 </style>

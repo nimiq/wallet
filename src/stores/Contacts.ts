@@ -10,12 +10,13 @@ export const useContactsStore = createStore({
     getters: {
         contacts: (state): Readonly<{ [address: string]: string }> => state.contacts,
         contactsArray: (state): Readonly<Array<{address: string, label: string}>> =>
-            Object.keys(state.contacts).map((address) => ({ address, label: state.contacts[address] })),
+            Object.entries(state.contacts).map(([address, label]) => ({ address, label })),
         getLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
             state.contacts[address],
     },
     actions: {
         setContact(address: string, label: string) {
+            console.debug('Updating contact', address, label);
             if (!label) {
                 // Remove contact
                 const contacts = { ...this.state.contacts };

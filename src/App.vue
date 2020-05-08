@@ -125,6 +125,10 @@ export default defineComponent({
     --transition-time: 0.75s;
 }
 
+.identicon img {
+    display: block;
+}
+
 @media (prefers-reduced-motion: reduce) {
     :root {
         --transition-time: 0s;

@@ -133,7 +133,11 @@
                 </section>
 
                 <section class="message-section">
-                    <LabelInput v-model="message" :placeholder="$t('Add a public message...')" vanishing/>
+                    <LabelInput
+                        v-model="message"
+                        :placeholder="$t('Add a public message...')"
+                        :maxBytes="64"
+                        vanishing/>
                 </section>
 
                 <button
@@ -813,6 +817,9 @@ export default defineComponent({
     }
 
     .message-section {
+        align-self: stretch;
+        text-align: center;
+
         .label-input {
             font-size: 2.5rem;
         }

@@ -58,7 +58,10 @@
             </PageBody>
         </div>
 
-        <div v-if="page === Pages.AMOUNT_INPUT" class="page flex-column" :key="Pages.AMOUNT_INPUT">
+        <div
+            v-if="page === Pages.AMOUNT_INPUT" class="page flex-column"
+            :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
+        >
             <PageHeader
                 :backArrow="true"
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
@@ -79,34 +82,35 @@
                 </section>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
-                    <div class="flex-row amount-row">
+                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
+                        <span v-if="activeCurrency !== 'nim'" class="tilde">~</span>
                         <AmountInput v-if="activeCurrency === 'nim'" v-model="amount"/>
                         <AmountInput v-else v-model="fiatAmount"/>
                         <button
                             class="reset amount-menu-button flex-row"
-                            @click="amountMenuOpened = !amountMenuOpened"
+                            @click.stop="amountMenuOpened = !amountMenuOpened"
                         >{{ activeCurrency.toUpperCase() }}</button>
                         <div v-if="amountMenuOpened" class="amount-menu">
-                            <button class="reset" @click="feeSelectionOpened = true; amountMenuOpened = false;">
+                            <button class="reset" @click="feeSelectionOpened = true">
                                 {{ $t('Add fee') }}
                             </button>
-                            <button class="reset" @click="sendMax(); amountMenuOpened = false;">
+                            <button class="reset" @click="sendMax">
                                 {{ $t('Send all') }}
                             </button>
                             <div class="separator"></div>
                             <div class="flex-row currencies">
                                 <button
                                     class="reset" :class="{'active': activeCurrency === 'nim'}"
-                                    @click="activeCurrency = 'nim'; amountMenuOpened = false;"
+                                    @click="activeCurrency = 'nim'"
                                 >NIM</button>
                                 <button
                                     class="reset" :class="{'active': activeCurrency === fiatCurrency}"
-                                    @click="activeCurrency = fiatCurrency; amountMenuOpened = false;"
+                                    @click="activeCurrency = fiatCurrency"
                                 >{{ fiatCurrency.toUpperCase() }}</button>
                                 <button
                                     v-for="fiatCurrency of otherFiatCurrencies" :key="fiatCurrency"
                                     class="reset" :class="{'active': activeCurrency === fiatCurrency}"
-                                    @click="activeCurrency = fiatCurrency; amountMenuOpened = false;"
+                                    @click="activeCurrency = fiatCurrency"
                                 >{{fiatCurrency.toUpperCase()}}</button>
                             </div>
                         </div>
@@ -661,17 +665,27 @@ export default defineComponent({
             align-self: stretch;
             justify-content: center;
             align-items: flex-end;
+            color: var(--nimiq-light-blue);
+            margin-bottom: 1rem;
+        }
+
+        .tilde {
+            font-size: 8rem;
+            font-weight: bold;
+            opacity: 0.5;
+            line-height: 10rem;
+            margin-right: 0.75rem;
         }
 
         .amount-input {
-            margin-bottom: 1rem;
             width: auto;
-            max-width: calc(100% - 9.75rem - 1rem);
+            max-width: calc(100% - 10rem - 1rem); // Subtract width of AmountMenuButton and its left margin
+            min-height: 5rem;
 
             /deep/ input {
                 padding-top: 0;
                 padding-bottom: 0;
-                // height: 8.75rem; // 70px
+                color: inherit !important;
             }
 
             /deep/ .nim {
@@ -679,13 +693,16 @@ export default defineComponent({
             }
         }
 
+        .estimate .amount-input {
+            max-width: calc(100% - 10rem - 1rem - 5rem); // Additionally subtract width of tilde
+        }
+
         .amount-menu-button {
             align-items: center;
             margin-left: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             font-size: 4rem;
-            font-weight: 700;
-            color: var(--nimiq-light-blue);
+            font-weight: bold;
             cursor: pointer;
 
             &::after {
@@ -786,9 +803,10 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input /deep/ input,
-            .amount-menu-button {
-                color: var(--nimiq-orange) !important;
+            .amount-row {
+                color: var(--nimiq-orange);
+            }
+            .amount-input /deep/ input {
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }

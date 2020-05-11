@@ -335,24 +335,25 @@ export default defineComponent({
 
         const hasHeight = computed(() => !!network$.height);
 
-        // if (props.requestUri) {
-        //     const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
-        //     if (parsedRequestLink) {
-        //         let recipient: string | undefined;
-        //         ({ recipient, amount: amount.value, message: message.value } = parsedRequestLink);
-        //         if (recipient) {
-        //             recipientWithLabel.value = {
-        //                 address: recipient,
-        //                 label: Object.values(addresses$.addressInfos)
-        //                     .find((addressInfo) => addressInfo.address === recipient)?.label
-        //                     || getLabel.value(recipient)
-        //                     || '',
-        //             };
-        //         }
-        //     }
-        // }
-
         const canSend = computed(() => hasHeight && amount.value && amount.value <= maxSendableAmount.value);
+
+        if (props.requestUri) {
+            const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
+            if (parsedRequestLink) {
+                if (parsedRequestLink.recipient) {
+                    onAddressEntered(parsedRequestLink.recipient);
+                    if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
+                        recipientWithLabel.value!.label = parsedRequestLink.label;
+                    }
+                }
+                if (parsedRequestLink.amount) {
+                    amount.value = parsedRequestLink.amount;
+                }
+                if (parsedRequestLink.message) {
+                    message.value = parsedRequestLink.message;
+                }
+            }
+        }
 
         async function sign() {
             // TODO: Show loading screen

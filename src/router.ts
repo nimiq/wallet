@@ -1,4 +1,4 @@
-import VueRouter, { RouteConfig } from 'vue-router';
+import VueRouter, { RouteConfig, Route } from 'vue-router';
 import Vue from 'vue';
 
 import { provide, inject } from '@vue/composition-api';
@@ -83,7 +83,9 @@ const routes: RouteConfig[] = [{
                 modal: SendModal,
             },
             name: 'send-via-uri',
-            props: (route) => ({ requestUri: route.fullPath.substr(1) }),
+            props: {
+                modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
+            },
         }],
     }, {
         path: '/settings',

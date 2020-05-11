@@ -66,8 +66,8 @@ export const useFiatStore = createStore({
         async updateExchangeRates(failGracefully = true) {
             try {
                 this.state.exchangeRates = await getExchangeRates(
-                    Object.values(CryptoCurrency) as CryptoCurrency[],
-                    [this.state.currency],
+                    [CryptoCurrency.NIM, CryptoCurrency.BTC],
+                    Object.values(FiatCurrency),
                 );
                 this.state.timestamp = Date.now();
             } catch (e) {

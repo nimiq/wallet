@@ -80,7 +80,8 @@
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row">
-                        <AmountInput v-model="amount"/>
+                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount"/>
+                        <AmountInput v-else v-model="fiatAmount"/>
                         <button
                             class="reset amount-menu-button flex-row"
                             @click="amountMenuOpened = !amountMenuOpened"
@@ -90,7 +91,7 @@
                                 {{ $t('Add fee') }}
                             </button>
                             <button class="reset" @click="sendMax(); amountMenuOpened = false;">
-                                {{ $t('Send max') }}
+                                {{ $t('Send all') }}
                             </button>
                             <div class="separator"></div>
                             <div class="flex-row currencies">
@@ -112,7 +113,12 @@
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
-                        {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                        <span v-if="activeCurrency === 'nim'" key="fiat-amount">
+                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                        </span>
+                        <span v-else key="nim-amount">
+                            {{ $t('You will send {amount} NIM', { amount: amount / 1e5 }) }}
+                        </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
@@ -285,14 +291,37 @@ export default defineComponent({
         const feeSelectionOpened = ref(false);
 
         const activeCurrency = ref('nim');
+        const fiatAmount = ref(0);
 
-        function sendMax() {
-            amount.value = maxSendableAmount.value;
-        }
-
-        const { state: fiat$ } = useFiatStore();
+        const { state: fiat$, exchangeRates } = useFiatStore();
         const otherFiatCurrencies = computed(() =>
             Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency));
+
+        watch(activeCurrency, (currency) => {
+            if (currency === 'nim') {
+                fiatAmount.value = 0;
+                return;
+            }
+
+            // Fiat store already has all exchange rates for all supported fiat currencies
+            // TODO: What to do when exchange rates are not yet populated?
+            fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]!;
+        });
+
+        watch(() => {
+            if (activeCurrency.value === 'nim') return;
+            amount.value = Math.floor(fiatAmount.value / exchangeRates.value.nim[activeCurrency.value]!);
+        });
+
+        async function sendMax() {
+            if (activeCurrency.value !== 'nim') {
+                fiatAmount.value = maxSendableAmount.value * fiat$.exchangeRates.nim[activeCurrency.value]!;
+            }
+            // Need to wait here for the next processing tick, as otherwise we would have a
+            // race condition between the amount assignment and the fiatAmount watcher.
+            await context.root.$nextTick();
+            amount.value = maxSendableAmount.value;
+        }
 
         const message = ref('');
 
@@ -371,6 +400,7 @@ export default defineComponent({
             amountMenuOpened,
             feeSelectionOpened,
             activeCurrency,
+            fiatAmount,
             sendMax,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
@@ -631,7 +661,6 @@ export default defineComponent({
             align-self: stretch;
             justify-content: center;
             align-items: flex-end;
-            position: relative;
         }
 
         .amount-input {
@@ -683,12 +712,12 @@ export default defineComponent({
         }
 
         .amount-menu {
-            width: 17.25rem;
+            width: 16.75rem;
             border-radius: 0.5rem;
             background: var(--nimiq-blue-bg);
             position: absolute;
-            top: -7rem;
-            right: 0;
+            right: 3rem;
+            bottom: 3rem;
             padding: 1rem;
             z-index: 1;
             box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
@@ -735,6 +764,7 @@ export default defineComponent({
                             border-width: 0.5rem 0.75rem;
                             border-right-color: inherit;
                             margin-bottom: 0.25rem;
+                            margin-left: -0.25rem;
                         }
                     }
                 }

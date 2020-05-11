@@ -78,10 +78,20 @@
                         @click="recipientDetailsOpened = true"/>
                 </section>
 
-                <section class="amount-section">
-                    <AmountInput v-model="amount"/>
-                    <span class="secondary-amount">
+                <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
+                    <div class="flex-row amount-row">
+                        <AmountInput v-model="amount"/>
+                        <button class="reset amount-menu flex-row">NIM</button>
+                    </div>
+
+                    <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                    </span>
+                    <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
+                        {{ $t('Insufficient balance.') }}
+                        <a class="send-all" @click="amount = maxSendableAmount">
+                            {{ $t('Send all') }}
+                        </a>
                     </span>
                 </section>
 
@@ -91,7 +101,7 @@
 
                 <button
                     class="nq-button light-blue"
-                    :disabled="!hasHeight || !amount"
+                    :disabled="!canSend"
                     @click="sign"
                 >{{ $t('Send Transaction') }}</button>
             </PageBody>
@@ -239,6 +249,9 @@ export default defineComponent({
 
         const amount = ref(0);
         const fee = ref(0);
+
+        const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0) - fee.value, 0));
+
         const message = ref('');
 
         const hasHeight = computed(() => !!network$.height);
@@ -259,6 +272,8 @@ export default defineComponent({
         //         }
         //     }
         // }
+
+        const canSend = computed(() => hasHeight && amount.value && amount.value <= maxSendableAmount.value);
 
         async function sign() {
             // TODO: Show loading screen
@@ -310,8 +325,9 @@ export default defineComponent({
             addressListOpened,
             amount,
             fee,
+            maxSendableAmount,
             message,
-            hasHeight,
+            canSend,
             sign,
             // onboard,
         };
@@ -563,19 +579,80 @@ export default defineComponent({
         text-align: center;
         align-self: stretch;
 
+        .amount-row {
+            align-self: stretch;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
         .amount-input {
             margin-bottom: 1rem;
+            width: auto;
+            max-width: calc(100% - 9.75rem - 1rem);
 
             /deep/ input {
                 padding-top: 0;
                 padding-bottom: 0;
                 // height: 8.75rem; // 70px
             }
+
+            /deep/ .nim {
+                display: none;
+            }
+        }
+
+        .amount-menu {
+            align-items: center;
+            margin-left: 1rem;
+            margin-bottom: 2rem;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--nimiq-light-blue);
+            cursor: pointer;
+
+            &::after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 0;
+                border: 1rem solid transparent;
+                border-width: 1rem 0.625rem;
+                border-top-color: inherit;
+                margin-left: 0.75rem;
+                margin-bottom: -1.5rem;
+                opacity: 0.4;
+
+                transition: opacity var(--attr-duration) var(--nimiq-ease);
+            }
+
+            &:hover,
+            &:active {
+                &::after {
+                    opacity: 0.7;
+                }
+            }
         }
 
         .secondary-amount {
             font-weight: 600;
             opacity: 0.5;
+        }
+
+        .insufficient-balance-warning {
+            font-weight: 600;
+
+            .send-all {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        }
+
+        &.insufficient-balance {
+            .amount-input /deep/ input,
+            .amount-menu {
+                color: var(--nimiq-orange) !important;
+                --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
+            }
         }
     }
 

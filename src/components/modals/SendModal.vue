@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="contactListOpened || recipientDetailsOpened">
+    <Modal :showOverlay="contactListOpened || recipientDetailsOpened || addressListOpened">
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="page__recipient-input flex-column">
@@ -65,7 +65,7 @@
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="identicon-section flex-row">
-                    <button class="reset identicon-stack flex-column">
+                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
                         <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                         <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
@@ -96,6 +96,14 @@
                 >{{ $t('Send Transaction') }}</button>
             </PageBody>
         </div>
+
+        <div v-if="addressListOpened" slot="overlay" class="page flex-column">
+            <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
+            <CloseButton class="top-right" @click="addressListOpened = false"/>
+            <PageBody class="page__address-list">
+                <AddressList embedded @address-selected="addressListOpened = false"/>
+            </PageBody>
+        </div>
     </Modal>
 </template>
 }
@@ -118,6 +126,7 @@ import { parseRequestLink, AddressBook } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import IdenticonButton from '../IdenticonButton.vue';
+import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
@@ -226,6 +235,7 @@ export default defineComponent({
                 .map((addressInfo) => addressInfo.address);
         });
 
+        const addressListOpened = ref(false);
 
         const amount = ref(0);
         const fee = ref(0);
@@ -297,6 +307,7 @@ export default defineComponent({
             resetRecipient,
             activeAddressInfo,
             backgroundAddresses,
+            addressListOpened,
             amount,
             fee,
             message,
@@ -318,6 +329,7 @@ export default defineComponent({
         Copyable,
         AddressDisplay,
         IdenticonButton,
+        AddressList,
         AmountInput,
         FiatConvertedAmount,
     },
@@ -356,6 +368,11 @@ export default defineComponent({
     .page__amount-input {
         // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
         padding: 0.375rem 3rem 3rem;
+    }
+
+    .page__address-list {
+        --padding-sides: 2rem;
+        padding: 0.375rem var(--padding-sides) 1.5rem;
     }
 
     .page__amount-input {
@@ -536,6 +553,10 @@ export default defineComponent({
             overflow: hidden;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
+    }
+
+    .address-list {
+        height: 100%;
     }
 
     .amount-section {

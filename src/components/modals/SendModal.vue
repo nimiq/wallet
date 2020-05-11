@@ -81,7 +81,34 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row">
                         <AmountInput v-model="amount"/>
-                        <button class="reset amount-menu flex-row">NIM</button>
+                        <button
+                            class="reset amount-menu-button flex-row"
+                            @click="amountMenuOpened = !amountMenuOpened"
+                        >{{ activeCurrency.toUpperCase() }}</button>
+                        <div v-if="amountMenuOpened" class="amount-menu">
+                            <button class="reset" @click="feeSelectionOpened = true; amountMenuOpened = false;">
+                                {{ $t('Add fee') }}
+                            </button>
+                            <button class="reset" @click="sendMax(); amountMenuOpened = false;">
+                                {{ $t('Send max') }}
+                            </button>
+                            <div class="separator"></div>
+                            <div class="flex-row currencies">
+                                <button
+                                    class="reset" :class="{'active': activeCurrency === 'nim'}"
+                                    @click="activeCurrency = 'nim'; amountMenuOpened = false;"
+                                >NIM</button>
+                                <button
+                                    class="reset" :class="{'active': activeCurrency === fiatCurrency}"
+                                    @click="activeCurrency = fiatCurrency; amountMenuOpened = false;"
+                                >{{ fiatCurrency.toUpperCase() }}</button>
+                                <button
+                                    v-for="fiatCurrency of otherFiatCurrencies" :key="fiatCurrency"
+                                    class="reset" :class="{'active': activeCurrency === fiatCurrency}"
+                                    @click="activeCurrency = fiatCurrency; amountMenuOpened = false;"
+                                >{{fiatCurrency.toUpperCase()}}</button>
+                            </div>
+                        </div>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
@@ -89,7 +116,7 @@
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
-                        <a class="send-all" @click="amount = maxSendableAmount">
+                        <a class="send-all" @click="sendMax">
                             {{ $t('Send all') }}
                         </a>
                     </span>
@@ -141,6 +168,8 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
+import { useFiatStore } from '../../stores/Fiat';
+import { FiatCurrency } from '../../lib/Constants';
 import { onboard, sendTransaction, createCashlink } from '../../hub';
 
 export default defineComponent({
@@ -252,6 +281,19 @@ export default defineComponent({
 
         const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0) - fee.value, 0));
 
+        const amountMenuOpened = ref(false);
+        const feeSelectionOpened = ref(false);
+
+        const activeCurrency = ref('nim');
+
+        function sendMax() {
+            amount.value = maxSendableAmount.value;
+        }
+
+        const { state: fiat$ } = useFiatStore();
+        const otherFiatCurrencies = computed(() =>
+            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency));
+
         const message = ref('');
 
         const hasHeight = computed(() => !!network$.height);
@@ -326,6 +368,12 @@ export default defineComponent({
             amount,
             fee,
             maxSendableAmount,
+            amountMenuOpened,
+            feeSelectionOpened,
+            activeCurrency,
+            sendMax,
+            fiatCurrency: fiat$.currency,
+            otherFiatCurrencies,
             message,
             canSend,
             sign,
@@ -583,6 +631,7 @@ export default defineComponent({
             align-self: stretch;
             justify-content: center;
             align-items: flex-end;
+            position: relative;
         }
 
         .amount-input {
@@ -601,7 +650,7 @@ export default defineComponent({
             }
         }
 
-        .amount-menu {
+        .amount-menu-button {
             align-items: center;
             margin-left: 1rem;
             margin-bottom: 2rem;
@@ -633,6 +682,65 @@ export default defineComponent({
             }
         }
 
+        .amount-menu {
+            width: 17.25rem;
+            border-radius: 0.5rem;
+            background: var(--nimiq-blue-bg);
+            position: absolute;
+            top: -7rem;
+            right: 0;
+            padding: 1rem;
+            z-index: 1;
+            box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
+
+            button {
+                color: white;
+                opacity: 0.7;
+                font-weight: 600;
+                width: 100%;
+                text-align: left;
+                padding: 0.5rem;
+
+                transition: opacity var(--attr-duration) var(--nimiq-ease);
+
+                &:hover,
+                &:focus {
+                    opacity: 1 !important;
+                }
+            }
+
+            .separator {
+                height: 0.125rem;
+                background: white;
+                opacity: 0.16;
+                border-radius: 1rem;
+                margin: 1rem 0;
+            }
+
+            .currencies {
+                flex-wrap: wrap;
+
+                button {
+                    width: 50%;
+                    opacity: 0.4;
+                    font-weight: bold;
+
+                    &.active {
+                        opacity: 1;
+
+                        &::after {
+                            content: '';
+                            display: inline-block;
+                            border: 1rem solid transparent;
+                            border-width: 0.5rem 0.75rem;
+                            border-right-color: inherit;
+                            margin-bottom: 0.25rem;
+                        }
+                    }
+                }
+            }
+        }
+
         .secondary-amount {
             font-weight: 600;
             opacity: 0.5;
@@ -649,7 +757,7 @@ export default defineComponent({
 
         &.insufficient-balance {
             .amount-input /deep/ input,
-            .amount-menu {
+            .amount-menu-button {
                 color: var(--nimiq-orange) !important;
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }

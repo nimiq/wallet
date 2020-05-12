@@ -154,7 +154,6 @@ import {
 } from '@nimiq/vue-components';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import Contact from '../Contact.vue';
 import Modal from './Modal.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
@@ -323,7 +322,6 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         ArrowRightIcon,
-        Contact,
         Identicon,
         PageBody,
         PageHeader,

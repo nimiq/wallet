@@ -1,10 +1,10 @@
 <template>
-    <div class="address-list" :class="{'has-scrollbar': scrollbarVisible}" ref="root">
+    <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root">
         <button
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             class="address-button reset flex-row"
             :class="{'active': activeAddress === addressInfo.address}"
-            @click="selectAddress(addressInfo.address)"
+            @click="selectAddress(addressInfo.address); embedded && $emit('address-selected', addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"
         >
             <div class="identicon-wrapper">
@@ -23,7 +23,7 @@
             </div>
             <div v-else>???</div>
         </button>
-        <div class="active-box" :style="`transform: translateY(${backgroundYOffset}px);`"></div>
+        <div v-if="!embedded" class="active-box" :style="`transform: translateY(${backgroundYOffset}px);`"></div>
     </div>
 </template>
 
@@ -38,6 +38,12 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
 
 export default defineComponent({
+    props: {
+        embedded: {
+            type: Boolean,
+            default: false,
+        },
+    },
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { state: network$ } = useNetworkStore();
@@ -64,7 +70,9 @@ export default defineComponent({
             const el = (context.refs[`address-button-${address}`] as Element[])[0] as HTMLElement;
             backgroundYOffset.value = el.offsetTop;
         }
-        watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));
+        if (!props.embedded) {
+            watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));
+        }
 
         const root = ref<HTMLElement>(null);
         const scrollbarVisible = ref(false);
@@ -171,7 +179,7 @@ export default defineComponent({
     }
 
     .label {
-        font-weight: bold;
+        font-weight: 600;
         margin-left: 2rem;
         flex-grow: 1;
         margin-right: 2rem;
@@ -195,12 +203,15 @@ export default defineComponent({
 
     .address-button:hover,
     .address-button:focus,
-    .address-button.active {
+    .address-button.active,
+    .embedded .address-button {
         opacity: 1;
     }
 
     .address-button:not(.active):hover,
-    .address-button:not(.active):focus {
+    .address-button:not(.active):focus,
+    .embedded .address-button:hover,
+    .embedded .address-button:focus {
         background: var(--nimiq-highlight-bg);
     }
 

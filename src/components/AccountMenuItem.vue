@@ -85,10 +85,6 @@ export default defineComponent({
 
     .identicon {
         width: 100%;
-
-        /deep/ img {
-            display: block;
-        }
     }
 
     svg {

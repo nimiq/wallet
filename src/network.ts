@@ -152,5 +152,5 @@ export async function sendTransaction(tx: SignedTransaction) {
 
     const client = NetworkClient.Instance;
 
-    return client.sendTransaction(tx.serializedTx as any);
+    return client.sendTransaction(tx.serializedTx);
 }

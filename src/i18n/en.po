@@ -26,6 +26,10 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
+#: src/components/modals/SendModal.vue:132
+msgid "Add a public message..."
+msgstr ""
+
 #: src/components/AccountMenu.vue:63
 msgid "Add Account"
 msgstr ""
@@ -33,6 +37,14 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:49
 #: src/components/modals/TransactionModal.vue:86
 msgid "Add contact"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:91
+msgid "Add fee"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:16
+msgid "Address unavailable?"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:29
@@ -64,7 +76,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:261
+#: src/components/modals/TransactionModal.vue:260
 #: src/components/TransactionList.vue:48
 #: src/components/TransactionListItem.vue:137
 msgid "Cashlink"
@@ -80,6 +92,10 @@ msgstr ""
 
 #: src/components/AccountMenu.vue:44
 msgid "Change Password"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:144
+msgid "Choose an Address"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:47
@@ -120,6 +136,7 @@ msgid "Consensus"
 msgstr ""
 
 #: src/components/ContactShortcuts.vue:5
+#: src/components/modals/SendModal.vue:26
 msgid "Contacts"
 msgstr ""
 
@@ -129,6 +146,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:10
 msgid "Control how many decimals are shown for NIM values."
+msgstr ""
+
+#: src/components/modals/SendModal.vue:17
+msgid "Create a Cashlink"
 msgstr ""
 
 #: src/components/AccountMenu.vue:37
@@ -141,6 +162,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:61
 msgid "Developer"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:12
+msgid "Enter Address"
 msgstr ""
 
 #: src/components/TransactionListItem.vue:39
@@ -211,6 +236,10 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
+#: src/components/modals/SendModal.vue:124
+msgid "Insufficient balance."
+msgstr ""
+
 #: src/components/TransactionListItem.vue:40
 msgid "invalid"
 msgstr ""
@@ -253,6 +282,10 @@ msgstr ""
 
 #: src/components/MigrationWelcome.vue:93
 msgid "Multiple Addresses and Login Files<br>are supported by new Accounts only."
+msgstr ""
+
+#: src/components/modals/SendModal.vue:49
+msgid "Name this contact..."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:43
@@ -342,8 +375,21 @@ msgstr ""
 msgid "Search Transactions by Contact, Address, etc."
 msgstr ""
 
+#: src/components/modals/SendModal.vue:126
+msgid "Send all"
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:18
 msgid "send and receive transactions."
+msgstr ""
+
+#: src/components/modals/SendModal.vue:94
+msgid "Send max"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:139
+#: src/components/modals/SendModal.vue:4
+msgid "Send Transaction"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:34
@@ -351,6 +397,8 @@ msgid "sent at"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:9
+#: src/components/modals/SendModal.vue:57
+#: src/components/modals/SendModal.vue:65
 msgid "Set Amount"
 msgstr ""
 
@@ -403,7 +451,7 @@ msgstr ""
 msgid "Transaction to"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:262
+#: src/components/modals/TransactionModal.vue:261
 #: src/components/TransactionListItem.vue:138
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -426,6 +474,10 @@ msgstr ""
 
 #: src/components/TransactionList.vue:45
 msgid "You now own crypto!"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:120
+msgid "You will send {amount} NIM"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:8

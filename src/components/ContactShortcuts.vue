@@ -1,116 +1,91 @@
 <template>
-    <div class="contact-shortcuts">
-        <div class="open-contacts" @click="contactsOpened" :class="{'disabled': contacts.length === 0}">
+    <div class="contact-shortcuts flex-row">
+        <button class="reset contact-list-button flex-column" @click="$emit('contact-list-opened')">
             <ContactsIcon/>
-            <div class="label">{{ $t('Contacts') }}</div>
-        </div>
-        <div class="contacts">
-            <Account v-for="contact in filteredContacts" :key="contact.address"
-                layout="column"
-                :address="contact.address"
-                :label="contact.label"
-                @click.native="contactSelected(contact.address, contact.label)" />
-            <Account v-for="n in missingContacts" class="disabled" :key="n"
-                layout="column"
-                address=""
-                label="" />
-        </div>
+            <label>{{ $t('Contacts') }}</label>
+        </button>
+        <div class="separator"></div>
+        <IdenticonButton
+            v-for="contact in contacts"
+            :key="contact.address"
+            @click="$emit('contact-selected', contact)"
+            :address="contact.address"
+            :label="contact.label"/>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
-import { Account, ContactsIcon } from '@nimiq/vue-components';
+import { defineComponent } from '@vue/composition-api';
+import { ContactsIcon } from '@nimiq/vue-components';
+import IdenticonButton from './IdenticonButton.vue';
 
-@Component({ components: { Account, ContactsIcon } })
-export default class ContactShortcuts extends Vue {
-        @Prop(Array) public contacts!: Array<{address: string, label: string}>;
-
-        private get filteredContacts() {
-            return this.contacts.slice(0, 3);
-        }
-
-        private get missingContacts() {
-            return Math.max(0, 3 - this.contacts.length);
-        }
-
-        @Emit()
-        // eslint-disable-next-line @typescript-eslint/no-empty-function, class-methods-use-this
-        public contactsOpened() {}
-
-        @Emit()
-        // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-        public contactSelected(address: string, label: string) {} // eslint-disable-line class-methods-use-this
-}
+export default defineComponent({
+    props: {
+        contacts: {
+            type: Array as () => {address: string, label: string}[],
+            required: false,
+        },
+    },
+    components: {
+        ContactsIcon,
+        IdenticonButton,
+    },
+});
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .contact-shortcuts {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
-        font-size: 2rem;
-        width: 100%;
+        align-content: flex-start;
+        width: calc(100% + 2rem);
     }
 
-    .open-contacts {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        cursor: pointer;
-        flex-direction: column;
-        margin: 1rem 3rem 2rem 0;
-        width: 10rem;
+    button,
+    .identicon-button {
+        margin-right: 0.5rem;
+        width: 0;
+        flex-grow: 1;
+
+        &:first-child,
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
-    .open-contacts.disabled {
-        cursor: unset;
-        opacity: 0.5;
+    .contact-list-button {
+        align-items: stretch;
+        border-radius: 0.75rem;
+        padding: 1rem 0.5rem;
+        width: 13rem;
+        flex-shrink: 0;
+        flex-grow: 0;
+
+        &:hover,
+        &:focus {
+            background: var(--nimiq-highlight-bg);
+        }
     }
 
-    .open-contacts.disabled .nq-icon {
+    .nq-icon {
+        display: block;
+        font-size: 6rem;
         opacity: 0.4;
+        box-sizing: content-box;
+        padding: 0.5rem 1rem;
+        margin: 0 auto 1.5rem;
     }
 
-    .open-contacts.disabled .label {
-        opacity: 0.6;
-    }
-
-    .open-contacts svg {
-        width: 5rem;
-        height: auto;
-        margin-top: 0.5rem;
-        margin-bottom: 2.875rem;
-        color: var(--nimiq-blue);
-        opacity: .4;
-    }
-
-    .contacts {
-        display: flex;
-        flex-direction: row;
-        border-left: 1px solid rgba(30,30,30, 0.1);
-        padding-left: 1rem;
-        margin-right: -1.5rem;
-    }
-
-    .account {
-        padding: 0.5rem 1.5rem;
+    label {
+        text-align: center;
         cursor: pointer;
     }
 
-    .account.disabled {
-        cursor: unset;
-    }
-
-    .account >>> .identicon {
-        width: 8rem;
-        height: auto;
-    }
-
-    .account >>> .label {
-        max-height: 6em;
-        overflow: hidden;
-        max-width: 8rem;
+    .separator {
+        content: '';
+        display: block;
+        width: 0.125rem;
+        margin: 0 0.5rem;
+        flex-shrink: 0;
+        align-self: stretch;
+        background: var(--text-14);
     }
 </style>

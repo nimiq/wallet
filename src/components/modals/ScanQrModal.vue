@@ -1,6 +1,5 @@
 <template>
     <Modal class="scan-qr-modal">
-        <PageHeader>Scan Qr Code</PageHeader>
         <PageBody>
             <QrScanner @result="checkResult" @cancel="$router.back()" />
         </PageBody>
@@ -65,7 +64,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding: 0 1rem 1rem;
+    padding: 1rem;
 
     .qr-scanner {
         border-radius: 0.5rem;

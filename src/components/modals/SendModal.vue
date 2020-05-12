@@ -231,7 +231,7 @@ export default defineComponent({
                 type: RecipientType.CONTACT,
             };
             contactListOpened.value = false;
-            recipientDetailsOpened.value = true;
+            page.value = Pages.AMOUNT_INPUT;
         }
 
         const addressInputValue = ref(''); // Used for resetting the address input
@@ -260,7 +260,11 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            recipientDetailsOpened.value = true;
+            if (!label) {
+                recipientDetailsOpened.value = true;
+            } else {
+                page.value = Pages.AMOUNT_INPUT;
+            }
         }
 
         function resetRecipient() {

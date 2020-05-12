@@ -16,7 +16,7 @@
                     <span>{{ $t('Address unavailable?') }}</span>
                     <button class="nq-button-s" @click="onCreateCashlink">{{ $t('Create a Cashlink') }}</button>
                 </section>
-                <button class="reset scan-qr-button" @click="$router.replace('/scan').catch((err)=>{})">
+                <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
                     <ScanQrCodeIcon/>
                 </button>
             </PageBody>

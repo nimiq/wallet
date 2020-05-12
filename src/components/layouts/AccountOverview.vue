@@ -116,7 +116,6 @@ export default defineComponent({
     }
 
     > h2 {
-        color: var(--text-40);
         display: flex;
         align-items: center;
         justify-content: space-between;

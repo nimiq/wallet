@@ -30,5 +30,8 @@ button.reset:disabled {
 
 .nq-label {
     font-weight: bold;
-    color: rgba(31, 35, 72, 0.4);
+}
+
+.nq-label:not([class*="-bg"]) {
+    color: var(--text-40);
 }

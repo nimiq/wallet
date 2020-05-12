@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="contactListOpened || recipientDetailsOpened || addressListOpened">
+    <Modal :showOverlay="contactListOpened || recipientDetailsOpened || addressListOpened || feeSelectionOpened">
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="page__recipient-input flex-column">
@@ -92,7 +92,7 @@
                         >{{ activeCurrency.toUpperCase() }}</button>
                         <div v-if="amountMenuOpened" class="amount-menu">
                             <button class="reset" @click="feeSelectionOpened = true">
-                                {{ $t('Add fee') }}
+                                {{ $t('Set fee') }}
                             </button>
                             <button class="reset" @click="sendMax">
                                 {{ $t('Send all') }}
@@ -119,6 +119,9 @@
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'nim'" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                            <span v-if="fee">
+                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/> {{ $t('fee') }}
+                            </span>
                         </span>
                         <span v-else key="nim-amount">
                             {{ $t('You will send {amount} NIM', { amount: amount / 1e5 }) }}
@@ -155,6 +158,23 @@
                 <AddressList embedded @address-selected="addressListOpened = false"/>
             </PageBody>
         </div>
+
+        <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
+            <CloseButton class="top-right" @click="feeSelectionOpened = false"/>
+            <PageBody class="page__fee-selection fee-selection flex-column">
+                <h1 class="nq-h1">{{ $t('Speed up your transaction') }}</h1>
+                <p class="nq-text">
+                    {{$t(`By adding a transation fee, you can influence
+                    how fast your transaction will be processed.`) }}
+                </p>
+                <SelectBar
+                    :options="feeOptions"
+                    :selectedValue="feePerByte"
+                    @changed="(value) => feePerByte = value"
+                />
+                <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
+            </PageBody>
+        </div>
     </Modal>
 </template>
 }
@@ -172,8 +192,10 @@ import {
     Copyable,
     AddressDisplay,
     AmountInput,
+    SelectBar,
+    Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook } from '@nimiq/utils';
+import { parseRequestLink, AddressBook, Utf8Tools } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import IdenticonButton from '../IdenticonButton.vue';
@@ -184,7 +206,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
-import { onboard, sendTransaction, createCashlink } from '../../hub';
+import { createCashlink, sendTransaction } from '../../hub';
 
 export default defineComponent({
     name: 'send-modal',
@@ -295,12 +317,34 @@ export default defineComponent({
         const addressListOpened = ref(false);
 
         const amount = ref(0);
-        const fee = ref(0);
+        const feePerByte = ref(0);
+        const message = ref('');
+
+        const fee = computed(() => message.value
+            ? feePerByte.value * (166 + Utf8Tools.stringToUtf8ByteArray(message.value).byteLength)
+            : feePerByte.value * 138);
 
         const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0) - fee.value, 0));
 
         const amountMenuOpened = ref(false);
         const feeSelectionOpened = ref(false);
+
+        const feeOptions: SelectBar.SelectBarOption[] = [{
+            color: 'nq-light-blue-bg',
+            text: 'free',
+            value: 0,
+            index: 0,
+        }, {
+            color: 'nq-green-bg',
+            text: 'standard',
+            value: 1,
+            index: 1,
+        }, {
+            color: 'nq-gold-bg',
+            text: 'express',
+            value: 2,
+            index: 2,
+        }];
 
         const activeCurrency = ref('nim');
         const fiatAmount = ref(0);
@@ -334,8 +378,6 @@ export default defineComponent({
             await context.root.$nextTick();
             amount.value = maxSendableAmount.value;
         }
-
-        const message = ref('');
 
         const hasHeight = computed(() => !!network$.height);
 
@@ -408,10 +450,12 @@ export default defineComponent({
             backgroundAddresses,
             addressListOpened,
             amount,
+            feePerByte,
             fee,
             maxSendableAmount,
             amountMenuOpened,
             feeSelectionOpened,
+            feeOptions,
             activeCurrency,
             fiatAmount,
             sendMax,
@@ -439,6 +483,8 @@ export default defineComponent({
         AddressList,
         AmountInput,
         FiatConvertedAmount,
+        SelectBar,
+        Amount,
     },
 });
 
@@ -484,6 +530,10 @@ export default defineComponent({
 
     .page__amount-input {
         padding-bottom: 4rem;
+    }
+
+    .page__fee-selection {
+        justify-content: center;
     }
 
     .address-section {
@@ -800,6 +850,11 @@ export default defineComponent({
         .secondary-amount {
             font-weight: 600;
             opacity: 0.5;
+
+            .fiat-amount,
+            .amount {
+                margin-left: -0.25em;
+            }
         }
 
         .insufficient-balance-warning {
@@ -827,6 +882,18 @@ export default defineComponent({
 
         .label-input {
             font-size: 2.5rem;
+        }
+    }
+
+    .fee-selection {
+        p {
+            text-align: center;
+            margin-top: 0.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .amount {
+            margin-top: 3rem;
         }
     }
 </style>

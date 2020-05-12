@@ -250,8 +250,6 @@ export default defineComponent({
 
         const contactListOpened = ref(false);
         function onContactSelected(contact: {address: string, label: string}) {
-            console.debug('Contact selected:', contact);
-
             recipientWithLabel.value = {
                 ...contact,
                 type: RecipientType.CONTACT,
@@ -262,8 +260,6 @@ export default defineComponent({
 
         const addressInputValue = ref(''); // Used for resetting the address input
         function onAddressEntered(address: string) {
-            console.debug('Address entered:', address);
-
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default

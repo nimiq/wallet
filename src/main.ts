@@ -25,7 +25,7 @@ declare global {
     }
 }
 
-if (window.innerWidth >= 1024 && window.innerHeight >= 560) {
+if (window.outerWidth >= 1150 && window.outerHeight >= 560) {
     // Specify where the svg asset for the Nimiq identicons is located.
     // The file gets copied to this location via the copy-webpack-plugin
     // as specified in vue.config.js
@@ -62,6 +62,7 @@ if (window.innerWidth >= 1024 && window.innerHeight >= 560) {
 
     launchNetwork();
 } else {
+    document.querySelector('html')!.classList.add('mobile');
     document.getElementById('mobile-notice')!.style.display = 'flex';
 }
 

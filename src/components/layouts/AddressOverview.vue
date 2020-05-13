@@ -1,11 +1,30 @@
 <template>
     <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
         <template v-if="activeAddressInfo">
+            <div class="actions-mobile flex-row">
+                <button>Back</button>
+                <SearchBar @input="search.searchString = $event.target.value"/>
+                <button
+                    v-if="unclaimedCashlinkCount"
+                    class="nq-button-s orange unclaimed-cashlinks"
+                    :class="{'active': showUnclaimedCashlinkList}"
+                    @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
+                >
+                    {{ $tc(
+                        '{count} pending Cashlink | {count} pending Cashlinks',
+                        unclaimedCashlinkCount,
+                    ) }}
+                </button>
+                <button @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})">
+                    Dots
+                </button>
+            </div>
             <button
                 class="reset active-address flex-row"
                 @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
             >
                 <Identicon :address="activeAddressInfo.address" />
+                <div class="label mobile">{{activeAddressInfo.label}}</div>
                 <div class="meta">
                     <div class="flex-row">
                         <div class="label">{{activeAddressInfo.label}}</div>
@@ -136,6 +155,10 @@ export default defineComponent({
         --padding: 3rem;
     }
 
+    @media (max-width: 500px) { // Full mobile breakpoint
+        --padding: 1rem;
+    }
+
     @media (min-width: 1800px) {
         --padding: 6rem; // 7rem per design
     }
@@ -165,56 +188,60 @@ export default defineComponent({
             flex-grow: 1;
             min-width: 0;
 
-            > .flex-row {
+            .flex-row {
                 align-items: center;
             }
+        }
 
-            .address,
-            .label {
-                flex-grow: 1;
-                overflow: hidden;
-                white-space: nowrap;
-                mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
-                margin-right: 4rem;
-            }
+        .address,
+        .label {
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+            margin-right: 4rem;
+        }
 
-            .label,
-            .amount {
-                font-size: 3rem;
-                margin-top: 0.25rem;
-            }
+        .label,
+        .amount {
+            font-size: 3rem;
+            margin-top: 0.25rem;
+        }
 
-            .address,
-            .fiat-amount {
-                font-size: 2.5rem;
-                opacity: 0.5;
-            }
+        .address,
+        .fiat-amount {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
 
-            .label {
-                font-weight: 600;
-                margin-bottom: 1rem;
-            }
+        .label {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
 
-            .address {
-                word-spacing: -0.15em;
-                letter-spacing: 0.005em;
-                font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
-            }
+        .address {
+            word-spacing: -0.15em;
+            letter-spacing: 0.005em;
+            font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
+        }
 
-            .amount,
-            .fiat-amount {
-                flex-shrink: 0;
-            }
+        .amount,
+        .fiat-amount {
+            flex-shrink: 0;
+        }
 
-            .amount {
-                font-weight: bold;
-                margin-bottom: 0.75rem;
-            }
+        .amount {
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
 
-            .fiat-amount {
-                font-weight: 600;
-                line-height: 1;
-            }
+        .fiat-amount {
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .label.mobile {
+            display: none;
         }
 
         &:hover,
@@ -223,44 +250,56 @@ export default defineComponent({
         }
     }
 
-    .actions {
+    .actions,
+    .actions-mobile {
         justify-content: space-between;
         margin-bottom: 0.75rem;
         align-items: center;
         margin: 4rem var(--padding) 2rem;
         padding: 0 3rem 0 2rem;
+    }
 
-        .search-bar {
-            margin-right: 5rem;
-        }
+    .send, .receive {
+        margin: 0 1rem;
+        align-items: center;
 
-        .unclaimed-cashlinks {
-            flex-shrink: 0;
+        .nq-icon {
+            width: 1.5rem;
+            height: 1.5rem;
             margin-right: 1rem;
-
-            &:not(.active) {
-                background: none;
-                box-shadow: inset 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
-            }
         }
+    }
 
-        .send, .receive {
+    .send .nq-icon {
+        transform: rotateZ(-90deg);
+    }
+
+    .receive .nq-icon {
+        transform: rotateZ(90deg);
+    }
+
+    .search-bar {
+        margin-right: 5rem;
+    }
+
+    .unclaimed-cashlinks {
+        flex-shrink: 0;
+        margin-right: 1rem;
+
+        &:not(.active) {
+            background: none;
+            box-shadow: inset 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
+        }
+    }
+
+    .actions-mobile {
+        display: none;
+        padding: 0;
+        margin: 1rem var(--padding);
+
+        .search-bar,
+        .unclaimed-cashlinks {
             margin: 0 1rem;
-            align-items: center;
-
-            .nq-icon {
-                width: 1.5rem;
-                height: 1.5rem;
-                margin-right: 1rem;
-            }
-        }
-
-        .send .nq-icon {
-            transform: rotateZ(-90deg);
-        }
-
-        .receive .nq-icon {
-            transform: rotateZ(90deg);
         }
     }
 
@@ -290,6 +329,65 @@ export default defineComponent({
         display: inline-block;
         border-radius: 0.5rem;
         font-size: 2rem;
+    }
+
+    @media (max-width: 500px) { // Full mobile breakpoint
+        .actions {
+            display: none;
+        }
+
+        .actions-mobile {
+            display: flex;
+        }
+
+        .active-address {
+            padding: 2rem;
+            margin: 0 var(--padding);
+
+            .identicon {
+                height: 5.75rem;
+                width: 5.75rem;
+                margin: -0.25rem 1.5rem -0.25rem 0; // Negative margin above and below to size identicon to be 46x40 px
+            }
+
+            .meta {
+                flex-shrink: 0;
+
+                .flex-row {
+                    justify-content: flex-end;
+                }
+
+                .address,
+                .label {
+                    display: none;
+                }
+            }
+
+            .label.mobile {
+                display: block;
+            }
+
+            .label {
+                // mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+                mask: none;
+                white-space: unset;
+                line-height: 1.2;
+                margin: 0 2rem 0 0;
+            }
+
+            .label,
+            .amount {
+                font-size: 2.25rem;
+            }
+
+            .fiat-amount {
+                font-size: 1.75rem;
+            }
+
+            .amount {
+                margin-bottom: 0.5rem;
+            }
+        }
     }
 }
 </style>

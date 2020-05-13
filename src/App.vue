@@ -73,11 +73,6 @@ export default defineComponent({
     @media (max-width: 500px) { // Full mobile breakpoint
         --account-column-width: 100vw;
         --address-column-width: 100vw;
-
-        main {
-            // Start position: account column
-            transform: translateX(calc(-1 * var(--sidebar-width)));
-        }
     }
 
     @media (min-width: 1800px) {
@@ -125,6 +120,17 @@ export default defineComponent({
             width: calc(100% - var(--sidebar-width));
             height: 100%;
             z-index: 0;
+        }
+    }
+
+    @media (max-width: 500px) { // Full mobile breakpoint
+        main {
+            // Start position: account column
+            transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
+
+            /deep/ .address-overview {
+                min-width: unset;
+            }
         }
     }
 }

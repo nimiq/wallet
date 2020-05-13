@@ -413,4 +413,19 @@ svg {
         }
     }
 }
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .transaction {
+        padding: 1rem 1rem;
+
+        > * {
+            margin: 0rem 0.75rem;
+        }
+
+        .identicon {
+            width: 5.5rem;
+            height: 5.5rem;
+        }
+    }
+}
 </style>

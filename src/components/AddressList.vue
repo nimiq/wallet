@@ -23,6 +23,13 @@
             </div>
             <div v-else>???</div>
         </button>
+        <button v-if="showAddAddressButton" class="address-button reset flex-row" @click="$emit('add-address')">
+            <div class="identicon-wrapper">
+                <div class="identicon add-address-icon">+
+                </div>
+            </div>
+            <span class="label add-address-label">{{ $t('Add Address') }}</span>
+        </button>
         <div v-if="!embedded" class="active-box" :style="`transform: translateY(${backgroundYOffset}px);`"></div>
     </div>
 </template>
@@ -40,6 +47,10 @@ import ClockIcon from './icons/ClockIcon.vue';
 export default defineComponent({
     props: {
         embedded: {
+            type: Boolean,
+            default: false,
+        },
+        showAddAddressButton: {
             type: Boolean,
             default: false,
         },
@@ -180,9 +191,8 @@ export default defineComponent({
 
     .label {
         font-weight: 600;
-        margin-left: 2rem;
+        margin: 0 2rem;
         flex-grow: 1;
-        margin-right: 2rem;
     }
 
     .balances {
@@ -225,5 +235,40 @@ export default defineComponent({
         font-size: 1.75rem;
         font-weight: 600;
         opacity: 0.5;
+    }
+
+    .add-address-icon {
+        width: 5rem !important;
+        height: 5rem;
+        margin: 0 calc(0.75rem / 2);
+        background: var(--nimiq-highlight-bg);
+        border-radius: 50%;
+        text-align: center;
+        line-height: 4.25rem;
+        font-size: 4rem;
+        color:rgba(31, 35, 72, 0.5);
+    }
+
+    .add-address-label {
+        opacity: 0.45;
+    }
+
+    @media (max-width: 500px) { // Full mobile breakpoint
+        .active-box {
+            display: none;
+        }
+
+        .label {
+            margin: 0 1.5rem;
+        }
+
+        .address-button {
+            opacity: 1;
+            background: none !important;
+
+            .crypto-balance {
+                color: inherit !important;
+            }
+        }
     }
 </style>

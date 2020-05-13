@@ -23,13 +23,18 @@
             </button>
         </div>
 
+        <div class="mobile-menu-bar flex-row">
+            <button class="reset">MN</button>
+            <button class="reset">NW</button>
+        </div>
+
         <AccountBalance />
 
         <h2 class="nq-label">
             {{ $t('Addresses') }}
             <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
         </h2>
-        <AddressList />
+        <AddressList :showAddAddressButton="canHaveMultipleAddresses" @add-address="addAddress(activeAccountId)" />
 
         <div class="bitcoin-teaser flex-row">
             <BitcoinIcon/>
@@ -95,6 +100,11 @@ export default defineComponent({
         --padding-bottom: 0;
     }
 
+    @media (max-width: 500px) { // Full mobile breakpoint
+        --padding-top: 1rem;
+        --padding-sides: 1rem;
+    }
+
     @media (min-width: 1800px) {
         --padding-top: 8rem; // 9rem per design
         --padding-sides: 8rem; // 9rem per design
@@ -114,26 +124,26 @@ export default defineComponent({
     > * {
         margin-bottom: var(--item-margin);
     }
+}
 
-    > h2 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 0 2rem var(--item-margin);
+h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 2rem var(--item-margin);
 
-        > button {
-            width: 4rem;
-            height: 4rem;
-            padding: 0;
-            padding-bottom: 0.125rem; // To move the plus sign up by one pixel, so it's more centered.
-            margin: 0;
-            min-width: 0;
-            font-weight: bold;
-            font-size: 2.75rem;
-            line-height: 4rem;
-            border-radius: 50%;
-            color: var(--text-60);
-        }
+    > button {
+        width: 4rem;
+        height: 4rem;
+        padding: 0;
+        padding-bottom: 0.125rem; // To move the plus sign up by one pixel, so it's more centered.
+        margin: 0;
+        min-width: 0;
+        font-weight: bold;
+        font-size: 2.75rem;
+        line-height: 4rem;
+        border-radius: 50%;
+        color: var(--text-60);
     }
 }
 
@@ -143,16 +153,24 @@ export default defineComponent({
 
 .backup-warning {
     align-items: center;
-    padding: 1.25rem 1.25rem 1.25rem 1.75rem;
+    flex-wrap: wrap;
+    padding: 0.625rem 1rem;
     border-radius: 0.5rem;
     font-size: 2rem;
 
     .alert-icon {
-        margin-right: 1rem;
+        margin: 0 1rem;
+        flex-shrink: 0;
     }
 
     .alert-text {
+        margin: 0.625rem 0;
         font-weight: bold;
+        line-height: 3.375rem; // Same height as .nq-button-s
+    }
+
+    button {
+        margin: 0.625rem 0.25rem 0.625rem 1rem;
     }
 
     button .nq-icon {
@@ -175,6 +193,10 @@ export default defineComponent({
     }
 }
 
+.mobile-menu-bar {
+    display: none;
+}
+
 .address-list {
     flex-grow: 1;
     margin-bottom: 1rem;
@@ -187,8 +209,9 @@ export default defineComponent({
     color: var(--text-40);
     font-size: 2rem;
     font-weight: 600;
-    padding: 4rem;
+    padding: 0 4rem;
     margin: 0 -2rem;
+    flex-shrink: 0;
 
     @media (max-width: 1319px) {
         padding: 3rem;
@@ -208,6 +231,36 @@ export default defineComponent({
         padding: 0.75rem 1.75rem;
         border: 0.25rem solid var(--text-10);
         border-radius: 500px;
+    }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .mobile-menu-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem 1rem;
+
+        button {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 0.5rem;
+            background: var(--nimiq-highlight-bg);
+            text-align: center;
+        }
+    }
+
+    .account-balance {
+        margin-top: -5rem;
+    }
+
+    h2 {
+        display: none;
+    }
+
+    .bitcoin-teaser {
+        height: 11rem;
+        padding: 0 1.75rem;
+        margin: 0 0.5rem;
     }
 }
 </style>

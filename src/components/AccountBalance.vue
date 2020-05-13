@@ -37,4 +37,14 @@ export default defineComponent({
 .fiat-amount {
     font-size: 8rem;
 }
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .account-balance {
+        text-align: center;
+    }
+
+    .fiat-amount {
+        font-size: 5.5rem;
+    }
+}
 </style>

@@ -70,6 +70,16 @@ export default defineComponent({
         --account-column-width: 47rem;
     }
 
+    @media (max-width: 500px) { // Full mobile breakpoint
+        --account-column-width: 100vw;
+        --address-column-width: 100vw;
+
+        main {
+            // Start position: account column
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+        }
+    }
+
     @media (min-width: 1800px) {
         --account-column-width: 75rem; // 80.75rem for fullscreen design
         --address-column-width: 110rem; // 134.25rem for fullscreen design

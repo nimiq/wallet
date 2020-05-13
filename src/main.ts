@@ -25,46 +25,41 @@ declare global {
     }
 }
 
-if (window.outerWidth >= 1150 && window.outerHeight >= 560) {
-    // Specify where the svg asset for the Nimiq identicons is located.
-    // The file gets copied to this location via the copy-webpack-plugin
-    // as specified in vue.config.js
-    window.NIMIQ_IQONS_SVG_PATH = '/img/iqons.min.svg';
+// Specify where the svg asset for the Nimiq identicons is located.
+// The file gets copied to this location via the copy-webpack-plugin
+// as specified in vue.config.js
+window.NIMIQ_IQONS_SVG_PATH = '/img/iqons.min.svg';
 
-    Vue.config.productionTip = false;
+Vue.config.productionTip = false;
 
-    Vue.use(VueCompositionApi);
-    Vue.use(VueVirtualScroller);
+Vue.use(VueCompositionApi);
+Vue.use(VueVirtualScroller);
 
-    initStorage();
-    syncFromHub();
-    const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
+initStorage();
+syncFromHub();
+const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
 
-    // Update exchange rates every 2 minutes. If the last update was
-    // less than 2 minutes ago, wait the remaining time first.
-    window.setTimeout(
-        () => {
-            updateExchangeRates();
-            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
-        },
-        Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
-    );
+// Update exchange rates every 2 minutes. If the last update was
+// less than 2 minutes ago, wait the remaining time first.
+window.setTimeout(
+    () => {
+        updateExchangeRates();
+        setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+    },
+    Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
+);
 
-    // Fetch language file
-    const { language } = useSettingsStore();
-    loadLanguageAsync(language.value);
+// Fetch language file
+const { language } = useSettingsStore();
+loadLanguageAsync(language.value);
 
-    new Vue({
-        router,
-        i18n,
-        render: (h) => h(App),
-    }).$mount('#app');
+new Vue({
+    router,
+    i18n,
+    render: (h) => h(App),
+}).$mount('#app');
 
-    launchNetwork();
-} else {
-    document.querySelector('html')!.classList.add('mobile');
-    document.getElementById('mobile-notice')!.style.display = 'flex';
-}
+launchNetwork();
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {

@@ -1,6 +1,6 @@
 import { PlainAddressInfo } from '@nimiq/network-client';
 import bitmap from '../data/NetworkBitMap';
-import GeoIp from './GeoIp';
+import { useGeoIp, GeoIpResponse } from '../composables/useGeoIp';
 import RobinsonProjection from './RobinsonProjection';
 import { countryIso2Name } from './CountryIsoNames';
 
@@ -409,6 +409,7 @@ export default class NetworkMap {
     private _lastFrameTime = 0;
     private _mapDc: CanvasRenderingContext2D;
     private _overlayDc: CanvasRenderingContext2D;
+    private _geoLocate: (host?: string) => Promise<GeoIpResponse>;
 
     public constructor(
         _mapCanvas: HTMLCanvasElement,
@@ -430,6 +431,8 @@ export default class NetworkMap {
 
         this._overlayDc.lineCap = 'round';
 
+        this._geoLocate = useGeoIp().locate;
+
         // build Hexagon Map (TODO: might as well be compile time)
         for (let x = 0; x < NETWORK_MAP_WIDTH; x++) {
             for (let y = 0; y < NETWORK_MAP_HEIGHT; y++) {
@@ -444,7 +447,7 @@ export default class NetworkMap {
         };
 
         // set up self location
-        GeoIp.retrieveOwn((response) => {
+        this._geoLocate().then((response) => {
             if (response && response.location && response.location.latitude && response.location.longitude) {
                 const selfPosition = this._hexagonByCoordinate(response.location.latitude, response.location.longitude);
                 this._self = new SelfHexagon(selfPosition.x, selfPosition.y);
@@ -481,7 +484,7 @@ export default class NetworkMap {
 
                 this.draw();
             } // TODO what to do when no response, or wrong response?
-        });
+        }).catch(() => undefined);
 
         this.draw();
     }
@@ -511,7 +514,9 @@ export default class NetworkMap {
             node.state = nodeAddressInfo.state;
             node.hexagon.updateState(node);
         } else if (nodeAddressInfo.peerAddress._host || nodeAddressInfo.peerAddress._netAddress._ip) {
-            GeoIp.retrieve(
+            this._geoLocate(
+                nodeAddressInfo.peerAddress._host || Array.from(nodeAddressInfo.peerAddress._netAddress._ip).join('.'),
+            ).then(
                 (response) => {
                     if (response && response.location && response.location.latitude && response.location.longitude) {
                         const nodePosition = this._hexagonByCoordinate(
@@ -550,8 +555,7 @@ export default class NetworkMap {
                         this._nodes.set(nodeAddressInfo.peerId, node);
                     }
                 },
-                nodeAddressInfo.peerAddress._host || Array.from(nodeAddressInfo.peerAddress._netAddress._ip).join('.'),
-            );
+            ).catch(() => undefined);
         }
         return true;
     }

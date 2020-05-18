@@ -192,7 +192,8 @@ export default defineComponent({
     }
 }
 
-.identicon img {
+.identicon img,
+.nq-icon {
     display: block;
 }
 

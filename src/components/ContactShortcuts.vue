@@ -66,7 +66,6 @@ export default defineComponent({
     }
 
     .nq-icon {
-        display: block;
         font-size: 6rem;
         opacity: 0.4;
         box-sizing: content-box;

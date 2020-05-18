@@ -123,8 +123,14 @@ export default defineComponent({
         }
     }
 
-    .tooltip /deep/ .tooltip-box {
-        width: 20rem;
+    .tooltip {
+        /deep/ .trigger {
+            vertical-align: unset;
+        }
+
+        /deep/ .tooltip-box {
+            width: 20rem;
+        }
     }
 }
 

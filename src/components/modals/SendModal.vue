@@ -563,10 +563,6 @@ export default defineComponent({
 
         transition: opacity var(--attr-duration) var(--nimiq-ease);
 
-        .nq-icon {
-            display: block;
-        }
-
         &:hover,
         &:focus {
             opacity: 0.6;

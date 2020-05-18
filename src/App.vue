@@ -254,4 +254,20 @@ export default defineComponent({
         transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
     }
 }
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .groundfloor {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(100vw, 0, 0);
+        }
+    }
+
+    .address-overview {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+}
 </style>

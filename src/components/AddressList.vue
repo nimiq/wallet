@@ -23,10 +23,13 @@
             </div>
             <div v-else>???</div>
         </button>
-        <button v-if="showAddAddressButton" class="address-button reset flex-row" @click="$emit('add-address')">
+        <button
+            v-if="showAddAddressButton"
+            class="address-button add-address-button reset flex-row"
+            @click="$emit('add-address')"
+        >
             <div class="identicon-wrapper">
-                <div class="identicon add-address-icon">+
-                </div>
+                <div class="identicon add-address-icon flex-row"><AddMobileIcon/></div>
             </div>
             <span class="label add-address-label">{{ $t('Add Address') }}</span>
         </button>
@@ -43,6 +46,7 @@ import { useNetworkStore } from '../stores/Network';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
+import AddMobileIcon from './icons/AddMobileIcon.vue';
 
 export default defineComponent({
     props: {
@@ -109,6 +113,7 @@ export default defineComponent({
         FiatConvertedAmount,
         ClockIcon,
         LockLockedIcon,
+        AddMobileIcon,
     } as any,
 });
 </script>
@@ -177,7 +182,7 @@ export default defineComponent({
     .identicon-wrapper {
         position: relative;
 
-        svg {
+        > svg {
             position: absolute;
             right: -1rem;
             bottom: -0.5rem;
@@ -237,16 +242,24 @@ export default defineComponent({
         opacity: 0.5;
     }
 
+    .add-address-button {
+        display: none;
+    }
+
     .add-address-icon {
+        justify-content: center;
+        align-items: center;
         width: 5rem !important;
         height: 5rem;
         margin: 0 calc(0.75rem / 2);
         background: var(--nimiq-highlight-bg);
         border-radius: 50%;
-        text-align: center;
-        line-height: 4.25rem;
-        font-size: 4rem;
         color:rgba(31, 35, 72, 0.5);
+
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
     }
 
     .add-address-label {
@@ -269,6 +282,10 @@ export default defineComponent({
             .crypto-balance {
                 color: inherit !important;
             }
+        }
+
+        .add-address-button {
+            display: flex;
         }
     }
 </style>

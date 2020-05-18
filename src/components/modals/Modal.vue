@@ -83,6 +83,7 @@ export default defineComponent({
         .small-page {
             margin: 0;
             width: 52.5rem; /* 420px */
+            max-width: 100vw;
         }
     }
 

@@ -115,7 +115,6 @@ export default defineComponent({
 section {
     box-sizing: content-box;
     width: 48rem;
-    height: 37rem;
     padding: 3.75rem 4rem;
     border-right: 0.25rem solid var(--text-10);
     border-bottom: 0.25rem solid var(--text-10);
@@ -187,5 +186,21 @@ select {
 
 select:disabled {
     opacity: 0.5;
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .settings {
+        width: 100vw;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    section {
+        border-right: none;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
 }
 </style>

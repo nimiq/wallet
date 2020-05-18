@@ -24,15 +24,18 @@
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset" @click="$router.back()">MN</button>
-            <button class="reset" @click="$router.replace('/network')">NW</button>
+            <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
+
+            <button class="reset" @click="$router.replace('/network')"><ConsensusIcon/></button>
         </div>
 
         <AccountBalance />
 
         <h2 class="nq-label">
             {{ $t('Addresses') }}
-            <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
+            <button v-if="canHaveMultipleAddresses" class="nq-button-s flex-row" @click="addAddress(activeAccountId)">
+                <AddDesktopIcon/>
+            </button>
         </h2>
         <AddressList
             :showAddAddressButton="canHaveMultipleAddresses"
@@ -55,6 +58,9 @@ import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import MenuIcon from '../icons/MenuIcon.vue';
+import ConsensusIcon from '../ConsensusIcon.vue';
+import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -92,6 +98,9 @@ export default defineComponent({
         AccountBalance,
         AddressList,
         BitcoinIcon,
+        MenuIcon,
+        ConsensusIcon,
+        AddDesktopIcon,
     },
 });
 </script>
@@ -147,17 +156,19 @@ h2 {
     margin: 0 2rem var(--item-margin);
 
     > button {
+        justify-content: center;
+        align-items: center;
         width: 4rem;
         height: 4rem;
         padding: 0;
-        padding-bottom: 0.125rem; // To move the plus sign up by one pixel, so it's more centered.
         margin: 0;
-        min-width: 0;
-        font-weight: bold;
-        font-size: 2.75rem;
-        line-height: 4rem;
         border-radius: 50%;
         color: var(--text-60);
+
+        svg {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
     }
 }
 
@@ -252,20 +263,23 @@ h2 {
     .mobile-menu-bar {
         display: flex;
         justify-content: space-between;
-        padding: 2rem 1rem;
+        padding: 1rem;
         z-index: 1;
 
         button {
-            width: 5rem;
-            height: 5rem;
-            border-radius: 0.5rem;
-            background: var(--nimiq-highlight-bg);
-            text-align: center;
+            padding: 1rem;
+            opacity: 0.3;
+        }
+
+        .menu-button {
+            width: 3.5rem;
+            height: 2.75rem;
+            box-sizing: content-box;
         }
     }
 
     .account-balance {
-        margin-top: -5rem;
+        margin-top: -4rem;
     }
 
     h2 {

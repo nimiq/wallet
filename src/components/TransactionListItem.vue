@@ -426,6 +426,13 @@ svg {
             width: 5.5rem;
             height: 5.5rem;
         }
+
+        .data {
+            .label {
+                white-space: nowrap;
+                mask: linear-gradient(90deg , white, white calc(100% - 2rem), rgba(255,255,255, 0));
+            }
+        }
     }
 }
 </style>

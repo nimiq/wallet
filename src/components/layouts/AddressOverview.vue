@@ -2,7 +2,7 @@
     <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
         <template v-if="activeAddressInfo">
             <div class="actions-mobile flex-row">
-                <button @click="$router.back()">Back</button>
+                <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar @input="search.searchString = $event.target.value"/>
                 <button
                     v-if="unclaimedCashlinkCount"
@@ -15,8 +15,11 @@
                         unclaimedCashlinkCount,
                     ) }}
                 </button>
-                <button @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})">
-                    Dots
+                <button
+                    class="reset icon-button"
+                    @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
+                >
+                    <MenuDotsIcon/>
                 </button>
             </div>
             <button
@@ -84,7 +87,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api';
-import { Identicon, ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { Identicon, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
 
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -137,7 +140,9 @@ export default defineComponent({
         FiatConvertedAmount,
         SearchBar,
         TransactionList,
-    } as any,
+        ArrowLeftIcon,
+        MenuDotsIcon,
+    },
 });
 </script>
 
@@ -294,13 +299,6 @@ export default defineComponent({
 
     .actions-mobile {
         display: none;
-        padding: 0;
-        margin: 1rem var(--padding);
-
-        .search-bar,
-        .unclaimed-cashlinks {
-            margin: 0 1rem;
-        }
     }
 
     .transaction-list {
@@ -338,6 +336,23 @@ export default defineComponent({
 
         .actions-mobile {
             display: flex;
+            padding: 0;
+            margin: 1rem var(--padding);
+
+            .search-bar,
+            .unclaimed-cashlinks {
+                margin: 0 1rem;
+            }
+
+            .icon-button {
+                padding: 1rem;
+                opacity: 0.3;
+                font-size: 2.5rem;
+
+                /deep/ svg {
+                    display: block;
+                }
+            }
         }
 
         .active-address {

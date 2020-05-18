@@ -1,5 +1,9 @@
 <template>
     <div class="settings flex-row">
+        <div class="mobile-menu-bar flex-row">
+            <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
+        </div>
+
         <section class="general">
             <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -76,6 +80,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import MenuIcon from '../icons/MenuIcon.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
@@ -103,6 +108,9 @@ export default defineComponent({
             ...settings,
         };
     },
+    components: {
+        MenuIcon,
+    },
 });
 </script>
 
@@ -127,6 +135,10 @@ section {
 
 .nq-text {
     color: var(--text-70);
+}
+
+.setting:last-child .nq-text {
+    margin-bottom: 0;
 }
 
 .setting {
@@ -188,18 +200,45 @@ select:disabled {
     opacity: 0.5;
 }
 
+.mobile-menu-bar {
+    display: none;
+}
+
 @media (max-width: 500px) { // Full mobile breakpoint
     .settings {
         width: 100vw;
-        padding: 2rem;
+        padding: 1rem;
         overflow-y: auto;
     }
 
     section {
         border-right: none;
+        margin: 0 1rem;
+        padding: 3.75rem 3rem;
 
         &:last-child {
             border-bottom: none;
+        }
+    }
+
+    .mobile-menu-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-self: stretch;
+        padding: 1rem;
+        z-index: 1;
+
+        button.reset {
+            padding: 1rem;
+            opacity: 0.3;
+            font-size: 2.5rem;
+        }
+
+        .menu-button {
+            width: 3.5rem;
+            height: 2.75rem;
+            box-sizing: content-box;
         }
     }
 }

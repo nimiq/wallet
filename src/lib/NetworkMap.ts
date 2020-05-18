@@ -17,10 +17,14 @@ const NETWORK_MAP_WIDTH = 129;
 /** Map height in hexagons */
 const NETWORK_MAP_HEIGHT = 52;
 
+/**
+ * These WIDTH and HEIGHT values are used in Network.vue CSS to calculate the width of the map on mobile!
+ */
 /** Map width in pixel */
 export const WIDTH = 1082;
 /** Map height in pixel */
 export const HEIGHT = 502;
+
 /** Map scaling factor */
 export const SCALING_FACTOR = .95;
 

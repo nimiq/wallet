@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
@@ -34,6 +34,15 @@ export default defineComponent({
         provideRouter(router);
 
         const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
+
+        if (window.outerWidth <= 500) { // Full mobile breakpoint
+            // Navigate to the account column (start view)
+            // Use push by default, so the user is able to use the OS' back button
+            // to open the sidebar.
+            onMounted(() => {
+                context.root.$router.push('/account');
+            });
+        }
 
         const routeClass = computed(() => {
             switch (context.root.$route.path) {

@@ -4,7 +4,7 @@
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             class="address-button reset flex-row"
             :class="{'active': activeAddress === addressInfo.address}"
-            @click="selectAddress(addressInfo.address); embedded && $emit('address-selected', addressInfo.address);"
+            @click="selectAddress(addressInfo.address); $emit('address-selected', addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"
         >
             <div class="identicon-wrapper">

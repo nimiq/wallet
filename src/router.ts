@@ -37,6 +37,7 @@ const routes: RouteConfig[] = [{
             addressOverview: AddressOverview,
         },
         name: 'root',
+        alias: ['/account', '/transactions'],
         children: [{
             path: '/send/:senderAddress',
             components: {

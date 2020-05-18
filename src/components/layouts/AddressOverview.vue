@@ -2,7 +2,7 @@
     <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
         <template v-if="activeAddressInfo">
             <div class="actions-mobile flex-row">
-                <button>Back</button>
+                <button @click="$router.back()">Back</button>
                 <SearchBar @input="search.searchString = $event.target.value"/>
                 <button
                     v-if="unclaimedCashlinkCount"

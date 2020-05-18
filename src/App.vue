@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <main>
+        <main :class="routeClass">
             <Sidebar/>
 
             <transition name="delay">
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
@@ -30,13 +30,25 @@ import { TESTNET_ORIGIN } from './lib/Constants';
 
 export default defineComponent({
     name: 'app',
-    setup() {
+    setup(props, context) {
         provideRouter(router);
 
         const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
 
+        const routeClass = computed(() => {
+            switch (context.root.$route.path) {
+                case '/': return 'root';
+                case '/account': return 'account';
+                case '/transactions': return 'transactions';
+                case '/network': return 'network';
+                case '/settings': return 'settings';
+                default: return '';
+            }
+        });
+
         return {
             showPreviewNotice,
+            routeClass,
         };
     },
     components: {
@@ -113,6 +125,10 @@ export default defineComponent({
             z-index: 3;
         }
 
+        /deep/ .mobile-tap-area {
+            z-index: 4;
+        }
+
         .network {
             position: absolute;
             top: 0;
@@ -125,11 +141,34 @@ export default defineComponent({
 
     @media (max-width: 500px) { // Full mobile breakpoint
         main {
-            // Start position: account column
-            transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
+            width: calc(var(--sidebar-width) + 200vw);
+            transition: transform var(--transition-time) var(--nimiq-ease);
 
             /deep/ .address-overview {
                 min-width: unset;
+            }
+
+            .network {
+                width: 100vw;
+            }
+
+            &.root {
+                /deep/ .mobile-tap-area {
+                    opacity: 1;
+                    pointer-events: all;
+                }
+            }
+
+            &.account,
+            &.network,
+            &.settings {
+                // Account column
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+
+            &.transactions {
+                // Address column
+                transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
             }
         }
     }
@@ -141,14 +180,20 @@ export default defineComponent({
     --transition-time: 0.75s;
 }
 
-.identicon img {
-    display: block;
-}
-
 @media (prefers-reduced-motion: reduce) {
     :root {
         --transition-time: 0s;
     }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    :root {
+        --transition-time: 0.3s;
+    }
+}
+
+.identicon img {
+    display: block;
 }
 
 .fade-enter-active, .fade-leave-active {

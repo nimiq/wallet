@@ -24,8 +24,8 @@
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset">MN</button>
-            <button class="reset">NW</button>
+            <button class="reset" @click="$router.back()">MN</button>
+            <button class="reset" @click="$router.replace('/network')">NW</button>
         </div>
 
         <AccountBalance />
@@ -34,7 +34,11 @@
             {{ $t('Addresses') }}
             <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
         </h2>
-        <AddressList :showAddAddressButton="canHaveMultipleAddresses" @add-address="addAddress(activeAccountId)" />
+        <AddressList
+            :showAddAddressButton="canHaveMultipleAddresses"
+            @address-selected="onAddressSelected"
+            @add-address="addAddress(activeAccountId)"
+        />
 
         <div class="bitcoin-teaser flex-row">
             <BitcoinIcon/>
@@ -53,15 +57,24 @@ import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'account-overview',
-    setup() {
+    setup(props, context) {
         const { activeAccountInfo, activeAccountId } = useAccountStore();
 
         const canHaveMultipleAddresses = computed(() => activeAccountInfo.value
             ? activeAccountInfo.value.type !== AccountType.LEGACY
             : false);
+
+        const { width } = useWindowSize();
+
+        function onAddressSelected() {
+            if (width.value <= 500) { // Full mobile breakpoint
+                context.root.$router.push('/transactions');
+            }
+        }
 
         return {
             activeAccountInfo,
@@ -70,6 +83,7 @@ export default defineComponent({
             canHaveMultipleAddresses,
             addAddress,
             activeAccountId,
+            onAddressSelected,
         };
     },
     components: {
@@ -239,6 +253,7 @@ h2 {
         display: flex;
         justify-content: space-between;
         padding: 2rem 1rem;
+        z-index: 1;
 
         button {
             width: 5rem;

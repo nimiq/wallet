@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
@@ -44,14 +44,18 @@ export default defineComponent({
             });
         }
 
-        const routeClass = computed(() => {
-            switch (context.root.$route.path) {
-                case '/': return 'root';
-                case '/account': return 'account';
-                case '/transactions': return 'transactions';
-                case '/network': return 'network';
-                case '/settings': return 'settings';
-                default: return '';
+        const routeClass = ref('');
+
+        watch(() => context.root.$route.path, (path) => {
+            // Using a watcher, because the routeClass should only change when a route is visited
+            // that may require a column navigation. When opening modals, we don't want to change
+            // column.
+            switch (path) {
+                case '/': routeClass.value = 'root'; break;
+                case '/account': routeClass.value = 'account'; break;
+                case '/transactions': routeClass.value = 'transactions'; break;
+                case '/network': routeClass.value = 'network'; break;
+                case '/settings': routeClass.value = 'settings'; break;
             }
         });
 
@@ -197,7 +201,7 @@ export default defineComponent({
 
 @media (max-width: 500px) { // Full mobile breakpoint
     :root {
-        --transition-time: 0.3s;
+        --transition-time: 0.35s;
     }
 }
 
@@ -217,10 +221,6 @@ export default defineComponent({
         position: absolute;
         left: 0;
         top: 0;
-    }
-
-    &.backdrop { // Modals
-        transition-duration: 0.4s;
     }
 }
 

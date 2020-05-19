@@ -279,6 +279,13 @@ h2 {
             height: 2.75rem;
             box-sizing: content-box;
         }
+
+        .consensus-icon {
+            &.connecting, &.syncing {
+                // Generated with https://codepen.io/sosuke/full/Pjoqqp to make white into ~nimiq-blue
+                filter: brightness(0.1) sepia(27%) saturate(3808%) hue-rotate(216deg) brightness(91%) contrast(89%);
+            }
+        }
     }
 
     .account-balance {

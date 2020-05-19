@@ -60,7 +60,7 @@ const app = new Vue({
 }).$mount('#app');
 
 router.afterEach((to, from) => {
-    console.debug('route-changed', from, to);
+    // console.debug('route-changed', from, to);
     app.$emit('route-changed', to, from);
 });
 
@@ -73,7 +73,7 @@ declare module '@vue/composition-api/dist/component/component' {
 }
 
 router.onReady(() => {
-    console.debug(router.currentRoute, window.history.state);
+    // console.debug(router.currentRoute, window.history.state);
 
     // Vue-Router sets a history.state. If a state exists, this means this was
     // a page-reload and we don't need to set up the initial routing anymore.

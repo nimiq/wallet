@@ -16,7 +16,7 @@ export const useContactsStore = createStore({
     },
     actions: {
         setContact(address: string, label: string) {
-            console.debug('Updating contact', address, label);
+            // console.debug('Updating contact', address, label);
             if (!label) {
                 // Remove contact
                 const contacts = { ...this.state.contacts };

@@ -37,11 +37,12 @@ module.exports = {
     },
     pwa: {
         name: 'Nimiq Wallet',
-        themeColor: '#F4F4F4',
+        themeColor: '#1F2348',
         msTileColor: '#F4F4F4',
         manifestOptions: {
             start_url: '/',
             display: 'standalone',
+            background_color: '#F4F4F4',
         },
     },
 };

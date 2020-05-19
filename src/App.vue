@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <main>
+        <main :class="routeClass">
             <Sidebar/>
 
             <transition name="delay">
@@ -21,22 +21,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
-import router, { provideRouter } from './router';
+import router, { provideRouter, Columns } from './router';
 import { TESTNET_ORIGIN } from './lib/Constants';
 
 export default defineComponent({
     name: 'app',
-    setup() {
+    setup(props, context) {
         provideRouter(router);
 
         const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
 
+        const routeClass = ref('');
+
+        watch(() => context.root.$route.meta, (meta) => {
+            if (!meta) return;
+            // Using a watcher, because the routeClass should only change when a route is visited
+            // that may require a column navigation. When opening modals, we don't want to change
+            // column.
+            switch (meta.column) {
+                case Columns.DYNAMIC:
+                    switch (context.root.$route.path) {
+                        case '/': routeClass.value = 'column-root'; break;
+                        case '/account': routeClass.value = 'column-account'; break;
+                        case '/transactions': routeClass.value = 'column-address'; break;
+                        default: break;
+                    }
+                    break;
+                case Columns.ACCOUNT: routeClass.value = 'column-account'; break;
+                case Columns.ADDRESS: routeClass.value = 'column-address'; break;
+                default: break;
+            }
+        });
+
         return {
             showPreviewNotice,
+            routeClass,
         };
     },
     components: {
@@ -68,6 +91,11 @@ export default defineComponent({
 
     @media (max-width: 1199px) {
         --account-column-width: 47rem;
+    }
+
+    @media (max-width: 500px) { // Full mobile breakpoint
+        --account-column-width: 100vw;
+        --address-column-width: 100vw;
     }
 
     @media (min-width: 1800px) {
@@ -108,6 +136,10 @@ export default defineComponent({
             z-index: 3;
         }
 
+        /deep/ .mobile-tap-area {
+            z-index: 4;
+        }
+
         .network {
             position: absolute;
             top: 0;
@@ -115,6 +147,38 @@ export default defineComponent({
             width: calc(100% - var(--sidebar-width));
             height: 100%;
             z-index: 0;
+        }
+    }
+
+    @media (max-width: 500px) { // Full mobile breakpoint
+        main {
+            width: calc(var(--sidebar-width) + 200vw);
+            transition: transform var(--transition-time) var(--nimiq-ease);
+
+            /deep/ .address-overview {
+                min-width: unset;
+            }
+
+            .network {
+                width: 100vw;
+            }
+
+            &.column-root {
+                /deep/ .mobile-tap-area {
+                    opacity: 1;
+                    pointer-events: all;
+                }
+            }
+
+            &.column-account {
+                // Account column
+                transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+
+            &.column-address {
+                // Address column
+                transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
+            }
         }
     }
 }
@@ -125,14 +189,21 @@ export default defineComponent({
     --transition-time: 0.75s;
 }
 
-.identicon img {
-    display: block;
-}
-
 @media (prefers-reduced-motion: reduce) {
     :root {
         --transition-time: 0s;
     }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    :root {
+        --transition-time: 0.35s;
+    }
+}
+
+.identicon img,
+.nq-icon {
+    display: block;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -146,10 +217,6 @@ export default defineComponent({
         position: absolute;
         left: 0;
         top: 0;
-    }
-
-    &.backdrop { // Modals
-        transition-duration: 0.4s;
     }
 }
 
@@ -191,6 +258,22 @@ export default defineComponent({
     .slide-right-enter &,
     .slide-right-leave-to & {
         transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
+    }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .groundfloor {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(100vw, 0, 0);
+        }
+    }
+
+    .address-overview {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(0, 0, 0);
+        }
     }
 }
 </style>

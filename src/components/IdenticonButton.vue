@@ -49,6 +49,6 @@ export default defineComponent({
         text-align: center;
         white-space: nowrap;
         overflow: hidden;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg , white, white calc(100% - 2rem), rgba(255,255,255, 0));
     }
 </style>

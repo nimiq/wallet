@@ -25,6 +25,12 @@ const AddressModal = () =>
 
 Vue.use(VueRouter);
 
+export enum Columns {
+    DYNAMIC,
+    ACCOUNT,
+    ADDRESS,
+}
+
 const routes: RouteConfig[] = [{
     path: '/',
     components: {
@@ -37,19 +43,22 @@ const routes: RouteConfig[] = [{
             addressOverview: AddressOverview,
         },
         name: 'root',
+        alias: ['/account', '/transactions'],
+        meta: { column: Columns.DYNAMIC },
         children: [{
-            path: '/send/:senderAddress',
+            path: '/send',
             components: {
                 modal: SendModal,
             },
             name: 'send',
-            props: { modal: true },
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/receive',
             components: {
                 modal: ReceiveModal,
             },
             name: 'receive',
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/transaction/:hash',
             components: {
@@ -57,6 +66,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'transaction',
             props: { modal: true },
+            meta: { column: Columns.ADDRESS },
         // }, {
         //     path: '/trade',
         //     components: {
@@ -70,6 +80,7 @@ const routes: RouteConfig[] = [{
                 modal: ScanQrModal,
             },
             name: 'scan',
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/address/:address',
             components: {
@@ -77,6 +88,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'address',
             props: { modal: true },
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/nimiq\\::requestUri',
             components: {
@@ -86,6 +98,7 @@ const routes: RouteConfig[] = [{
             props: {
                 modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
             },
+            meta: { column: Columns.ADDRESS },
         }],
     }, {
         path: '/settings',
@@ -93,6 +106,7 @@ const routes: RouteConfig[] = [{
             settings: Settings,
         },
         name: 'settings',
+        meta: { column: Columns.ACCOUNT },
     }],
 }, {
     path: '/network',
@@ -100,6 +114,7 @@ const routes: RouteConfig[] = [{
         basement: Network,
     },
     name: 'network',
+    meta: { column: Columns.ACCOUNT },
 }];
 
 const router = new VueRouter({

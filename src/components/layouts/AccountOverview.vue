@@ -23,13 +23,24 @@
             </button>
         </div>
 
+        <div class="mobile-menu-bar flex-row">
+            <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
+            <button class="reset" @click="$router.replace('/network')"><ConsensusIcon/></button>
+        </div>
+
         <AccountBalance />
 
         <h2 class="nq-label">
             {{ $t('Addresses') }}
-            <button v-if="canHaveMultipleAddresses" class="nq-button-s" @click="addAddress(activeAccountId)">+</button>
+            <button v-if="canHaveMultipleAddresses" class="nq-button-s flex-row" @click="addAddress(activeAccountId)">
+                <AddDesktopIcon/>
+            </button>
         </h2>
-        <AddressList />
+        <AddressList
+            :showAddAddressButton="canHaveMultipleAddresses"
+            @address-selected="onAddressSelected"
+            @add-address="addAddress(activeAccountId)"
+        />
 
         <div class="bitcoin-teaser flex-row">
             <BitcoinIcon/>
@@ -37,6 +48,8 @@
             <div class="flex-grow"></div>
             <label>{{ $t('Coming soon') }}</label>
         </div>
+
+        <MobileActionBar/>
     </div>
 </template>
 
@@ -46,17 +59,30 @@ import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import MenuIcon from '../icons/MenuIcon.vue';
+import ConsensusIcon from '../ConsensusIcon.vue';
+import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
+import MobileActionBar from '../MobileActionBar.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'account-overview',
-    setup() {
+    setup(props, context) {
         const { activeAccountInfo, activeAccountId } = useAccountStore();
 
         const canHaveMultipleAddresses = computed(() => activeAccountInfo.value
             ? activeAccountInfo.value.type !== AccountType.LEGACY
             : false);
+
+        const { width } = useWindowSize();
+
+        function onAddressSelected() {
+            if (width.value <= 500) { // Full mobile breakpoint
+                context.root.$router.push('/transactions');
+            }
+        }
 
         return {
             activeAccountInfo,
@@ -65,6 +91,7 @@ export default defineComponent({
             canHaveMultipleAddresses,
             addAddress,
             activeAccountId,
+            onAddressSelected,
         };
     },
     components: {
@@ -73,6 +100,10 @@ export default defineComponent({
         AccountBalance,
         AddressList,
         BitcoinIcon,
+        MenuIcon,
+        ConsensusIcon,
+        AddDesktopIcon,
+        MobileActionBar,
     },
 });
 </script>
@@ -95,6 +126,11 @@ export default defineComponent({
         --padding-bottom: 0;
     }
 
+    @media (max-width: 500px) { // Full mobile breakpoint
+        --padding-top: 1rem;
+        --padding-sides: 1rem;
+    }
+
     @media (min-width: 1800px) {
         --padding-top: 8rem; // 9rem per design
         --padding-sides: 8rem; // 9rem per design
@@ -114,25 +150,27 @@ export default defineComponent({
     > * {
         margin-bottom: var(--item-margin);
     }
+}
 
-    > h2 {
-        display: flex;
+h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 2rem var(--item-margin);
+
+    > button {
+        justify-content: center;
         align-items: center;
-        justify-content: space-between;
-        margin: 0 2rem var(--item-margin);
+        width: 4rem;
+        height: 4rem;
+        padding: 0;
+        margin: 0;
+        border-radius: 50%;
+        color: var(--text-60);
 
-        > button {
-            width: 4rem;
-            height: 4rem;
-            padding: 0;
-            padding-bottom: 0.125rem; // To move the plus sign up by one pixel, so it's more centered.
-            margin: 0;
-            min-width: 0;
-            font-weight: bold;
-            font-size: 2.75rem;
-            line-height: 4rem;
-            border-radius: 50%;
-            color: var(--text-60);
+        svg {
+            width: 1.75rem;
+            height: 1.75rem;
         }
     }
 }
@@ -143,16 +181,24 @@ export default defineComponent({
 
 .backup-warning {
     align-items: center;
-    padding: 1.25rem 1.25rem 1.25rem 1.75rem;
+    flex-wrap: wrap;
+    padding: 0.625rem 1rem;
     border-radius: 0.5rem;
     font-size: 2rem;
 
     .alert-icon {
-        margin-right: 1rem;
+        margin: 0 1rem;
+        flex-shrink: 0;
     }
 
     .alert-text {
+        margin: 0.625rem 0;
         font-weight: bold;
+        line-height: 3.375rem; // Same height as .nq-button-s
+    }
+
+    button {
+        margin: 0.625rem 0.25rem 0.625rem 1rem;
     }
 
     button .nq-icon {
@@ -175,6 +221,10 @@ export default defineComponent({
     }
 }
 
+.mobile-menu-bar {
+    display: none;
+}
+
 .address-list {
     flex-grow: 1;
     margin-bottom: 1rem;
@@ -187,8 +237,9 @@ export default defineComponent({
     color: var(--text-40);
     font-size: 2rem;
     font-weight: 600;
-    padding: 4rem;
+    padding: 0 4rem;
     margin: 0 -2rem;
+    flex-shrink: 0;
 
     @media (max-width: 1319px) {
         padding: 3rem;
@@ -208,6 +259,45 @@ export default defineComponent({
         padding: 0.75rem 1.75rem;
         border: 0.25rem solid var(--text-10);
         border-radius: 500px;
+    }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .mobile-menu-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        z-index: 1;
+
+        button {
+            padding: 1rem;
+            opacity: 0.3;
+        }
+
+        .menu-button {
+            width: 3.5rem;
+            height: 2.75rem;
+            box-sizing: content-box;
+        }
+    }
+
+    .account-balance {
+        margin-top: -4rem;
+    }
+
+    h2 {
+        display: none;
+    }
+
+    .bitcoin-teaser {
+        height: 11rem;
+        padding: 0 1.75rem;
+        margin: 0 0.5rem;
+    }
+
+    .mobile-action-bar {
+        margin: 0 calc(-1 * var(--padding-sides));
+        box-shadow: 0px 0px 60px rgba(31, 35, 72, 0.07);
     }
 }
 </style>

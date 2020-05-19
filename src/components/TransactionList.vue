@@ -84,6 +84,7 @@ import { parseData } from '../lib/DataFormatting';
 import { MAINNET_ORIGIN } from '../lib/Constants';
 import { isFundingCashlink } from '../lib/CashlinkDetection';
 import { createCashlink } from '../hub';
+import { useWindowSize } from '../composables/useWindowSize';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -145,7 +146,11 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Height of items in pixel
-        const itemSize = 72;
+        const { width: windowWidth } = useWindowSize();
+        const itemSize = computed(() => windowWidth.value > 500 // Full mobile breakpoint
+            ? 72
+            : 68, // 64px + 4px margin between items
+        );
 
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
@@ -195,7 +200,7 @@ export default defineComponent({
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
-                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize);
+                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
                 return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
             }
 
@@ -498,6 +503,19 @@ export default defineComponent({
 
     .no-search-results {
         opacity: 0.4;
+    }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .transaction-list {
+        .month-label {
+            padding-top: 4rem;
+        }
+
+        .vue-recycle-scroller {
+            padding-right: calc(0.25rem + var(--padding));
+            padding-left: calc(0.25rem + var(--padding));
+        }
     }
 }
 </style>

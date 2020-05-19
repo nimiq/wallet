@@ -54,12 +54,10 @@
                     ) }}
                 </button>
 
-                <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push({name: 'send', params: {senderAddress}})">
+                <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')">
                     <ArrowRightSmallIcon />Send
                 </button>
-                <button class="receive nq-button-s flex-row"
-                    @click="$router.push('/receive')">
+                <button class="receive nq-button-s flex-row" @click="$router.push('/receive')">
                     <ArrowRightSmallIcon />Receive
                 </button>
             </div>
@@ -77,6 +75,8 @@
             <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
         </template>
 
+        <MobileActionBar/>
+
         <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
 
         <transition name="modal">
@@ -93,6 +93,7 @@ import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
+import MobileActionBar from '../MobileActionBar.vue';
 
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -142,6 +143,7 @@ export default defineComponent({
         TransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
+        MobileActionBar,
     },
 });
 </script>
@@ -407,6 +409,15 @@ export default defineComponent({
         .amount {
             margin-bottom: 0.5rem;
         }
+    }
+
+    .mobile-action-bar {
+        margin: 0 calc(-1 * var(--padding));
+        box-shadow:
+            0px 0px 4.12454px rgba(31, 35, 72, 0.031357),
+            0px 0px 12.5187px rgba(31, 35, 72, 0.045),
+            0px 0px 32.0004px rgba(31, 35, 72, 0.058643),
+            0px 0px 80px rgba(31, 35, 72, 0.07);
     }
 }
 </style>

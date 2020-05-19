@@ -46,12 +46,11 @@ const routes: RouteConfig[] = [{
         alias: ['/account', '/transactions'],
         meta: { column: Columns.DYNAMIC },
         children: [{
-            path: '/send/:senderAddress',
+            path: '/send',
             components: {
                 modal: SendModal,
             },
             name: 'send',
-            props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
             path: '/receive',

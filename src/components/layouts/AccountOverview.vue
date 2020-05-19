@@ -48,6 +48,8 @@
             <div class="flex-grow"></div>
             <label>{{ $t('Coming soon') }}</label>
         </div>
+
+        <MobileActionBar/>
     </div>
 </template>
 
@@ -60,6 +62,7 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
+import MobileActionBar from '../MobileActionBar.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -100,6 +103,7 @@ export default defineComponent({
         MenuIcon,
         ConsensusIcon,
         AddDesktopIcon,
+        MobileActionBar,
     },
 });
 </script>
@@ -289,6 +293,11 @@ h2 {
         height: 11rem;
         padding: 0 1.75rem;
         margin: 0 0.5rem;
+    }
+
+    .mobile-action-bar {
+        margin: 0 calc(-1 * var(--padding-sides));
+        box-shadow: 0px 0px 60px rgba(31, 35, 72, 0.07);
     }
 }
 </style>

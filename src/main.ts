@@ -53,11 +53,16 @@ window.setTimeout(
 const { language } = useSettingsStore();
 loadLanguageAsync(language.value);
 
-new Vue({
+const app = new Vue({
     router,
     i18n,
     render: (h) => h(App),
 }).$mount('#app');
+
+router.afterEach((to, from) => {
+    console.debug('route-changed', from, to);
+    app.$emit('route-changed', to, from);
+});
 
 launchNetwork();
 
@@ -66,3 +71,31 @@ declare module '@vue/composition-api/dist/component/component' {
         readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }
+
+router.onReady(() => {
+    console.debug(router.currentRoute, window.history.state);
+
+    // Vue-Router sets a history.state. If a state exists, this means this was
+    // a page-reload and we don't need to set up the initial routing anymore.
+    if (window.history.state) return;
+
+    const startPath = router.currentRoute.path === '/'
+        ? window.outerWidth <= 500 // Full mobile breakpoint
+            ? '/account' // Navigate to the account column (start view)
+            : false // On Desktop, stay on root path
+        : router.currentRoute.path;
+
+    const goToStartPath = () => {
+        if (!startPath) return;
+        // Use push, so the user is able to use the OS' back button
+        // to open the sidebar.
+        router.push(startPath);
+    };
+
+    if (router.currentRoute.path !== '/') {
+        app.$once('route-changed', () => Vue.nextTick().then(goToStartPath));
+        router.replace('/');
+    } else {
+        goToStartPath();
+    }
+});

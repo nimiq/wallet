@@ -21,11 +21,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
-import router, { provideRouter } from './router';
+import router, { provideRouter, Columns } from './router';
 import { TESTNET_ORIGIN } from './lib/Constants';
 
 export default defineComponent({
@@ -35,27 +35,25 @@ export default defineComponent({
 
         const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
 
-        if (window.outerWidth <= 500) { // Full mobile breakpoint
-            // Navigate to the account column (start view)
-            // Use push by default, so the user is able to use the OS' back button
-            // to open the sidebar.
-            onMounted(() => {
-                context.root.$router.push('/account');
-            });
-        }
-
         const routeClass = ref('');
 
-        watch(() => context.root.$route.path, (path) => {
+        watch(() => context.root.$route.meta, (meta) => {
+            if (!meta) return;
             // Using a watcher, because the routeClass should only change when a route is visited
             // that may require a column navigation. When opening modals, we don't want to change
             // column.
-            switch (path) {
-                case '/': routeClass.value = 'root'; break;
-                case '/account': routeClass.value = 'account'; break;
-                case '/transactions': routeClass.value = 'transactions'; break;
-                case '/network': routeClass.value = 'network'; break;
-                case '/settings': routeClass.value = 'settings'; break;
+            switch (meta.column) {
+                case Columns.DYNAMIC:
+                    switch (context.root.$route.path) {
+                        case '/': routeClass.value = 'column-root'; break;
+                        case '/account': routeClass.value = 'column-account'; break;
+                        case '/transactions': routeClass.value = 'column-address'; break;
+                        default: break;
+                    }
+                    break;
+                case Columns.ACCOUNT: routeClass.value = 'column-account'; break;
+                case Columns.ADDRESS: routeClass.value = 'column-address'; break;
+                default: break;
             }
         });
 
@@ -165,21 +163,19 @@ export default defineComponent({
                 width: 100vw;
             }
 
-            &.root {
+            &.column-root {
                 /deep/ .mobile-tap-area {
                     opacity: 1;
                     pointer-events: all;
                 }
             }
 
-            &.account,
-            &.network,
-            &.settings {
+            &.column-account {
                 // Account column
                 transform: translateX(calc(-1 * var(--sidebar-width)));
             }
 
-            &.transactions {
+            &.column-address {
                 // Address column
                 transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
             }

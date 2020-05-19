@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="33.75"
+   inkscape:export-xdpi="33.75"
+   inkscape:export-filename="/home/soeren/nimiq/wallet/public/img/icons/apple-touch-icon.png"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="icon-gradient-on-blue.svg"
+   id="svg1155"
+   version="1.1"
+   viewBox="0 0 512 512"
+   height="512"
+   width="512">
+  <metadata
+     id="metadata1159">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>nimiq</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:current-layer="svg1155"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="390.79175"
+     inkscape:cx="418.94163"
+     inkscape:zoom="0.53636364"
+     fit-margin-bottom="0"
+     fit-margin-right="0"
+     fit-margin-left="0"
+     fit-margin-top="0"
+     showgrid="false"
+     id="namedview1157"
+     inkscape:window-height="977"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title1146">nimiq</title>
+  <desc
+     id="desc1148">Created with Sketch.</desc>
+  <rect
+     transform="rotate(90)"
+     ry="89.824997"
+     y="-512"
+     x="2.9292487e-15"
+     height="512"
+     width="512"
+     id="rect1704"
+     style="opacity:1;fill:url(#radialGradient847);fill-opacity:1;stroke:none;stroke-width:1.70666659;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <defs
+     id="defs1150">
+    <linearGradient
+       id="linearGradient841"
+       inkscape:collect="always">
+      <stop
+         id="stop837"
+         offset="0"
+         style="stop-color:#260133;stop-opacity:1" />
+      <stop
+         id="stop839"
+         offset="1"
+         style="stop-color:#1f2348;stop-opacity:1" />
+    </linearGradient>
+    <style
+       id="style1593">.cls-1{fill:url(#radial-gradient);}</style>
+    <radialGradient
+       gradientTransform="matrix(5.6323013,0,0,5.6323013,53.251171,75.766392)"
+       id="radial-gradient"
+       cx="54.17"
+       cy="63.17"
+       r="72.02"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#ec991c"
+         id="stop1595" />
+      <stop
+         offset="1"
+         stop-color="#e9b213"
+         id="stop1597" />
+    </radialGradient>
+    <radialGradient
+       r="256"
+       fy="-457.20047"
+       fx="454.58304"
+       cy="-457.20047"
+       cx="454.58304"
+       gradientTransform="matrix(-1.9999996,1.6216618e-7,-1.6401428e-7,-1.9999999,1421.1658,-1426.4009)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient847"
+       xlink:href="#linearGradient841"
+       inkscape:collect="always" />
+  </defs>
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:url(#radial-gradient);stroke-width:5.63230133"
+     class="cls-1"
+     d="M 454.27107,239.1031 369.78654,92.663262 A 33.793808,33.793808 0 0 0 340.49858,75.766358 H 171.52954 A 33.793808,33.793808 0 0 0 142.2979,92.663262 L 57.757052,239.1031 a 33.793808,33.793808 0 0 0 0,33.7938 l 84.484518,146.43984 a 33.793808,33.793808 0 0 0 29.28797,16.8969 h 168.96904 a 33.793808,33.793808 0 0 0 29.23164,-16.8969 L 454.21474,272.8969 a 33.793808,33.793808 0 0 0 0.0564,-33.7938 z"
+     id="path1604" />
+</svg>

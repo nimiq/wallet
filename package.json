@@ -1,5 +1,5 @@
 {
-  "name": "safe-next",
+  "name": "@nimiq/wallet",
   "version": "0.1.0",
   "private": false,
   "author": "Nimiq (https://www.nimiq.com)",

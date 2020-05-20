@@ -64,7 +64,7 @@ module.exports = {
         */
     },
     overrides: [{
-            files: ['src/components/icons/*'],
+            files: ['src/components/icons/**/*'],
             rules: {
                 'max-len': 'off',
             },

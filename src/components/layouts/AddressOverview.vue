@@ -282,6 +282,12 @@ export default defineComponent({
     margin: 0 1rem;
     align-items: center;
 
+    padding: 1.125rem 2rem;
+    height: unset;
+    line-height: 1;
+    border-radius: 500px;
+    font-size: 2rem;
+
     .nq-icon {
         width: 1.5rem;
         height: 1.5rem;
@@ -293,17 +299,27 @@ export default defineComponent({
     transform: rotateZ(-90deg);
 }
 
-.receive .nq-icon {
-    transform: rotateZ(90deg);
+.receive {
+    margin-right: 0;
+
+    .nq-icon {
+        transform: rotateZ(90deg);
+    }
 }
 
 .search-bar {
-    margin-right: 5rem;
+    margin-right: 3rem;
 }
 
 .unclaimed-cashlinks {
     flex-shrink: 0;
     margin-right: 1rem;
+
+    padding: 1.125rem 2rem;
+    height: unset;
+    line-height: 1;
+    border-radius: 500px;
+    font-size: 2rem;
 
     &:not(.active) {
         background: none;

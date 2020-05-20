@@ -8,7 +8,13 @@
         <input
             ref="searchBarInput"
             type="text"
-            :placeholder="fullWidth ? $t('Search Transactions by Contact, Address, etc.') : $t('Search Transactions')"
+            :placeholder="width < 50
+                ? ''
+                : width > 340
+                    ? $t('Search Transactions by Contact, Address, etc.')
+                    : width > 150
+                        ? $t('Search Transactions')
+                        : $t('Search')"
             @input="$emit('input', $event)" />
     </div>
 </template>
@@ -20,7 +26,7 @@ export default defineComponent({
     name: 'search-bar',
     setup() {
         const searchBarInput = ref<HTMLInputElement | null>(null);
-        const fullWidth = ref(true);
+        const width = ref(1000);
 
         // FIXME: Remove when Typescript supports ResizeObserver
         type ResizeObserver = any;
@@ -32,8 +38,7 @@ export default defineComponent({
                 // @ts-ignore ResizeObserver not supported by Typescript yet
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
-                    const width = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
-                    fullWidth.value = width > 340;
+                    width.value = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
                 });
                 observer.observe(searchBarInput.value);
             }
@@ -47,7 +52,7 @@ export default defineComponent({
 
         return {
             searchBarInput,
-            fullWidth,
+            width,
         };
     },
 });

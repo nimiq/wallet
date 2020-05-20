@@ -519,5 +519,15 @@ export default defineComponent({
     .after-first-tx {
         margin-top: 6rem;
     }
+
+    .unclaimed-cashlink-list {
+        padding: 0.5rem;
+        margin: 0;
+
+        .top-right {
+            top: 1rem;
+            right: 1rem;
+        }
+    }
 }
 </style>

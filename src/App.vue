@@ -14,7 +14,7 @@
             </transition>
         </main>
 
-        <transition name="fade">
+        <transition name="modal">
             <PreviewNoticeModal v-if="showPreviewNotice" emitClose @close="showPreviewNotice = false"/>
         </transition>
     </div><!-- #app -->

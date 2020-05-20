@@ -2,7 +2,6 @@
     <button
         v-if="activeAccountInfo"
         class="account-menu reset flex-row"
-        :class="{'active': menuOpen}"
         v-click-outside="closeMenu"
         @click="toggleMenu"
         @keydown.esc="closeMenu"
@@ -24,45 +23,47 @@
         </div>
 
         <!-- Submenu -->
-        <div class="menu flex-column">
-            <div class="current-account">
-                <AccountMenuItem :id="activeAccountId"/>
-                <button v-if="canExportFile" class="item reset flex-row"
-                    @click="backup(activeAccountId, { fileOnly: true })">
-                    {{ $t('Save Login File') }}
-                    <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
-                </button>
-                <button v-if="canExportWords" class="item reset flex-row"
-                    @click="backup(activeAccountId, { wordsOnly: true })">
-                    {{ $t('Create Backup') }}
-                    <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
-                </button>
-                <button class="item reset" @click="rename(activeAccountId)">
-                    {{ $t('Rename') }}
-                </button>
-                <button v-if="canChangePassword" class="item reset" @click="changePassword(activeAccountId)">
-                    {{ $t('Change Password') }}
-                </button>
-                <!-- <div class="separator"></div> -->
-                <button class="item reset logout" @click="logout(activeAccountId)" disabled>
-                    <ArrowRightSmallIcon/>{{ $t('Logout') }}
-                </button>
-            </div>
+        <transition name="modal">
+            <Modal v-if="menuOpen" class="menu" emitClose @close="closeMenu" @click.native.stop>
+                <div class="current-account">
+                    <AccountMenuItem :id="activeAccountId"/>
+                    <button v-if="canExportFile" class="item reset flex-row"
+                        @click="backup(activeAccountId, { fileOnly: true })">
+                        {{ $t('Save Login File') }}
+                        <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
+                    </button>
+                    <button v-if="canExportWords" class="item reset flex-row"
+                        @click="backup(activeAccountId, { wordsOnly: true })">
+                        {{ $t('Create Backup') }}
+                        <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
+                    </button>
+                    <button class="item reset" @click="rename(activeAccountId)">
+                        {{ $t('Rename') }}
+                    </button>
+                    <button v-if="canChangePassword" class="item reset" @click="changePassword(activeAccountId)">
+                        {{ $t('Change Password') }}
+                    </button>
+                    <!-- <div class="separator"></div> -->
+                    <button class="item reset logout" @click="logout(activeAccountId)" disabled>
+                        <ArrowRightSmallIcon/>{{ $t('Logout') }}
+                    </button>
+                </div>
 
-            <div class="account-list">
-                <AccountMenuItem
-                    v-for="id of otherAccountIds" :key="id"
-                    :id="id"
-                    tag="button"
-                    class="reset"
-                    @click.native.prevent="selectAccount(id) && closeMenu()"
-                />
-            </div>
+                <div class="account-list">
+                    <AccountMenuItem
+                        v-for="id of otherAccountIds" :key="id"
+                        :id="id"
+                        tag="button"
+                        class="reset"
+                        @click.native.stop="selectAccount(id); closeMenu();"
+                    />
+                </div>
 
-            <button class="nq-button-s add-account" @click="onboard">
-                {{ $t('Add Account') }}
-            </button>
-        </div>
+                <button class="nq-button-s add-account" @click="onboard">
+                    {{ $t('Add Account') }}
+                </button>
+            </Modal>
+        </transition>
     </button>
 </template>
 
@@ -75,6 +76,7 @@ import vClickOutside from 'v-click-outside';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import AccountMenuItem from './AccountMenuItem.vue';
+import Modal from './modals/Modal.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
@@ -148,6 +150,7 @@ export default defineComponent({
         AlertTriangleIcon,
         AccountMenuItem,
         Identicon,
+        Modal,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -207,26 +210,37 @@ export default defineComponent({
     opacity: 1;
 }
 
-.menu {
-    display: none;
-    position: absolute;
-    left: calc(100% + 1rem);
-    bottom: -13.75rem;
-    background: white;
-    width: 33rem;
-    max-height: calc(100vh - 4rem);
-    padding: 1rem;
-    border-radius: .75rem;
-    color: var(--nimiq-blue);
-    font-size: 2rem;
-    font-weight: 600;
-    z-index: 100;
-    cursor: auto;
-    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
+@media (min-width: 500px) {
+    .menu {
+        display: block;
+
+        /deep/ .wrapper {
+            position: absolute;
+            left: calc(var(--sidebar-width) - 1rem);
+            bottom: 2rem;
+            max-height: calc(100vh - 4rem);
+
+            .small-page {
+                width: 33rem;
+            }
+        }
+    }
 }
 
-.account-menu.active .menu {
-    display: flex;
+.menu {
+    position: fixed;
+    cursor: auto;
+
+    /deep/ .wrapper {
+        .small-page {
+            padding: 1rem;
+            height: unset;
+        }
+    }
+
+    /deep/ .close-button {
+        display: none;
+    }
 }
 
 .current-account {

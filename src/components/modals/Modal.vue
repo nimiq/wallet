@@ -106,7 +106,7 @@ export default defineComponent({
     bottom: 0;
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .backdrop {
         justify-content: flex-end;
         position: absolute;
@@ -154,7 +154,7 @@ export default defineComponent({
     transform: translateY(calc(-1.1 * ((100vh - 100%) / 2 + 100%)));
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .modal-enter-active, .modal-leave-active {
         transition:
             background-color var(--transition-time) var(--nimiq-ease),

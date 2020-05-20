@@ -147,7 +147,7 @@ export default defineComponent({
 
         // Height of items in pixel
         const { width: windowWidth } = useWindowSize();
-        const itemSize = computed(() => windowWidth.value > 500 // Full mobile breakpoint
+        const itemSize = computed(() => windowWidth.value > 700 // Full mobile breakpoint
             ? 72
             : 68, // 64px + 4px margin between items
         );
@@ -506,7 +506,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .month-label {
         padding-top: 4rem;
     }

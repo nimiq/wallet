@@ -272,7 +272,7 @@ export default defineComponent({
         display: none;
     }
 
-    @media (max-width: 500px) { // Full mobile breakpoint
+    @media (max-width: 700px) { // Full mobile breakpoint
         .active-box {
             display: none;
         }

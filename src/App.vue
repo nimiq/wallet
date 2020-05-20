@@ -93,7 +93,7 @@ export default defineComponent({
         --account-column-width: 47rem;
     }
 
-    @media (max-width: 500px) { // Full mobile breakpoint
+    @media (max-width: 700px) { // Full mobile breakpoint
         --account-column-width: 100vw;
         --address-column-width: 100vw;
     }
@@ -150,7 +150,7 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: 500px) { // Full mobile breakpoint
+    @media (max-width: 700px) { // Full mobile breakpoint
         main {
             width: calc(var(--sidebar-width) + 200vw);
             transition: transform var(--transition-time) var(--nimiq-ease);
@@ -195,7 +195,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     :root {
         --transition-time: 0.5s;
     }
@@ -261,7 +261,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .groundfloor {
         &.slide-right-enter,
         &.slide-right-leave-to {

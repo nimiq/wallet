@@ -80,7 +80,7 @@ router.onReady(() => {
     if (window.history.state) return;
 
     const startPath = router.currentRoute.path === '/'
-        ? window.outerWidth <= 500 // Full mobile breakpoint
+        ? window.outerWidth <= 700 // Full mobile breakpoint
             ? '/account' // Navigate to the account column (start view)
             : false // On Desktop, stay on root path
         : router.currentRoute.path;

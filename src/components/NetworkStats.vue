@@ -66,7 +66,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .stat {
         padding: 0 1.5rem;
 

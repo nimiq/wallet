@@ -162,7 +162,7 @@ export default defineComponent({
         --padding: 3rem;
     }
 
-    @media (max-width: 500px) { // Full mobile breakpoint
+    @media (max-width: 700px) { // Full mobile breakpoint
         --padding: 1rem;
     }
 
@@ -348,7 +348,7 @@ export default defineComponent({
     font-size: 2rem;
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .address-overview {
         position: relative;
     }

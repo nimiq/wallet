@@ -129,7 +129,7 @@ export default defineComponent({
         const { width: windowWidth } = useWindowSize();
 
         function goToAccount() {
-            const path = windowWidth.value <= 500 // Full mobile breakpoint
+            const path = windowWidth.value <= 700 // Full mobile breakpoint
                 ? '/account'
                 : '/';
             context.root.$router.push(path).catch(() => { /* ignore */ });
@@ -266,7 +266,7 @@ export default defineComponent({
     }
 }
 
-@media (min-width: 500px) {
+@media (min-width: 700px) { // Full mobile breakpoint
     .menu {
         display: block;
 
@@ -409,7 +409,7 @@ export default defineComponent({
     align-self: flex-start;
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .menu {
         /deep/ .wrapper {
             .small-page {

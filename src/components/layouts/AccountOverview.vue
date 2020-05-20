@@ -79,7 +79,7 @@ export default defineComponent({
         const { width } = useWindowSize();
 
         function onAddressSelected() {
-            if (width.value <= 500) { // Full mobile breakpoint
+            if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');
             }
         }
@@ -126,7 +126,7 @@ export default defineComponent({
         --padding-bottom: 0;
     }
 
-    @media (max-width: 500px) { // Full mobile breakpoint
+    @media (max-width: 700px) { // Full mobile breakpoint
         --padding-top: 1rem;
         --padding-sides: 1rem;
     }
@@ -263,7 +263,7 @@ h2 {
     }
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .mobile-menu-bar {
         display: flex;
         justify-content: space-between;

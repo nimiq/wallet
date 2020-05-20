@@ -72,7 +72,7 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-@media (max-width: 500px) { // Full mobile breakpoint
+@media (max-width: 700px) { // Full mobile breakpoint
     .page-body {
         padding: 0;
     }

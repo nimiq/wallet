@@ -2,9 +2,8 @@
     <button
         v-if="activeAccountInfo"
         class="account-menu reset flex-row"
-        v-click-outside="closeMenu"
-        @click="toggleMenu"
-        @keydown.esc="closeMenu"
+        @click="goToAccount"
+        ref="$button"
     >
         <div v-if="activeAccountInfo.type === AccountType.BIP39" class="icon" :class="backgroundColor">
             <LoginFileIcon/>
@@ -21,6 +20,9 @@
                 : activeAccountInfo.label
             }}
         </div>
+        <button class="reset menu-button" @click.stop="openMenu">
+            <MenuDotsIcon/>
+        </button>
 
         <!-- Submenu -->
         <transition name="modal">
@@ -29,25 +31,30 @@
                     <AccountMenuItem :id="activeAccountId"/>
                     <button v-if="canExportFile" class="item reset flex-row"
                         @click="backup(activeAccountId, { fileOnly: true })">
-                        {{ $t('Save Login File') }}
+                        <LoginFileDownloadIcon/>{{ $t('Save Login File') }}
                         <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
                     </button>
                     <button v-if="canExportWords" class="item reset flex-row"
                         @click="backup(activeAccountId, { wordsOnly: true })">
-                        {{ $t('Create Backup') }}
+                        <BackupIcon/>{{ $t('Create backup') }}
                         <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
                     </button>
-                    <button class="item reset" @click="rename(activeAccountId)">
-                        {{ $t('Rename') }}
+                    <button class="item reset flex-row" @click="rename(activeAccountId)">
+                        <RenameIcon/>{{ $t('Rename') }}
                     </button>
-                    <button v-if="canChangePassword" class="item reset" @click="changePassword(activeAccountId)">
-                        {{ $t('Change Password') }}
+                    <button
+                        v-if="canChangePassword"
+                        class="item reset flex-row"
+                        @click="changePassword(activeAccountId)"
+                    >
+                        <ChangePasswordIcon/>{{ $t('Change password') }}
                     </button>
-                    <!-- <div class="separator"></div> -->
-                    <button class="item reset logout" @click="logout(activeAccountId)" disabled>
-                        <ArrowRightSmallIcon/>{{ $t('Logout') }}
+                    <button class="item reset logout flex-row" @click="logout(activeAccountId)" disabled>
+                        <LogoutArrowIcon/>{{ $t('Logout') }}
                     </button>
                 </div>
+
+                <div class="separator"></div>
 
                 <div class="account-list">
                     <AccountMenuItem
@@ -55,7 +62,7 @@
                         :id="id"
                         tag="button"
                         class="reset"
-                        @click.native.stop="selectAccount(id); closeMenu();"
+                        @click.native.stop="onAccountSelected(id)"
                     />
                 </div>
 
@@ -69,7 +76,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { ArrowRightSmallIcon, AlertTriangleIcon, Identicon } from '@nimiq/vue-components';
+import { AlertTriangleIcon, Identicon, MenuDotsIcon } from '@nimiq/vue-components';
 // @ts-ignore Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 
@@ -77,28 +84,31 @@ import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import AccountMenuItem from './AccountMenuItem.vue';
 import Modal from './modals/Modal.vue';
+import LoginFileDownloadIcon from './icons/AccountMenu/LoginFileDownloadIcon.vue';
+import BackupIcon from './icons/AccountMenu/BackupIcon.vue';
+import RenameIcon from './icons/AccountMenu/RenameIcon.vue';
+import ChangePasswordIcon from './icons/AccountMenu/ChangePasswordIcon.vue';
+import LogoutArrowIcon from './icons/AccountMenu/LogoutArrowIcon.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
+import { useWindowSize } from '../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { state: addressState, accountBalance } = useAddressStore();
 
+        const $button = ref<HTMLButtonElement>(null);
+
         const menuOpen = ref(false);
-        function toggleMenu(event: Event) {
-            if (context.root.$route.name !== 'root') {
-                context.root.$router.push('/');
-                return;
-            }
-            if (!event.target) return;
-            if ((event.target as Element).matches('.menu, .menu *')) return;
-            menuOpen.value = !menuOpen.value;
+        function openMenu() {
+            menuOpen.value = true;
         }
         function closeMenu() {
             menuOpen.value = false;
+            $button.value!.blur();
         }
 
         const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
@@ -116,6 +126,21 @@ export default defineComponent({
         const otherAccountIds = computed(() => Object.keys(accountInfos.value)
             .filter((id) => id !== activeAccountId.value));
 
+        const { width: windowWidth } = useWindowSize();
+
+        function goToAccount() {
+            const path = windowWidth.value <= 500 // Full mobile breakpoint
+                ? '/account'
+                : '/';
+            context.root.$router.push(path).catch(() => { /* ignore */ });
+        }
+
+        function onAccountSelected(id: string) {
+            selectAccount(id);
+            closeMenu();
+            goToAccount();
+        }
+
         return {
             otherAccountIds,
             activeAccountInfo,
@@ -123,7 +148,7 @@ export default defineComponent({
             backgroundColor,
             accountBalance,
             menuOpen,
-            toggleMenu,
+            openMenu,
             closeMenu,
             selectAccount,
             canExportFile,
@@ -136,6 +161,9 @@ export default defineComponent({
             onboard,
             AccountType,
             firstAddressInfo,
+            goToAccount,
+            onAccountSelected,
+            $button,
         };
     },
     mounted() {
@@ -146,11 +174,16 @@ export default defineComponent({
     components: {
         LoginFileIcon,
         LedgerIcon,
-        ArrowRightSmallIcon,
+        MenuDotsIcon,
         AlertTriangleIcon,
         AccountMenuItem,
         Identicon,
         Modal,
+        LoginFileDownloadIcon,
+        BackupIcon,
+        RenameIcon,
+        ChangePasswordIcon,
+        LogoutArrowIcon,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -200,14 +233,37 @@ export default defineComponent({
 
 .account-menu > .label {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
     opacity: 0.7;
+    word-wrap: break-word;
 
     transition: opacity 300ms var(--nimiq-ease);
 }
 
 .account-menu:hover .label,
-.account-menu:focus .label {
+.account-menu:focus .label,
+.account-menu.active .label {
     opacity: 1;
+}
+
+.menu-button {
+    align-self: stretch;
+    margin: -1rem -1rem -1rem 0.5rem;
+    flex-shrink: 0;
+    font-size: 2.5rem;
+    width: 4rem;
+    text-align: center;
+    border-radius: 0 0.5rem 0.5rem 0;
+
+    svg {
+        margin: auto;
+    }
+
+    &:hover,
+    &:focus {
+        background: rgba(255, 255, 255, 0.1);
+    }
 }
 
 @media (min-width: 500px) {
@@ -221,8 +277,13 @@ export default defineComponent({
             max-height: calc(100vh - 4rem);
 
             .small-page {
-                width: 33rem;
+                width: 34rem;
+                border-radius: 0.75rem;
             }
+        }
+
+        /deep/ .close-button {
+            display: none;
         }
     }
 }
@@ -237,32 +298,35 @@ export default defineComponent({
             height: unset;
         }
     }
-
-    /deep/ .close-button {
-        display: none;
-    }
 }
 
 .current-account {
     padding: 1rem;
-    background: var(--nimiq-highlight-bg);
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .current-account .account-menu-item {
     margin-bottom: 2rem;
 }
 
-.current-account .account-menu-item ::v-deep .nq-icon {
+.current-account .account-menu-item /deep/ .nq-icon {
     display: none;
 }
 
+.separator {
+    margin: 0 0.5rem 0.5rem 0.5rem;
+    background: var(--nimiq-blue);
+    height: 0.1875rem;
+    opacity: .14;
+    flex-shrink: 0;
+    border-radius: 1rem;
+}
+
 .menu .item {
+    align-items: center;
     line-height: 3.75rem;
     width: 100%;
-    padding: 0.25rem 1rem;
-    margin-bottom: .5rem;
+    padding: 0.375rem 0.25rem;
     white-space: nowrap;
     // background: transparent;
     border-radius: 0.5rem;
@@ -275,19 +339,13 @@ export default defineComponent({
         color 0.2s var(--nimiq-ease);
 }
 
-.menu .item.flex-row {
-    justify-content: space-between;
-    align-items: center;
-}
-
 .menu .item:disabled {
-    opacity: 0.5;
+    opacity: 0.2;
     pointer-events: none;
 }
 
 .menu .logout {
     margin-bottom: 0;
-    color: var(--nimiq-red);
 }
 
 .menu .item:hover,
@@ -306,26 +364,18 @@ export default defineComponent({
     color: white;
 }
 
-.menu .item .nq-icon.alert {
+.menu .item .alert {
+    margin-left: auto;
     font-size: 2.5rem;
     color: var(--nimiq-orange);
 }
 
-.menu .logout .nq-icon {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: .25rem;
-    font-size: 1.5rem;
-    margin-right: 1rem;
+.menu button svg:first-child {
+    width: 2.75rem;
+    height: 3rem;
+    margin: -0.125rem 1rem -0.125rem 0;
+    opacity: 0.6;
 }
-
-// .menu .separator {
-//     margin-bottom: 0.5rem;
-//     background: var(--nimiq-blue);
-//     width: 100%;
-//     height: 1px;
-//     opacity: .1;
-// }
 
 .account-list {
     margin: 1rem 0;
@@ -357,5 +407,25 @@ export default defineComponent({
 .menu .add-account {
     margin: 1rem;
     align-self: flex-start;
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .menu {
+        /deep/ .wrapper {
+            .small-page {
+                padding: 2rem;
+                font-size: 2.25rem;
+            }
+        }
+
+        .item {
+            padding-top: 0.875rem;
+            padding-bottom: 0.875rem;
+        }
+    }
+
+    // .account-list .account-menu-item {
+    //     opacity: 1;
+    // }
 }
 </style>

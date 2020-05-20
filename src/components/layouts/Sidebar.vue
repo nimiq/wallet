@@ -32,7 +32,7 @@
 
         <div class="flex-grow"></div>
 
-        <AccountMenu/>
+        <AccountMenu :class="{'active': $route.name === 'root'}"/>
 
         <button
             class="network reset flex-row"

@@ -197,7 +197,7 @@ export default defineComponent({
 
 @media (max-width: 500px) { // Full mobile breakpoint
     :root {
-        --transition-time: 0.35s;
+        --transition-time: 0.5s;
     }
 }
 

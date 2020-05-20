@@ -65,10 +65,19 @@ export default defineComponent({
     flex-direction: column;
     justify-content: space-evenly;
     padding: 1rem;
+}
 
+.qr-scanner {
+    border-radius: 0.5rem;
+    flex-grow: 1;
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .page-body {
+        padding: 0;
+    }
     .qr-scanner {
-        border-radius: 0.5rem;
-        flex-grow: 1;
+        border-radius: 2.5rem 2.5rem 0 0;
     }
 }
 </style>

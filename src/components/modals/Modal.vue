@@ -78,6 +78,7 @@ export default defineComponent({
         margin: 0;
         width: 52.5rem; /* 420px */
         max-width: 100vw;
+        max-height: 96vh;
     }
 }
 

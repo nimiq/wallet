@@ -11,8 +11,9 @@
                         : isIncoming
                             ? $t('Transaction from')
                             : $t('Transaction to')
-            }}
-            {{ peerLabel || peerAddress.substring(0, 9) }}
+            }}<label><i v-html="'&nbsp;'"></i>{{
+                peerLabel || peerAddress.substring(0, 9)
+            }}</label>
 
             <span
                 v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
@@ -97,8 +98,6 @@
                         @click="manageCashlink(hubCashlink.address)">Show Link</button>
                 </div>
             </div>
-
-            <hr>
 
             <div class="amount-and-message flex-column">
                 <Amount :amount="transaction.value" :class="{
@@ -513,16 +512,8 @@ export default defineComponent({
     margin-top: 3rem;
 }
 
-hr {
-    border: none;
-    border-top: 1px solid rgba(31, 35, 72, 0.1);
-    margin: 0 -2rem;
-    width: calc(100% + 4rem);
-}
-
 .amount-and-message {
     align-items: center;
-    margin-top: 3.5rem; // Same as .copyable margin-bottom
 
     .amount {
         font-size: 5rem;
@@ -593,6 +584,48 @@ hr {
     .fee {
         display: inline-block;
         margin-top: 1.25rem;
+    }
+}
+
+@media (max-width: 500px) { // Full mobile breakpoint
+    .page-header {
+        /deep/ .nq-h1 {
+            margin-left: 3.5rem;
+            margin-right: 3.5rem;
+            font-size: 2.75rem;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+
+        &.inline-header /deep/ .nq-h1 {
+            align-self: unset;
+        }
+
+        &:not(.inline-header) {
+            /deep/ .nq-h1 {
+                white-space: normal;
+            }
+
+            label {
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .address-info {
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .sender-recipient {
+        padding: 0;
+    }
+}
+
+@media (max-width: 374px) {
+    .page-body {
+        padding-left: 2rem;
+        padding-right: 2rem;
     }
 }
 </style>

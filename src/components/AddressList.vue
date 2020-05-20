@@ -213,6 +213,7 @@ export default defineComponent({
         transition: color 300ms var(--nimiq-ease);
 
         .nq-icon {
+            display: inline-block;
             font-size: 1.75rem;
         }
     }

@@ -202,6 +202,7 @@ h2 {
     }
 
     button .nq-icon {
+        display: inline-block;
         font-size: 1.25rem;
         vertical-align: middle;
         margin-bottom: 0.25rem;

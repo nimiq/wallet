@@ -160,7 +160,6 @@ export default defineComponent({
 
 .account-menu {
     position: relative;
-    width: 100%;
     padding: 1rem;
     background: rgba(255, 255, 255, 0);
     border-radius: 0.5rem;

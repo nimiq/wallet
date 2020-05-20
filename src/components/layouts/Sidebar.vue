@@ -164,14 +164,16 @@ export default defineComponent({
     margin: 0 1rem;
 }
 
-.account-list {
-    flex-grow: 1;
+.account-menu,
+.settings,
+.network {
+    margin: 0 0.5rem;
+    align-self: stretch;
 }
 
 .settings,
 .network {
     align-items: center;
-    width: 100%;
     color: rgba(255, 255, 255, .3);
     margin-top: 1rem;
     padding: 1.75rem 1.25rem;

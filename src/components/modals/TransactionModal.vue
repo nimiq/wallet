@@ -342,8 +342,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .page-header {
     /deep/ .nq-h1 {
-        margin-left: 1rem;
-        margin-right: 1rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
         white-space: nowrap;
         overflow: hidden;
         margin-bottom: 1rem;
@@ -590,8 +590,6 @@ export default defineComponent({
 @media (max-width: 500px) { // Full mobile breakpoint
     .page-header {
         /deep/ .nq-h1 {
-            margin-left: 3.5rem;
-            margin-right: 3.5rem;
             font-size: 2.75rem;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }

@@ -22,6 +22,7 @@
                     :amount="addressInfo.balance"/>
             </div>
             <div v-else>???</div>
+            <div class="mobile-arrow"></div>
         </button>
         <button
             v-if="showAddAddressButton"
@@ -212,6 +213,7 @@ export default defineComponent({
         transition: color 300ms var(--nimiq-ease);
 
         .nq-icon {
+            display: inline-block;
             font-size: 1.75rem;
         }
     }
@@ -266,6 +268,10 @@ export default defineComponent({
         opacity: 0.45;
     }
 
+    .mobile-arrow {
+        display: none;
+    }
+
     @media (max-width: 500px) { // Full mobile breakpoint
         .active-box {
             display: none;
@@ -278,6 +284,7 @@ export default defineComponent({
         .address-button {
             opacity: 1;
             background: none !important;
+            position: relative;
 
             .crypto-balance {
                 color: inherit !important;
@@ -286,6 +293,16 @@ export default defineComponent({
 
         .add-address-button {
             display: flex;
+        }
+
+        .mobile-arrow {
+            display: block;
+            border: 1rem solid transparent;
+            border-width: 0.5rem 0.75rem;
+            border-left-color: inherit;
+            margin-left: 1.5rem;
+            margin-right: -0.75rem;
+            opacity: 0.3;
         }
     }
 </style>

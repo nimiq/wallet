@@ -348,134 +348,134 @@ export default defineComponent({
 
 .transaction-list {
     position: relative;
+}
+
+.month-label {
+    letter-spacing: 1.5px;
+    font-size: 1.75rem;
+    padding-top: 5rem; // Padding-top +
+    line-height: 2rem; // Line-height +
+    padding-bottom: 2rem; // Padding-bottom = 9rem, equal to a transaction height
+    text-transform: uppercase;
+    font-weight: bold;
+    padding-left: 2rem;
+    opacity: 0.4;
+}
+
+.vue-recycle-scroller {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding-right: calc(2rem + var(--padding) - 6px);
+    padding-left: calc(2rem + var(--padding));
+    padding-bottom: var(--padding, 4rem);
+
+    @extend %custom-scrollbar;
+}
+
+.unclaimed-cashlink-list {
+    border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
+    border-radius: 0.5rem;
+    padding: 2rem;
+    position: relative;
+    margin: 0 -2rem;
 
     .month-label {
-        letter-spacing: 1.5px;
-        font-size: 1.75rem;
-        padding-top: 5rem; // Padding-top +
-        line-height: 2rem; // Line-height +
-        padding-bottom: 2rem; // Padding-bottom = 9rem, equal to a transaction height
-        text-transform: uppercase;
-        font-weight: bold;
-        padding-left: 2rem;
-        opacity: 0.4;
+        opacity: 1;
+        padding-top: 1rem;
     }
+}
 
-    .vue-recycle-scroller {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        padding-right: calc(2rem + var(--padding) - 6px);
-        padding-left: calc(2rem + var(--padding));
-        padding-bottom: var(--padding, 4rem);
+.list-element {
+    position: relative;
 
-        @extend %custom-scrollbar;
-    }
+    &.fadein {
+        animation-name: fadein;
+        animation-duration: 250ms;
+        animation-iteration-count: 1;
 
-    .unclaimed-cashlink-list {
-        border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
-        border-radius: 0.5rem;
-        padding: 2rem;
-        position: relative;
-        margin: 0 -2rem;
-
-        .month-label {
-            opacity: 1;
-            padding-top: 1rem;
+        @keyframes fadein {
+            0% { opacity: 0 }
+            100% { opacity: 1 }
         }
     }
 
-    .list-element {
-        position: relative;
+    &.loading {
+        cursor: progress;
+        height: 10rem;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
 
-        &.fadein {
-            animation-name: fadein;
-            animation-duration: 250ms;
-            animation-iteration-count: 1;
+        .placeholder {
+            background-color: var(--text-10);
+            border-radius: 1rem;
 
-            @keyframes fadein {
-                0% { opacity: 0 }
+            animation-name: loading;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-delay: inherit;
+
+            @keyframes loading {
+                0% { opacity: 1 }
+                50% { opacity: .5 }
                 100% { opacity: 1 }
             }
         }
 
-        &.loading {
-            cursor: progress;
-            height: 10rem;
-            padding: 2rem 1rem;
+        .date {
             display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
+            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            margin-left: 1rem;
+            margin-right: 1.25rem;
+            height: 5rem;
+            animation-delay: inherit;
 
             .placeholder {
-                background-color: var(--text-10);
-                border-radius: 1rem;
-
-                animation-name: loading;
-                animation-duration: 1s;
-                animation-iteration-count: infinite;
-                animation-delay: inherit;
-
-                @keyframes loading {
-                    0% { opacity: 1 }
-                    50% { opacity: .5 }
-                    100% { opacity: 1 }
-                }
+                height: 2rem;
+                width: 3rem;
             }
-
-            .date {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: center;
-                margin-left: 1rem;
-                margin-right: 1.25rem;
-                height: 5rem;
-                animation-delay: inherit;
-
-                .placeholder {
-                    height: 2rem;
-                    width: 3rem;
-                }
-            }
-            .identicon {
-                margin: 0 1rem;
-                height: 6rem;
-                width: 6rem;
-            }
-            .data {
-                flex-grow: 1;
-                margin: 0 1rem;
-                height: 22px;
-                align-self: flex-start;
-                max-width: 50%;
-            }
+        }
+        .identicon {
+            margin: 0 1rem;
+            height: 6rem;
+            width: 6rem;
+        }
+        .data {
+            flex-grow: 1;
+            margin: 0 1rem;
+            height: 22px;
+            align-self: flex-start;
+            max-width: 50%;
         }
     }
+}
 
-    .after-first-tx {
-        width: 37rem;
-        max-width: 100%;
-        margin: 16rem auto 0;
-        text-align: center;
+.after-first-tx {
+    width: 37rem;
+    max-width: 100%;
+    margin: 16rem auto 0;
+    text-align: center;
 
-        .nq-h1:nth-child(2) {
-            margin-top: -2.5rem;
-            margin-bottom: 2rem;
-        }
+    .nq-h1:nth-child(2) {
+        margin-top: -2.5rem;
+        margin-bottom: 2rem;
+    }
 
-        .nq-text {
-            color: var(--text-60);
-            font-weight: 600;
-            margin-bottom: 1rem;
+    .nq-text {
+        color: var(--text-60);
+        font-weight: 600;
+        margin-bottom: 1rem;
 
-            a {
-                color: inherit;
-                text-decoration: underline;
-            }
+        a {
+            color: inherit;
+            text-decoration: underline;
         }
     }
 }
@@ -507,14 +507,26 @@ export default defineComponent({
 }
 
 @media (max-width: 500px) { // Full mobile breakpoint
-    .transaction-list {
-        .month-label {
-            padding-top: 4rem;
-        }
+    .month-label {
+        padding-top: 4rem;
+    }
 
-        .vue-recycle-scroller {
-            padding-right: calc(0.25rem + var(--padding));
-            padding-left: calc(0.25rem + var(--padding));
+    .vue-recycle-scroller {
+        padding-right: calc(0.25rem + var(--padding));
+        padding-left: calc(0.25rem + var(--padding));
+    }
+
+    .after-first-tx {
+        margin-top: 6rem;
+    }
+
+    .unclaimed-cashlink-list {
+        padding: 0.5rem;
+        margin: 0;
+
+        .top-right {
+            top: 1rem;
+            right: 1rem;
         }
     }
 }

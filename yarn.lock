@@ -9396,8 +9396,8 @@ vue-template-es2015-compiler@^1.9.0:
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
 "vue-virtual-scroller@github:sisou/vue-virtual-scroller#build/before-slot-sizing":
-  version "1.0.3"
-  resolved "https://codeload.github.com/sisou/vue-virtual-scroller/tar.gz/867cdb814d3f4507546f2b5502c7054b160718f9"
+  version "1.0.10"
+  resolved "https://codeload.github.com/sisou/vue-virtual-scroller/tar.gz/c3d8f97dfc4b28cd16150db5e7a2d9188dd9d680"
   dependencies:
     scrollparent "^2.0.1"
     vue-observe-visibility "^0.4.4"

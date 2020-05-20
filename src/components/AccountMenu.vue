@@ -299,6 +299,7 @@ export default defineComponent({
 }
 
 .menu .logout .nq-icon {
+    display: inline-block;
     vertical-align: middle;
     margin-bottom: .25rem;
     font-size: 1.5rem;

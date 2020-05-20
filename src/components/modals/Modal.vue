@@ -78,6 +78,7 @@ export default defineComponent({
         margin: 0;
         width: 52.5rem; /* 420px */
         max-width: 100vw;
+        max-height: 96vh;
     }
 }
 
@@ -112,8 +113,7 @@ export default defineComponent({
     }
 
     .small-page {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        border-radius: 2.5rem 2.5rem 0 0;
     }
 
     .main {

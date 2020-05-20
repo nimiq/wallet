@@ -209,6 +209,8 @@ select:disabled {
         width: 100vw;
         padding: 1rem;
         overflow-y: auto;
+        flex-direction: column;
+        flex-wrap: nowrap;
     }
 
     section {

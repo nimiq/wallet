@@ -48,21 +48,13 @@ enum NodeType {
     BROWSER,
 }
 
-// From Nimiq.Services
-enum Services {
-    PROVIDES_FULL = 4092,
-    PROVIDES_LIGHT = 3050,
-    PROVIDES_NANO = 65,
-    PROVIDES_PICO = 0,
-}
-
 // TODO
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace NodeType {
     // eslint-disable-next-line no-inner-declarations
-    export function fromServices(features: number) {
-        if (features & Services.PROVIDES_FULL) return NodeType.FULL_NODE; // eslint-disable-line no-bitwise
-        if (features & Services.PROVIDES_LIGHT) return NodeType.LIGHT_NODE; // eslint-disable-line no-bitwise
+    export function fromServices(features: string[]) {
+        if (features.includes('BLOCK_HISTORY')) return NodeType.FULL_NODE;
+        if (features.includes('MEMPOOL')) return NodeType.LIGHT_NODE;
         return NodeType.BROWSER;
     }
 }
@@ -208,6 +200,7 @@ class SelfHexagon extends Hexagon {
         return this._animation !== 1;
     }
 }
+
 export class NodeHexagon extends Hexagon {
     private static HEXAGON_ANIMATION_TIME = 1000;
     private static SPLINE_ANIMATION_TIME = 1000;
@@ -238,7 +231,7 @@ export class NodeHexagon extends Hexagon {
             return false; // UNEXPECTED
         }
 
-        if (node.state === 2) {
+        if (node.connected) {
             let updated = false;
             if (this._connections.size === 0) {
                 updated = true;
@@ -253,7 +246,7 @@ export class NodeHexagon extends Hexagon {
     public updateState(node: Node) {
         if (!this._nodes.has(node)) return false; // node is not present, do not update
         let updated = false;
-        if (node.state === 2) {
+        if (node.connected) {
             if (this._connections.size === 0) {
                 this._animation.connection = 0;
                 updated = true;
@@ -460,19 +453,12 @@ export default class NetworkMap {
                 // use dummy Node data for it, as it will not be used
                 const selfHexagon = new NodeHexagon(selfPosition.x, selfPosition.y);
                 selfHexagon.addNode({
-                    state: -1,
+                    connected: false,
+                    banned: false,
                     peerId: '',
-                    peerAddress: {
-                        _protocol: 0,
-                        _services: 0,
-                        _timestamp: 0,
-                        _netAddress: { _type: 0, _ip: new Uint8Array(), _reliable: true },
-                        _publicKey: new Uint8Array(),
-                        _distance: 0,
-                        _signature: new Uint8Array(),
-                        _host: '',
-                        _port: 0,
-                    },
+                    peerAddress: '',
+                    services: [],
+                    netAddress: null,
                     hexagon: selfHexagon,
                     locationData: {
                         country: response.country,
@@ -512,15 +498,13 @@ export default class NetworkMap {
     private _updateOrAddNode(nodeAddressInfo: PlainAddressInfo): boolean {
         if (this._nodes.has(nodeAddressInfo.peerId)) { // existing peer
             const node = this._nodes.get(nodeAddressInfo.peerId)!;
-            if (node.state === nodeAddressInfo.state) {
+            if (node.connected === nodeAddressInfo.connected) {
                 return false; // only case were there is no update
             }
-            node.state = nodeAddressInfo.state;
+            node.connected = nodeAddressInfo.connected;
             node.hexagon.updateState(node);
-        } else if (nodeAddressInfo.peerAddress._host || nodeAddressInfo.peerAddress._netAddress._ip) {
-            this._geoLocate(
-                nodeAddressInfo.peerAddress._host || Array.from(nodeAddressInfo.peerAddress._netAddress._ip).join('.'),
-            ).then(
+        } else if (this._getPeerLocator(nodeAddressInfo)) {
+            this._geoLocate(this._getPeerLocator(nodeAddressInfo)!).then(
                 (response) => {
                     if (response && response.location && response.location.latitude && response.location.longitude) {
                         const nodePosition = this._hexagonByCoordinate(
@@ -542,9 +526,9 @@ export default class NetworkMap {
 
                         const node: Node = Object.assign(nodeAddressInfo, {
                             hexagon,
-                            type: NodeType.fromServices(nodeAddressInfo.peerAddress._services),
+                            type: NodeType.fromServices(nodeAddressInfo.services),
                             locationData: {},
-                            host: nodeAddressInfo.peerAddress._host,
+                            host: this._getPeerHost(nodeAddressInfo),
                         });
 
                         if (response.country) {
@@ -570,6 +554,41 @@ export default class NetworkMap {
         node.hexagon.removeNode(node);
         this._nodes.delete(peerId);
         return true;
+    }
+
+    /**
+     * 1. IP if reliable
+     * 2. Hostname for WS and WSS peers if available (not 0.0.0.0)
+     * 3. IP if available
+     */
+    private _getPeerLocator(addressInfo: PlainAddressInfo) {
+        if (addressInfo.netAddress && addressInfo.netAddress.reliable) {
+            return this._ipToString(addressInfo.netAddress.ip);
+        }
+
+        const { hostname } = new URL(addressInfo.peerAddress);
+        if (hostname && hostname !== '0.0.0.0') {
+            return hostname;
+        }
+
+        if (addressInfo.netAddress) {
+            return this._ipToString(addressInfo.netAddress.ip);
+        }
+
+        return null;
+    }
+
+    private _ipToString(ip: Uint8Array) { // eslint-disable-line class-methods-use-this
+        return Array.from(ip).join('.');
+    }
+
+    private _getPeerHost(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
+        const { hostname } = new URL(addressInfo.peerAddress);
+        if (hostname && !/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(hostname)) {
+            return hostname;
+        }
+
+        return undefined;
     }
 
     /**

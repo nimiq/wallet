@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction-list" ref="$el">
+    <div class="transaction-list flex-row" ref="$el">
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -481,7 +481,7 @@ export default defineComponent({
 }
 
 .empty-state {
-    height: 100%;
+    width: 100%;
     justify-content: center;
     align-items: center;
 

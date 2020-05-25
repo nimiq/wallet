@@ -268,7 +268,8 @@ export default defineComponent({
         opacity: 0.45;
     }
 
-    .mobile-arrow {
+    .mobile-arrow,
+    .embedded .mobile-arrow {
         display: none;
     }
 

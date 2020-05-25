@@ -161,7 +161,7 @@ class Hexagon {
         return false;
     }
 
-    protected createGradiewnt(dc: CanvasRenderingContext2D, colorStop1: string, colorStop2: string) {
+    protected createGradient(dc: CanvasRenderingContext2D, colorStop1: string, colorStop2: string) {
         const gradient = dc.createRadialGradient(
             this.x + Hexagon.SCALE / 2,
             this.y + Hexagon.SCALE / 2,
@@ -189,7 +189,7 @@ class SelfHexagon extends Hexagon {
     public draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
         this._animation = Math.min(this._animation + timeDelta / SelfHexagon.ANIMATION_TIME, 1);
 
-        dc.fillStyle! = this.createGradiewnt(
+        dc.fillStyle! = this.createGradient(
             dc,
             `rgba(236, 153, 28, ${this._animation})`,
             `rgba(233, 178, 19, ${this._animation})`,
@@ -303,7 +303,7 @@ export class NodeHexagon extends Hexagon {
         }
 
         if (this.isConnected) {
-            dc.fillStyle = this.createGradiewnt(
+            dc.fillStyle = this.createGradient(
                 dc,
                 `rgba(38, 93, 215, ${this._connections.size === 0
                     ? 1 - this._animation.hexagon
@@ -337,21 +337,21 @@ export class NodeHexagon extends Hexagon {
         const distance = Math.sqrt((xSelf - xPeer) ** 2 + (ySelf - yPeer) ** 2);
 
         // set up stroke style depending on node state
-        dc.lineWidth = 2;
+        dc.lineWidth = 2.5;
         if (this._animation.connection !== 1) { // animating is going on TODO
             switch (this._connections.size) {
                 case 0: // animating towards disconnected
-                    dc.strokeStyle = `rgba(255, 255, 255, ${1 - sinEasing(this._animation.connection)})`;
+                    dc.strokeStyle = `rgba(117, 121, 157, ${1 - sinEasing(this._animation.connection)})`;
                     dc.setLineDash([]);
                     dc.lineDashOffset = 0;
                     break;
                 default: // animating towards connected
-                    dc.strokeStyle = 'rgba(255, 255, 255, 1)';
+                    dc.strokeStyle = 'rgba(117, 121, 157, 1)';
                     dc.setLineDash([distance, distance]);
                     dc.lineDashOffset = -(distance + cubicEasing(this._animation.connection) * distance);
             }
         } else { // no animation
-            dc.strokeStyle = `rgba(255, 255, 255, ${this.isConnected ? 1 : 0})`;
+            dc.strokeStyle = `rgba(117, 121, 157, ${this.isConnected ? 1 : 0})`;
             dc.setLineDash([]);
             dc.lineDashOffset = 0;
         }

@@ -529,5 +529,19 @@ export default defineComponent({
             right: 1rem;
         }
     }
+
+    .empty-state {
+        margin: 0 2rem;
+
+        .nq-h1 {
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
+        .testnet-faucet,
+        > .nq-button {
+            margin-top: 2.5rem;
+        }
+    }
 }
 </style>

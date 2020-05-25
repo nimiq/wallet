@@ -79,15 +79,19 @@
 
         <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
 
-        <transition name="modal">
-            <router-view name="modal"/>
-        </transition>
+        <Portal>
+            <transition name="modal">
+                <router-view name="modal"/>
+            </transition>
+        </Portal>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
+// @ts-ignore missing types for this package
+import { Portal } from '@linusborg/vue-simple-portal';
 
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -144,6 +148,7 @@ export default defineComponent({
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
+        Portal,
     },
 });
 </script>

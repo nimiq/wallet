@@ -109,7 +109,6 @@ export default defineComponent({
 @media (max-width: 700px) { // Full mobile breakpoint
     .backdrop {
         justify-content: flex-end;
-        position: absolute;
     }
 
     .small-page {

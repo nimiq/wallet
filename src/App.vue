@@ -48,7 +48,7 @@ export default defineComponent({
                         case '/': routeClass.value = 'column-root'; break;
                         case '/account': routeClass.value = 'column-account'; break;
                         case '/transactions': routeClass.value = 'column-address'; break;
-                        default: break;
+                        default: break; // Don't change column
                     }
                     break;
                 case Columns.ACCOUNT: routeClass.value = 'column-account'; break;

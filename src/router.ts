@@ -51,14 +51,14 @@ const routes: RouteConfig[] = [{
                 modal: SendModal,
             },
             name: 'send',
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive',
             components: {
                 modal: ReceiveModal,
             },
             name: 'receive',
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/transaction/:hash',
             components: {
@@ -66,7 +66,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'transaction',
             props: { modal: true },
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         // }, {
         //     path: '/trade',
         //     components: {
@@ -80,7 +80,7 @@ const routes: RouteConfig[] = [{
                 modal: ScanQrModal,
             },
             name: 'scan',
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/address/:address',
             components: {
@@ -88,7 +88,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'address',
             props: { modal: true },
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/nimiq\\::requestUri',
             components: {
@@ -98,7 +98,7 @@ const routes: RouteConfig[] = [{
             props: {
                 modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
             },
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }],
     }, {
         path: '/settings',

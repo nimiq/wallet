@@ -15,6 +15,7 @@
   },
   "main": "src/main.ts",
   "dependencies": {
+    "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/hub-api": "^1.2.0",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.5.0",

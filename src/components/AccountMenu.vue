@@ -129,6 +129,11 @@ export default defineComponent({
         const { width: windowWidth } = useWindowSize();
 
         function goToAccount() {
+            if (context.root.$route.name === 'root') {
+                openMenu();
+                return;
+            }
+
             const path = windowWidth.value <= 700 // Full mobile breakpoint
                 ? '/account'
                 : '/';

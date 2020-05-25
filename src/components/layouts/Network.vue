@@ -2,12 +2,12 @@
     <div class="network nq-blue-bg">
         <div class="background"></div>
         <div class="network-inner flex-column">
-            <div class="mobile-menu-bar flex-row">
+            <div class="menu-bar flex-row">
                 <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
-                <button class="nq-button-s inverse" @click="$router.replace('/account')">
+                <button class="nq-button-s inverse account-button" @click="$router.replace('/account')">
                     {{ $t('Back to Addresses') }}
                 </button>
-                <button class="reset"><InfoCircleIcon/></button>
+                <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
             </div>
             <div class="scroller map">
                 <NetworkMap/>
@@ -16,22 +16,43 @@
                 <NetworkStats/>
             </div>
         </div>
+
+        <transition name="modal">
+            <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>
+        </transition>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleIcon } from '@nimiq/vue-components';
 import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
+import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
+
+const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
+    setup() {
+        const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
+
+        function onNetworkInfoClosed() {
+            window.localStorage.setItem(LOCALSTORAGE_KEY, '1');
+            showNetworkInfo.value = false;
+        }
+
+        return {
+            showNetworkInfo,
+            onNetworkInfoClosed,
+        };
+    },
     components: {
         NetworkMap,
         NetworkStats,
         MenuIcon,
         InfoCircleIcon,
+        NetworkInfoModal,
     },
 });
 </script>
@@ -91,8 +112,25 @@ export default defineComponent({
     padding-bottom: 5rem;
 }
 
-.mobile-menu-bar {
-    display: none;
+.menu-bar {
+    justify-content: flex-end;
+    align-self: stretch;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 2rem;
+    z-index: 1;
+
+    button.reset {
+        padding: 1rem;
+        opacity: 0.3;
+        font-size: 2.5rem;
+    }
+
+    .menu-button,
+    .account-button {
+        display: none;
+    }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
@@ -116,19 +154,16 @@ export default defineComponent({
         padding-bottom: 3rem;
     }
 
-    .mobile-menu-bar {
-        display: flex;
+    .menu-bar {
         justify-content: space-between;
         align-items: center;
-        align-self: stretch;
-        padding: 2rem;
         padding-bottom: 0;
         z-index: 1;
+        position: unset;
 
-        button.reset {
-            padding: 1rem;
-            opacity: 0.3;
-            font-size: 2.5rem;
+        .menu-button,
+        .account-button {
+            display: block;
         }
 
         .menu-button {

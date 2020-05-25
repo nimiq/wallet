@@ -3,7 +3,7 @@
         <div class="wrapper" @click.stop>
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
-                <CloseButton class="top-right" @click="close"/>
+                <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
             </SmallPage>
 
             <transition name="overlay">
@@ -26,6 +26,10 @@ export default defineComponent({
             default: false,
         },
         showOverlay: {
+            type: Boolean,
+            default: false,
+        },
+        closeButtonInverse: {
             type: Boolean,
             default: false,
         },

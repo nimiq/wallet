@@ -70,11 +70,12 @@ p {
     display: inline-flex;
     align-items: center;
     font-weight: bold;
-    font-size: 1.75rem;
+    font-size: 2rem;
 
     .nq-icon {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         margin-left: 0.75rem;
+        margin-top: 0.125rem;
 
         transition: transform 0.3s var(--nimiq-ease);
     }

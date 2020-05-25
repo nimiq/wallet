@@ -211,9 +211,14 @@ select:disabled {
         overflow-y: auto;
         flex-direction: column;
         flex-wrap: nowrap;
+
+        .description {
+            margin-right: 3rem;
+        }
     }
 
     section {
+        width: unset;
         border-right: none;
         margin: 0 1rem;
         padding: 3.75rem 3rem;

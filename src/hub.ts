@@ -1,4 +1,5 @@
 import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
+import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
@@ -93,9 +94,8 @@ export async function syncFromHub() {
         listedCashlinks = await hubApi.cashlinks();
     } catch (error) {
         if (error.message === 'MIGRATION_REQUIRED') {
-            // @ts-ignore Argument of type 'RedirectRequestBehavior' is not assignable to parameter of type
-            // 'RequestBehavior<BehaviorType.POPUP>'.
-            hubApi.migrate(new HubApi.RedirectRequestBehavior());
+            const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+            hubApi.migrate(behavior);
             return;
         }
 
@@ -106,6 +106,11 @@ export async function syncFromHub() {
         else throw error;
     }
 
+    if (!listedAccounts.length) {
+        onboard(true); // eslint-disable-line @typescript-eslint/no-use-before-define
+        return;
+    }
+
     processAndStoreAccounts(listedAccounts, true);
 
     if (listedCashlinks.length) {
@@ -114,7 +119,13 @@ export async function syncFromHub() {
     }
 }
 
-export async function onboard() {
+export async function onboard(asRedirect = false) {
+    if (asRedirect === true) {
+        const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+        hubApi.onboard({ appName: APP_NAME }, behavior);
+        return;
+    }
+
     // TODO: Handle error
     const listedAccounts = await hubApi.onboard({ appName: APP_NAME });
 

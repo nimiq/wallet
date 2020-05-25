@@ -42,7 +42,7 @@
             @add-address="addAddress(activeAccountId)"
         />
 
-        <div class="bitcoin-teaser flex-row">
+        <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
             <BitcoinIcon/>
             Bitcoin
             <div class="flex-grow"></div>

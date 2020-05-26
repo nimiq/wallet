@@ -279,11 +279,11 @@ export default defineComponent({
             position: absolute;
             left: calc(var(--sidebar-width) - 1rem);
             bottom: 2rem;
-            max-height: calc(100vh - 4rem);
 
             .small-page {
                 width: 34rem;
                 border-radius: 0.75rem;
+                max-height: calc(100vh - 4rem);
             }
         }
 

@@ -28,28 +28,38 @@
             <button class="reset" @click="$router.replace('/network')"><ConsensusIcon/></button>
         </div>
 
-        <AccountBalance />
+        <template v-if="showLegacyAccountNotice">
+            <LegacyAccountNotice/>
+        </template>
 
-        <h2 class="nq-label">
-            {{ $t('Addresses') }}
-            <button v-if="canHaveMultipleAddresses" class="nq-button-s flex-row" @click="addAddress(activeAccountId)">
-                <AddDesktopIcon/>
-            </button>
-        </h2>
-        <AddressList
-            :showAddAddressButton="canHaveMultipleAddresses"
-            @address-selected="onAddressSelected"
-            @add-address="addAddress(activeAccountId)"
-        />
+        <template v-else>
+            <AccountBalance />
 
-        <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
-            <BitcoinIcon/>
-            Bitcoin
-            <div class="flex-grow"></div>
-            <label>{{ $t('Coming soon') }}</label>
-        </div>
+            <h2 class="nq-label">
+                {{ $t('Addresses') }}
+                <button
+                    v-if="canHaveMultipleAddresses"
+                    class="nq-button-s flex-row"
+                    @click="addAddress(activeAccountId)"
+                >
+                    <AddDesktopIcon/>
+                </button>
+            </h2>
+            <AddressList
+                :showAddAddressButton="canHaveMultipleAddresses"
+                @address-selected="onAddressSelected"
+                @add-address="addAddress(activeAccountId)"
+            />
 
-        <MobileActionBar/>
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
+                <BitcoinIcon/>
+                Bitcoin
+                <div class="flex-grow"></div>
+                <label>{{ $t('Coming soon') }}</label>
+            </div>
+
+            <MobileActionBar/>
+        </template>
     </div>
 </template>
 
@@ -63,6 +73,7 @@ import MenuIcon from '../icons/MenuIcon.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
 import MobileActionBar from '../MobileActionBar.vue';
+import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -84,6 +95,11 @@ export default defineComponent({
             }
         }
 
+        const showLegacyAccountNotice = computed(() =>
+            activeAccountInfo.value
+            && activeAccountInfo.value.type === AccountType.LEGACY
+            && activeAccountInfo.value.addresses.length === 1);
+
         return {
             activeAccountInfo,
             AccountType,
@@ -92,6 +108,7 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            showLegacyAccountNotice,
         };
     },
     components: {
@@ -104,6 +121,7 @@ export default defineComponent({
         ConsensusIcon,
         AddDesktopIcon,
         MobileActionBar,
+        LegacyAccountNotice,
     },
 });
 </script>

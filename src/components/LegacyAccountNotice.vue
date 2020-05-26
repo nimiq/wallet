@@ -1,0 +1,139 @@
+<template>
+    <div class="legacy-account-notice flex-column">
+        <header>
+            <h1 class="nq-h1">{{ $t('You are using a Legacy Account ') }}</h1>
+            <p class="nq-text">
+                {{ $t('Create a new account and transfer your funds. New features and possibilities await.') }}
+            </p>
+        </header>
+        <section class="flex-column">
+            <div class="flex-spacer"></div>
+            <div class="flex-row">
+                <img src="../assets/account-ring.png" alt="Identicons of an account">
+                <div class="text">
+                    <h2 class="nq-h2">{{ $t('Multiple Addresses') }}</h2>
+                    <p class="nq-text">{{ $t('One account can now have multiple addresses.') }}</p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <BitcoinIcon/>
+                <div class="text">
+                    <h2 class="nq-h2">{{ $t('Bitcoin') }} <label>{{ $t('Coming soon') }}</label></h2>
+                    <p class="nq-text">{{ $t('Send, receive and hold BTC in your wallet.') }}</p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div data-placeholder></div>
+                <div class="text">
+                    <h2 class="nq-h2">{{ $t('Staking') }} <label>{{ $t('Coming soon') }}</label></h2>
+                    <p class="nq-text">{{ $t('Stake NIM to generate rewards for securing the network.') }}</p>
+                </div>
+            </div>
+            <div class="flex-spacer"></div>
+        </section>
+        <footer>
+            <LegacyAccountUpgradeButton/>
+            <p class="future-notice">
+                {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
+            </p>
+        </footer>
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api';
+import BitcoinIcon from './icons/BitcoinIcon.vue';
+import LegacyAccountUpgradeButton from './LegacyAccountUpgradeButton.vue';
+
+export default defineComponent({
+    components: {
+        BitcoinIcon,
+        LegacyAccountUpgradeButton,
+    },
+});
+</script>
+
+<style lang="scss" scoped>
+.legacy-account-notice {
+    flex-grow: 1;
+    max-width: 46rem;
+    margin: 0 auto !important;
+}
+
+header,
+footer {
+    text-align: center;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.nq-text {
+    color: var(--text-60);
+}
+
+img, svg, div[data-placeholder] {
+    width: 93px;
+    height: 93px;
+    margin-right: 4rem;
+    flex-shrink: 0;
+    color: #F7931A;
+}
+
+svg, div[data-placeholder] {
+    width: 87px;
+    height: 87px;
+    margin: 3px;
+    margin-right: calc(3px + 4rem);
+}
+
+div[data-placeholder] {
+    background: var(--text-10);
+    border-radius: 50%;
+}
+
+h2 {
+    margin: 0;
+}
+
+section {
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.flex-row {
+    align-items: center;
+    margin: 1rem 0;
+}
+
+section .nq-text {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.flex-spacer {
+    flex-grow: 0.25;
+}
+
+label {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    padding: 0.625rem 1.5rem;
+    border-radius: 500px;
+    color: var(--text-50);
+    box-shadow: 0 0 0 1.5px var(--text-16);
+    vertical-align: middle;
+    margin-left: 1rem;
+}
+
+.future-notice {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-40);
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+</style>

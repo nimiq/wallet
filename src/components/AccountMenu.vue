@@ -128,8 +128,8 @@ export default defineComponent({
 
         const { width: windowWidth } = useWindowSize();
 
-        function goToAccount() {
-            if (context.root.$route.name === 'root') {
+        function goToAccount(testForMenuOpening = true) {
+            if (testForMenuOpening && context.root.$route.name === 'root') {
                 openMenu();
                 return;
             }
@@ -143,7 +143,7 @@ export default defineComponent({
         function onAccountSelected(id: string) {
             selectAccount(id);
             closeMenu();
-            goToAccount();
+            goToAccount(false);
         }
 
         return {

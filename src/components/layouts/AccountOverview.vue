@@ -28,33 +28,55 @@
             <button class="reset" @click="$router.replace('/network')"><ConsensusIcon/></button>
         </div>
 
-        <AccountBalance />
+        <template v-if="showFullLegacyAccountNotice">
+            <LegacyAccountNotice/>
+        </template>
 
-        <h2 class="nq-label">
-            {{ $t('Addresses') }}
-            <button v-if="canHaveMultipleAddresses" class="nq-button-s flex-row" @click="addAddress(activeAccountId)">
-                <AddDesktopIcon/>
-            </button>
-        </h2>
-        <AddressList
-            :showAddAddressButton="canHaveMultipleAddresses"
-            @address-selected="onAddressSelected"
-            @add-address="addAddress(activeAccountId)"
-        />
+        <template v-else>
+            <AccountBalance />
 
-        <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
-            <BitcoinIcon/>
-            Bitcoin
-            <div class="flex-grow"></div>
-            <label>{{ $t('Coming soon') }}</label>
-        </div>
+            <h2 class="nq-label">
+                {{ $t('Addresses') }}
+                <button
+                    v-if="canHaveMultipleAddresses"
+                    class="nq-button-s flex-row"
+                    @click="addAddress(activeAccountId)"
+                >
+                    <AddDesktopIcon/>
+                </button>
+            </h2>
+            <AddressList
+                :showAddAddressButton="canHaveMultipleAddresses"
+                @address-selected="onAddressSelected"
+                @add-address="addAddress(activeAccountId)"
+            />
 
-        <MobileActionBar/>
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
+                <BitcoinIcon/>
+                Bitcoin
+                <div class="flex-grow"></div>
+                <label>{{ $t('Coming soon') }}</label>
+            </div>
+            <div v-else>
+                <LegacyAccountUpgradeButton/>
+                <p class="future-notice">
+                    {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
+                </p>
+            </div>
+
+            <MobileActionBar/>
+        </template>
+
+        <transition name="modal">
+            <LegacyAccountNoticeModal
+                v-if="showModalLegacyAccountNotice"
+                emitClose @close="showModalLegacyAccountNotice = false"/>
+        </transition>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
@@ -63,6 +85,9 @@ import MenuIcon from '../icons/MenuIcon.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
 import MobileActionBar from '../MobileActionBar.vue';
+import LegacyAccountNotice from '../LegacyAccountNotice.vue';
+import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
+import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -72,9 +97,10 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeAccountId } = useAccountStore();
 
-        const canHaveMultipleAddresses = computed(() => activeAccountInfo.value
-            ? activeAccountInfo.value.type !== AccountType.LEGACY
-            : false);
+        const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
+            && activeAccountInfo.value.type === AccountType.LEGACY);
+
+        const canHaveMultipleAddresses = computed(() => !isLegacyAccount.value);
 
         const { width } = useWindowSize();
 
@@ -84,6 +110,19 @@ export default defineComponent({
             }
         }
 
+        const showFullLegacyAccountNotice = computed(() =>
+            isLegacyAccount.value
+            && activeAccountInfo.value!.addresses.length === 1
+            && width.value > 700); // Full mobile breakpoint
+
+        const showModalLegacyAccountNotice = ref(false);
+
+        function determineIfShowModalLegacyAccountNotice() {
+            showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 700; // Full mobile breakpoint
+        }
+
+        watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
+
         return {
             activeAccountInfo,
             AccountType,
@@ -92,6 +131,8 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            showFullLegacyAccountNotice,
+            showModalLegacyAccountNotice,
         };
     },
     components: {
@@ -104,6 +145,9 @@ export default defineComponent({
         ConsensusIcon,
         AddDesktopIcon,
         MobileActionBar,
+        LegacyAccountNotice,
+        LegacyAccountUpgradeButton,
+        LegacyAccountNoticeModal,
     },
 });
 </script>
@@ -114,6 +158,7 @@ export default defineComponent({
     @include flex-full-height;
     max-height: 100%;
     flex-direction: column;
+    position: relative;
 
     /* Default: 1440px */
     --padding-top: 6rem;
@@ -261,6 +306,14 @@ h2 {
         border: 0.25rem solid var(--text-10);
         border-radius: 500px;
     }
+}
+
+.future-notice {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-40);
+    margin: 2rem 0;
+    text-align: center;
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

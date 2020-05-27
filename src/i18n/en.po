@@ -48,7 +48,7 @@ msgstr ""
 msgid "Address unavailable?"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:34
+#: src/components/layouts/AccountOverview.vue:39
 #: src/components/MigrationWelcome.vue:18
 msgid "Addresses"
 msgstr ""
@@ -57,12 +57,21 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+#: src/components/layouts/AccountOverview.vue:63
+#: src/components/LegacyAccountNotice.vue:37
+msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
+msgstr ""
+
 #: src/components/layouts/Network.vue:8
 msgid "Back to Addresses"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:22
 msgid "Backup"
+msgstr ""
+
+#: src/components/LegacyAccountNotice.vue:21
+msgid "Bitcoin"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:126
@@ -125,7 +134,9 @@ msgstr ""
 msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:49
+#: src/components/layouts/AccountOverview.vue:58
+#: src/components/LegacyAccountNotice.vue:21
+#: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr ""
 
@@ -161,6 +172,14 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:17
 msgid "Create a Cashlink"
+msgstr ""
+
+#: src/components/LegacyAccountUpgradeButton.vue:6
+msgid "Create a new Account"
+msgstr ""
+
+#: src/components/LegacyAccountNotice.vue:6
+msgid "Create a new account and transfer your funds. New features and possibilities await."
 msgstr ""
 
 #: src/components/AccountMenu.vue:39
@@ -299,6 +318,10 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+#: src/components/LegacyAccountNotice.vue:14
+msgid "Multiple Addresses"
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:93
 msgid "Multiple Addresses and Login Files<br>are supported by new Accounts only."
 msgstr ""
@@ -321,6 +344,10 @@ msgstr ""
 
 #: src/components/MigrationWelcome.vue:92
 msgid "Old and new Accounts"
+msgstr ""
+
+#: src/components/LegacyAccountNotice.vue:15
+msgid "One account can now have multiple addresses."
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:84
@@ -416,6 +443,10 @@ msgstr ""
 msgid "Send Transaction"
 msgstr ""
 
+#: src/components/LegacyAccountNotice.vue:22
+msgid "Send, receive and hold BTC in your wallet."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:35
 msgid "sent at"
 msgstr ""
@@ -450,6 +481,14 @@ msgstr ""
 msgid "Speed up your transaction"
 msgstr ""
 
+#: src/components/LegacyAccountNotice.vue:29
+msgid "Stake NIM to generate rewards for securing the network."
+msgstr ""
+
+#: src/components/LegacyAccountNotice.vue:28
+msgid "Staking"
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:85
 msgid "The new and improved Accounts<br>can have multiple Addresses."
 msgstr ""
@@ -460,6 +499,10 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
+msgstr ""
+
+#: src/components/modals/LegacyAccountNoticeModal.vue:7
+msgid "This is a Legacy Account"
 msgstr ""
 
 #: src/components/modals/PreviewNoticeModal.vue:10
@@ -481,6 +524,10 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:13
 msgid "Transaction to"
+msgstr ""
+
+#: src/components/LegacyAccountUpgradeButton.vue:7
+msgid "Transfer funds"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:260
@@ -508,6 +555,10 @@ msgstr ""
 msgid "You are here"
 msgstr ""
 
+#: src/components/LegacyAccountNotice.vue:4
+msgid "You are using a Legacy Account "
+msgstr ""
+
 #: src/components/TransactionList.vue:45
 msgid "You now own crypto!"
 msgstr ""
@@ -526,6 +577,10 @@ msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:9
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
+msgstr ""
+
+#: src/components/modals/LegacyAccountNoticeModal.vue:9
+msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
 #: src/components/TransactionList.vue:59

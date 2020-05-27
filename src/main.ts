@@ -83,7 +83,7 @@ router.onReady(() => {
         ? window.outerWidth <= 700 // Full mobile breakpoint
             ? '/account' // Navigate to the account column (start view)
             : false // On Desktop, stay on root path
-        : router.currentRoute.path;
+        : router.currentRoute.fullPath;
 
     const goToStartPath = () => {
         if (!startPath) return;

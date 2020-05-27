@@ -35,7 +35,12 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        let modalClosed = false;
+
         function close() {
+            if (modalClosed) return;
+            modalClosed = true;
+
             if (props.emitClose) {
                 context.emit('close');
             } else {

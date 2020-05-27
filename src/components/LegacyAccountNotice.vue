@@ -136,4 +136,41 @@ label {
     margin-top: 3rem;
     margin-bottom: 2rem;
 }
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    h1 {
+        font-size: 2.75rem;
+    }
+
+    section {
+        margin: 0 1rem;
+    }
+
+    h2 {
+        font-size: 2.25rem;
+    }
+
+    p {
+        font-size: 1.875rem;
+    }
+
+    img, svg, div[data-placeholder] {
+        width: 68px;
+        height: 68px;
+        margin-right: 3rem;
+    }
+
+    svg, div[data-placeholder] {
+        width: 64px;
+        height: 64px;
+        margin: 2px;
+        margin-right: calc(2px + 3rem);
+    }
+
+    label {
+        font-size: 1.375rem;
+        letter-spacing: 0.06em;
+        padding: 0.5rem 1.25rem;
+    }
+}
 </style>

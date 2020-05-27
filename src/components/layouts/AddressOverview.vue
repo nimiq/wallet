@@ -55,10 +55,10 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')">
-                    <ArrowRightSmallIcon />Send
+                    <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
                 <button class="receive nq-button-s flex-row" @click="$router.push('/receive')">
-                    <ArrowRightSmallIcon />Receive
+                    <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
             <TransactionList

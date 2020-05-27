@@ -51,7 +51,7 @@
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
-                    Fiat value unavailable
+                    {{ $t('Fiat value unavailable') }}
                 </div>
                 <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
             </transition>

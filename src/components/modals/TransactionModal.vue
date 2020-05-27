@@ -1,19 +1,45 @@
 <template>
     <Modal class="transaction-modal">
         <PageHeader :class="{'inline-header': !peerLabel}">
-            {{
-                peerAddress === constants.CASHLINK_ADDRESS
-                    ? '' /* Use the peerLabel below only, without prefix */
-                    : isCashlink
-                        ? isIncoming
-                            ? $t('Cashlink from')
-                            : $t('Cashlink to')
-                        : isIncoming
-                            ? $t('Transaction from')
-                            : $t('Transaction to')
-            }}<label><i v-html="'&nbsp;'"></i>{{
-                peerLabel || peerAddress.substring(0, 9)
-            }}</label>
+
+            <template v-if="peerAddress === constants.CASHLINK_ADDRESS">
+                <label><i>&nbsp;</i>{{
+                    peerLabel || peerAddress.substring(0, 9)
+                }}</label>
+            </template>
+
+            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}">
+                <template #address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}">
+                <template #address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}">
+                <template #address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}">
+                <template #address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+            <!-- TODO: find a way to avoid the template#address repetition -->
 
             <span
                 v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
@@ -32,8 +58,16 @@
                 {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
             </span>
             <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                {{ isIncoming ? $t('received at') : $t('sent at') }}
-                {{ datum }} <strong>&middot;</strong> {{ time }}
+                <i18n v-if="isIncoming" path="received at {dateAndTime}">
+                    <template #dateAndTime>
+                        {{ datum }} <strong>&middot;</strong> {{ time }}
+                    </template>
+                </i18n>
+                <i18n v-else path="sent at {dateAndTime}">
+                    <template #dateAndTime>
+                        {{ datum }} <strong>&middot;</strong> {{ time }}
+                    </template>
+                </i18n>
             </span>
         </PageHeader>
         <PageBody class="flex-column" :class="state">

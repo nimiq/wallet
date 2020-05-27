@@ -14,7 +14,7 @@ export const i18n = new VueI18n({
     silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
-function setI18nLanguage(lang: string) {
+function setI18nLanguage(lang: string): string {
     const { hostname } = window.location;
     const cookieDomain = hostname.includes('nimiq-testnet.com') ? 'nimiq-testnet.com'
         : hostname.includes('nimiq.com') ? 'nimiq.com'
@@ -25,27 +25,36 @@ function setI18nLanguage(lang: string) {
     return lang;
 }
 
-export function loadLanguageAsync(lang: string) {
-    if (!SUPPORTED_LANGUAGES.includes(lang)) lang = DEFAULT_LANGUAGE;
+export async function loadLanguage(lang: string): Promise<string> {
+    if (!SUPPORTED_LANGUAGES.includes(lang)) {
+        lang = DEFAULT_LANGUAGE;
+    }
 
     // If the language was already loaded
     if (loadedLanguage.includes(lang)) {
-        return Promise.resolve(setI18nLanguage(lang));
+        return setI18nLanguage(lang);
     }
 
     // If the language hasn't been loaded yet
-    return import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`).then(
-        (messages) => {
-            i18n.setLocaleMessage(lang, messages.default);
-            loadedLanguage.push(lang);
-            return setI18nLanguage(lang);
-        },
-    );
+    const messages = await import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`);
+    i18n.setLocaleMessage(lang, messages.default);
+    loadedLanguage.push(lang);
+    return setI18nLanguage(lang);
 }
 
-export function autodetectLanguage() {
+export function detectLanguage(): string {
     const langCookie = Cookie.getCookie('lang');
     const langRaw = window.navigator.language;
-    const langParts = langRaw.replace('-', '_').split('_');
+    const langParts = langRaw.split('-');
     return langCookie || langParts[0];
 }
+
+// If the user changed the language in another window/tab then load and enable new language
+function onTabFocus() {
+    const lang = detectLanguage();
+    if (i18n.locale !== lang) {
+        loadLanguage(lang).then(setI18nLanguage);
+    }
+}
+
+window.addEventListener('focus', onTabFocus);

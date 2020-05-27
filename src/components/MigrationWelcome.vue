@@ -54,7 +54,7 @@
                     + ' Account picker.') }}
                 </p>
                 <p class="nq-text">
-                    {{ $t('Account creation was massively improved. Give<br>'
+                    {{ $t('Account creation was massively improved. Give\n'
                     + 'it a try and experience all new Nimiq features.') }}
                 </p>
             </div>
@@ -82,15 +82,15 @@ export default class MigrationWelcome extends Vue {
 
         private content = [{
             title: this.$t('One Account, many Addresses'),
-            notice: this.$t('The new and improved Accounts<br>can have multiple Addresses.'),
+            notice: this.$t('The new and improved Accounts\ncan have multiple Addresses.'),
             button: this.$t('Continue'),
         }, {
             title: this.$t('Improved Accessibility'),
-            notice: this.$t('Log in on your devices with the new<br>Nimiq Login Files.'),
+            notice: this.$t('Log in on your devices with the new\nNimiq Login Files.'),
             button: this.$t('What else?'),
         }, {
             title: this.$t('Old and new Accounts'),
-            notice: this.$t('Multiple Addresses and Login Files<br>are supported by new Accounts only.'),
+            notice: this.$t('Multiple Addresses and Login Files\nare supported by new Accounts only.'),
             button: this.$t('Got it!'),
         }];
 

@@ -115,7 +115,7 @@
                                     v-for="fiatCurrency of otherFiatCurrencies" :key="fiatCurrency"
                                     class="reset" :class="{'active': activeCurrency === fiatCurrency}"
                                     @click="activeCurrency = fiatCurrency"
-                                >{{fiatCurrency.toUpperCase()}}</button>
+                                >{{ fiatCurrency.toUpperCase() }}</button>
                             </div>
                         </div>
                     </div>
@@ -168,8 +168,8 @@
             <PageBody class="page__fee-selection fee-selection flex-column">
                 <h1 class="nq-h1">{{ $t('Speed up your transaction') }}</h1>
                 <p class="nq-text">
-                    {{$t(`By adding a transation fee, you can influence
-                    how fast your transaction will be processed.`) }}
+                    {{ $t('By adding a transaction fee, you can influence ' +
+                    'how fast your transaction will be processed.') }}
                 </p>
                 <SelectBar
                     :options="feeOptions"

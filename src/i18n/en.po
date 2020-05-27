@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/TransactionModal.vue:128
+#: src/components/modals/TransactionModal.vue:162
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -23,6 +23,12 @@ msgstr ""
 msgid "2"
 msgstr ""
 
+#: src/components/MigrationWelcome.vue:57
+msgid ""
+"Account creation was massively improved. Give\n"
+"it a try and experience all new Nimiq features."
+msgstr ""
+
 #: src/components/MigrationWelcome.vue:15
 msgid "Accounts"
 msgstr ""
@@ -39,8 +45,8 @@ msgstr ""
 msgid "Add Address"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:50
-#: src/components/modals/TransactionModal.vue:87
+#: src/components/modals/TransactionModal.vue:121
+#: src/components/modals/TransactionModal.vue:84
 msgid "Add contact"
 msgstr ""
 
@@ -74,7 +80,7 @@ msgstr ""
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:126
+#: src/components/modals/TransactionModal.vue:160
 msgid "Block #{height}"
 msgstr ""
 
@@ -91,23 +97,21 @@ msgid "Buy NIM"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:171
-msgid ""
-"By adding a transation fee, you can influence\n"
-"                    how fast your transaction will be processed."
+msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:259
+#: src/components/modals/TransactionModal.vue:293
 #: src/components/TransactionList.vue:48
 #: src/components/TransactionListItem.vue:137
 msgid "Cashlink"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:9
-msgid "Cashlink from"
+#: src/components/modals/TransactionModal.vue:11
+msgid "Cashlink from {address}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:10
-msgid "Cashlink to"
+#: src/components/modals/TransactionModal.vue:19
+msgid "Cashlink to {address}"
 msgstr ""
 
 #: src/components/AccountMenu.vue:50
@@ -202,11 +206,11 @@ msgstr ""
 msgid "expired"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:32
+#: src/components/modals/TransactionModal.vue:58
 msgid "Expired"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:32
+#: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
 msgstr ""
 
@@ -232,6 +236,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:127
 msgid "fee"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:54
+msgid "Fiat value unavailable"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -311,7 +319,9 @@ msgid "Localization"
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:89
-msgid "Log in on your devices with the new<br>Nimiq Login Files."
+msgid ""
+"Log in on your devices with the new\n"
+"Nimiq Login Files."
 msgstr ""
 
 #: src/components/AccountMenu.vue:53
@@ -323,7 +333,9 @@ msgid "Multiple Addresses"
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:93
-msgid "Multiple Addresses and Login Files<br>are supported by new Accounts only."
+msgid ""
+"Multiple Addresses and Login Files\n"
+"are supported by new Accounts only."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:49
@@ -370,8 +382,12 @@ msgstr ""
 msgid "Pending Cashlinks"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:24
+#: src/components/modals/TransactionModal.vue:50
 msgid "Pending..."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:61
+msgid "Receive"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:7
@@ -387,8 +403,8 @@ msgstr ""
 msgid "Receive some free NIM to get started."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:35
-msgid "received at"
+#: src/components/modals/TransactionModal.vue:61
+msgid "received at {dateAndTime}"
 msgstr ""
 
 #: src/components/AccountMenu.vue:43
@@ -425,6 +441,10 @@ msgstr ""
 msgid "Search Transactions by Contact, Address, etc."
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:58
+msgid "Send"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:102
 #: src/components/modals/SendModal.vue:137
 msgid "Send all"
@@ -447,8 +467,8 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:35
-msgid "sent at"
+#: src/components/modals/TransactionModal.vue:66
+msgid "sent at {dateAndTime}"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:9
@@ -490,7 +510,9 @@ msgid "Staking"
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:85
-msgid "The new and improved Accounts<br>can have multiple Addresses."
+msgid ""
+"The new and improved Accounts\n"
+"can have multiple Addresses."
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:30
@@ -518,19 +540,19 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:12
-msgid "Transaction from"
+#: src/components/modals/TransactionModal.vue:27
+msgid "Transaction from {address}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:13
-msgid "Transaction to"
+#: src/components/modals/TransactionModal.vue:35
+msgid "Transaction to {address}"
 msgstr ""
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:260
+#: src/components/modals/TransactionModal.vue:294
 #: src/components/TransactionListItem.vue:138
 msgid "Unclaimed Cashlink"
 msgstr ""

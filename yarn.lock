@@ -9522,7 +9522,7 @@ webpack-dev-server@^3.10.2:
 
 "webpack-i18n-tools@https://github.com/Yukiioz/webpack-i18n-tools.git#master":
   version "0.0.1"
-  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#a6cf30a50cb906b85070027c42d1b76156f2c7e8"
+  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#c67c20a9eefbac4a949ac5ca19f4a294bb818326"
   dependencies:
     gettext-extractor "^3.5.2"
     glob "^7.1.6"

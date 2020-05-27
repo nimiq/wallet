@@ -1,9 +1,9 @@
 <template>
-    <div class="modal backdrop flex-column" @click="close">
+    <div class="modal backdrop flex-column" @click.once="close">
         <div class="wrapper" @click.stop>
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
-                <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click.once="close"/>
             </SmallPage>
 
             <transition name="overlay">

@@ -33,7 +33,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:145
+#: src/components/modals/SendModal.vue:151
 msgid "Add a public message..."
 msgstr ""
 
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:16
+#: src/components/modals/SendModal.vue:21
 msgid "Address unavailable?"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:171
+#: src/components/modals/SendModal.vue:178
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
@@ -118,7 +118,7 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:159
+#: src/components/modals/SendModal.vue:166
 msgid "Choose an Address"
 msgstr ""
 
@@ -162,7 +162,7 @@ msgid "Consensus"
 msgstr ""
 
 #: src/components/ContactShortcuts.vue:5
-#: src/components/modals/SendModal.vue:26
+#: src/components/modals/SendModal.vue:31
 msgid "Contacts"
 msgstr ""
 
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Control how many decimals are shown for NIM values."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:17
+#: src/components/modals/SendModal.vue:22
 msgid "Create a Cashlink"
 msgstr ""
 
@@ -198,7 +198,11 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:12
+#: src/components/modals/SendModal.vue:459
+msgid "Edit transaction"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:17
 msgid "Enter Address"
 msgstr ""
 
@@ -234,7 +238,7 @@ msgstr ""
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:127
+#: src/components/modals/SendModal.vue:133
 msgid "fee"
 msgstr ""
 
@@ -278,7 +282,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:135
+#: src/components/modals/SendModal.vue:141
 msgid "Insufficient balance."
 msgstr ""
 
@@ -338,7 +342,7 @@ msgid ""
 "are supported by new Accounts only."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:49
+#: src/components/modals/SendModal.vue:54
 msgid "Name this contact..."
 msgstr ""
 
@@ -415,6 +419,10 @@ msgstr ""
 msgid "Request failed"
 msgstr ""
 
+#: src/components/modals/SendModal.vue:458
+msgid "Retry"
+msgstr ""
+
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
 msgstr ""
@@ -445,8 +453,8 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:102
-#: src/components/modals/SendModal.vue:137
+#: src/components/modals/SendModal.vue:108
+#: src/components/modals/SendModal.vue:143
 msgid "Send all"
 msgstr ""
 
@@ -458,8 +466,8 @@ msgstr ""
 msgid "send and receive transactions."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:154
-#: src/components/modals/SendModal.vue:4
+#: src/components/modals/SendModal.vue:161
+#: src/components/modals/SendModal.vue:9
 msgid "Send Transaction"
 msgstr ""
 
@@ -467,17 +475,21 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
+#: src/components/modals/SendModal.vue:455
+msgid "Sending Transaction"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:9
-#: src/components/modals/SendModal.vue:57
-#: src/components/modals/SendModal.vue:68
+#: src/components/modals/SendModal.vue:63
+#: src/components/modals/SendModal.vue:74
 msgid "Set Amount"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:97
+#: src/components/modals/SendModal.vue:103
 msgid "Set fee"
 msgstr ""
 
@@ -497,7 +509,11 @@ msgstr ""
 msgid "Shown Decimals"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:499
+msgid "Something went wrong"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:176
 msgid "Speed up your transaction"
 msgstr ""
 
@@ -544,6 +560,10 @@ msgstr ""
 msgid "Transaction from {address}"
 msgstr ""
 
+#: src/components/modals/SendModal.vue:481
+msgid "Transaction sent"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
 msgstr ""
@@ -585,7 +605,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:131
+#: src/components/modals/SendModal.vue:137
 msgid "You will send {amount} NIM"
 msgstr ""
 

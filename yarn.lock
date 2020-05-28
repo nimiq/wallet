@@ -7540,7 +7540,7 @@ q@^1.1.2:
 
 "qr-code@github:nimiq/qr-encoder":
   version "1.0.0"
-  resolved "https://codeload.github.com/nimiq/qr-encoder/tar.gz/d195110e3c3e44a3867fec878904181c6615899f"
+  resolved "https://codeload.github.com/nimiq/qr-encoder/tar.gz/e3130b5c058d42cfe97e437dbb5932f5ebd1db49"
 
 qr-scanner@^1.1.1:
   version "1.1.1"

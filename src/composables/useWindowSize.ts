@@ -9,19 +9,21 @@ let width: Ref<number> | null = null;
 let height: Ref<number> | null = null;
 
 function listener() {
-    width!.value = window.outerWidth;
-    height!.value = window.outerHeight;
+    width!.value = window.innerWidth;
+    height!.value = window.innerHeight;
 }
 
 export function useWindowSize() {
     // First-time setup
-    width = width || ref(0);
-    height = height || ref(0);
+    if (!width || !height) {
+        width = ref(0);
+        height = ref(0);
+        listener();
+    }
 
     onMounted(() => {
         if (numberOfListeners === 0) {
             window.addEventListener('resize', listener);
-            listener();
         }
         numberOfListeners += 1;
     });

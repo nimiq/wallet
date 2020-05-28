@@ -140,6 +140,10 @@ export default defineComponent({
     transition: opacity var(--transition-time) var(--nimiq-ease);
 }
 
+.modal-leave-active, .modal-leave-to {
+    pointer-events: none;
+}
+
 .modal-enter, .modal-leave-to {
     opacity: 0 !important;
 }

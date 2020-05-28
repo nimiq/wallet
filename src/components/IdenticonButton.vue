@@ -2,6 +2,7 @@
     <button class="reset identicon-button flex-column" v-on="$listeners">
         <Identicon :address="address"/>
         <label v-if="label">{{ label }}</label>
+        <span v-else>{{ address }}</span>
     </button>
 </template>
 
@@ -44,11 +45,20 @@ export default defineComponent({
         margin: -0.5rem auto 1rem;
     }
 
-    label {
+    label,
+    span {
         cursor: pointer;
         text-align: center;
         white-space: nowrap;
         overflow: hidden;
         mask: linear-gradient(90deg , white, white calc(100% - 2rem), rgba(255,255,255, 0));
+    }
+
+    span {
+        font-size: 0.95em;
+        font-family: 'Fira Mono', monospace;
+        word-spacing: -0.15em;
+        letter-spacing: -0.005em;
+        // opacity: 0.7;
     }
 </style>

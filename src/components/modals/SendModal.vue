@@ -332,22 +332,11 @@ export default defineComponent({
         const amountMenuOpened = ref(false);
         const feeSelectionOpened = ref(false);
 
-        const feeOptions: SelectBar.SelectBarOption[] = [{
-            color: 'nq-light-blue-bg',
-            text: 'free',
-            value: 0,
-            index: 0,
-        }, {
-            color: 'nq-green-bg',
-            text: 'standard',
-            value: 1,
-            index: 1,
-        }, {
-            color: 'nq-gold-bg',
-            text: 'express',
-            value: 2,
-            index: 2,
-        }];
+        const feeOptions: SelectBar.SelectBarOption[] = [
+            { color: 'nq-light-blue-bg', text: 'free', value: 0, index: 0 },
+            { color: 'nq-green-bg', text: 'standard', value: 1, index: 1 },
+            { color: 'nq-gold-bg', text: 'express', value: 2, index: 2 },
+        ];
 
         const activeCurrency = ref('nim');
         const fiatAmount = ref(0);
@@ -721,7 +710,9 @@ export default defineComponent({
             top: 1.375rem;
             opacity: 0.4;
 
-            transition: transform var(--movement-duration) var(--nimiq-ease);
+            transition:
+                transform var(--movement-duration) var(--nimiq-ease),
+                opacity var(--movement-duration) var(--nimiq-ease);
 
             &:first-child {
                 left: 1rem;
@@ -737,11 +728,13 @@ export default defineComponent({
             background: var(--nimiq-highlight-bg);
 
             .secondary:first-child {
-                transform: translateX(-0.375rem);
+                transform: translateX(-0.375rem) scale(1.05);
+                opacity: 0.5;
             }
 
             .secondary:nth-child(2) {
-                transform: translateX(0.375rem);
+                transform: translateX(0.375rem) scale(1.05);
+                opacity: 0.5;
             }
         }
 

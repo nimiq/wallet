@@ -245,7 +245,7 @@ export default defineComponent({
 
     .address {
         word-spacing: -0.15em;
-        letter-spacing: 0.005em;
+        letter-spacing: -0.005em;
         font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
     }
 

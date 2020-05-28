@@ -10,7 +10,7 @@
                 />
                 <section class="address-section">
                     <label class="nq-label">{{ $t('Enter Address') }}</label>
-                    <AddressInput v-model="addressInputValue" @address="onAddressEntered"/>
+                    <AddressInput v-model="addressInputValue" @address="onAddressEntered" ref="addressInputRef"/>
                 </section>
                 <section class="cashlink-section">
                     <span>{{ $t('Address unavailable?') }}</span>
@@ -46,7 +46,8 @@
                 <LabelInput
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
-                    :placeholder="$t('Name this contact...')"/>
+                    :placeholder="$t('Name this contact...')"
+                     ref="labelInputRef"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <Copyable :text="recipientWithLabel.address">
                     <AddressDisplay :address="recipientWithLabel.address"/>
@@ -84,7 +85,7 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
                         <span v-if="activeCurrency !== 'nim'" class="tilde">~</span>
-                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount"/>
+                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef"/>
                         <AmountInput v-else v-model="fiatAmount"/>
                         <button
                             class="reset amount-menu-button flex-row"
@@ -144,7 +145,8 @@
                         v-model="message"
                         :placeholder="$t('Add a public message...')"
                         :maxBytes="64"
-                        vanishing/>
+                        vanishing
+                        ref="messageInputRef"/>
                 </section>
 
                 <button
@@ -184,7 +186,7 @@
 }
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -211,6 +213,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'send-modal',
@@ -401,6 +404,43 @@ export default defineComponent({
             }
         }
 
+        /**
+         * Autofocus
+         */
+
+        const addressInputRef: Ref<AddressInput | null> = ref(null);
+        const labelInputRef: Ref<LabelInput | null> = ref(null);
+        const amountInputRef: Ref<AmountInput | null> = ref(null);
+        const messageInputRef: Ref<LabelInput | null> = ref(null);
+
+        const { width } = useWindowSize();
+
+        async function focus(input: Ref<AddressInput | LabelInput | AmountInput | null>) {
+            // TODO: Detect onscreen keyboards instead?
+            if (width.value <= 700) return; // Full mobile breakpoint
+
+            await context.root.$nextTick();
+            input.value!.focus();
+        }
+
+        watch(page, (currentPage) => {
+            if (currentPage === Pages.RECIPIENT_INPUT) {
+                focus(addressInputRef);
+            } else if (currentPage === Pages.AMOUNT_INPUT) {
+                focus(amountInputRef);
+            }
+        });
+
+        watch(recipientDetailsOpened, (isOpened) => {
+            if (isOpened) {
+                focus(labelInputRef);
+            } else if (page.value === Pages.RECIPIENT_INPUT) {
+                focus(addressInputRef);
+            } else {
+                focus(amountInputRef);
+            }
+        });
+
         async function sign() {
             // TODO: Show loading screen
             try {
@@ -465,6 +505,12 @@ export default defineComponent({
             canSend,
             sign,
             // onboard,
+
+            // DOM refs for autofocus
+            addressInputRef,
+            labelInputRef,
+            amountInputRef,
+            messageInputRef,
         };
     },
     components: {

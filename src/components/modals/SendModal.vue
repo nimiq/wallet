@@ -1,5 +1,10 @@
 <template>
-    <Modal :showOverlay="contactListOpened || recipientDetailsOpened || addressListOpened || feeSelectionOpened">
+    <Modal :showOverlay="contactListOpened
+        || recipientDetailsOpened
+        || addressListOpened
+        || feeSelectionOpened
+        || statusScreenOpened"
+    >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="page__recipient-input flex-column">
@@ -181,6 +186,18 @@
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
             </PageBody>
         </div>
+
+        <div v-if="statusScreenOpened" slot="overlay" class="page">
+            <StatusScreen
+                :title="statusTitle"
+                :state="statusState"
+                :message="statusMessage"
+                :mainAction="statusMainActionText"
+                :alternativeAction="statusAlternativeActionText"
+                @main-action="onStatusMainAction"
+                @alternative-action="onStatusAlternativeAction"
+            />
+        </div>
     </Modal>
 </template>
 }
@@ -207,6 +224,7 @@ import ContactShortcuts from '../ContactShortcuts.vue';
 import IdenticonButton from '../IdenticonButton.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StatusScreen from '../StatusScreen.vue';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -373,7 +391,7 @@ export default defineComponent({
 
         const hasHeight = computed(() => !!network$.height);
 
-        const canSend = computed(() => hasHeight && amount.value && amount.value <= maxSendableAmount.value);
+        const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
 
         if (props.requestUri) {
             const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
@@ -430,8 +448,21 @@ export default defineComponent({
             }
         });
 
+        /**
+         * Status Screen
+         */
+        const statusScreenOpened = ref(false);
+        const statusTitle = ref(context.root.$t('Sending Transaction'));
+        const statusState = ref(StatusScreen.State.LOADING);
+        const statusMessage = ref('');
+        const statusMainActionText = ref(context.root.$t('Retry'));
+        const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
+
         async function sign() {
-            // TODO: Show loading screen
+            // Show loading screen
+            statusScreenOpened.value = true;
+            statusState.value = StatusScreen.State.LOADING;
+
             try {
                 const plainTx = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
@@ -445,14 +476,37 @@ export default defineComponent({
                 });
 
                 if (plainTx) {
-                    // TODO: Show success screen
+                    // Show success screen
+                    statusState.value = StatusScreen.State.SUCCESS;
+                    statusTitle.value = context.root.$t('Transaction sent');
 
                     // Close modal
-                    context.root.$router.back();
+                    setTimeout(() => context.root.$router.back(), StatusScreen.SUCCESS_REDIRECT_DELAY);
                 }
             } catch (error) {
-                // TODO: Show error screen
+                if (error.message === 'CANCELED'
+                    || error === 'Connection was closed'
+                    || error.message === 'Connection was closed'
+                ) {
+                    statusScreenOpened.value = false;
+                    return;
+                }
+
+                // console.debug(error);
+
+                // Show error screen
+                statusState.value = StatusScreen.State.WARNING;
+                statusTitle.value = context.root.$t('Something went wrong');
+                statusMessage.value = error.message;
             }
+        }
+
+        function onStatusMainAction() {
+            sign();
+        }
+
+        function onStatusAlternativeAction() {
+            statusScreenOpened.value = false;
         }
 
         return {
@@ -500,6 +554,16 @@ export default defineComponent({
             labelInputRef,
             amountInputRef,
             messageInputRef,
+
+            // Status Screen
+            statusScreenOpened,
+            statusTitle,
+            statusState,
+            statusMessage,
+            statusMainActionText,
+            statusAlternativeActionText,
+            onStatusMainAction,
+            onStatusAlternativeAction,
         };
     },
     components: {
@@ -520,6 +584,7 @@ export default defineComponent({
         FiatConvertedAmount,
         SelectBar,
         Amount,
+        StatusScreen,
     },
 });
 

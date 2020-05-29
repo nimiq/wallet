@@ -1,8 +1,8 @@
 <template>
     <div class="consensus-icon" :class="consensus">
-        <WorldIcon v-if="consensus === 'connecting' || consensus === 'syncing'"/>
+        <WorldIcon v-if="consensus === 'syncing'"/>
         <WorldCheckIcon v-else-if="consensus === 'established'"/>
-        <WorldAlertIcon v-else-if="consensus === 'lost'"/>
+        <WorldAlertIcon v-else/>
     </div>
 </template>
 

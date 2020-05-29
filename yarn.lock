@@ -948,12 +948,12 @@
 
 "@nimiq/vue-components@github:nimiq/vue-components#build/master":
   version "0.1.0"
-  resolved "https://codeload.github.com/nimiq/vue-components/tar.gz/b5dd9e8b2465d1d99e853197f4a9400a12d13fb7"
+  resolved "https://codeload.github.com/nimiq/vue-components/tar.gz/807c5b14544d94067c6259c46f50287685d08c9d"
   dependencies:
     "@nimiq/style" "^0.8.0"
     big-integer "^1.6.44"
     input-format "^0.2.8"
-    qr-code "github:nimiq/qr-encoder"
+    qr-creator "^1.0.0"
     qr-scanner "^1.1.1"
     vue "^2.6.11"
     vue-property-decorator "^8.4.0"
@@ -7538,9 +7538,10 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
-"qr-code@github:nimiq/qr-encoder":
+qr-creator@^1.0.0:
   version "1.0.0"
-  resolved "https://codeload.github.com/nimiq/qr-encoder/tar.gz/e3130b5c058d42cfe97e437dbb5932f5ebd1db49"
+  resolved "https://registry.yarnpkg.com/qr-creator/-/qr-creator-1.0.0.tgz#f350a8f0b5be02bd1fc1ef133a038a06ef8bc5ef"
+  integrity sha512-C0cqfbS1P5hfqN4NhsYsUXePlk9BO+a45bAQ3xLYjBL3bOIFzoVEjs79Fado9u9BPBD3buHi3+vY+C8tHh4qMQ==
 
 qr-scanner@^1.1.1:
   version "1.1.1"

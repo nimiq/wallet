@@ -15,7 +15,11 @@
                 />
                 <section class="address-section">
                     <label class="nq-label">{{ $t('Enter Address') }}</label>
-                    <AddressInput v-model="addressInputValue" @address="onAddressEntered" ref="addressInputRef"/>
+                    <AddressInput
+                        v-model="addressInputValue"
+                        @paste="(event, text) => parseRequestUri(text, event)"
+                        @address="onAddressEntered"
+                        ref="addressInputRef"/>
                 </section>
                 <section class="cashlink-section">
                     <span>{{ $t('Address unavailable?') }}</span>
@@ -393,9 +397,15 @@ export default defineComponent({
 
         const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
 
-        if (props.requestUri) {
-            const parsedRequestLink = parseRequestLink(props.requestUri, window.location.origin, true);
+        function parseRequestUri(uri: string, event?: ClipboardEvent) {
+            uri = uri.replace(`${window.location.origin}/`, '');
+            const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
             if (parsedRequestLink) {
+                if (event) {
+                    // Prevent paste event being applied to the recipient label field, that now became focussed.
+                    event.preventDefault();
+                }
+
                 if (parsedRequestLink.recipient) {
                     onAddressEntered(parsedRequestLink.recipient);
                     if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
@@ -409,6 +419,10 @@ export default defineComponent({
                     message.value = parsedRequestLink.message;
                 }
             }
+        }
+
+        if (props.requestUri) {
+            parseRequestUri(props.requestUri);
         }
 
         /**
@@ -526,6 +540,7 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
+            parseRequestUri,
 
             // Amount Input
             resetRecipient,

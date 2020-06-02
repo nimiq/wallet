@@ -68,7 +68,7 @@ export default defineComponent({
     align-items: center;
     width: 100%;
     cursor: text;
-    padding: 0.625rem 0;
+    padding: 0.75rem 0;
     min-width: 0;
 
     transition: color 0.2s var(--nimiq-ease);
@@ -106,6 +106,8 @@ export default defineComponent({
         border: 0;
         line-height: 2.75rem;
         font-size: 2rem;
+        margin: 0;
+        padding: 0;
         padding-right: 2rem;
         background: none;
         min-width: 0;

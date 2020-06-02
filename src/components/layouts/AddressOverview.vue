@@ -433,7 +433,7 @@ export default defineComponent({
     }
 
     .mobile-action-bar {
-        margin: 0 calc(-1 * var(--padding));
+        margin: 0;
         box-shadow:
             0px 0px 4.12454px rgba(31, 35, 72, 0.031357),
             0px 0px 12.5187px rgba(31, 35, 72, 0.045),

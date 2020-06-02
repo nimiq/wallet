@@ -85,10 +85,10 @@ export default defineComponent({
     padding-bottom: 2rem;
 
     div {
-        font-size: 2rem;
+        font-size: var(--body-size);
         font-weight: 600;
         opacity: 0.6;
-        margin-top: 2rem;
+        margin-top: 1em;
     }
 }
 
@@ -108,7 +108,7 @@ export default defineComponent({
         width: calc(100% + 4rem);
         border-top: 1px solid rgba(31, 35, 72, 0.1);
         border-bottom: 1px solid rgba(31, 35, 72, 0.1);
-        margin: 2rem -2rem;
+        margin: 0 -2rem 2rem;
         padding: 1.25rem 0 1.25rem;
         position: relative;
 
@@ -157,10 +157,14 @@ export default defineComponent({
         color: rgba(31, 35, 72, 0.5);
         text-align: center;
         font-size: 2.25rem;
+
+        @media (max-width: 700px) { // Full Mobile Breakpoint
+            font-size: 2rem;
+        }
     }
 
     .copyable.big {
-        font-size: 3rem;
+        font-size: var(--h1-size);
     }
 }
 </style>

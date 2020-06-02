@@ -105,7 +105,7 @@ export default defineComponent({
         flex-grow: 1;
         border: 0;
         line-height: 2.75rem;
-        font-size: 2rem;
+        font-size: var(--body-size);
         margin: 0;
         padding: 0;
         padding-right: 2rem;

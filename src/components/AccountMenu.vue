@@ -206,7 +206,7 @@ export default defineComponent({
     border-radius: 0.5rem;
     align-items: center;
     font-weight: 600;
-    font-size: 2rem;
+    font-size: var(--body-size);
 
     transition: background-color 0.2s var(--nimiq-ease);
 

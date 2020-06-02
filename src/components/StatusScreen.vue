@@ -296,7 +296,7 @@ export default StatusScreen;
     }
 
     .status-row {
-        --status-font-size: 2.5rem;
+        --status-font-size: var(--h2-size);
         margin-top: 2rem; /* Same as title margin-bottom, to equalize spacing to center icon */
         margin-bottom: 5rem;
         height: var(--status-font-size); /* 1 line of status text. For multiple lines, the text overflows to the top */
@@ -365,7 +365,7 @@ export default StatusScreen;
 
     .action-row .nq-link {
         color: white;
-        font-size: 2rem;
+        font-size: var(--link-size);
     }
 
     /* FADE transitions */
@@ -398,7 +398,7 @@ export default StatusScreen;
     .status-screen.small .title {
         margin-top: 3rem;
         margin-bottom: 2rem;
-        font-size: 2.5rem;
+        font-size: var(--h2-size);
     }
 
     .status-screen .icon-row .nq-icon {

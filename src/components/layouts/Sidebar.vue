@@ -114,7 +114,7 @@ export default defineComponent({
 
     p {
         margin: 0;
-        font-size: 1.75rem;
+        font-size: var(--small-size);
         font-weight: 600;
         line-height: 1.3;
 

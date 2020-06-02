@@ -112,7 +112,7 @@ export default defineComponent({
     }
 
     .label {
-        font-size: 3rem;
+        font-size: var(--h1-size);
         font-weight: 600;
         margin-bottom: 3rem;
         white-space: nowrap;
@@ -123,7 +123,7 @@ export default defineComponent({
     }
 
     .amount {
-        font-size: 3rem;
+        font-size: var(--h1-size);
         font-weight: bold;
         line-height: 1;
         color: var(--nimiq-light-blue);
@@ -131,7 +131,7 @@ export default defineComponent({
     }
 
     .fiat-amount {
-        font-size: 2.5rem;
+        font-size: var(--h2-size);
         font-weight: 600;
         line-height: 1;
         color: rgba(31, 35, 72, 0.5);
@@ -161,7 +161,7 @@ export default defineComponent({
     }
 
     .qr-info-text {
-        font-size: 2.5rem;
+        font-size: var(--h2-size);
         font-weight: 600;
         white-space: pre;
         text-align: center;

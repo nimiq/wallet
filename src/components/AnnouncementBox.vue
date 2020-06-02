@@ -60,7 +60,7 @@ export default defineComponent({
 
 p {
     font-weight: 600;
-    font-size: 2rem;
+    font-size: var(--body-size);
     line-height: 1.4;
     margin-top: 0;
     margin-bottom: 1.75rem;
@@ -70,7 +70,7 @@ p {
     display: inline-flex;
     align-items: center;
     font-weight: bold;
-    font-size: 2rem;
+    font-size: var(--link-size);
 
     .nq-icon {
         font-size: 1.5rem;

@@ -66,7 +66,7 @@ export default defineComponent({
 
 img {
     float: right;
-    height: 42rem;
+    height: 38rem;
     padding-left: 5rem;
     shape-outside: polygon(50% 0, 100% 0, 100% 100%, 0% 100%, 15% 55%);
     margin-right: -3rem;
@@ -81,7 +81,7 @@ img {
 }
 
 p, a {
-    font-size: 2rem;
+    font-size: var(--body-size);
 }
 
 a {
@@ -131,6 +131,7 @@ a {
         padding-left: 3rem;
         margin-right: -4rem;
         margin-bottom: -4rem;
+        height: 36rem;
     }
 }
 </style>

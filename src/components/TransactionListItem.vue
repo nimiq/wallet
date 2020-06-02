@@ -216,6 +216,7 @@ svg {
     border-radius: .75rem;
     cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
+    font-size: var(--body-size);
 
     &:hover,
     &:focus {
@@ -227,7 +228,6 @@ svg {
     }
 
     .date {
-        font-size: 2rem;
         font-weight: bold;
         text-transform: uppercase;
         opacity: 0.4;
@@ -236,7 +236,7 @@ svg {
         line-height: 1;
 
         > .month {
-            font-size: 1.5rem;
+            font-size: var(--small-label-size);
             letter-spacing: 0.0667em;
         }
     }
@@ -289,7 +289,6 @@ svg {
             border-radius: 2rem;
             height: 2.5rem;
             width: 2.5rem;
-            font-size: 2rem;
         }
     }
 
@@ -297,7 +296,6 @@ svg {
         flex-grow: 1;
         overflow: hidden;
         line-height: 1.4;
-        font-size: 2rem;
 
         .label {
             font-weight: 600;
@@ -318,7 +316,7 @@ svg {
         }
 
         .time-and-message {
-            font-size: 1.75rem;
+            font-size: var(--small-size);
             opacity: .5;
             white-space: nowrap;
             mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
@@ -342,14 +340,13 @@ svg {
         line-height: 1.4;
 
         .amount {
-            font-size: 2rem;
             font-weight: bold;
         }
 
         .fiat-amount,
         .fiat-amount-loading,
         .fiat-amount-unavailable {
-            font-size: 1.75rem;
+            font-size: var(--small-size);
             font-weight: 600;
             opacity: 0.4;
 

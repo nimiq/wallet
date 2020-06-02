@@ -35,3 +35,73 @@ button.reset:disabled {
 .nq-label:not([class*="-bg"]) {
     color: var(--text-40);
 }
+
+
+/* Font Sizes */
+
+:root {
+    --transition-time: 0.75s;
+
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+
+    --label-size: 1.75rem;
+    --small-label-size: 1.5rem;
+    --tiny-label-size: 1.375rem;
+
+    --large-button-size: 2rem;
+    --small-button-size: 1.75rem;
+    --link-size: 2rem;
+
+    --h1-size: 3rem;
+    --h2-size: 2.5rem;
+}
+
+.nq-h1 {
+    font-size: var(--h1-size);
+}
+
+.nq-h2 {
+    font-size: var(--h2-size);
+}
+
+.nq-text {
+    font-size: var(--body-size);
+}
+
+.nq-label {
+    font-size: var(--small-size);
+}
+
+.nq-button {
+    font-size: var(--large-button-size);
+}
+
+.nq-button-s {
+    font-size: var(--small-button-size);
+}
+
+@media (max-width: 700px) { /* Full mobile breakpoint */
+    :root {
+        --transition-time: 0.5s;
+
+        --body-size: 1.875rem;
+        --small-size: 1.625rem;
+
+        --label-size: 1.625rem;
+        --small-label-size: 1.375rem;
+        --tiny-label-size: 1.375rem;
+
+        --large-button-size: 1.875rem;
+        --small-button-size: 1.625rem;
+        --link-size: 1.875rem;
+
+        --h1-size: 2.75rem;
+        --h2-size: 2.25rem;
+    }
+
+    .nq-button {
+        height: 7rem;
+        line-height: unset;
+    }
+}

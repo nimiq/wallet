@@ -352,7 +352,7 @@ export default defineComponent({
 
 .month-label {
     letter-spacing: 1.5px;
-    font-size: 1.75rem;
+    font-size: var(--label-size);
     padding-top: 5rem; // Padding-top +
     line-height: 2rem; // Line-height +
     padding-bottom: 2rem; // Padding-bottom = 9rem, equal to a transaction height
@@ -491,7 +491,7 @@ export default defineComponent({
     }
 
     span {
-        font-size: 2rem;
+        font-size: var(--body-size);
         font-weight: 600;
         opacity: 0.6;
     }

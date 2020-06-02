@@ -175,7 +175,7 @@ export default defineComponent({
                 }
 
                 .fiat-amount {
-                    font-size: 1.5rem;
+                    font-size: var(--small-label-size);
                     opacity: .6;
                     font-weight: 600;
                 }
@@ -190,7 +190,7 @@ export default defineComponent({
         }
 
         > span {
-            font-size: 1.75rem;
+            font-size: var(--small-size);
             white-space: nowrap;
             margin-left: 0.125rem;
             margin-right: 0.125rem;

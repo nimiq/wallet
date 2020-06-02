@@ -228,13 +228,13 @@ export default defineComponent({
 
     .label,
     .amount {
-        font-size: 3rem;
+        font-size: var(--h1-size);
         margin-top: 0.25rem;
     }
 
     .address,
     .fiat-amount {
-        font-size: 2.5rem;
+        font-size: var(--h2-size);
         opacity: 0.5;
     }
 
@@ -291,7 +291,7 @@ export default defineComponent({
     height: unset;
     line-height: 1;
     border-radius: 500px;
-    font-size: 2rem;
+    font-size: var(--large-button-size);
 
     .nq-icon {
         width: 1.5rem;
@@ -324,7 +324,7 @@ export default defineComponent({
     height: unset;
     line-height: 1;
     border-radius: 500px;
-    font-size: 2rem;
+    font-size: var(--large-button-size);
 
     &:not(.active) {
         background: none;
@@ -350,7 +350,7 @@ export default defineComponent({
     color: white;
     display: inline-block;
     border-radius: 0.5rem;
-    font-size: 2rem;
+    font-size: var(--body-size);
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
@@ -420,11 +420,11 @@ export default defineComponent({
 
         .label,
         .amount {
-            font-size: 2.25rem;
+            font-size: var(--h2-size);
         }
 
         .fiat-amount {
-            font-size: 1.75rem;
+            font-size: var(--small-size);
         }
 
         .amount {

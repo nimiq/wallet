@@ -1,7 +1,7 @@
 <template>
     <div class="legacy-account-notice flex-column">
         <header>
-            <h1 class="nq-h1">{{ $t('You are using a Legacy Account ') }}</h1>
+            <h1 class="nq-h1">{{ $t('You are using a Legacy\u00a0Account ') }}</h1>
             <p class="nq-text">
                 {{ $t('Create a new account and transfer your funds. New features and possibilities await.') }}
             </p>
@@ -119,7 +119,7 @@ section .nq-text {
 
 label {
     text-transform: uppercase;
-    font-size: 1.5rem;
+    font-size: var(--small-label-size);
     letter-spacing: 0.06em;
     padding: 0.625rem 1.5rem;
     border-radius: 500px;
@@ -130,7 +130,7 @@ label {
 }
 
 .future-notice {
-    font-size: 1.75rem;
+    font-size: var(--small-size);
     font-weight: 600;
     color: var(--text-40);
     margin-top: 3rem;
@@ -138,20 +138,8 @@ label {
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    h1 {
-        font-size: 2.75rem;
-    }
-
     section {
         margin: 0 1rem;
-    }
-
-    h2 {
-        font-size: 2.25rem;
-    }
-
-    p {
-        font-size: 1.875rem;
     }
 
     img, svg, div[data-placeholder] {
@@ -168,8 +156,6 @@ label {
     }
 
     label {
-        font-size: 1.375rem;
-        letter-spacing: 0.06em;
         padding: 0.5rem 1.25rem;
     }
 }

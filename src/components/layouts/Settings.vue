@@ -186,11 +186,14 @@ select {
     color: inherit;
 
     background: var(--bg-base);
-    border: 0.25rem solid var(--text-10);
+    border: none;
     padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
+    border-radius: 500px;
     font-weight: bold;
-    font-size: 2.5rem;
+    font-size: var(--h2-size);
+    padding: 0.75rem 1.75rem;
+    padding-right: 0;
+    box-shadow: 0 0 0 0.1875rem var(--text-16);
 
     &[name="theme"] {
         text-transform: capitalize;

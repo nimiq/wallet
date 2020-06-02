@@ -618,7 +618,7 @@ export default defineComponent({
 
     .page {
         flex-grow: 1;
-        font-size: 2rem;
+        font-size: var(--body-size);
         height: 100%;
 
         .nq-button {
@@ -729,7 +729,7 @@ export default defineComponent({
 
         .label-input,
         label {
-            font-size: 3rem;
+            font-size: var(--h1-size);
             font-weight: 600;
         }
 
@@ -1004,7 +1004,7 @@ export default defineComponent({
         text-align: center;
 
         .label-input {
-            font-size: 2.5rem;
+            font-size: var(--h2-size);
         }
     }
 

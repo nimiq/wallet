@@ -129,7 +129,7 @@ export default defineComponent({
         overflow-y: auto;
         padding-bottom: 1rem;
         padding-right: var(--padding-sides);
-        margin-right: calc(-1 * var(--padding-sides)) !important;
+        margin-right: calc(-1 * var(--padding-sides));
         color: var(--text-70);
 
         // To make space for the .active-box leftside box-shadow
@@ -139,14 +139,12 @@ export default defineComponent({
         @extend %custom-scrollbar;
     }
 
-    $btnMargin: .5;
-    $btnHeight: 9;
     .address-button {
         width: 100%;
-        font-size: 2rem;
+        font-size: var(--body-size);
         align-items: center;
         padding: 2rem;
-        margin: #{$btnMargin}rem 0;
+        margin: 0.5rem 0;
         border-radius: 0.75rem;
         z-index: 1;
 
@@ -160,7 +158,7 @@ export default defineComponent({
 
     .active-box {
         width: calc(100% - var(--padding-sides) - 1rem);
-        height: #{$btnHeight}rem;
+        height: 9rem;
         position: absolute;
         left: 1rem;
         top: 0;
@@ -236,7 +234,7 @@ export default defineComponent({
     }
 
     .fiat-balance {
-        font-size: 1.75rem;
+        font-size: var(--small-size);
         font-weight: 600;
         opacity: 0.5;
     }
@@ -267,6 +265,11 @@ export default defineComponent({
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint
+        .address-list {
+            margin-left: -0.5rem;
+            margin-right: calc(-1 * var(--padding-sides) + 0.5rem);
+        }
+
         .active-box {
             display: none;
         }
@@ -279,11 +282,17 @@ export default defineComponent({
             background: none !important;
             position: relative;
             color: var(--text-100);
+            margin: 0.25rem 0;
+            padding: 1.5rem;
 
             .crypto-balance {
                 color: inherit !important;
             }
         }
+
+        // .active-box {
+        //     height: 8rem;
+        // }
 
         .mobile-arrow {
             display: block;

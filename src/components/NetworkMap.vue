@@ -158,15 +158,15 @@ export default defineComponent({
 
     h3 {
         opacity: .5;
-        font-size: 1.5rem;
-        line-height: 1.5rem;
+        font-size: var(--small-label-size);
+        line-height: 1;
         margin: 0;
     }
 
     p {
         opacity: .8;
-        font-size: 2rem;
-        line-height: 2rem;
+        font-size: var(--body-size);
+        line-height: 1;
         margin: .75rem 0 0;
 
         &.self {

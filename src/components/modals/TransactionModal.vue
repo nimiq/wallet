@@ -8,7 +8,7 @@
                 }}</label>
             </template>
 
-            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}" tag="b">
+            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
@@ -16,7 +16,7 @@
                 </template>
             </i18n>
 
-            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}" tag="b">
+            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
@@ -24,7 +24,7 @@
                 </template>
             </i18n>
 
-            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}" tag="b">
+            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
@@ -32,7 +32,7 @@
                 </template>
             </i18n>
 
-            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}" tag="b">
+            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
@@ -386,7 +386,7 @@ export default defineComponent({
 
     span {
         display: block;
-        font-size: 2rem;
+        font-size: var(--body-size);
         font-weight: 600;
         align-items: center;
         justify-content: center;
@@ -496,27 +496,27 @@ export default defineComponent({
         border-radius: 3rem;
         height: 3.75rem;
         width: 3.75rem;
-        font-size: 3rem;
     }
 }
 
-.label {
-    font-size: 2rem;
+.label,
+.nq-input-s {
+    font-size: var(--body-size);
     font-weight: 600;
+    text-align: center;
+}
+
+.label {
     margin: 2rem 0 1rem;
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
-    text-align: center;
     mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 }
 
 .nq-input-s {
-    font-size: 2rem;
-    font-weight: 600;
     margin: 1.25rem 0 0.375rem;
     max-width: 100%;
-    text-align: center;
 }
 
 .nq-input-s:not(:focus):not(:hover) {
@@ -535,7 +535,7 @@ export default defineComponent({
 }
 
 .address-display {
-    font-size: 2rem;
+    font-size: var(--body-size);
 }
 
 .address-display /deep/ .chunk {
@@ -571,11 +571,15 @@ export default defineComponent({
             margin-right: -0.1em;
             margin-left: -0.6em;
         }
+
+        @media (max-width: 700px) { // Full Mobile Breakpoint
+            font-size: 4.75rem;
+        }
     }
 }
 
 .fiat-amount {
-    font-size: 1.75rem;
+    font-size: var(--small-size);
     font-weight: 600;
     color: rgba(31, 35, 72, 0.5);
 }
@@ -583,7 +587,7 @@ export default defineComponent({
 .message {
     margin: 1rem 0;
     text-align: center;
-    font-size: 2rem;
+    font-size: var(--body-size);
     line-height: 1.375;
     word-break: break-word;
 }
@@ -603,7 +607,7 @@ export default defineComponent({
     }
 
     /deep/ .tooltip-box {
-        font-size: 1.75rem;
+        font-size: var(--small-size);
         white-space: nowrap;
         line-height: 1.3;
         font-weight: 600;
@@ -612,7 +616,7 @@ export default defineComponent({
 
     .confirmations {
         display: block;
-        font-size: 1.5rem;
+        font-size: var(--small-label-size);
         opacity: 0.6;
     }
 
@@ -625,7 +629,6 @@ export default defineComponent({
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
         /deep/ .nq-h1 {
-            font-size: 2.75rem;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
 

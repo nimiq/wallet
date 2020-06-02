@@ -4,7 +4,7 @@
         <PageBody class="flex-column">
             <LegacyAccountNotice v-if="!hasMultiAddressAccount"/>
             <div v-else>
-                <h1 class="nq-h1">{{ $t('This is a Legacy Account') }}</h1>
+                <h1 class="nq-h1">{{ $t('This is a Legacy\u00a0Account') }}</h1>
                 <p class="nq-text">
                     {{ $t('Your NIM are stored in a legacy account. Transfer them to a regular account '
                         + 'to profit from new features.') }}
@@ -78,12 +78,10 @@ h1, p {
 h1 {
     margin-top: 1rem;
     margin-bottom: 2rem;
-    font-size: 2.75rem;
 }
 
 p {
     color: var(--text-60);
-    font-size: 1.875rem;
     margin-bottom: 4rem;
 }
 </style>

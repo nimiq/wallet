@@ -194,7 +194,7 @@ export default defineComponent({
     flex-wrap: wrap;
     padding: 0.625rem 1rem;
     border-radius: 0.5rem;
-    font-size: 2rem;
+    font-size: var(--body-size);
 
     .alert-icon {
         margin: 0 1rem;
@@ -246,7 +246,7 @@ export default defineComponent({
     border-top: 0.25rem solid var(--text-10);
     align-items: center;
     color: var(--text-40);
-    font-size: 2rem;
+    font-size: var(--body-size);
     font-weight: 600;
     padding: 0 4rem;
     margin: 0 -2rem;
@@ -264,7 +264,7 @@ export default defineComponent({
 
     label {
         text-transform: uppercase;
-        font-size: 1.5rem;
+        font-size: var(--small-label-size);
         font-weight: bold;
         letter-spacing: 0.06em;
         padding: 0.75rem 1.75rem;
@@ -274,7 +274,7 @@ export default defineComponent({
 }
 
 .future-notice {
-    font-size: 1.75rem;
+    font-size: var(--small-size);
     font-weight: 600;
     color: var(--text-40);
     margin: 2rem 0;

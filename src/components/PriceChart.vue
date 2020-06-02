@@ -248,7 +248,7 @@ svg path {
     margin: -0.25rem;
     border-radius: calc(0.25rem + 0.25rem); // border-width + effective border-radius of the label
     padding: 0.375rem; // 3px
-    font-size: 1.375rem; // 11px
+    font-size: var(--tiny-label-size); // 11px
     line-height: 1;
     font-weight: bold;
     color: var(--bg-secondary);
@@ -259,7 +259,7 @@ svg path {
     min-height: 4.5rem; // to avoid jumping of UI when children are hidden via v-if
     justify-content: space-between;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 1.75rem;
+    font-size: var(--small-size);
     margin-top: 1rem;
 }
 

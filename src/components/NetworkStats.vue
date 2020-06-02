@@ -48,13 +48,13 @@ export default defineComponent({
 }
 
 .nq-label {
-    font-size: 1.5rem;
+    font-size: var(--small-label-size);
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
 }
 
 .value {
-    font-size: 3rem;
+    font-size: var(--h1-size);
     text-transform: capitalize;
 
     &.flex-row {

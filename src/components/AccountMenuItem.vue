@@ -103,7 +103,7 @@ export default defineComponent({
 
 .fiat-amount {
     font-weight: 600;
-    font-size: 1.75rem;
+    font-size: var(--small-size);
     opacity: 0.5;
 }
 
@@ -112,5 +112,11 @@ export default defineComponent({
     color: var(--nimiq-orange);
     margin-right: 1.5rem;
     flex-shrink: 0;
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .fiat-amount {
+        font-size: 1.875rem;
+    }
 }
 </style>

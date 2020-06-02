@@ -130,6 +130,7 @@ export default defineComponent({
         padding-bottom: 1rem;
         padding-right: var(--padding-sides);
         margin-right: calc(-1 * var(--padding-sides)) !important;
+        color: var(--text-70);
 
         // To make space for the .active-box leftside box-shadow
         padding-left: 1rem;
@@ -147,10 +148,9 @@ export default defineComponent({
         padding: 2rem;
         margin: #{$btnMargin}rem 0;
         border-radius: 0.75rem;
-        opacity: 0.6;
         z-index: 1;
 
-        transition: opacity 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
+        transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
 
         .has-scrollbar & {
             width: calc(100% + 6px);
@@ -214,7 +214,6 @@ export default defineComponent({
         display: block;
         line-height: 1.2;
         font-weight: bold;
-        transition: color 300ms var(--nimiq-ease);
 
         .nq-icon {
             display: inline-block;
@@ -226,7 +225,7 @@ export default defineComponent({
     .address-button:focus,
     .address-button.active,
     .embedded .address-button {
-        opacity: 1;
+        color: var(--text-100);
     }
 
     .address-button:not(.active):hover,
@@ -234,12 +233,6 @@ export default defineComponent({
     .embedded .address-button:hover,
     .embedded .address-button:focus {
         background: var(--nimiq-highlight-bg);
-    }
-
-    .address-button:hover .crypto-balance,
-    .address-button:focus .crypto-balance,
-    .address-button.active .crypto-balance {
-        color: var(--nimiq-light-blue);
     }
 
     .fiat-balance {
@@ -287,9 +280,9 @@ export default defineComponent({
         }
 
         .address-button {
-            opacity: 1;
             background: none !important;
             position: relative;
+            color: var(--text-100);
 
             .crypto-balance {
                 color: inherit !important;

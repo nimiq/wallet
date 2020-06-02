@@ -8,32 +8,32 @@
                 }}</label>
             </template>
 
-            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}">
-                <template #address>
+            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}" tag="b">
+                <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>
                 </template>
             </i18n>
 
-            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}">
-                <template #address>
+            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}" tag="b">
+                <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>
                 </template>
             </i18n>
 
-            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}">
-                <template #address>
+            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}" tag="b">
+                <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>
                 </template>
             </i18n>
 
-            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}">
-                <template #address>
+            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}" tag="b">
+                <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>

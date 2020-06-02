@@ -59,7 +59,7 @@
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
             <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
-            <a v-if="isMainnet" href="https://getsome.nimiq.com" class="nq-button light-blue">
+            <a v-if="isMainnet" href="https://getsome.nimiq.com" class="nq-button green">
                 {{ $t('Receive free NIM') }}
             </a>
             <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>

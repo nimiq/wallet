@@ -54,7 +54,6 @@ msgstr ""
 msgid "Address unavailable?"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:39
 #: src/components/MigrationWelcome.vue:18
 msgid "Addresses"
 msgstr ""
@@ -63,7 +62,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:63
+#: src/components/layouts/AccountOverview.vue:53
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -138,7 +137,7 @@ msgstr ""
 msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:58
+#: src/components/layouts/AccountOverview.vue:48
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -198,7 +197,7 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:473
+#: src/components/modals/SendModal.vue:475
 msgid "Edit transaction"
 msgstr ""
 
@@ -419,7 +418,7 @@ msgstr ""
 msgid "Request failed"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:472
+#: src/components/modals/SendModal.vue:474
 msgid "Retry"
 msgstr ""
 
@@ -475,8 +474,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:469
+#: src/components/modals/SendModal.vue:471
 msgid "Sending Transaction"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:502
+msgid "Sent {nim} NIM"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:498
+msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:66
@@ -509,7 +516,7 @@ msgstr ""
 msgid "Shown Decimals"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:513
+#: src/components/modals/SendModal.vue:522
 msgid "Something went wrong"
 msgstr ""
 
@@ -540,7 +547,7 @@ msgid "There is no ‘forgot password’"
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
-msgid "This is a Legacy Account"
+msgid "This is a Legacy Account"
 msgstr ""
 
 #: src/components/modals/PreviewNoticeModal.vue:10
@@ -558,10 +565,6 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
-msgstr ""
-
-#: src/components/modals/SendModal.vue:495
-msgid "Transaction sent"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:35
@@ -598,7 +601,7 @@ msgid "You are here"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
-msgid "You are using a Legacy Account "
+msgid "You are using a Legacy Account "
 msgstr ""
 
 #: src/components/TransactionList.vue:45

@@ -658,6 +658,15 @@ export default defineComponent({
     }
 }
 
+@media (max-width: 450px) { // Nimiq Style breakpoint for smaller .nq-card-header padding
+    .page-header {
+        /deep/ .nq-h1 {
+            margin-left: 3rem;
+            margin-right: 3rem;
+        }
+    }
+}
+
 @media (max-width: 400px) {
     .sender-recipient {
         padding: 0;

@@ -494,7 +494,14 @@ export default defineComponent({
                 if (plainTx) {
                     // Show success screen
                     statusState.value = StatusScreen.State.SUCCESS;
-                    statusTitle.value = context.root.$t('Transaction sent');
+                    statusTitle.value = recipientWithLabel.value!.label
+                        ? context.root.$t('Sent {nim} NIM to {name}', {
+                            nim: amount.value / 1e5,
+                            name: recipientWithLabel.value!.label,
+                        })
+                        : context.root.$t('Sent {nim} NIM', {
+                            nim: amount.value / 1e5,
+                        });
 
                     // Close modal
                     setTimeout(() => context.root.$router.back(), StatusScreen.SUCCESS_REDIRECT_DELAY);
@@ -1017,6 +1024,13 @@ export default defineComponent({
 
         .amount {
             margin-top: 3rem;
+        }
+    }
+
+    @media (max-width: 700px) { // Full Mobile Breakpoint
+        .status-screen {
+            border-top-left-radius: 1.75rem;
+            border-top-right-radius: 1.75rem;
         }
     }
 </style>

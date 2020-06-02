@@ -30,7 +30,7 @@
             @click="$emit('add-address')"
         >
             <div class="identicon-wrapper">
-                <div class="identicon add-address-icon flex-row"><AddMobileIcon/></div>
+                <div class="identicon add-address-icon flex-row"><AddIcon/></div>
             </div>
             <span class="label add-address-label">{{ $t('Add Address') }}</span>
         </button>
@@ -47,7 +47,7 @@ import { useNetworkStore } from '../stores/Network';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ClockIcon from './icons/ClockIcon.vue';
-import AddMobileIcon from './icons/AddMobileIcon.vue';
+import AddIcon from './icons/AddIcon.vue';
 
 export default defineComponent({
     props: {
@@ -114,7 +114,7 @@ export default defineComponent({
         FiatConvertedAmount,
         ClockIcon,
         LockLockedIcon,
-        AddMobileIcon,
+        AddIcon,
     } as any,
 });
 </script>
@@ -241,10 +241,6 @@ export default defineComponent({
         opacity: 0.5;
     }
 
-    .add-address-button {
-        display: none;
-    }
-
     .add-address-icon {
         justify-content: center;
         align-items: center;
@@ -253,7 +249,7 @@ export default defineComponent({
         margin: 0 calc(0.75rem / 2);
         background: var(--nimiq-highlight-bg);
         border-radius: 50%;
-        color:rgba(31, 35, 72, 0.5);
+        color: var(--text-50);
 
         svg {
             width: 2rem;
@@ -262,7 +258,7 @@ export default defineComponent({
     }
 
     .add-address-label {
-        opacity: 0.45;
+        opacity: 0.65;
     }
 
     .mobile-arrow,
@@ -287,10 +283,6 @@ export default defineComponent({
             .crypto-balance {
                 color: inherit !important;
             }
-        }
-
-        .add-address-button {
-            display: flex;
         }
 
         .mobile-arrow {

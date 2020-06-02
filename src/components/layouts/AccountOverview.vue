@@ -35,16 +35,6 @@
         <template v-else>
             <AccountBalance />
 
-            <h2 class="nq-label">
-                {{ $t('Addresses') }}
-                <button
-                    v-if="canHaveMultipleAddresses"
-                    class="nq-button-s flex-row"
-                    @click="addAddress(activeAccountId)"
-                >
-                    <AddDesktopIcon/>
-                </button>
-            </h2>
             <AddressList
                 :showAddAddressButton="canHaveMultipleAddresses"
                 @address-selected="onAddressSelected"
@@ -83,7 +73,6 @@ import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
-import AddDesktopIcon from '../icons/AddDesktopIcon.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
@@ -143,7 +132,6 @@ export default defineComponent({
         BitcoinIcon,
         MenuIcon,
         ConsensusIcon,
-        AddDesktopIcon,
         MobileActionBar,
         LegacyAccountNotice,
         LegacyAccountUpgradeButton,
@@ -194,29 +182,6 @@ export default defineComponent({
 
     > * {
         margin-bottom: var(--item-margin);
-    }
-}
-
-h2 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 2rem var(--item-margin);
-
-    > button {
-        justify-content: center;
-        align-items: center;
-        width: 4rem;
-        height: 4rem;
-        padding: 0;
-        margin: 0;
-        border-radius: 50%;
-        color: var(--text-60);
-
-        svg {
-            width: 1.75rem;
-            height: 1.75rem;
-        }
     }
 }
 
@@ -344,10 +309,6 @@ h2 {
 
     .account-balance {
         margin-top: -4rem;
-    }
-
-    h2 {
-        display: none;
     }
 
     .bitcoin-teaser {

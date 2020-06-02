@@ -607,6 +607,7 @@ export default defineComponent({
         white-space: nowrap;
         line-height: 1.3;
         font-weight: 600;
+        transform: translate(-1rem, 2rem);
     }
 
     .confirmations {
@@ -645,6 +646,12 @@ export default defineComponent({
 
     .address-info {
         flex-shrink: 0;
+    }
+
+    .tooltip {
+        /deep/ .tooltip-box {
+            transform: translate(1rem, 2rem);
+        }
     }
 }
 

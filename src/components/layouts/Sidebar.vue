@@ -4,7 +4,7 @@
             <StreetconeIcon/>
             <span class="nq-label">Testnet</span>
             <div class="flex-grow"></div>
-            <Tooltip preferredPosition="bottom left" theme="inverse">
+            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(2rem, 2rem)'}">
                 <InfoCircleIcon slot="trigger"/>
                 <p>You are connecting to the Nimiq Testnet.</p>
                 <p>Please do not use your Mainnet accounts!</p>
@@ -124,10 +124,6 @@ export default defineComponent({
     }
 
     .tooltip {
-        /deep/ .trigger {
-            vertical-align: unset;
-        }
-
         /deep/ .tooltip-box {
             width: 20rem;
         }

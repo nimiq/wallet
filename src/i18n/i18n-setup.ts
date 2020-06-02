@@ -14,6 +14,10 @@ export const i18n = new VueI18n({
     silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
+if (process.env.NODE_ENV === 'production') {
+    i18n.missing = () => ''; // trick to not show numbers instead of string before language is loaded
+}
+
 function setI18nLanguage(lang: string): string {
     const { hostname } = window.location;
     const cookieDomain = hostname.includes('nimiq-testnet.com') ? 'nimiq-testnet.com'

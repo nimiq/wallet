@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, QrScanner } from '@nimiq/vue-components';
-import { parseRequestLink, createNimiqRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
+import { parseRequestLink, createNimiqRequestLink, NimiqRequestLinkType, ValidationUtils } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useRouter } from '../../router';
 
@@ -18,6 +18,13 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const checkResult = (result: string) => {
+            if (ValidationUtils.isValidAddress(result)) {
+                router.replace(`/${createNimiqRequestLink(result, {
+                    type: NimiqRequestLinkType.URI,
+                })}`);
+                return;
+            }
+
             // parseRequestLink has not implemented urischemes appending an url yet.
             // checkResult('http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd');
             // does not give an result for any of the below combinations of arguments to parseRequestLink

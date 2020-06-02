@@ -21,10 +21,7 @@ export default defineComponent({
             // parseRequestLink has not implemented urischemes appending an url yet.
             // checkResult('http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd');
             // does not give an result for any of the below combinations of arguments to parseRequestLink
-            // Thus check to see if the url is present and if so remove it including the trailing '/'
-            if (result.startsWith(window.location.origin) && result.length > window.location.origin.length + 1) {
-                result = result.substr(window.location.origin.length + 1);
-            }
+            result = result.replace(`${window.location.origin}/`, '');
 
             const requestLink = parseRequestLink(result, undefined, true)
                 || parseRequestLink(result, 'safe.nimiq.com', true)
@@ -42,7 +39,7 @@ export default defineComponent({
 
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
-                window.location.replace(result);
+                window.location.href = result;
             }
         };
 

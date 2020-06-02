@@ -200,6 +200,7 @@
                 :alternativeAction="statusAlternativeActionText"
                 @main-action="onStatusMainAction"
                 @alternative-action="onStatusAlternativeAction"
+                :lightBlue="true"
             />
         </div>
     </Modal>
@@ -438,9 +439,10 @@ export default defineComponent({
 
         async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
-            if (width.value <= 700 || !elementRef.value) return; // Full mobile breakpoint
+            if (width.value <= 700) return; // Full mobile breakpoint
 
             await context.root.$nextTick();
+            if (!elementRef.value) return;
             elementRef.value.focus();
         }
 

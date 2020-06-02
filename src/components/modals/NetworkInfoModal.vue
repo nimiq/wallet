@@ -45,8 +45,17 @@ export default defineComponent({
         .small-page {
             height: unset;
             color: white;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(1rem);
+            background: var(--nimiq-blue);
+
+            /**
+             * Backdrop Blur can be enabled once these bugs are fixed in browsers:
+             * - blur is also applied during transform transitions
+             * - (iOS) Safari blurs the whole background of the element, not just where text is
+             * - the majority of browsers support it
+             */
+
+            // background: rgba(255, 255, 255, 0.2);
+            // backdrop-filter: blur(1rem);
         }
     }
 }

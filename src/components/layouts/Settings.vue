@@ -160,6 +160,7 @@ section {
     .button-group button {
         border-radius: 0;
         border-right: 0.125rem solid var(--text-10);
+        margin: 0; // Remove iOS default margin
 
         &::before {
             display: none;
@@ -233,6 +234,7 @@ select:disabled {
         justify-content: space-between;
         align-items: center;
         align-self: stretch;
+        flex-shrink: 0;
         padding: 1rem;
         z-index: 1;
 

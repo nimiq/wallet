@@ -213,7 +213,7 @@ export default defineComponent({
     &:hover,
     &:focus,
     &.active {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.1);
     }
 }
 

@@ -60,6 +60,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.modal /deep/ .close-button {
+    display: none;
+}
+
 .page-body {
     display: flex;
     flex-direction: column;
@@ -73,11 +77,25 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
+    .modal /deep/ {
+        .wrapper,
+        .small-page {
+            height: 100%;
+            max-height: 100%;
+            border-radius: 0;
+        }
+    }
+
     .page-body {
         padding: 0;
     }
+
     .qr-scanner {
-        border-radius: 2.5rem 2.5rem 0 0;
+        border-radius: 0;
+
+        /deep/ .cancel-button {
+            bottom: 6rem;
+        }
     }
 }
 </style>

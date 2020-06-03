@@ -3,7 +3,7 @@
         <template v-if="activeAddressInfo">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
-                <SearchBar @input="search.searchString = $event.target.value"/>
+                <SearchBar @input="searchString = $event.target.value"/>
                 <button
                     v-if="unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
@@ -40,7 +40,7 @@
                 </div>
             </button>
             <div class="actions flex-row">
-                <SearchBar @input="search.searchString = $event.target.value"/>
+                <SearchBar @input="searchString = $event.target.value"/>
 
                 <button
                     v-if="unclaimedCashlinkCount"
@@ -62,7 +62,7 @@
                 </button>
             </div>
             <TransactionList
-                :searchString="search.searchString"
+                :searchString="searchString"
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import { Identicon, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
 // @ts-ignore missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -106,11 +106,10 @@ import { onboard } from '../../hub';
 export default defineComponent({
     name: 'address-overview',
     setup() {
-        const { activeAddressInfo } = useAddressStore();
+        const { activeAddressInfo, activeAddress } = useAddressStore();
         const { isFetchingTxHistory } = useNetworkStore();
 
-        const search = reactive({ searchString: '' });
-        const senderAddress = computed(() => activeAddressInfo!.value!.address!);
+        const searchString = ref('');
 
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
@@ -124,11 +123,10 @@ export default defineComponent({
             if (!count) hideUnclaimedCashlinkList();
         }
 
-        watch(senderAddress, hideUnclaimedCashlinkList);
+        watch(activeAddress, hideUnclaimedCashlinkList);
 
         return {
-            senderAddress,
-            search,
+            searchString,
             activeAddressInfo,
             isFetchingTxHistory,
             onboard,

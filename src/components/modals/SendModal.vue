@@ -33,7 +33,6 @@
 
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
             <PageHeader>{{ $t('Contacts') }}</PageHeader>
-            <CloseButton class="top-right" @click="contactListOpened = false"/>
             <PageBody class="page__contact-list contact-list">
                 <button
                     v-for="contact in contacts"
@@ -45,10 +44,10 @@
                     <label>{{ contact.label }}</label>
                 </button>
             </PageBody>
+            <CloseButton class="top-right" @click="contactListOpened = false"/>
         </div>
 
         <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
-            <CloseButton class="top-right" @click="closeRecipientDetails"/>
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <Identicon :address="recipientWithLabel.address"/>
@@ -66,6 +65,7 @@
                     @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
                 >{{ $t('Set Amount') }}</button>
             </PageBody>
+            <CloseButton class="top-right" @click="closeRecipientDetails"/>
         </div>
 
         <div
@@ -168,14 +168,13 @@
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
-            <CloseButton class="top-right" @click="addressListOpened = false"/>
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false"/>
             </PageBody>
+            <CloseButton class="top-right" @click="addressListOpened = false"/>
         </div>
 
         <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
-            <CloseButton class="top-right" @click="feeSelectionOpened = false"/>
             <PageBody class="page__fee-selection fee-selection flex-column">
                 <h1 class="nq-h1">{{ $t('Speed up your transaction') }}</h1>
                 <p class="nq-text">
@@ -189,6 +188,7 @@
                 />
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
             </PageBody>
+            <CloseButton class="top-right" @click="feeSelectionOpened = false"/>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">

@@ -18,7 +18,6 @@
         </PageBody>
 
         <PageBody class="overlay flex-column" slot="overlay">
-            <CloseButton @click.prevent="qrCodeOverlayOpened = false" class="top-right" />
             <div class="flex-spacer"></div>
             <QrCode
                 :data="addressInfo.address"
@@ -27,6 +26,7 @@
                 class="qr-code"
             />
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
+            <CloseButton @click.prevent="qrCodeOverlayOpened = false" class="top-right" />
         </PageBody>
     </Modal>
 </template>

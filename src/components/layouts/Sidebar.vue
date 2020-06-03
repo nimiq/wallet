@@ -124,6 +124,10 @@ export default defineComponent({
     }
 
     .tooltip {
+        /deep/ .trigger {
+            display: block;
+        }
+
         /deep/ .tooltip-box {
             width: 20rem;
         }

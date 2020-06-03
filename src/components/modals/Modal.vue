@@ -83,7 +83,7 @@ export default defineComponent({
     z-index: 5;
     width: 100%;
     height: 100%;
-    background: rgba(31, 35, 72, 0.8);
+    background: rgba(31, 35, 72, 0.6);
     align-items: center;
     justify-content: center;
 
@@ -148,8 +148,13 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+
 .modal-enter-active, .modal-leave-active {
-    transition: opacity var(--transition-time) var(--nimiq-ease);
+    transition: background-color 0.45s cubic-bezier(0.4,0,0.2,1);
+
+    /deep/ .nq-card {
+        transition: opacity 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.45s var(--nimiq-ease);
+    }
 }
 
 .modal-leave-active, .modal-leave-to {
@@ -157,11 +162,16 @@ export default defineComponent({
 }
 
 .modal-enter, .modal-leave-to {
-    opacity: 0 !important;
+    background-color: rgba(31, 35, 72, 0) !important;
+
+    /deep/ .nq-card {
+        opacity: 0 !important;
+        transform: translate3D(0,16px,0) scale(0.99);
+    }
 }
 
 .overlay-enter-active, .overlay-leave-active {
-    transition: transform var(--transition-time) var(--nimiq-ease);
+    transition: transform 0.75s cubic-bezier(0.4,0,0,1);
 }
 
 .overlay-enter, .overlay-leave-to {

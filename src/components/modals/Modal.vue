@@ -9,6 +9,7 @@
             <transition name="overlay">
                 <SmallPage v-if="showOverlay" class="overlay">
                     <slot name="overlay"/>
+                    <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
                 </SmallPage>
             </transition>
         </div>
@@ -36,6 +37,11 @@ export default defineComponent({
     },
     setup(props, context) {
         function close() {
+            if (props.showOverlay) {
+                context.emit('close-overlay');
+                return;
+            }
+
             if (props.emitClose) {
                 context.emit('close');
             } else {

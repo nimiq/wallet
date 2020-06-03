@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="qrCodeOverlayOpened" class="address-modal">
+    <Modal :showOverlay="qrCodeOverlayOpened" class="address-modal" @close-overlay="qrCodeOverlayOpened = false">
         <PageBody class="flex-column">
             <button
                 v-if="addressInfo.type === AddressType.BASIC"
@@ -26,7 +26,6 @@
                 class="qr-code"
             />
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
-            <CloseButton @click.prevent="qrCodeOverlayOpened = false" class="top-right" />
         </PageBody>
     </Modal>
 </template>
@@ -34,7 +33,6 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import {
-    CloseButton,
     PageBody,
     Identicon,
     Copyable,
@@ -70,7 +68,6 @@ export default defineComponent({
     components: {
         Modal,
         PageBody,
-        CloseButton,
         Identicon,
         Amount,
         FiatConvertedAmount,

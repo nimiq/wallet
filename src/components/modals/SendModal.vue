@@ -4,6 +4,7 @@
         || addressListOpened
         || feeSelectionOpened
         || statusScreenOpened"
+        @close-overlay="onCloseOverlay"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
@@ -44,7 +45,6 @@
                     <label>{{ contact.label }}</label>
                 </button>
             </PageBody>
-            <CloseButton class="top-right" @click="contactListOpened = false"/>
         </div>
 
         <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
@@ -65,7 +65,6 @@
                     @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
                 >{{ $t('Set Amount') }}</button>
             </PageBody>
-            <CloseButton class="top-right" @click="closeRecipientDetails"/>
         </div>
 
         <div
@@ -171,7 +170,6 @@
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false"/>
             </PageBody>
-            <CloseButton class="top-right" @click="addressListOpened = false"/>
         </div>
 
         <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
@@ -188,7 +186,6 @@
                 />
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
             </PageBody>
-            <CloseButton class="top-right" @click="feeSelectionOpened = false"/>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -215,7 +212,6 @@ import {
     AddressInput,
     ScanQrCodeIcon,
     Identicon,
-    CloseButton,
     LabelInput,
     Copyable,
     AddressDisplay,
@@ -532,6 +528,15 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        function onCloseOverlay() {
+            contactListOpened.value = false;
+            if (recipientDetailsOpened.value) {
+                closeRecipientDetails();
+            }
+            addressListOpened.value = false;
+            feeSelectionOpened.value = false;
+        }
+
         return {
             // General
             Pages,
@@ -588,6 +593,8 @@ export default defineComponent({
             statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
+
+            onCloseOverlay,
         };
     },
     components: {
@@ -598,7 +605,6 @@ export default defineComponent({
         AddressInput,
         ScanQrCodeIcon,
         Identicon,
-        CloseButton,
         LabelInput,
         Copyable,
         AddressDisplay,

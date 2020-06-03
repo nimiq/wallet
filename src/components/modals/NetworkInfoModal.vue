@@ -45,7 +45,8 @@ export default defineComponent({
         .small-page {
             height: unset;
             color: white;
-            background: var(--nimiq-blue);
+            background: #302949; // Determined by Julian
+            box-shadow: none;
 
             /**
              * Backdrop Blur can be enabled once these bugs are fixed in browsers:

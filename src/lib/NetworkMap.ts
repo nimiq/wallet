@@ -59,6 +59,8 @@ namespace NodeType {
     }
 }
 
+export { NodeType };
+
 /**
  * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
  */
@@ -218,14 +220,14 @@ export class NodeHexagon extends Hexagon {
         connection: 1,
     };
 
-    private _nodes: Set<Node> = new Set();
+    public peers: Set<Node> = new Set();
     private _connections: Set<string> = new Set();
-    private _oldNodeCount = 0;
+    private _oldPeerCount = 0;
 
     public addNode(node: Node) {
-        if (this._nodes.has(node)) return false; // do not add existing nodes explicitly update their state
-        this._oldNodeCount = this._nodes.size;
-        if (this._nodes.size !== this._nodes.add(node).size) {
+        if (this.peers.has(node)) return false; // do not add existing nodes explicitly update their state
+        this._oldPeerCount = this.peers.size;
+        if (this.peers.size !== this.peers.add(node).size) {
             this._animation.hexagon = 0;
         } else {
             return false; // UNEXPECTED
@@ -244,7 +246,7 @@ export class NodeHexagon extends Hexagon {
     }
 
     public updateState(node: Node) {
-        if (!this._nodes.has(node)) return false; // node is not present, do not update
+        if (!this.peers.has(node)) return false; // node is not present, do not update
         let updated = false;
         if (node.connected) {
             if (this._connections.size === 0) {
@@ -269,8 +271,8 @@ export class NodeHexagon extends Hexagon {
                 this._animation.hexagon = 0;
             }
         }
-        this._oldNodeCount = this._nodes.size;
-        if (this._nodes.delete(node) && (!this.isConnected || this._nodes.size === 0)) {
+        this._oldPeerCount = this.peers.size;
+        if (this.peers.delete(node) && (!this.isConnected || this.peers.size === 0)) {
             updated = true;
             this._animation.hexagon = 0;
         }
@@ -278,7 +280,7 @@ export class NodeHexagon extends Hexagon {
     }
 
     public get nodeCount() {
-        return this._nodes.size;
+        return this.peers.size;
     }
 
     public get isConnected(): boolean {
@@ -296,9 +298,9 @@ export class NodeHexagon extends Hexagon {
                 // maximum opacity
                 .25
                 // old state
-                * NodeHexagon.getAlpha(this._oldNodeCount)
+                * NodeHexagon.getAlpha(this._oldPeerCount)
                 // animation to new state
-                + NodeHexagon.getAlpha(this._nodes.size - this._oldNodeCount) * this._animation.hexagon}`;
+                + NodeHexagon.getAlpha(this.peers.size - this._oldPeerCount) * this._animation.hexagon}`;
             super.draw(dc, timeDelta);
         }
 

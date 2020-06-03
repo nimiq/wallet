@@ -18,7 +18,7 @@
                     <div :style="`padding: ${scale}em;`"></div>
                 </template>
                 <template v-slot:default>
-                    <div v-for="peer in node._nodes" :key="peer.peerId">
+                    <div v-for="peer in node.peers" :key="peer.peerId">
                         <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
                         <!-- <h3 v-else>
                             {{ peer.connected ? $t('Connected') : $t('Available') }}
@@ -41,14 +41,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '../network';
-import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR } from '../lib/NetworkMap';
+import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR, NodeType } from '../lib/NetworkMap';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const $container = ref<HTMLDivElement|null>(null);
         const $network = ref<HTMLCanvasElement|null>(null);
         const $overlay = ref<HTMLCanvasElement|null>(null);
@@ -98,7 +98,7 @@ export default defineComponent({
             NetworkClient.Instance.on(NetworkClient.Events.PEER_ADDRESSES_ADDED, updateKnownAddresses);
             NetworkClient.Instance.on(NetworkClient.Events.PEERS_CHANGED, updateKnownAddresses);
 
-            // if no consensus is establiched one of the other events will trigger the update
+            // If no consensus is established, one of the other events will trigger the update
             if (NetworkClient.Instance.consensusState === 'established') {
                 updateKnownAddresses();
             }
@@ -108,6 +108,12 @@ export default defineComponent({
         });
 
         onUnmounted(() => window.removeEventListener('resize', setDimensions));
+
+        // Emit own X coordinate so the parent can scroll the map to the correct horizontal position
+        const ownNode = computed(() =>
+            nodes.value.find((node) => [...node.peers].some((peer) => peer.type === NodeType.SELF)));
+        const ownXCoordinate = computed(() => ownNode.value ? ownNode.value.x : null);
+        watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * scale.value));
 
         return {
             $container,
@@ -127,11 +133,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .network-map {
-    padding: 0;
-    display: flex;
-    width: 100%;
     position: relative;
     overflow: hidden;
 }

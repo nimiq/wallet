@@ -9,8 +9,8 @@
                 </button>
                 <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
             </div>
-            <div class="scroller map">
-                <NetworkMap/>
+            <div class="scroller map" ref="$map">
+                <NetworkMap @own-x-coordinate="scrollMap"/>
             </div>
             <div class="scroller stats">
                 <NetworkStats/>
@@ -30,6 +30,7 @@ import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
+import { WIDTH } from '../../lib/NetworkMap';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
@@ -42,9 +43,20 @@ export default defineComponent({
             showNetworkInfo.value = false;
         }
 
+        const $map = ref<HTMLDivElement | null>(null);
+        function scrollMap(x: number) {
+            const mapWidth = $map.value!.children[0]!.clientWidth;
+            const adjustedX = x * (mapWidth / WIDTH);
+
+            const scrollTarget = adjustedX - (window.innerWidth / 2);
+            $map.value!.scrollTo(scrollTarget, 0);
+        }
+
         return {
             showNetworkInfo,
             onNetworkInfoClosed,
+            $map,
+            scrollMap,
         };
     },
     components: {
@@ -143,11 +155,14 @@ export default defineComponent({
     }
 
     .network-map {
-        // Take the screen height, subtract footer and header heights, and multiply with the ratio between
-        // network map width and height.
-        --height: calc(100vh - 10rem - 6.75rem - 2rem);
-        height: var(--height);
-        width: calc(var(--height) * (1082 / 502));
+        // On iOS, the viewport height (vh) includes the bottom browser tapbar, so if we were to use 100vh for the
+        // height, the map would be scrollable vertically (which we don't want).
+        // However, for the calculation below we can still use 100vh - it just adds a bit of margin on the map's side.
+        height: calc(100% - 2rem);
+        // Take the screen height, subtract footer (9.5rem), header (6.75rem) and margin (2rem), and multiply with
+        // the ratio between network map width and height.
+        --mapHeight: calc(100vh - 9.5rem - 6.75rem - 2rem);
+        width: calc(var(--mapHeight) * (1082 / 502));
     }
 
     .network-stats {

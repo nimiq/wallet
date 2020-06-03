@@ -39,13 +39,11 @@ export default defineComponent({
         width: calc(100% + 2rem);
     }
 
-    button,
     .identicon-button {
-        margin-right: 0.5rem;
+        margin-right: 0.25rem;
         width: 0;
         flex-grow: 1;
 
-        &:first-child,
         &:last-child {
             margin-right: 0;
         }
@@ -58,6 +56,8 @@ export default defineComponent({
         width: 13rem;
         flex-shrink: 0;
         flex-grow: 0;
+
+        transition: background var(--attr-duration) var(--nimiq-ease);
 
         &:hover,
         &:focus {
@@ -82,7 +82,7 @@ export default defineComponent({
         content: '';
         display: block;
         width: 0.125rem;
-        margin: 0 0.5rem;
+        margin: 0 0.75rem;
         flex-shrink: 0;
         align-self: stretch;
         background: var(--text-14);

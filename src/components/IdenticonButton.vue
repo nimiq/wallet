@@ -33,6 +33,8 @@ export default defineComponent({
         border-radius: 0.75rem;
         padding: 1rem;
 
+        transition: background var(--attr-duration) var(--nimiq-ease);
+
         &:hover,
         &:focus {
             background: var(--nimiq-highlight-bg);

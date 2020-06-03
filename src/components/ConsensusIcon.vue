@@ -46,9 +46,9 @@ export default defineComponent({
     opacity: 1 !important;
 }
 
-:hover > .lost,
-:focus > .lost,
-.active > .lost {
+:hover > .connecting,
+:focus > .connecting,
+.active > .connecting {
     color: var(--nimiq-orange) !important;
     opacity: 1 !important;
 }

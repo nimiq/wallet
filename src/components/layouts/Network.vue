@@ -136,7 +136,7 @@ export default defineComponent({
     button.reset {
         padding: 1rem;
         opacity: 0.3;
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
 
     .menu-button,
@@ -175,6 +175,10 @@ export default defineComponent({
         padding-bottom: 0;
         z-index: 1;
         position: unset;
+
+        button.reset {
+            font-size: 2.5rem;
+        }
 
         .menu-button,
         .account-button {

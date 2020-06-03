@@ -20,7 +20,9 @@
                 :fill="'#1F2348' /* nimiq-blue */"
                 class="qr-code"
             />
-            <Copyable :class="{'big': !isInputsOpen}">{{ origin }}/{{ requestLink }}</Copyable>
+            <Copyable :class="{'big': !isInputsOpen}" :text="`${origin}/${requestLink}`">
+                {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
+            </Copyable>
         </PageBody>
     </Modal>
 </template>

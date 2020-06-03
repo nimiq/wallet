@@ -71,7 +71,7 @@ export default defineComponent({
     padding: 0.75rem 0;
     min-width: 0;
 
-    transition: color 0.2s var(--nimiq-ease);
+    transition: color var(--attr-duration) var(--nimiq-ease);
 
     &::after {
         content: '';
@@ -83,7 +83,7 @@ export default defineComponent({
         box-shadow: 0 0 0 $borderTickness var(--text-16);
         border-radius: 500px;
 
-        transition: box-shadow 0.2s var(--nimiq-ease);
+        transition: box-shadow var(--attr-duration) var(--nimiq-ease);
     }
 
     svg {
@@ -95,6 +95,8 @@ export default defineComponent({
         opacity: 0.4;
         width: 1.75rem;
         height: 1.75rem;
+
+        transition: opacity var(--attr-duration) var(--nimiq-ease);
     }
 
     input {
@@ -129,6 +131,10 @@ export default defineComponent({
 
     &:focus-within {
         color: var(--nimiq-light-blue);
+
+        svg {
+            opacity: 1;
+        }
 
         &::after {
         box-shadow: 0 0 0 $borderTickness var(--light-blue-30);

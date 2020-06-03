@@ -208,7 +208,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: var(--body-size);
 
-    transition: background-color 0.2s var(--nimiq-ease);
+    transition: background-color var(--attr-duration) var(--nimiq-ease);
 
     &:hover,
     &:focus,
@@ -243,7 +243,7 @@ export default defineComponent({
     opacity: 0.7;
     word-wrap: break-word;
 
-    transition: opacity 300ms var(--nimiq-ease);
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
 }
 
 .account-menu:hover .label,
@@ -260,6 +260,9 @@ export default defineComponent({
     width: 4rem;
     text-align: center;
     border-radius: 0 0.5rem 0.5rem 0;
+    opacity: 0.3;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
 
     svg {
         margin: auto;
@@ -267,7 +270,7 @@ export default defineComponent({
 
     &:hover,
     &:focus {
-        background: rgba(255, 255, 255, 0.1);
+        opacity: 1;
     }
 }
 
@@ -338,10 +341,10 @@ export default defineComponent({
     opacity: 0.7;
 
     transition:
-        // background 0.2s var(--nimiq-ease),
-        opacity 0.2s var(--nimiq-ease),
-        box-shadow 0.2s var(--nimiq-ease),
-        color 0.2s var(--nimiq-ease);
+        // background var(--attr-duration) var(--nimiq-ease),
+        opacity var(--attr-duration) var(--nimiq-ease),
+        box-shadow var(--attr-duration) var(--nimiq-ease),
+        color var(--attr-duration) var(--nimiq-ease);
 }
 
 .menu .item:disabled {
@@ -396,8 +399,8 @@ export default defineComponent({
     border-radius: 0.5rem;
 
     transition:
-        opacity 0.2s var(--nimiq-ease),
-        box-shadow 0.2s var(--nimiq-ease);
+        opacity var(--attr-duration) var(--nimiq-ease),
+        box-shadow var(--attr-duration) var(--nimiq-ease);
 }
 
 .account-list .account-menu-item:hover,

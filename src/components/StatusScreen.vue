@@ -265,7 +265,7 @@ export default StatusScreen;
         width: calc(100% - 2 * var(--status-screen-margin));
         height: calc(100% - 2 * var(--status-screen-margin));
         margin: var(--status-screen-margin);
-        z-index: 1000;
+        z-index: 3;
         position: relative;
         flex-grow: 1;
     }

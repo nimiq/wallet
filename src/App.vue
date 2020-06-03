@@ -17,15 +17,21 @@
         <transition name="modal">
             <PreviewNoticeModal v-if="showPreviewNotice" emitClose @close="showPreviewNotice = false"/>
         </transition>
+
+        <div v-if="!hasAccounts" class="loader flex-row">
+            <LoadingSpinner/>
+        </div>
     </div><!-- #app -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
 import router, { provideRouter, Columns } from './router';
+import { useAccountStore } from './stores/Account';
 import { TESTNET_ORIGIN } from './lib/Constants';
 
 export default defineComponent({
@@ -57,14 +63,20 @@ export default defineComponent({
             }
         });
 
+        const { accountInfos } = useAccountStore();
+        // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
+        const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
+
         return {
             showPreviewNotice,
             routeClass,
+            hasAccounts,
         };
     },
     components: {
         Sidebar,
         PreviewNoticeModal,
+        LoadingSpinner,
     },
 });
 </script>
@@ -148,6 +160,16 @@ export default defineComponent({
             height: 100%;
             z-index: 0;
         }
+    }
+
+    .loader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background: var(--nimiq-gray);
+        z-index: 100;
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint

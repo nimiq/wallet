@@ -4,6 +4,9 @@
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                <transition name="fade">
+                    <div v-if="showOverlay" class="cover"></div>
+                </transition>
             </SmallPage>
 
             <transition name="overlay">
@@ -98,15 +101,22 @@ export default defineComponent({
 }
 
 .main {
-    transition:
-        transform var(--transition-time) var(--nimiq-ease),
-        filter var(--transition-time) var(--nimiq-ease);
+    transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);
-        filter: brightness(0.6);
     }
+}
+
+.cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(31, 35, 72, 0.5);
+    border-radius: 1rem;
 }
 
 .overlay {
@@ -122,7 +132,8 @@ export default defineComponent({
         justify-content: flex-end;
     }
 
-    .small-page {
+    .small-page,
+    .cover {
         border-radius: 2.5rem 2.5rem 0 0;
     }
 

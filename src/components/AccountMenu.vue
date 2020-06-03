@@ -452,6 +452,7 @@ export default defineComponent({
     /deep/ .nq-card {
         transform: translate3D(0,0,0), scale(1);
         transform-origin: left center;
+        box-shadow: 0px 2px 2.5px rgba(31, 35, 72, 0.02), 0px 7px 8.5px rgba(31, 35, 72, 0.04), 0px 18px 38px rgba(31, 35, 72, 0.07);
     }
 }
 

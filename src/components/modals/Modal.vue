@@ -170,9 +170,17 @@ export default defineComponent({
     }
 }
 
-.overlay-enter-active, .overlay-leave-active {
-    transition: transform 0.75s cubic-bezier(0.4,0,0,1);
+.overlay-enter-active {
+    // transition: transform 0.6s var(--nimiq-ease);
+    transition: transform 0.6s cubic-bezier(0.2,0.95,0.2,1);
 }
+
+.overlay-leave-active {
+    transition: transform 0.6s cubic-bezier(0.9,0,0.9,0.05);
+    transition: transform 0.6s cubic-bezier(0.4,0,0,1);
+}
+
+
 
 .overlay-enter, .overlay-leave-to {
     /**

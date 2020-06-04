@@ -9,7 +9,7 @@
                 </button>
                 <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
             </div>
-            <div class="scroller map" ref="$map">
+            <div class="scroller map flex-column" ref="$map">
                 <NetworkMap @own-x-coordinate="scrollMap"/>
             </div>
             <div class="scroller stats">
@@ -152,13 +152,14 @@ export default defineComponent({
 
     .scroller {
         overflow-y: auto;
+
+        &.map {
+            padding-bottom: 2rem;
+        }
     }
 
     .network-map {
-        // On iOS, the viewport height (vh) includes the bottom browser tapbar, so if we were to use 100vh for the
-        // height, the map would be scrollable vertically (which we don't want).
-        // However, for the calculation below we can still use 100vh - it just adds a bit of margin on the map's side.
-        height: calc(100% - 2rem);
+        flex-grow: 1;
         // Take the screen height, subtract footer (9.5rem), header (6.75rem) and margin (2rem), and multiply with
         // the ratio between network map width and height.
         --mapHeight: calc(100vh - 9.5rem - 6.75rem - 2rem);

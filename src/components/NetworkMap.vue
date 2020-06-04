@@ -8,7 +8,7 @@
                 theme="inverse"
                 :container="$container ? { $el: $container } : null"
                 :margin="{ left: 12, top: 12, right: 12, bottom: 12 }"
-                :style="`transform: translate(${Math.round(node.x * scale)}px, ${Math.round(node.y * scale)}px);`"
+                :style="`transform: translate(${Math.floor(node.x * scale)}px, ${Math.floor(node.y * scale)}px);`"
                 :styles="{
                     whiteSpace: 'nowrap',
                     pointerEvents: 'none',

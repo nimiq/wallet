@@ -1,4 +1,4 @@
-# safe-next
+# Nimiq Wallet
 
 ## Project setup
 ```
@@ -10,6 +10,8 @@ yarn install
 yarn serve
 ```
 
+> You will also need to run the [Nimiq Hub](https://github.com/nimiq/hub#contribute) and [Nimiq Keyguard](https://github.com/nimiq/keyguard/#development) in development, too.
+
 ### Compiles and minifies for production
 ```
 yarn build
@@ -19,6 +21,3 @@ yarn build
 ```
 yarn lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

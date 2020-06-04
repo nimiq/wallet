@@ -249,7 +249,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: src/components/modals/PreviewNoticeModal.vue:12
+#: src/components/modals/PreviewNoticeModal.vue:18
 msgid "Got it"
 msgstr ""
 
@@ -305,7 +305,7 @@ msgstr ""
 msgid "Let's get started! Connect your first account:"
 msgstr ""
 
-#: src/components/modals/PreviewNoticeModal.vue:11
+#: src/components/modals/PreviewNoticeModal.vue:15
 msgid "Let's hear your feedback!"
 msgstr ""
 
@@ -585,7 +585,7 @@ msgid "Updating transactions..."
 msgstr ""
 
 #: src/components/modals/PreviewNoticeModal.vue:9
-msgid "Welcome to the Wallet Preview!"
+msgid "Welcome to the Wallet Beta!"
 msgstr ""
 
 #: src/components/MigrationWelcome.vue:90

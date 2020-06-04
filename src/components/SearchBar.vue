@@ -80,7 +80,7 @@ export default defineComponent({
         right: 0;
         bottom: 0;
         left: 0;
-        box-shadow: 0 0 0 $borderTickness var(--text-16);
+        box-shadow: inset 0 0 0 $borderTickness var(--text-16);
         border-radius: 500px;
 
         transition: box-shadow var(--attr-duration) var(--nimiq-ease);
@@ -126,7 +126,7 @@ export default defineComponent({
     }
 
     &:hover::after {
-        box-shadow: 0 0 0 $borderTickness var(--text-22);
+        box-shadow: inset 0 0 0 $borderTickness var(--text-22);
     }
 
     &:focus-within {
@@ -137,7 +137,7 @@ export default defineComponent({
         }
 
         &::after {
-        box-shadow: 0 0 0 $borderTickness var(--light-blue-30);
+        box-shadow: inset 0 0 0 $borderTickness var(--light-blue-30);
         }
     }
 }

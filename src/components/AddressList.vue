@@ -155,6 +155,10 @@ export default defineComponent({
         }
     }
 
+    .add-address-button {
+        background: none !important;
+    }
+
 
     .active-box {
         width: calc(100% - var(--padding-sides) - 1rem);
@@ -165,13 +169,16 @@ export default defineComponent({
         z-index: 0;
         border-radius: 0.75rem;
         background: var(--bg-card);
-        box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.08);
+        box-shadow:
+            0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+            0px 1.5px 3px rgba(0, 0, 0, 0.05),
+            0px 4px 16px rgba(0, 0, 0, 0.07);
 
         will-change: transform;
         transition: transform 400ms var(--nimiq-ease);
 
         .has-scrollbar & {
-            width: calc(100% - var(--padding-sides) - 1rem + 6px);
+            width: calc(100% - var(--padding-sides) - 1rem + 6px); // 6px = scrollbar width
         }
     }
 
@@ -249,6 +256,8 @@ export default defineComponent({
         border-radius: 50%;
         color: var(--text-50);
 
+        transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
+
         svg {
             width: 2rem;
             height: 2rem;
@@ -257,6 +266,14 @@ export default defineComponent({
 
     .add-address-label {
         opacity: 0.65;
+    }
+
+    .add-address-button:hover,
+    .add-address-button:focus {
+        .add-address-icon {
+            background: rgba(31, 35, 72, 0.1);
+            color: var(--text-80);
+        }
     }
 
     .mobile-arrow,

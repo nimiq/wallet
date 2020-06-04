@@ -17,7 +17,7 @@
                 <div class="button-group">
                     <button
                         class="nq-button-s" :class="{'light-blue': decimals === 0}"
-                        @click="setDecimals(0)">{{ $t('0') }}</button>
+                        @click="setDecimals(0)">{{ $t('none') }}</button>
                     <button
                         class="nq-button-s" :class="{'light-blue': decimals === 2}"
                         @click="setDecimals(2)">{{ $t('2') }}</button>

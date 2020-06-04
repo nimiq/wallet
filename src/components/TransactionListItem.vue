@@ -303,7 +303,7 @@ svg {
 
         .address {
             font-family: 'Fira Mono', monospace;
-            word-spacing: -0.1em;
+            word-spacing: -0.2em;
             white-space: nowrap;
 
             .bold {

@@ -378,6 +378,7 @@ export default defineComponent({
     /deep/ .nq-h1 {
         margin-left: 2rem;
         margin-right: 2rem;
+        max-width: calc(100% - 4rem);
         white-space: nowrap;
         overflow: hidden;
         margin-bottom: 1rem;
@@ -600,6 +601,19 @@ export default defineComponent({
     /deep/ a {
         color: rgba(31, 35, 72, 0.25);
 
+        transition: color 0.3s var(--nimiq-ease);
+
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: -1.5rem;
+            top: -1.5rem;
+            right: -1.5rem;
+            bottom: -1.5rem;
+            border-radius: 50%;
+        }
+
         &:hover,
         &:focus {
             color: rgba(31, 35, 72, 0.6);
@@ -663,6 +677,7 @@ export default defineComponent({
         /deep/ .nq-h1 {
             margin-left: 3rem;
             margin-right: 3rem;
+            // max-width: calc(100% - 6rem);
         }
     }
 }

@@ -157,6 +157,7 @@ export default defineComponent({
     @include flex-full-height;
     background: var(--bg-primary);
     flex-direction: column;
+    box-shadow: -0.75rem 0 12rem rgba(0, 0, 0, 0.05);
 
     /* Default: 1440px */
     --padding: 4rem;
@@ -232,7 +233,7 @@ export default defineComponent({
 
     .address,
     .fiat-amount {
-        font-size: var(--h2-size);
+        font-size: var(--body-size);
         opacity: 0.5;
     }
 
@@ -242,8 +243,7 @@ export default defineComponent({
     }
 
     .address {
-        word-spacing: -0.15em;
-        letter-spacing: -0.005em;
+        word-spacing: -0.2em;
         font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
     }
 
@@ -324,9 +324,22 @@ export default defineComponent({
     border-radius: 500px;
     font-size: var(--large-button-size);
 
-    &:not(.active) {
-        background: none;
-        box-shadow: inset 0 0 0 0.25rem rgba(252, 135, 2, 0.3);
+    background: none !important;
+    box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.35); // Based on Nimiq Orange
+
+    transition:
+        color .3s var(--nimiq-ease),
+        background-color .3s var(--nimiq-ease),
+        box-shadow .3s var(--nimiq-ease);
+
+    &:hover,
+    &:focus {
+        box-shadow: inset 0 0 0 0.1875rem rgba(252, 117, 0, 0.45); // Based on Nimiq Orange Darkened
+    }
+
+    &.active {
+        box-shadow: none;
+        background:rgba(252, 135, 2, 0.13) !important;
     }
 }
 

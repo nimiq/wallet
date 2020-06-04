@@ -376,11 +376,12 @@ export default defineComponent({
 }
 
 .unclaimed-cashlink-list {
-    border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
-    border-radius: 0.5rem;
+    // border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
+    border-radius: 0.75rem;
     padding: 2rem;
     position: relative;
-    margin: 0 -2rem;
+    margin: 4rem -2rem 0;
+    box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.4);
 
     .month-label {
         opacity: 1;
@@ -522,7 +523,9 @@ export default defineComponent({
 
     .unclaimed-cashlink-list {
         padding: 0.5rem;
+        padding-bottom: 1.5rem;
         margin: 0;
+        margin-top: 2rem;
 
         .top-right {
             top: 1rem;

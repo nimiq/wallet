@@ -6,6 +6,7 @@
             :item-size="itemSize"
             key-field="transactionHash"
             :buffer="scrollerBuffer"
+            ref="scroller"
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
@@ -323,6 +324,22 @@ export default defineComponent({
             createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);
         }
 
+        // Scroll to top when
+        // - Active address changes
+        // - Unclaimed Cashlinks list is opened
+        const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
+        watch(activeAddress, () => {
+            if (scroller.value) {
+                scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
+            }
+        });
+        watch(() => props.showUnclaimedCashlinkList, (show) => {
+            if (show && scroller.value) {
+                console.log(scroller.value.scrollToPosition);
+                scroller.value.scrollToPosition(0, true);
+            }
+        });
+
         return {
             activeAddress,
             scrollerBuffer,
@@ -333,6 +350,7 @@ export default defineComponent({
             isMainnet,
             unclaimedCashlinkTxs,
             onCreateCashlink,
+            scroller,
         };
     },
     components: {

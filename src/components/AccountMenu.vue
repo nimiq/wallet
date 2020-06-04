@@ -323,11 +323,10 @@ export default defineComponent({
 
 .separator {
     margin: 0 0.5rem 0.5rem 0.5rem;
-    background: var(--nimiq-blue);
-    height: 0.1875rem;
-    opacity: .14;
+    height: 2px;
+    box-shadow: 0 1.5px 0 0 var(--text-14);
     flex-shrink: 0;
-    border-radius: 1rem;
+    border-radius: 2px;
 }
 
 .menu .item {
@@ -415,6 +414,30 @@ export default defineComponent({
 .menu .add-account {
     margin: 1rem;
     align-self: flex-start;
+}
+
+@media (min-width: 700px) { // Full mobile breakpoint
+    .backdrop {
+        background-color: rgba(31, 35, 72, 0.3);
+
+        /deep/ .wrapper {
+            transform-origin: left center;
+        }
+
+        /deep/ .nq-card {
+            box-shadow:
+                0px 2px 2.5px rgba(31, 35, 72, 0.02),
+                0px 7px 8.5px rgba(31, 35, 72, 0.04),
+                0px 18px 38px rgba(31, 35, 72, 0.07);
+        }
+    }
+
+    // Special transition for Account Menu modal
+    .modal-enter, .modal-leave-to {
+        /deep/ .wrapper {
+            transform: translate3D(1rem, 0, 0) scale(0.99);
+        }
+    }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

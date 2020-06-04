@@ -261,7 +261,7 @@ export default defineComponent({
 
 .groundfloor,
 .address-overview {
-    transition: transform var(--transition-time) var(--nimiq-ease);
+    transition: transform var(--transition-time) cubic-bezier(0.6, 0, 0.25, 1);
 }
 
 .groundfloor {

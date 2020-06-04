@@ -83,7 +83,7 @@ export default defineComponent({
     z-index: 5;
     width: 100%;
     height: 100%;
-    background: rgba(31, 35, 72, 0.8);
+    background: rgba(31, 35, 72, 0.6);
     align-items: center;
     justify-content: center;
 
@@ -148,8 +148,26 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+:root {
+    --modal-transition-time: 0.45s;
+    --overlay-transition-time: 0.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --modal-transition-time: 0s;
+        --overlay-transition-time: 0s;
+    }
+}
+
 .modal-enter-active, .modal-leave-active {
-    transition: opacity var(--transition-time) var(--nimiq-ease);
+    transition: background-color var(--modal-transition-time) cubic-bezier(0.4, 0, 0.2, 1);
+
+    .wrapper {
+        transition:
+            opacity calc(0.55 * var(--modal-transition-time)) cubic-bezier(0.4, 0, 0.2, 1),
+            transform var(--modal-transition-time) var(--nimiq-ease);
+    }
 }
 
 .modal-leave-active, .modal-leave-to {
@@ -157,11 +175,22 @@ export default defineComponent({
 }
 
 .modal-enter, .modal-leave-to {
-    opacity: 0 !important;
+    background-color: rgba(31, 35, 72, 0) !important;
+
+    .wrapper {
+        opacity: 0 !important;
+        transform: translate3D(0, 2rem, 0) scale(0.99);
+    }
 }
 
-.overlay-enter-active, .overlay-leave-active {
-    transition: transform var(--transition-time) var(--nimiq-ease);
+.overlay-enter-active {
+    // transition: transform var(--overlay-transition-time) var(--nimiq-ease);
+    transition: transform var(--overlay-transition-time) cubic-bezier(0.2, 0.95, 0.2, 1);
+}
+
+.overlay-leave-active {
+    // transition: transform var(--overlay-transition-time) cubic-bezier(0.9, 0, 0.9, 0.05);
+    transition: transform var(--overlay-transition-time) cubic-bezier(0.4, 0, 0, 1);
 }
 
 .overlay-enter, .overlay-leave-to {
@@ -176,34 +205,15 @@ export default defineComponent({
      * [-1 *] so it animates from and to the top, and we add a little extra [1.1 = +10%] so the easing
      * doesn't stop at the top of the viewport.
      */
-    transform: translateY(calc(-1.1 * ((100vh - 100%) / 2 + 100%)));
+    transform: translate3D(0, calc(-1.1 * ((100vh - 100%) / 2 + 100%)), 0);
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal-enter-active, .modal-leave-active {
-        transition:
-            background-color var(--transition-time) var(--nimiq-ease),
-            // Need to 'animate' opacity to ensure modal stays visible during leave transition
-            opacity 0s;
-    }
-
-    .modal-leave-active {
-        // Delay opacity transition during leave transition to ensure modal stays visible
-        transition-delay: 0s, var(--transition-time);
-    }
-
     .modal-enter, .modal-leave-to {
-        background-color: rgba(31, 35, 72, 0) !important;
-    }
-
-    .modal-enter-active .wrapper,
-    .modal-leave-active .wrapper {
-        transition: transform var(--transition-time) var(--nimiq-ease);
-    }
-
-    .modal-enter .wrapper,
-    .modal-leave-to .wrapper {
-        transform: translateY(100%);
+        .wrapper {
+            opacity: 1 !important;
+            transform: translate3D(0, 100%, 0);
+        }
     }
 
     .overlay-enter,
@@ -211,7 +221,7 @@ export default defineComponent({
         /**
          * 100% is the height of the overlay
          */
-        transform: translateY(100%);
+        transform: translate3D(0, 100%, 0);
     }
 }
 </style>

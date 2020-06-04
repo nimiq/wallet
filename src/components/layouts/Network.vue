@@ -117,7 +117,7 @@ export default defineComponent({
 }
 
 .network-map {
-    height: 100%;
+    flex-grow: 1;
 }
 
 .network-stats {
@@ -159,7 +159,6 @@ export default defineComponent({
     }
 
     .network-map {
-        flex-grow: 1;
         // Take the screen height, subtract footer (9.5rem), header (6.75rem) and margin (2rem), and multiply with
         // the ratio between network map width and height.
         --mapHeight: calc(100vh - 9.5rem - 6.75rem - 2rem);

@@ -8,6 +8,7 @@
         <input
             ref="searchBarInput"
             type="text"
+            :value="value"
             :placeholder="width < 50
                 ? ''
                 : width > 340
@@ -15,7 +16,7 @@
                     : width > 150
                         ? $t('Search Transactions')
                         : $t('Search')"
-            @input="$emit('input', $event)" />
+            @input="$emit('input', $event.target.value)" />
     </div>
 </template>
 
@@ -24,6 +25,12 @@ import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-a
 
 export default defineComponent({
     name: 'search-bar',
+    props: {
+        value: {
+            type: String,
+            default: '',
+        },
+    },
     setup() {
         const searchBarInput = ref<HTMLInputElement | null>(null);
         const width = ref(1000);

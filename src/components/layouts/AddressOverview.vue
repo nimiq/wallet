@@ -3,7 +3,7 @@
         <template v-if="activeAddressInfo">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
-                <SearchBar @input="searchString = $event.target.value"/>
+                <SearchBar v-model="searchString"/>
                 <button
                     v-if="unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
@@ -40,7 +40,7 @@
                 </div>
             </button>
             <div class="actions flex-row">
-                <SearchBar @input="searchString = $event.target.value"/>
+                <SearchBar v-model="searchString"/>
 
                 <button
                     v-if="unclaimedCashlinkCount"
@@ -123,7 +123,14 @@ export default defineComponent({
             if (!count) hideUnclaimedCashlinkList();
         }
 
-        watch(activeAddress, hideUnclaimedCashlinkList);
+        function clearSearchString() {
+            searchString.value = '';
+        }
+
+        watch(activeAddress, () => {
+            hideUnclaimedCashlinkList();
+            clearSearchString();
+        });
 
         return {
             searchString,

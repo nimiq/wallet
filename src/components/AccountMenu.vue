@@ -25,7 +25,7 @@
         </button>
 
         <!-- Submenu -->
-        <transition name="account-modal">
+        <transition name="modal">
             <Modal v-if="menuOpen" class="menu" emitClose @close="closeMenu" @click.native.stop>
                 <div class="current-account">
                     <AccountMenuItem :id="activeAccountId"/>
@@ -321,20 +321,12 @@ export default defineComponent({
     display: none;
 }
 
-// Julian: I used transform transitions for entry of the account menu,
-// which have a weird effect on the separator line. The reason, I assume, is because
-// it has a height that doesn't fit in full pixels so it jumps slightly when the animation is finished.
-// A solution is to work with the box-shadow approach here as well – potentially even
-// just applying the separator line as a box-shadow to the top to the other-accounts list?
-
 .separator {
     margin: 0 0.5rem 0.5rem 0.5rem;
-    background: white;
     height: 2px;
     box-shadow: 0 1.5px 0 0 var(--text-14);
-    // opacity: .14;
     flex-shrink: 0;
-    border-radius: 1rem;
+    border-radius: 2px;
 }
 
 .menu .item {
@@ -424,6 +416,30 @@ export default defineComponent({
     align-self: flex-start;
 }
 
+@media (min-width: 700px) { // Full mobile breakpoint
+    .backdrop {
+        background-color: rgba(31, 35, 72, 0.3);
+
+        /deep/ .wrapper {
+            transform-origin: left center;
+        }
+
+        /deep/ .nq-card {
+            box-shadow:
+                0px 2px 2.5px rgba(31, 35, 72, 0.02),
+                0px 7px 8.5px rgba(31, 35, 72, 0.04),
+                0px 18px 38px rgba(31, 35, 72, 0.07);
+        }
+    }
+
+    // Special transition for Account Menu modal
+    .modal-enter, .modal-leave-to {
+        /deep/ .wrapper {
+            transform: translate3D(1rem, 0, 0) scale(0.99);
+        }
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .menu {
         /deep/ .wrapper {
@@ -442,38 +458,5 @@ export default defineComponent({
     // .account-list .account-menu-item {
     //     opacity: 1;
     // }
-}
-
-// Julian: New account modal styles, separated from the modal transition. Might need to be merged in somewhere better
-
-.backdrop.menu {
-    background-color: rgba(31, 35, 72, 0.3);
-
-    /deep/ .nq-card {
-        transform: translate3D(0,0,0), scale(1);
-        transform-origin: left center;
-        box-shadow: 0px 2px 2.5px rgba(31, 35, 72, 0.02), 0px 7px 8.5px rgba(31, 35, 72, 0.04), 0px 18px 38px rgba(31, 35, 72, 0.07);
-    }
-}
-
-.account-modal-enter-active, .account-modal-leave-active {
-    transition: background-color 0.4s cubic-bezier(0.4,0,0.2,1);
-
-    /deep/ .nq-card {
-        transition: opacity 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.45s var(--nimiq-ease);
-    }
-}
-
-.account-modal-leave-active, .account-modal-leave-to {
-    pointer-events: none;
-}
-
-.account-modal-enter, .account-modal-leave-to {
-    background-color: rgba(31, 35, 72, 0) !important;
-
-    /deep/ .nq-card {
-        opacity: 0 !important;
-        transform: translate3D(16px,0,0) scale(0.99);
-    }
 }
 </style>

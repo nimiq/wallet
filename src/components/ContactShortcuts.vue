@@ -81,10 +81,10 @@ export default defineComponent({
     .separator {
         content: '';
         display: block;
-        width: 0.125rem;
+        width: 0.25rem;
         margin: 0 0.75rem;
         flex-shrink: 0;
         align-self: stretch;
-        background: var(--text-14);
+        box-shadow: inset 3px 0 0 -1.5px var(--text-14);
     }
 </style>

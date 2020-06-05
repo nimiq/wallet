@@ -24,7 +24,7 @@ function setI18nLanguage(lang: string): string {
         : hostname.includes('nimiq.com') ? 'nimiq.com'
             : undefined;
 
-    Cookie.setCookie('lang', lang, { domain: cookieDomain });
+    Cookie.setCookie('lang', lang, { domain: cookieDomain, samesite: 'lax' });
     i18n.locale = lang;
     return lang;
 }

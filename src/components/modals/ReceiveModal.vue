@@ -97,8 +97,6 @@ export default defineComponent({
 .page-body {
     justify-content: space-between;
     align-items: center;
-    padding-top: 0;
-    padding-bottom: 2rem;
     overflow: visible;
 
     .nq-button-s {
@@ -153,7 +151,6 @@ export default defineComponent({
 
     .copyable {
         flex-shrink: 0;
-        margin-top: 2rem;
         max-width: 100%;
         word-wrap: break-word;
         color: rgba(31, 35, 72, 0.5);

@@ -134,10 +134,6 @@ export default defineComponent({
         color: rgba(31, 35, 72, 0.5);
         margin-bottom: 3.5rem;
     }
-
-    .copyable {
-        margin-bottom: 0;
-    }
 }
 
 .overlay {

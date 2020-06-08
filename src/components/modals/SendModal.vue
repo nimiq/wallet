@@ -751,13 +751,7 @@ export default defineComponent({
         }
 
         .copyable {
-            margin-bottom: 3rem;
             padding: 1rem;
-
-            &::before,
-            &::after {
-                padding-top: 1.5rem;
-            }
         }
     }
 

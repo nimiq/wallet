@@ -143,6 +143,15 @@ export default defineComponent({
     .account-button {
         display: none;
     }
+
+    .info-button {
+        transition: opacity 0.3s var(--nimiq-ease);
+
+        &:hover,
+        &:focus {
+            opacity: 0.5;
+        }
+    }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

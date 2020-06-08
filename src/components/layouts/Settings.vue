@@ -56,9 +56,9 @@
                             <option value="dark" :selected="colorMode === 'dark'">{{ $t('Dark') }}</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
 
-                <div class="setting">
+                <!-- <div class="setting">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Product Tour') }}</label>
                         <p class="nq-text">
@@ -145,10 +145,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.settings {
-    overflow: scroll;
-}
-
 .flex-column {
     justify-content: flex-start;
 
@@ -281,7 +277,7 @@ select {
 .currency {
     width: 11.875rem;
     margin: 1rem;
-    padding: 1rem .5rem;
+    padding: 1rem .5rem 1rem 1rem;
     border-radius: 0.75rem;
     font-weight: bold;
     letter-spacing: 1px;
@@ -290,12 +286,11 @@ select {
 
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: space-around;
+    align-items: center;
 
     transition: {
         property: background-color, box-shadow, opacity;
-        duration: 500ms;
+        duration: 0.3s;
     };
 
     &:hover,

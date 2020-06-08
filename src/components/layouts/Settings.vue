@@ -4,77 +4,103 @@
             <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
         </div>
 
-        <section class="general">
-            <h2 class="nq-label">{{ $t('General') }}</h2>
+        <div class="flex-column left-column">
+            <section>
+                <h2 class="nq-label">{{ $t('General') }}</h2>
 
-            <div class="setting">
-                <div class="description">
-                    <label class="nq-h2">{{ $t('Shown Decimals') }}</label>
-                    <p class="nq-text">
-                        {{ $t('Control how many decimals are shown for NIM values.') }}
-                    </p>
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="language">{{ $t('Language') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Set the interface language.') }}
+                        </p>
+                    </div>
+                    <div class="select-wrapper">
+                        <select name="language" id="language" @input="setLanguage($event.target.value)" disabled>
+                            <option value="de" :selected="language === 'de'">Deutsch</option>
+                            <option value="en" :selected="language === 'en'">English</option>
+                            <option value="fr" :selected="language === 'fr'">Français</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="button-group">
-                    <button
-                        class="nq-button-s" :class="{'light-blue': decimals === 0}"
-                        @click="setDecimals(0)">{{ $t('none') }}</button>
-                    <button
-                        class="nq-button-s" :class="{'light-blue': decimals === 2}"
-                        @click="setDecimals(2)">{{ $t('2') }}</button>
-                    <button
-                        class="nq-button-s" :class="{'light-blue': decimals === 5}"
-                        @click="setDecimals(5)">{{ $t('all') }}</button>
-                </div>
-            </div>
-        </section>
 
-        <section class="localization">
-            <h2 class="nq-label">{{ $t('Localization') }}</h2>
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Shown Decimals') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Control how many decimals are shown for NIM values.') }}
+                        </p>
+                    </div>
 
-            <div class="setting">
-                <div class="description">
-                    <label class="nq-h2" for="language">{{ $t('Language') }}</label>
-                    <p class="nq-text">
-                        {{ $t('Set the interface language.') }}
-                    </p>
+                    <div class="select-wrapper">
+                        <select name="language" id="language" @input="setDecimals($event.target.value)">
+                            <option value="0" :selected="language === 0">{{ $t('None') }}</option>
+                            <option value="2" :selected="language === 2">2</option>
+                            <option value="5" :selected="language === 5">{{ $t('all') }}</option>
+                        </select>
+                    </div>
                 </div>
-                <select name="language" id="language" @input="setLanguage($event.target.value)" disabled>
-                    <option value="de" :selected="language === 'de'">Deutsch</option>
-                    <option value="en" :selected="language === 'en'">English</option>
-                    <option value="fr" :selected="language === 'fr'">Français</option>
-                </select>
-            </div>
-            <div class="setting">
-                <div class="description">
-                    <label class="nq-h2" for="currency">{{ $t('Currency') }}</label>
-                    <p class="nq-text">
-                        {{ $t('Choose your reference government currency.') }}
-                    </p>
-                </div>
-                <select name="currency" id="currency" @input="setCurrency($event.target.value)">
-                    <option v-for="currencyOption of FiatCurrency"
-                        :key="currencyOption"
-                        :value="currencyOption"
-                        :selected="currencyOption === currency"
-                    >{{currencyOption.toUpperCase()}}</option>
-                </select>
-            </div>
-        </section>
 
-        <section class="developer">
-            <h2 class="nq-label">{{ $t('Developer') }}</h2>
+                <!-- <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Interface Theme') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Select the color scheme the Nimiq Wallet should be in.') }}
+                        </p>
+                    </div>
 
-            <div class="setting">
-                <div class="description">
-                    <label class="nq-h2">{{ $t('Clear Cache') }}</label>
-                    <p class="nq-text">
-                        {{ $t('Clear locally stored transaction history and balances. ' +
-                            'Reload them from the decentralized network.') }}
-                    </p>
+                    <div class="select-wrapper">
+                        <select name="language" id="language" @input="colorMode($event.target.value)" disabled>
+                            <option value="automatic" :selected="colorMode === 'automatic'">{{ $t('Auto') }}</option>
+                            <option value="light" :selected="colorMode === 'light'">{{ $t('Light') }}</option>
+                            <option value="dark" :selected="colorMode === 'dark'">{{ $t('Dark') }}</option>
+                        </select>
+                    </div>
                 </div>
-                <button class="nq-button-s" @click="clearCache">{{ $t('Clear') }}</button>
-            </div>
-        </section>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Product Tour') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Go through the product again') }}
+                        </p>
+                    </div>
+                    <button class="nq-button-pill light-blue disabled">{{ $t('Start Tour') }}</button>
+                </div> -->
+            </section>
+
+            <section>
+                <h2 class="nq-label">{{ $t('Developer') }}</h2>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Clear Cache') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Clear locally stored transaction history and balances. ' +
+                                'Reload them from the decentralized network.') }}
+                        </p>
+                    </div>
+                    <button class="nq-button-pill light-blue" @click="clearCache">{{ $t('Clear') }}</button>
+                </div>
+            </section>
+        </div>
+        <div class="flex-column right-column">
+            <section>
+                <h2 class="nq-label">{{ $t('Reference currency') }}</h2>
+
+                    <div class="setting currency-selector">
+                        <div v-for="currencyOption of sortedFiatCurrency()"
+                            :key="currencyOption"
+                            :class="{ selected: currencyOption === currency }"
+                            class="currency"
+                            @click="setCurrency(currencyOption)"
+                        >
+                            <img :src="require(`../../assets/flags/${currencyOption}.svg`)"/>
+                            {{currencyOption.toUpperCase()}}
+                        </div>
+                    </div>
+            </section>
+        </div>
     </div>
 </template>
 
@@ -99,11 +125,15 @@ export default defineComponent({
             window.location.reload();
         }
 
+        function sortedFiatCurrency() {
+            return Object.values(FiatCurrency).sort();
+        }
+
         return {
             clearCache,
             ColorMode,
             currency,
-            FiatCurrency,
+            sortedFiatCurrency,
             setCurrency,
             ...settings,
         };
@@ -116,25 +146,60 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .settings {
-    padding: 2.25rem 4rem;
-    flex-wrap: wrap;
+    overflow: scroll;
+}
+
+.flex-column {
+    justify-content: flex-start;
+
+    &.left-column {
+        flex-shrink: 1;
+        border-right: 0.25rem solid var(--text-10);
+        margin: 4rem 0;
+
+        section:first-child {
+            padding-top: 2rem;
+        }
+
+        section:last-child {
+            padding-bottom: 2rem;
+        }
+    }
+
+    &.right-column {
+        flex-shrink: 2;
+    }
 }
 
 section {
     box-sizing: content-box;
-    width: 48rem;
-    padding: 3.75rem 4rem;
-    border-right: 0.25rem solid var(--text-10);
-    border-bottom: 0.25rem solid var(--text-10);
+    max-width: 48rem;
+    padding: 6rem 8rem;
+
+    &:not(:last-child) {
+        border-bottom: 0.25rem solid var(--text-10);
+    }
 }
 
 .nq-label {
-    margin: 0 0 6rem;
+    margin: 0 0 4rem;
     color: var(--text-40);
 }
 
 .nq-text {
     color: var(--text-70);
+}
+
+.nq-button-pill {
+    padding: 0.5rem 2rem;
+    border-radius: 3.75rem;
+    font-size: 2rem;
+
+    &.disabled {
+        filter: grayscale(100%);
+        cursor: normal;
+        pointer-events: none;
+    }
 }
 
 .setting:last-child .nq-text {
@@ -146,7 +211,10 @@ section {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    margin-top: 5rem;
+
+    &:not(:first-of-type) {
+        margin-top: 4rem;
+    }
 
     > *:not(.description) {
         flex-shrink: 0;
@@ -155,28 +223,29 @@ section {
     .description {
         margin-right: 5rem;
         max-width: 30rem;
-    }
 
-    .button-group button {
-        border-radius: 0;
-        border-right: 0.125rem solid var(--text-10);
-        margin: 0; // Remove iOS default margin
-
-        &::before {
-            display: none;
-        }
-
-        &:first-child {
-            border-top-left-radius: 500px;
-            border-bottom-left-radius: 500px;
-        }
-
-        &:last-child {
-            border-top-right-radius: 500px;
-            border-bottom-right-radius: 500px;
-            border-right: none;
+        p {
+            margin-top: 0.75rem;
+            margin-bottom: 0;
         }
     }
+}
+
+.select-wrapper {
+    border: 0.1875rem solid var(--text-16);
+    border-radius: 2.5rem;
+    padding: {
+        top: 0.375rem;
+        bottom: 0.5rem;
+        left: 2rem;
+        right: 3.5rem;
+    }
+
+    background-image: url('../../assets/arrow-down.svg');
+    background-size: 1.25rem;
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 1.75rem);
+    background-position-y: 60%;
 }
 
 select {
@@ -184,34 +253,86 @@ select {
     font-family: inherit;
     line-height: inherit;
     color: inherit;
+    cursor: pointer;
 
-    background: var(--bg-base);
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 500px;
     font-weight: bold;
-    font-size: var(--h2-size);
-    padding: 0.75rem 1.75rem;
-    padding-right: 0;
-    box-shadow: 0 0 0 0.1875rem var(--text-16);
+    font-size: 2rem;
+    position: relative;
+
+    border: none;
+    appearance:none;
+    background: transparent;
 
     &[name="theme"] {
         text-transform: capitalize;
     }
+
+    &:disabled {
+        opacity: .5;
+    }
 }
 
-select:disabled {
-    opacity: 0.5;
+.currency-selector {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: -1rem;
+}
+
+.currency {
+    width: 11.875rem;
+    margin: 1rem;
+    padding: 1rem .5rem;
+    border-radius: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: space-around;
+
+    transition: {
+        property: background-color, box-shadow, opacity;
+        duration: 500ms;
+    };
+
+    &:hover,
+    &:focus,
+    &:focus-within,
+    &.selected {
+        opacity: 1;
+        background-color: white;
+        box-shadow: 0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
+                    0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
+                    0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
+    }
+
+    img {
+        border-radius: 50%;
+        margin-right: 1.25rem;
+    }
 }
 
 .mobile-menu-bar {
     display: none;
 }
 
+@media (max-width: 1140px) { // Small screens - reduce margins
+    .flex-column:not(:last-child) {
+        margin: 2rem 0;
+    }
+
+    section {
+        padding: 4rem 5rem;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .settings {
         width: 100vw;
-        padding: 1rem;
+        padding: 26px 24px;
         overflow-y: auto;
         flex-direction: column;
         flex-wrap: nowrap;
@@ -222,13 +343,32 @@ select:disabled {
     }
 
     section {
-        width: unset;
-        border-right: none;
-        margin: 0 1rem;
-        padding: 3.75rem 3rem;
+        margin: 0;
+        padding: 32px 0;
+        max-width: none;
+    }
 
-        &:last-child {
-            border-bottom: none;
+    .flex-column {
+
+        &.left-column {
+            border-right: none;
+            margin: 0;
+
+            section {
+                border-bottom: 0.25rem solid var(--text-10);
+
+                &:first-child {
+                    padding-top: 32px;
+                }
+
+                &:last-child {
+                    padding-bottom: 32px;
+                }
+            }
+        }
+
+        &.right-column section:last-child {
+            padding-bottom: 0;
         }
     }
 
@@ -238,11 +378,10 @@ select:disabled {
         align-items: center;
         align-self: stretch;
         flex-shrink: 0;
-        padding: 1rem;
         z-index: 1;
+        margin-bottom: 0.5rem;
 
         button.reset {
-            padding: 1rem;
             opacity: 0.3;
             font-size: 2.5rem;
         }

@@ -22,11 +22,18 @@
                     <MenuDotsIcon/>
                 </button>
             </div>
-            <button
-                class="reset active-address flex-row"
-                @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
-            >
-                <Identicon :address="activeAddressInfo.address" />
+            <div class="active-address flex-row">
+                <div class="identicon-wrapper">
+                    <Identicon :address="activeAddressInfo.address" />
+                    <button class="reset identicon-menu flex-row">
+                        <GearIcon/>
+                        <div class="popup-menu nq-blue-bg">
+                            <button class="reset flex-row" @click="rename(activeAccountId, activeAddressInfo.address)">
+                                <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                        </div>
+                    </button>
+                </div>
                 <div class="label mobile">{{activeAddressInfo.label}}</div>
                 <div class="meta">
                     <div class="flex-row">
@@ -34,11 +41,15 @@
                         <Amount :amount="activeAddressInfo.balance"/>
                     </div>
                     <div class="flex-row">
-                        <div class="address">{{activeAddressInfo.address}}</div>
+                        <!-- We need to key the Copyable component, so that the tooltip disappears when
+                             switching addresses while the tooltip is showing -->
+                        <Copyable :text="activeAddressInfo.address" :key="activeAddressInfo.address">
+                            <div class="address">{{activeAddressInfo.address}}</div>
+                        </Copyable>
                         <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
                     </div>
                 </div>
-            </button>
+            </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -89,7 +100,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-import { Identicon, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
+import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
 // @ts-ignore missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
@@ -98,14 +109,17 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
+import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 
+import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
-import { onboard } from '../../hub';
+import { onboard, rename } from '../../hub';
 
 export default defineComponent({
     name: 'address-overview',
     setup() {
+        const { activeAccountId } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { isFetchingTxHistory } = useNetworkStore();
 
@@ -134,9 +148,11 @@ export default defineComponent({
 
         return {
             searchString,
+            activeAccountId,
             activeAddressInfo,
             isFetchingTxHistory,
             onboard,
+            rename,
             unclaimedCashlinkCount,
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
@@ -146,6 +162,9 @@ export default defineComponent({
     components: {
         ArrowRightSmallIcon,
         Identicon,
+        GearIcon,
+        RenameIcon,
+        Copyable,
         Amount,
         FiatConvertedAmount,
         SearchBar,
@@ -204,13 +223,90 @@ export default defineComponent({
     align-items: center;
     padding: 2rem 4rem 2rem 2rem;
     margin: 0 var(--padding);
-    border-radius: 0.5rem;
-    transition: background 400ms var(--nimiq-ease);
+
+    .identicon-wrapper {
+        position: relative;
+        margin-right: 4rem;
+
+        .identicon-menu {
+            position: absolute;
+            right: 0.25rem;
+            bottom: -1.25rem;
+            width: 4rem;
+            height: 4rem;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            box-shadow:
+                0px 0.337011px 2px rgba(31, 35, 72, 0.08),
+                0px 1.5px 3px rgba(31, 35, 72, 0.08),
+                0px 4px 16px rgba(31, 35, 72, 0.11);
+
+            opacity: 0;
+            transition: opacity 0.3s var(--nimiq-ease);
+
+            .nq-icon {
+                opacity: 0.5;
+                transition: opacity 0.3s var(--nimiq-ease);
+            }
+
+            .popup-menu {
+                position: absolute;
+                top: -0.25rem;
+                left: -0.25rem;
+                font-size: var(--body-size);
+                padding: 0.5rem;
+                font-weight: 600;
+                border-radius: 0.5rem;
+                z-index: 1;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.3s var(--nimiq-ease);
+
+                button {
+                    padding: 1rem 1.5rem 1rem 1rem;
+                    border-radius: 0.25rem;
+                    transition: background-color .3s var(--nimiq-ease);
+
+                    svg {
+                        width: 2.75rem;
+                        height: 3rem;
+                        margin: -0.125rem 1rem -0.125rem 0;
+                        opacity: 0.8;
+                    }
+
+                    &:hover,
+                    &:focus {
+                        background: rgba(255, 255, 255, 0.12);
+                    }
+                }
+            }
+
+            &:hover,
+            &:focus,
+            &:focus-within {
+                opacity: 1;
+
+                .nq-icon {
+                    opacity: 0.8;
+                }
+            }
+
+            &:focus,
+            &:focus-within {
+                .popup-menu {
+                    pointer-events: all;
+                    opacity: 1;
+                }
+            }
+        }
+    }
 
     .identicon {
         height: 11.25rem;
         width: 11.25rem;
-        margin: -0.625rem 4rem -0.625rem 0; // Negative margin above and below to size identicon to be 90x80 px
+        margin: -0.625rem 0; // Negative margin above and below to size identicon to be 90x80 px
         flex-shrink: 0;
     }
 
@@ -228,8 +324,6 @@ export default defineComponent({
         flex-grow: 1;
         overflow: hidden;
         white-space: nowrap;
-        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
-        margin-right: 4rem;
     }
 
     .label,
@@ -246,12 +340,34 @@ export default defineComponent({
 
     .label {
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
+        margin-right: 3rem;
+        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
     }
 
     .address {
+        text-overflow: ellipsis;
         word-spacing: -0.2em;
         font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
+        transition: opacity .3s var(--nimiq-ease);
+    }
+
+    .copyable {
+        padding: 0.5rem 1rem;
+        margin-left: -1rem;
+        min-width: 0;
+        margin-right: 3rem;
+
+        &:hover .address,
+        &:focus .address,
+        &.copied .address {
+            opacity: 1;
+            font-weight: 500;
+        }
+    }
+
+    .fiat-amount {
+        margin-left: auto;
     }
 
     .amount,
@@ -261,7 +377,7 @@ export default defineComponent({
 
     .amount {
         font-weight: bold;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
     }
 
     .fiat-amount {
@@ -273,9 +389,10 @@ export default defineComponent({
         display: none;
     }
 
-    &:hover,
-    &:focus {
-        background: var(--nimiq-highlight-bg);
+    &:hover {
+        .identicon-wrapper .identicon-menu {
+            opacity: 1;
+        }
     }
 }
 
@@ -405,10 +522,18 @@ export default defineComponent({
         padding: 2rem;
         margin: 0 var(--padding);
 
+        .identicon-wrapper {
+            margin-right: 1.5rem;
+        }
+
+        .identicon-menu {
+            display: none;
+        }
+
         .identicon {
             height: 5.75rem;
             width: 5.75rem;
-            margin: -0.25rem 1.5rem -0.25rem 0; // Negative margin above and below to size identicon to be 46x40 px
+            margin: -0.25rem 0; // Negative margin above and below to size identicon to be 46x40 px
         }
 
         .meta {

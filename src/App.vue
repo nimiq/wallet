@@ -85,6 +85,7 @@ export default defineComponent({
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;
+    @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
     /* Default: >= 1440px */

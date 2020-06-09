@@ -33,10 +33,10 @@
                     </div>
 
                     <div class="select-wrapper">
-                        <select name="language" id="language" @input="setDecimals($event.target.value)">
-                            <option value="0" :selected="language === 0">{{ $t('None') }}</option>
-                            <option value="2" :selected="language === 2">2</option>
-                            <option value="5" :selected="language === 5">{{ $t('all') }}</option>
+                        <select name="language" id="language" @input="setDecimals(parseInt($event.target.value))">
+                            <option value="0" :selected="decimals === 0">{{ $t('None') }}</option>
+                            <option value="2" :selected="decimals === 2">2</option>
+                            <option value="5" :selected="decimals === 5">{{ $t('all') }}</option>
                         </select>
                     </div>
                 </div>
@@ -89,15 +89,15 @@
                 <h2 class="nq-label">{{ $t('Reference currency') }}</h2>
 
                     <div class="setting currency-selector">
-                        <div v-for="currencyOption of sortedFiatCurrency()"
+                        <button v-for="currencyOption of sortedFiatCurrency()"
                             :key="currencyOption"
                             :class="{ selected: currencyOption === currency }"
-                            class="currency"
+                            class="reset currency"
                             @click="setCurrency(currencyOption)"
                         >
                             <img :src="require(`../../assets/flags/${currencyOption}.svg`)"/>
                             {{currencyOption.toUpperCase()}}
-                        </div>
+                        </button>
                     </div>
             </section>
         </div>
@@ -145,8 +145,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/mixins.scss';
 .flex-column {
     justify-content: flex-start;
+    @include ios-flex;
 
     &.left-column {
         flex-shrink: 1;
@@ -189,7 +191,7 @@ section {
 .nq-button-pill {
     padding: 0.5rem 2rem;
     border-radius: 3.75rem;
-    font-size: 2rem;
+    font-size: var(--body-size);
 
     &.disabled {
         filter: grayscale(100%);
@@ -247,13 +249,11 @@ section {
 select {
     font-size: inherit;
     font-family: inherit;
+    font-weight: bold;
+    font-size: var(--body-size);
     line-height: inherit;
     color: inherit;
     cursor: pointer;
-
-    font-weight: bold;
-    font-size: 2rem;
-    position: relative;
 
     border: none;
     appearance:none;
@@ -275,18 +275,22 @@ select {
 }
 
 .currency {
-    width: 11.875rem;
-    margin: 1rem;
-    padding: 1rem .5rem 1rem 1rem;
-    border-radius: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    opacity: 0.7;
-    cursor: pointer;
-
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    width: 11.875rem;
+    margin: 1rem;
+    padding: 1rem 1.5rem 1rem 1rem;
+    border-radius: 0.75rem;
+    opacity: 0.7;
+
+    font-weight: bold;
+    letter-spacing: 0.125rem;
+    font-size: var(--body-size);
+    cursor: pointer;
 
     transition: {
         property: background-color, box-shadow, opacity;
@@ -298,10 +302,19 @@ select {
     &:focus-within,
     &.selected {
         opacity: 1;
-        background-color: white;
         box-shadow: 0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
                     0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
                     0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        background-color: var(--nimiq-highlight-bg);
+    }
+
+    &.selected {
+        background-color: white;
     }
 
     img {
@@ -327,7 +340,7 @@ select {
 @media (max-width: 700px) { // Full mobile breakpoint
     .settings {
         width: 100vw;
-        padding: 26px 24px;
+        padding: 3.25rem 3rem;
         overflow-y: auto;
         flex-direction: column;
         flex-wrap: nowrap;
@@ -339,7 +352,7 @@ select {
 
     section {
         margin: 0;
-        padding: 32px 0;
+        padding: 4rem 0;
         max-width: none;
     }
 
@@ -353,11 +366,11 @@ select {
                 border-bottom: 0.25rem solid var(--text-10);
 
                 &:first-child {
-                    padding-top: 32px;
+                    padding-top: 4rem;
                 }
 
                 &:last-child {
-                    padding-bottom: 32px;
+                    padding-bottom: 4rem;
                 }
             }
         }

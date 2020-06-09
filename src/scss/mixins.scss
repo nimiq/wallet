@@ -1,5 +1,11 @@
 @import './variables.scss';
 
+@mixin ios-flex {
+    @supports (-webkit-touch-callout: none) { // ios safari fix for flexbox issues
+        display: -webkit-box;
+    }
+}
+
 @mixin flex-full-height {
     display: flex;
     min-height: 100%;

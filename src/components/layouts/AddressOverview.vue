@@ -204,8 +204,6 @@ export default defineComponent({
         --padding: 9rem;
     }
 
-    padding: var(--padding) 0 0;
-
     &.no-accounts {
         padding: 6rem 0;
         justify-content: center;
@@ -221,8 +219,8 @@ export default defineComponent({
 .active-address {
     flex-shrink: 0;
     align-items: center;
-    padding: 2rem 4rem 2rem 2rem;
-    margin: 0 var(--padding);
+    padding: calc(var(--padding) + 2rem);
+    padding-right: calc(var(--padding) + 4rem);
 
     .identicon-wrapper {
         position: relative;
@@ -401,7 +399,7 @@ export default defineComponent({
     justify-content: space-between;
     margin-bottom: 0.75rem;
     align-items: center;
-    margin: 4rem var(--padding) 2rem;
+    margin: 0 var(--padding) 2rem;
     padding: 0 3rem 0 2rem;
 }
 
@@ -500,7 +498,7 @@ export default defineComponent({
     .actions-mobile {
         display: flex;
         padding: 0;
-        margin: 1rem var(--padding);
+        margin: 2rem var(--padding) 1rem;
 
         .search-bar,
         .unclaimed-cashlinks {

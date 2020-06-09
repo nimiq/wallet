@@ -93,45 +93,6 @@ export default defineComponent({
         transition: box-shadow var(--attr-duration) var(--nimiq-ease);
     }
 
-    svg {
-        justify-self: left;
-        flex-grow: 0;
-        margin-left: 1.75rem;
-        margin-right: 1rem;
-        flex-shrink: 0;
-        opacity: 0.4;
-        width: 1.75rem;
-        height: 1.75rem;
-
-        transition: opacity var(--attr-duration) var(--nimiq-ease);
-    }
-
-    input {
-        font-family: inherit;
-        font-weight: 600;
-        color: inherit;
-        justify-self: right;
-        flex-grow: 1;
-        border: 0;
-        line-height: 2.75rem;
-        font-size: var(--body-size);
-        margin: 0;
-        padding: 0;
-        padding-right: 2rem;
-        background: none;
-        min-width: 0;
-
-        &:focus {
-            outline: none;
-        }
-
-        &::placeholder {
-            font-weight: normal;
-            color: inherit;
-            opacity: 0.4;
-        }
-    }
-
     &:hover::after {
         box-shadow: inset 0 0 0 $borderTickness var(--text-22);
     }
@@ -145,6 +106,53 @@ export default defineComponent({
 
         &::after {
         box-shadow: inset 0 0 0 $borderTickness var(--light-blue-30);
+        }
+    }
+}
+
+svg {
+    justify-self: left;
+    flex-grow: 0;
+    margin-left: 1.75rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.4;
+    width: 1.75rem;
+    height: 1.75rem;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+}
+
+input {
+    font-family: inherit;
+    font-weight: 600;
+    color: inherit;
+    justify-self: right;
+    flex-grow: 1;
+    border: 0;
+    line-height: 2.75rem;
+    font-size: var(--body-size);
+    margin: 0;
+    padding: 0;
+    padding-right: 2rem;
+    background: none;
+    min-width: 0;
+
+    &:focus {
+        outline: none;
+    }
+
+    &::placeholder {
+        font-weight: normal;
+        color: inherit;
+        opacity: 0.4;
+    }
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    input {
+        &::placeholder {
+            font-weight: 600;
         }
     }
 }

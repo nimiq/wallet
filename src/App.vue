@@ -235,7 +235,7 @@ export default defineComponent({
 
 <style lang="scss">
 :root {
-    --transition-time: 0.75s;
+    --transition-time: 0.1s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -288,7 +288,7 @@ export default defineComponent({
 
 .groundfloor,
 .address-overview {
-    transition: transform var(--transition-time) cubic-bezier(0.6, 0, 0.25, 1);
+    transition: transform var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
 }
 
 .groundfloor {

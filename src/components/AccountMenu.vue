@@ -49,7 +49,7 @@
                     >
                         <ChangePasswordIcon/>{{ $t('Change password') }}
                     </button>
-                    <button class="item reset logout flex-row" @click="logout(activeAccountId)" disabled>
+                    <button class="item reset logout flex-row" @click="logout(activeAccountId)">
                         <LogoutArrowIcon/>{{ $t('Logout') }}
                     </button>
                 </div>

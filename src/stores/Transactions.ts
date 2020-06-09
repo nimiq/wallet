@@ -94,5 +94,13 @@ export const useTransactionsStore = createStore({
                     : FIAT_PRICE_UNAVAILABLE);
             }
         },
+
+        removeTransactions(txs: Transaction[]) {
+            const transactions = { ...this.state.transactions };
+            for (const tx of txs) {
+                delete transactions[tx.transactionHash];
+            }
+            this.state.transactions = transactions;
+        },
     },
 });

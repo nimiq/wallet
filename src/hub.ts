@@ -2,12 +2,14 @@ import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
+import { useTransactionsStore } from './stores/Transactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
+import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 
 const hubApi = new HubApi();
 
-const APP_NAME = 'Wallet 2.0';
+const APP_NAME = 'Wallet';
 
 function processAndStoreAccounts(accounts: Account[], replaceState = false): void {
     const accountInfos: AccountInfo[] = [];
@@ -239,15 +241,59 @@ export async function changePassword(accountId: string) {
 }
 
 export async function logout(accountId: string) {
-    alert('Logout is not yet possible'); // eslint-disable-line no-alert
-    return;
-
-    // eslint-disable-next-line no-unreachable
     // TODO: Handle error
-    await hubApi.logout({
+    const loggedOut = await hubApi.logout({
         appName: APP_NAME,
         accountId,
     });
 
-    // TODO: Delete account, it's addresses, and their transactions
+    if (!loggedOut) return;
+
+    const accountStore = useAccountStore();
+    const addressStore = useAddressStore();
+    const transactionStore = useTransactionsStore();
+    const cashlinkStore = useCashlinkStore();
+
+    const addressesToDelete = accountStore.state.accountInfos[accountId].addresses;
+
+    const remainingAddresses = Object.values(addressStore.state.addressInfos)
+        .map((addressInfo) => addressInfo.address)
+        .filter((address) => !addressesToDelete.includes(address));
+
+    let transactionsToDelete = Object.values(transactionStore.state.transactions)
+        .filter((tx) => !remainingAddresses.includes(tx.sender) && !remainingAddresses.includes(tx.recipient));
+
+    const transactionsToDeleteHashes = transactionsToDelete
+        .map((tx) => tx.transactionHash);
+
+    const remainingTransactions = Object.values(transactionStore.state.transactions)
+        .filter((tx) => !transactionsToDeleteHashes.includes(tx.transactionHash));
+
+    const remainingTransactionRelatedTransactionHashes = remainingTransactions
+        .map((tx) => tx.relatedTransactionHash)
+        .filter((hash) => Boolean(hash));
+
+    // Keep the transactions that are still referenced by remaining transactions' relatedTransactionHash
+    transactionsToDelete = transactionsToDelete
+        .filter((tx) => !remainingTransactionRelatedTransactionHashes.includes(tx.transactionHash));
+
+    const pendingCashlinksToDelete = transactionsToDelete
+        .map((tx) => {
+            if (isFundingCashlink(tx.data.raw)) return tx.recipient;
+            if (isClaimingCashlink(tx.data.raw)) return tx.sender;
+            return '';
+        })
+        .filter((address) => Boolean(address));
+
+    // Delete account, it's addresses, their transactions and cashlinks
+    for (const cashlinkAddress of pendingCashlinksToDelete) {
+        cashlinkStore.removeCashlink(cashlinkAddress);
+    }
+    transactionStore.removeTransactions(transactionsToDelete);
+    addressStore.removeAddresses(addressesToDelete);
+    accountStore.removeAccount(accountId);
+
+    if (!Object.values(accountStore.state.accountInfos).length) {
+        onboard(true);
+    }
 }

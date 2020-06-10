@@ -24,7 +24,7 @@ export const useAccountStore = createStore({
     id: 'accounts',
     state: () => ({
         accountInfos: {},
-        activeAccountId: 'abc',
+        activeAccountId: null,
     } as AccountState),
     getters: {
         accountInfos: (state) => state.accountInfos,
@@ -75,6 +75,20 @@ export const useAccountStore = createStore({
         addAddressToAccount(accountId: string, address: string) {
             if (this.state.accountInfos[accountId].addresses.includes(address)) return;
             this.state.accountInfos[accountId].addresses.push(address);
+        },
+        removeAccount(accountId: string) {
+            const accountInfos = { ...this.state.accountInfos };
+            delete accountInfos[accountId];
+            this.state.accountInfos = accountInfos;
+
+            if (this.state.activeAccountId === accountId) {
+                const accountInfosArray = Object.values(accountInfos);
+                if (accountInfosArray[0]) {
+                    this.selectAccount(accountInfosArray[0].id);
+                } else {
+                    this.state.activeAccountId = null;
+                }
+            }
         },
     },
 });

@@ -82,9 +82,14 @@ export default defineComponent({
 
         const backgroundYOffset = ref(4); // px - Top margin of the address-buttons is 0.5rem
         function adjustBackgroundOffset(address: string) {
+            let offset = 0;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
-            const el = (context.refs[`address-button-${address}`] as Element[])[0] as HTMLElement;
-            backgroundYOffset.value = el.offsetTop;
+            const refs = (context.refs[`address-button-${address}`] as Element[] | undefined);
+            if (refs) {
+                const el = refs[0] as HTMLElement;
+                offset = el.offsetTop;
+            }
+            backgroundYOffset.value = offset;
         }
         if (!props.embedded) {
             watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));

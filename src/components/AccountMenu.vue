@@ -49,7 +49,7 @@
                     >
                         <ChangePasswordIcon/>{{ $t('Change password') }}
                     </button>
-                    <button class="item reset logout flex-row" @click="logout(activeAccountId)" disabled>
+                    <button class="item reset logout flex-row" @click="logout(activeAccountId)">
                         <LogoutArrowIcon/>{{ $t('Logout') }}
                     </button>
                 </div>
@@ -309,12 +309,12 @@ export default defineComponent({
 }
 
 .current-account {
-    padding: 1rem;
     margin-bottom: 0.75rem;
 }
 
 .current-account .account-menu-item {
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .current-account .account-menu-item /deep/ .nq-icon {
@@ -333,22 +333,14 @@ export default defineComponent({
     align-items: center;
     line-height: 3.75rem;
     width: 100%;
-    padding: 0.375rem 0.25rem;
+    padding: 0.625rem 1.25rem;
     white-space: nowrap;
-    // background: transparent;
     border-radius: 0.5rem;
-    opacity: 0.7;
+    color: var(--text-70);
 
     transition:
-        // background var(--attr-duration) var(--nimiq-ease),
-        opacity var(--attr-duration) var(--nimiq-ease),
-        box-shadow var(--attr-duration) var(--nimiq-ease),
-        color var(--attr-duration) var(--nimiq-ease);
-}
-
-.menu .item:disabled {
-    opacity: 0.2;
-    pointer-events: none;
+        color var(--attr-duration) var(--nimiq-ease),
+        background var(--attr-duration) var(--nimiq-ease);
 }
 
 .menu .logout {
@@ -357,18 +349,13 @@ export default defineComponent({
 
 .menu .item:hover,
 .menu .item:focus {
-    // background: var(--nimiq-highlight-bg);
-    opacity: 1;
-}
-
-.menu .item:focus {
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+    color: var(--text-100);
+    background: var(--nimiq-highlight-bg);
 }
 
 .menu .logout:hover,
 .menu .logout:focus {
-    background: var(--nimiq-red);
-    color: white;
+    color: var(--nimiq-red);
 }
 
 .menu .item .alert {
@@ -394,21 +381,28 @@ export default defineComponent({
 .account-list .account-menu-item {
     padding: 1rem;
     width: 100%;
-    opacity: 0.7;
     border-radius: 0.5rem;
+    color: var(--text-70);
 
     transition:
-        opacity var(--attr-duration) var(--nimiq-ease),
-        box-shadow var(--attr-duration) var(--nimiq-ease);
+        color var(--attr-duration) var(--nimiq-ease),
+        background var(--attr-duration) var(--nimiq-ease);
+
+    /deep/ .icon {
+        opacity: 0.8;
+
+        transition: opacity var(--attr-duration) var(--nimiq-ease),
+    }
 }
 
 .account-list .account-menu-item:hover,
 .account-list .account-menu-item:focus {
-    opacity: 1;
-}
+    background: var(--nimiq-highlight-bg);
+    color: var(--text-100);
 
-.account-list .account-menu-item:focus {
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+    /deep/ .icon {
+        opacity: 1;
+    }
 }
 
 .menu .add-account {

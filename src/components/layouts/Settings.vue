@@ -15,13 +15,13 @@
                             {{ $t('Set the interface language.') }}
                         </p>
                     </div>
-                    <div class="select-wrapper">
+                    <label class="select-wrapper">
                         <select name="language" id="language" @input="setLanguage($event.target.value)" disabled>
                             <option value="de" :selected="language === 'de'">Deutsch</option>
                             <option value="en" :selected="language === 'en'">English</option>
                             <option value="fr" :selected="language === 'fr'">Français</option>
                         </select>
-                    </div>
+                    </label>
                 </div>
 
                 <div class="setting">
@@ -32,13 +32,13 @@
                         </p>
                     </div>
 
-                    <div class="select-wrapper">
-                        <select name="language" id="language" @input="setDecimals(parseInt($event.target.value))">
+                    <label class="select-wrapper">
+                        <select name="decimals" id="decimals" @input="setDecimals(parseInt($event.target.value))">
                             <option value="0" :selected="decimals === 0">{{ $t('None') }}</option>
                             <option value="2" :selected="decimals === 2">2</option>
                             <option value="5" :selected="decimals === 5">{{ $t('all') }}</option>
                         </select>
-                    </div>
+                    </label>
                 </div>
 
                 <!-- <div class="setting">
@@ -49,13 +49,13 @@
                         </p>
                     </div>
 
-                    <div class="select-wrapper">
-                        <select name="language" id="language" @input="colorMode($event.target.value)" disabled>
+                    <label class="select-wrapper">
+                        <select name="theme" id="theme" @input="colorMode($event.target.value)" disabled>
                             <option value="automatic" :selected="colorMode === 'automatic'">{{ $t('Auto') }}</option>
                             <option value="light" :selected="colorMode === 'light'">{{ $t('Light') }}</option>
                             <option value="dark" :selected="colorMode === 'dark'">{{ $t('Dark') }}</option>
                         </select>
-                    </div>
+                    </label>
                 </div> -->
 
                 <!-- <div class="setting">
@@ -146,6 +146,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+
+.settings {
+    align-items: flex-start;
+}
+
 .flex-column {
     justify-content: flex-start;
     @include ios-flex;
@@ -230,11 +235,11 @@ section {
 }
 
 .select-wrapper {
-    border: 0.1875rem solid var(--text-16);
+    box-shadow: inset 0 0 0 0.1875rem var(--text-16);
     border-radius: 2.5rem;
     padding: {
-        top: 0.375rem;
-        bottom: 0.5rem;
+        top: 0.625rem;
+        bottom: 0.875rem;
         left: 2rem;
         right: 3.5rem;
     }
@@ -243,7 +248,7 @@ section {
     background-size: 1.25rem;
     background-repeat: no-repeat;
     background-position-x: calc(100% - 1.75rem);
-    background-position-y: 60%;
+    background-position-y: 55%;
 }
 
 select {
@@ -278,22 +283,20 @@ select {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
 
     box-sizing: border-box;
     width: 11.875rem;
     margin: 1rem;
     padding: 1rem 1.5rem 1rem 1rem;
     border-radius: 0.75rem;
-    opacity: 0.7;
+    color: var(--text-70);
 
     font-weight: bold;
     letter-spacing: 0.125rem;
     font-size: var(--body-size);
-    cursor: pointer;
 
     transition: {
-        property: background-color, box-shadow, opacity;
+        property: background-color, box-shadow, color;
         duration: 0.3s;
     };
 
@@ -301,10 +304,7 @@ select {
     &:focus,
     &:focus-within,
     &.selected {
-        opacity: 1;
-        box-shadow: 0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
-                    0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
-                    0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
+        color: var(--text-100);
     }
 
     &:hover,
@@ -315,6 +315,9 @@ select {
 
     &.selected {
         background-color: white;
+        box-shadow: 0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
+                    0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
+                    0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
     }
 
     img {

@@ -72,15 +72,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .network {
     position: relative;
-
-    &.delay-enter-to .background {
-        opacity: 0;
-    }
-
-    &.delay-enter .background,
-    &.delay-leave-to .background {
-        opacity: 1;
-    }
 }
 
 .background {
@@ -90,10 +81,8 @@ export default defineComponent({
     bottom: 0;
     left: 0;
     z-index: -1;
-    background: var(--nimiq-blue);
-    opacity: 0;
-
-    transition: opacity 0.75s var(--nimiq-ease);
+    background: #05081F;
+    opacity: 0.3;
 }
 
 .network-inner {

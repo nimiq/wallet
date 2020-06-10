@@ -20,8 +20,8 @@ module.exports = {
     },
     root: true,
     rules: {
-        'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-console': 'error',
+        'no-debugger': 'error',
         'function-paren-newline': 'off',
         indent: ['error', 4, { SwitchCase: 1 }],
         'max-len': ['error', 120],

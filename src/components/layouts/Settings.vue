@@ -15,47 +15,41 @@
                             {{ $t('Set the interface language.') }}
                         </p>
                     </div>
-                    <label class="select-wrapper">
-                        <select name="language" id="language" @input="setLanguage($event.target.value)" disabled>
-                            <option value="de" :selected="language === 'de'">Deutsch</option>
-                            <option value="en" :selected="language === 'en'">English</option>
-                            <option value="fr" :selected="language === 'fr'">Français</option>
-                        </select>
-                    </label>
+                    <select id="language" name="language" @input="setLanguage($event.target.value)" disabled>
+                        <option value="de" :selected="language === 'de'">Deutsch</option>
+                        <option value="en" :selected="language === 'en'">English</option>
+                        <option value="fr" :selected="language === 'fr'">Français</option>
+                    </select>
                 </div>
 
                 <div class="setting">
                     <div class="description">
-                        <label class="nq-h2">{{ $t('Shown Decimals') }}</label>
+                        <label class="nq-h2" for="decimals">{{ $t('Shown Decimals') }}</label>
                         <p class="nq-text">
                             {{ $t('Control how many decimals are shown for NIM values.') }}
                         </p>
                     </div>
 
-                    <label class="select-wrapper">
-                        <select name="decimals" id="decimals" @input="setDecimals(parseInt($event.target.value))">
-                            <option value="0" :selected="decimals === 0">{{ $t('None') }}</option>
-                            <option value="2" :selected="decimals === 2">2</option>
-                            <option value="5" :selected="decimals === 5">{{ $t('all') }}</option>
-                        </select>
-                    </label>
+                    <select id="decimals" name="decimals" @input="setDecimals(parseInt($event.target.value))">
+                        <option value="0" :selected="decimals === 0">{{ $t('None') }}</option>
+                        <option value="2" :selected="decimals === 2">2</option>
+                        <option value="5" :selected="decimals === 5">{{ $t('all') }}</option>
+                    </select>
                 </div>
 
                 <!-- <div class="setting">
                     <div class="description">
-                        <label class="nq-h2">{{ $t('Interface Theme') }}</label>
+                        <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
                         <p class="nq-text">
                             {{ $t('Select the color scheme the Nimiq Wallet should be in.') }}
                         </p>
                     </div>
 
-                    <label class="select-wrapper">
-                        <select name="theme" id="theme" @input="colorMode($event.target.value)" disabled>
-                            <option value="automatic" :selected="colorMode === 'automatic'">{{ $t('Auto') }}</option>
-                            <option value="light" :selected="colorMode === 'light'">{{ $t('Light') }}</option>
-                            <option value="dark" :selected="colorMode === 'dark'">{{ $t('Dark') }}</option>
-                        </select>
-                    </label>
+                    <select name="theme" id="theme" @input="colorMode($event.target.value)" disabled>
+                        <option value="automatic" :selected="colorMode === 'automatic'">{{ $t('Auto') }}</option>
+                        <option value="light" :selected="colorMode === 'light'">{{ $t('Light') }}</option>
+                        <option value="dark" :selected="colorMode === 'dark'">{{ $t('Dark') }}</option>
+                    </select>
                 </div> -->
 
                 <!-- <div class="setting">
@@ -234,7 +228,17 @@ section {
     }
 }
 
-.select-wrapper {
+select {
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: var(--body-size);
+    line-height: inherit;
+    color: inherit;
+    border: none;
+    appearance: none;
+    cursor: pointer;
+
     box-shadow: inset 0 0 0 0.1875rem var(--text-16);
     border-radius: 2.5rem;
     padding: {
@@ -244,25 +248,12 @@ section {
         right: 3.5rem;
     }
 
+    background-color: transparent;
     background-image: url('../../assets/arrow-down.svg');
     background-size: 1.25rem;
     background-repeat: no-repeat;
     background-position-x: calc(100% - 1.75rem);
     background-position-y: 55%;
-}
-
-select {
-    font-size: inherit;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: var(--body-size);
-    line-height: inherit;
-    color: inherit;
-    cursor: pointer;
-
-    border: none;
-    appearance:none;
-    background: transparent;
 
     &[name="theme"] {
         text-transform: capitalize;

@@ -1,0 +1,40 @@
+stages:
+  - build
+  - test
+  - docker
+  - deploy
+
+# include private configs for the remaining stages
+include:
+  - project: "it/ci-config"
+    file: "/testnet/deploy_webapp.yml"
+
+build:
+  stage: build
+  image: node:lts
+  artifacts:
+    paths:
+      - dist/
+  cache:
+    key: node-cache
+    paths:
+      - node_modules/
+  script:
+    - yarn install
+    - yarn build
+    # Make sure the dist directory exists, so that _this_ job fails and not the next one
+    - test -d dist || (echo "No dist directory\!" && exit 1)
+    - test -f dist/index.html || (echo "No files in dist\!" && exit 1)
+  allow_failure: false
+
+test:
+  stage: test
+  image: node:lts
+  cache:
+    key: node-cache
+    paths:
+      - node_modules/
+  script:
+    - yarn lint
+  allow_failure: true
+

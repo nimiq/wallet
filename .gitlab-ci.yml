@@ -9,6 +9,21 @@ include:
   - project: "it/ci-config"
     file: "/testnet/deploy_webapp.yml"
 
+variables:
+  # nginx configuration for this webapp
+  NGINX_CONFIG: |
+    server {
+        listen       80;
+        listen  [::]:80;
+        server_name  localhost;
+
+        location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+          try_files $$uri /index.html =404;
+        }
+    }
+
 build:
   stage: build
   image: node:lts

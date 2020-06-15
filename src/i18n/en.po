@@ -50,7 +50,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:36
 msgid "all"
 msgstr ""
 
@@ -93,7 +93,7 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:293
 #: src/components/TransactionList.vue:49
-#: src/components/TransactionListItem.vue:137
+#: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
 msgstr ""
 
@@ -113,15 +113,15 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:83
+#: src/components/layouts/Settings.vue:77
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:77
+#: src/components/layouts/Settings.vue:71
 msgid "Clear Cache"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:79
+#: src/components/layouts/Settings.vue:73
 msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:31
+#: src/components/layouts/Settings.vue:29
 msgid "Control how many decimals are shown for NIM values."
 msgstr ""
 
@@ -177,7 +177,7 @@ msgstr ""
 msgid "Create backup"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:73
+#: src/components/layouts/Settings.vue:67
 msgid "Developer"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr ""
 msgid "Enter Address"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:39
+#: src/components/TransactionListItem.vue:36
 msgid "expired"
 msgstr ""
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:54
+#: src/components/TransactionListItem.vue:51
 msgid "Fiat value unavailable"
 msgstr ""
 
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Insufficient balance."
 msgstr ""
 
-#: src/components/TransactionListItem.vue:40
+#: src/components/TransactionListItem.vue:37
 msgid "invalid"
 msgstr ""
 
@@ -333,11 +333,11 @@ msgstr ""
 msgid "No transactions found"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:34
 msgid "None"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:37
+#: src/components/TransactionListItem.vue:34
 msgid "not sent"
 msgstr ""
 
@@ -361,7 +361,7 @@ msgstr ""
 msgid "Peers"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:38
+#: src/components/TransactionListItem.vue:35
 msgid "pending"
 msgstr ""
 
@@ -394,7 +394,7 @@ msgstr ""
 msgid "received at {dateAndTime}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:89
+#: src/components/layouts/Settings.vue:83
 msgid "Reference currency"
 msgstr ""
 
@@ -501,7 +501,7 @@ msgstr ""
 msgid "Share the link or the QR code with the sender."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:29
+#: src/components/layouts/Settings.vue:27
 msgid "Shown Decimals"
 msgstr ""
 
@@ -565,7 +565,7 @@ msgid "Transfer funds"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:294
-#: src/components/TransactionListItem.vue:138
+#: src/components/TransactionListItem.vue:135
 msgid "Unclaimed Cashlink"
 msgstr ""
 
@@ -583,10 +583,6 @@ msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:7
 msgid "You are a part of the Nimiq Blockchain."
-msgstr ""
-
-#: src/components/NetworkMap.vue:22
-msgid "You are here"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
@@ -607,6 +603,10 @@ msgstr ""
 
 #: src/components/MigrationWelcome.vue:53
 msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
+msgstr ""
+
+#: src/components/NetworkMap.vue:22
+msgid "Your browser"
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:9

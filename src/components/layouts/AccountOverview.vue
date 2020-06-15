@@ -227,7 +227,7 @@ export default defineComponent({
     }
 
     &.words {
-        border: 2px solid var(--text-6);
+        border: 2px solid var(--text-10);
         padding: 1rem 1.25rem 1rem 1.75rem
     }
 }

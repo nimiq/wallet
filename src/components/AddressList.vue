@@ -138,8 +138,8 @@ export default defineComponent({
         color: var(--text-70);
 
         // To make space for the .active-box leftside box-shadow
-        padding-left: 1rem;
-        margin-left: -1rem;
+        padding-left: var(--padding-sides);
+        margin-left: calc(-1 * var(--padding-sides));
 
         @extend %custom-scrollbar;
     }
@@ -166,10 +166,10 @@ export default defineComponent({
 
 
     .active-box {
-        width: calc(100% - var(--padding-sides) - 1rem);
+        width: calc(100% - 2 * var(--padding-sides));
         height: 9rem;
         position: absolute;
-        left: 1rem;
+        left: var(--padding-sides);
         top: 0;
         z-index: 0;
         border-radius: 0.75rem;
@@ -183,7 +183,7 @@ export default defineComponent({
         transition: transform 400ms var(--nimiq-ease);
 
         .has-scrollbar & {
-            width: calc(100% - var(--padding-sides) - 1rem + 6px); // 6px = scrollbar width
+            width: calc(100% - 2 * var(--padding-sides) + 6px); // 6px = scrollbar width
         }
     }
 

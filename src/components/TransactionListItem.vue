@@ -29,10 +29,7 @@
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
-            <div v-else class="address">
-                <span class="bold">{{ peerAddress.substring(0, 9) }}</span>
-                <span>{{ peerAddress.substring(9) }}</span>
-            </div>
+            <div v-else class="address">{{ peerAddress }}</div>
             <div class="time-and-message">
                 <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
                 <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
@@ -305,14 +302,6 @@ svg {
             font-family: 'Fira Mono', monospace;
             word-spacing: -0.2em;
             white-space: nowrap;
-
-            .bold {
-                font-weight: 500;
-            }
-
-            :not(.bold) {
-                opacity: .5;
-            }
         }
 
         .time-and-message {

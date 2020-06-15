@@ -19,7 +19,7 @@
                 </template>
                 <template v-slot:default>
                     <div v-for="peer in node.peers" :key="peer.peerId">
-                        <h3 v-if="peer.type === 0 /* SELF */">{{ $t('You are here') }}</h3>
+                        <h3 v-if="peer.type === 0 /* SELF */">{{ $t('Your browser') }}</h3>
                         <!-- <h3 v-else>
                             {{ peer.connected ? $t('Connected') : $t('Available') }}
                             {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}

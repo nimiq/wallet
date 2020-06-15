@@ -526,10 +526,18 @@ export default defineComponent({
 
 .copyable {
     padding: 0rem;
+
+    &:hover .address-display,
+    &:focus .address-display,
+    &.copied .address-display {
+        opacity: 1;
+        font-weight: 500;
+    }
 }
 
 .address-display {
     font-size: var(--body-size);
+    transition: opacity .3s var(--nimiq-ease);
 }
 
 .address-display /deep/ .chunk {

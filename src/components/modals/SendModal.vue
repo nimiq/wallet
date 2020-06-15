@@ -94,7 +94,7 @@
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
                         <span v-if="activeCurrency !== 'nim'" class="tilde">~</span>
                         <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef"/>
-                        <AmountInput v-else v-model="fiatAmount"/>
+                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals"/>
                         <button
                             class="reset amount-menu-button flex-row"
                             @click.stop="amountMenuOpened = !amountMenuOpened"
@@ -219,7 +219,7 @@ import {
     SelectBar,
     Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook, Utf8Tools } from '@nimiq/utils';
+import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import IdenticonButton from '../IdenticonButton.vue';
@@ -360,9 +360,18 @@ export default defineComponent({
         const activeCurrency = ref('nim');
         const fiatAmount = ref(0);
 
-        const { state: fiat$, exchangeRates } = useFiatStore();
+        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
         const otherFiatCurrencies = computed(() =>
             Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency));
+
+        const fiatCurrencyInfo = computed(() => {
+            if (activeCurrency.value === 'nim') {
+                return new CurrencyInfo(referenceCurrency.value);
+            }
+            return new CurrencyInfo(activeCurrency.value);
+        });
+
+        const fiatToNimDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e5);
 
         watch(activeCurrency, (currency) => {
             if (currency === 'nim') {
@@ -372,17 +381,22 @@ export default defineComponent({
 
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]!;
+            fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
         });
 
         watch(() => {
             if (activeCurrency.value === 'nim') return;
-            amount.value = Math.floor(fiatAmount.value / exchangeRates.value.nim[activeCurrency.value]!);
+            amount.value = Math.floor(
+                fiatAmount.value
+                / exchangeRates.value.nim[activeCurrency.value]!
+                / fiatToNimDecimalRatio.value);
         });
 
         async function sendMax() {
             if (activeCurrency.value !== 'nim') {
-                fiatAmount.value = maxSendableAmount.value * fiat$.exchangeRates.nim[activeCurrency.value]!;
+                fiatAmount.value = maxSendableAmount.value
+                    * fiat$.exchangeRates.nim[activeCurrency.value]!
+                    * fiatToNimDecimalRatio.value;
             }
             // Need to wait here for the next processing tick, as otherwise we would have a
             // race condition between the amount assignment and the fiatAmount watcher.
@@ -570,6 +584,7 @@ export default defineComponent({
             feeOptions,
             activeCurrency,
             fiatAmount,
+            fiatCurrencyInfo,
             sendMax,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,

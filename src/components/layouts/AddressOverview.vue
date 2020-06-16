@@ -82,8 +82,8 @@
         <template v-else>
             <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
                 + 'illustrations/To_the_stars_qhyy.svg'"/>
-            <span class="opacity-75">{{ $t('Let\'s get started! Connect your first account:') }}</span>
-            <button class="nq-button" @click="onboard">{{ $t('Connect') }}</button>
+            <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
+            <button class="nq-button" @click="onboard">{{ $t('Signup') }}</button>
         </template>
 
         <MobileActionBar/>

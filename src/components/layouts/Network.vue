@@ -3,11 +3,15 @@
         <div class="background"></div>
         <div class="network-inner flex-column">
             <div class="menu-bar flex-row">
-                <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
-                <button class="nq-button-s inverse account-button" @click="$router.replace('/account')">
+                <button class="reset menu-button" @click="$router.push({name: 'network', query: {sidebar: true}})">
+                    <MenuIcon/>
+                </button>
+                <button class="nq-button-s inverse account-button" @click="$router.push('/')">
                     {{ $t('Back to Addresses') }}
                 </button>
-                <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
+                <button class="reset info-button" @click="showNetworkInfo = true">
+                    <InfoCircleIcon/>
+                </button>
             </div>
             <div class="scroller map flex-column" ref="$map">
                 <NetworkMap @own-x-coordinate="scrollMap"/>
@@ -16,6 +20,8 @@
                 <NetworkStats/>
             </div>
         </div>
+
+        <div class="mobile-tap-area" @click="$router.back()"></div>
 
         <transition name="modal">
             <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>
@@ -143,6 +149,10 @@ export default defineComponent({
     }
 }
 
+.mobile-tap-area {
+    display: none;
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .network-inner {
         align-items: flex-start;
@@ -192,6 +202,20 @@ export default defineComponent({
         .nq-button-s {
             opacity: 0.7;
         }
+    }
+
+    .mobile-tap-area {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(5, 8, 31, 0.6);
+        opacity: 0;
+        pointer-events: none;
+
+        transition: opacity var(--transition-time) var(--nimiq-ease);
     }
 }
 </style>

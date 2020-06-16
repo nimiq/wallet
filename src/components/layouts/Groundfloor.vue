@@ -16,7 +16,7 @@
             </keep-alive>
         </transition>
 
-        <div class="mobile-tap-area" @click="$router.push('/account')"></div>
+        <div class="mobile-tap-area" @click="$router.back()"></div>
     </div>
 </template>
 

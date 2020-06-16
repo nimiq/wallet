@@ -51,8 +51,7 @@ export default defineComponent({
             switch (meta.column) {
                 case Columns.DYNAMIC:
                     switch (context.root.$route.path) {
-                        case '/': routeClass.value = 'column-root'; break;
-                        case '/account': routeClass.value = 'column-account'; break;
+                        case '/': routeClass.value = 'column-account'; break;
                         case '/transactions': routeClass.value = 'column-address'; break;
                         default: break; // Don't change column
                     }
@@ -60,6 +59,15 @@ export default defineComponent({
                 case Columns.ACCOUNT: routeClass.value = 'column-account'; break;
                 case Columns.ADDRESS: routeClass.value = 'column-address'; break;
                 default: break;
+            }
+        });
+
+        watch(() => context.root.$route.query, (newQuery, oldQuery) => {
+            if (!newQuery) return;
+            if (newQuery.sidebar) {
+                routeClass.value = 'column-sidebar';
+            } else if (oldQuery && oldQuery.sidebar) {
+                routeClass.value = 'column-account';
             }
         });
 
@@ -125,6 +133,7 @@ export default defineComponent({
         @include flex-full-height;
         flex-direction: row;
         width: 100%;
+        position: relative;
 
         .sidebar {
             width: var(--sidebar-width);
@@ -186,7 +195,7 @@ export default defineComponent({
                 width: 100vw;
             }
 
-            &.column-root {
+            &.column-sidebar {
                 /deep/ .mobile-tap-area {
                     opacity: 1;
                     pointer-events: all;

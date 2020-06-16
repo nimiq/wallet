@@ -32,12 +32,14 @@
 
         <div class="flex-grow"></div>
 
-        <AccountMenu :class="{'active': $route.name === 'root'}"/>
+        <AccountMenu
+            :class="{'active': $route.name === 'root'}"
+            @click="navigateTo('/')"/>
 
         <button
             class="network reset flex-row"
             :class="{'active': $route.name === 'network'}"
-            @click="$router.push('/network').catch(() => {})"
+            @click="navigateTo('/network')"
         >
             <ConsensusIcon/>
             <span class="label">{{ $t('Network') }}</span>
@@ -45,7 +47,7 @@
         <button
             class="settings reset flex-row"
             :class="{'active': $route.name === 'settings'}"
-            @click="$router.push('/settings').catch(() => {})"
+            @click="navigateTo('/settings')"
         >
             <GearIcon/>
             <span class="label">{{ $t('Settings') }}</span>
@@ -63,8 +65,25 @@ import PriceChart from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
+import { useWindowSize } from '../../composables/useWindowSize';
+
 export default defineComponent({
     name: 'sidebar',
+    setup(props, context) {
+        const { width } = useWindowSize();
+
+        function navigateTo(path: string) {
+            if (width.value < 700) { // Full mobile breakpoint
+                context.root.$router.replace(path);
+            } else {
+                context.root.$router.push(path).catch(() => { /* ignore */ });
+            }
+        }
+
+        return {
+            navigateTo,
+        };
+    },
     components: {
         AnnouncementBox,
         GearIcon,

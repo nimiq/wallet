@@ -79,23 +79,13 @@ router.onReady(() => {
     // a page-reload and we don't need to set up the initial routing anymore.
     if (window.history.state) return;
 
-    const startPath = router.currentRoute.path === '/'
-        ? window.outerWidth <= 700 // Full mobile breakpoint
-            ? '/account' // Navigate to the account column (start view)
-            : false // On Desktop, stay on root path
-        : router.currentRoute.fullPath;
-
-    const goToStartPath = () => {
-        if (!startPath) return;
-        // Use push, so the user is able to use the OS' back button
-        // to open the sidebar.
-        router.push(startPath);
-    };
-
     if (router.currentRoute.path !== '/') {
-        app.$once('route-changed', () => Vue.nextTick().then(goToStartPath));
-        router.replace('/');
-    } else {
-        goToStartPath();
+        const startRoute = router.currentRoute.fullPath;
+        app.$once('route-changed', () => Vue.nextTick().then(() => {
+            // Use push, so the user is able to use the OS' back button.
+            // Use fullpath to also capture query params, like used in payment links.
+            router.push(startRoute);
+        }));
     }
+    router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
 });

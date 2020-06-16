@@ -43,7 +43,7 @@ const routes: RouteConfig[] = [{
             addressOverview: AddressOverview,
         },
         name: 'root',
-        alias: ['/account', '/transactions'],
+        alias: '/transactions',
         meta: { column: Columns.DYNAMIC },
         children: [{
             path: '/send',
@@ -66,7 +66,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'transaction',
             props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
+            meta: { column: Columns.ADDRESS },
         // }, {
         //     path: '/trade',
         //     components: {
@@ -88,7 +88,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'address',
             props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/nimiq\\::requestUri',
             components: {

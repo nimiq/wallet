@@ -1,7 +1,9 @@
 <template>
     <div class="settings flex-row">
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
+            <button class="reset menu-button" @click="$router.push({name: 'settings', query: {sidebar: true}})">
+                <MenuIcon/>
+            </button>
         </div>
 
         <div class="flex-column left-column">

@@ -24,8 +24,12 @@
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.back()"><MenuIcon/></button>
-            <button class="reset" @click="$router.replace('/network')"><ConsensusIcon/></button>
+            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
+                <MenuIcon/>
+            </button>
+            <button class="reset" @click="$router.push('/network')">
+                <ConsensusIcon/>
+            </button>
         </div>
 
         <template v-if="showFullLegacyAccountNotice">

@@ -93,7 +93,6 @@ import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
-import { useWindowSize } from '../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
@@ -126,18 +125,12 @@ export default defineComponent({
         const otherAccountIds = computed(() => Object.keys(accountInfos.value)
             .filter((id) => id !== activeAccountId.value));
 
-        const { width: windowWidth } = useWindowSize();
-
         function goToAccount(testForMenuOpening = true) {
             if (testForMenuOpening && context.root.$route.name === 'root') {
                 openMenu();
                 return;
             }
-
-            const path = windowWidth.value <= 700 // Full mobile breakpoint
-                ? '/account'
-                : '/';
-            context.root.$router.push(path).catch(() => { /* ignore */ });
+            context.emit('click');
         }
 
         function onAccountSelected(id: string) {

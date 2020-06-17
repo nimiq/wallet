@@ -4,11 +4,16 @@
             <div class="exchange-area flex-column">
                 <header>
                     <h1 class="nq-h1">{{ $t('Get NIM and BTC') }}</h1>
-                    <p class="nq-text intro">
-                        {{ $t('There are many options, use a credit card or trade crypto. ' +
-                            'You can find more exchanges on') }}
-                        <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank">nimiq.com/exchanges</a>
-                    </p>
+                    <!-- eslint-disable-next-line max-len -->
+                    <i18n path="There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
+                        tag="p" class="nq-text intro"
+                    >
+                        <template v-slot:link>
+                            <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank">
+                                nimiq.com/exchanges
+                            </a>
+                        </template>
+                    </i18n>
                 </header>
                 <div class="featured-exchanges flex-row">
                     <div class="exchange kucoin flex-column">

@@ -15,6 +15,9 @@
                         <h2 class="nq-h1 flex-row">
                             <img src="../../assets/exchanges/kucoin.svg">
                             Kucoin
+                            <a class="nq-button-pill light-blue flex-row"
+                                href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
+                            >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
                         <ul>
                             <li>{{ $t('24/7 Chat & Phone\u00a0Support') }}</li>
@@ -30,6 +33,9 @@
                         <h2 class="nq-h1 flex-row">
                             <img src="../../assets/exchanges/changehero.svg">
                             Changehero
+                            <a class="nq-button-pill light-blue flex-row"
+                                href="https://changehero.io/?to=nim" target="_blank"
+                            >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
                         <ul>
                             <li>{{ $t('For beginners') }}</li>
@@ -79,15 +85,19 @@
                 <label>{{ $t('Coming soon') }}</label>
                 <h2 class="nq-h2">{{ $t('Buy and sell with your wallet.') }}</h2>
                 <p class="nq-text">
-                    {{ $t('Nimiq OASIS enables decentra-lized buying and selling directly from your wallet.') }}
+                    {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling directly from your wallet.') }}
                 </p>
                 <p class="nq-text">
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}
                 </p>
-                <a href="#" class="nq-link flex-row" target="_blank">{{ $t('Learn more') }}<ArrowRightSmallIcon/></a>
-                <div class="flex-grow"></div>
-                <p class="nq-text"><small>{{ $t('In cooperation with') }}</small></p>
-                <img src="../../assets/ten31.svg" alt="TEN31">
+                <footer class="flex-column">
+                    <a href="#" class="nq-link flex-row" target="_blank">
+                        {{ $t('Learn more') }}<ArrowRightSmallIcon/>
+                    </a>
+                    <div class="flex-grow"></div>
+                    <p class="nq-text">{{ $t('In cooperation with') }}</p>
+                    <img src="../../assets/ten31.svg" alt="TEN31">
+                </footer>
             </div>
         </PageBody>
     </Modal>
@@ -166,6 +176,10 @@ export default defineComponent({
 
         h2 {
             align-items: center;
+
+            .nq-button-pill {
+                display: none;
+            }
         }
 
         img {
@@ -300,13 +314,19 @@ export default defineComponent({
         }
     }
 
-    .nq-text:first-of-type {
+    > .nq-text:first-of-type {
         margin-bottom: 1.5rem;
     }
 
-    .nq-text:last-of-type {
-        margin-bottom: 1rem;
-        opacity: calc(0.5 / 0.7);
+    footer {
+        flex-grow: 1;
+        align-items: flex-start;
+
+        .nq-text {
+            margin-bottom: 1rem;
+            opacity: calc(0.5 / 0.7);
+            font-size: 1.5rem;
+        }
     }
 
     img {
@@ -324,6 +344,89 @@ export default defineComponent({
         background: url('../../assets/oasis-bg-desktop.svg') bottom right no-repeat;
         pointer-events: none;
         user-select: none;
+    }
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .modal /deep/ .small-page {
+        height: unset !important;
+        width: 52.5rem !important;
+    }
+
+    .page-body {
+        flex-direction: column;
+        mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));
+    }
+
+    .exchange-area {
+        margin-left: 0;
+        padding: 2.25rem 1.25rem;
+        align-items: stretch;
+
+        .intro {
+            max-width: unset;
+            margin-bottom: 5rem;
+        }
+    }
+
+    .featured-exchanges {
+        flex-direction: column;
+
+        .separator {
+            height: 2px;
+            width: 100%;
+            box-shadow: inset 0 1.5px var(--text-14);
+            margin: 3rem 0;
+        }
+
+        .exchange {
+            margin: 0 1rem;
+            width: unset;
+
+            h2 {
+                align-self: stretch;
+
+                .nq-button-pill {
+                    display: flex;
+                    margin-left: auto;
+                }
+            }
+
+            > .nq-button-pill {
+                display: none;
+            }
+
+            &:first-child ul {
+                margin-bottom: 0;
+
+                li:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    .exchange-logos {
+        display: none;
+    }
+
+    .oasis-area {
+        width: unset;
+
+        footer {
+            flex-direction: row;
+            align-self: stretch;
+            align-items: center;
+
+            .nq-text {
+                margin-bottom: 0;
+                margin-right: 1rem;
+            }
+        }
+
+        &::after {
+            background: url('../../assets/oasis-bg-mobile.svg') bottom right no-repeat;
+        }
     }
 }
 </style>

@@ -541,7 +541,7 @@ export default defineComponent({
                 justify-content: flex-end;
             }
 
-            .address,
+            .copyable,
             .label {
                 display: none;
             }

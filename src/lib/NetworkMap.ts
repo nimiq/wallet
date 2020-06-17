@@ -339,7 +339,7 @@ export class NodeHexagon extends Hexagon {
         const distance = Math.sqrt((xSelf - xPeer) ** 2 + (ySelf - yPeer) ** 2);
 
         // set up stroke style depending on node state
-        dc.lineWidth = 2.5;
+        dc.lineWidth = 3.5;
         if (this._animation.connection !== 1) { // animating is going on TODO
             switch (this._connections.size) {
                 case 0: // animating towards disconnected

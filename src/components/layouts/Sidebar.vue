@@ -21,14 +21,11 @@
         <PriceChart currency="nim"/>
         <PriceChart currency="btc" :showTimespanLabel="false"/>
 
-        <!-- <div class="trade-actions">
+        <div class="trade-actions">
             <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
-                {{ $t('Buy') }}
+                {{ $t('Buy & Sell') }}
             </button>
-            <button class="nq-button-s inverse" @click="$router.push('/trade')" :disabled="$route.name !== 'root'">
-                {{ $t('Sell') }}
-            </button>
-        </div> -->
+        </div>
 
         <div class="flex-grow"></div>
 

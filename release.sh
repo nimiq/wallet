@@ -20,7 +20,7 @@ fi
 yarn build
 
 # Tag current commit
-git tag -a -s $1
+git tag $1
 
 # Push commit and tag to origin
 git push && git push --tags

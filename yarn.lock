@@ -9523,7 +9523,7 @@ webpack-dev-server@^3.10.2:
 
 "webpack-i18n-tools@https://github.com/Yukiioz/webpack-i18n-tools.git#master":
   version "0.0.1"
-  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#5e8b10d202abdff448826398047616e9837f8ceb"
+  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#c3a04d3af54b6fc0e134f1af09e285aeab2a3a4e"
   dependencies:
     gettext-extractor "^3.5.2"
     glob "^7.1.6"
@@ -9532,6 +9532,7 @@ webpack-dev-server@^3.10.2:
     parse5 "^4.*.*"
     po2json "^0.4.5"
     queue "^6.0.1"
+    webpack-sources "^1.4.3"
 
 webpack-log@^2.0.0:
   version "2.0.0"

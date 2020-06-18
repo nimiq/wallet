@@ -80,7 +80,7 @@ export default defineComponent({
             hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
         })));
 
-        const backgroundYOffset = ref(4); // px - Top margin of the address-buttons is 0.5rem
+        const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top
         function adjustBackgroundOffset(address: string) {
             let offset = 0;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.

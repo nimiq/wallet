@@ -294,6 +294,12 @@ svg {
         overflow: hidden;
         line-height: 1.4;
 
+        .label,
+        .address {
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+
         .label {
             font-weight: 600;
         }
@@ -301,14 +307,13 @@ svg {
         .address {
             font-family: 'Fira Mono', monospace;
             word-spacing: -0.2em;
-            white-space: nowrap;
         }
 
         .time-and-message {
             font-size: var(--small-size);
             opacity: .5;
             white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
             .time {
                 font-weight: 600;
@@ -411,13 +416,6 @@ svg {
         .identicon {
             width: 5.5rem;
             height: 5.5rem;
-        }
-
-        .data {
-            .label {
-                white-space: nowrap;
-                mask: linear-gradient(90deg , white, white calc(100% - 2rem), rgba(255,255,255, 0));
-            }
         }
     }
 }

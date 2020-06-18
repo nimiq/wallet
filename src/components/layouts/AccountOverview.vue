@@ -184,7 +184,8 @@ export default defineComponent({
 
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 
-    > * {
+    .backup-warning,
+    .mobile-menu-bar {
         margin-bottom: var(--item-margin);
     }
 }
@@ -241,8 +242,10 @@ export default defineComponent({
 }
 
 .address-list {
+    padding-top: var(--item-margin);
     flex-grow: 1;
     margin-bottom: 1rem;
+    mask: linear-gradient(0deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 }
 
 .bitcoin-teaser {

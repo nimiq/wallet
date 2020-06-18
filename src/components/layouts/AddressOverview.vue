@@ -17,7 +17,7 @@
                 </button>
                 <button
                     class="reset icon-button"
-                    @click="$router.push({name: 'address', params: {address: activeAddressInfo.address}})"
+                    @click="$router.push('/receive')"
                 >
                     <MenuDotsIcon/>
                 </button>

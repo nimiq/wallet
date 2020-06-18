@@ -20,8 +20,6 @@ const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
-const AddressModal = () =>
-    import(/* webpackChunkName: "address-modal" */ './components/modals/AddressModal.vue');
 
 Vue.use(VueRouter);
 
@@ -82,14 +80,6 @@ const routes: RouteConfig[] = [{
             },
             name: 'scan',
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/address/:address',
-            components: {
-                modal: AddressModal,
-            },
-            name: 'address',
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
         }, {
             path: '/nimiq\\::requestUri',
             components: {

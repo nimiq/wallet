@@ -1,29 +1,67 @@
 <template>
-    <Modal class="receive-modal">
+    <Modal class="receive-modal"
+        :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
+        @close-overlay="addressQrCodeOverlayOpened = false; receiveLinkOverlayOpened = false; amount = 0;"
+    >
         <PageHeader>
-            {{ $t('Receive Money') }}
-            <div slot="more">{{ $t('Share the link or the QR code with the sender.') }}</div>
+            {{ $t('Receive NIM') }}
+            <div slot="more">{{ $t('Share your address with the sender.') }}</div>
         </PageHeader>
-        <PageBody class="flex-column">
-            <button v-if="!isInputsOpen" class="nq-button-s" @click="isInputsOpen = true">
-                {{ $t('Set Amount') }}
+        <PageBody class="flex-column address-page">
+            <button
+                v-if="activeAddressInfo.type === AddressType.BASIC"
+                @click="addressQrCodeOverlayOpened = true"
+                class="reset qr-button"
+            >
+                <QrCodeIcon/>
             </button>
-            <div v-else class="inputs">
-                <AmountInput v-model="amount" :maxFontSize="5"/>
-                <CloseButton class="close-button top-right" @click="isInputsOpen = false, amount = 0"/>
-            </div>
-            <!-- <AmountInput v-model="amount" />
-            <labelInput v-model="message" placeholder="add a message" /> -->
+            <Identicon :address="activeAddressInfo.address"/>
+            <Copyable :text="activeAddressInfo.address">
+                <AddressDisplay :address="activeAddressInfo.address"/>
+            </Copyable>
+            <button
+                v-if="activeAddressInfo.type === AddressType.BASIC"
+                @click="receiveLinkOverlayOpened = true"
+                class="nq-button-s"
+            >
+                {{ $t('Create payment link') }}
+            </button>
+        </PageBody>
+
+        <PageBody v-if="addressQrCodeOverlayOpened" class="address-qr-overlay flex-column" slot="overlay">
             <QrCode
-                :data="requestLink"
-                :size="400"
+                :data="activeAddressInfo.address"
+                :size="520"
                 :fill="'#1F2348' /* nimiq-blue */"
                 class="qr-code"
             />
-            <Copyable :class="{'big': !isInputsOpen}" :text="`${origin}/${requestLink}`">
-                {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
-            </Copyable>
+            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
         </PageBody>
+
+        <template v-if="receiveLinkOverlayOpened" slot="overlay">
+            <PageHeader class="link-overlay">
+                {{ $t('Share your payment link') }}
+                <div slot="more">
+                    {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
+                </div>
+            </PageHeader>
+            <PageBody class="flex-column link-overlay">
+                <div class="inputs">
+                    <AmountInput v-model="amount" :maxFontSize="5"/>
+                </div>
+                <!-- <AmountInput v-model="amount" />
+                <labelInput v-model="message" placeholder="add a message" /> -->
+                <QrCode
+                    :data="requestLink"
+                    :size="400"
+                    :fill="'#1F2348' /* nimiq-blue */"
+                    class="qr-code"
+                />
+                <Copyable :text="`${origin}/${requestLink}`">
+                    {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
+                </Copyable>
+            </PageBody>
+        </template>
     </Modal>
 </template>
 
@@ -32,20 +70,24 @@ import { defineComponent, computed, Ref, ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
-    CloseButton,
+    Identicon,
+    AddressDisplay,
     AmountInput,
     LabelInput,
+    QrCodeIcon,
     QrCode,
     Copyable,
 } from '@nimiq/vue-components';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
-import { useAddressStore } from '../../stores/Address';
+import { useAddressStore, AddressType } from '../../stores/Address';
 
 export default defineComponent({
     name: 'receive-modal',
     setup() {
-        const isInputsOpen = ref(false);
+        const addressQrCodeOverlayOpened = ref(false);
+        const receiveLinkOverlayOpened = ref(false);
+
         const amount: Ref<string> = ref(0);
         const message: Ref<string> = ref('');
         const { activeAddressInfo } = useAddressStore();
@@ -61,21 +103,25 @@ export default defineComponent({
             () => createRequestLink(activeAddressInfo.value!.address, requestLinkOptions.value));
 
         return {
-            isInputsOpen,
             activeAddressInfo,
             amount,
             message,
             requestLink,
             origin: window.location.origin,
+            addressQrCodeOverlayOpened,
+            receiveLinkOverlayOpened,
+            AddressType,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
-        CloseButton,
+        Identicon,
+        AddressDisplay,
         AmountInput,
         LabelInput,
+        QrCodeIcon,
         QrCode,
         Copyable,
     } as any,
@@ -83,26 +129,93 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.page-body.address-page {
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 3rem;
+
+    .qr-button {
+        position: absolute;
+        right: 3rem;
+        bottom: 3rem;
+        font-size: 4rem;
+        opacity: 0.4;
+        transition: opacity 250ms var(--nimiq-ease);
+
+        svg {
+            display: block;
+        }
+    }
+
+    .qr-button:hover,
+    .qr-button:focus {
+        opacity: 0.8;
+    }
+
+    .identicon {
+        width: 18rem;
+        margin-top: 3rem;
+        margin-bottom: -5rem;
+    }
+
+    .copyable {
+        padding: 0.5rem;
+
+        .address-display {
+            transition: opacity 0.3s var(--nimiq-ease);
+        }
+
+        &:hover .address-display,
+        &:focus .address-display,
+        &.copied .address-display {
+            opacity: 1;
+            font-weight: 500;
+        }
+    }
+}
+
+.address-qr-overlay {
+    justify-content: space-evenly;
+    align-items: center;
+
+    .flex-spacer {
+        height: 2rem;
+    }
+
+    .qr-code {
+        // The QrCode is rendered at 2x size and then scaled to half its size,
+        // to be sharp on retina displays:
+        // 2 x 260px = 560px
+        // But now we need to make it behave as half its size as well, that's
+        // why we use negative margins on all sides (130px = 260px / 2).
+        transform: scale(0.5);
+        margin: -130px;
+    }
+
+    .qr-info-text {
+        font-size: var(--h2-size);
+        font-weight: 600;
+        white-space: pre;
+        text-align: center;
+    }
+}
+
 .page-header {
     padding-bottom: 2rem;
 
     div {
         font-size: var(--body-size);
+        line-height: 1.4;
         font-weight: 600;
         opacity: 0.6;
-        margin-top: 1em;
+        margin-top: 1rem;
     }
 }
 
-.page-body {
+.page-body.link-overlay {
     justify-content: space-between;
     align-items: center;
     overflow: visible;
-
-    .nq-button-s {
-        flex-shrink: 0;
-        margin-bottom: 2rem;
-    }
 
     .inputs {
         width: calc(100% + 4rem);
@@ -129,11 +242,6 @@ export default defineComponent({
                 padding: 0 1rem;
             }
         }
-
-        .close-button {
-            right: 1rem;
-            top: 1rem;
-        }
     }
 
     .qr-code {
@@ -155,15 +263,7 @@ export default defineComponent({
         word-wrap: break-word;
         color: rgba(31, 35, 72, 0.5);
         text-align: center;
-        font-size: 2.25rem;
-
-        @media (max-width: 700px) { // Full Mobile Breakpoint
-            font-size: 2rem;
-        }
-    }
-
-    .copyable.big {
-        font-size: var(--h1-size);
+        font-size: var(--h2-size);
     }
 }
 </style>

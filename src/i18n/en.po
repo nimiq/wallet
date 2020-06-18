@@ -190,6 +190,10 @@ msgstr ""
 msgid "Create backup"
 msgstr ""
 
+#: src/components/modals/ReceiveModal.vue:27
+msgid "Create payment link"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:47
 msgid "Credit Card accepted"
 msgstr ""
@@ -429,8 +433,8 @@ msgstr ""
 msgid "Receive free NIM"
 msgstr ""
 
-#: src/components/modals/ReceiveModal.vue:4
-msgid "Receive Money"
+#: src/components/modals/ReceiveModal.vue:7
+msgid "Receive NIM"
 msgstr ""
 
 #: src/components/TransactionList.vue:61
@@ -466,7 +470,7 @@ msgstr ""
 msgid "Save now"
 msgstr ""
 
-#: src/components/modals/AddressModal.vue:28
+#: src/components/modals/ReceiveModal.vue:38
 msgid ""
 "Scan the code to send\n"
 "money to this address"
@@ -526,7 +530,6 @@ msgstr ""
 msgid "sent at {dateAndTime}"
 msgstr ""
 
-#: src/components/modals/ReceiveModal.vue:9
 #: src/components/modals/SendModal.vue:66
 #: src/components/modals/SendModal.vue:77
 msgid "Set Amount"
@@ -544,8 +547,18 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/components/modals/ReceiveModal.vue:5
-msgid "Share the link or the QR code with the sender."
+#: src/components/modals/ReceiveModal.vue:45
+msgid ""
+"Share the link or QR code with the sender.\n"
+"Optionally include an amount. "
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:8
+msgid "Share your address with the sender."
+msgstr ""
+
+#: src/components/modals/ReceiveModal.vue:43
+msgid "Share your payment link"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:29

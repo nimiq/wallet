@@ -354,7 +354,8 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .modal /deep/ .small-page {
-        height: unset !important;
+        // Regular Modal size (iOS scrolling inside the TradeModal does not work without a fixed height)
+        height: 70.5rem !important;
         width: 52.5rem !important;
     }
 
@@ -364,6 +365,7 @@ export default defineComponent({
     }
 
     .exchange-area {
+        flex-shrink: 0;
         margin-left: 0;
         padding: 2.25rem 1.25rem;
         align-items: stretch;

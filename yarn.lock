@@ -946,9 +946,9 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/vue-components@github:nimiq/vue-components#build/master":
+"@nimiq/vue-components@https://github.com/nimiq/vue-components#build/master":
   version "0.1.0"
-  resolved "https://codeload.github.com/nimiq/vue-components/tar.gz/590540164bae132df2003e7d69ca947f6e2d4307"
+  resolved "https://github.com/nimiq/vue-components#590540164bae132df2003e7d69ca947f6e2d4307"
   dependencies:
     "@nimiq/style" "^0.8.0"
     big-integer "^1.6.44"
@@ -9408,9 +9408,9 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-"vue-virtual-scroller@github:sisou/vue-virtual-scroller#nimiq/build":
+"vue-virtual-scroller@https://github.com/sisou/vue-virtual-scroller#nimiq/build":
   version "1.0.10"
-  resolved "https://codeload.github.com/sisou/vue-virtual-scroller/tar.gz/8e03a1432c611856e92a3f61f496b93337338701"
+  resolved "https://github.com/sisou/vue-virtual-scroller#8e03a1432c611856e92a3f61f496b93337338701"
   dependencies:
     scrollparent "^2.0.1"
     vue-observe-visibility "^0.4.4"

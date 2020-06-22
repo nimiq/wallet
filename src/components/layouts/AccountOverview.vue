@@ -163,6 +163,11 @@ export default defineComponent({
         --padding-bottom: 0;
     }
 
+    @media (max-width: 960px) { // Tablet breakpoint
+        --padding-top: 3rem;
+        --padding-sides: 3rem;
+    }
+
     @media (max-width: 700px) { // Full mobile breakpoint
         --padding-top: 1rem;
         --padding-sides: 1rem;
@@ -289,6 +294,10 @@ export default defineComponent({
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
+    .account-overview .backup-warning {
+        margin-bottom: calc(2 * var(--item-margin));
+    }
+
     .mobile-menu-bar {
         display: flex;
         justify-content: space-between;
@@ -317,6 +326,16 @@ export default defineComponent({
 
     .account-balance {
         margin-top: -4rem;
+    }
+}
+
+@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    .account-balance {
+        margin-top: -2rem;
+    }
+
+    .bitcoin-teaser label {
+        display: none;
     }
 }
 

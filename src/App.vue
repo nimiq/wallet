@@ -117,6 +117,10 @@ export default defineComponent({
         --account-column-width: 47.5rem;
     }
 
+    @media (max-width: 960px) { // Tablet breakpoint
+        --account-column-width: 34.5rem;
+    }
+
     @media (max-width: 700px) { // Full mobile breakpoint
         --account-column-width: 100vw;
         --address-column-width: 100vw;

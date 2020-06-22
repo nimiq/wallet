@@ -9521,9 +9521,9 @@ webpack-dev-server@^3.10.2:
     ws "^6.2.1"
     yargs "12.0.5"
 
-"webpack-i18n-tools@https://github.com/Yukiioz/webpack-i18n-tools.git#master":
+"webpack-i18n-tools@https://github.com/nimiq//webpack-i18n-tools#master":
   version "0.0.1"
-  resolved "https://github.com/Yukiioz/webpack-i18n-tools.git#c3a04d3af54b6fc0e134f1af09e285aeab2a3a4e"
+  resolved "https://github.com/nimiq//webpack-i18n-tools#c3a04d3af54b6fc0e134f1af09e285aeab2a3a4e"
   dependencies:
     gettext-extractor "^3.5.2"
     glob "^7.1.6"

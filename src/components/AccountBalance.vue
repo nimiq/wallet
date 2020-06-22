@@ -38,7 +38,7 @@ export default defineComponent({
     font-size: 8rem;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 1160px) { // Half mobile breakpoint
     .account-balance {
         text-align: center;
     }

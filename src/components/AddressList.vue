@@ -21,7 +21,7 @@
                     class="fiat-balance"
                     :amount="addressInfo.balance"/>
             </div>
-            <div v-else>???</div>
+            <div v-else class="balances">???</div>
             <div class="mobile-arrow"></div>
         </button>
         <button
@@ -284,6 +284,12 @@ export default defineComponent({
     .mobile-arrow,
     .embedded .mobile-arrow {
         display: none;
+    }
+
+    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+        .balances {
+            display: none;
+        }
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint

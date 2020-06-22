@@ -145,6 +145,7 @@ export default defineComponent({
 
 .settings {
     align-items: flex-start;
+    padding: 4rem;
 }
 
 .flex-column {
@@ -154,7 +155,10 @@ export default defineComponent({
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
-        margin: 4rem 0;
+
+        section {
+            padding-left: 3rem;
+        }
 
         section:first-child {
             padding-top: 2rem;
@@ -316,6 +320,8 @@ select {
     img {
         border-radius: 50%;
         margin-right: 1.25rem;
+        width: 3.5rem;
+        height: 3.5rem;
     }
 }
 
@@ -323,9 +329,33 @@ select {
     display: none;
 }
 
-@media (max-width: 1140px) { // Small screens - reduce margins
-    .flex-column:not(:last-child) {
-        margin: 2rem 0;
+@media (max-width: 1160px) { // Half mobile breakpoint
+    .settings {
+        padding: 5rem 3rem 3rem 4rem;
+    }
+
+    .mobile-menu-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-self: stretch;
+        flex-shrink: 0;
+        z-index: 1;
+        margin-bottom: 0.5rem;
+        position: absolute;
+        left: 3rem;
+        top: 3rem;
+
+        button.reset {
+            opacity: 0.3;
+            font-size: 2.5rem;
+        }
+
+        .menu-button {
+            width: 3.5rem;
+            height: 2.75rem;
+            box-sizing: content-box;
+        }
     }
 
     section {
@@ -339,6 +369,7 @@ select {
         padding: 3.25rem 3rem;
         overflow-y: auto;
         flex-direction: column;
+        align-items: stretch;
         flex-wrap: nowrap;
 
         .description {
@@ -346,9 +377,15 @@ select {
         }
     }
 
+    .mobile-menu-bar {
+        position: relative;
+        left: 0;
+        top: 0;
+    }
+
     section {
         margin: 0;
-        padding: 4rem 0;
+        padding: 4rem 0 !important;
         max-width: none;
     }
 
@@ -373,27 +410,6 @@ select {
 
         &.right-column section:last-child {
             padding-bottom: 0;
-        }
-    }
-
-    .mobile-menu-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-self: stretch;
-        flex-shrink: 0;
-        z-index: 1;
-        margin-bottom: 0.5rem;
-
-        button.reset {
-            opacity: 0.3;
-            font-size: 2.5rem;
-        }
-
-        .menu-button {
-            width: 3.5rem;
-            height: 2.75rem;
-            box-sizing: content-box;
         }
     }
 }

@@ -137,7 +137,7 @@ label {
     margin-bottom: 2rem;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 1199px) {
     section {
         margin: 0 1rem;
     }
@@ -157,6 +157,12 @@ label {
 
     label {
         padding: 0.5rem 1.25rem;
+    }
+}
+
+@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    img, svg, div[data-placeholder] {
+        display: none;
     }
 }
 </style>

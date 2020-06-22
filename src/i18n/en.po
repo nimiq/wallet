@@ -271,12 +271,9 @@ msgstr ""
 msgid "Get NIM and BTC"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:52
-msgid "Get NIM on Changehero"
-msgstr ""
-
 #: src/components/modals/TradeModal.vue:34
-msgid "Get NIM on Kucoin"
+#: src/components/modals/TradeModal.vue:52
+msgid "Get NIM on {exchange}"
 msgstr ""
 
 #: src/components/modals/PreviewNoticeModal.vue:18

@@ -19,7 +19,7 @@
                     <div class="exchange kucoin flex-column">
                         <h2 class="nq-h1 flex-row">
                             <img src="../../assets/exchanges/kucoin.svg">
-                            Kucoin
+                            KuCoin
                             <a class="nq-button-pill light-blue flex-row"
                                 href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
@@ -31,13 +31,13 @@
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
-                        >{{ $t('Get NIM on Kucoin') }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('Get NIM on {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                     <div class="separator"></div>
                     <div class="exchange changehero flex-column">
                         <h2 class="nq-h1 flex-row">
                             <img src="../../assets/exchanges/changehero.svg">
-                            Changehero
+                            ChangeHero
                             <a class="nq-button-pill light-blue flex-row"
                                 href="https://changehero.io/?to=nim" target="_blank"
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
@@ -49,7 +49,7 @@
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://changehero.io/?to=nim" target="_blank"
-                        >{{ $t('Get NIM on Changehero') }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('Get NIM on {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">

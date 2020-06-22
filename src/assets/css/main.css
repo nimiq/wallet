@@ -85,7 +85,7 @@ button.reset:disabled {
     font-size: var(--small-button-size);
 }
 
-@media (max-width: 700px) { /* Full mobile breakpoint */
+@media (max-width: 1160px) { /* Half mobile breakpoint */
     :root {
         --transition-time: 0.5s;
 

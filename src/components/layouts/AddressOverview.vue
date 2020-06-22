@@ -187,21 +187,26 @@ export default defineComponent({
 
     /* Default: 1440px */
     --padding: 4rem;
+    --padding-bottom: 6rem;
 
     @media (max-width: 1319px) {
         --padding: 3rem;
+        --padding-bottom: 5rem;
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint
         --padding: 1rem;
+        --padding-bottom: 2rem;
     }
 
     @media (min-width: 1800px) {
-        --padding: 6rem; // 7rem per design
+        --padding: 7rem;
+        --padding-bottom: 6rem;
     }
 
     @media (min-width: 2000px) {
         --padding: 9rem;
+        --padding-bottom: 6rem;
     }
 
     &.no-accounts {
@@ -221,6 +226,7 @@ export default defineComponent({
     align-items: center;
     padding: calc(var(--padding) + 2rem);
     padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: var(--padding-bottom);
 
     .identicon-wrapper {
         position: relative;

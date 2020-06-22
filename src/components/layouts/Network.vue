@@ -153,30 +153,7 @@ export default defineComponent({
     display: none;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
-    .network-inner {
-        align-items: flex-start;
-    }
-
-    .scroller {
-        overflow-y: auto;
-
-        &.map {
-            padding-bottom: 2rem;
-        }
-    }
-
-    .network-map {
-        // Take the screen height, subtract footer (9.5rem), header (6.75rem) and margin (2rem), and multiply with
-        // the ratio between network map width and height.
-        --mapHeight: calc(100vh - 9.5rem - 6.75rem - 2rem);
-        width: calc(var(--mapHeight) * (1082 / 502));
-    }
-
-    .network-stats {
-        padding-bottom: 3rem;
-    }
-
+@media (max-width: 1160px) { // Half mobile breakpoint
     .menu-bar {
         justify-content: space-between;
         align-items: center;
@@ -216,6 +193,31 @@ export default defineComponent({
         pointer-events: none;
 
         transition: opacity var(--transition-time) var(--nimiq-ease);
+    }
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .network-inner {
+        align-items: flex-start;
+    }
+
+    .scroller {
+        overflow-y: auto;
+
+        &.map {
+            padding-bottom: 2rem;
+        }
+    }
+
+    .network-map {
+        // Take the screen height, subtract footer (9.5rem), header (6.75rem) and margin (2rem), and multiply with
+        // the ratio between network map width and height.
+        --mapHeight: calc(100vh - 9.5rem - 6.75rem - 2rem);
+        width: calc(var(--mapHeight) * (1082 / 502));
+    }
+
+    .network-stats {
+        padding-bottom: 3rem;
     }
 }
 </style>

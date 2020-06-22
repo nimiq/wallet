@@ -43,7 +43,7 @@ export default defineComponent({
     position: relative; // iOS Safari fix to make settings fill the screen width
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 1160px) { // Half mobile breakpoint
     .mobile-tap-area {
         display: block;
         position: absolute;

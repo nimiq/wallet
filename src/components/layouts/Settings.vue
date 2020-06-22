@@ -316,6 +316,8 @@ select {
     img {
         border-radius: 50%;
         margin-right: 1.25rem;
+        width: 3.5rem;
+        height: 3.5rem;
     }
 }
 
@@ -330,6 +332,29 @@ select {
 
     section {
         padding: 4rem 5rem;
+    }
+}
+
+@media (max-width: 1160px) { // Half mobile breakpoint
+    .mobile-menu-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-self: stretch;
+        flex-shrink: 0;
+        z-index: 1;
+        margin-bottom: 0.5rem;
+
+        button.reset {
+            opacity: 0.3;
+            font-size: 2.5rem;
+        }
+
+        .menu-button {
+            width: 3.5rem;
+            height: 2.75rem;
+            box-sizing: content-box;
+        }
     }
 }
 
@@ -373,27 +398,6 @@ select {
 
         &.right-column section:last-child {
             padding-bottom: 0;
-        }
-    }
-
-    .mobile-menu-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-self: stretch;
-        flex-shrink: 0;
-        z-index: 1;
-        margin-bottom: 0.5rem;
-
-        button.reset {
-            opacity: 0.3;
-            font-size: 2.5rem;
-        }
-
-        .menu-button {
-            width: 3.5rem;
-            height: 2.75rem;
-            box-sizing: content-box;
         }
     }
 }

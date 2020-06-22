@@ -96,22 +96,25 @@ export default defineComponent({
     @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
-    /* Default: >= 1440px */
+    /* Default: >= 1500px */
     --sidebar-width: 23rem;
-    --account-column-width: 60rem;
-    --address-column-width: 99rem;
+    --account-column-width: 70rem;
+    --address-column-width: 150rem;
 
-    @media (max-width: 1369px) {
+    @media (max-width: 1499px) {
+        --account-column-width: 65rem;
+    }
+
+    @media (max-width: 1409px) {
         --account-column-width: 59rem;
     }
 
     @media (max-width: 1319px) {
         --account-column-width: 52rem;
-        --address-column-width: 92rem;
     }
 
     @media (max-width: 1199px) {
-        --account-column-width: 47rem;
+        --account-column-width: 47.5rem;
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint
@@ -120,13 +123,11 @@ export default defineComponent({
     }
 
     @media (min-width: 1800px) {
-        --account-column-width: 75rem; // 80.75rem for fullscreen design
-        --address-column-width: 110rem; // 134.25rem for fullscreen design
+        --account-column-width: 80.75rem;
     }
 
     @media (min-width: 2000px) {
         --account-column-width: 85rem;
-        --address-column-width: 139rem;
     }
 
     main {
@@ -182,16 +183,13 @@ export default defineComponent({
         z-index: 100;
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: 1160px) { // Half mobile breakpoint
         main {
-            width: calc(var(--sidebar-width) + 200vw);
+            width: calc(var(--sidebar-width) + 100vw);
             transition: transform var(--transition-time) var(--nimiq-ease);
 
-            /deep/ .address-overview {
-                min-width: unset;
-            }
-
-            .network {
+            .network,
+            .groundfloor {
                 width: 100vw;
             }
 
@@ -202,9 +200,20 @@ export default defineComponent({
                 }
             }
 
-            &.column-account {
+            &.column-account,
+            &.column-address {
                 // Account column
                 transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+        }
+    }
+
+    @media (max-width: 700px) { // Full mobile breakpoint
+        main {
+            width: calc(var(--sidebar-width) + 200vw);
+
+            /deep/ .address-overview {
+                min-width: unset;
             }
 
             &.column-address {
@@ -293,13 +302,23 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 1160px) { // Half mobile breakpoint
     .groundfloor {
         &.slide-right-enter,
         &.slide-right-leave-to {
             transform: translate3d(100vw, 0, 0);
         }
     }
+
+    .address-overview {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(calc(100vw - var(--account-column-width)), 0, 0);
+        }
+    }
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
 
     .address-overview {
         &.slide-right-enter,

@@ -160,16 +160,26 @@ export default defineComponent({
 
     .copyable {
         padding: 0.5rem;
+        background: var(--nimiq-highlight-bg);
+
+        transition:
+            color .3s var(--nimiq-ease),
+            background 0.3s var(--nimiq-ease);
+
+        /deep/ .background {
+            display: none;
+        }
 
         .address-display {
             transition: opacity 0.3s var(--nimiq-ease);
+            font-weight: 500;
+            opacity: 1;
         }
 
-        &:hover .address-display,
-        &:focus .address-display,
-        &.copied .address-display {
-            opacity: 1;
-            font-weight: 500;
+        &:hover,
+        &:focus,
+        &.copied {
+            background: rgba(5, 130, 202, 0.07); // Based on Nimiq Light Blue
         }
     }
 }

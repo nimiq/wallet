@@ -33,17 +33,9 @@
         </div>
 
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
-            <PageHeader>{{ $t('Contacts') }}</PageHeader>
-            <PageBody class="page__contact-list contact-list">
-                <button
-                    v-for="contact in contacts"
-                    :key="contact.address"
-                    class="reset contact-button flex-row"
-                    @click="onContactSelected(contact)"
-                >
-                    <Identicon :address="contact.address"/>
-                    <label>{{ contact.label }}</label>
-                </button>
+            <PageHeader class="header__contact-list">{{ $t('Contacts') }}</PageHeader>
+            <PageBody class="page__contact-list">
+                <ContactBook @contact-selected="onContactSelected"/>
             </PageBody>
         </div>
 
@@ -166,7 +158,7 @@
         </div>
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
-            <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
+            <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false"/>
             </PageBody>
@@ -222,6 +214,7 @@ import {
 import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
+import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -233,6 +226,12 @@ import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+
+export enum RecipientType {
+    CONTACT,
+    OWN_ADDRESS,
+    GLOBAL_ADDRESS,
+}
 
 export default defineComponent({
     name: 'send-modal',
@@ -248,12 +247,6 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
         const page = ref(Pages.RECIPIENT_INPUT);
-
-        enum RecipientType {
-            CONTACT,
-            OWN_ADDRESS,
-            GLOBAL_ADDRESS,
-        }
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -271,10 +264,10 @@ export default defineComponent({
         const recentContacts = computed(() => contacts.value.slice(0, 3));
 
         const contactListOpened = ref(false);
-        function onContactSelected(contact: {address: string, label: string}) {
+        function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
             recipientWithLabel.value = {
                 ...contact,
-                type: RecipientType.CONTACT,
+                type,
             };
             contactListOpened.value = false;
             page.value = Pages.AMOUNT_INPUT;
@@ -558,7 +551,6 @@ export default defineComponent({
             page,
 
             // Recipient Input
-            contacts,
             recentContacts,
             contactListOpened,
             onContactSelected,
@@ -617,6 +609,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         ContactShortcuts,
+        ContactBook,
         AddressInput,
         ScanQrCodeIcon,
         Identicon,
@@ -642,8 +635,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/mixins.scss';
-
     .page {
         flex-grow: 1;
         font-size: var(--body-size);
@@ -666,6 +657,16 @@ export default defineComponent({
     .page__amount-input {
         // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
         padding: 0.375rem 3rem 3rem;
+    }
+
+    .header__contact-list,
+    .header__address-list {
+        padding-bottom: 1.5rem;
+    }
+
+    .page__contact-list {
+        padding-right: 0;
+        padding-left: 0;
     }
 
     .page__address-list {
@@ -711,37 +712,6 @@ export default defineComponent({
         &:hover,
         &:focus {
             opacity: 0.6;
-        }
-    }
-
-    .contact-list {
-        overflow-y: scroll;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.5rem;
-
-        @extend %custom-scrollbar;
-    }
-
-    .contact-button {
-        align-items: center;
-        width: 100%;
-        padding: 2rem;
-        border-radius: 0.75rem;
-
-        .identicon {
-            width: 5.75rem;
-            margin: -0.3125rem 0; // 0.3125 = 2.5px
-        }
-
-        label {
-            margin-left: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
         }
     }
 

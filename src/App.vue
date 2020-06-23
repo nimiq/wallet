@@ -216,6 +216,10 @@ export default defineComponent({
         main {
             width: calc(var(--sidebar-width) + 200vw);
 
+            .groundfloor {
+                width: 100%;
+            }
+
             /deep/ .address-overview {
                 min-width: unset;
             }

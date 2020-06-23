@@ -1,29 +1,11 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root">
-        <button
+        <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
-            class="address-button reset flex-row"
+            :addressInfo="addressInfo"
             :class="{'active': activeAddress === addressInfo.address}"
             @click="selectAddress(addressInfo.address); $emit('address-selected', addressInfo.address);"
-            :ref="`address-button-${addressInfo.address}`"
-        >
-            <div class="identicon-wrapper">
-                <Identicon :address="addressInfo.address"/>
-                <ClockIcon v-if="addressInfo.type === AddressType.VESTING"/>
-            </div>
-            <span class="label">{{ addressInfo.label }}</span>
-            <div v-if="addressInfo.balance !== null" class="balances">
-                <span class="crypto-balance">
-                    <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
-                    <Amount :amount="addressInfo.balance"/>
-                </span>
-                <FiatConvertedAmount
-                    class="fiat-balance"
-                    :amount="addressInfo.balance"/>
-            </div>
-            <div v-else class="balances">???</div>
-            <div class="mobile-arrow"></div>
-        </button>
+            :ref="`address-button-${addressInfo.address}`"/>
         <button
             v-if="showAddAddressButton"
             class="address-button add-address-button reset flex-row"
@@ -40,14 +22,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
-import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 
+import AddressListItem from './AddressListItem.vue';
+import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
-import Amount from './Amount.vue';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import ClockIcon from './icons/ClockIcon.vue';
-import AddIcon from './icons/AddIcon.vue';
 
 export default defineComponent({
     props: {
@@ -84,9 +63,9 @@ export default defineComponent({
         function adjustBackgroundOffset(address: string) {
             let offset = 0;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
-            const refs = (context.refs[`address-button-${address}`] as Element[] | undefined);
+            const refs = (context.refs[`address-button-${address}`] as Vue[] | undefined);
             if (refs) {
-                const el = refs[0] as HTMLElement;
+                const el = refs[0].$el as HTMLElement;
                 offset = el.offsetTop;
             }
             backgroundYOffset.value = offset;
@@ -109,18 +88,13 @@ export default defineComponent({
             selectAddress,
             addressInfos: processedAddressInfos,
             activeAddress,
-            AddressType,
             backgroundYOffset,
         };
     },
     components: {
-        Identicon,
-        Amount,
-        FiatConvertedAmount,
-        ClockIcon,
-        LockLockedIcon,
+        AddressListItem,
         AddIcon,
-    } as any,
+    },
 });
 </script>
 
@@ -135,7 +109,7 @@ export default defineComponent({
         padding-top: 2.5rem;
         padding-bottom: 2.5rem;
         padding-right: var(--padding-sides);
-        margin-right: calc(-1 * var(--padding-sides));
+        margin: 0 calc(-1 * var(--padding-sides));
         color: var(--text-70);
         mask: linear-gradient(0deg ,
             rgba(255,255,255, 0),
@@ -146,18 +120,13 @@ export default defineComponent({
 
         // To make space for the .active-box leftside box-shadow
         padding-left: var(--padding-sides);
-        margin-left: calc(-1 * var(--padding-sides));
 
         @extend %custom-scrollbar;
     }
 
     .address-button {
         width: 100%;
-        font-size: var(--body-size);
-        align-items: center;
-        padding: 2rem;
         margin: 0.5rem 0;
-        border-radius: 0.75rem;
         z-index: 1;
 
         transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
@@ -168,6 +137,9 @@ export default defineComponent({
     }
 
     .add-address-button {
+        font-size: var(--body-size);
+        align-items: center;
+        padding: 2rem;
         background: none !important;
     }
 
@@ -203,39 +175,12 @@ export default defineComponent({
 
     .identicon-wrapper {
         position: relative;
-
-        > svg {
-            position: absolute;
-            right: -1rem;
-            bottom: -0.5rem;
-            padding: 0.375rem;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
-            color: rgba(31, 35, 72, 0.7);
-        }
     }
 
     .label {
         font-weight: 600;
         margin: 0 2rem;
         flex-grow: 1;
-    }
-
-    .balances {
-        text-align: right;
-        flex-shrink: 0;
-    }
-
-    .crypto-balance {
-        display: block;
-        line-height: 1.2;
-        font-weight: bold;
-
-        .nq-icon {
-            display: inline-block;
-            font-size: 1.75rem;
-        }
     }
 
     .address-button:hover,
@@ -250,12 +195,6 @@ export default defineComponent({
     .embedded .address-button:hover,
     .embedded .address-button:focus {
         background: var(--nimiq-highlight-bg);
-    }
-
-    .fiat-balance {
-        font-size: var(--small-size);
-        font-weight: 600;
-        opacity: 0.5;
     }
 
     .add-address-icon {
@@ -288,23 +227,17 @@ export default defineComponent({
         }
     }
 
-    .mobile-arrow,
-    .embedded .mobile-arrow {
+    .embedded /deep/ .mobile-arrow {
         display: none;
     }
 
     @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
-        .balances {
+        /deep/ .balances {
             display: none;
         }
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint
-        .address-list {
-            margin-left: -0.5rem;
-            margin-right: calc(-1 * var(--padding-sides) + 0.5rem);
-        }
-
         .active-box {
             display: none;
         }
@@ -315,28 +248,16 @@ export default defineComponent({
 
         .address-button {
             background: none !important;
-            position: relative;
             color: var(--text-100);
             margin: 0.25rem 0;
-            padding: 1.5rem;
 
-            .crypto-balance {
+            /deep/ .crypto-balance {
                 color: inherit !important;
             }
         }
 
-        // .active-box {
-        //     height: 8rem;
-        // }
-
-        .mobile-arrow {
-            display: block;
-            border: 1rem solid transparent;
-            border-width: 0.5rem 0.75rem;
-            border-left-color: inherit;
-            margin-left: 1.5rem;
-            margin-right: -0.75rem;
-            opacity: 0.3;
+        .add-address-button {
+            padding: 1.5rem;
         }
     }
 </style>

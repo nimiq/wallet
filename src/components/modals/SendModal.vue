@@ -33,7 +33,7 @@
         </div>
 
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
-            <PageHeader class="header__contact-list">{{ $t('Contacts') }}</PageHeader>
+            <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
             <PageBody class="page__contact-list">
                 <ContactBook @contact-selected="onContactSelected"/>
             </PageBody>

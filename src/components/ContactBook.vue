@@ -95,4 +95,14 @@ export default defineComponent({
     align-self: center;
     margin-right: 2rem;
 }
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .contact-button {
+        background: none !important;
+
+        label {
+            margin: 0 1.5rem;
+        }
+    }
+}
 </style>

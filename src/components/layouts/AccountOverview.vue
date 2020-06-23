@@ -61,17 +61,21 @@
             <MobileActionBar/>
         </template>
 
-        <transition name="modal">
-            <LegacyAccountNoticeModal
-                v-if="showModalLegacyAccountNotice"
-                emitClose @close="showModalLegacyAccountNotice = false"/>
-        </transition>
+        <Portal>
+            <transition name="modal">
+                <LegacyAccountNoticeModal
+                    v-if="showModalLegacyAccountNotice"
+                    emitClose @close="showModalLegacyAccountNotice = false"/>
+            </transition>
+        </Portal>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+// @ts-ignore missing types for this package
+import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -106,12 +110,12 @@ export default defineComponent({
         const showFullLegacyAccountNotice = computed(() =>
             isLegacyAccount.value
             && activeAccountInfo.value!.addresses.length === 1
-            && width.value > 700); // Full mobile breakpoint
+            && width.value > 960); // Tablet breakpoint
 
         const showModalLegacyAccountNotice = ref(false);
 
         function determineIfShowModalLegacyAccountNotice() {
-            showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 700; // Full mobile breakpoint
+            showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
         }
 
         watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
@@ -140,6 +144,7 @@ export default defineComponent({
         LegacyAccountNotice,
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
+        Portal,
     },
 });
 </script>

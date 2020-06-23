@@ -9,7 +9,7 @@
                     {{ $t('Your NIM are stored in a legacy account. Transfer them to a regular account '
                         + 'to profit from new features.') }}
                 </p>
-                <LegacyAccountUpgradeButton/>
+                <LegacyAccountUpgradeButton @click="$emit('close')"/>
             </div>
         </PageBody>
     </Modal>

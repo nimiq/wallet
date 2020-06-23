@@ -31,6 +31,7 @@ export default defineComponent({
 
             const url = createRequestLink(multiAddressAccount.value!.addresses[0], options);
             context.root.$router.push(`/${url}`);
+            context.emit('click');
         }
 
         return {

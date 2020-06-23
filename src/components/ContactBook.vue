@@ -1,6 +1,18 @@
 <template>
     <div class="contact-book flex-column">
-        <div class="list">
+        <div class="list flex-column">
+            <AddressListItem
+                v-for="addressInfo in (showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2))"
+                :key="addressInfo.address"
+                :addressInfo="addressInfo"
+                @click="$emit('contact-selected', addressInfo, RecipientType.OWN_ADDRESS)"
+            />
+            <button v-if="ownAddressInfos.length > 2"
+                class="nq-button-s show-own-addresses-button"
+                @click="showAllOwnAddresses = !showAllOwnAddresses">
+                {{ $t('Show all my addresses') }}
+            </button>
+            <div v-if="ownAddressInfos.length" class="separator"></div>
             <button
                 v-for="contact in contacts"
                 :key="contact.address"
@@ -17,23 +29,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
+import AddressListItem from './AddressListItem.vue';
 import ShortAddress from './ShortAddress.vue';
 import { RecipientType } from './modals/SendModal.vue';
 import { useContactsStore } from '../stores/Contacts';
+import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     setup() {
         const { contactsArray: contacts, setContact } = useContactsStore();
 
+        const { state: addresses$, activeAddress } = useAddressStore();
+
+        const ownAddressInfos = computed(() => {
+            const addressInfos = { ...addresses$.addressInfos }; // Clone object
+            delete addressInfos[activeAddress.value!];
+            return Object.values(addressInfos);
+        });
+
+        const showAllOwnAddresses = ref(false);
+
         return {
             contacts,
+            ownAddressInfos,
+            showAllOwnAddresses,
             RecipientType,
         };
     },
     components: {
         Identicon,
+        AddressListItem,
         ShortAddress,
     },
 });
@@ -59,13 +86,32 @@ export default defineComponent({
     @extend %custom-scrollbar;
 }
 
+.address-button,
+.contact-button {
+    width: 100%;
+    transition: background 0.2s var(--nimiq-ease);
+
+    &:hover,
+    &:focus {
+        background: var(--nimiq-highlight-bg);
+    }
+}
+
+.show-own-addresses-button {
+    margin: 2rem auto 1rem;
+}
+
+.separator {
+    height: 0.25rem;
+    box-shadow: inset 0 1.5px var(--text-14);
+    margin: 2rem 0;
+    flex-shrink: 0;
+}
+
 .contact-button {
     align-items: center;
-    width: 100%;
     padding: 2rem;
     border-radius: 0.75rem;
-
-    transition: background 0.2s var(--nimiq-ease);
 
     .identicon {
         width: 5.75rem;
@@ -83,11 +129,6 @@ export default defineComponent({
     .short-address {
         opacity: 0.5;
         flex-shrink: 0;
-    }
-
-    &:hover,
-    &:focus {
-        background: var(--nimiq-highlight-bg);
     }
 }
 

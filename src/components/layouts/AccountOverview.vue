@@ -255,7 +255,6 @@ export default defineComponent({
     padding-top: var(--item-margin);
     flex-grow: 1;
     margin-bottom: 1rem;
-    mask: linear-gradient(0deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 }
 
 .bitcoin-teaser {

@@ -132,10 +132,17 @@ export default defineComponent({
         flex-direction: column;
         position: relative;
         overflow-y: auto;
-        padding-bottom: 1rem;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
         padding-right: var(--padding-sides);
         margin-right: calc(-1 * var(--padding-sides));
         color: var(--text-70);
+        mask: linear-gradient(0deg ,
+            rgba(255,255,255, 0),
+            white 3rem,
+            white calc(100% - 3rem),
+            rgba(255,255,255, 0)
+        );
 
         // To make space for the .active-box leftside box-shadow
         padding-left: var(--padding-sides);

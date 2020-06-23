@@ -1,129 +1,144 @@
+# 
+# Translators:
+# Sven <sven@nimiq.com>, 2020
+# Daniel, 2020
+# 
 msgid ""
 msgstr ""
+"Last-Translator: Daniel, 2020\n"
+"Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/107022/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src/components/modals/TransactionModal.vue:162
 msgid "{count} Confirmation | {count} Confirmations"
-msgstr ""
+msgstr "{count}个确认 | {count}个确认"
 
 #: src/components/NetworkStats.vue:9
 msgid "{count} Peer | {count} Peers"
-msgstr ""
+msgstr "{count}个端点 | {count}个端点"
 
 #: src/components/layouts/AddressOverview.vue:13
 #: src/components/layouts/AddressOverview.vue:62
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr ""
+msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 
 #: src/components/modals/TradeModal.vue:28
 msgid "24/7 Chat & Phone Support"
-msgstr ""
+msgstr "24/7文字和电话 支持"
 
 #: src/components/MigrationWelcome.vue:57
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
+"帐户创建得到了极大的改善，\n"
+"尝试看看并体验Nimiq的所有新功能。"
 
 #: src/components/MigrationWelcome.vue:15
 msgid "Accounts"
-msgstr ""
+msgstr "账户"
 
 #: src/components/modals/SendModal.vue:146
 msgid "Add a public message..."
-msgstr ""
+msgstr "添加公开信息..."
 
 #: src/components/AccountMenu.vue:70
 msgid "Add Account"
-msgstr ""
+msgstr "添加账户"
 
 #: src/components/AddressList.vue:17
 msgid "Add Address"
-msgstr ""
+msgstr "添加地址"
 
 #: src/components/modals/TransactionModal.vue:121
 #: src/components/modals/TransactionModal.vue:84
 msgid "Add contact"
-msgstr ""
+msgstr "添加联络人"
 
 #: src/components/modals/SendModal.vue:26
 msgid "Address unavailable?"
-msgstr ""
+msgstr "地址无法使用？"
 
 #: src/components/MigrationWelcome.vue:18
 msgid "Addresses"
-msgstr ""
+msgstr "地址"
 
 #: src/components/layouts/Settings.vue:38
 msgid "all"
-msgstr ""
+msgstr "全部"
 
 #: src/components/layouts/AccountOverview.vue:57
 #: src/components/LegacyAccountNotice.vue:37
-msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
-msgstr ""
+msgid ""
+"All new features are exclusive to new accounts. Upgrade now, it only takes "
+"seconds."
+msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟。"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "Android and iOS App"
-msgstr ""
+msgstr "Android和iOS应用"
 
 #: src/components/layouts/Network.vue:10
 msgid "Back to Addresses"
-msgstr ""
+msgstr "返回地址"
 
 #: src/components/layouts/AccountOverview.vue:22
 msgid "Backup"
-msgstr ""
+msgstr "备份"
 
 #: src/components/LegacyAccountNotice.vue:21
 msgid "Bitcoin"
-msgstr ""
+msgstr "比特币"
 
 #: src/components/modals/TransactionModal.vue:160
 msgid "Block #{height}"
-msgstr ""
+msgstr "区块＃{height}"
 
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
-msgstr ""
+msgstr "区块高度"
 
 #: src/components/NetworkMap.vue:29
 msgid "Browser"
-msgstr ""
+msgstr "浏览器"
 
 #: src/components/layouts/Sidebar.vue:28
 msgid "Buy & Sell"
-msgstr ""
+msgstr "买 & 卖"
 
 #: src/components/modals/TradeModal.vue:91
 msgid "Buy and sell with your wallet."
-msgstr ""
+msgstr "用您的钱包买卖"
 
 #: src/components/TransactionList.vue:53
 msgid "Buy NIM"
-msgstr ""
+msgstr "购买 NIM"
 
 #: src/components/modals/SendModal.vue:171
-msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
-msgstr ""
+msgid ""
+"By adding a transaction fee, you can influence how fast your transaction "
+"will be processed."
+msgstr "通过增加交易费用，您可以影响交易的处理速度"
 
 #: src/components/modals/TransactionModal.vue:293
 #: src/components/TransactionList.vue:49
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
-msgstr ""
+msgstr "现金链接"
 
 #: src/components/modals/TransactionModal.vue:11
 msgid "Cashlink from {address}"
-msgstr ""
+msgstr "来自 {address} 的现金链接"
 
 #: src/components/modals/TransactionModal.vue:19
 msgid "Cashlink to {address}"
-msgstr ""
+msgstr "现金连结至 {address}"
 
 #: src/components/AccountMenu.vue:50
 msgid "Change password"
-msgstr ""
+msgstr "更改密码"
 
 #: src/components/modals/SendModal.vue:36
 msgid "Choose a Recipient"
@@ -131,79 +146,82 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:161
 msgid "Choose an Address"
-msgstr ""
+msgstr "选择地址"
 
 #: src/components/layouts/Settings.vue:79
 msgid "Clear"
-msgstr ""
+msgstr "清除"
 
 #: src/components/layouts/Settings.vue:73
 msgid "Clear Cache"
-msgstr ""
+msgstr "清除缓存"
 
 #: src/components/layouts/Settings.vue:75
-msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
-msgstr ""
+msgid ""
+"Clear locally stored transaction history and balances. Reload them from the "
+"decentralized network."
+msgstr "清除本地存储的交易历史和余额，并从分散的网络中重新加载。"
 
 #: src/components/layouts/AccountOverview.vue:52
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
 #: src/components/modals/TradeModal.vue:90
 msgid "Coming soon"
-msgstr ""
+msgstr "即将推出"
 
 #: src/components/TransactionList.vue:45
 msgid "Congrats"
-msgstr ""
+msgstr "恭喜"
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
-msgstr ""
+msgstr "以连接至"
 
-#: src/components/Footer.vue:3
-#: src/components/NetworkStats.vue:4
+#: src/components/Footer.vue:3 src/components/NetworkStats.vue:4
 msgid "Consensus"
-msgstr ""
+msgstr "共识"
 
 #: src/components/ContactShortcuts.vue:5
 msgid "Contacts"
-msgstr ""
+msgstr "联系信息"
 
 #: src/components/MigrationWelcome.vue:86
 msgid "Continue"
-msgstr ""
+msgstr "继续"
 
 #: src/components/layouts/Settings.vue:31
 msgid "Control how many decimals are shown for NIM values."
-msgstr ""
+msgstr "控制显示NIM值的小数位数"
 
 #: src/components/modals/SendModal.vue:27
 msgid "Create a Cashlink"
-msgstr ""
+msgstr "创建现金链接"
 
 #: src/components/LegacyAccountUpgradeButton.vue:6
 msgid "Create a new Account"
-msgstr ""
+msgstr "创建新账户"
 
 #: src/components/LegacyAccountNotice.vue:6
-msgid "Create a new account and transfer your funds. New features and possibilities await."
-msgstr ""
+msgid ""
+"Create a new account and transfer your funds. New features and possibilities"
+" await."
+msgstr "创建一个新帐户并转移您的资金。新功能和可能性正在等着您。"
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr ""
+msgstr "创建备份"
 
 #: src/components/modals/ReceiveModal.vue:27
 msgid "Create payment link"
-msgstr ""
+msgstr "创建付款链接"
 
 #: src/components/modals/TradeModal.vue:47
 msgid "Credit Card accepted"
-msgstr ""
+msgstr "接受信用卡"
 
 #: src/components/layouts/Settings.vue:69
 msgid "Developer"
-msgstr ""
+msgstr "开发者"
 
 #: src/components/ContactBook.vue:40
 msgid "Done"
@@ -215,170 +233,176 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:478
 msgid "Edit transaction"
-msgstr ""
+msgstr "修改交易"
 
 #: src/components/modals/SendModal.vue:18
 msgid "Enter Address"
-msgstr ""
+msgstr "输入地址"
 
 #: src/components/TransactionListItem.vue:36
 msgid "expired"
-msgstr ""
+msgstr "已过期"
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Expired"
-msgstr ""
+msgstr "已过期"
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
-msgstr ""
+msgstr "失败"
 
 #: src/components/TestnetFaucet.vue:112
 msgid "Faucet error - please try again"
-msgstr ""
+msgstr "水龙头错误－请重试"
 
 #: src/components/TestnetFaucet.vue:72
 msgid "Faucet is empty"
-msgstr ""
+msgstr "水龙头是空的"
 
 #: src/components/TestnetFaucet.vue:76
 msgid "Faucet is not available from your location"
-msgstr ""
+msgstr "您所在的位置无法使用水龙头"
 
 #: src/components/TestnetFaucet.vue:83
 msgid "Faucet unavailable"
-msgstr ""
+msgstr "水龙头无法使用"
 
 #: src/components/TestnetFaucet.vue:68
 msgid "Faucet unavailable (wrong network)"
-msgstr ""
+msgstr "水龙头无法使用（网络错误）"
 
 #: src/components/modals/SendModal.vue:128
 msgid "fee"
-msgstr ""
+msgstr "费用"
 
 #: src/components/TransactionListItem.vue:51
 msgid "Fiat value unavailable"
-msgstr ""
+msgstr "法币无法使用"
 
 #: src/components/modals/TradeModal.vue:46
 msgid "For beginners"
-msgstr ""
+msgstr "给初学者"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
-msgstr ""
+msgstr "完整节点"
 
 #: src/components/layouts/Settings.vue:11
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: src/components/modals/TradeModal.vue:25
 #: src/components/modals/TradeModal.vue:43
 msgid "Get NIM"
-msgstr ""
+msgstr "获取 NIM"
 
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
-msgstr ""
+msgstr "获取 NIM 和 BTC"
 
 #: src/components/modals/TradeModal.vue:34
 #: src/components/modals/TradeModal.vue:52
 msgid "Get NIM on {exchange}"
-msgstr ""
+msgstr "在 {exchange} 上获取 NIM"
 
 #: src/components/modals/PreviewNoticeModal.vue:18
 msgid "Got it"
-msgstr ""
+msgstr "已取得"
 
 #: src/components/MigrationWelcome.vue:94
 msgid "Got it!"
-msgstr ""
+msgstr "已取得！"
 
 #: src/components/MigrationWelcome.vue:11
-msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
-msgstr ""
+msgid ""
+"Handling multiple Addresses is now convenient and easy – with one password "
+"and shared login information."
+msgstr "现在使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址。"
 
 #: src/components/Footer.vue:5
 msgid "Height"
-msgstr ""
+msgstr "高度"
 
 #: src/components/MigrationWelcome.vue:15
 msgid "hold, manage and aggregate Addresses."
-msgstr ""
+msgstr "保存，管理和汇总地址"
 
 #: src/components/MigrationWelcome.vue:34
 msgid "Import it to any browser and enter your password to connect to Nimiq."
-msgstr ""
+msgstr "请将它导入至任何浏览器，输入密码以连接到Nimiq。"
 
 #: src/components/MigrationWelcome.vue:88
 msgid "Improved Accessibility"
-msgstr ""
+msgstr "改善的可及性"
 
 #: src/components/modals/TradeModal.vue:103
 msgid "In cooperation with"
-msgstr ""
+msgstr "与...合作"
 
 #: src/components/modals/SendModal.vue:136
 msgid "Insufficient balance."
-msgstr ""
+msgstr "余额不足"
 
 #: src/components/TransactionListItem.vue:37
 msgid "invalid"
-msgstr ""
+msgstr "无效"
 
 #: src/components/TransactionList.vue:48
 msgid "Invite a friend with a"
-msgstr ""
+msgstr "使用...邀请朋友"
 
 #: src/components/layouts/Settings.vue:15
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 #: src/components/modals/NetworkInfoModal.vue:16
 #: src/components/modals/TradeModal.vue:100
 msgid "Learn more"
-msgstr ""
+msgstr "了解更多"
 
 #: src/components/MigrationWelcome.vue:39
 msgid "Learn more here"
-msgstr ""
+msgstr "在这里了解更多"
 
 #: src/components/layouts/AddressOverview.vue:85
 msgid "Let's get started! Create your Nimiq account:"
-msgstr ""
+msgstr "让我们开始吧！创建您的Nimiq帐户："
 
 #: src/components/modals/PreviewNoticeModal.vue:15
 msgid "Let's hear your feedback!"
-msgstr ""
+msgstr "让我们听听您的反馈！"
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
-msgstr ""
+msgstr "轻节点"
 
 #: src/components/MigrationWelcome.vue:89
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
 msgstr ""
+"使用新版的Nimiq登录文件\n"
+"登录设备。"
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
-msgstr ""
+msgstr "登出"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
-msgstr ""
+msgstr "多个地址"
 
 #: src/components/MigrationWelcome.vue:93
 msgid ""
 "Multiple Addresses and Login Files\n"
 "are supported by new Accounts only."
 msgstr ""
+"多个地址和登录文件\n"
+"仅支持新帐户。"
 
 #: src/components/modals/SendModal.vue:49
 msgid "Name this contact..."
-msgstr ""
+msgstr "命名此联系人..."
 
 #: src/components/ContactBook.vue:27
 msgid "Name your contact"
@@ -386,192 +410,198 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:43
 msgid "Network"
-msgstr ""
+msgstr "网络"
 
 #: src/components/modals/TradeModal.vue:93
-msgid "Nimiq OASIS enables decentra­lized buying and selling directly from your wallet."
-msgstr ""
+msgid ""
+"Nimiq OASIS enables decentra­lized buying and selling directly from your "
+"wallet."
+msgstr "Nimiq OASIS 让您可以直接从您的钱包进行去中心化的买卖"
 
 #: src/components/TransactionList.vue:69
 msgid "No transactions found"
-msgstr ""
+msgstr "交易未找到"
 
 #: src/components/layouts/Settings.vue:36
 msgid "None"
-msgstr ""
+msgstr "无"
 
 #: src/components/TransactionListItem.vue:34
 msgid "not sent"
-msgstr ""
+msgstr "未发送"
 
 #: src/components/MigrationWelcome.vue:92
 msgid "Old and new Accounts"
-msgstr ""
+msgstr "新旧帐户"
 
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
-msgstr ""
+msgstr "一个帐户现在可以拥有多个地址"
 
 #: src/components/MigrationWelcome.vue:84
 msgid "One Account, many Addresses"
-msgstr ""
+msgstr "一个帐户，多个地址"
 
 #: src/components/TransactionList.vue:50
 msgid "or visit an exchange and get more."
-msgstr ""
+msgstr "或访问交易所获取更多"
 
 #: src/components/Footer.vue:4
 msgid "Peers"
-msgstr ""
+msgstr "端点"
 
 #: src/components/TransactionListItem.vue:35
 msgid "pending"
-msgstr ""
+msgstr "待处理"
 
 #: src/components/TransactionList.vue:14
 msgid "Pending Cashlinks"
-msgstr ""
+msgstr "待处理的现金链接"
 
 #: src/components/modals/TransactionModal.vue:50
 msgid "Pending..."
-msgstr ""
+msgstr "待处理..."
 
 #: src/components/layouts/AddressOverview.vue:72
 msgid "Receive"
-msgstr ""
+msgstr "接收"
 
-#: src/components/TestnetFaucet.vue:7
-#: src/components/TransactionList.vue:64
+#: src/components/TestnetFaucet.vue:7 src/components/TransactionList.vue:64
 msgid "Receive free NIM"
-msgstr ""
+msgstr "接收免费的NIM"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr ""
+msgstr "接收NIM"
 
 #: src/components/TransactionList.vue:61
 msgid "Receive some free NIM to get started."
-msgstr ""
+msgstr "领取一些免费的NIM来开始"
 
 #: src/components/modals/TransactionModal.vue:61
 msgid "received at {dateAndTime}"
-msgstr ""
+msgstr "在 {dateAndTime} 已收到"
 
 #: src/components/layouts/Settings.vue:85
 msgid "Reference currency"
-msgstr ""
+msgstr "参考货币"
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:32
 msgid "Rename"
-msgstr ""
+msgstr "重新命名"
 
 #: src/components/TestnetFaucet.vue:120
 msgid "Request failed"
-msgstr ""
+msgstr "请求失败"
 
 #: src/components/modals/SendModal.vue:477
 msgid "Retry"
-msgstr ""
+msgstr "重试"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr ""
+msgstr "储存登录文件"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
-msgstr ""
+msgstr "马上储存"
 
 #: src/components/modals/ReceiveModal.vue:38
 msgid ""
 "Scan the code to send\n"
 "money to this address"
 msgstr ""
+"扫码并发送资金\n"
+"到这个地址"
 
 #: src/components/SearchBar.vue:18
 msgid "Search"
-msgstr ""
+msgstr "搜索"
 
 #: src/components/SearchBar.vue:17
 msgid "Search Transactions"
-msgstr ""
+msgstr "搜索交易"
 
 #: src/components/SearchBar.vue:15
 msgid "Search Transactions by Contact, Address, etc."
-msgstr ""
+msgstr "通过联系人，地址等搜索交易"
 
 #: src/components/layouts/AddressOverview.vue:69
 msgid "Send"
-msgstr ""
+msgstr "发送"
 
 #: src/components/modals/SendModal.vue:103
 #: src/components/modals/SendModal.vue:138
 msgid "Send all"
-msgstr ""
+msgstr "全部发送"
 
 #: src/components/modals/NetworkInfoModal.vue:13
-msgid "Send and receive NIM without a middleman and enjoy true decentralization."
-msgstr ""
+msgid ""
+"Send and receive NIM without a middleman and enjoy true decentralization."
+msgstr "在没有中间人的情况下发送和接收NIM，享受真正的去中心。"
 
 #: src/components/MigrationWelcome.vue:18
 msgid "send and receive transactions."
-msgstr ""
+msgstr "发送和接收交易"
 
 #: src/components/modals/SendModal.vue:10
 #: src/components/modals/SendModal.vue:156
 msgid "Send Transaction"
-msgstr ""
+msgstr "发送交易"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr ""
+msgstr "从您的钱包中发送、接收和持有BTC。"
 
 #: src/components/modals/SendModal.vue:474
 msgid "Sending Transaction"
-msgstr ""
+msgstr "正在发送交易"
 
 #: src/components/modals/SendModal.vue:505
 msgid "Sent {nim} NIM"
-msgstr ""
+msgstr "发送 {nim} NIM"
 
 #: src/components/modals/SendModal.vue:501
 msgid "Sent {nim} NIM to {name}"
-msgstr ""
+msgstr "发送 {nim} NIM 至 {name}"
 
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
-msgstr ""
+msgstr "在 {dateAndTime} 发送"
 
 #: src/components/modals/SendModal.vue:58
 #: src/components/modals/SendModal.vue:69
 msgid "Set Amount"
-msgstr ""
+msgstr "设置金额"
 
 #: src/components/modals/SendModal.vue:98
 msgid "Set fee"
-msgstr ""
+msgstr "设置费用"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Set the interface language."
-msgstr ""
+msgstr "设置界面语言"
 
 #: src/components/layouts/Sidebar.vue:51
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: src/components/modals/ReceiveModal.vue:45
 msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
+"与发送者分享链接或QR码，\n"
+"也可选择包括金额。"
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
-msgstr ""
+msgstr "与发件人分享您的地址"
 
 #: src/components/modals/ReceiveModal.vue:43
 msgid "Share your payment link"
-msgstr ""
+msgstr "分享您的付款链接"
 
 #: src/components/ContactBook.vue:13
 msgid "Show all my addresses"
@@ -579,132 +609,144 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:29
 msgid "Shown Decimals"
-msgstr ""
+msgstr "显示的小数"
 
 #: src/components/layouts/AddressOverview.vue:86
 msgid "Signup"
-msgstr ""
+msgstr "注册"
 
 #: src/components/modals/SendModal.vue:525
 msgid "Something went wrong"
-msgstr ""
+msgstr "出了些问题"
 
 #: src/components/modals/SendModal.vue:169
 msgid "Speed up your transaction"
-msgstr ""
+msgstr "加快交易"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
-msgstr ""
+msgstr "质押NIM取得奖励，并确保网络安全。"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
-msgstr ""
+msgstr "质押"
 
 #: src/components/modals/TradeModal.vue:96
 msgid "Starting with EU bank accounts in Q3 2020."
-msgstr ""
+msgstr "将从2020年 第三季度 欧盟 银行 帐户开始"
 
 #: src/components/MigrationWelcome.vue:85
 msgid ""
 "The new and improved Accounts\n"
 "can have multiple Addresses."
 msgstr ""
+"新的和改进的账户\n"
+"可以持有多个地址"
 
 #: src/components/MigrationWelcome.vue:30
-msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
-msgstr ""
+msgid ""
+"The new Login Files are an easy and convenient way to gain access to your "
+"Account and its Addresses."
+msgstr "新的登录文件是个用来访问您的账户及地址简单方便的方式"
 
 #: src/components/modals/TradeModal.vue:8
-msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
-msgstr ""
+msgid ""
+"There are many options, use a credit card or trade crypto. You can find more"
+" exchanges on {link}"
+msgstr "我们有多种选择，您可以使用信用卡或交易加密货币，也可以在 {link} 上找到更多的交易所。"
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
-msgstr ""
+msgstr "没有 “忘记密码” 的选项"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
-msgstr ""
+msgstr "这是一个传统账户（ Legacy Account）"
 
 #: src/components/modals/PreviewNoticeModal.vue:10
 msgid "This is an early version of the new Nimiq Wallet."
-msgstr ""
+msgstr "这是新版 Nimiq 钱包的早期版本"
 
 #: src/components/TransactionList.vue:222
 #: src/components/TransactionList.vue:237
 msgid "This month"
-msgstr ""
+msgstr "本月份"
 
 #: src/components/AccountBalance.vue:3
 msgid "Total Balance"
-msgstr ""
+msgstr "总余额"
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
-msgstr ""
+msgstr "来自 {address} 的交易"
 
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
-msgstr ""
+msgstr "交易到 {address}"
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
 msgid "Transfer funds"
-msgstr ""
+msgstr "转移资金"
 
 #: src/components/modals/TransactionModal.vue:294
 #: src/components/TransactionListItem.vue:135
 msgid "Unclaimed Cashlink"
-msgstr ""
+msgstr "未认领的现金链接"
 
 #: src/components/layouts/AddressOverview.vue:91
 msgid "Updating transactions..."
-msgstr ""
+msgstr "更新交易..."
 
 #: src/components/modals/PreviewNoticeModal.vue:9
 msgid "Welcome to the Wallet Beta!"
-msgstr ""
+msgstr "欢迎使用Beta版 钱包！"
 
 #: src/components/MigrationWelcome.vue:90
 msgid "What else?"
-msgstr ""
+msgstr "还有什么？"
 
 #: src/components/modals/NetworkInfoModal.vue:7
 msgid "You are a part of the Nimiq Blockchain."
-msgstr ""
+msgstr "您是Nimiq区块链的一部分"
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
-msgstr ""
+msgstr "您正在使用传统账户"
 
 #: src/components/TransactionList.vue:46
 msgid "You now own crypto!"
-msgstr ""
+msgstr "您现在拥有加密货币了！"
 
 #: src/components/modals/SendModal.vue:132
 msgid "You will send {amount} NIM"
-msgstr ""
+msgstr "您将发送 {amount} NIM"
 
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your Account is not safe yet!"
-msgstr ""
+msgstr "您的帐户还不安全！"
 
 #: src/components/MigrationWelcome.vue:53
-msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
-msgstr ""
+msgid ""
+"Your Accounts are now legacy Accounts. Easily switch, edit and create "
+"Accounts with the new Account picker."
+msgstr "您的账户是传统账户，使用新的账户选择器让您轻松切换、编辑和创建账户。"
 
 #: src/components/NetworkMap.vue:22
 msgid "Your browser"
-msgstr ""
+msgstr "您的浏览器"
 
 #: src/components/modals/NetworkInfoModal.vue:9
-msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
-msgstr ""
+msgid ""
+"Your browser connects directly to a set of peers from all around the world. "
+"This makes you a first-class citizen of the blockchain."
+msgstr "您的浏览器直接连接到一组来自世界各地的端点，这将让你成为区块链的头等公民。"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
-msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
-msgstr ""
+msgid ""
+"Your NIM are stored in a legacy account. Transfer them to a regular account "
+"to profit from new features."
+msgstr "您的 NIM 储存在传统账户中，将它们转移到普通账户，您将从新功能得到好处。"
 
 #: src/components/TransactionList.vue:60
 msgid "Your transactions will appear here"
-msgstr ""
+msgstr "您的交易将在这里显示"

@@ -8,15 +8,19 @@
                 </p>
             </template>
 
-            <template v-if="page === 2">{{ $t('Improved Accessibility') }}</template>
-            <p v-if="page === 2" slot="more" class="nq-notice info">
-                {{ $t('Log in on your devices with the new\nNimiq Login Files.') }}
-            </p>
+            <template v-if="page === 2">
+                {{ $t('Improved Accessibility') }}
+                <p slot="more" class="nq-notice info">
+                    {{ $t('Log in on your devices with the new\nNimiq Login Files.') }}
+                </p>
+            </template>
 
-            <template v-if="page === 3">{{ $t('Old and new Accounts') }}</template>
-            <p v-if="page === 3" slot="more" class="nq-notice info">
-                {{ $t('Multiple Addresses and Login Files\nare supported by new Accounts only.') }}
-            </p>
+            <template v-if="page === 3">
+                {{ $t('Old and new Accounts') }}
+                <p slot="more" class="nq-notice info">
+                    {{ $t('Multiple Addresses and Login Files\nare supported by new Accounts only.') }}
+                </p>
+            </template>
         </PageHeader>
 
         <PageBody v-if="page === 1" class="right-aligned">
@@ -92,7 +96,7 @@ import { PageHeader, PageBody, PageFooter, ArrowRightSmallIcon } from '@nimiq/vu
 import Modal from './Modal.vue';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const page = ref(1);
 
         function reset() {
@@ -101,7 +105,7 @@ export default defineComponent({
 
         function onButtonClick() {
             if (page.value === 3) {
-                window.history.back();
+                context.root.$router.back();
             } else {
                 page.value += 1;
             }

@@ -10,6 +10,10 @@ import router from './router';
 
 const hubApi = new HubApi();
 
+hubApi.on(HubApi.RequestType.ONBOARD, () => {
+    router.push('/welcome');
+});
+
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
     router.push('/migration-welcome');
 });
@@ -139,6 +143,8 @@ export async function onboard(asRedirect = false) {
     const listedAccounts = await hubApi.onboard({ appName: APP_NAME });
 
     processAndStoreAccounts(listedAccounts);
+
+    router.push('/welcome');
 }
 
 export async function addAddress(accountId: string) {

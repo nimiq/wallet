@@ -19,13 +19,13 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:69
+#: src/components/modals/MigrationWelcomeModal.vue:73
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:29
+#: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "Accounts"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Address unavailable?"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:32
+#: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "Addresses"
 msgstr ""
 
@@ -58,9 +58,17 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+#: src/components/modals/SignupWelcomeModal.vue:39
+msgid "All in one easy place."
+msgstr ""
+
 #: src/components/layouts/AccountOverview.vue:57
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:33
+msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:29
@@ -156,6 +164,10 @@ msgstr ""
 msgid "Congrats"
 msgstr ""
 
+#: src/components/modals/SignupWelcomeModal.vue:14
+msgid "Connect directly to the blockchain – be independent from any middleman."
+msgstr ""
+
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
 msgstr ""
@@ -168,8 +180,13 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:80
+#: src/components/modals/MigrationWelcomeModal.vue:84
+#: src/components/modals/SignupWelcomeModal.vue:83
 msgid "Continue"
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:85
+msgid "Continue to Login File"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:35
@@ -206,6 +223,14 @@ msgstr ""
 
 #: src/components/ContactBook.vue:40
 msgid "Done"
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:70
+msgid "Download it and store it safely. Don’t share it – don’t lose it."
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:19
+msgid "Download your Login File"
 msgstr ""
 
 #: src/components/ContactBook.vue:37
@@ -294,23 +319,27 @@ msgstr ""
 msgid "Got it"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:82
+#: src/components/modals/MigrationWelcomeModal.vue:86
 msgid "Got it!"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:25
-msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
+#: src/components/modals/SignupWelcomeModal.vue:5
+msgid "Great, you’re here!"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
+msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
+msgstr ""
+
+#: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:47
+#: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:11
+#: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
 msgstr ""
 
@@ -330,6 +359,10 @@ msgstr ""
 msgid "Invite a friend with a"
 msgstr ""
 
+#: src/components/modals/SignupWelcomeModal.vue:56
+msgid "It is fast, safe and makes you truly independent."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:15
 msgid "Language"
 msgstr ""
@@ -339,7 +372,7 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:53
+#: src/components/modals/MigrationWelcomeModal.vue:57
 msgid "Learn more here"
 msgstr ""
 
@@ -355,7 +388,7 @@ msgstr ""
 msgid "Light Node"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:13
+#: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
@@ -369,7 +402,7 @@ msgstr ""
 msgid "Multiple Addresses"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:18
+#: src/components/modals/MigrationWelcomeModal.vue:21
 msgid ""
 "Multiple Addresses and Login Files\n"
 "are supported by new Accounts only."
@@ -385,6 +418,10 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:43
 msgid "Network"
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:21
+msgid "Nimiq does not store your personal data. Use your Login File to log in."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:93
@@ -403,7 +440,7 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:16
+#: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
 msgstr ""
 
@@ -413,6 +450,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:84
+msgid "One more thing"
 msgstr ""
 
 #: src/components/TransactionList.vue:56
@@ -508,7 +549,11 @@ msgstr ""
 msgid "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:32
+#: src/components/modals/SignupWelcomeModal.vue:53
+msgid "Send and receive transactions directly on the blockchain."
+msgstr ""
+
+#: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "send and receive transactions."
 msgstr ""
 
@@ -600,14 +645,22 @@ msgstr ""
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr ""
 
+#: src/components/modals/SignupWelcomeModal.vue:7
+msgid "Store, send and receive NIM and BTC."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
 "can have multiple Addresses."
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:43
+#: src/components/modals/MigrationWelcomeModal.vue:47
 msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:50
+msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:8
@@ -652,11 +705,19 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
+#: src/components/modals/SignupWelcomeModal.vue:28
+msgid "Use {NIM}, the super performant and browser- based payment coin."
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:73
+msgid "Use it to access your account from any device."
+msgstr ""
+
 #: src/components/modals/PreviewNoticeModal.vue:9
 msgid "Welcome to the Wallet Beta!"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:81
+#: src/components/modals/MigrationWelcomeModal.vue:85
 msgid "What else?"
 msgstr ""
 
@@ -680,7 +741,7 @@ msgstr ""
 msgid "Your Account is not safe yet!"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:65
+#: src/components/modals/MigrationWelcomeModal.vue:69
 msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
 msgstr ""
 
@@ -690,6 +751,14 @@ msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:9
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:12
+msgid "Your browser is a node"
+msgstr ""
+
+#: src/components/modals/SignupWelcomeModal.vue:67
+msgid "Your Login File, in combination with your password, grants access."
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9

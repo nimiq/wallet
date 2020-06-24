@@ -16,7 +16,10 @@
             </div>
             <span class="label add-address-label">{{ $t('Add Address') }}</span>
         </button>
-        <div v-if="!embedded" class="active-box" :style="`transform: translateY(${backgroundYOffset}px);`"></div>
+        <div v-if="!embedded"
+            class="active-box"
+            :style="`transform: scaleY(${backgroundYScale}) translateY(${backgroundYOffset}px)`"
+        ></div>
     </div>
 </template>
 
@@ -60,18 +63,27 @@ export default defineComponent({
         })));
 
         const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top
-        function adjustBackgroundOffset(address: string) {
+        const backgroundYScale = ref(1);
+        function adjustBackgroundOffsetAndScale(address: string) {
             let offset = 0;
+            let scalingRatio = 1;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
             const refs = (context.refs[`address-button-${address}`] as Vue[] | undefined);
             if (refs) {
                 const el = refs[0].$el as HTMLElement;
-                offset = el.offsetTop;
+
+                scalingRatio = el.clientHeight / 72; // 72px or 9rem is the original height of the activeBox
+                offset = el.offsetTop / scalingRatio;
             }
             backgroundYOffset.value = offset;
+            backgroundYScale.value = scalingRatio;
         }
         if (!props.embedded) {
-            watch(() => activeAddress.value && adjustBackgroundOffset(activeAddress.value));
+            watch(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+            window.addEventListener(
+                'resize',
+                () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
+            );
         }
 
         const root = ref<HTMLElement>(null);
@@ -89,6 +101,7 @@ export default defineComponent({
             addressInfos: processedAddressInfos,
             activeAddress,
             backgroundYOffset,
+            backgroundYScale,
         };
     },
     components: {
@@ -158,7 +171,7 @@ export default defineComponent({
             0px 1.5px 3px rgba(0, 0, 0, 0.05),
             0px 4px 16px rgba(0, 0, 0, 0.07);
 
-        will-change: transform;
+        transform-origin: center top;
         transition: transform 400ms var(--nimiq-ease);
 
         .has-scrollbar & {

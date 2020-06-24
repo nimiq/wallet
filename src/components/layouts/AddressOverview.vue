@@ -88,8 +88,6 @@
 
         <MobileActionBar/>
 
-        <div v-if="isFetchingTxHistory" class="history-loading-indicator">{{ $t('Updating transactions...') }}</div>
-
         <Portal>
             <transition name="modal">
                 <router-view name="modal"/>
@@ -113,7 +111,6 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
-import { useNetworkStore } from '../../stores/Network';
 import { onboard, rename } from '../../hub';
 
 export default defineComponent({
@@ -121,7 +118,6 @@ export default defineComponent({
     setup() {
         const { activeAccountId } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { isFetchingTxHistory } = useNetworkStore();
 
         const searchString = ref('');
 
@@ -150,7 +146,6 @@ export default defineComponent({
             searchString,
             activeAccountId,
             activeAddressInfo,
-            isFetchingTxHistory,
             onboard,
             rename,
             unclaimedCashlinkCount,
@@ -477,19 +472,6 @@ export default defineComponent({
 
 .transaction-list {
     flex-grow: 1;
-}
-
-.history-loading-indicator {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 0.5rem 1.5rem;
-    margin: 1rem;
-    background: var(--nimiq-light-blue);
-    color: white;
-    display: inline-block;
-    border-radius: 0.5rem;
-    font-size: var(--body-size);
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

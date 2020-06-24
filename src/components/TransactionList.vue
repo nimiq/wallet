@@ -68,12 +68,17 @@
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
         </div>
+
+        <div v-if="isFetchingTxHistory" class="fetching flex-row">
+            <CircleSpinner/>
+            <span>{{ $t('Fetching') }}</span>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, onMounted, onBeforeUnmount, watch } from '@vue/composition-api';
-import { CloseButton } from '@nimiq/vue-components';
+import { CloseButton, CircleSpinner } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -357,6 +362,7 @@ export default defineComponent({
         TransactionListItem,
         TestnetFaucet,
         CloseButton,
+        CircleSpinner,
     },
 });
 </script>
@@ -523,6 +529,22 @@ export default defineComponent({
 
     .no-search-results {
         opacity: 0.4;
+    }
+}
+
+.fetching {
+    position: absolute;
+    top: 4.875rem;
+    right: calc(2rem + 2rem + var(--padding));
+    background: var(--bg-primary);
+    box-shadow: 0 0 1rem 1rem var(--bg-primary);
+    border-radius: 5rem;
+
+    span {
+        font-size: var(--small-size);
+        opacity: 0.5;
+        margin-left: 1rem;
+        font-weight: 600;
     }
 }
 

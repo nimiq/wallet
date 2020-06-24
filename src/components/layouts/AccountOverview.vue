@@ -85,7 +85,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
-import { backup, addAddress } from '../../hub';
+import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 

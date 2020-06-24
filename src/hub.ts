@@ -6,8 +6,15 @@ import { useTransactionsStore } from './stores/Transactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
+import router from './router';
 
 const hubApi = new HubApi();
+
+hubApi.on(HubApi.RequestType.MIGRATE, () => {
+    router.push('/migration-welcome');
+});
+
+hubApi.checkRedirectResponse();
 
 const APP_NAME = 'Wallet';
 

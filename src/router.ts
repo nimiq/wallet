@@ -20,6 +20,8 @@ const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+const MigrationWelcomeModal = () =>
+    import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
 
 Vue.use(VueRouter);
 
@@ -90,6 +92,13 @@ const routes: RouteConfig[] = [{
                 modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
             },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/migration-welcome',
+            components: {
+                modal: MigrationWelcomeModal,
+            },
+            name: 'migration-welcome',
+            meta: { column: Columns.ACCOUNT },
         }],
     }, {
         path: '/settings',

@@ -4,8 +4,31 @@ import { Cookie } from '@nimiq/utils';
 
 Vue.use(VueI18n);
 
+export const Languages = [{
+    code: 'en',
+    name: 'English',
+}, {
+    code: 'de',
+    name: 'Deutsch',
+}, {
+    code: 'fr',
+    name: 'Français',
+}, {
+    code: 'zh',
+    name: '简体中文',
+// }, {
+//     code: 'es',
+//     name: 'Español',
+// }, {
+//     code: 'ru',
+//     name: 'Русский',
+// }, {
+//     code: 'tr',
+//     name: 'Türkçe',
+}];
+
 const DEFAULT_LANGUAGE = 'en';
-const SUPPORTED_LANGUAGES = [DEFAULT_LANGUAGE, 'de', 'fr', 'zh'];
+const SUPPORTED_LANGUAGES = Languages.map((lang) => lang.code);
 const loadedLanguage: string[] = []; // our default language that is preloaded, if any
 
 export const i18n = new VueI18n({

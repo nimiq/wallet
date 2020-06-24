@@ -18,13 +18,10 @@
                         </p>
                     </div>
                     <select id="language" name="language" @input="setLanguage($event.target.value)" disabled>
-                        <option value="de" :selected="language === 'de'">Deutsch</option>
-                        <option value="en" :selected="language === 'en'">English</option>
-                        <!-- <option value="es" :selected="language === 'es'">Español</option> -->
-                        <option value="fr" :selected="language === 'fr'">Français</option>
-                        <!-- <option value="ru" :selected="language === 'ru'">Русский</option> -->
-                        <!-- <option value="tr" :selected="language === 'tr'">Türkçe</option> -->
-                        <option value="zh" :selected="language === 'zh'">简体中文</option>
+                        <option
+                            v-for="lang in Languages" :key="lang.code"
+                            :value="lang.code" :selected="language === lang.code"
+                        >{{ lang.name }}</option>
                     </select>
                 </div>
 
@@ -111,6 +108,7 @@ import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { clearStorage } from '../../storage';
+import { Languages } from '../../i18n/i18n-setup';
 
 export default defineComponent({
     setup() {
@@ -131,6 +129,7 @@ export default defineComponent({
 
         return {
             clearCache,
+            Languages,
             ColorMode,
             currency,
             sortedFiatCurrency,

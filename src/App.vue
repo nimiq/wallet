@@ -235,7 +235,7 @@ export default defineComponent({
 
 <style lang="scss">
 :root {
-    --transition-time: 0.1s;
+    // --transition-time: 0.1s; // gets overwritten anyways by main.css
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -256,7 +256,7 @@ export default defineComponent({
 }
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity var(--transition-time) var(--nimiq-ease);
+    transition: opacity var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
 
     &.settings {
         // The address-overview is flex-row positioned next to the account-overview.

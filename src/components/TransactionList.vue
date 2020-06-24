@@ -11,7 +11,7 @@
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
                     <CloseButton class="top-right" @click="$emit('close-unclaimed-cashlink-list')"/>
-                    <div class="month-label nq-orange">{{ $t('Pending Cashlinks') }}</div>
+                    <div class="month-label nq-orange"><label>{{ $t('Pending Cashlinks') }}</label></div>
                     <TransactionListItem
                         v-for="tx in unclaimedCashlinkTxs"
                         :transaction="tx"
@@ -35,7 +35,13 @@
                     <div class="data placeholder"></div>
                 </div>
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div class="month-label" v-if="!item.sender">{{ item.transactionHash }}</div>
+                    <div v-if="!item.sender" class="month-label flex-row">
+                        <label>{{ item.transactionHash }}</label>
+                        <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
+                            <CircleSpinner/>
+                            <span>{{ $t('Fetching') }}</span>
+                        </div>
+                    </div>
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
@@ -67,11 +73,6 @@
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
-        </div>
-
-        <div v-if="isFetchingTxHistory" class="fetching flex-row">
-            <CircleSpinner/>
-            <span>{{ $t('Fetching') }}</span>
         </div>
     </div>
 </template>
@@ -218,13 +219,15 @@ export default defineComponent({
 
             // Inject "This month" label
             const transactionsWithMonths: any[] = [];
+            let isLatestMonth = true;
 
             let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
             let hasThisMonthLabel = false;
 
             if (!txs[n].timestamp) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
+                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                isLatestMonth = false;
                 hasThisMonthLabel = true;
                 while (txs[n] && !txs[n].timestamp) {
                     transactionsWithMonths.push(txs[n]);
@@ -239,7 +242,8 @@ export default defineComponent({
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentTxMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month') });
+                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                isLatestMonth = false;
             }
 
             const len = txs.length;
@@ -253,7 +257,9 @@ export default defineComponent({
                             context.root.$i18n.locale,
                             { month: 'long', year: 'numeric' },
                         ),
+                        isLatestMonth,
                     });
+                    isLatestMonth = false;
                 } else if (txMonth !== currentTxMonth) {
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
@@ -261,7 +267,9 @@ export default defineComponent({
                             context.root.$i18n.locale,
                             { month: 'long' },
                         ),
+                        isLatestMonth,
                     });
+                    isLatestMonth = false;
                 }
 
                 currentTxMonth = txMonth;
@@ -375,15 +383,18 @@ export default defineComponent({
 }
 
 .month-label {
-    letter-spacing: 1.5px;
-    font-size: var(--label-size);
-    padding-top: 5rem; // Padding-top +
-    line-height: 2rem; // Line-height +
-    padding-bottom: 2rem; // Padding-bottom = 9rem, equal to a transaction height
-    text-transform: uppercase;
-    font-weight: bold;
-    padding-left: 2rem;
-    opacity: 0.4;
+    padding: 5rem 2rem 2rem;
+    justify-content: space-between;
+    align-items: center;
+
+    label {
+        letter-spacing: 1.5px;
+        font-size: var(--label-size);
+        line-height: 2rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        opacity: 0.4;
+    }
 }
 
 .vue-recycle-scroller {
@@ -409,8 +420,11 @@ export default defineComponent({
     box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.4);
 
     .month-label {
-        opacity: 1;
         padding-top: 1rem;
+
+        label {
+            opacity: 1;
+        }
     }
 }
 
@@ -533,13 +547,6 @@ export default defineComponent({
 }
 
 .fetching {
-    position: absolute;
-    top: 4.875rem;
-    right: calc(2rem + 2rem + var(--padding));
-    background: var(--bg-primary);
-    box-shadow: 0 0 1rem 1rem var(--bg-primary);
-    border-radius: 5rem;
-
     span {
         font-size: var(--small-size);
         opacity: 0.5;

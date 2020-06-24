@@ -125,6 +125,7 @@ export default defineComponent({
     top: 0;
     right: 0;
     bottom: 0;
+    will-change: transform;
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

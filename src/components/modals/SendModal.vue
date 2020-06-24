@@ -682,6 +682,10 @@ export default defineComponent({
         justify-content: center;
     }
 
+    .contact-book {
+        height: 100%;
+    }
+
     .address-section {
         text-align: center;
 

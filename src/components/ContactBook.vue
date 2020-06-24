@@ -105,6 +105,7 @@ export default defineComponent({
 .list {
     overflow-y: auto;
     padding: 2.5rem 2rem;
+    flex-grow: 1;
     mask: linear-gradient(0deg ,
         rgba(255,255,255, 0),
         white 3rem,

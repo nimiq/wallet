@@ -88,17 +88,30 @@
                 {{ $t('Skip for now') }}
                 <CaretRightSmallIcon/>
             </a>
+            <!-- <div v-if="page === 1" class="flex-row flags">
+                <Tooltip v-for="lang in Languages" :key="lang.code"
+                    preferredPosition="bottom"
+                    :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
+                    @click="setLanguage(lang.code)"
+                >
+                    <img slot="trigger" :src="`/img/flags/${lang.code}.svg`"
+                        class="flag" :class="{'active': settings$.language === lang.code}">
+                    {{ lang.name }}
+                </Tooltip>
+            </div> -->
         </PageFooter>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
-import { backup } from '../../hub';
-
+import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+
 import { useAccountStore } from '../../stores/Account';
+import { backup } from '../../hub';
+import { Languages } from '../../i18n/i18n-setup';
+import { useSettingsStore } from '../../stores/Settings';
 
 export default defineComponent({
     setup(props, context) {
@@ -120,10 +133,15 @@ export default defineComponent({
             }
         }
 
+        const { state: settings$, setLanguage } = useSettingsStore();
+
         return {
             page,
             reset,
             onButtonClick,
+            Languages,
+            settings$,
+            setLanguage,
         };
     },
     components: {
@@ -131,6 +149,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         PageFooter,
+        Tooltip,
         CaretRightSmallIcon,
     },
 });
@@ -191,6 +210,33 @@ export default defineComponent({
 
     .nq-button {
         margin-top: 0 !important;
+    }
+
+    .flags {
+        justify-content: center;
+        align-items: center;
+        margin-top: -1rem;
+        margin-bottom: 1rem;
+    }
+
+    .tooltip {
+        margin: 0 1rem;
+    }
+
+    .flag {
+        width: 3rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        opacity: 0.3;
+        cursor: pointer;
+
+        transition: opacity 0.3s var(--nimiq-ease);
+    }
+
+    .flag:hover,
+    .flag:focus,
+    .flag.active {
+        opacity: 1;
     }
 
     .skip {

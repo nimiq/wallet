@@ -111,7 +111,7 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
-import { onboard, rename } from '../../hub';
+import { onboard, rename } from '../../hub'; // eslint-disable-line import/no-cycle
 
 export default defineComponent({
     name: 'address-overview',

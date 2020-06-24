@@ -20,10 +20,10 @@ const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+const WelcomeModal = () =>
+    import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
-const SignupWelcomeModal = () =>
-    import(/* webpackChunkName: "signup-welcome-modal" */ './components/modals/SignupWelcomeModal.vue');
 
 Vue.use(VueRouter);
 
@@ -97,7 +97,7 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/welcome',
             components: {
-                modal: SignupWelcomeModal,
+                modal: WelcomeModal,
             },
             name: 'welcome',
             meta: { column: Columns.ACCOUNT },
@@ -131,8 +131,6 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes,
 });
-
-window.router = router;
 
 export default router;
 

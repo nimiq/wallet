@@ -948,7 +948,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/master":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#590540164bae132df2003e7d69ca947f6e2d4307"
+  resolved "https://github.com/nimiq/vue-components#4a1d3b02e210c006771ead7abdae9589a4dfd17e"
   dependencies:
     "@nimiq/style" "^0.8.0"
     big-integer "^1.6.44"

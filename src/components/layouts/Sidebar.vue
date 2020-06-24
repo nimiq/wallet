@@ -98,10 +98,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
 .sidebar {
-    @include flex-full-height;
+    display: flex;
+    min-height: 100%;
     align-items: center;
     background: var(--bg-secondary);
     color: white;
+    overflow-y: scroll;
 
     /* Default: 1440px */
     --padding-top: 3rem;
@@ -186,6 +188,10 @@ export default defineComponent({
 .network {
     margin: 0 0.5rem;
     align-self: stretch;
+}
+
+.account-menu {
+    margin-top: 1rem;
 }
 
 .settings,

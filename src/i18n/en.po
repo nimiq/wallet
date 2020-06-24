@@ -19,13 +19,13 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:57
+#: src/components/modals/MigrationWelcomeModal.vue:69
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:15
+#: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "Accounts"
 msgstr ""
 
@@ -50,11 +50,11 @@ msgstr ""
 msgid "Address unavailable?"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:18
+#: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:38
+#: src/components/layouts/Settings.vue:42
 msgid "all"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:53
+#: src/components/TransactionList.vue:59
 msgid "Buy NIM"
 msgstr ""
 
@@ -108,7 +108,7 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:293
-#: src/components/TransactionList.vue:49
+#: src/components/TransactionList.vue:55
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
 msgstr ""
@@ -133,15 +133,15 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:79
+#: src/components/layouts/Settings.vue:83
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:73
+#: src/components/layouts/Settings.vue:77
 msgid "Clear Cache"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:75
+#: src/components/layouts/Settings.vue:79
 msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/TransactionList.vue:45
+#: src/components/TransactionList.vue:51
 msgid "Congrats"
 msgstr ""
 
@@ -160,7 +160,6 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/components/Footer.vue:3
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr ""
@@ -169,11 +168,11 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:86
+#: src/components/modals/MigrationWelcomeModal.vue:80
 msgid "Continue"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:31
+#: src/components/layouts/Settings.vue:35
 msgid "Control how many decimals are shown for NIM values."
 msgstr ""
 
@@ -201,7 +200,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:69
+#: src/components/layouts/Settings.vue:73
 msgid "Developer"
 msgstr ""
 
@@ -257,6 +256,10 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
+#: src/components/TransactionList.vue:42
+msgid "Fetching"
+msgstr ""
+
 #: src/components/TransactionListItem.vue:51
 msgid "Fiat value unavailable"
 msgstr ""
@@ -291,27 +294,23 @@ msgstr ""
 msgid "Got it"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:94
+#: src/components/modals/MigrationWelcomeModal.vue:82
 msgid "Got it!"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:11
+#: src/components/modals/MigrationWelcomeModal.vue:25
 msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/Footer.vue:5
-msgid "Height"
-msgstr ""
-
-#: src/components/MigrationWelcome.vue:15
+#: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "hold, manage and aggregate Addresses."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:34
+#: src/components/modals/MigrationWelcomeModal.vue:47
 msgid "Import it to any browser and enter your password to connect to Nimiq."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:88
+#: src/components/modals/MigrationWelcomeModal.vue:11
 msgid "Improved Accessibility"
 msgstr ""
 
@@ -327,7 +326,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/TransactionList.vue:48
+#: src/components/TransactionList.vue:54
 msgid "Invite a friend with a"
 msgstr ""
 
@@ -340,7 +339,7 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:39
+#: src/components/modals/MigrationWelcomeModal.vue:53
 msgid "Learn more here"
 msgstr ""
 
@@ -356,7 +355,7 @@ msgstr ""
 msgid "Light Node"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:89
+#: src/components/modals/MigrationWelcomeModal.vue:13
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
@@ -370,7 +369,7 @@ msgstr ""
 msgid "Multiple Addresses"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:93
+#: src/components/modals/MigrationWelcomeModal.vue:18
 msgid ""
 "Multiple Addresses and Login Files\n"
 "are supported by new Accounts only."
@@ -392,11 +391,11 @@ msgstr ""
 msgid "Nimiq OASIS enables decentra­lized buying and selling directly from your wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:69
+#: src/components/TransactionList.vue:75
 msgid "No transactions found"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:36
+#: src/components/layouts/Settings.vue:40
 msgid "None"
 msgstr ""
 
@@ -404,7 +403,7 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:92
+#: src/components/modals/MigrationWelcomeModal.vue:16
 msgid "Old and new Accounts"
 msgstr ""
 
@@ -412,16 +411,12 @@ msgstr ""
 msgid "One account can now have multiple addresses."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:84
+#: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
 msgstr ""
 
-#: src/components/TransactionList.vue:50
+#: src/components/TransactionList.vue:56
 msgid "or visit an exchange and get more."
-msgstr ""
-
-#: src/components/Footer.vue:4
-msgid "Peers"
 msgstr ""
 
 #: src/components/TransactionListItem.vue:35
@@ -441,7 +436,7 @@ msgid "Receive"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:7
-#: src/components/TransactionList.vue:64
+#: src/components/TransactionList.vue:70
 msgid "Receive free NIM"
 msgstr ""
 
@@ -449,7 +444,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:61
+#: src/components/TransactionList.vue:67
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -457,7 +452,7 @@ msgstr ""
 msgid "received at {dateAndTime}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:85
+#: src/components/layouts/Settings.vue:89
 msgid "Reference currency"
 msgstr ""
 
@@ -513,7 +508,7 @@ msgstr ""
 msgid "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:18
+#: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "send and receive transactions."
 msgstr ""
 
@@ -577,7 +572,7 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:29
+#: src/components/layouts/Settings.vue:33
 msgid "Shown Decimals"
 msgstr ""
 
@@ -605,13 +600,13 @@ msgstr ""
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:85
+#: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
 "can have multiple Addresses."
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:30
+#: src/components/modals/MigrationWelcomeModal.vue:43
 msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
 msgstr ""
 
@@ -631,8 +626,8 @@ msgstr ""
 msgid "This is an early version of the new Nimiq Wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:222
-#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:229
+#: src/components/TransactionList.vue:245
 msgid "This month"
 msgstr ""
 
@@ -657,15 +652,11 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:91
-msgid "Updating transactions..."
-msgstr ""
-
 #: src/components/modals/PreviewNoticeModal.vue:9
 msgid "Welcome to the Wallet Beta!"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:90
+#: src/components/modals/MigrationWelcomeModal.vue:81
 msgid "What else?"
 msgstr ""
 
@@ -677,7 +668,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/TransactionList.vue:46
+#: src/components/TransactionList.vue:52
 msgid "You now own crypto!"
 msgstr ""
 
@@ -689,7 +680,7 @@ msgstr ""
 msgid "Your Account is not safe yet!"
 msgstr ""
 
-#: src/components/MigrationWelcome.vue:53
+#: src/components/modals/MigrationWelcomeModal.vue:65
 msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
 msgstr ""
 
@@ -705,6 +696,6 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/TransactionList.vue:60
+#: src/components/TransactionList.vue:66
 msgid "Your transactions will appear here"
 msgstr ""

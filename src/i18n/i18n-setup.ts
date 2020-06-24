@@ -5,7 +5,7 @@ import { Cookie } from '@nimiq/utils';
 Vue.use(VueI18n);
 
 const DEFAULT_LANGUAGE = 'en';
-const SUPPORTED_LANGUAGES = [DEFAULT_LANGUAGE];
+const SUPPORTED_LANGUAGES = [DEFAULT_LANGUAGE, 'de', 'fr', 'zh'];
 const loadedLanguage: string[] = []; // our default language that is preloaded, if any
 
 export const i18n = new VueI18n({
@@ -47,6 +47,7 @@ export async function loadLanguage(lang: string): Promise<string> {
 }
 
 export function detectLanguage(): string {
+    return i18n.locale || DEFAULT_LANGUAGE; // FIXME: Remove when enabling i18n
     const langCookie = Cookie.getCookie('lang');
     const langRaw = window.navigator.language;
     const langParts = langRaw.split('-');

@@ -20,7 +20,11 @@
                     <select id="language" name="language" @input="setLanguage($event.target.value)" disabled>
                         <option value="de" :selected="language === 'de'">Deutsch</option>
                         <option value="en" :selected="language === 'en'">English</option>
+                        <!-- <option value="es" :selected="language === 'es'">Español</option> -->
                         <option value="fr" :selected="language === 'fr'">Français</option>
+                        <!-- <option value="ru" :selected="language === 'ru'">Русский</option> -->
+                        <!-- <option value="tr" :selected="language === 'tr'">Türkçe</option> -->
+                        <option value="zh" :selected="language === 'zh'">简体中文</option>
                     </select>
                 </div>
 

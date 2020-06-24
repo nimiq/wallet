@@ -1005,6 +1005,10 @@ export default defineComponent({
     }
 
     .fee-selection {
+        .nq-h1 {
+            text-align: center;
+        }
+
         p {
             text-align: center;
             margin-top: 0.5rem;

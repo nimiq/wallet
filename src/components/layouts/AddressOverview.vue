@@ -402,6 +402,10 @@ export default defineComponent({
     align-items: center;
     margin: 0 var(--padding) 2rem;
     padding: 0 3rem 0 2rem;
+
+    button {
+        flex-shrink: 0;
+    }
 }
 
 .send, .receive {

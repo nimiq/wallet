@@ -18,8 +18,10 @@
 
         <AnnouncementBox/>
 
-        <PriceChart currency="nim"/>
-        <PriceChart currency="btc" :showTimespanLabel="false"/>
+        <div class="price-chart-wrapper">
+            <PriceChart currency="nim"/>
+            <PriceChart currency="btc" :showTimespanLabel="false"/>
+        </div>
 
         <div class="trade-actions">
             <button class="nq-button-s inverse"
@@ -27,8 +29,6 @@
                 :disabled="$route.name !== 'root'"
             >{{ $t('Buy & Sell') }}</button>
         </div>
-
-        <div class="flex-grow"></div>
 
         <AccountMenu
             :class="{'active': $route.name === 'root'}"
@@ -97,13 +97,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+.sidebar, .price-chart-wrapper {
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 0px;
+    }
+}
+
 .sidebar {
     display: flex;
     min-height: 100%;
     align-items: center;
     background: var(--bg-secondary);
     color: white;
-    overflow-y: scroll;
 
     /* Default: 1440px */
     --padding-top: 3rem;
@@ -159,13 +166,34 @@ export default defineComponent({
 
 .logo {
     color: white;
-    margin-bottom: 3.5rem;
     align-self: flex-start;
     margin-left: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .announcement-box {
     margin-bottom: 2.5rem;
+    margin-top: 2rem;
+}
+
+.price-chart-wrapper {
+    width: 100%;
+    min-height: 120px;
+
+    mask: linear-gradient(0deg ,
+        rgba(255,255,255, 0),
+        white 3rem,
+        white calc(100% - 3rem),
+        rgba(255,255,255, 0)
+    );
+
+    .price-chart:first-child {
+        margin-top: 1.5rem;
+    }
+
+    .price-chart:last-child {
+        margin-bottom: 1.5rem;
+    }
 }
 
 .price-chart {
@@ -175,12 +203,16 @@ export default defineComponent({
 
     /deep/ .timespan {
         left: 1.5rem;
-        top: 0.5rem;
+        top: 1.5rem;
     }
 }
 
+.trade-actions {
+    flex-grow: 1;
+}
+
 .trade-actions .nq-button-s {
-    margin: 0 1rem;
+    margin: 1rem;
 }
 
 .account-menu,
@@ -188,10 +220,6 @@ export default defineComponent({
 .network {
     margin: 0 0.5rem;
     align-self: stretch;
-}
-
-.account-menu {
-    margin-top: 1rem;
 }
 
 .settings,

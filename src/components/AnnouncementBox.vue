@@ -42,6 +42,7 @@ export default defineComponent({
 .announcement-box {
     position: relative;
     padding: 1.5rem;
+    padding-top: 2rem;
     border-radius: 0.5rem;
 }
 

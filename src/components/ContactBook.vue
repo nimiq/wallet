@@ -50,19 +50,17 @@ import ShortAddress from './ShortAddress.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import { RecipientType } from './modals/SendModal.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { useAddressStore } from '../stores/Address';
+import { useAddressStore, AddressType } from '../stores/Address';
 
 export default defineComponent({
     setup() {
         const { contactsArray: contacts, setContact } = useContactsStore();
 
-        const { state: addresses$, activeAddress } = useAddressStore();
+        const { addressInfos, activeAddress } = useAddressStore();
 
-        const ownAddressInfos = computed(() => {
-            const addressInfos = { ...addresses$.addressInfos }; // Clone object
-            delete addressInfos[activeAddress.value!];
-            return Object.values(addressInfos);
-        });
+        const ownAddressInfos = computed(() => addressInfos.value.filter(
+            (addressInfo) => addressInfo.address !== activeAddress.value && addressInfo.type === AddressType.BASIC,
+        ));
 
         const showAllOwnAddresses = ref(false);
 

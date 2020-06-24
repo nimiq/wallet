@@ -252,7 +252,7 @@ export default defineComponent({
 }
 
 .address-list {
-    padding-top: var(--item-margin);
+    margin-top: calc(var(--item-margin) - 2.5rem);
     flex-grow: 1;
     margin-bottom: 1rem;
 }

@@ -172,7 +172,8 @@ export default defineComponent({
             0px 4px 16px rgba(0, 0, 0, 0.07);
 
         transform-origin: center top;
-        transition: transform 400ms var(--nimiq-ease);
+        transition: transform 350ms cubic-bezier(0.4, 0, 0, 1);
+        will-change: transform;
 
         .has-scrollbar & {
             width: calc(100% - 2 * var(--padding-sides) + 6px); // 6px = scrollbar width

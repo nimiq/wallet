@@ -109,3 +109,9 @@ button.reset:disabled {
         line-height: unset;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --transition-time: 0s;
+    }
+}

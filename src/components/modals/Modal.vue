@@ -125,6 +125,7 @@ export default defineComponent({
     top: 0;
     right: 0;
     bottom: 0;
+    will-change: transform;
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
@@ -150,7 +151,7 @@ export default defineComponent({
 <style lang="scss">
 :root {
     --modal-transition-time: 0.45s;
-    --overlay-transition-time: 0.6s;
+    --overlay-transition-time: 0.65s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -184,13 +185,11 @@ export default defineComponent({
 }
 
 .overlay-enter-active {
-    // transition: transform var(--overlay-transition-time) var(--nimiq-ease);
-    transition: transform var(--overlay-transition-time) cubic-bezier(0.2, 0.95, 0.2, 1);
+    transition: transform var(--overlay-transition-time) cubic-bezier(.3, 1, 0.2, 1);
 }
 
 .overlay-leave-active {
-    // transition: transform var(--overlay-transition-time) cubic-bezier(0.9, 0, 0.9, 0.05);
-    transition: transform var(--overlay-transition-time) cubic-bezier(0.4, 0, 0, 1);
+    transition: transform var(--overlay-transition-time) cubic-bezier(0.3, 0, 0, 1);
 }
 
 .overlay-enter, .overlay-leave-to {

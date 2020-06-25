@@ -234,29 +234,13 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-:root {
-    --transition-time: 0.75s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    :root {
-        --transition-time: 0s;
-    }
-}
-
-@media (max-width: 700px) { // Full mobile breakpoint
-    :root {
-        --transition-time: 0.5s;
-    }
-}
-
 .identicon img,
 .nq-icon {
     display: block;
 }
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity var(--transition-time) var(--nimiq-ease);
+    transition: opacity var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
 
     &.settings {
         // The address-overview is flex-row positioned next to the account-overview.
@@ -288,7 +272,8 @@ export default defineComponent({
 
 .groundfloor,
 .address-overview {
-    transition: transform var(--transition-time) cubic-bezier(0.6, 0, 0.25, 1);
+    transition: transform var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
+    will-change: transform;
 }
 
 .groundfloor {

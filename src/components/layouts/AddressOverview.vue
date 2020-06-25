@@ -26,7 +26,7 @@
                 <div class="identicon-wrapper">
                     <Identicon :address="activeAddressInfo.address" />
                     <button class="reset identicon-menu flex-row"
-                        @click="$event.target.focus() /* Required for MacOS Safari & Firefox */"
+                        @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">

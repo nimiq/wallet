@@ -155,20 +155,20 @@ export default defineComponent({
     justify-content: flex-start;
     @include ios-flex;
 
+    section:first-child {
+        padding-top: 2rem;
+    }
+
+    section:last-child {
+        padding-bottom: 2rem;
+    }
+
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
 
         section {
             padding-left: 3rem;
-        }
-
-        section:first-child {
-            padding-top: 2rem;
-        }
-
-        section:last-child {
-            padding-bottom: 2rem;
         }
     }
 

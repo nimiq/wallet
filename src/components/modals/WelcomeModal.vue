@@ -1,6 +1,12 @@
 <template>
     <Modal v-bind="$attrs" v-on="$listeners">
-        <PageHeader :backArrow="page > 1" @back="page -= 1" progressIndicator :numberSteps="3" :step="page">
+        <PageHeader
+            :backArrow="page > 1"
+            @back="page -= 1"
+            progressIndicator
+            :numberSteps="activeAccountInfo.type === AccountType.LEDGER ? 2 : 3"
+            :step="page"
+        >
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}
                 <p slot="more" class="nq-notice info">
@@ -81,7 +87,12 @@
         <PageFooter>
             <button class="nq-button light-blue" @click="onButtonClick">
                 <template v-if="page === 1">{{ $t('Continue') }}</template>
-                <template v-if="page === 2">{{ $t('One more thing') }}</template>
+                <template v-if="page === 2">
+                    {{ activeAccountInfo.type === AccountType.LEDGER
+                        ? $t('Got it')
+                        : $t('One more thing')
+                    }}
+                </template>
                 <template v-if="page === 3">{{ $t('Continue to Login File') }}</template>
             </button>
             <a v-if="page === 3" class="nq-link skip flex-row" href="javascript:void(0)" @click="$router.back()">
@@ -108,7 +119,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 
-import { useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { backup } from '../../hub';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
@@ -121,11 +132,14 @@ export default defineComponent({
             page.value = 1;
         }
 
+        const { activeAccountInfo } = useAccountStore();
+
         async function onButtonClick() {
-            if (page.value === 3) {
+            if (activeAccountInfo.value!.type === AccountType.LEDGER && page.value === 2) {
+                context.root.$router.back();
+            } else if (page.value === 3) {
                 // Go to backup
-                const { activeAccountId } = useAccountStore();
-                await backup(activeAccountId.value!, {});
+                await backup(activeAccountInfo.value!.id, {});
                 // Close modal
                 context.root.$router.back();
             } else {
@@ -142,6 +156,8 @@ export default defineComponent({
             Languages,
             settings$,
             setLanguage,
+            activeAccountInfo,
+            AccountType,
         };
     },
     components: {

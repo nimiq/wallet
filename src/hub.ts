@@ -10,8 +10,12 @@ import router from './router';
 
 const hubApi = new HubApi();
 
-hubApi.on(HubApi.RequestType.ONBOARD, () => {
-    router.push('/welcome');
+hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
+        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
+        // which also have no exports.
+        router.push('/welcome');
+    }
 });
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
@@ -140,10 +144,15 @@ export async function onboard(asRedirect = false) {
     }
 
     // TODO: Handle error
-    const listedAccounts = await hubApi.onboard({ appName: APP_NAME });
+    const accounts = await hubApi.onboard({ appName: APP_NAME });
 
-    processAndStoreAccounts(listedAccounts);
+    processAndStoreAccounts(accounts);
 
+    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
+        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
+        // which also have no exports.
+        router.push('/welcome');
+    }
     router.push('/welcome');
 }
 

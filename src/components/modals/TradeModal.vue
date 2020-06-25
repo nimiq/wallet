@@ -81,8 +81,11 @@
                     <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank">
                         <img src="../../assets/exchanges/swapzone.svg">
                     </a>
-                    <a href="https://swapspace.co/?to=nim" title="Swapspace" target="_blank">
+                    <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank">
                         <img src="../../assets/exchanges/swapspace.svg">
+                    </a>
+                    <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank">
+                        <img src="../../assets/exchanges/coinspot.svg">
                     </a>
                 </div>
             </div>

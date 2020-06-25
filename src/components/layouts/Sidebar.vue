@@ -97,17 +97,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
-.sidebar, .price-chart-wrapper {
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        width: 0px;
-    }
-}
-
 .sidebar {
-    display: flex;
-    min-height: 100%;
+    @include flex-full-height;
     align-items: center;
     background: var(--bg-secondary);
     color: white;
@@ -177,6 +168,7 @@ export default defineComponent({
 }
 
 .price-chart-wrapper {
+    overflow-y: auto;
     width: 100%;
     min-height: 120px;
 
@@ -193,6 +185,10 @@ export default defineComponent({
 
     .price-chart:last-child {
         margin-bottom: 1rem;
+    }
+
+    &::-webkit-scrollbar {
+        width: 0px;
     }
 }
 

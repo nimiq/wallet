@@ -210,6 +210,13 @@ export default defineComponent({
 
 .trade-actions .nq-button-s {
     margin: 0.5rem 1rem 1rem;
+    background: rgba(255, 255, 255, .1);
+
+    &:active,
+    &:focus,
+    &:hover {
+        background: rgba(255, 255, 255, .2);
+    }
 }
 
 .account-menu,

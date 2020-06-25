@@ -12,6 +12,7 @@ import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
+import { startSentry } from './lib/Sentry';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -52,6 +53,8 @@ window.setTimeout(
 // Fetch language file
 const { language } = useSettingsStore();
 loadLanguage(language.value);
+
+startSentry(Vue);
 
 const app = new Vue({
     router,

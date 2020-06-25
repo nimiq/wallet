@@ -2,15 +2,19 @@
     <!-- Pass down all attributes not declared as props --->
     <Modal v-bind="$attrs" v-on="$listeners" class="disclaimer-modal">
         <PageHeader>
-            Disclaimer
-            <div slot="more" class="more nq-light-blue">Always backup your Recovery Words, Password and Login Files.</div>
+            {{ $t('Disclaimer') }}
+            <div slot="more" class="more nq-light-blue">
+                {{ $t('Always backup your Recovery Words, Password and Login Files.') }}
+            </div>
         </PageHeader>
         <PageBody>
             <p class="nq-text">
-                Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not "hosted wallets". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain.
+                <!-- eslint-disable-next-line max-len -->
+                {{ $t('Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not "hosted wallets". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain.') }}
             </p>
             <p class="nq-text">
-                Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development.
+                <!-- eslint-disable-next-line max-len -->
+                {{ $t('Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development.') }}
             </p>
         </PageBody>
     </Modal>

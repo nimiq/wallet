@@ -199,8 +199,8 @@ export default defineComponent({
 
         &:hover,
         &:focus {
-            background: rgba(216, 65, 51, 0.12); // Based on Nimiq Red
             color: var(--nimiq-red);
+            background: rgba(216, 65, 51, 0.12); // Based on Nimiq Red
 
             svg {
                 opacity: 1;

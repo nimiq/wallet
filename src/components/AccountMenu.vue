@@ -349,6 +349,7 @@ export default defineComponent({
 .menu .logout:hover,
 .menu .logout:focus {
     color: var(--nimiq-red);
+    background: rgba(216, 65, 51, 0.12); // Based on Nimiq Red
 }
 
 .menu .item .alert {

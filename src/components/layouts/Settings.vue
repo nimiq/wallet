@@ -92,7 +92,7 @@
                             class="reset currency"
                             @click="setCurrency(currencyOption)"
                         >
-                            <img :src="require(`../../assets/flags/${currencyOption}.svg`)"/>
+                            <img :src="require(`../../assets/currencies/${currencyOption}.svg`)"/>
                             {{currencyOption.toUpperCase()}}
                         </button>
                     </div>

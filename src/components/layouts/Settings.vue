@@ -6,7 +6,7 @@
             </button>
         </div>
 
-        <div class="flex-column left-column">
+        <div class="column left-column flex-column">
             <section>
                 <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -81,28 +81,43 @@
                 </div>
             </section>
         </div>
-        <div class="flex-column right-column">
+        <div class="column right-column flex-column">
             <section>
                 <h2 class="nq-label">{{ $t('Reference currency') }}</h2>
 
-                    <div class="setting currency-selector">
-                        <button v-for="currencyOption of sortedFiatCurrency()"
-                            :key="currencyOption"
-                            :class="{ selected: currencyOption === currency }"
-                            class="reset currency"
-                            @click="setCurrency(currencyOption)"
-                        >
-                            <img :src="require(`../../assets/currencies/${currencyOption}.svg`)"/>
-                            {{currencyOption.toUpperCase()}}
-                        </button>
-                    </div>
+                <div class="setting currency-selector">
+                    <button v-for="currencyOption of sortedFiatCurrency()"
+                        :key="currencyOption"
+                        :class="{ selected: currencyOption === currency }"
+                        class="reset currency"
+                        @click="setCurrency(currencyOption)"
+                    >
+                        <img :src="require(`../../assets/currencies/${currencyOption}.svg`)"/>
+                        {{currencyOption.toUpperCase()}}
+                    </button>
+                </div>
+
+                <div class="copyright">
+                    &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
+                    <strong>&middot;</strong>
+                    <router-link to="/disclaimer">Disclaimer</router-link>
+                </div>
             </section>
         </div>
+
+        <Portal>
+            <transition name="modal">
+                <router-view name="modal"/>
+            </transition>
+        </Portal>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+// @ts-ignore missing types for this package
+import { Portal } from '@linusborg/vue-simple-portal';
+
 import MenuIcon from '../icons/MenuIcon.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
@@ -139,6 +154,7 @@ export default defineComponent({
     },
     components: {
         MenuIcon,
+        Portal,
     },
 });
 </script>
@@ -151,7 +167,7 @@ export default defineComponent({
     padding: 4rem;
 }
 
-.flex-column {
+.column {
     justify-content: flex-start;
     @include ios-flex;
 
@@ -332,6 +348,22 @@ select {
     display: none;
 }
 
+.copyright {
+    margin-top: 6rem;
+    font-size: 1.625rem;
+    font-weight: 600;
+    opacity: 0.5;
+
+    strong {
+        margin-left: 0.5rem;
+        margin-right: 1rem;
+    }
+
+    a {
+        color: inherit;
+    }
+}
+
 @media (max-width: 1160px) { // Half mobile breakpoint
     .settings {
         padding: 5rem 3rem 3rem 4rem;
@@ -392,7 +424,7 @@ select {
         max-width: none;
     }
 
-    .flex-column {
+    .column {
 
         &.left-column {
             border-right: none;

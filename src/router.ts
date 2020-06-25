@@ -24,6 +24,8 @@ const WelcomeModal = () =>
     import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
+const DisclaimerModal = () =>
+    import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
 
 Vue.use(VueRouter);
 
@@ -116,6 +118,14 @@ const routes: RouteConfig[] = [{
         },
         name: 'settings',
         meta: { column: Columns.ACCOUNT },
+        children: [{
+            path: '/disclaimer',
+            components: {
+                modal: DisclaimerModal,
+            },
+            name: 'disclaimer',
+            meta: { column: Columns.ACCOUNT },
+        }],
     }],
 }, {
     path: '/network',

@@ -94,7 +94,7 @@
                     :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
                     @click="setLanguage(lang.code)"
                 >
-                    <img slot="trigger" :src="`/img/flags/${lang.code}.svg`"
+                    <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
                         class="flag" :class="{'active': settings$.language === lang.code}">
                     {{ lang.name }}
                 </Tooltip>

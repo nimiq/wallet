@@ -25,7 +25,9 @@
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon :address="activeAddressInfo.address" />
-                    <button class="reset identicon-menu flex-row">
+                    <button class="reset identicon-menu flex-row"
+                        @click="$event.target.focus() /* Required for MacOS Safari & Firefox */"
+                    >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">
                             <button class="reset flex-row" @click="rename(activeAccountId, activeAddressInfo.address)">

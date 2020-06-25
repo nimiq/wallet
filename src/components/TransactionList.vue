@@ -348,7 +348,6 @@ export default defineComponent({
         });
         watch(() => props.showUnclaimedCashlinkList, (show) => {
             if (show && scroller.value) {
-                console.log(scroller.value.scrollToPosition); // eslint-disable-line no-console
                 scroller.value.scrollToPosition(0, true);
             }
         });

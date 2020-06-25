@@ -159,7 +159,6 @@ export default defineComponent({
             0px 4px 16px rgba(0, 0, 0, 0.07);
 
         will-change: transform;
-        transition: transform 400ms var(--nimiq-ease);
         transition: transform 350ms cubic-bezier(0.4, 0, 0, 1);
 
         .has-scrollbar & {

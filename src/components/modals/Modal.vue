@@ -185,12 +185,10 @@ export default defineComponent({
 }
 
 .overlay-enter-active {
-    // transition: transform var(--overlay-transition-time) var(--nimiq-ease);
     transition: transform var(--overlay-transition-time) cubic-bezier(.3, 1, 0.2, 1);
 }
 
 .overlay-leave-active {
-    // transition: transform var(--overlay-transition-time) cubic-bezier(0.9, 0, 0.9, 0.05);
     transition: transform var(--overlay-transition-time) cubic-bezier(0.3, 0, 0, 1);
 }
 

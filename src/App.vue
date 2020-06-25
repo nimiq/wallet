@@ -234,22 +234,6 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-:root {
-    // --transition-time: 0.1s; // gets overwritten anyways by main.css
-}
-
-@media (prefers-reduced-motion: reduce) {
-    :root {
-        --transition-time: 0s;
-    }
-}
-
-@media (max-width: 700px) { // Full mobile breakpoint
-    :root {
-        --transition-time: 0.5s;
-    }
-}
-
 .identicon img,
 .nq-icon {
     display: block;

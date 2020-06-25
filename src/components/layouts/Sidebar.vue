@@ -188,11 +188,11 @@ export default defineComponent({
     );
 
     .price-chart:first-child {
-        margin-top: 1.5rem;
+        margin-top: 1rem;
     }
 
     .price-chart:last-child {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 }
 
@@ -209,10 +209,11 @@ export default defineComponent({
 
 .trade-actions {
     flex-grow: 1;
+    margin-bottom: 2rem;
 }
 
 .trade-actions .nq-button-s {
-    margin: 1rem;
+    margin: 0.5rem 1rem 1rem;
 }
 
 .account-menu,

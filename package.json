@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
+    "build:ci": "build=testnet vue-cli-service build",
     "lint": "vue-cli-service lint --no-fix",
     "i18n:extract": "node ./node_modules/webpack-i18n-tools/index.js ./src/i18n/en.po",
     "i18n:pull": "tx pull --all --parallel --no-interactive --force --minimum-perc 95",

@@ -1,5 +1,6 @@
 import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
+import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useTransactionsStore } from './stores/Transactions';
@@ -8,7 +9,7 @@ import { sendTransaction as sendTx } from './network';
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 import router from './router';
 
-const hubApi = new HubApi();
+const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     if (!accounts[0].wordsExported && !accounts[0].fileExported) {

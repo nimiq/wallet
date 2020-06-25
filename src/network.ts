@@ -3,6 +3,7 @@ import { watch } from '@vue/composition-api';
 import { NetworkClient } from '@nimiq/network-client';
 
 import { SignedTransaction } from '@nimiq/hub-api';
+import Config from 'config';
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
@@ -13,7 +14,7 @@ let clientPromise: Promise<NetworkClient>;
 
 export async function getNetworkClient() {
     clientPromise = clientPromise || new Promise((resolve) => {
-        const client = NetworkClient.createInstance();
+        const client = NetworkClient.createInstance(Config.networkEndpoint);
         client.init().then(() => resolve(client));
     });
 

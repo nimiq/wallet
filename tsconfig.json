@@ -17,6 +17,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "config": [
+        "src/config/config.local.ts"
       ]
     },
     "lib": [

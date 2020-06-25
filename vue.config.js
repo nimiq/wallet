@@ -1,12 +1,25 @@
+const path = require('path');
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
+
+const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
+if (!buildName) throw new Error('Please specify the build config with the `build` environment variable');
+
+console.log('Building for:', buildName);
 
 module.exports = {
     configureWebpack: {
         plugins: [
             new PoLoaderOptimizer(),
         ],
+        // Resolve config for yarn build
+        resolve: {
+            alias: {
+                config: path.join(__dirname, `src/config/config.${buildName}.ts`)
+            }
+        },
         devtool: 'source-map', // TEMP: only 'source-map' allowed by webpack-i18-tools, will be fixed in future versions.
     },
     chainWebpack(config) {
@@ -34,6 +47,15 @@ module.exports = {
                         .loader('webpack-i18n-tools')
                         .end()
                 .end();
+
+        config.module
+            .rule('ts')
+            .use('ts-loader')
+                .loader('ts-loader')
+                .tap(options => {
+                    options.configFile = `tsconfig.${buildName}.json`
+                    return options
+                });
     },
     pwa: {
         name: 'Nimiq Wallet',

@@ -740,7 +740,24 @@ export default defineComponent({
         }
 
         .copyable {
-            padding: 1rem;
+            padding: 0.5rem;
+
+            /deep/ .background {
+                border-radius: 0.625rem;
+            }
+
+            .address-display {
+                transition: opacity 0.3s var(--nimiq-ease);
+            }
+
+            &:hover,
+            &:focus,
+            &.copied {
+                .address-display {
+                    opacity: 1;
+                    font-weight: 500;
+                }
+            }
         }
     }
 

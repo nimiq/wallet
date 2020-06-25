@@ -30,19 +30,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.account-balance {
+    text-align: center;
+}
+
 .nq-label {
     margin-bottom: 0.5rem;
 }
 
 .fiat-amount {
-    font-size: 8rem;
+    font-size: 7rem;
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
-    .account-balance {
-        text-align: center;
-    }
-
     .fiat-amount {
         font-size: 5.5rem;
     }

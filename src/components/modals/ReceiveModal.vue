@@ -161,6 +161,7 @@ export default defineComponent({
     .copyable {
         padding: 0.5rem;
         background: var(--nimiq-highlight-bg);
+        border-radius: 0.625rem;
 
         transition:
             color .3s var(--nimiq-ease),
@@ -274,6 +275,7 @@ export default defineComponent({
         color: rgba(31, 35, 72, 0.5);
         text-align: center;
         font-size: var(--h2-size);
+        margin-top: 2rem;
     }
 }
 </style>

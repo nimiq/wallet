@@ -33,12 +33,14 @@
                 </button>
             </button>
         </div>
-        <button v-if="!editing" class="nq-button-s edit-button" @click="editing = true" key="edit">
-            {{ $t('Edit contacts') }}
-        </button>
-        <button v-else class="nq-button-pill light-blue edit-button" @click="editing = false" key="done">
-            {{ $t('Done') }}
-        </button>
+        <template v-if="contacts.length">
+            <button v-if="!editing" class="nq-button-s edit-button" @click="editing = true" key="edit">
+                {{ $t('Edit contacts') }}
+            </button>
+            <button v-else class="nq-button-pill light-blue edit-button" @click="editing = false" key="done">
+                {{ $t('Done') }}
+            </button>
+        </template>
     </div>
 </template>
 

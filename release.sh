@@ -17,13 +17,13 @@ if [[ `git status --porcelain` ]]; then
 fi
 
 # Build Vue app
-yarn build
+yarn build &&
 
 # Tag current commit
-git tag $1
+git tag $1 &&
 
 # Push commit and tag to origin
-git push && git push --tags
+git push && git push --tags &&
 
 # Done
 echo "FINISHED - The app was built into the ./dist folder"

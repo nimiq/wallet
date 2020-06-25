@@ -11,16 +11,18 @@ import router from './router';
 
 const hubApi = new HubApi(Config.hubEndpoint);
 
+let welcomeRoute = '';
+
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     if (!accounts[0].wordsExported && !accounts[0].fileExported) {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
-        router.push('/welcome');
+        welcomeRoute = '/welcome';
     }
 });
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
-    router.push('/migration-welcome');
+    welcomeRoute = '/migration-welcome';
 });
 
 hubApi.checkRedirectResponse();
@@ -134,6 +136,10 @@ export async function syncFromHub() {
     if (listedCashlinks.length) {
         const cashlinkStore = useCashlinkStore();
         cashlinkStore.setHubCashlinks(listedCashlinks);
+    }
+
+    if (welcomeRoute) {
+        router.push(welcomeRoute);
     }
 }
 

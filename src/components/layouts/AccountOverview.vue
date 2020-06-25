@@ -208,7 +208,7 @@ export default defineComponent({
     align-items: center;
     flex-wrap: wrap;
     padding: 0.625rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     font-size: var(--body-size);
 
     .alert-icon {
@@ -242,8 +242,7 @@ export default defineComponent({
     }
 
     &.words {
-        border: 2px solid var(--text-10);
-        padding: 1rem 1.25rem 1rem 1.75rem
+        box-shadow: inset 0 0 0 1.5px var(--text-10);
     }
 }
 

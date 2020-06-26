@@ -19,6 +19,12 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:189
+msgid ""
+"A contact with the address \"{address}\", but a different name already exists.\n"
+"                            Do you want to replace it?"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:73
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -119,6 +125,10 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
+#: src/components/layouts/Settings.vue:169
+msgid "Cannot import contacts, wrong file format."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:293
 #: src/components/TransactionList.vue:55
 #: src/components/TransactionListItem.vue:134
@@ -149,11 +159,11 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:79
+#: src/components/layouts/Settings.vue:93
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:74
+#: src/components/layouts/Settings.vue:88
 msgid "Clear Cache"
 msgstr ""
 
@@ -217,11 +227,11 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:70
+#: src/components/layouts/Settings.vue:84
 msgid "Developer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:104
+#: src/components/layouts/Settings.vue:118
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -298,6 +308,10 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:175
+msgid "File contains no contacts."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:46
 msgid "For beginners"
 msgstr ""
@@ -353,6 +367,14 @@ msgstr ""
 msgid "If you find a bug or have any feedback, feel free to let us know in this {link}."
 msgstr ""
 
+#: src/components/layouts/Settings.vue:45
+msgid "Import Contacts"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:47
+msgid "Import contacts that you exported from the Safe."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
 msgstr ""
@@ -400,6 +422,10 @@ msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:52
+msgid "Load file"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
@@ -456,6 +482,10 @@ msgstr ""
 
 #: src/components/TransactionListItem.vue:34
 msgid "not sent"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:198
+msgid "OK! Contacts imported successfully."
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
@@ -515,7 +545,7 @@ msgstr ""
 msgid "received at {dateAndTime}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:85
+#: src/components/layouts/Settings.vue:99
 msgid "Reference currency"
 msgstr ""
 
@@ -528,7 +558,7 @@ msgstr ""
 msgid "Request failed"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:76
+#: src/components/layouts/Settings.vue:90
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 

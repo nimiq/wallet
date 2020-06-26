@@ -40,6 +40,20 @@
                     </select>
                 </div>
 
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="contact-import">{{ $t('Import Contacts') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Import contacts that you exported from the Safe.') }}
+                        </p>
+                    </div>
+
+                    <label class="nq-button-pill light-blue">
+                        {{ $t('Load file') }}
+                        <input type="file" @change="loadFile" ref="$fileInput">
+                    </label>
+                </div>
+
                 <!-- <div class="setting">
                     <div class="description">
                         <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
@@ -113,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 // @ts-ignore missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
@@ -123,9 +137,10 @@ import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
+import { useContactsStore } from '../../stores/Contacts';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const settings = useSettingsStore();
 
         const { currency, setCurrency } = useFiatStore();
@@ -141,6 +156,59 @@ export default defineComponent({
             return Object.values(FiatCurrency).sort();
         }
 
+        const $fileInput = ref<HTMLInputElement | null>(null);
+
+        function readFile(data: string) {
+            // Reset file input
+            $fileInput.value!.value = '';
+
+            let importedContacts = [];
+            try {
+                importedContacts = JSON.parse(data);
+            } catch (e) {
+                alert(context.root.$t('Cannot import contacts, wrong file format.')); // eslint-disable-line no-alert
+                return;
+            }
+
+            // Make sure the input is a non-empty array
+            if (!importedContacts.length) {
+                alert(context.root.$t('File contains no contacts.')); // eslint-disable-line no-alert
+                return;
+            }
+
+            const { state: contacts$, setContact } = useContactsStore();
+
+            for (const contact of importedContacts) {
+                if (!contact.label || !contact.address) continue;
+
+                const storedLabel = contacts$.contacts[contact.address];
+                if (storedLabel) {
+                    if (storedLabel === contact.label) continue;
+                    else {
+                        // eslint-disable-next-line no-alert, no-restricted-globals
+                        const shouldOverwrite = confirm(context.root.$t(
+                            `A contact with the address "{address}", but a different name already exists.
+                            Do you want to replace it?`, contact.address) as string);
+                        if (!shouldOverwrite) continue;
+                    }
+                }
+
+                setContact(contact.address, contact.label);
+            }
+            alert(context.root.$t('OK! Contacts imported successfully.')); // eslint-disable-line no-alert
+        }
+
+        function loadFile(event: InputEvent) {
+            const fileList = (event.target as HTMLInputElement).files;
+            if (!fileList) return;
+            const file = fileList[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => readFile(e.target!.result as string);
+            reader.readAsText(file);
+        }
+
         return {
             clearCache,
             Languages,
@@ -149,6 +217,8 @@ export default defineComponent({
             sortedFiatCurrency,
             setCurrency,
             ...settings,
+            $fileInput,
+            loadFile,
         };
     },
     components: {
@@ -287,6 +357,10 @@ select {
     &:disabled {
         opacity: .5;
     }
+}
+
+input[type="file"] {
+    display: none;
 }
 
 .currency-selector {

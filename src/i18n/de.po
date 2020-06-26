@@ -30,6 +30,12 @@ msgstr "{count} ausstehender Cashlink | {count} ausstehende Cashlinks"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat- & Telefonservice"
 
+#: src/components/layouts/Settings.vue:189
+msgid ""
+"A contact with the address \"{address}\", but a different name already exists.\n"
+"                            Do you want to replace it?"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:73
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -143,6 +149,10 @@ msgstr ""
 "Indem du eine Transaktionsgebühr hinzufügst, kannst du beeinflussen, wie "
 "schnell deine Transaktion verarbeitet wird."
 
+#: src/components/layouts/Settings.vue:169
+msgid "Cannot import contacts, wrong file format."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:293
 #: src/components/TransactionList.vue:55
 #: src/components/TransactionListItem.vue:134
@@ -173,11 +183,11 @@ msgstr "Empfänger auswählen"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/Settings.vue:79
+#: src/components/layouts/Settings.vue:93
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/components/layouts/Settings.vue:74
+#: src/components/layouts/Settings.vue:88
 msgid "Clear Cache"
 msgstr "Zwischenspeicher löschen"
 
@@ -248,11 +258,11 @@ msgstr "Bezahlungslink erstellen"
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/layouts/Settings.vue:70
+#: src/components/layouts/Settings.vue:84
 msgid "Developer"
 msgstr "Entwickler"
 
-#: src/components/layouts/Settings.vue:104
+#: src/components/layouts/Settings.vue:118
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
@@ -331,6 +341,10 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
+#: src/components/layouts/Settings.vue:175
+msgid "File contains no contacts."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:46
 msgid "For beginners"
 msgstr "Für Anfänger"
@@ -394,6 +408,14 @@ msgstr ""
 "Wenn du einen Fehler findest oder Anmerkungen hast, lass es uns gerne in "
 "dieser {link} wissen."
 
+#: src/components/layouts/Settings.vue:45
+msgid "Import Contacts"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:47
+msgid "Import contacts that you exported from the Safe."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
 msgstr ""
@@ -444,6 +466,10 @@ msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
 msgstr "Light Node"
+
+#: src/components/layouts/Settings.vue:52
+msgid "Load file"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -516,6 +542,10 @@ msgstr "Keine"
 msgid "not sent"
 msgstr "nicht gesendet"
 
+#: src/components/layouts/Settings.vue:198
+msgid "OK! Contacts imported successfully."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
 msgstr "Alte und neue Konten"
@@ -585,7 +615,7 @@ msgstr "Erhalte ein paar kostenlose NIM für den Anfang."
 msgid "received at {dateAndTime}"
 msgstr "erhalten am {dateAndTime}"
 
-#: src/components/layouts/Settings.vue:85
+#: src/components/layouts/Settings.vue:99
 msgid "Reference currency"
 msgstr "Referenzwährung"
 
@@ -598,7 +628,7 @@ msgstr "Umbenennen"
 msgid "Request failed"
 msgstr "Anfrage fehlgeschlagen"
 
-#: src/components/layouts/Settings.vue:76
+#: src/components/layouts/Settings.vue:90
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade Blockchain-Daten neu."

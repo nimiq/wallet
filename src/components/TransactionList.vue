@@ -66,9 +66,10 @@
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
             <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
-            <a v-if="isMainnet" href="https://getsome.nimiq.com" class="nq-button green">
-                {{ $t('Receive free NIM') }}
-            </a>
+            <a v-if="isMainnet"
+                :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank"
+                class="nq-button green"
+            >{{ $t('Receive free NIM') }}</a>
             <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
         </div>
         <div v-else class="empty-state flex-column">
@@ -82,13 +83,14 @@ import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ 
 import { CloseButton, CircleSpinner } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
+import Config from 'config';
 import TestnetFaucet from './TestnetFaucet.vue';
 import { useAddressStore } from '../stores/Address';
 import { useTransactionsStore /* , Transaction */ } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
-import { MAINNET_ORIGIN } from '../lib/Constants';
+import { ENV_MAIN } from '../lib/Constants';
 import { isFundingCashlink } from '../lib/CashlinkDetection';
 import { createCashlink } from '../hub';
 import { useWindowSize } from '../composables/useWindowSize';
@@ -331,7 +333,7 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        const isMainnet = window.location.origin === MAINNET_ORIGIN;
+        const isMainnet = Config.environment === ENV_MAIN;
 
         function onCreateCashlink() {
             createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);

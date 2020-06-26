@@ -162,6 +162,10 @@
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
                 <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
+
+                <a :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"
+                    target="_blank" class="nq-link flex-row"
+                >{{ $t('Block explorer') }}<ArrowRightSmallIcon/></a>
             </Tooltip>
         </PageBody>
     </Modal>
@@ -184,7 +188,9 @@ import {
     LabelInput,
     CashlinkSmallIcon,
     CrossIcon,
+    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
+import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -197,7 +203,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
 import { manageCashlink } from '../../hub';
@@ -329,6 +335,7 @@ export default defineComponent({
         const { language } = useSettingsStore();
 
         return {
+            ENV_MAIN,
             transaction,
             constants,
             state,
@@ -349,6 +356,7 @@ export default defineComponent({
             setContact,
             hubCashlink,
             manageCashlink,
+            env: Config.environment,
         };
     },
     components: {
@@ -369,6 +377,7 @@ export default defineComponent({
         LabelInput,
         CashlinkSmallIcon,
         UnclaimedCashlinkIcon,
+        ArrowRightSmallIcon,
     } as any,
 });
 </script>
@@ -599,7 +608,7 @@ export default defineComponent({
     left: 2rem;
     top: 2rem;
 
-    /deep/ a {
+    /deep/ .trigger {
         color: rgba(31, 35, 72, 0.25);
 
         transition: color 0.3s var(--nimiq-ease);
@@ -638,6 +647,27 @@ export default defineComponent({
     .fee {
         display: inline-block;
         margin-top: 1.25rem;
+    }
+
+    .nq-link {
+        font-weight: bold;
+        color: var(--nimiq-light-blue-on-dark);
+        margin-top: 1.25rem;
+        align-items: center;
+
+        .nq-icon {
+            font-size: 1.25rem;
+            margin-left: 0.75rem;
+
+            transition: transform 0.2s var(--nimiq-ease);
+        }
+
+        &:hover,
+        &:focus {
+            .nq-icon {
+                transform: translateX(0.25rem);
+            }
+        }
     }
 }
 

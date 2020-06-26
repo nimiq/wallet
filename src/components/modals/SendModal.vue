@@ -218,7 +218,7 @@ import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StatusScreen from '../StatusScreen.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -472,7 +472,7 @@ export default defineComponent({
          */
         const statusScreenOpened = ref(false);
         const statusTitle = ref(context.root.$t('Sending Transaction'));
-        const statusState = ref(StatusScreen.State.LOADING);
+        const statusState = ref(State.LOADING);
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry'));
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
@@ -480,7 +480,7 @@ export default defineComponent({
         async function sign() {
             // Show loading screen
             statusScreenOpened.value = true;
-            statusState.value = StatusScreen.State.LOADING;
+            statusState.value = State.LOADING;
 
             try {
                 const plainTx = await sendTransaction({
@@ -496,7 +496,7 @@ export default defineComponent({
 
                 if (plainTx) {
                     // Show success screen
-                    statusState.value = StatusScreen.State.SUCCESS;
+                    statusState.value = State.SUCCESS;
                     statusTitle.value = recipientWithLabel.value!.label
                         ? context.root.$t('Sent {nim} NIM to {name}', {
                             nim: amount.value / 1e5,
@@ -507,7 +507,7 @@ export default defineComponent({
                         });
 
                     // Close modal
-                    setTimeout(() => context.root.$router.back(), StatusScreen.SUCCESS_REDIRECT_DELAY);
+                    setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
                 }
             } catch (error) {
                 if (error.message === 'CANCELED'
@@ -521,7 +521,7 @@ export default defineComponent({
                 // console.debug(error);
 
                 // Show error screen
-                statusState.value = StatusScreen.State.WARNING;
+                statusState.value = State.WARNING;
                 statusTitle.value = context.root.$t('Something went wrong');
                 statusMessage.value = error.message;
             }

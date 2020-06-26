@@ -104,8 +104,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
+
+export const SUCCESS_REDIRECT_DELAY = 2000; // 1s of transition + 1s of display
+
+export enum State {
+    LOADING = 'loading',
+    SUCCESS = 'success',
+    WARNING = 'warning',
+    ERROR = 'error',
+}
+
+export enum Events {
+    MAIN_ACTION = 'main-action',
+    ALTERNATIVE_ACTION = 'alternative-action',
+}
 
 /**
  * **Nimiq StatusScreen Component**
@@ -139,121 +153,119 @@ import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@ni
  *
  * The events are available as `StatusScreen.Events.MAIN_ACTION` and `StatusScreen.Events.ALTERNATIVE_ACTION`.
  */
-@Component({ components: { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } })
-class StatusScreen extends Vue {
-    // TODO: Move to CONSTANTS
-    public static readonly SUCCESS_REDIRECT_DELAY: number = 2000; // 1s of transition + 1s of display
+export default defineComponent({
+    props: {
+        title: String,
+        state: {
+            type: String as () => State,
+            default: State.LOADING,
+        },
+        lightBlue: Boolean,
+        status: String,
+        message: String,
+        mainAction: String,
+        alternativeAction: String,
+        small: Boolean,
+    },
+    setup(props, context) {
+        const currentStatus = ref('');
+        const nextStatus = ref('');
+        const isTransitioningStatus = ref(false);
 
-    @Prop({ type: String }) private title?: string;
-    // Using StatusScreen.State.LOADING here results in runtime error: 'Cannot read property 'LOADING' of undefined'
-    @Prop({ default: 'loading' as StatusScreen.State }) private state!: StatusScreen.State;
-    @Prop(Boolean) private lightBlue?: boolean;
-    @Prop(String) private status?: string;
-    @Prop(String) private message?: string;
-    @Prop(String) private mainAction?: string;
-    @Prop(String) private alternativeAction?: string;
-    @Prop(Boolean) private small?: boolean;
+        /**
+         * To enable a smooth transition of the non-transitionable background-image
+         * property, we instead place the new background above the old one and
+         * animate the top element's opacity. But because the color area has rounded
+         * corners, and the browser creates transparent pixels in the corner
+         * because of anti-aliasing, the blue background partly shines through the
+         * transparent corner pixels of the foreground. Thus we remove the background
+         * color after the transition is complete.
+         */
+        const showLoadingBackground = ref(true);
 
-    private currentStatus = '';
-    private nextStatus = '';
-    private isTransitioningStatus = false;
+        const loadingTitle = ref('');
 
-    /**
-     * To enable a smooth transition of the non-transitionable background-image
-     * property, we instead place the new background above the old one and
-     * animate the top element's opacity. But because the color area has rounded
-     * corners, and the browser creates transparent pixels in the corner
-     * because of anti-aliasing, the blue background partly shines through the
-     * transparent corner pixels of the foreground. Thus we remove the background
-     * color after the transition is complete.
-     */
-    private showLoadingBackground = true;
+        let hideLoadingBackgroundTimeout = -1;
+        let statusUpdateTimeout = -1;
 
-    private loadingTitle = '';
-
-    private hideLoadingBackgroundTimeout = -1;
-    private statusUpdateTimeout = -1;
-
-    @Watch('title', { immediate: true })
-    private updateLoadingTitle(newTitle: string) {
-        // only change the _loadingTitle, if we're still in the loading state (and not changing the state right after
-        // setting the title) to avoid it being changed on the loading screen when we actually want to set it for the
-        // success/error/warning screen.
-        this.$nextTick(() => {
-            if (this.state !== StatusScreen.State.LOADING) return;
-            this.loadingTitle = newTitle;
+        watch(() => props.title || '', (newTitle: string) => {
+            // only change the _loadingTitle, if we're still in the loading state (and not changing the state right
+            // after setting the title) to avoid it being changed on the loading screen when we actually want to set
+            // it for the success/error/warning screen.
+            context.root.$nextTick(() => {
+                if (props.state !== State.LOADING) return;
+                loadingTitle.value = newTitle;
+            });
         });
-    }
 
-    @Watch('state', { immediate: true })
-    private updateState(newState: string, oldState: string) {
-        if (newState === StatusScreen.State.LOADING) {
-            // Starting in or changing to LOADING
-            if (this.hideLoadingBackgroundTimeout !== -1) {
-                clearTimeout(this.hideLoadingBackgroundTimeout);
-                this.hideLoadingBackgroundTimeout = -1;
-            }
-            this.showLoadingBackground = true;
-        } else {
-            // other state than LOADING
-            if (oldState === StatusScreen.State.LOADING) { // eslint-disable-line no-lonely-if
-                if (this.hideLoadingBackgroundTimeout === -1) {
-                    this.hideLoadingBackgroundTimeout = window.setTimeout(() => {
-                        this.showLoadingBackground = false;
-                        this.hideLoadingBackgroundTimeout = -1;
-                    }, 1000);
+        watch(() => props.state, (newState: string, oldState: string) => {
+            if (newState === State.LOADING) {
+                // Starting in or changing to LOADING
+                if (hideLoadingBackgroundTimeout !== -1) {
+                    clearTimeout(hideLoadingBackgroundTimeout);
+                    hideLoadingBackgroundTimeout = -1;
                 }
+                showLoadingBackground.value = true;
             } else {
-                this.showLoadingBackground = false;
+                // other state than LOADING
+                if (oldState === State.LOADING) { // eslint-disable-line no-lonely-if
+                    if (hideLoadingBackgroundTimeout === -1) {
+                        hideLoadingBackgroundTimeout = window.setTimeout(() => {
+                            showLoadingBackground.value = false;
+                            hideLoadingBackgroundTimeout = -1;
+                        }, 1000);
+                    }
+                } else {
+                    showLoadingBackground.value = false;
+                }
             }
+        });
+
+        watch(() => props.status || '', async (newStatus: string) => {
+            if (statusUpdateTimeout !== -1) {
+                clearTimeout(statusUpdateTimeout);
+                // reset transitioning state for new change
+                isTransitioningStatus.value = false;
+                await context.root.$nextTick();
+                await new Promise((resolve) => requestAnimationFrame(resolve)); // await style update
+                currentStatus.value = nextStatus.value;
+            }
+
+            nextStatus.value = newStatus;
+            isTransitioningStatus.value = true;
+
+            statusUpdateTimeout = window.setTimeout(() => {
+                statusUpdateTimeout = -1;
+                currentStatus.value = newStatus;
+                isTransitioningStatus.value = false;
+            }, 500);
+        });
+
+        function onMainAction() {
+            context.emit(Events.MAIN_ACTION);
         }
-    }
 
-    @Watch('status', { immediate: true })
-    private async updateStatus(newStatus: string) {
-        if (this.statusUpdateTimeout !== -1) {
-            clearTimeout(this.statusUpdateTimeout);
-            // reset transitioning state for new change
-            this.isTransitioningStatus = false;
-            await this.$nextTick();
-            await new Promise((resolve) => requestAnimationFrame(resolve)); // await style update
-            this.currentStatus = this.nextStatus;
+        function onAlternativeAction() {
+            context.emit(Events.ALTERNATIVE_ACTION);
         }
 
-        this.nextStatus = newStatus;
-        this.isTransitioningStatus = true;
-
-        this.statusUpdateTimeout = window.setTimeout(() => {
-            this.statusUpdateTimeout = -1;
-            this.currentStatus = newStatus;
-            this.isTransitioningStatus = false;
-        }, 500);
-    }
-
-    private onMainAction() {
-        this.$emit(StatusScreen.Events.MAIN_ACTION);
-    }
-
-    private onAlternativeAction() {
-        this.$emit(StatusScreen.Events.ALTERNATIVE_ACTION);
-    }
-}
-
-namespace StatusScreen { // eslint-disable-line @typescript-eslint/no-namespace, no-redeclare
-    export enum State {
-        LOADING = 'loading',
-        SUCCESS = 'success',
-        WARNING = 'warning',
-        ERROR = 'error',
-    }
-
-    export enum Events {
-        MAIN_ACTION = 'main-action',
-        ALTERNATIVE_ACTION = 'alternative-action',
-    }
-}
-
-export default StatusScreen;
+        return {
+            currentStatus,
+            nextStatus,
+            isTransitioningStatus,
+            showLoadingBackground,
+            loadingTitle,
+            onMainAction,
+            onAlternativeAction,
+        };
+    },
+    components: {
+        LoadingSpinner,
+        CheckmarkIcon,
+        FaceNeutralIcon,
+        FaceSadIcon,
+    },
+});
 </script>
 
 <style scoped>

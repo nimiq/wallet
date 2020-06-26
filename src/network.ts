@@ -79,14 +79,16 @@ export async function launchNetwork() {
         const knownTxDetails = Object.values(transactionsStore.state.transactions)
             .filter((tx) => tx.sender === address || tx.recipient === address);
 
-        const lastConfirmedHeight = knownTxDetails
-            .filter((tx) => tx.state === TransactionState.CONFIRMED)
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+        // const lastConfirmedHeight = knownTxDetails
+        //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
+        //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
 
         network$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        client.getTransactionsByAddress(address, lastConfirmedHeight - 10, knownTxDetails, 100)
+        // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
+        //        (even when cross-account transactions are already present)
+        client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => {
                 transactionsStore.addTransactions(txDetails);
             })
@@ -128,7 +130,7 @@ export async function launchNetwork() {
             network$.fetchingTxHistory++;
 
             console.debug('Fetching transaction history for', address, knownTxDetails);
-            client.getTransactionsByAddress(address, 0, knownTxDetails, 10)
+            client.getTransactionsByAddress(address, 0, knownTxDetails)
                 .then((txDetails) => {
                     if (
                         cashlinkStore.state.funded.includes(address)

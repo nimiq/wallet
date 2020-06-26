@@ -208,11 +208,7 @@ export class NodeHexagon extends Hexagon {
     private static SPLINE_ANIMATION_TIME = 1000;
 
     private static getAlpha(nodeCount: number): number {
-        return nodeCount > 4
-            ? 1
-            : nodeCount > 2
-                ? .75
-                : .5;
+        return 0.3 + 0.2 * nodeCount;
     }
 
     private _animation = {
@@ -296,11 +292,13 @@ export class NodeHexagon extends Hexagon {
         if (!this.isConnected || this._connections.size === 0) {
             dc.fillStyle! = `rgba(255, 255, 255, ${
                 // maximum opacity
-                .25
-                // old state
-                * NodeHexagon.getAlpha(this._oldPeerCount)
-                // animation to new state
-                + NodeHexagon.getAlpha(this.peers.size - this._oldPeerCount) * this._animation.hexagon}`;
+                .3
+                * (
+                    // old state
+                    NodeHexagon.getAlpha(this._oldPeerCount)
+                    // animation to new state
+                    + NodeHexagon.getAlpha(this.peers.size - this._oldPeerCount) * this._animation.hexagon
+                )}`;
             super.draw(dc, timeDelta);
         }
 

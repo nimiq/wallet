@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar padding flex-column" ref="sidebar">
-        <div class="testnet-notice flex-row">
+        <div v-if="isTestnet" class="testnet-notice flex-row">
             <StreetconeIcon/>
             <span class="nq-label">Testnet</span>
             <div class="flex-grow"></div>
@@ -57,6 +57,8 @@
 import { defineComponent } from '@vue/composition-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 
+import Config from 'config';
+
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart from '../PriceChart.vue';
@@ -64,6 +66,7 @@ import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
 import { useWindowSize } from '../../composables/useWindowSize';
+import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'sidebar',
@@ -78,8 +81,11 @@ export default defineComponent({
             }
         }
 
+        const isTestnet = Config.environment === ENV_TEST || Config.environment === ENV_DEV;
+
         return {
             navigateTo,
+            isTestnet,
         };
     },
     components: {

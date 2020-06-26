@@ -12,23 +12,24 @@
             <p>
                 {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
             </p>
-            <a href="https://www.youtube.com/watch?v=dA40oyDVtqs" class="nq-link flex-row" target="_blank">
-                {{ $t('Learn more') }}<ArrowRightSmallIcon/>
-            </a>
+            <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank">
+                {{ $t('Learn more') }}
+            </BlueLink>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
     components: {
         Modal,
         PageBody,
-        ArrowRightSmallIcon,
+        BlueLink,
     },
 });
 </script>
@@ -86,24 +87,7 @@ p, a {
 }
 
 a {
-    font-weight: bold;
-    align-items: center;
     display: inline-flex;
-
-    .nq-icon {
-        font-size: 1.5rem;
-        margin-left: 0.75rem;
-        margin-top: 0.125rem;
-
-        transition: transform var(--attr-duration) var(--nimiq-ease);
-    }
-
-    &:hover,
-    &:focus {
-        .nq-icon {
-            transform: translateX(0.25rem);
-        }
-    }
 }
 
 @media (min-width: 700px) { // Full mobile breakpoint

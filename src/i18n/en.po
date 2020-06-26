@@ -25,7 +25,7 @@ msgid ""
 "                            Do you want to replace it?"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:73
+#: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
@@ -101,6 +101,10 @@ msgstr ""
 msgid "Block #{height}"
 msgstr ""
 
+#: src/components/modals/TransactionModal.vue:169
+msgid "Block explorer"
+msgstr ""
+
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
 msgstr ""
@@ -129,7 +133,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:293
+#: src/components/modals/TransactionModal.vue:300
 #: src/components/TransactionList.vue:55
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
@@ -194,7 +198,7 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:84
+#: src/components/modals/MigrationWelcomeModal.vue:83
 #: src/components/modals/WelcomeModal.vue:89
 msgid "Continue"
 msgstr ""
@@ -347,7 +351,7 @@ msgstr ""
 msgid "Got it"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:86
+#: src/components/modals/MigrationWelcomeModal.vue:85
 msgid "Got it!"
 msgstr ""
 
@@ -383,7 +387,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:106
+#: src/components/modals/TradeModal.vue:104
 msgid "In cooperation with"
 msgstr ""
 
@@ -408,7 +412,7 @@ msgid "Language"
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:16
-#: src/components/modals/TradeModal.vue:103
+#: src/components/modals/TradeModal.vue:102
 msgid "Learn more"
 msgstr ""
 
@@ -756,7 +760,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:294
+#: src/components/modals/TransactionModal.vue:301
 #: src/components/TransactionListItem.vue:135
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -775,7 +779,7 @@ msgid ""
 "new Nimiq Wallet!"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:85
+#: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"
 msgstr ""
 
@@ -799,7 +803,7 @@ msgstr ""
 msgid "Your Account is not safe yet!"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:69
+#: src/components/modals/MigrationWelcomeModal.vue:68
 msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
 msgstr ""
 

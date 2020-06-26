@@ -99,9 +99,7 @@
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}
                 </p>
                 <footer class="flex-column">
-                    <a href="#" class="nq-link flex-row" target="_blank">
-                        {{ $t('Learn more') }}<ArrowRightSmallIcon/>
-                    </a>
+                    <BlueLink href="#" target="_blank">{{ $t('Learn more') }}</BlueLink>
                     <div class="flex-grow"></div>
                     <p class="nq-text">{{ $t('In cooperation with') }}</p>
                     <img src="../../assets/ten31.svg" alt="TEN31">
@@ -115,6 +113,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
     name: 'trade-modal',
@@ -122,6 +121,7 @@ export default defineComponent({
         Modal,
         PageBody,
         ArrowRightSmallIcon,
+        BlueLink,
     },
 });
 </script>
@@ -302,28 +302,13 @@ export default defineComponent({
         line-height: 1.4;
     }
 
-    .nq-link {
-        color: var(--nimiq-light-blue);
-        align-items: center;
-        font-weight: bold;
-
-        .nq-icon {
-            width: 1.25rem;
-            margin-left: 0.75rem;
-
-            transition: transform 0.2s var(--nimiq-ease);
-        }
-
-        &:hover,
-        &:focus {
-            .nq-icon {
-                transform: translateX(0.25rem);
-            }
-        }
-    }
-
     > .nq-text:first-of-type {
         margin-bottom: 1.5rem;
+    }
+
+    .blue-link {
+        font-weight: bold;
+        color: var(--nimiq-light-blue);
     }
 
     footer {

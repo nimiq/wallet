@@ -163,9 +163,10 @@
                 </span>
                 <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
 
-                <a :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"
-                    target="_blank" class="nq-link flex-row"
-                >{{ $t('Block explorer') }}<ArrowRightSmallIcon/></a>
+                <BlueLink
+                    :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"
+                    target="_blank"
+                >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
         </PageBody>
     </Modal>
@@ -188,13 +189,13 @@ import {
     LabelInput,
     CashlinkSmallIcon,
     CrossIcon,
-    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
+import BlueLink from '../BlueLink.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -377,7 +378,7 @@ export default defineComponent({
         LabelInput,
         CashlinkSmallIcon,
         UnclaimedCashlinkIcon,
-        ArrowRightSmallIcon,
+        BlueLink,
     } as any,
 });
 </script>
@@ -649,25 +650,9 @@ export default defineComponent({
         margin-top: 1.25rem;
     }
 
-    .nq-link {
-        font-weight: bold;
+    .blue-link {
         color: var(--nimiq-light-blue-on-dark);
         margin-top: 1.25rem;
-        align-items: center;
-
-        .nq-icon {
-            font-size: 1.25rem;
-            margin-left: 0.75rem;
-
-            transition: transform 0.2s var(--nimiq-ease);
-        }
-
-        &:hover,
-        &:focus {
-            .nq-icon {
-                transform: translateX(0.25rem);
-            }
-        }
     }
 }
 

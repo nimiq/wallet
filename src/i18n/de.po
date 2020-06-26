@@ -36,7 +36,7 @@ msgid ""
 "                            Do you want to replace it?"
 msgstr ""
 
-#: src/components/modals/MigrationWelcomeModal.vue:73
+#: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
@@ -121,6 +121,10 @@ msgstr "Bitcoin"
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
+#: src/components/modals/TransactionModal.vue:169
+msgid "Block explorer"
+msgstr ""
+
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
 msgstr "Blockhöhe"
@@ -153,7 +157,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:293
+#: src/components/modals/TransactionModal.vue:300
 #: src/components/TransactionList.vue:55
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
@@ -221,7 +225,7 @@ msgstr "Konsensus"
 msgid "Contacts"
 msgstr "Kontakte"
 
-#: src/components/modals/MigrationWelcomeModal.vue:84
+#: src/components/modals/MigrationWelcomeModal.vue:83
 #: src/components/modals/WelcomeModal.vue:89
 msgid "Continue"
 msgstr "Weiter"
@@ -380,7 +384,7 @@ msgstr "Kaufe NIM auf {exchange}"
 msgid "Got it"
 msgstr "Alles klar"
 
-#: src/components/modals/MigrationWelcomeModal.vue:86
+#: src/components/modals/MigrationWelcomeModal.vue:85
 msgid "Got it!"
 msgstr "Alles klar!"
 
@@ -426,7 +430,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Verbesserte Barrierefreiheit"
 
-#: src/components/modals/TradeModal.vue:106
+#: src/components/modals/TradeModal.vue:104
 msgid "In cooperation with"
 msgstr "In Kooperation mit"
 
@@ -451,7 +455,7 @@ msgid "Language"
 msgstr "Sprache"
 
 #: src/components/modals/NetworkInfoModal.vue:16
-#: src/components/modals/TradeModal.vue:103
+#: src/components/modals/TradeModal.vue:102
 msgid "Learn more"
 msgstr "Mehr erfahren"
 
@@ -852,7 +856,7 @@ msgstr "Transaktion an {address}"
 msgid "Transfer funds"
 msgstr "Guthaben überweisen"
 
-#: src/components/modals/TransactionModal.vue:294
+#: src/components/modals/TransactionModal.vue:301
 #: src/components/TransactionListItem.vue:135
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
@@ -875,7 +879,7 @@ msgstr ""
 "Willkommen in der\n"
 "neuen Nimiq Wallet!"
 
-#: src/components/modals/MigrationWelcomeModal.vue:85
+#: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"
 msgstr "Sonst noch was?"
 
@@ -899,7 +903,7 @@ msgstr "Du sendest {amount} NIM"
 msgid "Your Account is not safe yet!"
 msgstr "Dein Konto ist noch nicht sicher!"
 
-#: src/components/modals/MigrationWelcomeModal.vue:69
+#: src/components/modals/MigrationWelcomeModal.vue:68
 msgid ""
 "Your Accounts are now legacy Accounts. Easily switch, edit and create "
 "Accounts with the new Account picker."

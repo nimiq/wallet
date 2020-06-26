@@ -51,11 +51,10 @@
                     {{ $t('Import it to any browser and enter your password to connect to Nimiq.') }}
                 </p>
                 <p class="nq-text">
-                    <strong>
-                        <a href="https://www.nimiq.com/blog/the-biggest-release-since-mainnet-launch/"
-                            target="_blank" class="nq-link flex-row"
-                        >{{ $t('Learn more here') }} <ArrowRightSmallIcon/></a>
-                    </strong>
+                    <BlueLink
+                        href="https://www.nimiq.com/blog/the-biggest-release-since-mainnet-launch/"
+                        target="_blank"
+                    >{{ $t('Learn more here') }}</BlueLink>
                 </p>
             </div>
             <div class="visual login-file">
@@ -91,7 +90,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import BlueLink from '../BlueLink.vue';
 
 import Modal from './Modal.vue';
 
@@ -122,7 +122,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         PageFooter,
-        ArrowRightSmallIcon,
+        BlueLink,
     },
 });
 </script>
@@ -163,22 +163,6 @@ export default defineComponent({
 
     .left-aligned .nq-text {
         width: 26rem;
-    }
-
-    .nq-link {
-        text-decoration: none !important;
-        align-items: center;
-    }
-
-    .nq-link .nq-icon {
-        margin-left: .75rem;
-        font-size: 1.5rem;
-        transition: transform 0.3s var(--nimiq-ease);
-    }
-
-    .nq-link:hover .nq-icon,
-    .nq-link:focus .nq-icon {
-        transform: translateX(.25rem);
     }
 
     .visual img {

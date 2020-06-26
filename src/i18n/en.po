@@ -137,6 +137,10 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:17
+msgid "Change your language setting."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:36
 msgid "Choose a Recipient"
 msgstr ""
@@ -145,16 +149,12 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:80
+#: src/components/layouts/Settings.vue:79
 msgid "Clear"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:74
 msgid "Clear Cache"
-msgstr ""
-
-#: src/components/layouts/Settings.vue:76
-msgid "Clear locally stored transaction history and balances. Reload them from the decentralized network."
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:52
@@ -193,10 +193,6 @@ msgstr ""
 msgid "Continue to Login File"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:32
-msgid "Control how many decimals are shown for NIM values."
-msgstr ""
-
 #: src/components/modals/SendModal.vue:27
 msgid "Create a Cashlink"
 msgstr ""
@@ -225,6 +221,7 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:104
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -243,6 +240,10 @@ msgstr ""
 
 #: src/components/ContactBook.vue:38
 msgid "Edit contacts"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:32
+msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:478
@@ -514,7 +515,7 @@ msgstr ""
 msgid "received at {dateAndTime}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:85
 msgid "Reference currency"
 msgstr ""
 
@@ -525,6 +526,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:120
 msgid "Request failed"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:76
+msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:477
@@ -612,10 +617,6 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:17
-msgid "Set the interface language."
-msgstr ""
-
 #: src/components/layouts/Sidebar.vue:51
 msgid "Settings"
 msgstr ""
@@ -639,7 +640,7 @@ msgid "Show all my addresses"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:30
-msgid "Shown Decimals"
+msgid "Show Decimals"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:88

@@ -14,7 +14,7 @@
                     <div class="description">
                         <label class="nq-h2" for="language">{{ $t('Language') }}</label>
                         <p class="nq-text">
-                            {{ $t('Set the interface language.') }}
+                            {{ $t('Change your language setting.') }}
                         </p>
                     </div>
                     <select id="language" name="language" @input="setLanguage($event.target.value)" disabled>
@@ -27,9 +27,9 @@
 
                 <div class="setting">
                     <div class="description">
-                        <label class="nq-h2" for="decimals">{{ $t('Shown Decimals') }}</label>
+                        <label class="nq-h2" for="decimals">{{ $t('Show Decimals') }}</label>
                         <p class="nq-text">
-                            {{ $t('Control how many decimals are shown for NIM values.') }}
+                            {{ $t('Edit the amount of decimals visible for NIM values.') }}
                         </p>
                     </div>
 
@@ -44,7 +44,7 @@
                     <div class="description">
                         <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
                         <p class="nq-text">
-                            {{ $t('Select the color scheme the Nimiq Wallet should be in.') }}
+                            {{ $t('Change your wallet color scheme.') }}
                         </p>
                     </div>
 
@@ -73,8 +73,7 @@
                     <div class="description">
                         <label class="nq-h2">{{ $t('Clear Cache') }}</label>
                         <p class="nq-text">
-                            {{ $t('Clear locally stored transaction history and balances. ' +
-                                'Reload them from the decentralized network.') }}
+                            {{ $t('Reset your wallet settings and reload data from the blockchain.') }}
                         </p>
                     </div>
                     <button class="nq-button-pill light-blue" @click="clearCache">{{ $t('Clear') }}</button>
@@ -102,7 +101,7 @@
         <div class="copyright">
             &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
             <strong>&middot;</strong>
-            <router-link to="/disclaimer">Disclaimer</router-link>
+            <router-link to="/disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
 
         <Portal>
@@ -210,7 +209,7 @@ section {
 }
 
 .nq-text {
-    color: var(--text-70);
+    color: var(--text-100);
 }
 
 .nq-button-pill {
@@ -293,7 +292,7 @@ select {
 .currency-selector {
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-left: -1rem;
+    margin: -1rem;
 }
 
 .currency {

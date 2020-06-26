@@ -96,13 +96,13 @@
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
-
-                <div class="copyright">
-                    &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
-                    <strong>&middot;</strong>
-                    <router-link to="/disclaimer">Disclaimer</router-link>
-                </div>
             </section>
+        </div>
+
+        <div class="copyright">
+            &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
+            <strong>&middot;</strong>
+            <router-link to="/disclaimer">Disclaimer</router-link>
         </div>
 
         <Portal>
@@ -165,6 +165,7 @@ export default defineComponent({
 .settings {
     align-items: flex-start;
     padding: 4rem;
+    height: 100%;
 }
 
 .column {
@@ -349,10 +350,13 @@ select {
 }
 
 .copyright {
-    margin-top: 6rem;
-    font-size: 1.625rem;
+    position: absolute;
+    left: 3.25rem;
+    bottom: 3.25rem;
+
+    font-size: var(--small-size);
     font-weight: 600;
-    opacity: 0.5;
+    opacity: 0.6;
 
     strong {
         margin-left: 0.5rem;
@@ -425,7 +429,6 @@ select {
     }
 
     .column {
-
         &.left-column {
             border-right: none;
             margin: 0;
@@ -446,6 +449,10 @@ select {
         &.right-column section:last-child {
             padding-bottom: 0;
         }
+    }
+
+    .copyright {
+        position: unset;
     }
 }
 </style>

@@ -15,7 +15,7 @@
         </main>
 
         <transition name="modal">
-            <PreviewNoticeModal v-if="showPreviewNotice" emitClose @close="showPreviewNotice = false"/>
+            <BetaNoticeModal v-if="!isBetaNoticeDismissed" emitClose @close="isBetaNoticeDismissed = true"/>
         </transition>
 
         <div v-if="!hasAccounts" class="loader flex-row">
@@ -29,17 +29,22 @@ import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
-import PreviewNoticeModal from './components/modals/PreviewNoticeModal.vue';
+import BetaNoticeModal from './components/modals/BetaNoticeModal.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
-import { TESTNET_ORIGIN } from './lib/Constants';
+
+const BETA_NOTICE_DISMISSED = 'wallet_beta_notice_dismissed';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
 
-        const showPreviewNotice = ref(window.location.origin === TESTNET_ORIGIN);
+        const isBetaNoticeDismissed = ref(Boolean(window.localStorage.getItem(BETA_NOTICE_DISMISSED) || false));
+        watch(isBetaNoticeDismissed, (dismissed) => {
+            if (!dismissed) window.localStorage.removeItem(BETA_NOTICE_DISMISSED);
+            else window.localStorage.setItem(BETA_NOTICE_DISMISSED, 'yes');
+        });
 
         const routeClass = ref('');
 
@@ -76,14 +81,14 @@ export default defineComponent({
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
         return {
-            showPreviewNotice,
+            isBetaNoticeDismissed,
             routeClass,
             hasAccounts,
         };
     },
     components: {
         Sidebar,
-        PreviewNoticeModal,
+        BetaNoticeModal,
         LoadingSpinner,
     },
 });

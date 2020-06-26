@@ -301,6 +301,10 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
+#: src/components/modals/BetaNoticeModal.vue:43
+msgid "forum thread"
+msgstr ""
+
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr ""
@@ -323,7 +327,7 @@ msgstr ""
 msgid "Get NIM on {exchange}"
 msgstr ""
 
-#: src/components/modals/PreviewNoticeModal.vue:18
+#: src/components/modals/BetaNoticeModal.vue:45
 #: src/components/modals/WelcomeModal.vue:92
 msgid "Got it"
 msgstr ""
@@ -342,6 +346,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
+msgstr ""
+
+#: src/components/modals/BetaNoticeModal.vue:38
+msgid "If you find a bug or have any feedback, feel free to let us know in this {link}."
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
@@ -387,10 +395,6 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:87
 msgid "Let's get started! Create your Nimiq account:"
-msgstr ""
-
-#: src/components/modals/PreviewNoticeModal.vue:15
-msgid "Let's hear your feedback!"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -692,12 +696,12 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr ""
 
-#: src/components/modals/LegacyAccountNoticeModal.vue:7
-msgid "This is a Legacy Account"
+#: src/components/modals/BetaNoticeModal.vue:33
+msgid "This is a beta version of the new Nimiq Wallet. You can use it in the same way as the current {link}. Some things might not work as expected, but we’re on it."
 msgstr ""
 
-#: src/components/modals/PreviewNoticeModal.vue:10
-msgid "This is an early version of the new Nimiq Wallet."
+#: src/components/modals/LegacyAccountNoticeModal.vue:7
+msgid "This is a Legacy Account"
 msgstr ""
 
 #: src/components/TransactionList.vue:229
@@ -734,8 +738,10 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr ""
 
-#: src/components/modals/PreviewNoticeModal.vue:9
-msgid "Welcome to the Wallet Beta!"
+#: src/components/modals/BetaNoticeModal.vue:31
+msgid ""
+"Welcome to the\n"
+"new Nimiq Wallet!"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:85

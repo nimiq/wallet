@@ -332,6 +332,10 @@ msgstr "Fiatwert nicht verfügbar"
 msgid "For beginners"
 msgstr "Für Anfänger"
 
+#: src/components/modals/BetaNoticeModal.vue:43
+msgid "forum thread"
+msgstr ""
+
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr "Full Node"
@@ -354,7 +358,7 @@ msgstr "Hol dir NIM und BTC"
 msgid "Get NIM on {exchange}"
 msgstr "Kaufe NIM auf {exchange}"
 
-#: src/components/modals/PreviewNoticeModal.vue:18
+#: src/components/modals/BetaNoticeModal.vue:45
 #: src/components/modals/WelcomeModal.vue:92
 msgid "Got it"
 msgstr "Alles klar"
@@ -378,6 +382,12 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
 msgstr "Adressen verwalten und zusammenfassen."
+
+#: src/components/modals/BetaNoticeModal.vue:38
+msgid ""
+"If you find a bug or have any feedback, feel free to let us know in this "
+"{link}."
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
@@ -425,10 +435,6 @@ msgstr "Hier erfährst du mehr"
 #: src/components/layouts/AddressOverview.vue:87
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
-
-#: src/components/modals/PreviewNoticeModal.vue:15
-msgid "Let's hear your feedback!"
-msgstr "Wir freuen uns auf dein Feedback!"
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
@@ -767,13 +773,16 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr "Es gibt kein \"Passwort vergessen\""
 
+#: src/components/modals/BetaNoticeModal.vue:33
+msgid ""
+"This is a beta version of the new Nimiq Wallet. You can use it in the same "
+"way as the current {link}. Some things might not work as expected, but we’re"
+" on it."
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Dies ist ein Legacy-Konto"
-
-#: src/components/modals/PreviewNoticeModal.vue:10
-msgid "This is an early version of the new Nimiq Wallet."
-msgstr "Diese Version der neuen Nimiq Wallet ist noch nicht die entgültige."
 
 #: src/components/TransactionList.vue:229
 #: src/components/TransactionList.vue:245
@@ -811,9 +820,11 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr "Benutze sie um deine Konten anderen Geräte zu benutzen."
 
-#: src/components/modals/PreviewNoticeModal.vue:9
-msgid "Welcome to the Wallet Beta!"
-msgstr "Willkommen in der Betaversion der neuen Wallet!"
+#: src/components/modals/BetaNoticeModal.vue:31
+msgid ""
+"Welcome to the\n"
+"new Nimiq Wallet!"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:85
 msgid "What else?"

@@ -8,15 +8,15 @@ import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
-    ACCOUNTINFOS: 'safe-next_accounts',
-    ADDRESSINFOS: 'safe-next_addresses',
-    SETTINGS: 'safe-next_settings',
-    FIAT: 'safe-next_exchange-rates',
+    ACCOUNTINFOS: 'wallet_accounts_v01',
+    ADDRESSINFOS: 'wallet_addresses_v01',
+    SETTINGS: 'wallet_settings_v01',
+    FIAT: 'wallet_exchange-rates_v01',
     CASHLINKS: 'wallet_cashlinks_v01',
 };
 
 const PersistentStorageKeys = {
-    CONTACTS: 'safe-next_contacts',
+    CONTACTS: 'wallet_contacts_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];

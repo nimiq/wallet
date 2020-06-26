@@ -35,7 +35,7 @@
     "vue-i18n": "^8.15.5",
     "vue-router": "^3.1.6",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",
-    "webpack-i18n-tools": "https://github.com/nimiq//webpack-i18n-tools#master"
+    "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#master"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",

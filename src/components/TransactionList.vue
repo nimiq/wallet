@@ -55,9 +55,9 @@
                         <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
                         {{ $t('or visit an exchange and get more.') }}
                     </p>
-                    <a href="https://nimiq.com/exchanges" target="_blank" class="nq-button light-blue">
+                    <router-link to="trade" class="nq-button light-blue">
                         {{ $t('Buy NIM') }}
-                    </a>
+                    </router-link>
                 </div>
             </template>
         </RecycleScroller>

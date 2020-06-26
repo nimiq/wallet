@@ -112,7 +112,7 @@ export default defineComponent({
     /* Default: 1440px */
     --padding-top: 3rem;
     --padding-sides: 1.5rem;
-    --padding-bottom: 1.5rem;
+    --padding-bottom: 2rem;
 
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 }

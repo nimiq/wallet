@@ -23,7 +23,7 @@
     "@nimiq/network-client": "^0.5.0",
     "@nimiq/style": "^0.8.1",
     "@nimiq/utils": "^0.5.0",
-    "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/master",
+    "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",
     "@sentry/browser": "^5.18.0",
     "@sentry/integrations": "^5.18.0",
     "@vue/composition-api": "^0.4.0",

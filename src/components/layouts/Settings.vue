@@ -502,6 +502,11 @@ input[type="file"] {
     }
 
     .column {
+        &.left-column,
+        &.right-column {
+            flex-shrink: 0;
+        }
+
         &.left-column {
             border-right: none;
             margin: 0;

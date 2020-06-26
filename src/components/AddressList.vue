@@ -141,6 +141,7 @@ export default defineComponent({
         width: 100%;
         margin: 0.5rem 0;
         z-index: 1;
+        flex-shrink: 0;
 
         transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
 

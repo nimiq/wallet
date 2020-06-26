@@ -303,6 +303,7 @@ export default defineComponent({
 
     .mobile-menu-bar {
         display: flex;
+        flex-shrink: 0;
         justify-content: space-between;
         padding: 1rem;
         margin: calc(-1 * var(--padding-top) + 1rem) calc(-1 * var(--padding-sides) + 1rem);

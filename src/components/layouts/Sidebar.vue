@@ -230,6 +230,7 @@ export default defineComponent({
 .network {
     margin: 0 0.5rem;
     align-self: stretch;
+    flex-shrink: 0;
 }
 
 .settings,

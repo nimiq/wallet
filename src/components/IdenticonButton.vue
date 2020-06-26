@@ -51,9 +51,17 @@ export default defineComponent({
     span {
         cursor: pointer;
         text-align: center;
-        white-space: nowrap;
         overflow: hidden;
         mask: linear-gradient(90deg , white, white calc(100% - 2rem), rgba(255,255,255, 0));
+    }
+
+    span {
+        white-space: nowrap;
+    }
+
+    label {
+        max-height: 2.6em; // Two lines
+        max-width: 18.5rem;
     }
 
     span {

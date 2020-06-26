@@ -767,8 +767,6 @@ export default defineComponent({
         margin-bottom: 3.5rem;
 
         .identicon-button {
-            width: 14rem;
-
             /deep/ .identicon {
                 width: 9rem;
                 height: 9rem;
@@ -782,6 +780,7 @@ export default defineComponent({
             flex-grow: 1;
             margin: 5rem 2rem 0;
             max-width: 8rem;
+            min-width: 3rem;
         }
     }
 
@@ -790,7 +789,6 @@ export default defineComponent({
         border-radius: 0.75rem;
         padding: 1rem;
         position: relative;
-        width: 14rem;
 
         .primary {
             position: relative;
@@ -810,11 +808,13 @@ export default defineComponent({
                 opacity var(--movement-duration) var(--nimiq-ease);
 
             &:first-child {
-                left: 1rem;
+                left: 50%;
+                margin-left: -6rem;
             }
 
             &:nth-child(2) {
-                right: 1rem;
+                right: 50%;
+                margin-right: -6rem;
             }
         }
 
@@ -836,7 +836,8 @@ export default defineComponent({
         label {
             cursor: pointer;
             text-align: center;
-            white-space: nowrap;
+            max-height: 2.6em; // Two lines
+            max-width: 18.5rem;
             overflow: hidden;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
@@ -1038,6 +1039,11 @@ export default defineComponent({
     }
 
     @media (max-width: 700px) { // Full Mobile Breakpoint
+        .identicon-section .separator {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
         .status-screen {
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;

@@ -445,7 +445,7 @@ msgstr ""
 msgid "Nimiq OASIS enables decentra­lized buying and selling directly from your wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:76
 msgid "No transactions found"
 msgstr ""
 
@@ -498,7 +498,7 @@ msgid "Receive"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:7
-#: src/components/TransactionList.vue:70
+#: src/components/TransactionList.vue:72
 msgid "Receive free NIM"
 msgstr ""
 
@@ -704,8 +704,8 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
-#: src/components/TransactionList.vue:229
-#: src/components/TransactionList.vue:245
+#: src/components/TransactionList.vue:231
+#: src/components/TransactionList.vue:247
 msgid "This month"
 msgstr ""
 

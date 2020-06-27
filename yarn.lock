@@ -934,10 +934,15 @@
   resolved "https://registry.yarnpkg.com/@nimiq/rpc/-/rpc-0.4.0.tgz#d15f95c39d21c513172aa75c8f43ae555067cb50"
   integrity sha512-Zpv45kTnbhmr75xc8BK2o/K1gDBh3TcJwIuo95SWBoWmu4ntcKtHs744bfu6Lf49XGG8d+cFn2dPDDDIeoBfmw==
 
-"@nimiq/style@^0.8.0", "@nimiq/style@^0.8.1":
+"@nimiq/style@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.1.tgz#0ef4f310f0b5e2a22eb773c9501e4bd936340089"
   integrity sha512-AT1JDtC5OcZ3eTJNjRPXYlSNEcsAdpRngacO9iy2oYtu1NwBTqEoux4UtUDOtS+8hrBJYgdGvzdDg0Tqle6ouA==
+
+"@nimiq/style@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.2.tgz#140ab7cbe71a9b1db6e0bca34ba880cfff64037a"
+  integrity sha512-nQjMQjmU3ZuYRMG+8uADM/fVv6Taq70qKdPGuRR/gLUJZMg/2qxZaGHDikg4kVNLFbo9pjzjotJDMqtNwlVSew==
 
 "@nimiq/utils@^0.5.0":
   version "0.5.0"

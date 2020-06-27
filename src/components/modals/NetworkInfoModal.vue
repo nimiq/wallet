@@ -101,7 +101,6 @@ a {
 
             .small-page {
                 width: 47.25rem;
-                border-radius: 1.25rem;
             }
         }
     }

@@ -272,7 +272,7 @@ export default defineComponent({
 
 .oasis-area {
     width: 22.75rem;
-    border-radius: 0.5rem;
+    border-radius: 0.625rem;
     padding: 3rem;
     flex-shrink: 0;
     align-items: flex-start;

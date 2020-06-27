@@ -3,7 +3,7 @@
         <h2 class="nq-label">{{ $t('Total Balance') }}</h2>
         <div class="fiat-amount" ref="$fiatAmountContainer">
             <FiatConvertedAmount
-                :amount="1089716251785456"
+                :amount="accountBalance"
                 ref="$fiatAmount"
                 :style="{ fontSize: `${fiatAmountFontSize}rem` }"
             />
@@ -15,28 +15,29 @@
 import Vue from 'vue';
 import { defineComponent, ref, onBeforeUnmount, onMounted } from '@vue/composition-api';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import { useAddressStore } from '../stores/Address';
 // re add <BalanceDistribution /> once Bitcoin is avalable
 // import BalanceDistribution from './BalanceDistribution.vue';
+import { useAddressStore } from '../stores/Address';
+
+const FIAT_DEFAULT_SIZE = 7; // rem, the default desktop font-size of .fiat-amount
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { accountBalance } = useAddressStore();
 
         const $fiatAmountContainer = ref<HTMLDivElement>(null);
         const $fiatAmount = ref<Vue>(null);
-        const fiatAmountDefautFontSize = 7; // the default desktop font-size of .fiat-amount
-        const fiatAmountFontSize = ref(fiatAmountDefautFontSize);
+        const fiatAmountFontSize = ref(FIAT_DEFAULT_SIZE);
 
         async function updateFontSize() {
-            await Vue.nextTick();
+            await context.root.$nextTick();
 
             const availableWidth = $fiatAmountContainer.value!.offsetWidth;
             const referenceWidth = ($fiatAmount.value!.$el as HTMLElement).offsetWidth;
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
             if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
-                fiatAmountFontSize.value = Math.min(fiatAmountDefautFontSize, fiatAmountFontSize.value * scaleFactor);
+                fiatAmountFontSize.value = Math.min(FIAT_DEFAULT_SIZE, fiatAmountFontSize.value * scaleFactor);
             }
         }
 

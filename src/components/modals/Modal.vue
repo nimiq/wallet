@@ -135,7 +135,7 @@ export default defineComponent({
 
     .small-page,
     .cover {
-        border-radius: 2.5rem 2.5rem 0 0;
+        border-radius: 1.25rem 1.25rem 0 0;
     }
 
     .main {

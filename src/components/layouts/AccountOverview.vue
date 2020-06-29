@@ -27,7 +27,7 @@
             <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
                 <MenuIcon/>
             </button>
-            <button class="reset" @click="$router.push('/network')">
+            <button class="reset consensus" @click="$router.push('/network')">
                 <ConsensusIcon/>
             </button>
         </div>
@@ -311,19 +311,38 @@ export default defineComponent({
 
         button {
             padding: 1rem;
-            opacity: 0.3;
         }
 
         .menu-button {
             width: 3.5rem;
             height: 2.75rem;
             box-sizing: content-box;
+            opacity: 0.3;
         }
 
         .consensus-icon {
-            &.connecting, &.syncing {
+            width: 3rem;
+            height: 3rem;
+
+            &.syncing, &.established {
                 // Generated with https://codepen.io/sosuke/full/Pjoqqp to make white into ~nimiq-blue
                 filter: brightness(0.1) sepia(27%) saturate(3808%) hue-rotate(216deg) brightness(91%) contrast(89%);
+                opacity: 0.3;
+            }
+
+            /deep/ svg {
+                width: 3.25rem;
+                height: 3rem;
+            }
+        }
+
+        button.consensus {
+            &:hover,
+            &:focus {
+                .consensus-icon.established {
+                    filter: none;
+                    opacity: 1;
+                }
             }
         }
     }

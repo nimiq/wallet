@@ -99,7 +99,7 @@
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}
                 </p>
                 <footer class="flex-column">
-                    <BlueLink href="#" target="_blank">{{ $t('Learn more') }}</BlueLink>
+                    <BlueLink href="https://nimiq.com/oasis" target="_blank">{{ $t('Learn more') }}</BlueLink>
                     <div class="flex-grow"></div>
                     <p class="nq-text">{{ $t('In cooperation with') }}</p>
                     <img src="../../assets/ten31.svg" alt="TEN31">

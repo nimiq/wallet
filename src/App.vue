@@ -239,6 +239,16 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+:root {
+    --transition-time: 0.75s;
+}
+
+@media (max-width: 1160px) { /* Half mobile breakpoint */
+    :root {
+        --transition-time: 0.5s;
+    }
+}
+
 .identicon img,
 .nq-icon {
     display: block;

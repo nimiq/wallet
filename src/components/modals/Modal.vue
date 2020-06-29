@@ -154,13 +154,6 @@ export default defineComponent({
     --overlay-transition-time: 0.65s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    :root {
-        --modal-transition-time: 0s;
-        --overlay-transition-time: 0s;
-    }
-}
-
 .modal-enter-active, .modal-leave-active {
     transition: background-color var(--modal-transition-time) cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -221,6 +214,24 @@ export default defineComponent({
          * 100% is the height of the overlay
          */
         transform: translate3D(0, 100%, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-enter, .modal-leave-to {
+        .wrapper {
+            opacity: 0 !important;
+            transform: none;
+        }
+    }
+
+    /* Instead of translating the overlay, simply fade it in */
+    .overlay-enter-active, .overlay-leave-active {
+        transition: opacity var(--overlay-transition-time) var(--nimiq-ease);
+    }
+
+    .overlay-enter, .overlay-leave-to {
+        opacity: 0;
     }
 }
 </style>

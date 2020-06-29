@@ -44,8 +44,6 @@ button.reset:disabled {
 /* Font Sizes */
 
 :root {
-    --transition-time: 0.75s;
-
     --body-size: 2rem;
     --small-size: 1.75rem;
 
@@ -87,8 +85,6 @@ button.reset:disabled {
 
 @media (max-width: 1160px) { /* Half mobile breakpoint */
     :root {
-        --transition-time: 0.5s;
-
         --body-size: 1.875rem;
         --small-size: 1.625rem;
 
@@ -107,11 +103,5 @@ button.reset:disabled {
     .nq-button {
         height: 7rem;
         line-height: unset;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    :root {
-        --transition-time: 0s;
     }
 }

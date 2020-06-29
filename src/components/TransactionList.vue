@@ -26,13 +26,19 @@
                     v-if="item.loading"
                     :style="{ animationDelay: `${index * .1}s` }"
                 >
-                    <div class="date">
+                    <div class="date flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
                     </div>
-                    <div class="identicon placeholder">
+                    <HexagonIcon class="identicon"/>
+                    <div class="data flex-column">
+                        <div class="placeholder"></div>
+                        <div class="placeholder"></div>
                     </div>
-                    <div class="data placeholder"></div>
+                    <div class="amounts flex-column">
+                        <div class="placeholder"></div>
+                        <div class="placeholder"></div>
+                    </div>
                 </div>
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
                     <div v-if="!item.sender" class="month-label flex-row">
@@ -80,7 +86,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ watch } from '@vue/composition-api';
-import { CloseButton, CircleSpinner } from '@nimiq/vue-components';
+import { CloseButton, CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import Config from 'config';
@@ -372,6 +378,7 @@ export default defineComponent({
         TestnetFaucet,
         CloseButton,
         CircleSpinner,
+        HexagonIcon,
     },
 });
 </script>
@@ -452,10 +459,8 @@ export default defineComponent({
         justify-content: flex-start;
         align-items: center;
 
-        .placeholder {
-            background-color: var(--text-10);
-            border-radius: 1rem;
-
+        .placeholder,
+        .identicon {
             animation-name: loading;
             animation-duration: 1s;
             animation-iteration-count: infinite;
@@ -468,32 +473,70 @@ export default defineComponent({
             }
         }
 
-        .date {
-            display: flex;
-            flex-direction: column;
+        .placeholder {
+            background-color: var(--text-6);
+            border-radius: 0.5rem;
+        }
+
+        .date,
+        .data,
+        .amounts {
             justify-content: space-between;
-            align-items: center;
-            margin-left: 1rem;
-            margin-right: 1.25rem;
-            height: 5rem;
+            height: 4.25rem;
             animation-delay: inherit;
 
             .placeholder {
-                height: 2rem;
-                width: 3rem;
+                width: 100%;
+                height: 1.875rem;
+                max-width: 51rem;
+
+                &:last-child {
+                    height: 1rem;
+                }
+            }
+        }
+
+        .date {
+            align-items: center;
+            margin-left: 1rem;
+            margin-right: 1.25rem;
+
+            .placeholder {
+                width: 2.25rem;
+
+                &:last-child {
+                    width: 3rem;
+                }
             }
         }
         .identicon {
             margin: 0 1rem;
             height: 6rem;
             width: 6rem;
+            color: var(--text-6);
         }
         .data {
             flex-grow: 1;
-            margin: 0 1rem;
-            height: 22px;
-            align-self: flex-start;
-            max-width: 50%;
+            margin: 0 5vw 0 1.5rem;
+
+            .placeholder {
+                &:last-child {
+                    width: 30%;
+                    min-width: 5rem;
+                    max-width: 20rem;
+                }
+            }
+        }
+        .amounts {
+            width: 8%;
+            min-width: 8rem;
+            align-items: flex-end;
+
+            .placeholder {
+                &:last-child {
+                    width: 55%;
+                }
+            }
         }
     }
 }

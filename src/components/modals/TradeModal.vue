@@ -251,8 +251,7 @@ export default defineComponent({
 
         transition:
             filter 0.2s var(--nimiq-ease),
-            opacity 0.2s var(--nimiq-ease),
-            transform 0.2s var(--nimiq-ease);
+            opacity 0.2s var(--nimiq-ease);
 
         img {
             width: 3rem;
@@ -265,7 +264,6 @@ export default defineComponent({
         &:focus {
             filter: saturate(1);
             opacity: 1;
-            transform: scale(1.1);
         }
     }
 }

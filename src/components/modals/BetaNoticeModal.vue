@@ -32,7 +32,7 @@
             <!-- eslint-disable-next-line max-len -->
             <i18n path="This is a beta version of the new Nimiq Wallet. You can use it in the same way as the current {link}. Some things might not work as expected, but we’re on it."
                 tag="p" class="nq-text"
-            ><a slot="link" href="https://safe.nimiq.com" class="nq-link">Nimiq Safe</a>
+            ><a slot="link" href="https://safe.nimiq.com" class="nq-link" target="_blank">Nimiq Safe</a>
             </i18n>
 
             <i18n path="If you find a bug or have any feedback, feel free to let us know in this {link}."

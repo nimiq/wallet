@@ -121,7 +121,7 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:59
+#: src/components/TransactionList.vue:65
 msgid "Buy NIM"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:300
-#: src/components/TransactionList.vue:55
+#: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
 msgstr ""
@@ -178,7 +178,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/TransactionList.vue:51
+#: src/components/TransactionList.vue:57
 msgid "Congrats"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
-#: src/components/TransactionList.vue:42
+#: src/components/TransactionList.vue:48
 msgid "Fetching"
 msgstr ""
 
@@ -399,7 +399,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/TransactionList.vue:54
+#: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
 msgstr ""
 
@@ -476,7 +476,7 @@ msgstr ""
 msgid "Nimiq OASIS enables decentra­lized buying and selling directly from your wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:76
+#: src/components/TransactionList.vue:82
 msgid "No transactions found"
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "One more thing"
 msgstr ""
 
-#: src/components/TransactionList.vue:56
+#: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
 msgstr ""
 
@@ -533,7 +533,7 @@ msgid "Receive"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:7
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:78
 msgid "Receive free NIM"
 msgstr ""
 
@@ -541,7 +541,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:67
+#: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -739,8 +739,8 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
-#: src/components/TransactionList.vue:231
-#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:253
 msgid "This month"
 msgstr ""
 
@@ -791,7 +791,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/TransactionList.vue:52
+#: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr ""
 
@@ -827,6 +827,6 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/TransactionList.vue:66
+#: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr ""

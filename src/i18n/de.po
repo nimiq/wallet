@@ -141,7 +141,7 @@ msgstr "Kaufen & Verkaufen"
 msgid "Buy and sell with your wallet."
 msgstr "Kaufe und verkaufe mit deinem Wallet."
 
-#: src/components/TransactionList.vue:59
+#: src/components/TransactionList.vue:65
 msgid "Buy NIM"
 msgstr "NIM kaufen"
 
@@ -158,7 +158,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:300
-#: src/components/TransactionList.vue:55
+#: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:134
 msgid "Cashlink"
 msgstr "Cashlink"
@@ -202,7 +202,7 @@ msgstr "Zwischenspeicher löschen"
 msgid "Coming soon"
 msgstr "Bald verfügbar"
 
-#: src/components/TransactionList.vue:51
+#: src/components/TransactionList.vue:57
 msgid "Congrats"
 msgstr "Glückwunsch"
 
@@ -337,7 +337,7 @@ msgstr "Faucet nicht verfügbar (falsches Netzwerk)"
 msgid "fee"
 msgstr "Gebühr"
 
-#: src/components/TransactionList.vue:42
+#: src/components/TransactionList.vue:48
 msgid "Fetching"
 msgstr "Lade"
 
@@ -442,7 +442,7 @@ msgstr "Unzureichendes Guthaben."
 msgid "invalid"
 msgstr "ungültig"
 
-#: src/components/TransactionList.vue:54
+#: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
 msgstr "Lade Freunde ein mit einem "
 
@@ -534,7 +534,7 @@ msgstr ""
 "Nimiq OASIS macht es möglich direkt von deinem Wallet aus dezentral zu "
 "kaufen und zu verkaufen."
 
-#: src/components/TransactionList.vue:76
+#: src/components/TransactionList.vue:82
 msgid "No transactions found"
 msgstr "Keine Transaktionen gefunden"
 
@@ -566,7 +566,7 @@ msgstr "Ein Konto, viele Adressen"
 msgid "One more thing"
 msgstr "Eines noch"
 
-#: src/components/TransactionList.vue:56
+#: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
 msgstr "oder gehe zu eine Tauschbörse und hol dir mehr."
 
@@ -603,7 +603,7 @@ msgstr ""
 msgid "Receive"
 msgstr "Empfangen"
 
-#: src/components/TestnetFaucet.vue:7 src/components/TransactionList.vue:72
+#: src/components/TestnetFaucet.vue:7 src/components/TransactionList.vue:78
 msgid "Receive free NIM"
 msgstr "Kostenlos NIM bekommen"
 
@@ -611,7 +611,7 @@ msgstr "Kostenlos NIM bekommen"
 msgid "Receive NIM"
 msgstr "NIM bekommen"
 
-#: src/components/TransactionList.vue:67
+#: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
 msgstr "Erhalte ein paar kostenlose NIM für den Anfang."
 
@@ -835,8 +835,8 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr "Dies ist ein Legacy-Konto"
 
-#: src/components/TransactionList.vue:231
-#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:253
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -891,7 +891,7 @@ msgstr "Du bist ein Teil der Nimiq Blockchain."
 msgid "You are using a Legacy Account "
 msgstr "Du nutzt ein Legacy-Konto"
 
-#: src/components/TransactionList.vue:52
+#: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr "Du besitzt jetzt Krypto!"
 
@@ -940,6 +940,6 @@ msgstr ""
 "Deine NIM sind in einem Legacy-Konto gespeichert. Übertrage sie auf ein "
 "reguläres Konto, um von neuen Funktionen zu profitieren."
 
-#: src/components/TransactionList.vue:66
+#: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr "Deine Transaktionen werden hier angezeigt"

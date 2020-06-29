@@ -47,7 +47,9 @@
             </PageHeader>
             <PageBody class="flex-column link-overlay">
                 <div class="inputs">
+                    <div class="separator"></div>
                     <AmountInput v-model="amount" :maxFontSize="5"/>
+                    <div class="separator"></div>
                 </div>
                 <!-- <AmountInput v-model="amount" />
                 <labelInput v-model="message" placeholder="add a message" /> -->
@@ -230,11 +232,20 @@ export default defineComponent({
 
     .inputs {
         width: calc(100% + 4rem);
-        border-top: 1px solid rgba(31, 35, 72, 0.1);
-        border-bottom: 1px solid rgba(31, 35, 72, 0.1);
-        margin: 0 -2rem 2rem;
-        padding: 1.25rem 0 1.25rem;
+        margin: -1rem -2rem 2rem;
         position: relative;
+
+        .separator:first-child {
+            height: 2px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1.5px 0 var(--text-10);
+        }
+
+        .separator:last-child {
+            height: 2px;
+            margin-top: 1.5rem;
+            box-shadow: 0 -1.5px 0 var(--text-10);
+        }
 
         .amount-input {
             font-size: 5rem;

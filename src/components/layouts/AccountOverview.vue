@@ -258,7 +258,7 @@ export default defineComponent({
 
 .bitcoin-teaser {
     height: 15rem;
-    border-top: 0.25rem solid var(--text-10);
+    box-shadow: 0 -1.5px 0 var(--text-10);
     align-items: center;
     color: var(--text-40);
     font-size: var(--body-size);
@@ -283,7 +283,7 @@ export default defineComponent({
         font-weight: bold;
         letter-spacing: 0.06em;
         padding: 0.75rem 1.75rem;
-        border: 0.25rem solid var(--text-10);
+        box-shadow: 0 0 0 1.5px var(--text-10);
         border-radius: 500px;
     }
 }

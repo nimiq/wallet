@@ -420,7 +420,6 @@ export default defineComponent({
 }
 
 .unclaimed-cashlink-list {
-    // border: 0.25rem solid rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
     border-radius: 0.75rem;
     padding: 2rem;
     position: relative;

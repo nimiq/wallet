@@ -190,7 +190,7 @@ export default defineComponent({
         --padding-bottom: 4rem;
     }
 
-    --item-margin: calc(var(--padding-top) / 2);
+    --item-margin: var(--padding-top);
 
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
 
@@ -344,6 +344,10 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
+    .address-list {
+        margin-top: 0;
+    }
+
     .bitcoin-teaser {
         height: 11rem;
         padding: 0 1.75rem;

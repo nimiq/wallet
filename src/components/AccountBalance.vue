@@ -65,16 +65,21 @@ export default defineComponent({
 }
 
 .nq-label {
-    margin-bottom: 0.5rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
 }
 
 .fiat-amount {
     font-size: 7rem;
+    // Fixed line-height, so that the block height doesn't change when
+    // the font-size is dynamically adjusted for number length.
+    line-height: 7rem;
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
     .fiat-amount {
         font-size: 5.5rem;
+        line-height: 5.5rem;
     }
 }
 </style>

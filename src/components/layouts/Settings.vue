@@ -356,6 +356,7 @@ select {
 
     &:disabled {
         opacity: .5;
+        cursor: default;
     }
 }
 

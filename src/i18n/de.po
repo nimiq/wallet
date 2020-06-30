@@ -123,7 +123,7 @@ msgstr "Block #{height}"
 
 #: src/components/modals/TransactionModal.vue:169
 msgid "Block explorer"
-msgstr ""
+msgstr "Block Explorer"
 
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
@@ -209,7 +209,8 @@ msgstr "Glückwunsch"
 
 #: src/components/modals/WelcomeModal.vue:21
 msgid ""
-"Connect directly to the blockchain – be independent from any middleman."
+"Connect directly to the Nimiq blockchain.\n"
+"Be independent from any middleman."
 msgstr ""
 "Verbinde dich direkt mit der Blockchain, komplett unabhängig von "
 "irgendwelchen Mittelsmännern."
@@ -512,7 +513,8 @@ msgstr "Netzwerk"
 
 #: src/components/modals/WelcomeModal.vue:28
 msgid ""
-"Nimiq does not store your personal data. Use your Login File to log in."
+"Nimiq does not store your personal data.\n"
+"Use your Login File to log in."
 msgstr ""
 "Nimiq speichert keine persönlichen Daten. Nutze die Login-Datei um dich "
 "anzumelden."
@@ -679,16 +681,16 @@ msgstr "Senden"
 msgid "Send all"
 msgstr "Alles senden"
 
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Send and receive NIM directly on the blockchain."
+msgstr "Sende und empfange NIM direkt auf der Blockchain."
+
 #: src/components/modals/NetworkInfoModal.vue:13
 msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 "NIM ohne Mittelsmann versenden und empfangen. Das ist wahre "
 "Dezentralisierung."
-
-#: src/components/modals/WelcomeModal.vue:64
-msgid "Send and receive transactions directly on the blockchain."
-msgstr "Sende und empfange Transaktionen direkt auf der Blockchain."
 
 #: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "send and receive transactions."
@@ -786,7 +788,7 @@ msgstr "Starttermin für EU-Bankkonten ist das 3. Quartal 2020."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
-msgstr ""
+msgstr "Verwahre, sende und empfange NIM."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""

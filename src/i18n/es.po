@@ -1,10 +1,11 @@
 # 
 # Translators:
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
+# Sören Schwert <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2020\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/107022/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -211,6 +212,8 @@ msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
 msgstr ""
+"Conéctese directamente a la cadena de bloques - sea independiente de "
+"cualquier intermediario."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
@@ -513,6 +516,8 @@ msgid ""
 "Nimiq does not store your personal data.\n"
 "Use your Login File to log in."
 msgstr ""
+"Nimiq no almacena sus datos personales. Utilice su Archivo de Acceso para "
+"iniciar sesión."
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
@@ -678,7 +683,7 @@ msgstr "Enviar todo"
 
 #: src/components/modals/WelcomeModal.vue:64
 msgid "Send and receive NIM directly on the blockchain."
-msgstr ""
+msgstr "Envíe y reciba NIM directamente en la cadena de bloques."
 
 #: src/components/modals/NetworkInfoModal.vue:13
 msgid ""
@@ -785,7 +790,7 @@ msgstr "Comenzando con cuentas bancarias Europeas en Q3 2020."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
-msgstr ""
+msgstr "Almacene, envíe y reciba NIM."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""

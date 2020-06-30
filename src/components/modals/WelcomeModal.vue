@@ -46,7 +46,8 @@
                 </p>
             </div>
             <div class="visual nim-and-btc">
-                <img src="../../assets/slides/nim-and-btc-half.svg" key="nim-and-btc">
+                <BitcoinIcon/>
+                <Identicon :address="activeAddress"/>
             </div>
         </PageBody>
 
@@ -116,13 +117,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon, Identicon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { backup } from '../../hub';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     setup(props, context) {
@@ -149,6 +152,8 @@ export default defineComponent({
 
         const { state: settings$, setLanguage } = useSettingsStore();
 
+        const { activeAddress } = useAddressStore();
+
         return {
             page,
             reset,
@@ -158,6 +163,7 @@ export default defineComponent({
             setLanguage,
             activeAccountInfo,
             AccountType,
+            activeAddress,
         };
     },
     components: {
@@ -167,6 +173,8 @@ export default defineComponent({
         PageFooter,
         Tooltip,
         CaretRightSmallIcon,
+        Identicon,
+        BitcoinIcon,
     },
 });
 </script>
@@ -211,7 +219,8 @@ export default defineComponent({
     }
 
     .visual.nim-and-btc {
-        width: 13.75rem;
+        width: 11.75rem;
+        position: relative
     }
 
     .visual.browser-network {
@@ -222,6 +231,23 @@ export default defineComponent({
     .visual.login-file {
         width: 19rem;
         margin-left: -9rem;
+    }
+
+    .nim-and-btc .identicon,
+    .nim-and-btc svg {
+        position: absolute;
+        left: -6rem;
+        top: 0;
+        width: 16rem;
+        height: 16rem;
+    }
+
+    .nim-and-btc svg {
+        left: -4.75rem;
+        top: 12.25rem;
+        width: 14.75rem;
+        height: 14.75rem;
+        opacity: 0.2;
     }
 
     .nq-button {

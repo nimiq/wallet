@@ -10,7 +10,8 @@
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}
                 <p slot="more" class="nq-notice info">
-                    {{ $t('Store, send and receive NIM and BTC.') }}
+                    {{ $t('Store, send and receive NIM.') }}
+                    <!-- {{ $t('Store, send and receive NIM and BTC.') }} -->
                 </p>
             </template>
 
@@ -36,7 +37,10 @@
                         <strong>NIM</strong>
                     </template>
                 </i18n>
-                <i18n path="And {BTC}, the gold standard of crypto and a sound store of value." tag="p" class="nq-text">
+                <label class="coming-soon">{{ $t('Coming soon') }}</label>
+                <i18n path="And {BTC}, the gold standard of crypto and a sound store of value."
+                    tag="p" class="nq-text bitcoin"
+                >
                     <template v-slot:BTC>
                         <strong>BTC</strong>
                     </template>
@@ -248,6 +252,23 @@ export default defineComponent({
         width: 14.75rem;
         height: 14.75rem;
         opacity: 0.2;
+    }
+
+    .nq-text.bitcoin {
+        opacity: 0.6;
+    }
+
+    .coming-soon {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: var(--small-label-size);
+        font-weight: bold;
+        letter-spacing: 0.06em;
+        padding: 0.625rem 1.5rem;
+        box-shadow: 0 0 0 1.5px var(--text-10);
+        border-radius: 5rem;
+        margin: 1rem 0 -1rem 2rem;
+        color: var(--text-40);
     }
 
     .nq-button {

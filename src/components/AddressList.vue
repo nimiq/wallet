@@ -69,7 +69,7 @@ export default defineComponent({
             let scalingRatio = 1;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
             const refs = (context.refs[`address-button-${address}`] as Vue[] | undefined);
-            if (refs) {
+            if (refs && refs.length) {
                 const el = refs[0].$el as HTMLElement;
 
                 scalingRatio = el.clientHeight / 72; // 72px or 9rem is the original height of the activeBox

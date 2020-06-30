@@ -10,8 +10,14 @@ if (!buildName) {
     throw new Error('Please specify the build config with the `build` environment variable');
 }
 
-const tags = process.env.NODE_ENV === 'production' ? child_process.execSync("git tag --points-at HEAD").toString().split('\n') : ['linter'];
-const release = tags[0];
+let release;
+if (process.env.NODE_ENV !== 'production') {
+    release = 'dev';
+} else if (process.env.CI) {
+    release = 'ci';
+} else {
+    release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
+}
 if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
 }

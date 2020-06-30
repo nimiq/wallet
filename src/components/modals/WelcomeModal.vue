@@ -18,14 +18,14 @@
             <template v-if="page === 2">
                 {{ $t('Your browser is a node') }}
                 <p slot="more" class="nq-notice info">
-                    {{ $t('Connect directly to the blockchain – be independent from any middleman.') }}
+                    {{ $t('Connect directly to the Nimiq blockchain.\nBe independent from any middleman.') }}
                 </p>
             </template>
 
             <template v-if="page === 3">
                 {{ $t('Download your Login File') }}
                 <p slot="more" class="nq-notice info">
-                    {{ $t('Nimiq does not store your personal data. Use your Login File to log in.') }}
+                    {{ $t('Nimiq does not store your personal data.\nUse your Login File to log in.') }}
                 </p>
             </template>
         </PageHeader>
@@ -61,7 +61,7 @@
                     {{ $t('The Nimiq wallet is more than a web-wallet, it is a network node.') }}
                 </p>
                 <p class="nq-text">
-                    {{ $t('Send and receive transactions directly on the blockchain.') }}
+                    {{ $t('Send and receive NIM directly on the blockchain.') }}
                 </p>
                 <p class="nq-text">
                     {{ $t('It is fast, safe and makes you truly independent.') }}
@@ -186,6 +186,10 @@ export default defineComponent({
 <style scoped>
     .modal >>> .close-button {
         display: none;
+    }
+
+    .nq-notice {
+        white-space: pre-line;
     }
 
     .page-body {

@@ -184,7 +184,9 @@ msgid "Congrats"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:21
-msgid "Connect directly to the blockchain – be independent from any middleman."
+msgid ""
+"Connect directly to the Nimiq blockchain.\n"
+"Be independent from any middleman."
 msgstr ""
 
 #: src/components/NetworkStats.vue:8
@@ -466,7 +468,9 @@ msgid "Network"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:28
-msgid "Nimiq does not store your personal data. Use your Login File to log in."
+msgid ""
+"Nimiq does not store your personal data.\n"
+"Use your Login File to log in."
 msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
@@ -606,12 +610,12 @@ msgstr ""
 msgid "Send all"
 msgstr ""
 
-#: src/components/modals/NetworkInfoModal.vue:13
-msgid "Send and receive NIM without a middleman and enjoy true decentralization."
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Send and receive NIM directly on the blockchain."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:64
-msgid "Send and receive transactions directly on the blockchain."
+#: src/components/modals/NetworkInfoModal.vue:13
+msgid "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:36

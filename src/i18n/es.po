@@ -208,10 +208,9 @@ msgstr "Felicidades"
 
 #: src/components/modals/WelcomeModal.vue:21
 msgid ""
-"Connect directly to the blockchain – be independent from any middleman."
+"Connect directly to the Nimiq blockchain.\n"
+"Be independent from any middleman."
 msgstr ""
-"Conéctese directamente a la cadena de bloques - sea independiente de "
-"cualquier intermediario."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
@@ -511,10 +510,9 @@ msgstr "Red"
 
 #: src/components/modals/WelcomeModal.vue:28
 msgid ""
-"Nimiq does not store your personal data. Use your Login File to log in."
+"Nimiq does not store your personal data.\n"
+"Use your Login File to log in."
 msgstr ""
-"Nimiq no almacena sus datos personales. Utilice su Archivo de Acceso para "
-"iniciar sesión."
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
@@ -678,16 +676,16 @@ msgstr "Enviar"
 msgid "Send all"
 msgstr "Enviar todo"
 
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Send and receive NIM directly on the blockchain."
+msgstr ""
+
 #: src/components/modals/NetworkInfoModal.vue:13
 msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 "Envíe y reciba NIM sin ningún intermediario y disfrute de verdadera "
 "descentralización."
-
-#: src/components/modals/WelcomeModal.vue:64
-msgid "Send and receive transactions directly on the blockchain."
-msgstr "Envíe y reciba transacciones directamente en la cadena de bloques."
 
 #: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "send and receive transactions."

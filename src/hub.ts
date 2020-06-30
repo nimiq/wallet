@@ -29,6 +29,19 @@ hubApi.checkRedirectResponse();
 
 const APP_NAME = 'Wallet';
 
+function onError(error: 'Connection was closed' | Error) {
+    if (
+        error === 'Connection was closed'
+        || error.message === 'Connection was closed'
+        || error.message === 'CANCELED'
+    ) {
+        return null;
+    }
+
+    // TODO: Show user notification?
+    throw error;
+}
+
 function processAndStoreAccounts(accounts: Account[], replaceState = false): void {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
@@ -150,8 +163,8 @@ export async function onboard(asRedirect = false) {
         return;
     }
 
-    // TODO: Handle error
-    const accounts = await hubApi.onboard({ appName: APP_NAME });
+    const accounts = await hubApi.onboard({ appName: APP_NAME }).catch(onError);
+    if (!accounts) return;
 
     processAndStoreAccounts(accounts);
 
@@ -164,11 +177,11 @@ export async function onboard(asRedirect = false) {
 }
 
 export async function addAddress(accountId: string) {
-    // TODO: Handle error
     const addedAddress = await hubApi.addAddress({
         appName: APP_NAME,
         accountId,
-    });
+    }).catch(onError);
+    if (!addedAddress) return;
 
     const addressInfo: AddressInfo = {
         address: addedAddress.address,
@@ -186,33 +199,34 @@ export async function addAddress(accountId: string) {
 }
 
 export async function backup(accountId: string, options: { wordsOnly?: boolean, fileOnly?: boolean }) {
-    // TODO: Handle error
     const exportResult = await hubApi.export({
         appName: APP_NAME,
         accountId,
         ...options,
-    });
+    }).catch(onError);
+    if (!exportResult) return;
 
     const accountStore = useAccountStore();
     accountStore.patchAccount(accountId, exportResult);
 }
 
 export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>) {
-    // TODO: Handle error
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...tx,
-    });
+    }).catch(onError);
+    if (!signedTransaction) return null;
+
     return sendTx(signedTransaction);
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
-    // TODO: Handle error
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,
         senderAddress,
         senderBalance,
-    });
+    }).catch(onError);
+    if (!cashlink) return false;
 
     // Handle cashlink
     const cashlinkStore = useCashlinkStore();
@@ -222,11 +236,11 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
 }
 
 export async function manageCashlink(cashlinkAddress: string) {
-    // TODO: Handle error
     const cashlink = await hubApi.manageCashlink({
         appName: APP_NAME,
         cashlinkAddress,
-    }).catch((error) => {
+    }).catch(onError).catch((error: null | Error) => {
+        if (!error) return null;
         if (error.message.startsWith('Could not find Cashlink for address')) {
             return {
                 address: cashlinkAddress,
@@ -236,6 +250,7 @@ export async function manageCashlink(cashlinkAddress: string) {
         }
         throw error;
     });
+    if (!cashlink) return false;
 
     // Handle cashlink
     const cashlinkStore = useCashlinkStore();
@@ -245,12 +260,12 @@ export async function manageCashlink(cashlinkAddress: string) {
 }
 
 export async function rename(accountId: string, address?: string) {
-    // TODO: Handle error
     const account = await hubApi.rename({
         appName: APP_NAME,
         accountId,
         address,
-    });
+    }).catch(onError);
+    if (!account) return;
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
@@ -262,21 +277,20 @@ export async function rename(accountId: string, address?: string) {
 }
 
 export async function changePassword(accountId: string) {
-    // TODO: Handle error
     await hubApi.changePassword({
         appName: APP_NAME,
         accountId,
-    });
+    }).catch(onError);
 }
 
 export async function logout(accountId: string) {
-    // TODO: Handle error
     const loggedOut = await hubApi.logout({
         appName: APP_NAME,
         accountId,
-    });
-
+    }).catch(onError);
     if (!loggedOut) return;
+
+    if (!loggedOut.success) return;
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();

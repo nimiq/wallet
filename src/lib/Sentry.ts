@@ -1,4 +1,4 @@
-import { init, captureException } from '@sentry/browser';
+import { init } from '@sentry/browser';
 import { Vue as VueIntegration } from '@sentry/integrations';
 import Config from 'config';
 
@@ -9,13 +9,5 @@ export function startSentry(Vue: any) {
             integrations: [new VueIntegration({ Vue, attachProps: true })],
             environment: Config.environment,
         });
-        Vue.prototype.$captureException = captureException;
-    }
-}
-
-// Types
-declare module 'vue/types/vue' {
-    interface Vue {
-        $captureException?: typeof captureException;
     }
 }

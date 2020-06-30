@@ -494,30 +494,25 @@ export default defineComponent({
                     validityStartHeight: network$.height,
                 });
 
-                if (plainTx) {
-                    // Show success screen
-                    statusState.value = State.SUCCESS;
-                    statusTitle.value = recipientWithLabel.value!.label
-                        ? context.root.$t('Sent {nim} NIM to {name}', {
-                            nim: amount.value / 1e5,
-                            name: recipientWithLabel.value!.label,
-                        })
-                        : context.root.$t('Sent {nim} NIM', {
-                            nim: amount.value / 1e5,
-                        });
-
-                    // Close modal
-                    setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
-                }
-            } catch (error) {
-                if (error.message === 'CANCELED'
-                    || error === 'Connection was closed'
-                    || error.message === 'Connection was closed'
-                ) {
+                if (!plainTx) {
                     statusScreenOpened.value = false;
                     return;
                 }
 
+                // Show success screen
+                statusState.value = State.SUCCESS;
+                statusTitle.value = recipientWithLabel.value!.label
+                    ? context.root.$t('Sent {nim} NIM to {name}', {
+                        nim: amount.value / 1e5,
+                        name: recipientWithLabel.value!.label,
+                    })
+                    : context.root.$t('Sent {nim} NIM', {
+                        nim: amount.value / 1e5,
+                    });
+
+                // Close modal
+                setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+            } catch (error) {
                 // console.debug(error);
 
                 // Show error screen

@@ -4,5 +4,5 @@ export default {
     hubEndpoint: 'https://hub.nimiq-testnet.com',
     environment: ENV_TEST,
     networkEndpoint: 'https://network.nimiq-testnet.com',
-    reportToSentry: false,
+    reportToSentry: true,
 };

@@ -16,11 +16,11 @@ if [[ `git status --porcelain` ]]; then
     exit 1
 fi
 
-# Build Vue app
-yarn build &&
-
 # Tag current commit
 git tag $1 &&
+
+# Build Vue app
+yarn build &&
 
 # Push commit and tag to origin
 git push && git push --tags &&

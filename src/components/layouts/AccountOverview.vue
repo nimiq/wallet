@@ -27,7 +27,7 @@
             <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
                 <MenuIcon/>
             </button>
-            <button class="reset consensus" @click="$router.push('/network')">
+            <button class="reset consensus" @click="$router.push('/network').catch(() => {})">
                 <ConsensusIcon/>
             </button>
         </div>

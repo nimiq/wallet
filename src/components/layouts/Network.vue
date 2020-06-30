@@ -6,7 +6,7 @@
                 <button class="reset menu-button" @click="$router.push({name: 'network', query: {sidebar: true}})">
                     <MenuIcon/>
                 </button>
-                <button class="nq-button-s inverse account-button" @click="$router.push('/')">
+                <button class="nq-button-s inverse account-button" @click="$router.push('/').catch(() => {})">
                     {{ $t('Back to Addresses') }}
                 </button>
                 <button class="reset info-button" @click="showNetworkInfo = true">

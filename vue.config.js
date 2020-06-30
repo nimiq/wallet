@@ -1,11 +1,20 @@
 const path = require('path');
+const child_process = require('child_process');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
-if (!buildName) throw new Error('Please specify the build config with the `build` environment variable');
+if (!buildName) {
+    throw new Error('Please specify the build config with the `build` environment variable');
+}
+
+const tags = process.env.NODE_ENV === 'production' ? child_process.execSync("git tag --points-at HEAD").toString().split('\n') : ['linter'];
+const release = tags[0];
+if (!release) {
+    throw new Error('The current commit must be tagged with the release version name.');
+}
 
 console.log('Building for:', buildName);
 
@@ -13,6 +22,11 @@ module.exports = {
     configureWebpack: {
         plugins: [
             new PoLoaderOptimizer(),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    SENTRY_RELEASE: `"wallet-${release}"`,
+                },
+            }),
         ],
         // Resolve config for yarn build
         resolve: {

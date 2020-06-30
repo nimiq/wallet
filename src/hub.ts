@@ -173,7 +173,6 @@ export async function onboard(asRedirect = false) {
         // which also have no exports.
         router.push('/welcome');
     }
-    router.push('/welcome');
 }
 
 export async function addAddress(accountId: string) {

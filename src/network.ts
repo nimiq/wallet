@@ -93,7 +93,7 @@ export async function launchNetwork() {
                 transactionsStore.addTransactions(txDetails);
             })
             .catch(() => fetchedAddresses.delete(address))
-            .finally(() => network$.fetchingTxHistory--);
+            .then(() => network$.fetchingTxHistory--);
     });
 
     // Fetch transactions for cashlinks
@@ -145,7 +145,7 @@ export async function launchNetwork() {
                     transactionsStore.addTransactions(txDetails);
                 })
                 .catch(() => fetchedCashlinks.delete(address))
-                .finally(() => network$.fetchingTxHistory--);
+                .then(() => network$.fetchingTxHistory--);
         }
     });
 }

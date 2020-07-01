@@ -1,8 +1,8 @@
 <template>
-    <div v-if="text" class="announcement-box nq-green-bg">
-        <p>{{ text }}</p>
-        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank">{{ cta }}</BlueLink>
-        <button v-else class="reset action flex-row" @click="action">{{ cta }}<ArrowRightSmallIcon/></button>
+    <div v-if="text()" class="announcement-box nq-green-bg">
+        <p>{{ text() }}</p>
+        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank">{{ cta() }}</BlueLink>
+        <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon/></button>
     </div>
 </template>
 
@@ -14,8 +14,8 @@ import BlueLink from './BlueLink.vue';
 
 export default defineComponent({
     setup(props, context) {
-        let text: LocaleMessage = '';
-        let cta: LocaleMessage = '';
+        let text: () => LocaleMessage = () => '';
+        let cta: () => LocaleMessage = () => '';
         let action: string | Function = '';
 
         // // Dark Mode
@@ -24,8 +24,8 @@ export default defineComponent({
         // action = () => context.root.$router.push('/settings');
 
         // Beta Testing
-        text = context.root.$t('Got feedback? Found a bug?');
-        cta = context.root.$t('Tell us here');
+        text = () => context.root.$t('Got feedback? Found a bug?');
+        cta = () => context.root.$t('Tell us here');
         action = 'https://forum.nimiq.community/t/new-wallet-feedback-thread/845';
 
         return {

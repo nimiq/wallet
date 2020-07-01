@@ -171,6 +171,7 @@ export default defineComponent({
 .announcement-box {
     margin-bottom: 2.5rem;
     margin-top: 2rem;
+    align-self: stretch;
 }
 
 .price-chart-wrapper {

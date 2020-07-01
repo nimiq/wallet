@@ -353,10 +353,6 @@ msgstr "El archivo no contiene contactos."
 msgid "For beginners"
 msgstr "Para novatos"
 
-#: src/components/modals/BetaNoticeModal.vue:43
-msgid "forum thread"
-msgstr "hilo del foto"
-
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr "Nodo Completo"
@@ -379,7 +375,11 @@ msgstr "Obtener NIM y BTC"
 msgid "Get NIM on {exchange}"
 msgstr "Obtener NIM en {exchange}"
 
-#: src/components/modals/BetaNoticeModal.vue:45
+#: src/components/AnnouncementBox.vue:27
+msgid "Got feedback? Found a bug?"
+msgstr ""
+
+#: src/components/modals/BetaNoticeModal.vue:42
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr "Lo tengo"
@@ -403,14 +403,6 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
 msgstr "conserve, maneje y agregue Direcciones."
-
-#: src/components/modals/BetaNoticeModal.vue:38
-msgid ""
-"If you find a bug or have any feedback, feel free to let us know in this "
-"{link}."
-msgstr ""
-"Si encuentra un error o tiene alguna retro-alimentación, le invitamos a que "
-"nos lo haga saber en este {link}."
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -792,6 +784,10 @@ msgstr "Comenzando con cuentas bancarias Europeas en Q3 2020."
 msgid "Store, send and receive NIM."
 msgstr "Almacene, envíe y reciba NIM."
 
+#: src/components/AnnouncementBox.vue:28
+msgid "Tell us here"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
@@ -813,6 +809,12 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "La billetera Nimiq es mas que una billetera web, es un nodo de la red."
 
+#: src/components/modals/BetaNoticeModal.vue:36
+msgid ""
+"The old {NimiqSafe} remains available but will be replaced by the new Nimiq "
+"Wallet eventually."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:8
 msgid ""
 "There are many options, use a credit card or trade crypto. You can find more"
@@ -825,16 +827,6 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr "No hay opción de \"Olvidé mi contraseña\""
 
-#: src/components/modals/BetaNoticeModal.vue:33
-msgid ""
-"This is a beta version of the new Nimiq Wallet. You can use it in the same "
-"way as the current {link}. Some things might not work as expected, but we’re"
-" on it."
-msgstr ""
-"Esta es la versión beta de la nueva Billetera Nimiq. Puede usarla de la "
-"misma forma que {link}. Puede que algunas cosas no funcionen perfectamente, "
-"pero estamos trabajando en ello."
-
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Esta es una Cuenta Versión Antigua"
@@ -843,6 +835,12 @@ msgstr "Esta es una Cuenta Versión Antigua"
 #: src/components/TransactionList.vue:253
 msgid "This month"
 msgstr "Este mes"
+
+#: src/components/modals/BetaNoticeModal.vue:34
+msgid ""
+"This next-gen browser wallet will feature staking, buying/selling and BTC "
+"support!"
+msgstr ""
 
 #: src/components/AccountBalance.vue:3
 msgid "Total Balance"
@@ -875,11 +873,9 @@ msgstr "Utilícelo para acceder a su cuenta desde cualquier dispositivo."
 
 #: src/components/modals/BetaNoticeModal.vue:31
 msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet!"
+"Welcome to the new\n"
+"Nimiq Wallet"
 msgstr ""
-"¡Bienvenido a la\n"
-"nueva Billetera Nimiq!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

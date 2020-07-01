@@ -28,20 +28,17 @@
                 </svg>
             <!-- eslint-enable max-len -->
 
-            <h1 class="nq-h1">{{ $t('Welcome to the\nnew Nimiq\u00a0Wallet!') }}</h1>
-            <!-- eslint-disable-next-line max-len -->
-            <i18n path="This is a beta version of the new Nimiq Wallet. You can use it in the same way as the current {link}. Some things might not work as expected, but we’re on it."
-                tag="p" class="nq-text"
-            ><a slot="link" href="https://safe.nimiq.com" class="nq-link" target="_blank">Nimiq Safe</a>
-            </i18n>
+            <h1 class="nq-h1">{{ $t('Welcome to the new\nNimiq\u00a0Wallet') }}</h1>
 
-            <i18n path="If you find a bug or have any feedback, feel free to let us know in this {link}."
+            <p class="nq-text">
+                {{ $t('This next-gen browser wallet will feature staking, buying/selling and BTC support!') }}
+            </p>
+            <i18n path="The old {NimiqSafe} remains available but will be replaced by the new Nimiq Wallet eventually."
                 tag="p" class="nq-text"
             >
-                <a slot="link" href="https://forum.nimiq.community/t/announcing-wallet-public-beta-testnet/784"
-                    class="nq-link" target="_blank"
-                >{{ $t('forum thread') }}</a>
+                <a slot="NimiqSafe" href="https://safe.nimiq.com" class="nq-link" target="_blank">Nimiq Safe</a>
             </i18n>
+
             <button class="nq-button light-blue" @click="$emit('close')">{{ $t('Got it') }}</button>
         </PageBody>
     </Modal>
@@ -81,8 +78,7 @@ svg {
 
 .nq-text {
     color: var(--nimiq-blue);
-    margin-top: 0;
-    margin-bottom: 2rem;
+    margin: 0 1.5rem 2rem 1.5rem;
 }
 
 .nq-link {

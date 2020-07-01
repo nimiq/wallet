@@ -323,10 +323,6 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:43
-msgid "forum thread"
-msgstr ""
-
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr ""
@@ -349,7 +345,11 @@ msgstr ""
 msgid "Get NIM on {exchange}"
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:45
+#: src/components/AnnouncementBox.vue:27
+msgid "Got feedback? Found a bug?"
+msgstr ""
+
+#: src/components/modals/BetaNoticeModal.vue:42
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr ""
@@ -368,10 +368,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
-msgstr ""
-
-#: src/components/modals/BetaNoticeModal.vue:38
-msgid "If you find a bug or have any feedback, feel free to let us know in this {link}."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:45
@@ -714,6 +710,10 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
+#: src/components/AnnouncementBox.vue:28
+msgid "Tell us here"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
@@ -728,16 +728,16 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
+#: src/components/modals/BetaNoticeModal.vue:36
+msgid "The old {NimiqSafe} remains available but will be replaced by the new Nimiq Wallet eventually."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:8
 msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
-msgstr ""
-
-#: src/components/modals/BetaNoticeModal.vue:33
-msgid "This is a beta version of the new Nimiq Wallet. You can use it in the same way as the current {link}. Some things might not work as expected, but we’re on it."
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
@@ -747,6 +747,10 @@ msgstr ""
 #: src/components/TransactionList.vue:237
 #: src/components/TransactionList.vue:253
 msgid "This month"
+msgstr ""
+
+#: src/components/modals/BetaNoticeModal.vue:34
+msgid "This next-gen browser wallet will feature staking, buying/selling and BTC support!"
 msgstr ""
 
 #: src/components/AccountBalance.vue:3
@@ -780,8 +784,8 @@ msgstr ""
 
 #: src/components/modals/BetaNoticeModal.vue:31
 msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet!"
+"Welcome to the new\n"
+"Nimiq Wallet"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:84

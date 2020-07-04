@@ -1,13 +1,13 @@
 # 
 # Translators:
-# Sebastian Langer <basti@b-compu.de>, 2020
 # Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
+# Sebastian Langer <basti@b-compu.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Sebastian Langer <basti@b-compu.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -35,6 +35,8 @@ msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
+"Ein Kontakt mit der Adresse \"{adress}\", aber ein anderer Name exisiert bereits.\n"
+"Willst du ihn überschreiben?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
@@ -155,7 +157,7 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:169
 msgid "Cannot import contacts, wrong file format."
-msgstr ""
+msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
 #: src/components/modals/TransactionModal.vue:300
 #: src/components/TransactionList.vue:61
@@ -293,7 +295,7 @@ msgstr "Kontakte bearbeiten"
 
 #: src/components/layouts/Settings.vue:32
 msgid "Edit the amount of decimals visible for NIM values."
-msgstr "Wieviele Nachkommenstellen möchtes du für NIM sehen?"
+msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
 #: src/components/modals/SendModal.vue:478
 msgid "Edit transaction"
@@ -349,15 +351,11 @@ msgstr "Fiatwert nicht verfügbar"
 
 #: src/components/layouts/Settings.vue:175
 msgid "File contains no contacts."
-msgstr ""
+msgstr "Datei enthält keine Kontakte."
 
 #: src/components/modals/TradeModal.vue:46
 msgid "For beginners"
 msgstr "Für Anfänger"
-
-#: src/components/modals/BetaNoticeModal.vue:43
-msgid "forum thread"
-msgstr "Forum Diskussion"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -381,7 +379,11 @@ msgstr "Hol dir NIM und BTC"
 msgid "Get NIM on {exchange}"
 msgstr "Kaufe NIM auf {exchange}"
 
-#: src/components/modals/BetaNoticeModal.vue:45
+#: src/components/AnnouncementBox.vue:27
+msgid "Got feedback? Found a bug?"
+msgstr "Feedback? Fehler gefunden?"
+
+#: src/components/modals/BetaNoticeModal.vue:42
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr "Alles klar"
@@ -406,21 +408,13 @@ msgstr ""
 msgid "hold, manage and aggregate Addresses."
 msgstr "Adressen verwalten und zusammenfassen."
 
-#: src/components/modals/BetaNoticeModal.vue:38
-msgid ""
-"If you find a bug or have any feedback, feel free to let us know in this "
-"{link}."
-msgstr ""
-"Wenn du einen Fehler findest oder Anmerkungen hast, lass es uns gerne in "
-"dieser {link} wissen."
-
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
-msgstr ""
+msgstr "Kontakte importieren"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import contacts that you exported from the Safe."
-msgstr ""
+msgstr "Importiere Kontakte, die du aus dem Safe exportiert hast."
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
@@ -446,7 +440,7 @@ msgstr "ungültig"
 
 #: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
-msgstr "Lade Freunde ein mit einem "
+msgstr "Lade Freunde mit einem "
 
 #: src/components/modals/WelcomeModal.vue:67
 msgid "It is fast, safe and makes you truly independent."
@@ -475,7 +469,7 @@ msgstr "Light Node"
 
 #: src/components/layouts/Settings.vue:52
 msgid "Load file"
-msgstr ""
+msgstr "Datei laden"
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -551,7 +545,7 @@ msgstr "nicht gesendet"
 
 #: src/components/layouts/Settings.vue:198
 msgid "OK! Contacts imported successfully."
-msgstr ""
+msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
@@ -571,7 +565,7 @@ msgstr "Eines noch"
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
-msgstr "oder gehe zu eine Tauschbörse und hol dir mehr."
+msgstr "ein oder gehe zu einer Tauschbörse und hol dir mehr."
 
 #: src/components/TransactionListItem.vue:35
 msgid "pending"
@@ -638,7 +632,7 @@ msgstr "Anfrage fehlgeschlagen"
 #: src/components/layouts/Settings.vue:90
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
-"Setze deine Wallet-Einstellungen zurück und lade Blockchain-Daten neu."
+"Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
 
 #: src/components/modals/SendModal.vue:477
 msgid "Retry"
@@ -790,6 +784,10 @@ msgstr "Starttermin für EU-Bankkonten ist das 3. Quartal 2020."
 msgid "Store, send and receive NIM."
 msgstr "Verwahre, sende und empfange NIM."
 
+#: src/components/AnnouncementBox.vue:28
+msgid "Tell us here"
+msgstr "Sag uns hier bescheid"
+
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
@@ -812,6 +810,14 @@ msgstr ""
 "Die Nimiq Wallet ist mehr als nur eine Web-Wallet, sie ist direkt Teil des "
 "Nimiq-Netzwerkes mit einer eingebauten Light-Node."
 
+#: src/components/modals/BetaNoticeModal.vue:36
+msgid ""
+"The old {NimiqSafe} remains available but will be replaced by the new Nimiq "
+"Wallet eventually."
+msgstr ""
+"Der alte {NimiqSafe} bleibt verfügbar, wird aber irgendwann durch das neue "
+"Nimiq Wallet ersetzt."
+
 #: src/components/modals/TradeModal.vue:8
 msgid ""
 "There are many options, use a credit card or trade crypto. You can find more"
@@ -824,16 +830,6 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr "Es gibt kein \"Passwort vergessen\""
 
-#: src/components/modals/BetaNoticeModal.vue:33
-msgid ""
-"This is a beta version of the new Nimiq Wallet. You can use it in the same "
-"way as the current {link}. Some things might not work as expected, but we’re"
-" on it."
-msgstr ""
-"Dies ist eine Beta-Version der neuen Nimiq Wallet. Du kannst sie genauso "
-"nutzen wie den jetzigen {link}. Manches funktioniert vielleicht noch nicht "
-"ganz wie erwartet, aber wir sind dran."
-
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Dies ist ein Legacy-Konto"
@@ -842,6 +838,14 @@ msgstr "Dies ist ein Legacy-Konto"
 #: src/components/TransactionList.vue:253
 msgid "This month"
 msgstr "Diesen Monat"
+
+#: src/components/modals/BetaNoticeModal.vue:34
+msgid ""
+"This next-gen browser wallet will feature staking, buying/selling and BTC "
+"support!"
+msgstr ""
+"Dieser neue Browser-Wallet wird in Zukunft staking, kaufen/verkaufen und BTC"
+" unterstützen!"
 
 #: src/components/AccountBalance.vue:3
 msgid "Total Balance"
@@ -876,11 +880,11 @@ msgstr "Benutze sie um dein Konto von anderen Geräten zu benutzen."
 
 #: src/components/modals/BetaNoticeModal.vue:31
 msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet!"
+"Welcome to the new\n"
+"Nimiq Wallet"
 msgstr ""
-"Willkommen in der\n"
-"neuen Nimiq Wallet!"
+"Herzlich Wilkommen im neuen\n"
+"Nimiq Wallet"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

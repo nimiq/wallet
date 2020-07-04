@@ -934,11 +934,6 @@
   resolved "https://registry.yarnpkg.com/@nimiq/rpc/-/rpc-0.4.0.tgz#d15f95c39d21c513172aa75c8f43ae555067cb50"
   integrity sha512-Zpv45kTnbhmr75xc8BK2o/K1gDBh3TcJwIuo95SWBoWmu4ntcKtHs744bfu6Lf49XGG8d+cFn2dPDDDIeoBfmw==
 
-"@nimiq/style@^0.8.0":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.1.tgz#0ef4f310f0b5e2a22eb773c9501e4bd936340089"
-  integrity sha512-AT1JDtC5OcZ3eTJNjRPXYlSNEcsAdpRngacO9iy2oYtu1NwBTqEoux4UtUDOtS+8hrBJYgdGvzdDg0Tqle6ouA==
-
 "@nimiq/style@^0.8.2":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.2.tgz#140ab7cbe71a9b1db6e0bca34ba880cfff64037a"
@@ -953,9 +948,9 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#44e834d002674ae49e035c575047f456942aa266"
+  resolved "https://github.com/nimiq/vue-components#38bf3dd36e324c682f88d3e2ddb98caef46f078b"
   dependencies:
-    "@nimiq/style" "^0.8.0"
+    "@nimiq/style" "^0.8.2"
     big-integer "^1.6.44"
     input-format "^0.2.8"
     qr-creator "^1.0.0"
@@ -9437,9 +9432,9 @@ vue-observe-visibility@^0.4.4:
   integrity sha512-xo0CEVdkjSjhJoDdLSvoZoQrw/H2BlzB5jrCBKGZNXN2zdZgMuZ9BKrxXDjNP2AxlcCoKc8OahI3F3r3JGLv2Q==
 
 vue-property-decorator@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/vue-property-decorator/-/vue-property-decorator-8.4.0.tgz#f4e641f84ca51a7b4721e236392a1efbb6eac00b"
-  integrity sha512-0o85LJSTLZvDaB7IXfmpONfAQZ7NgScFvptFSrlFFSsScR716muJb3mMFojNnKC3Vpm7CM4PsmHNdk30uuNpag==
+  version "8.5.1"
+  resolved "https://registry.yarnpkg.com/vue-property-decorator/-/vue-property-decorator-8.5.1.tgz#571a91cf8d2b507f537d79bf8275af3184572fff"
+  integrity sha512-O6OUN2OMsYTGPvgFtXeBU3jPnX5ffQ9V4I1WfxFQ6dqz6cOUbR3Usou7kgFpfiXDvV7dJQSFcJ5yUPgOtPPm1Q==
   dependencies:
     vue-class-component "^7.1.0"
 

@@ -36,7 +36,7 @@ build:
       - node_modules/
   script:
     - yarn install
-    - yarn build
+    - build=testnet yarn build
     # Make sure the dist directory exists, so that _this_ job fails and not the next one
     - test -d dist || (echo "No dist directory\!" && exit 1)
     - test -f dist/index.html || (echo "No files in dist\!" && exit 1)

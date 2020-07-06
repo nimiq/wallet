@@ -84,41 +84,30 @@
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
-                        <span v-if="activeCurrency !== 'nim'" class="tilde">~</span>
-                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef"/>
-                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals"/>
-                        <button
-                            class="reset amount-menu-button flex-row"
-                            @click.stop="amountMenuOpened = !amountMenuOpened"
-                        >{{ activeCurrency.toUpperCase() }}</button>
-                        <div v-if="amountMenuOpened" class="amount-menu">
-                            <button class="reset flex-row" @click="feeSelectionOpened = true">
-                                <!-- eslint-disable-next-line max-len -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="15.25" y1="3.25" x2="7.75" y2="3.25"/><line class="cls-1" x1="12.25" y1="7.75" x2="0.75" y2="7.75"/><line class="cls-1" x1="13.75" y1="12.25" x2="4.75" y2="12.25"/></g></svg>
-                                {{ $t('Set fee') }}
-                            </button>
-                            <button class="reset flex-row" @click="sendMax">
-                                <!-- eslint-disable-next-line max-len -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25"/><path class="cls-1" d="M12.25,9.3l-4-4-4,4"/><line class="cls-1" x1="3.25" y1="1.25" x2="13.25" y2="1.25"/></g></svg>
-                                {{ $t('Send all') }}
-                            </button>
-                            <div class="separator"></div>
-                            <div class="flex-row currencies">
-                                <button
-                                    class="reset" :class="{'active': activeCurrency === 'nim'}"
-                                    @click="activeCurrency = 'nim'"
-                                >NIM</button>
-                                <button
-                                    class="reset" :class="{'active': activeCurrency === fiatCurrency}"
-                                    @click="activeCurrency = fiatCurrency"
-                                >{{ fiatCurrency.toUpperCase() }}</button>
-                                <button
-                                    v-for="fiatCurrency of otherFiatCurrencies" :key="fiatCurrency"
-                                    class="reset" :class="{'active': activeCurrency === fiatCurrency}"
-                                    @click="activeCurrency = fiatCurrency"
-                                >{{ fiatCurrency.toUpperCase() }}</button>
-                            </div>
-                        </div>
+                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef">
+                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
+                            <AmountMenu slot="suffix" class="nim"
+                                :open="amountMenuOpened"
+                                :activeCurrency="activeCurrency"
+                                :fiatCurrency="fiatCurrency"
+                                :otherFiatCurrencies="otherFiatCurrencies"
+                                @fee-selection="feeSelectionOpened = true"
+                                @send-max="sendMax"
+                                @currency="(currency) => activeCurrency = currency"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                        </AmountInput>
+                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
+                            <AmountMenu slot="suffix" class="nim"
+                                :open="amountMenuOpened"
+                                :activeCurrency="activeCurrency"
+                                :fiatCurrency="fiatCurrency"
+                                :otherFiatCurrencies="otherFiatCurrencies"
+                                @fee-selection="feeSelectionOpened = true"
+                                @send-max="sendMax"
+                                @currency="(currency) => activeCurrency = currency"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                        </AmountInput>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
@@ -207,7 +196,6 @@ import {
     LabelInput,
     Copyable,
     AddressDisplay,
-    AmountInput,
     SelectBar,
     Amount,
 } from '@nimiq/vue-components';
@@ -217,6 +205,8 @@ import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
 import AddressList from '../AddressList.vue';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useContactsStore } from '../../stores/Contacts';
@@ -433,6 +423,11 @@ export default defineComponent({
          * Autofocus
          */
 
+        // FIXME: This should optimally be automatic with Typescript
+        interface AmountInput {
+            focus(): void;
+        }
+
         const addressInputRef: Ref<AddressInput | null> = ref(null);
         const labelInputRef: Ref<LabelInput | null> = ref(null);
         const amountInputRef: Ref<AmountInput | null> = ref(null);
@@ -614,6 +609,7 @@ export default defineComponent({
         IdenticonButton,
         AddressList,
         AmountInput,
+        AmountMenu,
         FiatConvertedAmount,
         SelectBar,
         Amount,
@@ -856,126 +852,26 @@ export default defineComponent({
         .tilde {
             font-size: 8rem;
             font-weight: bold;
-            opacity: 0.5;
             line-height: 10rem;
             margin-right: 0.75rem;
         }
 
         .amount-input {
             width: auto;
-            max-width: calc(100% - 10rem - 1rem); // Subtract width of AmountMenuButton and its left margin
+            max-width: 100%;
             min-height: 5rem;
-
-            /deep/ input {
-                padding-top: 0;
-                padding-bottom: 0;
-                color: inherit !important;
-            }
-
-            /deep/ .nim {
-                display: none;
-            }
         }
 
-        .estimate .amount-input {
-            max-width: calc(100% - 10rem - 1rem - 5rem); // Additionally subtract width of tilde
-        }
-
-        .amount-menu-button {
-            align-items: center;
+        .amount-menu /deep/ .button {
             margin-left: 1rem;
             margin-bottom: 1rem;
-            font-size: 4rem;
-            font-weight: bold;
-            cursor: pointer;
-
-            &::after {
-                content: '';
-                display: block;
-                width: 0;
-                height: 0;
-                border: 1rem solid transparent;
-                border-width: 1rem 0.625rem;
-                border-top-color: inherit;
-                margin-left: 0.75rem;
-                margin-bottom: -1.5rem;
-                opacity: 0.4;
-
-                transition: opacity var(--attr-duration) var(--nimiq-ease);
-            }
-
-            &:hover,
-            &:active {
-                &::after {
-                    opacity: 0.7;
-                }
-            }
         }
 
-        .amount-menu {
-            width: 16.75rem;
-            border-radius: 0.5rem;
-            background: var(--nimiq-blue-bg);
+        .amount-menu /deep/ .menu {
             position: absolute;
             right: 3rem;
             bottom: 3rem;
-            padding: 1rem;
             z-index: 1;
-            box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
-
-            button {
-                color: white;
-                opacity: 0.7;
-                font-weight: 600;
-                width: 100%;
-                text-align: left;
-                padding: 0.5rem;
-                align-items: center;
-
-                transition: opacity var(--attr-duration) var(--nimiq-ease);
-
-                svg {
-                    width: 2rem;
-                    margin-right: 1rem;
-                }
-
-                &:hover,
-                &:focus {
-                    opacity: 1 !important;
-                }
-            }
-
-            .separator {
-                height: 0.125rem;
-                background: white;
-                opacity: 0.16;
-                border-radius: 1rem;
-                margin: 1rem 0;
-            }
-
-            .currencies {
-                flex-wrap: wrap;
-
-                button {
-                    width: 50%;
-                    opacity: 0.4;
-                    font-weight: bold;
-
-                    &.active {
-                        opacity: 1;
-
-                        &::after {
-                            content: '';
-                            display: inline-block;
-                            border: 1rem solid transparent;
-                            border-width: 0.5rem 0.75rem;
-                            border-right-color: inherit;
-                            margin-bottom: 0.25rem;
-                            margin-left: -0.25rem;
-                        }
-                    }
-                }
-            }
         }
 
         .secondary-amount {
@@ -998,9 +894,10 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-row {
+            .amount-input {
                 color: var(--nimiq-orange);
             }
+
             .amount-input /deep/ input {
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }

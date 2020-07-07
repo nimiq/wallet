@@ -47,7 +47,7 @@ export default defineComponent({
         const { state: network$ } = useNetworkStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
-            if (addressInfo.type !== AddressType.VESTING) return false;
+            if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
 
             const numberVestingSteps = Math.ceil(addressInfo.totalAmount / addressInfo.stepAmount);
 

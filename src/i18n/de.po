@@ -50,7 +50,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/modals/SendModal.vue:146
+#: src/components/modals/SendModal.vue:135
 msgid "Add a public message..."
 msgstr "Öffentliche Nachricht hinzufügen..."
 
@@ -147,7 +147,7 @@ msgstr "Kaufe und verkaufe mit deinem Wallet."
 msgid "Buy NIM"
 msgstr "NIM kaufen"
 
-#: src/components/modals/SendModal.vue:171
+#: src/components/modals/SendModal.vue:160
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -185,7 +185,7 @@ msgstr "Ändere deine Spracheinstellung."
 msgid "Choose a Recipient"
 msgstr "Empfänger auswählen"
 
-#: src/components/modals/SendModal.vue:161
+#: src/components/modals/SendModal.vue:150
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
@@ -297,7 +297,7 @@ msgstr "Kontakte bearbeiten"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
-#: src/components/modals/SendModal.vue:478
+#: src/components/modals/SendModal.vue:473
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -337,7 +337,7 @@ msgstr "Faucet nicht verfügbar"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet nicht verfügbar (falsches Netzwerk)"
 
-#: src/components/modals/SendModal.vue:128
+#: src/components/modals/SendModal.vue:117
 msgid "fee"
 msgstr "Gebühr"
 
@@ -430,7 +430,7 @@ msgstr "Verbesserte Barrierefreiheit"
 msgid "In cooperation with"
 msgstr "In Kooperation mit"
 
-#: src/components/modals/SendModal.vue:136
+#: src/components/modals/SendModal.vue:125
 msgid "Insufficient balance."
 msgstr "Unzureichendes Guthaben."
 
@@ -634,7 +634,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:472
 msgid "Retry"
 msgstr "Erneut versuchen"
 
@@ -670,8 +670,7 @@ msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 msgid "Send"
 msgstr "Senden"
 
-#: src/components/modals/SendModal.vue:103
-#: src/components/modals/SendModal.vue:138
+#: src/components/AmountMenu.vue:13 src/components/modals/SendModal.vue:127
 msgid "Send all"
 msgstr "Alles senden"
 
@@ -691,7 +690,7 @@ msgid "send and receive transactions."
 msgstr "Transaktionen versenden und empfangen."
 
 #: src/components/modals/SendModal.vue:10
-#: src/components/modals/SendModal.vue:156
+#: src/components/modals/SendModal.vue:145
 msgid "Send Transaction"
 msgstr "Transaktion senden"
 
@@ -699,15 +698,15 @@ msgstr "Transaktion senden"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deinem Wallet."
 
-#: src/components/modals/SendModal.vue:474
+#: src/components/modals/SendModal.vue:469
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
-#: src/components/modals/SendModal.vue:509
+#: src/components/modals/SendModal.vue:504
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM versendet"
 
-#: src/components/modals/SendModal.vue:505
+#: src/components/modals/SendModal.vue:500
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM an {name} versendet"
 
@@ -720,7 +719,7 @@ msgstr "versandt am {dateAndTime}"
 msgid "Set Amount"
 msgstr "Betrag festlegen"
 
-#: src/components/modals/SendModal.vue:98
+#: src/components/AmountMenu.vue:8
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
@@ -760,11 +759,11 @@ msgstr "Anmelden"
 msgid "Skip for now"
 msgstr "Erstmal überspringen"
 
-#: src/components/modals/SendModal.vue:520
+#: src/components/modals/SendModal.vue:515
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:158
 msgid "Speed up your transaction"
 msgstr "Beschleunige deine Transaktion"
 
@@ -902,7 +901,7 @@ msgstr "Du nutzt ein Legacy-Konto"
 msgid "You now own crypto!"
 msgstr "Du besitzt jetzt Krypto!"
 
-#: src/components/modals/SendModal.vue:132
+#: src/components/modals/SendModal.vue:121
 msgid "You will send {amount} NIM"
 msgstr "Du sendest {amount} NIM"
 

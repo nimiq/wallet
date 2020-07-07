@@ -32,8 +32,9 @@ const APP_NAME = 'Wallet';
 function onError(error: 'Connection was closed' | Error) {
     if (
         error === 'Connection was closed'
-        || error.message === 'Connection was closed'
-        || error.message === 'CANCELED'
+        || error.message === 'Connection was closed' // Popup closed
+        || error.message === 'Request aborted' // Reject-on-back
+        || error.message === 'CANCELED' // Cancelled by user action
     ) {
         return null;
     }

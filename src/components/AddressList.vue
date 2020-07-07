@@ -90,7 +90,7 @@ export default defineComponent({
         const scrollbarVisible = ref(false);
         onMounted(() => {
             watch(addressInfos, () => {
-                scrollbarVisible.value = root.value!.offsetWidth > root.value!.scrollWidth;
+                scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
             });
         });
 

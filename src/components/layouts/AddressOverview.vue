@@ -17,9 +17,14 @@
                 </button>
                 <button
                     class="reset icon-button"
-                    @click="$router.push('/receive')"
+                    @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
                     <MenuDotsIcon/>
+                    <div class="popup-menu nq-blue-bg">
+                        <button class="reset flex-row" @click="rename(activeAccountId, activeAddressInfo.address)">
+                            <RenameIcon/>{{ $t('Rename') }}
+                        </button>
+                    </div>
                 </button>
             </div>
             <div class="active-address flex-row">
@@ -251,56 +256,6 @@ export default defineComponent({
                 opacity: 0.5;
                 transition: opacity 0.3s var(--nimiq-ease);
             }
-
-            .popup-menu {
-                position: absolute;
-                top: -0.25rem;
-                left: -0.25rem;
-                font-size: var(--body-size);
-                padding: 0.5rem;
-                font-weight: 600;
-                border-radius: 0.5rem;
-                z-index: 1;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.3s var(--nimiq-ease);
-
-                button {
-                    padding: 1rem 1.5rem 1rem 1rem;
-                    border-radius: 0.25rem;
-                    transition: background-color .3s var(--nimiq-ease);
-
-                    svg {
-                        width: 2.75rem;
-                        height: 3rem;
-                        margin: -0.125rem 1rem -0.125rem 0;
-                        opacity: 0.8;
-                    }
-
-                    &:hover,
-                    &:focus {
-                        background: rgba(255, 255, 255, 0.12);
-                    }
-                }
-            }
-
-            &:hover,
-            &:focus,
-            &:focus-within {
-                opacity: 1;
-
-                .nq-icon {
-                    opacity: 0.8;
-                }
-            }
-
-            &:focus,
-            &:focus-within {
-                .popup-menu {
-                    pointer-events: all;
-                    opacity: 1;
-                }
-            }
         }
     }
 
@@ -408,6 +363,67 @@ export default defineComponent({
     button {
         flex-shrink: 0;
     }
+}
+
+.actions-mobile .icon-button,
+.active-address .identicon-wrapper .identicon-menu {
+    .popup-menu {
+        position: absolute;
+        font-size: var(--body-size);
+        padding: 0.5rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s var(--nimiq-ease);
+
+        button {
+            padding: 1rem 1.5rem 1rem 1rem;
+            border-radius: 0.25rem;
+            transition: background-color .3s var(--nimiq-ease);
+
+            svg {
+                width: 2.75rem;
+                height: 3rem;
+                margin: -0.125rem 1rem -0.125rem 0;
+                opacity: 0.8;
+            }
+
+            &:hover,
+            &:focus {
+                background: rgba(255, 255, 255, 0.12);
+            }
+        }
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        opacity: 1;
+
+        .nq-icon {
+            opacity: 0.8;
+        }
+    }
+
+    &:focus,
+    &:focus-within {
+        .popup-menu {
+            pointer-events: all;
+            opacity: 1;
+        }
+    }
+}
+
+.actions-mobile .icon-button .popup-menu {
+    top: 1rem;
+    right: 1rem;
+}
+
+.active-address .identicon-wrapper .identicon-menu .popup-menu {
+    top: -0.25rem;
+    left: -0.25rem;
 }
 
 .send, .receive {

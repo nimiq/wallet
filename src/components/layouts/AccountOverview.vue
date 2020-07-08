@@ -297,10 +297,6 @@ export default defineComponent({
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
-    .account-overview .backup-warning {
-        margin-bottom: calc(2 * var(--item-margin));
-    }
-
     .mobile-menu-bar {
         display: flex;
         flex-shrink: 0;

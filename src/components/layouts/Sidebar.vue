@@ -188,7 +188,7 @@ export default defineComponent({
 .price-chart-wrapper {
     overflow-y: auto;
     width: 100%;
-    min-height: 120px;
+    min-height: 10rem;
 
     mask: linear-gradient(0deg ,
         rgba(255,255,255, 0),

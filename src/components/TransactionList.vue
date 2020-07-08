@@ -10,7 +10,7 @@
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
-                    <CloseButton class="top-right" @click="$emit('close-unclaimed-cashlink-list')"/>
+                    <CrossCloseButton class="top-right nq-orange" @click="$emit('close-unclaimed-cashlink-list')"/>
                     <div class="month-label nq-orange"><label>{{ $t('Pending Cashlinks') }}</label></div>
                     <TransactionListItem
                         v-for="tx in unclaimedCashlinkTxs"
@@ -86,11 +86,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ watch } from '@vue/composition-api';
-import { CloseButton, CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
+import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import Config from 'config';
 import TestnetFaucet from './TestnetFaucet.vue';
+import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
 import { useTransactionsStore /* , Transaction */ } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
@@ -376,7 +377,7 @@ export default defineComponent({
     components: {
         TransactionListItem,
         TestnetFaucet,
-        CloseButton,
+        CrossCloseButton,
         CircleSpinner,
         HexagonIcon,
     },
@@ -425,6 +426,15 @@ export default defineComponent({
     position: relative;
     margin: 4rem -2rem 0;
     box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.4);
+
+    .cross-close-button {
+        top: 1.5rem;
+        right: 1.5rem;
+
+        /deep/ svg {
+            opacity: 0.5;
+        }
+    }
 
     .month-label {
         padding-top: 1rem;

@@ -27,7 +27,7 @@
     button:hover svg,
     button:active svg,
     button:focus svg {
-        opacity: 1;
+        opacity: 1 !important;
     }
 
     .cross-close-button.top-right {

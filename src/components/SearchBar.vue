@@ -105,7 +105,7 @@ export default defineComponent({
         }
 
         &::after {
-        box-shadow: inset 0 0 0 $borderTickness var(--light-blue-30);
+            box-shadow: inset 0 0 0 $borderTickness var(--light-blue-40);
         }
     }
 }

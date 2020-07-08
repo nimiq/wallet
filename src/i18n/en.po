@@ -11,7 +11,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:13
-#: src/components/layouts/AddressOverview.vue:64
+#: src/components/layouts/AddressOverview.vue:69
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
@@ -419,7 +419,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:87
+#: src/components/layouts/AddressOverview.vue:92
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgstr ""
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:74
+#: src/components/layouts/AddressOverview.vue:79
 msgid "Receive"
 msgstr ""
 
@@ -559,7 +559,8 @@ msgid "Reference currency"
 msgstr ""
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:34
+#: src/components/layouts/AddressOverview.vue:25
+#: src/components/layouts/AddressOverview.vue:39
 msgid "Rename"
 msgstr ""
 
@@ -601,7 +602,7 @@ msgstr ""
 msgid "Search Transactions by Contact, Address, etc."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:71
+#: src/components/layouts/AddressOverview.vue:76
 msgid "Send"
 msgstr ""
 
@@ -682,7 +683,7 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:88
+#: src/components/layouts/AddressOverview.vue:93
 msgid "Signup"
 msgstr ""
 

@@ -20,7 +20,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count} Pair | {count} Pairs"
 
 #: src/components/layouts/AddressOverview.vue:13
-#: src/components/layouts/AddressOverview.vue:64
+#: src/components/layouts/AddressOverview.vue:69
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink en attente | {count} Cashlinks en attente"
 
@@ -376,7 +376,7 @@ msgstr "Obtenir des NIM et BTC"
 msgid "Get NIM on {exchange}"
 msgstr "Obtenir des NIM sur {exchange}"
 
-#: src/components/AnnouncementBox.vue:27
+#: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
 msgstr "Vous avez des commentaires ? Ou trouvé un bug ?"
 
@@ -456,7 +456,7 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/layouts/AddressOverview.vue:87
+#: src/components/layouts/AddressOverview.vue:92
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
@@ -578,6 +578,10 @@ msgstr "Cashlinks en Attente"
 msgid "Pending..."
 msgstr "En attente..."
 
+#: src/components/layouts/Sidebar.vue:10
+msgid "Please do not use your Mainnet accounts!"
+msgstr ""
+
 #: src/components/modals/DisclaimerModal.vue:13
 msgid ""
 "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are "
@@ -594,7 +598,7 @@ msgstr ""
 "appareil. Nimiq vous permet simplement, via un navigateur, de créer, "
 "enregistrer et accéder à vos informations et d'interagir avec la blockchain."
 
-#: src/components/layouts/AddressOverview.vue:74
+#: src/components/layouts/AddressOverview.vue:79
 msgid "Receive"
 msgstr "Recevoir"
 
@@ -619,7 +623,8 @@ msgid "Reference currency"
 msgstr "Devise de référence"
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:34
+#: src/components/layouts/AddressOverview.vue:25
+#: src/components/layouts/AddressOverview.vue:39
 msgid "Rename"
 msgstr "Renommer"
 
@@ -665,7 +670,7 @@ msgstr "Rechercher des transactions"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Rechercher des transactions via contacts, adresses, etc..."
 
-#: src/components/layouts/AddressOverview.vue:71
+#: src/components/layouts/AddressOverview.vue:76
 msgid "Send"
 msgstr "Envoyer"
 
@@ -750,7 +755,7 @@ msgstr "Afficher toutes mes adresses"
 msgid "Show Decimals"
 msgstr "Afficher les décimales"
 
-#: src/components/layouts/AddressOverview.vue:88
+#: src/components/layouts/AddressOverview.vue:93
 msgid "Signup"
 msgstr "S'inscrire"
 
@@ -782,9 +787,13 @@ msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
 msgid "Store, send and receive NIM."
 msgstr "Stockez, envoyez et recevez des NIM."
 
-#: src/components/AnnouncementBox.vue:28
+#: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
 msgstr "Parlez-nous en ici."
+
+#: src/components/layouts/Sidebar.vue:5
+msgid "Testnet"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -830,8 +839,8 @@ msgstr "Il n'y a pas de \"mot de passe oublié\""
 msgid "This is a Legacy Account"
 msgstr "Ceci est un ancien type de compte."
 
-#: src/components/TransactionList.vue:237
-#: src/components/TransactionList.vue:253
+#: src/components/TransactionList.vue:238
+#: src/components/TransactionList.vue:254
 msgid "This month"
 msgstr "Ce mois-ci"
 
@@ -890,6 +899,10 @@ msgstr "Quoi d'autre ?"
 #: src/components/modals/NetworkInfoModal.vue:7
 msgid "You are a part of the Nimiq Blockchain."
 msgstr "Vous faites partie de la blockchain Nimiq."
+
+#: src/components/layouts/Sidebar.vue:9
+msgid "You are connecting to the Nimiq Testnet."
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "

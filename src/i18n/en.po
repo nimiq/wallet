@@ -345,7 +345,7 @@ msgstr ""
 msgid "Get NIM on {exchange}"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:27
+#: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
 msgstr ""
 
@@ -523,6 +523,10 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:50
 msgid "Pending..."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:10
+msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:13
@@ -710,8 +714,12 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:28
+#: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:5
+msgid "Testnet"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
@@ -744,8 +752,8 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
-#: src/components/TransactionList.vue:237
-#: src/components/TransactionList.vue:253
+#: src/components/TransactionList.vue:238
+#: src/components/TransactionList.vue:254
 msgid "This month"
 msgstr ""
 
@@ -794,6 +802,10 @@ msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:7
 msgid "You are a part of the Nimiq Blockchain."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:9
+msgid "You are connecting to the Nimiq Testnet."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4

@@ -2,12 +2,12 @@
     <div class="sidebar padding flex-column" ref="sidebar">
         <div v-if="isTestnet" class="testnet-notice flex-row">
             <StreetconeIcon/>
-            <span class="nq-label">Testnet</span>
+            <span class="nq-label">{{ $t('Testnet') }}</span>
             <div class="flex-grow"></div>
             <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(0.5rem, 2rem)'}">
                 <InfoCircleIcon slot="trigger"/>
-                <p>You are connecting to the Nimiq Testnet.</p>
-                <p>Please do not use your Mainnet accounts!</p>
+                <p>{{ $t('You are connecting to the Nimiq Testnet.') }}</p>
+                <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
             </Tooltip>
         </div>
 

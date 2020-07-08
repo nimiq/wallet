@@ -74,7 +74,7 @@ export default defineComponent({
         const { width } = useWindowSize();
 
         function navigateTo(path: string) {
-            if (width.value < 700) { // Full mobile breakpoint
+            if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.replace(path);
             } else {
                 context.root.$router.push(path).catch(() => { /* ignore */ });

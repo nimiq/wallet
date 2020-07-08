@@ -27,7 +27,7 @@
                     </div>
                 </button>
             </div>
-            <div class="active-address flex-row">
+            <div class="active-address flex-row" @click="openReceiveModalOnMobile">
                 <div class="identicon-wrapper">
                     <Identicon :address="activeAddressInfo.address" />
                     <button class="reset identicon-menu flex-row"
@@ -119,10 +119,11 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { onboard, rename } from '../../hub'; // eslint-disable-line import/no-cycle
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'address-overview',
-    setup() {
+    setup(props, context) {
         const { activeAccountId } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
 
@@ -149,6 +150,14 @@ export default defineComponent({
             clearSearchString();
         });
 
+        const { width } = useWindowSize();
+
+        function openReceiveModalOnMobile() {
+            if (width.value <= 700) { // Full mobile breakpoint
+                context.root.$router.push('/receive');
+            }
+        }
+
         return {
             searchString,
             activeAccountId,
@@ -159,6 +168,7 @@ export default defineComponent({
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
+            openReceiveModalOnMobile,
         };
     },
     components: {
@@ -379,6 +389,7 @@ export default defineComponent({
         transition: opacity 0.3s var(--nimiq-ease);
 
         button {
+            align-items: center;
             padding: 1rem 1.5rem 1rem 1rem;
             border-radius: 0.25rem;
             transition: background-color .3s var(--nimiq-ease);
@@ -417,8 +428,8 @@ export default defineComponent({
 }
 
 .actions-mobile .icon-button .popup-menu {
-    top: 1rem;
-    right: 1rem;
+    top: 1.375rem;
+    right: var(--padding);
 }
 
 .active-address .identicon-wrapper .identicon-menu .popup-menu {
@@ -529,6 +540,7 @@ export default defineComponent({
     .active-address {
         padding: 2rem;
         margin: 0 var(--padding);
+        cursor: pointer; // To trigger click handlers on iOS
 
         .identicon-wrapper {
             margin-right: 1.5rem;

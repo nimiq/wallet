@@ -4,7 +4,7 @@
             <StreetconeIcon/>
             <span class="nq-label">Testnet</span>
             <div class="flex-grow"></div>
-            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(2rem, 2rem)'}">
+            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(0.5rem, 2rem)'}">
                 <InfoCircleIcon slot="trigger"/>
                 <p>You are connecting to the Nimiq Testnet.</p>
                 <p>Please do not use your Mainnet accounts!</p>
@@ -132,12 +132,13 @@ export default defineComponent({
     align-items: center;
     width: calc(100% + calc(2 * var(--padding-sides)));
     margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);
-    padding: var(--padding-sides) calc(var(--padding-sides) * 2);
+    padding: var(--padding-sides);
     background: rgba(255, 255, 255, .07);
 
     .nq-label {
+        font-size: var(--small-label-size);
         color: var(--nimiq-orange);
-        margin: 0.25rem 0 0 1rem;
+        margin: 0 0 0 1rem;
     }
 
     .nq-icon {

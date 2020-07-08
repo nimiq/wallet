@@ -13,7 +13,7 @@
             />
         </svg>
 
-        <div v-if="showTimespanLabel" class="timespan">24H</div>
+        <button v-if="showTimespanLabel" class="reset timespan" @click="$emit('timespan')">{{ timeRange }}</button>
 
         <div class="meta flex-row">
             <strong>{{currency.toUpperCase()}}</strong>
@@ -42,6 +42,11 @@ import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
+export enum TimeRange {
+    '24h' = '24h',
+    '7d' = '7d',
+}
+
 export default defineComponent({
     props: {
         currency: {
@@ -52,6 +57,12 @@ export default defineComponent({
         showTimespanLabel: {
             type: Boolean,
             default: true,
+        },
+        timeRange: {
+            type: String,
+            required: false,
+            default: TimeRange['24h'],
+            validator: (range) => Object.values(TimeRange).includes(range),
         },
     },
     // @ts-ignore (The "validator" for the currency prop throws off the automatic prop typing)
@@ -168,16 +179,27 @@ export default defineComponent({
 
         watch(() => [
             props.currency,
+            props.timeRange,
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], ([cryptoCurrency, fiatCode]) => {
-            const timespan = 24 * 60 * 60 * 1000; // 24 hours
+        ], ([cryptoCurrency, timeRange, fiatCode], oldValues?: any[]) => {
+            const oldTimeRange = oldValues ? oldValues[1] : props.timeRange;
+
+            const timeRangeHours = timeRange === TimeRange['24h']
+                ? 24
+                : 7 * 24; // 7d
+            const timespan = timeRangeHours * 60 * 60 * 1000; // Milliseconds
             const sampleCount = 18; // 18 is the number of points determined to look good
             const timestep = timespan / (sampleCount - 1);
             const start = Date.now() - timespan;
             const timestamps: number[] = [];
             for (let i = 0; i < sampleCount; ++i) {
                 timestamps.push(start + i * timestep);
+            }
+
+            if (oldTimeRange !== timeRange) {
+                // Clear chart when switching time range
+                history.value = [];
             }
 
             // eslint-disable-next-line no-console

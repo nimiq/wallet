@@ -19,8 +19,8 @@
         <AnnouncementBox/>
 
         <div class="price-chart-wrapper">
-            <PriceChart currency="nim"/>
-            <PriceChart currency="btc" :showTimespanLabel="false"/>
+            <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
+            <PriceChart currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
         <div class="trade-actions">
@@ -54,14 +54,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 
 import Config from 'config';
 
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
-import PriceChart from '../PriceChart.vue';
+import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
@@ -83,9 +83,20 @@ export default defineComponent({
 
         const isTestnet = Config.environment === ENV_TEST || Config.environment === ENV_DEV;
 
+        const priceChartTimeRange = ref(TimeRange['24h']);
+        function switchPriceChartTimeRange() {
+            if (priceChartTimeRange.value === TimeRange['24h']) {
+                priceChartTimeRange.value = TimeRange['7d'];
+            } else {
+                priceChartTimeRange.value = TimeRange['24h'];
+            }
+        }
+
         return {
             navigateTo,
             isTestnet,
+            priceChartTimeRange,
+            switchPriceChartTimeRange,
         };
     },
     components: {

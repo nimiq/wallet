@@ -80,13 +80,15 @@ export const useTransactionsStore = createStore({
             const fiatCurrency = useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && (!tx.fiatValue || !(fiatCurrency in tx.fiatValue)),
-            );
-            if (transactionsToUpdate.length === 0) return;
-            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp! * 1000);
+            ) as Array<Transaction & { timestamp: number }>;
+
+            if (!transactionsToUpdate.length) return;
+
+            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp * 1000);
             const historicExchangeRates = await getHistoricExchangeRates(CryptoCurrency.NIM, fiatCurrency, timestamps);
 
             for (const tx of transactionsToUpdate) {
-                const exchangeRate = historicExchangeRates.get(tx.timestamp! * 1000);
+                const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                 // Set via Vue.set to let vue setup the reactivity. TODO this might be not necessary anymore with Vue3
                 if (!tx.fiatValue) Vue.set(tx, 'fiatValue', {});
                 Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined

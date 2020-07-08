@@ -62,7 +62,6 @@ export const useFiatStore = createStore({
             this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
         },
-
         async updateExchangeRates(failGracefully = true) {
             try {
                 this.state.exchangeRates = await getExchangeRates(

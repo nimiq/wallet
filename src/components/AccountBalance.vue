@@ -32,7 +32,7 @@ export default defineComponent({
         async function updateFontSize() {
             await context.root.$nextTick();
 
-            if (!$fiatAmountContainer.value || $fiatAmount.value) return;
+            if (!$fiatAmountContainer.value || !$fiatAmount.value) return;
 
             const availableWidth = $fiatAmountContainer.value!.offsetWidth;
             const referenceWidth = ($fiatAmount.value!.$el as HTMLElement).offsetWidth;

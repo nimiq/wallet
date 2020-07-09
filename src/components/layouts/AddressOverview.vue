@@ -27,7 +27,7 @@
                     </div>
                 </button>
             </div>
-            <div class="active-address flex-row" @click="openReceiveModalOnMobile">
+            <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon :address="activeAddressInfo.address" />
                     <button class="reset identicon-menu flex-row"
@@ -41,7 +41,6 @@
                         </div>
                     </button>
                 </div>
-                <div class="label mobile">{{activeAddressInfo.label}}</div>
                 <div class="meta">
                     <div class="flex-row">
                         <div class="label">{{activeAddressInfo.label}}</div>
@@ -51,7 +50,9 @@
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
                         <Copyable :text="activeAddressInfo.address" :key="activeAddressInfo.address">
-                            <div class="address">{{activeAddressInfo.address}}</div>
+                            <div class="address" :class="{'masked': isAddressCutOff}" ref="$address">
+                                {{activeAddressInfo.address}}
+                            </div>
                         </Copyable>
                         <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
                     </div>
@@ -104,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
 // @ts-ignore missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -123,7 +124,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'address-overview',
-    setup(props, context) {
+    setup() {
         const { activeAccountId } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
 
@@ -150,13 +151,38 @@ export default defineComponent({
             clearSearchString();
         });
 
-        const { width } = useWindowSize();
+        const $address = ref<HTMLDivElement>(null);
+        const isAddressCutOff = ref(false);
 
-        function openReceiveModalOnMobile() {
-            if (width.value <= 700) { // Full mobile breakpoint
-                context.root.$router.push('/receive');
+        const { width: windowWidth } = useWindowSize();
+
+        // FIXME: Remove when Typescript supports ResizeObserver
+        type ResizeObserver = any;
+
+        let observer: ResizeObserver;
+
+        onMounted(() => {
+            if ('ResizeObserver' in window && $address.value) {
+                // @ts-ignore ResizeObserver not supported by Typescript yet
+                observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+                    const entry = entries[0];
+                    const width = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
+                    const cutoffWidth = windowWidth.value > 1160
+                        ? 396
+                        : windowWidth.value > 700
+                            ? 372
+                            : 322;
+                    isAddressCutOff.value = width < cutoffWidth;
+                });
+                observer.observe($address.value);
             }
-        }
+        });
+
+        onUnmounted(() => {
+            if (observer && $address.value) {
+                observer.unobserve($address.value);
+            }
+        });
 
         return {
             searchString,
@@ -168,7 +194,8 @@ export default defineComponent({
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
-            openReceiveModalOnMobile,
+            $address,
+            isAddressCutOff,
         };
     },
     components: {
@@ -312,10 +339,13 @@ export default defineComponent({
     }
 
     .address {
-        text-overflow: ellipsis;
         word-spacing: -0.2em;
         font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
         transition: opacity .3s var(--nimiq-ease);
+
+        &.masked {
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
     }
 
     .copyable {
@@ -349,10 +379,6 @@ export default defineComponent({
     .fiat-amount {
         font-weight: 600;
         line-height: 1;
-    }
-
-    .label.mobile {
-        display: none;
     }
 
     &:hover {
@@ -540,7 +566,6 @@ export default defineComponent({
     .active-address {
         padding: 2rem;
         margin: 0 var(--padding);
-        cursor: pointer; // To trigger click handlers on iOS
 
         .identicon-wrapper {
             margin-right: 1.5rem;
@@ -556,42 +581,20 @@ export default defineComponent({
             margin: -0.25rem 0; // Negative margin above and below to size identicon to be 46x40 px
         }
 
-        .meta {
-            flex-shrink: 0;
-
-            .flex-row {
-                justify-content: flex-end;
-            }
-
-            .copyable,
-            .label {
-                display: none;
-            }
-        }
-
-        .label.mobile {
-            display: block;
-        }
-
-        .label {
-            // mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
-            mask: none;
-            white-space: unset;
-            line-height: 1.2;
-            margin: 0 2rem 0 0;
+        .label,
+        .copyable {
+            margin-right: 1.25rem;
         }
 
         .label,
         .amount {
             font-size: var(--h2-size);
+            margin-bottom: 0;
         }
 
+        .address,
         .fiat-amount {
             font-size: var(--small-size);
-        }
-
-        .amount {
-            margin-bottom: 0.5rem;
         }
     }
 

@@ -254,13 +254,13 @@ export default defineComponent({
                 }
             }
 
-            if (!txs[n]) return transactionsWithMonths; // Address has only pending txs
-
             // Skip expired & invalidated txs
-            while (!txs[n].timestamp) {
+            while (txs[n] && !txs[n].timestamp) {
                 transactionsWithMonths.push(txs[n]);
                 n++;
             }
+
+            if (!txs[n]) return transactionsWithMonths; // Address has no more txs
 
             // Inject month + year labels
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);

@@ -166,7 +166,9 @@ export default defineComponent({
                 // @ts-ignore ResizeObserver not supported by Typescript yet
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
-                    const width = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
+                    const width: number = entry.contentBoxSize
+                        ? (entry.contentBoxSize.inlineSize || entry.contentBoxSize[0].inlineSize)
+                        : entry.contentRect.width;
                     const cutoffWidth = windowWidth.value > 1160
                         ? 396
                         : windowWidth.value > 700

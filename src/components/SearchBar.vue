@@ -45,7 +45,9 @@ export default defineComponent({
                 // @ts-ignore ResizeObserver not supported by Typescript yet
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
-                    width.value = entry.contentBoxSize ? entry.contentBoxSize.inlineSize : entry.contentRect.width;
+                    width.value = entry.contentBoxSize
+                        ? (entry.contentBoxSize.inlineSize || entry.contentBoxSize[0].inlineSize)
+                        : entry.contentRect.width;
                 });
                 observer.observe(searchBarInput.value);
             }

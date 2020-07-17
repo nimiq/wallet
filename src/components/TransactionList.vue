@@ -93,7 +93,7 @@ import Config from 'config';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore /* , Transaction */ } from '../stores/Transactions';
+import { useTransactionsStore /* , Transaction */, TransactionState } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
@@ -223,8 +223,18 @@ export default defineComponent({
             if (!filteredTxs.value.length) return [];
 
             // Sort transactions by descending timestamp
-            const txs = filteredTxs.value.slice(0).sort((a, b) =>
-                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER));
+            const txs = filteredTxs.value.slice(0).sort((a, b) => {
+                const aHeight = a.blockHeight
+                    || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
+                        && a.validityStartHeight)
+                    || Number.MAX_SAFE_INTEGER;
+                const bHeight = b.blockHeight
+                    || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
+                        && b.validityStartHeight)
+                    || Number.MAX_SAFE_INTEGER;
+
+                return bHeight - aHeight;
+            });
 
             // Inject "This month" label
             const transactionsWithMonths: any[] = [];
@@ -234,17 +244,23 @@ export default defineComponent({
             let n = 0;
             let hasThisMonthLabel = false;
 
-            if (!txs[n].timestamp) {
+            if (txs[n].state === TransactionState.PENDING) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
                 isLatestMonth = false;
                 hasThisMonthLabel = true;
-                while (txs[n] && !txs[n].timestamp) {
+                while (txs[n] && txs[n].state === TransactionState.PENDING) {
                     transactionsWithMonths.push(txs[n]);
                     n++;
                 }
             }
 
             if (!txs[n]) return transactionsWithMonths; // Address has only pending txs
+
+            // Skip expired & invalidated txs
+            while (!txs[n].timestamp) {
+                transactionsWithMonths.push(txs[n]);
+                n++;
+            }
 
             // Inject month + year labels
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
@@ -255,8 +271,14 @@ export default defineComponent({
                 isLatestMonth = false;
             }
 
-            const len = txs.length;
-            while (n < len) {
+            while (n < txs.length) {
+                // Skip expired & invalidated txs
+                if (!txs[n].timestamp) {
+                    transactionsWithMonths.push(txs[n]);
+                    n++;
+                    continue;
+                }
+
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
 
                 if (txYear !== currentYear && (isLatestMonth || txMonth !== currentTxMonth)) {

@@ -13,13 +13,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref, onBeforeUnmount, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onBeforeUnmount, onMounted } from '@vue/composition-api';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // re add <BalanceDistribution /> once Bitcoin is avalable
 // import BalanceDistribution from './BalanceDistribution.vue';
 import { useAddressStore } from '../stores/Address';
-
-const FIAT_DEFAULT_SIZE = 7; // rem, the default desktop font-size of .fiat-amount
+import { useWindowSize } from '../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
@@ -27,7 +26,10 @@ export default defineComponent({
 
         const $fiatAmountContainer = ref<HTMLDivElement>(null);
         const $fiatAmount = ref<Vue>(null);
-        const fiatAmountFontSize = ref(FIAT_DEFAULT_SIZE);
+
+        const { width: windowWidth } = useWindowSize();
+        const fiatAmountMaxSize = computed(() => windowWidth.value > 1160 ? 7 : 5.5); // rem
+        const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
 
         async function updateFontSize() {
             await context.root.$nextTick();
@@ -39,7 +41,7 @@ export default defineComponent({
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
             if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
-                fiatAmountFontSize.value = Math.min(FIAT_DEFAULT_SIZE, fiatAmountFontSize.value * scaleFactor);
+                fiatAmountFontSize.value = Math.min(fiatAmountMaxSize.value, fiatAmountFontSize.value * scaleFactor);
             }
         }
 

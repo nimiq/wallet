@@ -57,7 +57,7 @@
                 <CrossIcon/>
                 {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
             </span>
-            <span v-else slot="more" :class="isIncoming ? 'nq-green' : 'opacity-60'">
+            <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                 <i18n v-if="isIncoming" path="received at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
@@ -396,23 +396,18 @@ export default defineComponent({
     }
 
     span {
-        display: block;
         font-size: var(--body-size);
         font-weight: 600;
         align-items: center;
         justify-content: center;
 
+        &.date {
+            display: block;
+        }
+
         /deep/ .circle-spinner,
         &.failed svg {
-            margin-right: 0.5rem;
-        }
-
-        /deep/ .circle-spinner {
-            margin-bottom: -0.375rem;
-        }
-
-        &.failed svg { // The cross icon for expired or invalidated transactions
-            margin-bottom: -0.25rem;
+            margin-right: 1rem;
         }
     }
 

@@ -259,7 +259,7 @@ export default defineComponent({
             while (n < len) {
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
 
-                if (txYear !== currentYear && txMonth !== currentTxMonth) {
+                if (txYear !== currentYear && (isLatestMonth || txMonth !== currentTxMonth)) {
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,

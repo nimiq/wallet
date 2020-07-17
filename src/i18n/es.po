@@ -20,7 +20,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count} Pares | {count} Pares"
 
 #: src/components/layouts/AddressOverview.vue:13
-#: src/components/layouts/AddressOverview.vue:69
+#: src/components/layouts/AddressOverview.vue:70
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink en trámite | {count} Cashlinks en trámite"
 
@@ -455,7 +455,7 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
-#: src/components/layouts/AddressOverview.vue:92
+#: src/components/layouts/AddressOverview.vue:93
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 
@@ -597,7 +597,7 @@ msgstr ""
 "dispositivo. Nimiq solo le facilita, a través de un navegador, crear, "
 "almacenar y acceder a su información e interactuar con la cadena de bloques."
 
-#: src/components/layouts/AddressOverview.vue:79
+#: src/components/layouts/AddressOverview.vue:80
 msgid "Receive"
 msgstr "Recibir"
 
@@ -669,7 +669,7 @@ msgstr "Buscar Transacciones"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Buscar Transacciones por Contacto, Dirección, etc."
 
-#: src/components/layouts/AddressOverview.vue:76
+#: src/components/layouts/AddressOverview.vue:77
 msgid "Send"
 msgstr "Enviar"
 
@@ -754,7 +754,7 @@ msgstr "Mostrar todas mis cuentas"
 msgid "Show Decimals"
 msgstr "Mostrar Decimales"
 
-#: src/components/layouts/AddressOverview.vue:93
+#: src/components/layouts/AddressOverview.vue:94
 msgid "Signup"
 msgstr "Regístrate"
 
@@ -839,8 +839,8 @@ msgstr "No hay opción de \"Olvidé mi contraseña\""
 msgid "This is a Legacy Account"
 msgstr "Esta es una Cuenta Versión Antigua"
 
-#: src/components/TransactionList.vue:238
-#: src/components/TransactionList.vue:254
+#: src/components/TransactionList.vue:248
+#: src/components/TransactionList.vue:270
 msgid "This month"
 msgstr "Este mes"
 

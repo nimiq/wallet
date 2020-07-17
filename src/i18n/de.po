@@ -2,12 +2,12 @@
 # Translators:
 # Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2020
 # Sebastian Langer <basti@b-compu.de>, 2020
+# Sören Schwert <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sebastian Langer <basti@b-compu.de>, 2020\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -22,7 +22,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count} Teilnehmer | {count} Teilnehmer"
 
 #: src/components/layouts/AddressOverview.vue:13
-#: src/components/layouts/AddressOverview.vue:69
+#: src/components/layouts/AddressOverview.vue:70
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} ausstehender Cashlink | {count} ausstehende Cashlinks"
 
@@ -459,7 +459,7 @@ msgstr "Mehr erfahren"
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/AddressOverview.vue:92
+#: src/components/layouts/AddressOverview.vue:93
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 
@@ -581,7 +581,7 @@ msgstr "Ausstehend..."
 
 #: src/components/layouts/Sidebar.vue:10
 msgid "Please do not use your Mainnet accounts!"
-msgstr ""
+msgstr "Bitte benutze nicht deine Mainnet-Konten!"
 
 #: src/components/modals/DisclaimerModal.vue:13
 msgid ""
@@ -600,7 +600,7 @@ msgstr ""
 "Daten zu erstellen, zu speichern und auf diese zuzugreifen und mit der "
 "Blockchain zu interagieren."
 
-#: src/components/layouts/AddressOverview.vue:79
+#: src/components/layouts/AddressOverview.vue:80
 msgid "Receive"
 msgstr "Empfangen"
 
@@ -671,7 +671,7 @@ msgstr "Transaktionen suchen"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 
-#: src/components/layouts/AddressOverview.vue:76
+#: src/components/layouts/AddressOverview.vue:77
 msgid "Send"
 msgstr "Senden"
 
@@ -756,7 +756,7 @@ msgstr "Alle meine Adressen anzeigen"
 msgid "Show Decimals"
 msgstr "Nachkommastellen"
 
-#: src/components/layouts/AddressOverview.vue:93
+#: src/components/layouts/AddressOverview.vue:94
 msgid "Signup"
 msgstr "Anmelden"
 
@@ -794,7 +794,7 @@ msgstr "Sag uns hier bescheid"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
-msgstr ""
+msgstr "Testnet"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -842,8 +842,8 @@ msgstr "Es gibt kein \"Passwort vergessen\""
 msgid "This is a Legacy Account"
 msgstr "Dies ist ein Legacy-Konto"
 
-#: src/components/TransactionList.vue:238
-#: src/components/TransactionList.vue:254
+#: src/components/TransactionList.vue:248
+#: src/components/TransactionList.vue:270
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -861,7 +861,7 @@ msgstr "Gesamtguthaben"
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
-msgstr "Transaktion von {adress}"
+msgstr "Transaktion von {address}"
 
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
@@ -904,7 +904,7 @@ msgstr "Du bist ein Teil der Nimiq Blockchain."
 
 #: src/components/layouts/Sidebar.vue:9
 msgid "You are connecting to the Nimiq Testnet."
-msgstr ""
+msgstr "Du verbindest dich mit dem Nimiq Testnet."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "

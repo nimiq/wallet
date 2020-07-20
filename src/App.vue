@@ -123,7 +123,7 @@ export default defineComponent({
     }
 
     @media (max-width: 960px) { // Tablet breakpoint
-        --account-column-width: 34.5rem;
+        --account-column-width: 35.125rem;
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint

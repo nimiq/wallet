@@ -111,6 +111,16 @@ export default defineComponent({
     display: none;
 }
 
+@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    .label {
+        margin-right: 0;
+    }
+
+    .balances {
+        display: none;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .label {
         margin: 0 1.5rem;

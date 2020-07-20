@@ -136,6 +136,8 @@ export default defineComponent({
 .network-map {
     position: relative;
     overflow: hidden;
+    width: 100%;
+    max-width: 1500px;
 }
 
 .map,

@@ -24,7 +24,9 @@
                 paddingLeft: (balanceDistribution.nim < .05 ? 5 - balanceDistribution.nim * 100 + '%' : undefined),
                 paddingRight: (balanceDistribution.btc < .05 ? 5 - balanceDistribution.btc * 100 + '%' : undefined),
             }">
-            <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})"><TransferIcon /></button>
+            <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})" @mousedown.prevent>
+                <TransferIcon/>
+            </button>
         </div>
         <div class="currency btc" :style="{width: balanceDistribution.btc * 80 + '%'}">
             <span class="nq-label">BTC</span>

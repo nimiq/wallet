@@ -9,6 +9,7 @@
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
+                    @mousedown.prevent
                 >
                     {{ $tc(
                         '{count} pending Cashlink | {count} pending Cashlinks',
@@ -66,6 +67,7 @@
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
+                    @mousedown.prevent
                 >
                     {{ $tc(
                         '{count} pending Cashlink | {count} pending Cashlinks',
@@ -73,10 +75,12 @@
                     ) }}
                 </button>
 
-                <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')">
+                <button class="send nq-button-pill light-blue flex-row"
+                    @click="$router.push('/send')" @mousedown.prevent
+                >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
-                <button class="receive nq-button-s flex-row" @click="$router.push('/receive')">
+                <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
@@ -91,7 +95,7 @@
             <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
                 + 'illustrations/To_the_stars_qhyy.svg'"/>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
-            <button class="nq-button" @click="onboard">{{ $t('Signup') }}</button>
+            <button class="nq-button" @click="onboard" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
 
         <MobileActionBar/>

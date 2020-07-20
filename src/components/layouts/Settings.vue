@@ -76,7 +76,9 @@
                             {{ $t('Go through the product again') }}
                         </p>
                     </div>
-                    <button class="nq-button-pill light-blue disabled">{{ $t('Start Tour') }}</button>
+                    <button class="nq-button-pill light-blue disabled" @mousedown.prevent>
+                        {{ $t('Start Tour') }}
+                    </button>
                 </div> -->
             </section>
 
@@ -90,7 +92,9 @@
                             {{ $t('Reset your wallet settings and reload data from the blockchain.') }}
                         </p>
                     </div>
-                    <button class="nq-button-pill light-blue" @click="clearCache">{{ $t('Clear') }}</button>
+                    <button class="nq-button-pill light-blue" @click="clearCache" @mousedown.prevent>
+                        {{ $t('Clear') }}
+                    </button>
                 </div>
             </section>
         </div>

@@ -7,7 +7,7 @@
             <AlertTriangleIcon class="alert-icon"/>
             <span class="alert-text">{{ $t('Your Account is not safe yet!') }}</span>
             <div class="flex-grow"></div>
-            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)">
+            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)" @mousedown.prevent>
                 {{ $t('Save now') }}<ArrowRightSmallIcon/>
             </button>
         </div>
@@ -18,7 +18,10 @@
             <AlertTriangleIcon class="alert-icon"/>
             <span class="alert-text">{{ $t('There is no ‘forgot password’') }}</span>
             <div class="flex-grow"></div>
-            <button class="nq-button-pill orange" @click="backup(activeAccountInfo.id, { wordsOnly: true })">
+            <button
+                class="nq-button-pill orange"
+                @click="backup(activeAccountInfo.id, { wordsOnly: true })" @mousedown.prevent
+            >
                 {{ $t('Backup') }}<ArrowRightSmallIcon/>
             </button>
         </div>

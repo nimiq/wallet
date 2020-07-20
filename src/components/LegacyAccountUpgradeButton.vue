@@ -3,8 +3,11 @@
         v-if="!multiAddressAccount"
         class="nq-button light-blue"
         @click="onboard"
+        @mousedown.prevent
     >{{ $t('Create a new Account') }}</button>
-    <button v-else class="nq-button light-blue" @click="onTransferFunds">{{ $t('Transfer funds') }}</button>
+    <button v-else class="nq-button light-blue" @click="onTransferFunds" @mousedown.prevent>
+        {{ $t('Transfer funds') }}
+    </button>
 </template>
 
 <script lang="ts">

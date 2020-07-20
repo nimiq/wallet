@@ -75,6 +75,7 @@
             <a v-if="isMainnet"
                 :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank"
                 class="nq-button green"
+                @mousedown.prevent
             >{{ $t('Receive free NIM') }}</a>
             <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
         </div>

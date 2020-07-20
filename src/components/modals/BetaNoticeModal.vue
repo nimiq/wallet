@@ -39,7 +39,7 @@
                 <a slot="NimiqSafe" href="https://safe.nimiq.com" class="nq-link" target="_blank">Nimiq Safe</a>
             </i18n>
 
-            <button class="nq-button light-blue" @click="$emit('close')">{{ $t('Got it') }}</button>
+            <button class="nq-button light-blue" @click="$emit('close')" @mousedown.prevent>{{ $t('Got it') }}</button>
         </PageBody>
     </Modal>
 </template>

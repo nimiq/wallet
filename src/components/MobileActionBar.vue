@@ -1,9 +1,9 @@
 <template>
     <div class="mobile-action-bar flex-row">
-        <button class="receive nq-button-s flex-row" @click="$router.push('/receive')">
+        <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
             <ArrowRightSmallIcon />Receive
         </button>
-        <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')">
+        <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')" @mousedown.prevent>
             <ArrowRightSmallIcon />Send
         </button>
         <button class="reset scan-qr" @click="$router.push('/scan')">

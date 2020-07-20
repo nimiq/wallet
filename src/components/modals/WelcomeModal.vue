@@ -90,7 +90,7 @@
         </PageBody>
 
         <PageFooter>
-            <button class="nq-button light-blue" @click="onButtonClick">
+            <button class="nq-button light-blue" @click="onButtonClick" @mousedown.prevent>
                 <template v-if="page === 1">{{ $t('Continue') }}</template>
                 <template v-if="page === 2">
                     {{ activeAccountInfo.type === AccountType.LEDGER

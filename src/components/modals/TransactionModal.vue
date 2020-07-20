@@ -129,7 +129,8 @@
                     <button
                         v-else-if="hubCashlink && hubCashlink.value"
                         class="nq-button-s manage-cashlink"
-                        @click="manageCashlink(hubCashlink.address)">Show Link</button>
+                        @click="manageCashlink(hubCashlink.address)"
+                        @mousedown.prevent>Show Link</button>
                 </div>
             </div>
 

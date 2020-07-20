@@ -3,7 +3,11 @@
         <div v-if="unavailableMsg" class="unavailable nq-orange"><CrossIcon/>{{ unavailableMsg }}</div>
 
         <!-- <transition name="fade"> -->
-            <button v-if="!loading && !errorMsg" class="nq-button green" :disabled="!canTap" @click="tap">
+            <button v-if="!loading && !errorMsg"
+                class="nq-button green"
+                :disabled="!canTap"
+                @click="tap" @mousedown.prevent
+            >
                 {{ $t('Receive free NIM') }}
             </button>
             <CircleSpinner v-else-if="!errorMsg"/>

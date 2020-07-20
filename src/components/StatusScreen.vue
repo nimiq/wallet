@@ -58,6 +58,7 @@
                         v-if="mainAction"
                         class="nq-button orange inverse"
                         @click="onMainAction"
+                        @mousedown.prevent
                     >{{ mainAction }}</button>
                     <a
                         v-if="alternativeAction"
@@ -90,6 +91,7 @@
                         v-if="mainAction"
                         class="main-action nq-button red inverse"
                         @click="onMainAction"
+                        @mousedown.prevent
                     >{{ mainAction }}</button>
                     <a
                         v-if="alternativeAction"

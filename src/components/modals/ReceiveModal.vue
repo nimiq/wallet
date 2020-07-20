@@ -22,6 +22,7 @@
             <button
                 v-if="activeAddressInfo.type === AddressType.BASIC"
                 @click="receiveLinkOverlayOpened = true"
+                @mousedown.prevent
                 class="nq-button-s"
             >
                 {{ $t('Create payment link') }}

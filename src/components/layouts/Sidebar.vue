@@ -26,6 +26,7 @@
         <div class="trade-actions">
             <button class="nq-button-s inverse"
                 @click="$router.push('/trade?sidebar=true')"
+                @mousedown.prevent
                 :disabled="$route.name !== 'root'"
             >{{ $t('Buy & Sell') }}</button>
         </div>

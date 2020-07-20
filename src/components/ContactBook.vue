@@ -9,7 +9,7 @@
             />
             <button v-if="ownAddressInfos.length > 2 && !showAllOwnAddresses"
                 class="nq-button-s show-own-addresses-button"
-                @click="showAllOwnAddresses = true">
+                @click="showAllOwnAddresses = true" @mousedown.prevent>
                 {{ $t('Show all my addresses') }}
             </button>
             <div v-if="ownAddressInfos.length" class="separator"></div>
@@ -34,10 +34,16 @@
             </button>
         </div>
         <template v-if="contacts.length">
-            <button v-if="!editing" class="nq-button-s edit-button" @click="editing = true" key="edit">
+            <button v-if="!editing"
+                class="nq-button-s edit-button"
+                @click="editing = true" @mousedown.prevent key="edit"
+            >
                 {{ $t('Edit contacts') }}
             </button>
-            <button v-else class="nq-button-pill light-blue edit-button" @click="editing = false" key="done">
+            <button v-else
+                class="nq-button-pill light-blue edit-button"
+                @click="editing = false" @mousedown.prevent key="done"
+            >
                 {{ $t('Done') }}
             </button>
         </template>

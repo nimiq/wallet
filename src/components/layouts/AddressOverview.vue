@@ -50,7 +50,7 @@
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
                         <Copyable :text="activeAddressInfo.address" :key="activeAddressInfo.address">
-                            <div class="address" :class="{'masked': isAddressCutOff}" ref="$address">
+                            <div class="address" v-responsive="{'masked': el => el.width < addressMaskedWidth}">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
@@ -105,10 +105,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
 // @ts-ignore missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
+// @ts-ignore missing types for this package
+import { ResponsiveDirective } from 'vue-responsive-components';
 
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -151,40 +153,13 @@ export default defineComponent({
             clearSearchString();
         });
 
-        const $address = ref<HTMLDivElement>(null);
-        const isAddressCutOff = ref(false);
-
         const { width: windowWidth } = useWindowSize();
 
-        // FIXME: Remove when Typescript supports ResizeObserver
-        type ResizeObserver = any;
-
-        let observer: ResizeObserver;
-
-        onMounted(() => {
-            if ('ResizeObserver' in window && $address.value) {
-                // @ts-ignore ResizeObserver not supported by Typescript yet
-                observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-                    const entry = entries[0];
-                    const width: number = entry.contentBoxSize
-                        ? (entry.contentBoxSize.inlineSize || entry.contentBoxSize[0].inlineSize)
-                        : entry.contentRect.width;
-                    const cutoffWidth = windowWidth.value > 1160
-                        ? 396
-                        : windowWidth.value > 700
-                            ? 372
-                            : 322;
-                    isAddressCutOff.value = width < cutoffWidth;
-                });
-                observer.observe($address.value);
-            }
-        });
-
-        onUnmounted(() => {
-            if (observer && $address.value) {
-                observer.unobserve($address.value);
-            }
-        });
+        const addressMaskedWidth = computed(() => windowWidth.value > 1160
+            ? 396
+            : windowWidth.value > 700
+                ? 372
+                : 322);
 
         return {
             searchString,
@@ -196,8 +171,7 @@ export default defineComponent({
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
-            $address,
-            isAddressCutOff,
+            addressMaskedWidth,
         };
     },
     components: {
@@ -214,6 +188,9 @@ export default defineComponent({
         MenuDotsIcon,
         MobileActionBar,
         Portal,
+    },
+    directives: {
+        responsive: ResponsiveDirective,
     },
 });
 </script>

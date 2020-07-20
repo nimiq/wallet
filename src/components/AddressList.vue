@@ -138,7 +138,6 @@ export default defineComponent({
     }
 
     .address-button {
-        width: 100%;
         margin: 0.5rem 0;
         z-index: 1;
         flex-shrink: 0;
@@ -151,6 +150,7 @@ export default defineComponent({
     }
 
     .add-address-button {
+        align-self: flex-start;
         font-size: var(--body-size);
         align-items: center;
         padding: 2rem;

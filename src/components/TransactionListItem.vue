@@ -237,6 +237,7 @@ svg {
         flex-grow: 0;
         letter-spacing: 0.0125em;
         line-height: 1;
+        flex-shrink: 0;
 
         > .month {
             font-size: var(--small-label-size);

@@ -17,7 +17,7 @@ export const useContactsStore = createStore({
     actions: {
         setContact(address: string, label: string) {
             // console.debug('Updating contact', address, label);
-            if (!label) {
+            if (!label.trim()) {
                 // Remove contact
                 const contacts = { ...this.state.contacts };
                 delete contacts[address];
@@ -29,7 +29,7 @@ export const useContactsStore = createStore({
             // TODO: Simply set new contact in Vue 3.
             this.state.contacts = {
                 ...this.state.contacts,
-                [address]: label,
+                [address.trim()]: label.trim(),
             };
         },
     },

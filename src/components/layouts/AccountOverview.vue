@@ -349,6 +349,7 @@ export default defineComponent({
 
     .account-balance {
         margin-top: -4rem;
+        z-index: 1; // To be on top of the .mobile-menu-bar
     }
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <Modal class="transaction-modal">
+    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
             <template v-if="peerAddress === constants.CASHLINK_ADDRESS">
@@ -140,9 +140,12 @@
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
                     'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
                         && isIncoming,
-                }"/>
+                }" value-mask/>
                 <transition name="fade">
-                    <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
+                    <FiatConvertedAmount
+                        v-if="state === TransactionState.PENDING"
+                        :amount="transaction.value"
+                        value-mask/>
                     <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                     <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                         Fiat value unavailable
@@ -151,13 +154,13 @@
                         <Tooltip>
                             <template slot="trigger">
                                 <HistoricValueIcon/>
-                                <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                                <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language" value-mask/>
                             </template>
                             {{ $t('Historic value') }}
                         </Tooltip>
                         <strong class="dot">&middot;</strong>
                         <Tooltip>
-                            <FiatConvertedAmount slot="trigger" :amount="transaction.value"/>
+                            <FiatConvertedAmount slot="trigger" :amount="transaction.value" value-mask/>
                             {{ $t('Current value') }}
                         </Tooltip>
                     </div>
@@ -348,7 +351,7 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight && (network$.height - transaction.value.blockHeight + 1));
 
-        const { language } = useSettingsStore();
+        const { language, amountsHidden } = useSettingsStore();
 
         return {
             ENV_MAIN,
@@ -373,6 +376,7 @@ export default defineComponent({
             hubCashlink,
             manageCashlink,
             env: Config.environment,
+            amountsHidden,
         };
     },
     components: {
@@ -573,7 +577,8 @@ export default defineComponent({
     align-items: center;
 
     .amount {
-        font-size: 5rem;
+        --size: 5rem;
+        font-size: var(--size);
         line-height: 1;
         margin-bottom: 0.5rem;
 
@@ -601,7 +606,8 @@ export default defineComponent({
     }
 
     > .fiat-amount {
-        font-size: var(--small-size);
+        --size: var(--small-size);
+        font-size: var(--size);
         font-weight: 600;
         color: var(--text-50);
         align-items: center;

@@ -44,16 +44,16 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value"/>
+            <Amount :amount="transaction.value" value-mask/>
             <transition name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <HistoricValueIcon/>
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language" value-mask/>
                 </div>
             </transition>
         </div>
@@ -341,13 +341,15 @@ svg {
         line-height: 1.4;
 
         .amount {
+            --size: var(--body-size);
             font-weight: bold;
             margin-bottom: 0.5rem;
             padding: 0.25rem 0;
         }
 
         > .fiat-amount {
-            font-size: var(--small-size);
+            --size: var(--small-size);
+            font-size: var(--size);
             font-weight: 600;
             opacity: 0.4;
             align-items: center;

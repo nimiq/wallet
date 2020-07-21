@@ -8,11 +8,12 @@
         <div v-if="addressInfo.balance !== null" class="balances">
             <span class="crypto-balance">
                 <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
-                <Amount :amount="addressInfo.balance"/>
+                <Amount :amount="addressInfo.balance" value-mask/>
             </span>
             <FiatConvertedAmount
                 class="fiat-balance"
-                :amount="addressInfo.balance"/>
+                :amount="addressInfo.balance"
+                value-mask/>
         </div>
         <div v-else class="balances">???</div>
         <div class="mobile-arrow"></div>
@@ -91,6 +92,7 @@ export default defineComponent({
 }
 
 .crypto-balance {
+    --size: var(--body-size);
     display: block;
     line-height: 1.2;
     font-weight: bold;
@@ -102,7 +104,8 @@ export default defineComponent({
 }
 
 .fiat-balance {
-    font-size: var(--small-size);
+    --size: var(--small-size);
+    font-size: var(--size);
     font-weight: 600;
     opacity: 0.5;
 }

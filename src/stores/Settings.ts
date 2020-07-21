@@ -11,6 +11,7 @@ export type SettingsState = {
     decimals: 0 | 2 | 5,
     language: string, // locale
     colorMode: ColorMode,
+    amountsHidden: boolean,
 };
 
 export const useSettingsStore = createStore({
@@ -19,11 +20,13 @@ export const useSettingsStore = createStore({
         decimals: 0,
         language: detectLanguage(),
         colorMode: ColorMode.AUTOMATIC,
+        amountsHidden: false,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
         language: (state): Readonly<string> => state.language,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
+        amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
     },
     actions: {
         setDecimals(num: 0 | 2 | 5 = 0) {
@@ -37,6 +40,9 @@ export const useSettingsStore = createStore({
             if (Object.values(ColorMode).includes(colorMode)) {
                 this.state.colorMode = colorMode;
             }
+        },
+        toggleAmountsHidden() {
+            this.state.amountsHidden = !this.state.amountsHidden;
         },
     },
 });

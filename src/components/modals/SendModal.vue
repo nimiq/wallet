@@ -5,6 +5,7 @@
         || feeSelectionOpened
         || statusScreenOpened"
         @close-overlay="onCloseOverlay"
+        :class="{'value-masked': amountsHidden}"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
@@ -218,6 +219,7 @@ import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
+import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -540,6 +542,8 @@ export default defineComponent({
             feeSelectionOpened.value = false;
         }
 
+        const { amountsHidden } = useSettingsStore();
+
         return {
             // General
             Pages,
@@ -558,6 +562,7 @@ export default defineComponent({
             recipientWithLabel,
             closeRecipientDetails,
             parseRequestUri,
+            amountsHidden,
 
             // Amount Input
             resetRecipient,

@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" :class="{'value-masked': amountsHidden}">
         <main :class="routeClass">
             <Sidebar/>
 
@@ -32,6 +32,7 @@ import Sidebar from './components/layouts/Sidebar.vue';
 import BetaNoticeModal from './components/modals/BetaNoticeModal.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
+import { useSettingsStore } from './stores/Settings';
 
 const BETA_NOTICE_DISMISSED = 'wallet_beta_notice_dismissed';
 
@@ -80,10 +81,13 @@ export default defineComponent({
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
+        const { amountsHidden } = useSettingsStore();
+
         return {
             isBetaNoticeDismissed,
             routeClass,
             hasAccounts,
+            amountsHidden,
         };
     },
     components: {
@@ -336,5 +340,24 @@ export default defineComponent({
             transform: translate3d(0, 0, 0);
         }
     }
+}
+
+.value-masked [value-mask] {
+    font-size: 0 !important;
+}
+
+.value-masked [value-mask]::after {
+    content: '•••••';
+    font-size: var(--size);
+    font-weight: 900;
+    letter-spacing: 0.125em;
+}
+
+// Overwrites for AccountBalance
+.value-masked .account-balance [value-mask] {
+    line-height: 0;
+}
+.value-masked .account-balance [value-mask]::after {
+    letter-spacing: 0.375em;
 }
 </style>

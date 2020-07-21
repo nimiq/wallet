@@ -45,7 +45,7 @@
                 <div class="meta">
                     <div class="flex-row">
                         <div class="label">{{activeAddressInfo.label}}</div>
-                        <Amount :amount="activeAddressInfo.balance"/>
+                        <Amount :amount="activeAddressInfo.balance" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -55,7 +55,7 @@
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
-                        <FiatConvertedAmount :amount="activeAddressInfo.balance"/>
+                        <FiatConvertedAmount :amount="activeAddressInfo.balance" value-mask/>
                     </div>
                 </div>
             </div>
@@ -304,13 +304,15 @@ export default defineComponent({
 
     .label,
     .amount {
-        font-size: var(--h1-size);
+        --size: var(--h1-size);
+        font-size: var(--size);
         margin-top: 0.25rem;
     }
 
     .address,
     .fiat-amount {
-        font-size: var(--body-size);
+        --size: var(--body-size);
+        font-size: var(--size);
         opacity: 0.5;
     }
 

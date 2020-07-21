@@ -13,7 +13,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/components/modals/TransactionModal.vue:176
+#: src/components/modals/TransactionModal.vue:179
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bestätigung | {count} Bestätigungen"
 
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/modals/SendModal.vue:138
+#: src/components/modals/SendModal.vue:140
 msgid "Add a public message..."
 msgstr "Öffentliche Nachricht hinzufügen..."
 
@@ -67,7 +67,7 @@ msgstr "Adresse hinzufügen"
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
-#: src/components/modals/SendModal.vue:26
+#: src/components/modals/SendModal.vue:28
 msgid "Address unavailable?"
 msgstr "Adresse nicht bekannt?"
 
@@ -119,11 +119,11 @@ msgstr "Sicherung"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:174
+#: src/components/modals/TransactionModal.vue:177
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/TransactionModal.vue:183
+#: src/components/modals/TransactionModal.vue:186
 msgid "Block explorer"
 msgstr "Block Explorer"
 
@@ -147,7 +147,7 @@ msgstr "Kaufe und verkaufe mit deinem Wallet."
 msgid "Buy NIM"
 msgstr "NIM kaufen"
 
-#: src/components/modals/SendModal.vue:164
+#: src/components/modals/SendModal.vue:166
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:315
+#: src/components/modals/TransactionModal.vue:318
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -181,11 +181,11 @@ msgstr "Passwort ändern"
 msgid "Change your language setting."
 msgstr "Ändere deine Spracheinstellung."
 
-#: src/components/modals/SendModal.vue:38
+#: src/components/modals/SendModal.vue:40
 msgid "Choose a Recipient"
 msgstr "Empfänger auswählen"
 
-#: src/components/modals/SendModal.vue:154
+#: src/components/modals/SendModal.vue:156
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
@@ -225,7 +225,7 @@ msgstr "Verbunden mit"
 msgid "Consensus"
 msgstr "Konsensus"
 
-#: src/components/ContactShortcuts.vue:5
+#: src/components/ContactShortcuts.vue:9
 msgid "Contacts"
 msgstr "Kontakte"
 
@@ -238,7 +238,7 @@ msgstr "Weiter"
 msgid "Continue to Login File"
 msgstr "Weiter zur Login-Datei"
 
-#: src/components/modals/SendModal.vue:28
+#: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
 msgstr "Cashlink erstellen"
 
@@ -266,7 +266,7 @@ msgstr "Bezahlungslink erstellen"
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/modals/TransactionModal.vue:161
+#: src/components/modals/TransactionModal.vue:164
 msgid "Current value"
 msgstr "Aktueller Wert"
 
@@ -301,11 +301,11 @@ msgstr "Kontakte bearbeiten"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:481
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
-#: src/components/modals/SendModal.vue:18
+#: src/components/modals/SendModal.vue:20
 msgid "Enter Address"
 msgstr "Adresse eingeben"
 
@@ -341,7 +341,7 @@ msgstr "Faucet nicht verfügbar"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet nicht verfügbar (falsches Netzwerk)"
 
-#: src/components/modals/SendModal.vue:120
+#: src/components/modals/SendModal.vue:122
 msgid "fee"
 msgstr "Gebühr"
 
@@ -408,7 +408,7 @@ msgstr ""
 "Mit nur einem Passwort und einem Login ist es ist jetzt ganz einfach und "
 "bequem mehrere Addressen zu haben."
 
-#: src/components/modals/TransactionModal.vue:156
+#: src/components/modals/TransactionModal.vue:159
 msgid "Historic value"
 msgstr "Historischer Wert"
 
@@ -438,7 +438,7 @@ msgstr "Verbesserte Barrierefreiheit"
 msgid "In cooperation with"
 msgstr "In Kooperation mit"
 
-#: src/components/modals/SendModal.vue:128
+#: src/components/modals/SendModal.vue:130
 msgid "Insufficient balance."
 msgstr "Unzureichendes Guthaben."
 
@@ -501,7 +501,7 @@ msgid ""
 msgstr ""
 "Mehrere Adressen und Login-Datei werden nur von neuen Konten unterstützt."
 
-#: src/components/modals/SendModal.vue:51
+#: src/components/modals/SendModal.vue:53
 msgid "Name this contact..."
 msgstr "Benenne diesen Kontakt..."
 
@@ -647,7 +647,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
 
-#: src/components/modals/SendModal.vue:476
+#: src/components/modals/SendModal.vue:480
 msgid "Retry"
 msgstr "Erneut versuchen"
 
@@ -683,7 +683,7 @@ msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 msgid "Send"
 msgstr "Senden"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/SendModal.vue:130
+#: src/components/AmountMenu.vue:13 src/components/modals/SendModal.vue:132
 msgid "Send all"
 msgstr "Alles senden"
 
@@ -702,8 +702,8 @@ msgstr ""
 msgid "send and receive transactions."
 msgstr "Transaktionen versenden und empfangen."
 
-#: src/components/modals/SendModal.vue:10
-#: src/components/modals/SendModal.vue:149
+#: src/components/modals/SendModal.vue:11
+#: src/components/modals/SendModal.vue:151
 msgid "Send Transaction"
 msgstr "Transaktion senden"
 
@@ -711,15 +711,15 @@ msgstr "Transaktion senden"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deinem Wallet."
 
-#: src/components/modals/SendModal.vue:473
+#: src/components/modals/SendModal.vue:477
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:512
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM versendet"
 
-#: src/components/modals/SendModal.vue:504
+#: src/components/modals/SendModal.vue:508
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM an {name} versendet"
 
@@ -727,8 +727,8 @@ msgstr "{nim} NIM an {name} versendet"
 msgid "sent at {dateAndTime}"
 msgstr "versandt am {dateAndTime}"
 
-#: src/components/modals/SendModal.vue:61
-#: src/components/modals/SendModal.vue:72
+#: src/components/modals/SendModal.vue:63
+#: src/components/modals/SendModal.vue:74
 msgid "Set Amount"
 msgstr "Betrag festlegen"
 
@@ -772,11 +772,11 @@ msgstr "Anmelden"
 msgid "Skip for now"
 msgstr "Erstmal überspringen"
 
-#: src/components/modals/SendModal.vue:519
+#: src/components/modals/SendModal.vue:523
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
-#: src/components/modals/SendModal.vue:162
+#: src/components/modals/SendModal.vue:164
 msgid "Speed up your transaction"
 msgstr "Beschleunige deine Transaktion"
 
@@ -863,7 +863,7 @@ msgstr ""
 "Dieser neue Browser-Wallet wird in Zukunft staking, kaufen/verkaufen und BTC"
 " unterstützen!"
 
-#: src/components/AccountBalance.vue:3
+#: src/components/AccountBalance.vue:4
 msgid "Total Balance"
 msgstr "Gesamtguthaben"
 
@@ -879,7 +879,7 @@ msgstr "Transaktion an {address}"
 msgid "Transfer funds"
 msgstr "Guthaben überweisen"
 
-#: src/components/modals/TransactionModal.vue:316
+#: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
@@ -922,7 +922,7 @@ msgstr "Du nutzt ein Legacy-Konto"
 msgid "You now own crypto!"
 msgstr "Du besitzt jetzt Krypto!"
 
-#: src/components/modals/SendModal.vue:124
+#: src/components/modals/SendModal.vue:126
 msgid "You will send {amount} NIM"
 msgstr "Du sendest {amount} NIM"
 

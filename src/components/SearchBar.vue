@@ -46,7 +46,9 @@ export default defineComponent({
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
                     width.value = entry.contentBoxSize
-                        ? (entry.contentBoxSize.inlineSize || entry.contentBoxSize[0].inlineSize)
+                        ? (Array.isArray(entry.contentBoxSize)
+                            ? entry.contentBoxSize[0].inlineSize
+                            : entry.contentBoxSize.inlineSize)
                         : entry.contentRect.width;
                 });
                 observer.observe(searchBarInput.value);

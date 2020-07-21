@@ -3,6 +3,7 @@
         class="reset transaction"
         :class="state"
         @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
+        :key="`tx-${transaction.transactionHash}`"
     >
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
@@ -46,11 +47,14 @@
             <Amount :amount="transaction.value"/>
             <transition name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value"/>
-                <div v-else-if="fiatValue === undefined" class="fiat-amount-loading">&nbsp;</div>
-                <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount-unavailable">
+                <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
+                <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
                 </div>
-                <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                <div v-else class="fiat-amount flex-row">
+                    <HistoricValueIcon/>
+                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                </div>
             </transition>
         </div>
     </button>
@@ -76,6 +80,7 @@ import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
+import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
@@ -193,7 +198,8 @@ export default defineComponent({
         Identicon,
         FiatAmount,
         UnclaimedCashlinkIcon,
-    } as any,
+        HistoricValueIcon,
+    },
 });
 </script>
 
@@ -335,23 +341,30 @@ svg {
 
         .amount {
             font-weight: bold;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
         }
 
-        .fiat-amount,
-        .fiat-amount-loading,
-        .fiat-amount-unavailable {
+        > .fiat-amount {
             font-size: var(--small-size);
             font-weight: 600;
             opacity: 0.4;
+            align-items: center;
+            line-height: 1;
+
+            svg {
+                margin-right: 0.5rem;
+                opacity: 0.75;
+            }
 
             &.fade-enter-active {
                 position: relative;
                 top: calc(-1 * var(--fiat-amount-height));
             }
-        }
 
-        .fiat-amount-loading {
-            min-height: var(--fiat-amount-height); // to avoid jumping when fiat value loaded
+            &.loading {
+                min-height: var(--fiat-amount-height); // to avoid jumping when fiat value loaded
+            }
         }
 
         > * {
@@ -377,7 +390,6 @@ svg {
                 border-radius: 0.5rem;
                 padding: 0.25rem 0.75rem;
                 margin-right: -0.75rem;
-                margin-bottom: .375rem;
             }
 
             .amount::before {

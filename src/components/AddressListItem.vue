@@ -2,7 +2,7 @@
     <button v-on="$listeners" class="address-button reset flex-row">
         <div class="identicon-wrapper">
             <Identicon :address="addressInfo.address"/>
-            <ClockIcon v-if="addressInfo.type === AddressType.VESTING"/>
+            <VestingIcon v-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
         <div v-if="addressInfo.balance !== null" class="balances">
@@ -24,7 +24,7 @@ import { defineComponent } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import ClockIcon from './icons/ClockIcon.vue';
+import VestingIcon from './icons/VestingIcon.vue';
 import { AddressInfo, AddressType } from '../stores/Address';
 
 export default defineComponent({
@@ -44,7 +44,7 @@ export default defineComponent({
         LockLockedIcon,
         Amount,
         FiatConvertedAmount,
-        ClockIcon,
+        VestingIcon,
     },
 });
 </script>

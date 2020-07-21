@@ -147,7 +147,20 @@
                     <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                         Fiat value unavailable
                     </div>
-                    <FiatAmount v-else :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                    <div v-else class="fiat-amount flex-row">
+                        <Tooltip>
+                            <template slot="trigger">
+                                <HistoricValueIcon/>
+                                <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language"/>
+                            </template>
+                            {{ $t('Historic value') }}
+                        </Tooltip>
+                        <strong class="dot">&middot;</strong>
+                        <Tooltip>
+                            <FiatConvertedAmount slot="trigger" :amount="transaction.value"/>
+                            {{ $t('Current value') }}
+                        </Tooltip>
+                    </div>
                 </transition>
 
                 <div class="message">{{ data }}</div>
@@ -156,7 +169,7 @@
             <!-- <button class="nq-button-s">Send more</button> -->
             <div class="flex-spacer"></div>
 
-            <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom right">
+            <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
                 <span class="block">{{ $t('Block #{height}', { height: transaction.blockHeight }) }}</span>
                 <span v-if="confirmations" class="confirmations">
@@ -196,6 +209,7 @@ import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
+import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
@@ -379,8 +393,9 @@ export default defineComponent({
         LabelInput,
         CashlinkSmallIcon,
         UnclaimedCashlinkIcon,
+        HistoricValueIcon,
         BlueLink,
-    } as any,
+    },
 });
 </script>
 
@@ -560,7 +575,7 @@ export default defineComponent({
     .amount {
         font-size: 5rem;
         line-height: 1;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
 
         /deep/ .currency {
             font-size: 0.5em;
@@ -584,12 +599,50 @@ export default defineComponent({
             font-size: 4.75rem;
         }
     }
-}
 
-.fiat-amount {
-    font-size: var(--small-size);
-    font-weight: 600;
-    color: rgba(31, 35, 72, 0.5);
+    > .fiat-amount {
+        font-size: var(--small-size);
+        font-weight: 600;
+        color: var(--text-50);
+        align-items: center;
+
+        svg {
+            opacity: 0.8;
+            margin-right: 0.5rem;
+        }
+
+        .dot {
+            opacity: 0.6;
+            margin: 0 1rem;
+        }
+
+        .tooltip {
+            /deep/ .trigger {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                transition: color 0.2s var(--nimiq-ease);
+
+                &:hover,
+                &:focus {
+                    color: var(--text-60);
+                }
+
+                &::after {
+                    top: -1.5rem;
+                    background: #211B43;
+                }
+            }
+
+            /deep/ .tooltip-box {
+                white-space: nowrap;
+                line-height: 1;
+                padding: 1rem;
+                transform: translateY(-1.5rem);
+            }
+        }
+    }
 }
 
 .message {
@@ -600,7 +653,7 @@ export default defineComponent({
     word-break: break-word;
 }
 
-.tooltip {
+.info-tooltip {
     position: absolute;
     left: 2rem;
     top: 2rem;

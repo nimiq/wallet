@@ -226,7 +226,7 @@ export default defineComponent({
 }
 
 .icon.nq-blue-bg {
-    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.25);
 }
 
 .account-menu > .label {
@@ -317,7 +317,7 @@ export default defineComponent({
 .separator {
     margin: 0 0.5rem 0.5rem 0.5rem;
     height: 2px;
-    box-shadow: 0 1.5px 0 0 var(--text-14);
+    box-shadow: inset 0 1.5px 0 var(--text-14);
     flex-shrink: 0;
     border-radius: 2px;
 }

@@ -490,7 +490,7 @@ export default defineComponent({
     font-size: var(--large-button-size);
 
     background: none !important;
-    box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.35); // Based on Nimiq Orange
+    box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.35); // Based on Nimiq Orange
 
     transition:
         color .3s var(--nimiq-ease),
@@ -499,7 +499,7 @@ export default defineComponent({
 
     &:hover,
     &:focus {
-        box-shadow: inset 0 0 0 0.1875rem rgba(252, 117, 0, 0.45); // Based on Nimiq Orange Darkened
+        box-shadow: inset 0 0 0 1.5px rgba(252, 117, 0, 0.45); // Based on Nimiq Orange Darkened
     }
 
     &.active {

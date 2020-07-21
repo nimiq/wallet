@@ -239,13 +239,13 @@ export default defineComponent({
         .separator:first-child {
             height: 2px;
             margin-bottom: 1.5rem;
-            box-shadow: 0 1.5px 0 var(--text-10);
+            box-shadow: inset 0 1.5px 0 var(--text-10);
         }
 
         .separator:last-child {
             height: 2px;
             margin-top: 1.5rem;
-            box-shadow: 0 -1.5px 0 var(--text-10);
+            box-shadow: inset 0 -1.5px 0 var(--text-10);
         }
 
         .amount-input {

@@ -338,7 +338,7 @@ select {
     appearance: none;
     cursor: pointer;
 
-    box-shadow: inset 0 0 0 0.1875rem var(--text-16);
+    box-shadow: inset 0 0 0 1.5px var(--text-16);
     border-radius: 2.5rem;
     padding: {
         top: 0.625rem;

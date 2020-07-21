@@ -16,7 +16,7 @@
                     : accountInfo.label
                 }}
             </div>
-            <FiatConvertedAmount :amount="accountBalance"/>
+            <FiatConvertedAmount :amount="accountBalance" value-mask/>
         </div>
         <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
     </component>
@@ -102,8 +102,9 @@ export default defineComponent({
 }
 
 .fiat-amount {
+    --size: var(--small-size);
+    font-size: var(--size);
     font-weight: 600;
-    font-size: var(--small-size);
     opacity: 0.5;
 }
 

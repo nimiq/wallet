@@ -1,6 +1,10 @@
 <template>
     <div class="contact-shortcuts flex-row">
-        <button class="reset contact-list-button flex-column" @click="$emit('contact-list-opened')">
+        <button
+            class="reset contact-list-button flex-column"
+            @click="$emit('contact-list-opened')"
+            :disabled="!contacts.length && !hasAddresses"
+        >
             <ContactsIcon/>
             <label>{{ $t('Contacts') }}</label>
         </button>
@@ -11,6 +15,10 @@
             @click="$emit('contact-selected', contact)"
             :address="contact.address"
             :label="contact.label"/>
+        <IdenticonButton
+            v-for="i in Math.max(0, 3 - contacts.length)"
+            :key="`placeholder-${i}`"
+            address="placeholder"/>
     </div>
 </template>
 
@@ -25,6 +33,10 @@ export default defineComponent({
             type: Array as () => {address: string, label: string}[],
             required: false,
         },
+        hasAddresses: {
+            type: Boolean,
+            required: true,
+        },
     },
     components: {
         ContactsIcon,
@@ -35,7 +47,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .contact-shortcuts {
-        align-content: flex-start;
         width: calc(100% + 2rem);
     }
 
@@ -59,9 +70,20 @@ export default defineComponent({
 
         transition: background var(--attr-duration) var(--nimiq-ease);
 
-        &:hover,
-        &:focus {
+        &:not(:disabled):hover,
+        &:not(:disabled):focus {
             background: var(--nimiq-highlight-bg);
+        }
+
+        &:disabled {
+            .nq-icon {
+                opacity: 0.2;
+            }
+
+            label {
+                opacity: 0.3;
+                cursor: auto;
+            }
         }
     }
 
@@ -79,12 +101,9 @@ export default defineComponent({
     }
 
     .separator {
-        content: '';
-        display: block;
         width: 0.25rem;
         margin: 0 0.75rem;
         flex-shrink: 0;
-        align-self: stretch;
-        box-shadow: inset 3px 0 0 -1.5px var(--text-14);
+        box-shadow: inset 1.5px 0 0 var(--text-14);
     }
 </style>

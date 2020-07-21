@@ -11,6 +11,7 @@
             <PageBody class="page__recipient-input flex-column">
                 <ContactShortcuts
                     :contacts="recentContacts"
+                    :hasAddresses="hasOwnAddresses"
                     @contact-list-opened="contactListOpened = true"
                     @contact-selected="onContactSelected"
                 />
@@ -256,6 +257,7 @@ export default defineComponent({
         }, { deep: true });
 
         const recentContacts = computed(() => contacts.value.slice(0, 3));
+        const hasOwnAddresses = computed(() => addressInfos.value.length - 1 > 0);
 
         const contactListOpened = ref(false);
         function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
@@ -546,6 +548,7 @@ export default defineComponent({
 
             // Recipient Input
             recentContacts,
+            hasOwnAddresses,
             contactListOpened,
             onContactSelected,
             addressInputValue,

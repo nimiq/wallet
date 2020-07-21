@@ -1,7 +1,8 @@
 <template>
-    <button class="reset identicon-button flex-column" v-on="$listeners">
+    <button class="reset identicon-button flex-column" v-on="$listeners" :disabled="address === 'placeholder'">
         <Identicon :address="address"/>
-        <label v-if="label">{{ label }}</label>
+        <div v-if="address === 'placeholder'" class="gray"></div>
+        <label v-else-if="label">{{ label }}</label>
         <span v-else>{{ address }}</span>
     </button>
 </template>
@@ -35,8 +36,8 @@ export default defineComponent({
 
         transition: background var(--attr-duration) var(--nimiq-ease);
 
-        &:hover,
-        &:focus {
+        &:not(:disabled):hover,
+        &:not(:disabled):focus {
             background: var(--nimiq-highlight-bg);
         }
     }
@@ -62,5 +63,13 @@ export default defineComponent({
         word-spacing: -0.15em;
         letter-spacing: -0.005em;
         // opacity: 0.7;
+    }
+
+    .gray {
+        width: 100%;
+        height: 0.875rem;
+        background: var(--text-10);
+        border-radius: 1rem;
+        margin-top: 1rem;
     }
 </style>

@@ -1,5 +1,6 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root">
+        <div class="scroll-mask top"></div>
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
@@ -20,6 +21,7 @@
             class="active-box"
             :style="`transform: scaleY(${backgroundYScale}) translateY(${backgroundYOffset}px)`"
         ></div>
+        <div class="scroll-mask bottom"></div>
     </div>
 </template>
 
@@ -114,22 +116,37 @@ export default defineComponent({
 <style scoped lang="scss">
     @import '../scss/mixins.scss';
 
+    // TODO: Extract into SCSS mixin or global style
+    .scroll-mask {
+        position: sticky;
+        height: 3rem;
+        flex-shrink: 0;
+        z-index: 2;
+        pointer-events: none;
+        width: calc(100% + 2 * var(--padding-sides));
+        margin-left: calc(-1 * var(--padding-sides));
+
+        &.top {
+            top: 0;
+            background: linear-gradient(var(--bg-base), rgba(244, 244, 244, 0));
+            margin-bottom: -0.5rem;
+        }
+
+        &.bottom {
+            bottom: 0;
+            background: linear-gradient(0deg, var(--bg-base), rgba(244, 244, 244, 0));
+            margin-top: -0.5rem;
+        }
+    }
+
     .address-list {
         display: flex;
         flex-direction: column;
         position: relative;
         overflow-y: auto;
-        padding-top: 2.5rem;
-        padding-bottom: 2.5rem;
         padding-right: var(--padding-sides);
         margin: 0 calc(-1 * var(--padding-sides));
         color: var(--text-70);
-        mask: linear-gradient(0deg ,
-            rgba(255,255,255, 0),
-            white 3rem,
-            white calc(100% - 3rem),
-            rgba(255,255,255, 0)
-        );
 
         // To make space for the .active-box leftside box-shadow
         padding-left: var(--padding-sides);

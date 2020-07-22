@@ -19,7 +19,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count}개의 피어 | {count}개의 피어"
 
 #: src/components/layouts/AddressOverview.vue:14
-#: src/components/layouts/AddressOverview.vue:72
+#: src/components/layouts/AddressOverview.vue:76
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 캐시링크"
 
@@ -458,7 +458,7 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/layouts/AddressOverview.vue:99
+#: src/components/layouts/AddressOverview.vue:103
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "시작합니다! 당신의 Nimiq 계정을 만드세요:"
 
@@ -595,7 +595,7 @@ msgstr ""
 "자산을 통제하는 당신의 키를 보유합니다. Nimiq은 브라우저를 통해 당신의 정보를 생성, 저장 및 액세스하고, 블록체인과 쉽게 "
 "상호작용할 수 있도록만 합니다."
 
-#: src/components/layouts/AddressOverview.vue:85
+#: src/components/layouts/AddressOverview.vue:89
 msgid "Receive"
 msgstr "받기"
 
@@ -620,8 +620,8 @@ msgid "Reference currency"
 msgstr "참조 통화"
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:26
-#: src/components/layouts/AddressOverview.vue:40
+#: src/components/layouts/AddressOverview.vue:28
+#: src/components/layouts/AddressOverview.vue:44
 msgid "Rename"
 msgstr "이름 바꾸기"
 
@@ -665,7 +665,7 @@ msgstr "거래 검색"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "연락처, 주소 등으로 검색"
 
-#: src/components/layouts/AddressOverview.vue:82
+#: src/components/layouts/AddressOverview.vue:86
 msgid "Send"
 msgstr "보내기"
 
@@ -748,7 +748,7 @@ msgstr "내 주소 모두 표시"
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
-#: src/components/layouts/AddressOverview.vue:100
+#: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr "가입"
 

@@ -20,7 +20,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count} Pair | {count} Pairs"
 
 #: src/components/layouts/AddressOverview.vue:14
-#: src/components/layouts/AddressOverview.vue:72
+#: src/components/layouts/AddressOverview.vue:76
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink en attente | {count} Cashlinks en attente"
 
@@ -473,7 +473,7 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/layouts/AddressOverview.vue:99
+#: src/components/layouts/AddressOverview.vue:103
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
@@ -615,7 +615,7 @@ msgstr ""
 "appareil. Nimiq vous permet simplement, via un navigateur, de créer, "
 "enregistrer et accéder à vos informations et d'interagir avec la blockchain."
 
-#: src/components/layouts/AddressOverview.vue:85
+#: src/components/layouts/AddressOverview.vue:89
 msgid "Receive"
 msgstr "Recevoir"
 
@@ -640,8 +640,8 @@ msgid "Reference currency"
 msgstr "Devise de référence"
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:26
-#: src/components/layouts/AddressOverview.vue:40
+#: src/components/layouts/AddressOverview.vue:28
+#: src/components/layouts/AddressOverview.vue:44
 msgid "Rename"
 msgstr "Renommer"
 
@@ -687,7 +687,7 @@ msgstr "Rechercher des transactions"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Rechercher des transactions via contacts, adresses, etc..."
 
-#: src/components/layouts/AddressOverview.vue:82
+#: src/components/layouts/AddressOverview.vue:86
 msgid "Send"
 msgstr "Envoyer"
 
@@ -772,7 +772,7 @@ msgstr "Afficher toutes mes adresses"
 msgid "Show Decimals"
 msgstr "Afficher les décimales"
 
-#: src/components/layouts/AddressOverview.vue:100
+#: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr "S'inscrire"
 

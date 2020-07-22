@@ -1,6 +1,7 @@
 <template>
     <div class="contact-book flex-column" :class="{ editing }">
         <div class="list flex-column">
+            <div class="scroll-mask top"></div>
             <AddressListItem
                 v-for="addressInfo in (showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2))"
                 :key="addressInfo.address"
@@ -32,6 +33,7 @@
                     <TrashIcon/>
                 </button>
             </button>
+            <div class="scroll-mask bottom"></div>
         </div>
         <template v-if="contacts.length">
             <button v-if="!editing"
@@ -104,20 +106,35 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../scss/mixins.scss';
 
+// TODO: Extract into SCSS mixin or global style
+.scroll-mask {
+    position: sticky;
+    height: 3rem;
+    flex-shrink: 0;
+    z-index: 2;
+    pointer-events: none;
+
+    &.top {
+        top: 0;
+        background: linear-gradient(var(--bg-primary), rgba(255, 255, 255, 0));
+        margin-bottom: -0.5rem;
+    }
+
+    &.bottom {
+        bottom: 0;
+        background: linear-gradient(0deg, var(--bg-primary), rgba(255, 255, 255, 0));
+        margin-top: -0.5rem;
+    }
+}
+
 .contact-book {
     max-height: 100%;
 }
 
 .list {
     overflow-y: auto;
-    padding: 2.5rem 2rem;
+    padding: 0 2rem;
     flex-grow: 1;
-    mask: linear-gradient(0deg ,
-        rgba(255,255,255, 0),
-        white 3rem,
-        white calc(100% - 3rem),
-        rgba(255,255,255, 0)
-    );
 
     @extend %custom-scrollbar;
 }

@@ -77,6 +77,7 @@
 
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push('/send')" @mousedown.prevent
+                    :disabled="!activeAddressInfo.balance"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
@@ -462,6 +463,11 @@ export default defineComponent({
         width: 1.5rem;
         height: 1.5rem;
         margin-right: 1rem;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
     }
 }
 

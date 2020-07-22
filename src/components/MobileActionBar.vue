@@ -3,7 +3,10 @@
         <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
             <ArrowRightSmallIcon />Receive
         </button>
-        <button class="send nq-button-pill light-blue flex-row" @click="$router.push('/send')" @mousedown.prevent>
+        <button class="send nq-button-pill light-blue flex-row"
+            @click="$router.push('/send')" @mousedown.prevent
+            :disabled="!activeAddressInfo.balance"
+        >
             <ArrowRightSmallIcon />Send
         </button>
         <button class="reset scan-qr" @click="$router.push('/scan')">
@@ -15,8 +18,16 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
+    setup() {
+        const { activeAddressInfo } = useAddressStore();
+
+        return {
+            activeAddressInfo,
+        };
+    },
     components: {
         ArrowRightSmallIcon,
         ScanQrCodeIcon,
@@ -49,6 +60,11 @@ export default defineComponent({
     .nq-icon {
         font-size: 1.75rem;
         margin-right: 1rem;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
     }
 }
 

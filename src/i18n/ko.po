@@ -720,7 +720,7 @@ msgstr "금액 설정"
 msgid "Set fee"
 msgstr "수수료 설정"
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:57
 msgid "Settings"
 msgstr "설정"
 
@@ -846,6 +846,10 @@ msgstr "{address}로의 거래"
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
 msgstr "자금 이체하기"
+
+#: src/components/NetworkStats.vue:23
+msgid "Tweet your map. Win some NIM."
+msgstr ""
 
 #: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140

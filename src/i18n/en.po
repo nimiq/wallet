@@ -673,7 +673,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:57
 msgid "Settings"
 msgstr ""
 
@@ -788,6 +788,10 @@ msgstr ""
 
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
+msgstr ""
+
+#: src/components/NetworkStats.vue:23
+msgid "Tweet your map. Win some NIM."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:319

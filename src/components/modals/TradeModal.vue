@@ -345,8 +345,7 @@ export default defineComponent({
 @media (max-width: 700px) { // Full mobile breakpoint
     .modal /deep/ .small-page {
         // Regular Modal size (iOS scrolling inside the TradeModal does not work without a fixed height)
-        height: 70.5rem !important;
-        width: 52.5rem !important;
+        height: unset !important;
     }
 
     .page-body {

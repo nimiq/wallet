@@ -1,6 +1,6 @@
 <template>
     <div class="modal backdrop flex-column" @click="close">
-        <div class="wrapper" @click.stop>
+        <div class="wrapper flex-column" @click="onWrapperClick">
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
@@ -58,6 +58,10 @@ export default defineComponent({
             }
         };
 
+        function onWrapperClick(event: Event) {
+            if (!(event.target as Element).matches('.wrapper')) event.stopPropagation();
+        }
+
         document.addEventListener('keydown', onEscape);
 
         onUnmounted(() => {
@@ -66,6 +70,7 @@ export default defineComponent({
 
         return {
             close,
+            onWrapperClick,
         };
     },
     components: {
@@ -122,7 +127,6 @@ export default defineComponent({
 .overlay {
     position: absolute;
     left: 0;
-    top: 0;
     right: 0;
     bottom: 0;
     will-change: transform;
@@ -133,6 +137,13 @@ export default defineComponent({
         justify-content: flex-end;
     }
 
+    .wrapper {
+        position: fixed; // Must be fixed so the bottom is not cut off by iOS Safari's bottom bar
+        bottom: 0;
+        height: 96%; // Must be a fixed heigth value (not max-height) to force children to limit their height
+        justify-content: flex-end;
+    }
+
     .small-page,
     .cover {
         border-radius: 1.25rem 1.25rem 0 0;
@@ -140,6 +151,7 @@ export default defineComponent({
 
     .main {
         transform-origin: center top;
+        position: relative;
 
         &.smallen {
             transform: scale(0.942857143) translateY(-1.5rem);

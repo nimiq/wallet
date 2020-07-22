@@ -34,17 +34,17 @@ import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
 
-const BETA_NOTICE_DISMISSED = 'wallet_beta_notice_dismissed';
+const NOTICE_DISMISSED = 'new_wallet_notice_dismissed';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
 
-        const isBetaNoticeDismissed = ref(Boolean(window.localStorage.getItem(BETA_NOTICE_DISMISSED) || false));
+        const isBetaNoticeDismissed = ref(Boolean(window.localStorage.getItem(NOTICE_DISMISSED) || false));
         watch(isBetaNoticeDismissed, (dismissed) => {
-            if (!dismissed) window.localStorage.removeItem(BETA_NOTICE_DISMISSED);
-            else window.localStorage.setItem(BETA_NOTICE_DISMISSED, 'yes');
+            if (!dismissed) window.localStorage.removeItem(NOTICE_DISMISSED);
+            else window.localStorage.setItem(NOTICE_DISMISSED, 'yes');
         });
 
         const routeClass = ref('');

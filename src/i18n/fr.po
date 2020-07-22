@@ -358,6 +358,10 @@ msgstr "Le fichier ne contient aucun contact."
 msgid "For beginners"
 msgstr "Pour les débutants"
 
+#: src/components/modals/BetaNoticeModal.vue:22
+msgid "forum thread"
+msgstr ""
+
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr "Noeud Complet"
@@ -384,7 +388,7 @@ msgstr "Obtenir des NIM sur {exchange}"
 msgid "Got feedback? Found a bug?"
 msgstr "Vous avez des commentaires ? Ou trouvé un bug ?"
 
-#: src/components/modals/BetaNoticeModal.vue:42
+#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr "Compris"
@@ -412,6 +416,11 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
 msgstr "conserver, gérer et regrouper les adresses."
+
+#: src/components/modals/BetaNoticeModal.vue:18
+msgid ""
+"If you find a bug or have feedback, please share it in this {forum-thread}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -823,13 +832,11 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Le wallet Nimiq est plus qu'un web-wallet, c'est un nœud réseau."
 
-#: src/components/modals/BetaNoticeModal.vue:36
+#: src/components/modals/BetaNoticeModal.vue:16
 msgid ""
-"The old {NimiqSafe} remains available but will be replaced by the new Nimiq "
-"Wallet eventually."
+"The Wallet is still in Beta. Your funds are safe, there just might be some "
+"visual issues."
 msgstr ""
-"L'ancien {NimiqSafe} reste disponible mais sera éventuellement remplacé par "
-"le nouveau wallet Nimiq."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -851,14 +858,6 @@ msgstr "Ceci est un ancien type de compte."
 #: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "Ce mois-ci"
-
-#: src/components/modals/BetaNoticeModal.vue:34
-msgid ""
-"This next-gen browser wallet will feature staking, buying/selling and BTC "
-"support!"
-msgstr ""
-"Ce wallet par navigateur de nouvelle génération comprendra le staking, "
-"l'achat / vente et le support du BTC !"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -892,13 +891,11 @@ msgid "Use it to access your account from any device."
 msgstr ""
 "Utilisez-le pour accéder à votre compte depuis n'importe quel appareil."
 
-#: src/components/modals/BetaNoticeModal.vue:31
+#: src/components/modals/BetaNoticeModal.vue:13
 msgid ""
-"Welcome to the new\n"
-"Nimiq Wallet"
+"Welcome to the\n"
+"new Nimiq Wallet"
 msgstr ""
-"Bienvenue dans le nouveau\n"
-"Wallet Nimiq"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

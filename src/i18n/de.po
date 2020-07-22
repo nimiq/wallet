@@ -361,6 +361,10 @@ msgstr "Datei enthält keine Kontakte."
 msgid "For beginners"
 msgstr "Für Anfänger"
 
+#: src/components/modals/BetaNoticeModal.vue:22
+msgid "forum thread"
+msgstr ""
+
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
 msgstr "Full Node"
@@ -387,7 +391,7 @@ msgstr "Kaufe NIM auf {exchange}"
 msgid "Got feedback? Found a bug?"
 msgstr "Feedback? Fehler gefunden?"
 
-#: src/components/modals/BetaNoticeModal.vue:42
+#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr "Alles klar"
@@ -415,6 +419,11 @@ msgstr "Historischer Wert"
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
 msgstr "Adressen verwalten und zusammenfassen."
+
+#: src/components/modals/BetaNoticeModal.vue:18
+msgid ""
+"If you find a bug or have feedback, please share it in this {forum-thread}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -826,13 +835,11 @@ msgstr ""
 "Die Nimiq Wallet ist mehr als nur eine Web-Wallet, sie ist direkt Teil des "
 "Nimiq-Netzwerkes mit einer eingebauten Light-Node."
 
-#: src/components/modals/BetaNoticeModal.vue:36
+#: src/components/modals/BetaNoticeModal.vue:16
 msgid ""
-"The old {NimiqSafe} remains available but will be replaced by the new Nimiq "
-"Wallet eventually."
+"The Wallet is still in Beta. Your funds are safe, there just might be some "
+"visual issues."
 msgstr ""
-"Der alte {NimiqSafe} bleibt verfügbar, wird aber irgendwann durch das neue "
-"Nimiq Wallet ersetzt."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -854,14 +861,6 @@ msgstr "Dies ist ein Legacy-Konto"
 #: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "Diesen Monat"
-
-#: src/components/modals/BetaNoticeModal.vue:34
-msgid ""
-"This next-gen browser wallet will feature staking, buying/selling and BTC "
-"support!"
-msgstr ""
-"Dieser neue Browser-Wallet wird in Zukunft staking, kaufen/verkaufen und BTC"
-" unterstützen!"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -894,13 +893,11 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr "Benutze sie um dein Konto von anderen Geräten zu benutzen."
 
-#: src/components/modals/BetaNoticeModal.vue:31
+#: src/components/modals/BetaNoticeModal.vue:13
 msgid ""
-"Welcome to the new\n"
-"Nimiq Wallet"
+"Welcome to the\n"
+"new Nimiq Wallet"
 msgstr ""
-"Herzlich Wilkommen im neuen\n"
-"Nimiq Wallet"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

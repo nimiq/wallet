@@ -1,175 +1,191 @@
+# 
+# Translators:
+# Kyungil Choi <hanpama@gmail.com>, 2020
+# 
 msgid ""
 msgstr ""
+"Last-Translator: Kyungil Choi <hanpama@gmail.com>, 2020\n"
+"Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/107022/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src/components/modals/TransactionModal.vue:179
 msgid "{count} Confirmation | {count} Confirmations"
-msgstr ""
+msgstr "{count}개의 승인 | {count}개의 승인"
 
 #: src/components/NetworkStats.vue:9
 msgid "{count} Peer | {count} Peers"
-msgstr ""
+msgstr "{count}개의 피어 | {count}개의 피어"
 
 #: src/components/layouts/AddressOverview.vue:14
 #: src/components/layouts/AddressOverview.vue:72
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr ""
+msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 캐시링크"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
-msgstr ""
+msgstr "24/7 채팅 & 전화 지원"
 
 #: src/components/layouts/Settings.vue:193
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
+"다른 이름의 연락처가 이미 \"{address}\" 주소를 가지고 있습니다.\n"
+"                            교체하고 싶으신가요?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
+"계정 생성이 크게 개선되었습니다.\n"
+"Nimiq의 모든 새 기능을 체험해보세요."
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "Accounts"
-msgstr ""
+msgstr "계정"
 
 #: src/components/modals/SendModal.vue:140
 msgid "Add a public message..."
-msgstr ""
+msgstr "공개 메시지 추가..."
 
 #: src/components/AccountMenu.vue:70
 msgid "Add Account"
-msgstr ""
+msgstr "계정 추가"
 
 #: src/components/AddressList.vue:17
 msgid "Add Address"
-msgstr ""
+msgstr "주소 추가"
 
 #: src/components/modals/TransactionModal.vue:121
 #: src/components/modals/TransactionModal.vue:84
 msgid "Add contact"
-msgstr ""
+msgstr "연락처 추가"
 
 #: src/components/modals/SendModal.vue:28
 msgid "Address unavailable?"
-msgstr ""
+msgstr "주소를 사용할 수 없나요?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "Addresses"
-msgstr ""
+msgstr "주소"
 
 #: src/components/layouts/Settings.vue:39
 msgid "all"
-msgstr ""
+msgstr "전체"
 
 #: src/components/modals/WelcomeModal.vue:49
 msgid "All in one easy place."
-msgstr ""
+msgstr "모든 것을 딱 한 곳에서."
 
 #: src/components/layouts/AccountOverview.vue:60
 #: src/components/LegacyAccountNotice.vue:37
-msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
-msgstr ""
+msgid ""
+"All new features are exclusive to new accounts. Upgrade now, it only takes "
+"seconds."
+msgstr "모든 새 기능은 새로운 계정에만 제공됩니다. 지금 업그레이드 하세요. 몇 초면 됩니다."
 
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
-msgstr ""
+msgstr "복구 단어, 비밀번호와 로그인 파일은 항상 백업하세요."
 
 #: src/components/modals/WelcomeModal.vue:41
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
-msgstr ""
+msgstr "그리고 {BTC}, 암호화폐의 금본위이자 가치의 견고한 저장소입니다."
 
 #: src/components/modals/TradeModal.vue:30
 msgid "Android and iOS App"
-msgstr ""
+msgstr "안드로이드와 iOS 앱"
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to Addresses"
-msgstr ""
+msgstr "주소로 돌아가기"
 
 #: src/components/layouts/AccountOverview.vue:25
 msgid "Backup"
-msgstr ""
+msgstr "백업"
 
 #: src/components/LegacyAccountNotice.vue:21
 msgid "Bitcoin"
-msgstr ""
+msgstr "비트코인"
 
 #: src/components/modals/TransactionModal.vue:177
 msgid "Block #{height}"
-msgstr ""
+msgstr "블록 #{height}"
 
 #: src/components/modals/TransactionModal.vue:186
 msgid "Block explorer"
-msgstr ""
+msgstr "블록 탐색기"
 
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
-msgstr ""
+msgstr "블록 높이"
 
 #: src/components/NetworkMap.vue:29
 msgid "Browser"
-msgstr ""
+msgstr "브라우저"
 
 #: src/components/layouts/Sidebar.vue:31
 msgid "Buy & Sell"
-msgstr ""
+msgstr "구매 & 판매"
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
-msgstr ""
+msgstr "당신의 지갑으로 거래하세요."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
-msgstr ""
+msgstr "NIM 구매"
 
 #: src/components/modals/SendModal.vue:166
-msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
-msgstr ""
+msgid ""
+"By adding a transaction fee, you can influence how fast your transaction "
+"will be processed."
+msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
 #: src/components/layouts/Settings.vue:173
 msgid "Cannot import contacts, wrong file format."
-msgstr ""
+msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
 #: src/components/modals/TransactionModal.vue:318
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
-msgstr ""
+msgstr "캐시링크"
 
 #: src/components/modals/TransactionModal.vue:11
 msgid "Cashlink from {address}"
-msgstr ""
+msgstr "{address}로부터의 캐시링크"
 
 #: src/components/modals/TransactionModal.vue:19
 msgid "Cashlink to {address}"
-msgstr ""
+msgstr "{address}로의 캐시링크"
 
 #: src/components/AccountMenu.vue:50
 msgid "Change password"
-msgstr ""
+msgstr "비밀번호 변경"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Change your language setting."
-msgstr ""
+msgstr "언어 설정을 바꿉니다."
 
 #: src/components/modals/SendModal.vue:40
 msgid "Choose a Recipient"
-msgstr ""
+msgstr "받는 사람을 고르세요"
 
 #: src/components/modals/SendModal.vue:156
 msgid "Choose an Address"
-msgstr ""
+msgstr "주소를 고르세요"
 
 #: src/components/layouts/Settings.vue:96
 msgid "Clear"
-msgstr ""
+msgstr "지우기"
 
 #: src/components/layouts/Settings.vue:90
 msgid "Clear Cache"
-msgstr ""
+msgstr "캐시 비우기"
 
 #: src/components/layouts/AccountOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
@@ -177,155 +193,159 @@ msgstr ""
 #: src/components/modals/TradeModal.vue:97
 #: src/components/modals/WelcomeModal.vue:40
 msgid "Coming soon"
-msgstr ""
+msgstr "곧 출시"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
-msgstr ""
+msgstr "축하합니다"
 
 #: src/components/modals/WelcomeModal.vue:21
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
 msgstr ""
+"Nimiq 블록체인에 직접 접속하세요.\n"
+"어떤 중간자에게서도 독립하세요."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
-msgstr ""
+msgstr "연결됨"
 
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
-msgstr ""
+msgstr "합의"
 
 #: src/components/ContactShortcuts.vue:9
 msgid "Contacts"
-msgstr ""
+msgstr "연락처"
 
 #: src/components/modals/MigrationWelcomeModal.vue:83
 #: src/components/modals/WelcomeModal.vue:94
 msgid "Continue"
-msgstr ""
+msgstr "계속하기"
 
 #: src/components/modals/WelcomeModal.vue:101
 msgid "Continue to Login File"
-msgstr ""
+msgstr "로그인 파일로 계속하기"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
-msgstr ""
+msgstr "캐시링크 생성"
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
 msgid "Create a new Account"
-msgstr ""
+msgstr "새 계정 생성"
 
 #: src/components/LegacyAccountNotice.vue:6
-msgid "Create a new account and transfer your funds. New features and possibilities await."
-msgstr ""
+msgid ""
+"Create a new account and transfer your funds. New features and possibilities"
+" await."
+msgstr "새로운 계정을 만들고 자금을 이체하세요. 새로운 기능과 가능성이 기다립니다."
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr ""
+msgstr "백업 생성"
 
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
-msgstr ""
+msgstr "지불 링크 생성"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "Credit Card accepted"
-msgstr ""
+msgstr "신용 카드 허용"
 
 #: src/components/modals/TransactionModal.vue:164
 msgid "Current value"
-msgstr ""
+msgstr "현재 가치"
 
 #: src/components/layouts/Settings.vue:86
 msgid "Developer"
-msgstr ""
+msgstr "개발자"
 
 #: src/components/layouts/Settings.vue:122
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
-msgstr ""
+msgstr "면책 조항"
 
 #: src/components/ContactBook.vue:47
 msgid "Done"
-msgstr ""
+msgstr "완료"
 
 #: src/components/modals/WelcomeModal.vue:81
 msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr ""
+msgstr "다운로드 해 안전하게 보관하세요. 공유하지도, 잃어버리지도 마세요."
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
-msgstr ""
+msgstr "로그인 파일 다운로드"
 
 #: src/components/ContactBook.vue:41
 msgid "Edit contacts"
-msgstr ""
+msgstr "연락처 수정"
 
 #: src/components/layouts/Settings.vue:32
 msgid "Edit the amount of decimals visible for NIM values."
-msgstr ""
+msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
 #: src/components/modals/SendModal.vue:481
 msgid "Edit transaction"
-msgstr ""
+msgstr "거래 수정"
 
 #: src/components/modals/SendModal.vue:20
 msgid "Enter Address"
-msgstr ""
+msgstr "주소 입력"
 
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
-msgstr ""
+msgstr "만료"
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Expired"
-msgstr ""
+msgstr "만료"
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
-msgstr ""
+msgstr "실패"
 
 #: src/components/TestnetFaucet.vue:116
 msgid "Faucet error - please try again"
-msgstr ""
+msgstr "수도꼭지 오류 - 다시 시도해 주세요"
 
 #: src/components/TestnetFaucet.vue:76
 msgid "Faucet is empty"
-msgstr ""
+msgstr "수도꼭지가 비었습니다"
 
 #: src/components/TestnetFaucet.vue:80
 msgid "Faucet is not available from your location"
-msgstr ""
+msgstr "현재 위치에서는 수도꼭지를 사용할 수 없습니다"
 
 #: src/components/TestnetFaucet.vue:87
 msgid "Faucet unavailable"
-msgstr ""
+msgstr "수도꼭지 사용 불가"
 
 #: src/components/TestnetFaucet.vue:72
 msgid "Faucet unavailable (wrong network)"
-msgstr ""
+msgstr "수도꼭지 사용 불가(잘못된 네트워크)"
 
 #: src/components/modals/SendModal.vue:122
 msgid "fee"
-msgstr ""
+msgstr "수수료"
 
 #: src/components/TransactionList.vue:48
 msgid "Fetching"
-msgstr ""
+msgstr "불러 오는 중"
 
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
-msgstr ""
+msgstr "명목화폐 값 사용 불가"
 
 #: src/components/layouts/Settings.vue:179
 msgid "File contains no contacts."
-msgstr ""
+msgstr "파일에 들어있는 연락처가 없습니다."
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
-msgstr ""
+msgstr "초심자용"
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
@@ -333,475 +353,512 @@ msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
-msgstr ""
+msgstr "완전 노드"
 
 #: src/components/layouts/Settings.vue:11
 msgid "General"
-msgstr ""
+msgstr "일반"
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
-msgstr ""
+msgstr "NIM 얻기"
 
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
-msgstr ""
+msgstr "NIM과 BTC 얻기"
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "Get NIM on {exchange}"
-msgstr ""
+msgstr "{exchange}에서 NIM 얻기"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
-msgstr ""
+msgstr "피드백이 있나요? 버그를 찾으셨나요?"
 
 #: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
-msgstr ""
+msgstr "알겠습니다"
 
 #: src/components/modals/MigrationWelcomeModal.vue:85
 msgid "Got it!"
-msgstr ""
+msgstr "알겠습니다!"
 
 #: src/components/modals/WelcomeModal.vue:11
 msgid "Great, you’re here!"
-msgstr ""
+msgstr "좋습니다, 여기까지 오셨군요!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
-msgid "Handling multiple Addresses is now convenient and easy – with one password and shared login information."
-msgstr ""
+msgid ""
+"Handling multiple Addresses is now convenient and easy – with one password "
+"and shared login information."
+msgstr "이제 하나의 비밀번호와 공유 로그인 정보로 여러 주소를 쉽고 편리하게 다룰 수 있습니다."
 
 #: src/components/modals/TransactionModal.vue:159
 msgid "Historic value"
-msgstr ""
+msgstr "당시 가치"
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
-msgstr ""
+msgstr "주소 저장, 관리 및 요약"
 
 #: src/components/modals/BetaNoticeModal.vue:18
-msgid "If you find a bug or have feedback, please share it in this {forum-thread}."
+msgid ""
+"If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
-msgstr ""
+msgstr "연락처 불러오기"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import contacts that you exported from the Safe."
-msgstr ""
+msgstr "금고에서 내보냈던 연락처를 불러오세요."
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "Import it to any browser and enter your password to connect to Nimiq."
-msgstr ""
+msgstr "어떤 브라우저에서든 불러와 비밀번호를 입력해 Nimiq에 접속합니다."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
-msgstr ""
+msgstr "개선된 접근성"
 
 #: src/components/modals/TradeModal.vue:108
 msgid "In cooperation with"
-msgstr ""
+msgstr "협력 기관"
 
 #: src/components/modals/SendModal.vue:130
 msgid "Insufficient balance."
-msgstr ""
+msgstr "잔고 부족."
 
 #: src/components/TransactionListItem.vue:38
 msgid "invalid"
-msgstr ""
+msgstr "올바르지 않음"
 
 #: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
-msgstr ""
+msgstr "초대할 친구에게 보낼"
 
 #: src/components/modals/WelcomeModal.vue:67
 msgid "It is fast, safe and makes you truly independent."
-msgstr ""
+msgstr "빠르고 안전하며 진정한 독립성을 제공합니다."
 
 #: src/components/layouts/Settings.vue:15
 msgid "Language"
-msgstr ""
+msgstr "언어"
 
 #: src/components/modals/NetworkInfoModal.vue:16
 #: src/components/modals/TradeModal.vue:106
 msgid "Learn more"
-msgstr ""
+msgstr "더 알아보기"
 
 #: src/components/modals/MigrationWelcomeModal.vue:57
 msgid "Learn more here"
-msgstr ""
+msgstr "여기서 더 알아보기"
 
 #: src/components/layouts/AddressOverview.vue:97
 msgid "Let's get started! Create your Nimiq account:"
-msgstr ""
+msgstr "시작합니다! 당신의 Nimiq 계정을 만드세요:"
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
-msgstr ""
+msgstr "경량 노드"
 
 #: src/components/layouts/Settings.vue:52
 msgid "Load file"
-msgstr ""
+msgstr "파일 불러오기"
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
 msgstr ""
+"새로운 Nimiq 로그인 파일을 활용해\n"
+"기기에서 로그인하세요."
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
-msgstr ""
+msgstr "로그아웃"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
-msgstr ""
+msgstr "여러 주소"
 
 #: src/components/modals/MigrationWelcomeModal.vue:21
 msgid ""
 "Multiple Addresses and Login Files\n"
 "are supported by new Accounts only."
 msgstr ""
+"여러 개의 주소와 로그인 파일은\n"
+"새로운 계정에서만 지원됩니다."
 
 #: src/components/modals/SendModal.vue:53
 msgid "Name this contact..."
-msgstr ""
+msgstr "연락처 이름 붙이기..."
 
 #: src/components/ContactBook.vue:27
 msgid "Name your contact"
-msgstr ""
+msgstr "연락처에 이름을 붙여주세요"
 
 #: src/components/layouts/Sidebar.vue:44
 msgid "Network"
-msgstr ""
+msgstr "네트워크"
 
 #: src/components/modals/WelcomeModal.vue:28
 msgid ""
 "Nimiq does not store your personal data.\n"
 "Use your Login File to log in."
 msgstr ""
+"Nimiq은 당신의 개인정보를 보관하지 않습니다.\n"
+"로그인하려면 로그인 파일을 사용해 주세요."
 
 #: src/components/modals/DisclaimerModal.vue:17
-msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
+msgid ""
+"Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, "
+"hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are"
+" under active development."
 msgstr ""
+"Nimiq은 어떠한 손실에도 책임이 없습니다. Nimiq, wallet.nimiq.com, hub.nimiq.com 및 "
+"keyguard.nimiq.com, 그 외 몇몇 기반 라이브러리는 현재도 개발 중입니다."
 
 #: src/components/modals/TradeModal.vue:100
-msgid "Nimiq OASIS enables decentra­lized buying and selling directly from your wallet."
-msgstr ""
+msgid ""
+"Nimiq OASIS enables decentra­lized buying and selling directly from your "
+"wallet."
+msgstr "Nimiq OASIS를 통해 당신의 지갑에서 직접 탈중앙화된 매매를 할 수 있게 됩니다."
 
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
-msgstr ""
+msgstr "찾은 거래 없음"
 
 #: src/components/layouts/Settings.vue:37
 msgid "None"
-msgstr ""
+msgstr "없음"
 
 #: src/components/TransactionListItem.vue:35
 msgid "not sent"
-msgstr ""
+msgstr "전송되지 않음"
 
 #: src/components/layouts/Settings.vue:202
 msgid "OK! Contacts imported successfully."
-msgstr ""
+msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
-msgstr ""
+msgstr "옛 계정과 새 계정"
 
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
-msgstr ""
+msgstr "이제 하나의 계정이 여러 개의 주소를 가질 수 있습니다."
 
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
-msgstr ""
+msgstr "하나의 계정, 여러 개의 주소"
 
 #: src/components/modals/WelcomeModal.vue:98
 msgid "One more thing"
-msgstr ""
+msgstr "하나 더"
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
-msgstr ""
+msgstr "또는 거래소를 찾아 더 많이 얻으세요."
 
 #: src/components/TransactionListItem.vue:36
 msgid "pending"
-msgstr ""
+msgstr "처리 중"
 
 #: src/components/TransactionList.vue:14
 msgid "Pending Cashlinks"
-msgstr ""
+msgstr "처리 중인 캐시링크"
 
 #: src/components/modals/TransactionModal.vue:50
 msgid "Pending..."
-msgstr ""
+msgstr "처리 중..."
 
 #: src/components/layouts/Sidebar.vue:10
 msgid "Please do not use your Mainnet accounts!"
-msgstr ""
+msgstr "메인넷 계정을 사용하지 마세요!"
 
 #: src/components/modals/DisclaimerModal.vue:13
-msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
+msgid ""
+"Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are "
+"not \"hosted wallets\". You do not create a hosted account or give Nimiq "
+"your funds to hold onto. You hold your keys that control the funds at your "
+"account addresses on your device. Nimiq only makes it easy for you, through "
+"a browser, to create, save, and access your information and interact with "
+"the blockchain."
 msgstr ""
+"wallet.nimiq.com, hub.nimiq.com 및 keyguard.nimiq.com은 \"호스팅 된 지갑\"이 아님을 "
+"유념하십시오. 호스팅 된 계정을 생성하거나, Nimiq에 자산을 주어 이를 보관하도록 할 수는 없습니다. 당신은 기기의 계정 주소 내 "
+"자산을 통제하는 당신의 키를 보유합니다. Nimiq은 브라우저를 통해 당신의 정보를 생성, 저장 및 액세스하고, 블록체인과 쉽게 "
+"상호작용할 수 있도록만 합니다."
 
 #: src/components/layouts/AddressOverview.vue:84
 msgid "Receive"
-msgstr ""
+msgstr "받기"
 
-#: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:79
+#: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
 msgid "Receive free NIM"
-msgstr ""
+msgstr "무료 NIM 받기"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr ""
+msgstr "NIM 받기"
 
 #: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
-msgstr ""
+msgstr "무료 NIM을 얼마 받고 시작하세요."
 
 #: src/components/modals/TransactionModal.vue:61
 msgid "received at {dateAndTime}"
-msgstr ""
+msgstr "{dateAndTime}에 받음"
 
 #: src/components/layouts/Settings.vue:103
 msgid "Reference currency"
-msgstr ""
+msgstr "참조 통화"
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:26
 #: src/components/layouts/AddressOverview.vue:40
 msgid "Rename"
-msgstr ""
+msgstr "이름 바꾸기"
 
 #: src/components/TestnetFaucet.vue:124
 msgid "Request failed"
-msgstr ""
+msgstr "요청 실패"
 
 #: src/components/layouts/Settings.vue:92
 msgid "Reset your wallet settings and reload data from the blockchain."
-msgstr ""
+msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
 #: src/components/modals/SendModal.vue:480
 msgid "Retry"
-msgstr ""
+msgstr "재시도"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr ""
+msgstr "로그인 파일 저장"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
-msgstr ""
+msgstr "지금 저장"
 
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
 "Scan the code to send\n"
 "money to this address"
 msgstr ""
+"코드를 스캔하여\n"
+"이 주소로 송금하세요"
 
 #: src/components/SearchBar.vue:18
 msgid "Search"
-msgstr ""
+msgstr "검색"
 
 #: src/components/SearchBar.vue:17
 msgid "Search Transactions"
-msgstr ""
+msgstr "거래 검색"
 
 #: src/components/SearchBar.vue:15
 msgid "Search Transactions by Contact, Address, etc."
-msgstr ""
+msgstr "연락처, 주소 등으로 검색"
 
 #: src/components/layouts/AddressOverview.vue:81
 msgid "Send"
-msgstr ""
+msgstr "보내기"
 
-#: src/components/AmountMenu.vue:13
-#: src/components/modals/SendModal.vue:132
+#: src/components/AmountMenu.vue:13 src/components/modals/SendModal.vue:132
 msgid "Send all"
-msgstr ""
+msgstr "모두 보내기"
 
 #: src/components/modals/WelcomeModal.vue:64
 msgid "Send and receive NIM directly on the blockchain."
-msgstr ""
+msgstr "블록체인에서 바로 NIM을 주고받으세요."
 
 #: src/components/modals/NetworkInfoModal.vue:13
-msgid "Send and receive NIM without a middleman and enjoy true decentralization."
-msgstr ""
+msgid ""
+"Send and receive NIM without a middleman and enjoy true decentralization."
+msgstr "중간자 없이 NIM을 주고받으며 진정한 탈중앙화를 누리세요."
 
 #: src/components/modals/MigrationWelcomeModal.vue:36
 msgid "send and receive transactions."
-msgstr ""
+msgstr "거래를 주고받으세요."
 
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:151
 msgid "Send Transaction"
-msgstr ""
+msgstr "거래 전송"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr ""
+msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
 #: src/components/modals/SendModal.vue:477
 msgid "Sending Transaction"
-msgstr ""
+msgstr "거래 전송 중"
 
 #: src/components/modals/SendModal.vue:512
 msgid "Sent {nim} NIM"
-msgstr ""
+msgstr "{nim} NIM을 보냄"
 
 #: src/components/modals/SendModal.vue:508
 msgid "Sent {nim} NIM to {name}"
-msgstr ""
+msgstr "{nim}NIM을 {name}에게 보냄"
 
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
-msgstr ""
+msgstr "{dateAndTime}에 보냄"
 
 #: src/components/modals/SendModal.vue:63
 #: src/components/modals/SendModal.vue:74
 msgid "Set Amount"
-msgstr ""
+msgstr "금액 설정"
 
 #: src/components/AmountMenu.vue:8
 msgid "Set fee"
-msgstr ""
+msgstr "수수료 설정"
 
 #: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
-msgstr ""
+msgstr "설정"
 
 #: src/components/modals/ReceiveModal.vue:46
 msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
+"송금인에게 링크나 QR 코드를 공유하세요.\n"
+"금액을 포함할 수도 있습니다."
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
-msgstr ""
+msgstr "송금인에게 주소를 공유하세요."
 
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your payment link"
-msgstr ""
+msgstr "지불 링크 공유하기"
 
 #: src/components/ContactBook.vue:13
 msgid "Show all my addresses"
-msgstr ""
+msgstr "내 주소 모두 표시"
 
 #: src/components/layouts/Settings.vue:30
 msgid "Show Decimals"
-msgstr ""
+msgstr "소수점 표시"
 
 #: src/components/layouts/AddressOverview.vue:98
 msgid "Signup"
-msgstr ""
+msgstr "가입"
 
 #: src/components/modals/WelcomeModal.vue:104
 msgid "Skip for now"
-msgstr ""
+msgstr "지금은 넘어가기"
 
 #: src/components/modals/SendModal.vue:523
 msgid "Something went wrong"
-msgstr ""
+msgstr "문제가 발생했습니다"
 
 #: src/components/modals/SendModal.vue:164
 msgid "Speed up your transaction"
-msgstr ""
+msgstr "거래 속도를 높이세요"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
-msgstr ""
+msgstr "NIM 지분을 걸어 보상을 받고 네트워크를 지키세요."
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
-msgstr ""
+msgstr "지분 걸기"
 
 #: src/components/modals/TradeModal.vue:103
 msgid "Starting with EU bank accounts in Q3 2020."
-msgstr ""
+msgstr "2020년 3분기에 유럽 은행 계좌와 시작합니다"
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
-msgstr ""
+msgstr "NIM을 보관하고 주고 받으세요."
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
-msgstr ""
+msgstr "여기에 말씀해주세요"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
-msgstr ""
+msgstr "테스트넷"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved Accounts\n"
 "can have multiple Addresses."
 msgstr ""
+"새롭게 개선된 계정은\n"
+"여러 개의 주소를 가질 수 있습니다."
 
 #: src/components/modals/MigrationWelcomeModal.vue:47
-msgid "The new Login Files are an easy and convenient way to gain access to your Account and its Addresses."
-msgstr ""
+msgid ""
+"The new Login Files are an easy and convenient way to gain access to your "
+"Account and its Addresses."
+msgstr "새로운 로그인 파일은 당신의 계정과 주소에 접근하는 쉽고 편리한 방법입니다."
 
 #: src/components/modals/WelcomeModal.vue:61
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
-msgstr ""
+msgstr "Nimiq 지갑은 웹 지갑을 넘어 하나의 네트워크 노드입니다."
 
 #: src/components/modals/BetaNoticeModal.vue:16
-msgid "The Wallet is still in Beta. Your funds are safe, there just might be some visual issues."
+msgid ""
+"The Wallet is still in Beta. Your funds are safe, there just might be some "
+"visual issues."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:8
-msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
-msgstr ""
+msgid ""
+"There are many options, use a credit card or trade crypto. You can find more"
+" exchanges on {link}"
+msgstr "여러 선택지가 있습니다. 신용 카드를 활용하거나 암호화폐를 거래하세요. {link}에서 거래소를 더 찾아볼 수 있습니다."
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
-msgstr ""
+msgstr "'비밀번호 찾기'란 없습니다"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
-msgstr ""
+msgstr "본 계정은 구 계정입니다"
 
 #: src/components/TransactionList.vue:249
 #: src/components/TransactionList.vue:271
 msgid "This month"
-msgstr ""
+msgstr "이달"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
-msgstr ""
+msgstr "전체 잔고"
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
-msgstr ""
+msgstr "{address}로부터의 거래"
 
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
-msgstr ""
+msgstr "{address}로의 거래"
 
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
-msgstr ""
+msgstr "자금 이체하기"
 
 #: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
-msgstr ""
+msgstr "미인수 캐시링크"
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
-msgstr ""
+msgstr "초 고성능의 브라우저 기반 지불결제 코인, {NIM}을 사용하세요."
 
 #: src/components/modals/WelcomeModal.vue:84
 msgid "Use it to access your account from any device."
-msgstr ""
+msgstr "이것을 사용해서 어떤 기기에서든 계정에 접근하세요."
 
 #: src/components/modals/BetaNoticeModal.vue:13
 msgid ""
@@ -811,56 +868,62 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"
-msgstr ""
+msgstr "그리고요?"
 
 #: src/components/modals/NetworkInfoModal.vue:7
 msgid "You are a part of the Nimiq Blockchain."
-msgstr ""
+msgstr "당신은 Nimiq 블록체인의 일부입니다."
 
 #: src/components/layouts/Sidebar.vue:9
 msgid "You are connecting to the Nimiq Testnet."
-msgstr ""
+msgstr "당신은 Nimiq 테스트넷에 접속중입니다."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
-msgstr ""
+msgstr "구 계정을 사용중입니다"
 
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
-msgstr ""
+msgstr "당신은 이제 암호화폐를 가지고 있습니다!"
 
 #: src/components/modals/SendModal.vue:126
 msgid "You will send {amount} NIM"
-msgstr ""
+msgstr "{amount} NIM을 보내게 됩니다"
 
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your Account is not safe yet!"
-msgstr ""
+msgstr "계정이 아직 안전하지 않습니다!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:68
-msgid "Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new Account picker."
-msgstr ""
+msgid ""
+"Your Accounts are now legacy Accounts. Easily switch, edit and create "
+"Accounts with the new Account picker."
+msgstr "당신의 계정은 이제 구 계정입니다. 새로운 계정 선택기를 통해 손쉽게 계정을 바꾸고 수정하고 생성하세요."
 
 #: src/components/NetworkMap.vue:22
 msgid "Your browser"
-msgstr ""
+msgstr "당신의 브라우저"
 
 #: src/components/modals/NetworkInfoModal.vue:9
-msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
-msgstr ""
+msgid ""
+"Your browser connects directly to a set of peers from all around the world. "
+"This makes you a first-class citizen of the blockchain."
+msgstr "당신의 브라우저는 전 세계에 걸친 여러 피어에 바로 연결됩니다. 이로써 당신은 블록체인의 일등 시민입니다."
 
 #: src/components/modals/WelcomeModal.vue:19
 msgid "Your browser is a node"
-msgstr ""
+msgstr "당신의 브라우저는 하나의 노드입니다"
 
 #: src/components/modals/WelcomeModal.vue:78
 msgid "Your Login File, in combination with your password, grants access."
-msgstr ""
+msgstr "패스와드와 결합된 당신의 로그인 파일이 접근 권한을 부여합니다."
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
-msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
-msgstr ""
+msgid ""
+"Your NIM are stored in a legacy account. Transfer them to a regular account "
+"to profit from new features."
+msgstr "당신의 NIM은 구 계정에 보관되어 있습니다. 정식 계정으로 옮겨 새로운 기능을 이용하세요."
 
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
-msgstr ""
+msgstr "거래 내역이 여기에 표시됩니다"

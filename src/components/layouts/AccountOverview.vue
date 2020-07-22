@@ -307,10 +307,12 @@ export default defineComponent({
         justify-content: space-between;
         padding: 1rem;
         margin: calc(-1 * var(--padding-top) + 1rem) calc(-1 * var(--padding-sides) + 1rem);
-        z-index: 1;
+        z-index: 1; // To be above .total-balance
+        pointer-events: none;
 
         button {
             padding: 1rem;
+            pointer-events: all;
         }
 
         .menu-button {
@@ -349,7 +351,6 @@ export default defineComponent({
 
     .account-balance {
         margin-top: -4rem;
-        z-index: 1; // To be on top of the .mobile-menu-bar
     }
 }
 

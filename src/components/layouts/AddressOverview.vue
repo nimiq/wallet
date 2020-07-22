@@ -81,7 +81,7 @@
 
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push('/send')" @mousedown.prevent
-                    :disabled="!activeAddressInfo.balance"
+                    :disabled="!activeAddressInfo || !activeAddressInfo.balance"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>

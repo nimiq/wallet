@@ -745,7 +745,7 @@ msgstr "Betrag festlegen"
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:57
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -877,6 +877,10 @@ msgstr "Transaktion an {address}"
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
 msgstr "Guthaben überweisen"
+
+#: src/components/NetworkStats.vue:23
+msgid "Tweet your map. Win some NIM."
+msgstr ""
 
 #: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140

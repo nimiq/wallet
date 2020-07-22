@@ -84,6 +84,7 @@
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
+            <div class="scroll-mask top"></div>
             <TransactionList
                 :searchString="searchString"
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
@@ -201,6 +202,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+
+// TODO: Extract into SCSS mixin or global style
+.scroll-mask {
+    // position: sticky;
+    height: 3rem;
+    flex-shrink: 0;
+    z-index: 2;
+    pointer-events: none;
+    margin-right: 2rem;
+
+    &.top {
+        // top: 0;
+        background: linear-gradient(var(--bg-primary), rgba(255, 255, 255, 0));
+        margin-bottom: -3rem;
+    }
+}
+
 .address-overview {
     @include flex-full-height;
     background: var(--bg-primary);

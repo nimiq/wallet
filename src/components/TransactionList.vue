@@ -438,7 +438,6 @@ export default defineComponent({
     padding-right: calc(2rem + var(--padding) - 6px);
     padding-left: calc(2rem + var(--padding));
     padding-bottom: var(--padding, 4rem);
-    mask: linear-gradient(0deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
     @extend %custom-scrollbar;
 }

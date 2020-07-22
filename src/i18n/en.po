@@ -43,7 +43,7 @@ msgstr ""
 msgid "Add Account"
 msgstr ""
 
-#: src/components/AddressList.vue:17
+#: src/components/AddressList.vue:18
 msgid "Add Address"
 msgstr ""
 
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/ContactBook.vue:47
+#: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr ""
 
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr ""
 
-#: src/components/ContactBook.vue:41
+#: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr ""
 
@@ -435,7 +435,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:99
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -471,7 +471,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr ""
 
-#: src/components/ContactBook.vue:27
+#: src/components/ContactBook.vue:28
 msgid "Name your contact"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgstr ""
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:84
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Receive"
 msgstr ""
 
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Search Transactions by Contact, Address, etc."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:82
 msgid "Send"
 msgstr ""
 
@@ -691,7 +691,7 @@ msgstr ""
 msgid "Share your payment link"
 msgstr ""
 
-#: src/components/ContactBook.vue:13
+#: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
 msgstr ""
 
@@ -699,7 +699,7 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:98
+#: src/components/layouts/AddressOverview.vue:100
 msgid "Signup"
 msgstr ""
 

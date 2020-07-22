@@ -55,7 +55,7 @@ msgstr "공개 메시지 추가..."
 msgid "Add Account"
 msgstr "계정 추가"
 
-#: src/components/AddressList.vue:17
+#: src/components/AddressList.vue:18
 msgid "Add Address"
 msgstr "주소 추가"
 
@@ -267,7 +267,7 @@ msgstr "개발자"
 msgid "Disclaimer"
 msgstr "면책 조항"
 
-#: src/components/ContactBook.vue:47
+#: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "완료"
 
@@ -279,7 +279,7 @@ msgstr "다운로드 해 안전하게 보관하세요. 공유하지도, 잃어�
 msgid "Download your Login File"
 msgstr "로그인 파일 다운로드"
 
-#: src/components/ContactBook.vue:41
+#: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr "연락처 수정"
 
@@ -458,7 +458,7 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:99
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "시작합니다! 당신의 Nimiq 계정을 만드세요:"
 
@@ -498,7 +498,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr "연락처 이름 붙이기..."
 
-#: src/components/ContactBook.vue:27
+#: src/components/ContactBook.vue:28
 msgid "Name your contact"
 msgstr "연락처에 이름을 붙여주세요"
 
@@ -595,7 +595,7 @@ msgstr ""
 "자산을 통제하는 당신의 키를 보유합니다. Nimiq은 브라우저를 통해 당신의 정보를 생성, 저장 및 액세스하고, 블록체인과 쉽게 "
 "상호작용할 수 있도록만 합니다."
 
-#: src/components/layouts/AddressOverview.vue:84
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Receive"
 msgstr "받기"
 
@@ -665,7 +665,7 @@ msgstr "거래 검색"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "연락처, 주소 등으로 검색"
 
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:82
 msgid "Send"
 msgstr "보내기"
 
@@ -740,7 +740,7 @@ msgstr "송금인에게 주소를 공유하세요."
 msgid "Share your payment link"
 msgstr "지불 링크 공유하기"
 
-#: src/components/ContactBook.vue:13
+#: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
 msgstr "내 주소 모두 표시"
 
@@ -748,7 +748,7 @@ msgstr "내 주소 모두 표시"
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
-#: src/components/layouts/AddressOverview.vue:98
+#: src/components/layouts/AddressOverview.vue:100
 msgid "Signup"
 msgstr "가입"
 

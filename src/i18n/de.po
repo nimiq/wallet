@@ -58,7 +58,7 @@ msgstr "Öffentliche Nachricht hinzufügen..."
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
-#: src/components/AddressList.vue:17
+#: src/components/AddressList.vue:18
 msgid "Add Address"
 msgstr "Adresse hinzufügen"
 
@@ -279,7 +279,7 @@ msgstr "Entwickler"
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
 
-#: src/components/ContactBook.vue:47
+#: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "Fertig"
 
@@ -293,7 +293,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr "Login-Datei herunterladen"
 
-#: src/components/ContactBook.vue:41
+#: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr "Kontakte bearbeiten"
 
@@ -476,7 +476,7 @@ msgstr "Mehr erfahren"
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:99
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 
@@ -514,7 +514,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr "Benenne diesen Kontakt..."
 
-#: src/components/ContactBook.vue:27
+#: src/components/ContactBook.vue:28
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
@@ -617,7 +617,7 @@ msgstr ""
 "Daten zu erstellen, zu speichern und auf diese zuzugreifen und mit der "
 "Blockchain zu interagieren."
 
-#: src/components/layouts/AddressOverview.vue:84
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Receive"
 msgstr "Empfangen"
 
@@ -688,7 +688,7 @@ msgstr "Transaktionen suchen"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:82
 msgid "Send"
 msgstr "Senden"
 
@@ -765,7 +765,7 @@ msgstr "Teile deine Adresse mit dem Sender."
 msgid "Share your payment link"
 msgstr "Teile deinen Zahlungslink"
 
-#: src/components/ContactBook.vue:13
+#: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
 msgstr "Alle meine Adressen anzeigen"
 
@@ -773,7 +773,7 @@ msgstr "Alle meine Adressen anzeigen"
 msgid "Show Decimals"
 msgstr "Nachkommastellen"
 
-#: src/components/layouts/AddressOverview.vue:98
+#: src/components/layouts/AddressOverview.vue:100
 msgid "Signup"
 msgstr "Anmelden"
 

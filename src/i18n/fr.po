@@ -56,7 +56,7 @@ msgstr "Ajouter un message public..."
 msgid "Add Account"
 msgstr "Ajouter un Compte"
 
-#: src/components/AddressList.vue:17
+#: src/components/AddressList.vue:18
 msgid "Add Address"
 msgstr "Ajouter une Adresse"
 
@@ -276,7 +276,7 @@ msgstr "Développeur"
 msgid "Disclaimer"
 msgstr "Avertissement"
 
-#: src/components/ContactBook.vue:47
+#: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "Terminé"
 
@@ -290,7 +290,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr "Téléchargez votre Fichier de Connexion"
 
-#: src/components/ContactBook.vue:41
+#: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr "Éditer les contacts"
 
@@ -473,7 +473,7 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:99
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
@@ -513,7 +513,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr "Nommez ce contact..."
 
-#: src/components/ContactBook.vue:27
+#: src/components/ContactBook.vue:28
 msgid "Name your contact"
 msgstr "Nommez votre contact"
 
@@ -615,7 +615,7 @@ msgstr ""
 "appareil. Nimiq vous permet simplement, via un navigateur, de créer, "
 "enregistrer et accéder à vos informations et d'interagir avec la blockchain."
 
-#: src/components/layouts/AddressOverview.vue:84
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Receive"
 msgstr "Recevoir"
 
@@ -687,7 +687,7 @@ msgstr "Rechercher des transactions"
 msgid "Search Transactions by Contact, Address, etc."
 msgstr "Rechercher des transactions via contacts, adresses, etc..."
 
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:82
 msgid "Send"
 msgstr "Envoyer"
 
@@ -764,7 +764,7 @@ msgstr "Partagez votre adresse avec l'expéditeur."
 msgid "Share your payment link"
 msgstr "Partager votre lien de paiement"
 
-#: src/components/ContactBook.vue:13
+#: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
 msgstr "Afficher toutes mes adresses"
 
@@ -772,7 +772,7 @@ msgstr "Afficher toutes mes adresses"
 msgid "Show Decimals"
 msgstr "Afficher les décimales"
 
-#: src/components/layouts/AddressOverview.vue:98
+#: src/components/layouts/AddressOverview.vue:100
 msgid "Signup"
 msgstr "S'inscrire"
 

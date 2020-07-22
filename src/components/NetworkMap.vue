@@ -168,7 +168,6 @@ export default defineComponent({
     }
 
     p {
-        opacity: .8;
         font-size: var(--body-size);
         line-height: 1;
         margin: .75rem 0 0;
@@ -178,7 +177,8 @@ export default defineComponent({
         }
 
         &.connected {
-            color: var(--nimiq-light-blue-darkened);
+            --nimiq-light-blue: #0582CA; // Real light blue, not the "on-dark" version
+            color: var(--nimiq-light-blue);
         }
     }
 }

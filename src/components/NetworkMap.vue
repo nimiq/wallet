@@ -113,7 +113,7 @@ export default defineComponent({
         const ownNode = computed(() =>
             nodes.value.find((node) => [...node.peers].some((peer) => peer.type === NodeType.SELF)));
         const ownXCoordinate = computed(() => ownNode.value ? ownNode.value.x : null);
-        watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * scale.value));
+        watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * SCALING_FACTOR));
 
         return {
             $container,

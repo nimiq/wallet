@@ -948,7 +948,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#matheo/build/wallet_tracking-consent":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#92f72845edfa057f96bfed43173494b401fb990f"
+  resolved "https://github.com/nimiq/vue-components#b5474343f4be2c41613f3d6faa87dc57162d2a66"
   dependencies:
     "@nimiq/style" "^0.8.2"
     big-integer "^1.6.44"
@@ -9399,9 +9399,9 @@ vm-browserify@^1.0.1:
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
 vue-class-component@^7.1.0:
-  version "7.2.3"
-  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.3.tgz#a5b1abd53513a72ad51098752e2dedd499807cca"
-  integrity sha512-oEqYpXKaFN+TaXU+mRLEx8dX0ah85aAJEe61mpdoUrq0Bhe/6sWhyZX1JjMQLhVsHAkncyhedhmCdDVSasUtDw==
+  version "7.2.5"
+  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.5.tgz#212b3548c4fdd3314774c4adbc1c3792a40b52d0"
+  integrity sha512-0CSftHY0bDTD+4FbYkuFf6+iKDjZ4h2in2YYJDRMk5daZIjrgT9LjFHvP7Rzqy9/s1pij3zDtTSLRUjsPWMwqg==
 
 vue-eslint-parser@^7.0.0:
   version "7.0.0"

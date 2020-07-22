@@ -1,6 +1,11 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <TrackingConsent theme="dark"/>
+        <TrackingConsent
+            theme="dark"
+            :uiAllowed="false"
+            :options="{ setSiteId: 68 }"
+            :geoIpServer="null"
+        />
 
         <main :class="routeClass">
             <Sidebar/>

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
 // @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
+import { TrackingConsent } from '@nimiq/vue-components';
 
 import App from './App.vue';
 import './registerServiceWorker';
@@ -65,6 +66,10 @@ const app = new Vue({
 router.afterEach((to, from) => {
     // console.debug('route-changed', from, to);
     app.$emit('route-changed', to, from);
+
+    TrackingConsent.trackPageView({
+        customUrl: to.fullPath,
+    });
 });
 
 launchNetwork();

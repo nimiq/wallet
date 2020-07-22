@@ -145,6 +145,14 @@ export default defineComponent({
             background: linear-gradient(0deg, var(--bg-base), rgba(244, 244, 244, 0));
             margin-top: -0.5rem;
         }
+
+        .embedded &.top {
+            background: linear-gradient(var(--bg-primary), rgba(255, 255, 255, 0));
+        }
+
+        .embedded &.bottom {
+            background: linear-gradient(0deg, var(--bg-primary), rgba(255, 255, 255, 0));
+        }
     }
 
     .address-list {

@@ -1,8 +1,8 @@
 <template>
-    <div class="account-balance">
+    <div class="account-balance" :class="{'privacy-on': amountsHidden}">
         <h2 class="nq-label flex-row">
-            {{ $t('Total Balance') }}
-            <button class="reset" @click="toggleAmountsHidden">
+            <span>{{ $t('Total Balance') }}</span>
+            <button class="reset" @click="toggleAmountsHidden" @mousedown.prevent>
                 <PrivacyOffIcon v-if="!amountsHidden"/>
                 <PrivacyOnIcon v-else/>
             </button>
@@ -89,43 +89,62 @@ export default defineComponent({
     margin-bottom: 1.5rem;
     justify-content: center;
     align-items: center;
-    padding-left: 4.5rem; // To balance the eye icon on the right
+
+    span {
+        transform: translateX(1.75rem);
+
+        transition: transform 0.3s var(--nimiq-ease);
+    }
 
     button {
-        padding: 0 1rem;
         position: relative;
         opacity: 0;
+        transform: scale(0.8);
+        margin-left: 1rem;
 
-        transition: color 0.2s var(--nimiq-ease), opacity 0.2s var(--nimiq-ease);
+        transition:
+            color 0.2s var(--nimiq-ease),
+            opacity 0.2s var(--nimiq-ease),
+            transform 0.2s var(--nimiq-ease);
 
         &::after {
             content: '';
             position: absolute;
             top: -0.75rem;
-            right: 0;
+            right: -1rem;
             bottom: -0.75rem;
-            left: 0;
+            left: -1rem;
             border-radius: 2rem;
         }
 
         &:hover,
         &:focus {
             opacity: 1;
+            transform: scale(1);
             color: var(--text-60);
         }
     }
 }
 
-.account-balance:hover .nq-label button {
-    opacity: 1;
+.account-balance:hover,
+.account-balance:focus-within,
+.account-balance.privacy-on {
+    .nq-label span {
+        transform: translateX(0);
+    }
+
+    .nq-label button {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .fiat-amount {
-    --size: 7rem;
-    font-size: var(--size);
+    --size: 5.25rem;
+    font-size: 7rem;
     // Fixed line-height, so that the block height doesn't change when
     // the font-size is dynamically adjusted for number length.
-    line-height: var(--size);
+    line-height: 7rem;
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
@@ -134,9 +153,9 @@ export default defineComponent({
     }
 
     .fiat-amount {
-        --size: 5.5rem;
-        font-size: var(--size);
-        line-height: var(--size);
+        --size: 4.125rem;
+        font-size: 5.5rem;
+        line-height: 5.5rem;
     }
 }
 </style>

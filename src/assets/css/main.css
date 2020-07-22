@@ -34,6 +34,7 @@ button.reset:disabled {
 
 .nq-label {
     font-weight: bold;
+    margin-right: -0.107em;
 }
 
 .nq-label:not([class*="-bg"]) {

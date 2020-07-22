@@ -351,6 +351,11 @@ export default defineComponent({
     font-size: var(--size);
     font-weight: 900;
     letter-spacing: 0.125em;
+    margin-right: -0.125em;
+
+    // Move dots up a little, to be vertically centered
+    position: relative;
+    top: -0.09em;
 }
 
 // Overwrites for AccountBalance
@@ -359,5 +364,6 @@ export default defineComponent({
 }
 .value-masked .account-balance [value-mask]::after {
     letter-spacing: 0.375em;
+    margin-right: -0.375em;
 }
 </style>

@@ -91,6 +91,14 @@ export default defineComponent({
         const root = ref<HTMLElement>(null);
         const scrollbarVisible = ref(false);
         onMounted(() => {
+            /* context.root.$nextTick works here except for Opera browser. Using setTimeout instead fix it. */
+            /* TODO: find a better way to do it. */
+            setTimeout(() => {
+                if (activeAddress.value) {
+                    adjustBackgroundOffsetAndScale(activeAddress.value);
+                }
+            }, 0);
+
             watch(addressInfos, () => {
                 scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
             });

@@ -96,6 +96,7 @@ export default defineComponent({
     display: block;
     line-height: 1.2;
     font-weight: bold;
+    white-space: nowrap;
 
     .nq-icon {
         display: inline-block;

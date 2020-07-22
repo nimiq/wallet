@@ -148,8 +148,13 @@ export default defineComponent({
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
+    .nq-label span {
+        transform: translateX(0);
+    }
+
     .nq-label button {
         opacity: 1;
+        transform: scale(1);
     }
 
     .fiat-amount {

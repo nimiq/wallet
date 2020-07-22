@@ -110,7 +110,6 @@ export default defineComponent({
     display: flex;
     align-items: center;
     border-radius: 6px;
-    // box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.2);
     color: rgba(255,255,255,1);
     text-decoration: none;
     padding: 1.25rem 1.75rem 1.5rem;

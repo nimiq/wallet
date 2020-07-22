@@ -11,7 +11,7 @@
             </Tooltip>
         </div>
 
-        <header class="logo">
+        <header class="logo" @click="resetState">
             <span class="nq-icon nimiq-logo"></span>
             <span class="logo-wordmark">Nimiq</span>
         </header>
@@ -66,6 +66,7 @@ import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
+import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
@@ -93,8 +94,18 @@ export default defineComponent({
             }
         }
 
+        const { addressInfos, selectAddress } = useAddressStore();
+        function resetState() {
+            navigateTo('/');
+
+            if (addressInfos.value.length > 0) {
+                selectAddress(addressInfos.value[0].address);
+            }
+        }
+
         return {
             navigateTo,
+            resetState,
             isTestnet,
             priceChartTimeRange,
             switchPriceChartTimeRange,
@@ -179,6 +190,7 @@ export default defineComponent({
     align-self: flex-start;
     margin-left: 1.5rem;
     margin-bottom: 1rem;
+    cursor: pointer;
 }
 
 .announcement-box {

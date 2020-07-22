@@ -108,7 +108,6 @@ export default defineComponent({
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
-        align-items: center;
     }
 
     &.stats {
@@ -156,6 +155,12 @@ export default defineComponent({
 
 .mobile-tap-area {
     display: none;
+}
+
+@media (min-width: 1500px) {
+    .scroller.map {
+        align-items: center;
+    }
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint

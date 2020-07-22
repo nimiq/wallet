@@ -552,6 +552,7 @@ export default class NetworkMap {
         if (!this._nodes.has(peerId)) return false;
         const node = this._nodes.get(peerId)!;
         node.hexagon.removeNode(node);
+        // TODO: Remove hexagon if this was its last node
         this._nodes.delete(peerId);
         return true;
     }
@@ -651,11 +652,13 @@ export default class NetworkMap {
             // Connecting splines need to be drawn separately, as they  need to draw over hexagons
             const connectedNodes: NodeHexagon[] = [];
 
-            const nodes: NodeHexagon[] = Array.from(this._nodeHexagons.values()).flatMap((foo) =>
-                Array.from(foo.values()),
-            );
-            // nodes.push(this._self);
-            if (this._updateCallback) this._updateCallback(nodes);
+            if (this._updateCallback) {
+                const nodes: NodeHexagon[] = Array.from(this._nodeHexagons.values()).flatMap((hexagons) =>
+                    Array.from(hexagons.values()).filter((hexagon) => hexagon.peers.size > 0),
+                );
+                // nodes.push(this._self);
+                this._updateCallback(nodes);
+            }
 
             // Draw hexagons
             for (const [, xHexagonMap] of this._nodeHexagons) {

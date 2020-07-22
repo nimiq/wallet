@@ -22,7 +22,7 @@
                 >
                     <MenuDotsIcon/>
                     <div class="popup-menu nq-blue-bg">
-                        <button class="reset flex-row" @click="rename(activeAccountId, activeAddressInfo.address)">
+                        <button class="reset flex-row" @mousedown="rename(activeAccountId, activeAddressInfo.address)">
                             <RenameIcon/>{{ $t('Rename') }}
                         </button>
                     </div>
@@ -36,7 +36,7 @@
                     >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">
-                            <button class="reset flex-row" @click="rename(activeAccountId, activeAddressInfo.address)">
+                            <button class="reset flex-row" @mousedown="rename(activeAccountId, activeAddressInfo.address)">
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                         </div>

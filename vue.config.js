@@ -88,12 +88,29 @@ module.exports = {
     },
     pwa: {
         name: 'Nimiq Wallet',
-        themeColor: '#1F2348',
-        msTileColor: '#F4F4F4',
+        themeColor: '#DBDCE2',
+        msTileColor: '#DBDCE2',
         manifestOptions: {
             start_url: '/',
             display: 'standalone',
-            background_color: '#F4F4F4',
+            background_color: '#F8F8F8',
+            icons: [
+                {
+                    src: "./img/icons/android-chrome-128x128.png",
+                    sizes: "128x128",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/icons/android-chrome-192x192.png",
+                    sizes: "192x192",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/icons/android-chrome-196x196.png",
+                    sizes: "196x196",
+                    type: "image/png"
+                },
+            ],
         },
     },
 };

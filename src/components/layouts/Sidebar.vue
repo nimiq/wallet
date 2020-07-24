@@ -210,6 +210,7 @@ export default defineComponent({
     overflow-y: auto;
     width: 100%;
     min-height: 10rem;
+    scrollbar-width: none;
 
     mask: linear-gradient(0deg ,
         rgba(255,255,255, 0),

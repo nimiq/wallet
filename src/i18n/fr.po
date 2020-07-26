@@ -197,9 +197,12 @@ msgstr "Vider le cache"
 #: src/components/layouts/AccountOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/modals/TradeModal.vue:97
 #: src/components/modals/WelcomeModal.vue:40
 msgid "Coming soon"
+msgstr "Bientôt disponible"
+
+#: src/components/modals/TradeModal.vue:97
+msgid "Coming soon"
 msgstr "Bientôt disponible"
 
 #: src/components/TransactionList.vue:57
@@ -442,7 +445,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Accessibilité améliorée"
 
-#: src/components/modals/TradeModal.vue:108
+#: src/components/modals/TradeModal.vue:109
 msgid "In cooperation with"
 msgstr "En coopération avec"
 

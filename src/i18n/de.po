@@ -4,10 +4,11 @@
 # Sven <sven@nimiq.com>, 2020
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
+# Matheo <matheo@nimiq.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -200,10 +201,13 @@ msgstr "Zwischenspeicher löschen"
 #: src/components/layouts/AccountOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/modals/TradeModal.vue:97
 #: src/components/modals/WelcomeModal.vue:40
 msgid "Coming soon"
 msgstr "Bald verfügbar"
+
+#: src/components/modals/TradeModal.vue:97
+msgid "Coming soon"
+msgstr "Bald verfügbar"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
@@ -443,7 +447,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Verbesserte Barrierefreiheit"
 
-#: src/components/modals/TradeModal.vue:108
+#: src/components/modals/TradeModal.vue:109
 msgid "In cooperation with"
 msgstr "In Kooperation mit"
 

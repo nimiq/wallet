@@ -1,10 +1,11 @@
 # 
 # Translators:
 # Kyungil Choi <hanpama@gmail.com>, 2020
+# Matheo <matheo@nimiq.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Kyungil Choi <hanpama@gmail.com>, 2020\n"
+"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
 "Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/107022/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ko\n"
@@ -190,9 +191,12 @@ msgstr "캐시 비우기"
 #: src/components/layouts/AccountOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/modals/TradeModal.vue:97
 #: src/components/modals/WelcomeModal.vue:40
 msgid "Coming soon"
+msgstr "곧 출시"
+
+#: src/components/modals/TradeModal.vue:97
+msgid "Coming soon"
 msgstr "곧 출시"
 
 #: src/components/TransactionList.vue:57
@@ -425,7 +429,7 @@ msgstr "어떤 브라우저에서든 불러와 비밀번호를 입력해 Nimiq�
 msgid "Improved Accessibility"
 msgstr "개선된 접근성"
 
-#: src/components/modals/TradeModal.vue:108
+#: src/components/modals/TradeModal.vue:109
 msgid "In cooperation with"
 msgstr "협력 기관"
 

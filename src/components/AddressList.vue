@@ -15,7 +15,7 @@
             <div class="identicon-wrapper">
                 <div class="identicon add-address-icon flex-row"><AddIcon/></div>
             </div>
-            <span class="label add-address-label">{{ $t('Add Address') }}</span>
+            <span class="label add-address-label">{{ $t('Add\u00a0Address') }}</span>
         </button>
         <div v-if="!embedded"
             class="active-box"

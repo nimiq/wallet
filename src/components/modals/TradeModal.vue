@@ -102,11 +102,13 @@
                 <p class="nq-text">
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}
                 </p>
-                <footer class="flex-column">
+                <footer>
                     <BlueLink href="https://nimiq.com/oasis" target="_blank">{{ $t('Learn more') }}</BlueLink>
-                    <div class="flex-grow"></div>
-                    <p class="nq-text">{{ $t('In cooperation with') }}</p>
-                    <img src="../../assets/ten31.svg" alt="TEN31">
+                    <!-- <div class="flex-grow"></div> -->
+                    <div>
+                        <p class="nq-text">{{ $t('In cooperation with') }}</p>
+                        <img src="../../assets/ten31.svg" alt="TEN31">
+                    </div>
                 </footer>
             </div>
         </PageBody>
@@ -315,8 +317,14 @@ export default defineComponent({
     }
 
     footer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
-        align-items: flex-start;
+
+        & > div:last-child {
+            margin-top: auto;
+        }
 
         .nq-text {
             margin-bottom: 1rem;
@@ -415,14 +423,28 @@ export default defineComponent({
         }
 
         footer {
+            align-items: flex-start;
             flex-direction: row;
-            align-self: stretch;
-            align-items: center;
+            flex-wrap: wrap;
+            flex-grow: 0;
 
-            .nq-text {
-                margin-bottom: 0;
-                margin-right: 1rem;
+            .nq-link,
+            & > div:last-child {
+                flex: 0 0 auto;
             }
+
+            & > div:last-child {
+                display: flex;
+                flex: 0 0 auto;
+                margin-left: auto;
+                margin-top: 0;
+
+                .nq-text {
+                    margin-bottom: 0;
+                    margin-right: 1rem;
+                }
+            }
+
         }
 
         &::after {

@@ -57,8 +57,8 @@ msgid "Add Account"
 msgstr "Ajouter un Compte"
 
 #: src/components/AddressList.vue:18
-msgid "Add Address"
-msgstr "Ajouter une Adresse"
+msgid "Add Address"
+msgstr "Ajouter une Adresse"
 
 #: src/components/modals/TransactionModal.vue:121
 #: src/components/modals/TransactionModal.vue:84
@@ -884,7 +884,7 @@ msgstr "Transférer des fonds"
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
-msgstr ""
+msgstr "Tweetez votre carte !"
 
 #: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140

@@ -57,8 +57,8 @@ msgid "Add Account"
 msgstr "계정 추가"
 
 #: src/components/AddressList.vue:18
-msgid "Add Address"
-msgstr "주소 추가"
+msgid "Add Address"
+msgstr "주소 추가"
 
 #: src/components/modals/TransactionModal.vue:121
 #: src/components/modals/TransactionModal.vue:84

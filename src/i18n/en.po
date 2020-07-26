@@ -44,7 +44,7 @@ msgid "Add Account"
 msgstr ""
 
 #: src/components/AddressList.vue:18
-msgid "Add Address"
+msgid "Add Address"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:121

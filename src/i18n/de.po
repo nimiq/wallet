@@ -60,8 +60,8 @@ msgid "Add Account"
 msgstr "Konto hinzufügen"
 
 #: src/components/AddressList.vue:18
-msgid "Add Address"
-msgstr "Adresse hinzufügen"
+msgid "Add Address"
+msgstr "Adresse hinzufügen"
 
 #: src/components/modals/TransactionModal.vue:121
 #: src/components/modals/TransactionModal.vue:84

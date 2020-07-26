@@ -2,7 +2,7 @@
     <div class="network-stats flex-row">
         <div class="stat consensus">
             <div class="nq-label">{{ $t('Consensus') }}</div>
-            <div class="value flex-row active"><ConsensusIcon/>{{ $network.consensus }}</div>
+            <div class="value flex-row active"><ConsensusIcon/>{{ getConsensusStateString() }}</div>
         </div>
         <div class="stat peers">
             <div class="nq-label">{{ $t('Connected to') }}</div>
@@ -36,11 +36,21 @@ import EventIcon from './icons/EventIcon.vue';
 import { useNetworkStore } from '../stores/Network';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { state: $network } = useNetworkStore();
+
+        function getConsensusStateString() {
+            return {
+                lost: context.root.$i18n.t('lost'),
+                syncing: context.root.$i18n.t('syncing'),
+                connecting: context.root.$i18n.t('connecting'),
+                established: context.root.$i18n.t('established'),
+            }[$network.consensus as 'lost' | 'syncing' | 'connecting' | 'established'];
+        }
 
         return {
             $network,
+            getConsensusStateString,
         };
     },
     components: {

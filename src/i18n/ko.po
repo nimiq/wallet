@@ -349,7 +349,7 @@ msgstr "초심자용"
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
-msgstr ""
+msgstr "포럼 스레드"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -407,7 +407,7 @@ msgstr "주소 저장, 관리 및 요약"
 #: src/components/modals/BetaNoticeModal.vue:18
 msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr ""
+msgstr "버그를 찾거나 의견이 있으시면 {forum-thread}에 공유해 주세요."
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -720,7 +720,7 @@ msgstr "금액 설정"
 msgid "Set fee"
 msgstr "수수료 설정"
 
-#: src/components/layouts/Sidebar.vue:57
+#: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
 msgstr "설정"
 
@@ -810,7 +810,7 @@ msgstr "Nimiq 지갑은 웹 지갑을 넘어 하나의 네트워크 노드입니
 msgid ""
 "The Wallet is still in Beta. Your funds are safe, there just might be some "
 "visual issues."
-msgstr ""
+msgstr "지갑은 아직 베타 단계입니다. 당신의 자산은 안전하지만 화면 상의 문제가 조금 있을 수도 있습니다."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -848,7 +848,7 @@ msgid "Transfer funds"
 msgstr "자금 이체하기"
 
 #: src/components/NetworkStats.vue:23
-msgid "Tweet your map. Win some NIM."
+msgid "Tweet your map!"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:319
@@ -869,6 +869,8 @@ msgid ""
 "Welcome to the\n"
 "new Nimiq Wallet"
 msgstr ""
+"새로운 Nimiq 지갑에\n"
+"오신 것을 환영합니다"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

@@ -22,7 +22,7 @@ msgstr "{count} Pair | {count} Pairs"
 #: src/components/layouts/AddressOverview.vue:14
 #: src/components/layouts/AddressOverview.vue:76
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr "{count} Cashlink en attente | {count} Cashlinks en attente"
+msgstr "{count} Cashlink | {count} Cashlinks"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
@@ -200,7 +200,7 @@ msgstr "Vider le cache"
 #: src/components/modals/TradeModal.vue:97
 #: src/components/modals/WelcomeModal.vue:40
 msgid "Coming soon"
-msgstr "Bientôt disponible"
+msgstr "Bientôt disponible"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
@@ -265,7 +265,7 @@ msgstr "Carte de crédit acceptée"
 
 #: src/components/modals/TransactionModal.vue:164
 msgid "Current value"
-msgstr ""
+msgstr "Valeur actuelle"
 
 #: src/components/layouts/Settings.vue:86
 msgid "Developer"
@@ -360,7 +360,7 @@ msgstr "Pour les débutants"
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
-msgstr ""
+msgstr "fil de discussion du forum"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -373,7 +373,7 @@ msgstr "Général"
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
-msgstr "Obtenir des NIM"
+msgstr "Y aller"
 
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
@@ -382,7 +382,7 @@ msgstr "Obtenir des NIM et BTC"
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "Get NIM on {exchange}"
-msgstr "Obtenir des NIM sur {exchange}"
+msgstr "Aller sur {exchange}"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
@@ -411,7 +411,7 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:159
 msgid "Historic value"
-msgstr ""
+msgstr "Valeur historique"
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
 msgid "hold, manage and aggregate Addresses."
@@ -421,6 +421,8 @@ msgstr "conserver, gérer et regrouper les adresses."
 msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr ""
+"Si vous trouvez un bug ou avez un retour à nous faire, merci de nous en "
+"parler dans ce {forum-thread}."
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -744,7 +746,7 @@ msgstr "Définir le montant"
 msgid "Set fee"
 msgstr "Définir les frais"
 
-#: src/components/layouts/Sidebar.vue:57
+#: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
 msgstr "Réglages"
 
@@ -798,7 +800,7 @@ msgstr "Staking"
 
 #: src/components/modals/TradeModal.vue:103
 msgid "Starting with EU bank accounts in Q3 2020."
-msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
+msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
@@ -837,6 +839,8 @@ msgid ""
 "The Wallet is still in Beta. Your funds are safe, there just might be some "
 "visual issues."
 msgstr ""
+"Le wallet est encore en Beta. Vos fonds sont en sécurité, mais il se peut "
+"qu'il y ait des problèmes visuels."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -876,7 +880,7 @@ msgid "Transfer funds"
 msgstr "Transférer des fonds"
 
 #: src/components/NetworkStats.vue:23
-msgid "Tweet your map. Win some NIM."
+msgid "Tweet your map!"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:319
@@ -900,6 +904,8 @@ msgid ""
 "Welcome to the\n"
 "new Nimiq Wallet"
 msgstr ""
+"Bienvenue dans le\n"
+"nouveau Wallet Nimiq"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"

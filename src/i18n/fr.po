@@ -221,6 +221,10 @@ msgstr ""
 msgid "Connected to"
 msgstr "Connecté à"
 
+#: src/components/NetworkStats.vue:46
+msgid "connecting"
+msgstr "connexion"
+
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr "Consensus"
@@ -308,6 +312,10 @@ msgstr "Éditer la transaction"
 #: src/components/modals/SendModal.vue:20
 msgid "Enter Address"
 msgstr "Entrez l'Adresse"
+
+#: src/components/NetworkStats.vue:47
+msgid "established"
+msgstr "établi"
 
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
@@ -501,6 +509,10 @@ msgstr ""
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
 msgstr "Déconnexion"
+
+#: src/components/NetworkStats.vue:44
+msgid "lost"
+msgstr "perdu"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -808,6 +820,10 @@ msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "Stockez, envoyez et recevez des NIM."
+
+#: src/components/NetworkStats.vue:45
+msgid "syncing"
+msgstr "synchronisation"
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"

@@ -215,6 +215,10 @@ msgstr ""
 msgid "Connected to"
 msgstr "연결됨"
 
+#: src/components/NetworkStats.vue:46
+msgid "connecting"
+msgstr ""
+
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr "합의"
@@ -298,6 +302,10 @@ msgstr "거래 수정"
 #: src/components/modals/SendModal.vue:20
 msgid "Enter Address"
 msgstr "주소 입력"
+
+#: src/components/NetworkStats.vue:47
+msgid "established"
+msgstr ""
 
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
@@ -485,6 +493,10 @@ msgstr ""
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
 msgstr "로그아웃"
+
+#: src/components/NetworkStats.vue:44
+msgid "lost"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -783,6 +795,10 @@ msgstr "2020년 3분기에 유럽 은행 계좌와 시작합니다"
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "NIM을 보관하고 주고 받으세요."
+
+#: src/components/NetworkStats.vue:45
+msgid "syncing"
+msgstr ""
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"

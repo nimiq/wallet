@@ -196,6 +196,10 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
+#: src/components/NetworkStats.vue:46
+msgid "connecting"
+msgstr ""
+
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr ""
@@ -276,6 +280,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:20
 msgid "Enter Address"
+msgstr ""
+
+#: src/components/NetworkStats.vue:47
+msgid "established"
 msgstr ""
 
 #: src/components/TransactionListItem.vue:37
@@ -458,6 +466,10 @@ msgstr ""
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
+msgstr ""
+
+#: src/components/NetworkStats.vue:44
+msgid "lost"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
@@ -732,6 +744,10 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
+msgstr ""
+
+#: src/components/NetworkStats.vue:45
+msgid "syncing"
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:33

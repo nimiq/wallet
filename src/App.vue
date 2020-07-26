@@ -104,6 +104,7 @@ export default defineComponent({
     @include flex-full-height;
     @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+    overscroll-behavior: contain; // Disable pull-to-refresh
 
     /* Default: >= 1500px */
     --sidebar-width: 23rem;

@@ -108,6 +108,7 @@ export default defineComponent({
 .main {
     transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
+    overscroll-behavior: contain; // Disable scroll-chaining to the app
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);
@@ -130,6 +131,7 @@ export default defineComponent({
     right: 0;
     bottom: 0;
     will-change: transform;
+    overscroll-behavior: contain; // Disable scroll-chaining to the app
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

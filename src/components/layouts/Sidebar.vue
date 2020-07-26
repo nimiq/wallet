@@ -42,11 +42,6 @@
         >
             <ConsensusIcon/>
             <span class="label">{{ $t('Network') }}</span>
-            <!-- Temporary #NimiqWorldWide -->
-            <span class="event-icon">
-                <EventIcon />
-            </span>
-            <!-- -->
         </button>
         <button
             class="settings reset flex-row"
@@ -70,7 +65,6 @@ import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
-import EventIcon from '../icons/EventIcon.vue';
 
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -126,7 +120,6 @@ export default defineComponent({
         Tooltip,
         InfoCircleIcon,
         StreetconeIcon,
-        EventIcon,
     },
 });
 </script>
@@ -314,13 +307,5 @@ export default defineComponent({
     &.active .consensus-icon {
         opacity: 0.5;
     }
-}
-
-/* Temporary #NimiqWorldWide */
-.event-icon {
-    color: var(--nimiq-light-blue-on-dark);
-    display: flex;
-    align-items: center;
-    margin-left: 1.125rem;
 }
 </style>

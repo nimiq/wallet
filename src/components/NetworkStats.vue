@@ -13,14 +13,14 @@
             <div class="value">#{{ $network.height }}</div>
         </div>
 
-        <!-- Temprary #NimiqWorldWide -->
+        <!-- #NimiqWorldWide -->
         <div class="tweet-note">
             <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank"
                 class="tweet-note--inner"
             >
                 <EventIcon />
                 <span>
-                    {{ $t('Tweet your map. Win some NIM.') }}<br/>
+                    {{ $t('Tweet your map!') }}<br/>
                     <strong>#NimiqWorldWide</strong>
                 </span>
             </a>
@@ -97,7 +97,7 @@ export default defineComponent({
 }
 
 
-/* Temporary #NimiqWorldWide */
+/* #NimiqWorldWide */
 
 .network-stats {
     align-items: center;

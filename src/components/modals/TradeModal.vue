@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div class="oasis-area nq-blue-bg flex-column">
-                <label>{{ $t('Coming soon') }}</label>
+                <label>{{ $t('Coming\u00a0soon') }}</label>
                 <h2 class="nq-h2">{{ $t('Buy and sell with your wallet.') }}</h2>
                 <p class="nq-text">
                     {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling directly from your wallet.') }}
@@ -289,6 +289,7 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.6);
         box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
         border-radius: 50px;
+        align-self: center;
     }
 
     h2 {
@@ -408,6 +409,10 @@ export default defineComponent({
 
     .oasis-area {
         width: unset;
+
+        label {
+            align-self: auto;
+        }
 
         footer {
             flex-direction: row;

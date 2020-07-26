@@ -291,7 +291,6 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.6);
         box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
         border-radius: 50px;
-        align-self: center;
     }
 
     h2 {
@@ -417,10 +416,6 @@ export default defineComponent({
 
     .oasis-area {
         width: unset;
-
-        label {
-            align-self: auto;
-        }
 
         footer {
             align-items: flex-start;

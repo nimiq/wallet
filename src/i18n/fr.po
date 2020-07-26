@@ -203,7 +203,7 @@ msgstr "Bientôt disponible"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "Bientôt disponible"
+msgstr "Bientôt"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"

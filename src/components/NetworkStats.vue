@@ -41,10 +41,10 @@ export default defineComponent({
 
         function getConsensusStateString() {
             return {
-                lost: context.root.$i18n.t('lost'),
-                syncing: context.root.$i18n.t('syncing'),
-                connecting: context.root.$i18n.t('connecting'),
-                established: context.root.$i18n.t('established'),
+                lost: context.root.$t('lost'),
+                syncing: context.root.$t('syncing'),
+                connecting: context.root.$t('connecting'),
+                established: context.root.$t('established'),
             }[$network.consensus as 'lost' | 'syncing' | 'connecting' | 'established'];
         }
 

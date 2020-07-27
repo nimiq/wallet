@@ -1,31 +1,70 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
     <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse>
-        <PageBody>
-            <img src="../../assets/browser-network.png" alt="Browser Network Graph">
+        <PageBody :style="height !== 0 ? `--height: calc(${height}px)`: ''">
+            <div class="image">
+                <img src="../../assets/browser-network.png" alt="Browser Network Graph" />
+            </div>
 
-            <h1 class="nq-h1">{{ $t('You are a part of the Nimiq Blockchain.') }}</h1>
-            <p>
-                {{ $t('Your browser connects directly to a set of peers from all around the world. ' +
-                'This makes you a first-class citizen of the blockchain.') }}
-            </p>
-            <p>
-                {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
-            </p>
-            <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank">
-                {{ $t('Learn more') }}
-            </BlueLink>
+            <div ref="$textDiv">
+                <h1 class="nq-h1">{{ $t('You are a part of the Nimiq Blockchain.') }}</h1>
+                <p>
+                    {{ $t('Your browser connects directly to a set of peers from all around the world. ' +
+                    'This makes you a first-class citizen of the blockchain.') }}
+                </p>
+                <p>
+                    {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
+                </p>
+                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank">
+                    {{ $t('Learn more') }}
+                </BlueLink>
+            </div>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
+    setup(props, context) {
+        /**
+         * This is needed to update the height of the .image element since we're using the `shape-outside` property
+         * and that the img inside need to be vertically centered. This cannot be done with css only unfortunately.
+         * Reminder: The `shape-outside` property needs the element to be floating and to have a defined height
+         *  (and not `height: 100%`)
+         */
+        const $textDiv = ref<HTMLDivElement | null>(null);
+        const height = ref<number>(0);
+
+        async function updateHeight() {
+            await context.root.$nextTick();
+            if ($textDiv.value && height.value !== $textDiv.value.clientHeight) {
+                height.value = $textDiv.value.clientHeight;
+            }
+        }
+
+        async function onResize() {
+            height.value = 0;
+            await updateHeight();
+            await updateHeight(); // Needs to be called twice due to the `shape-outside` property
+        }
+
+        onMounted(() => {
+            onResize();
+            window.addEventListener('resize', onResize);
+        });
+
+        onUnmounted(() => window.removeEventListener('resize', onResize));
+
+        return {
+            $textDiv,
+            height,
+        };
+    },
     components: {
         Modal,
         PageBody,
@@ -63,18 +102,35 @@ export default defineComponent({
 }
 
 .page-body {
-    padding: 4rem;
-}
+    --padding: 4rem;
+    --height: var(--padding); // default value, will be updated with Javascript
 
-img {
-    float: right;
-    height: 38rem;
-    padding-left: 5rem;
-    shape-outside: polygon(50% 0, 100% 0, 100% 100%, 0% 100%, 15% 55%);
-    margin-right: -3rem;
-    margin-bottom: -3rem;
-    pointer-events: none;
-    // user-select: none;
+    padding: var(--padding);
+
+    .image {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        height: var(--height);
+        margin-right: calc(var(--padding) * -1);
+        float: right;
+        shape-outside: polygon(
+            100% 8%,
+            45.17% 16.09%,
+            33% 44.67%,
+            -8.22% 45.33%,
+            -8.83% 68.3%,
+            47.61% 68.11%,
+            100% 100%
+        );
+
+
+        img {
+            height: 100%;
+            width: auto;
+            max-height: 38rem;
+        }
+    }
 }
 
 .nq-h1 {
@@ -106,16 +162,13 @@ a {
     }
 
     .page-body {
-        padding: 3rem;
+        --padding: 3rem;
     }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    img {
-        padding-left: 3rem;
-        margin-right: -4rem;
-        margin-bottom: -4rem;
-        height: 36rem;
+    .image img {
+        max-height: 36rem;
     }
 }
 </style>

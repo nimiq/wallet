@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref, computed, onBeforeUnmount, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // re add <BalanceDistribution /> once Bitcoin is avalable
 // import BalanceDistribution from './BalanceDistribution.vue';
@@ -55,9 +55,11 @@ export default defineComponent({
             }
         }
 
-        window.addEventListener('resize', updateFontSize);
-        onBeforeUnmount(() => window.removeEventListener('resize', updateFontSize));
-        onMounted(() => updateFontSize());
+        onMounted(() => {
+            window.addEventListener('resize', updateFontSize);
+            updateFontSize();
+        });
+        onUnmounted(() => window.removeEventListener('resize', updateFontSize));
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
 

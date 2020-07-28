@@ -1,5 +1,5 @@
 <template>
-    <a v-bind="$attrs" v-on="$listeners" class="blue-link nq-link flex-row"><slot></slot><ArrowRightSmallIcon/></a>
+    <a v-bind="$attrs" v-on="$listeners" class="blue-link nq-link"><slot></slot><ArrowRightSmallIcon/></a>
 </template>
 
 <script lang="ts">
@@ -20,8 +20,10 @@ export default defineComponent({
         font-weight: bold;
 
         .nq-icon {
+            display: inline;
             font-size: 0.8em;
             margin-left: 0.75rem;
+            vertical-align: middle;
 
             transition: transform 0.2s var(--nimiq-ease);
         }

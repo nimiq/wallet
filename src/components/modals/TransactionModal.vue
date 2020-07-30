@@ -172,10 +172,12 @@
             <!-- <button class="nq-button-s">Send more</button> -->
             <div class="flex-spacer"></div>
 
-            <Tooltip v-if="transaction.blockHeight" preferredPosition="bottom right" class="info-tooltip">
+            <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
-                <span class="block">{{ $t('Block #{height}', { height: transaction.blockHeight }) }}</span>
-                <span v-if="confirmations" class="confirmations">
+                <span v-if="transaction.blockHeight" class="block">
+                    {{ $t('Block #{height}', { height: transaction.blockHeight }) }}
+                </span>
+                <span class="confirmations">
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
                 <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
@@ -349,7 +351,7 @@ export default defineComponent({
 
         const { state: network$ } = useNetworkStore();
         const confirmations = computed(() =>
-            transaction.value.blockHeight && (network$.height - transaction.value.blockHeight + 1));
+            transaction.value.blockHeight && (network$.height - transaction.value.blockHeight + 1) || 0);
 
         const { language, amountsHidden } = useSettingsStore();
 

@@ -17,7 +17,7 @@
                     @contact-selected="onContactSelected"
                 />
                 <section class="address-section">
-                    <label class="nq-label">{{ $t('Enter Address') }}</label>
+                    <label class="nq-label">{{ $t('Enter address') }}</label>
                     <AddressInput
                         v-model="addressInputValue"
                         @paste="(event, text) => parseRequestUri(text, event)"
@@ -161,7 +161,7 @@
 
         <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
             <PageBody class="page__fee-selection fee-selection flex-column">
-                <h1 class="nq-h1">{{ $t('Speed up your transaction') }}</h1>
+                <h1 class="nq-h1">{{ $t('Speed up your Transaction') }}</h1>
                 <p class="nq-text">
                     {{ $t('By adding a transaction fee, you can influence ' +
                     'how fast your transaction will be processed.') }}

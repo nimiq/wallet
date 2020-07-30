@@ -1,14 +1,13 @@
 # 
 # Translators:
-# Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
-# Matheo <matheo@nimiq.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -56,11 +55,11 @@ msgid "Add a public message..."
 msgstr "Öffentliche Nachricht hinzufügen..."
 
 #: src/components/AccountMenu.vue:70
-msgid "Add Account"
+msgid "Add account"
 msgstr "Konto hinzufügen"
 
 #: src/components/AddressList.vue:18
-msgid "Add Address"
+msgid "Add address"
 msgstr "Adresse hinzufügen"
 
 #: src/components/modals/TransactionModal.vue:121
@@ -109,7 +108,7 @@ msgid "Android and iOS App"
 msgstr "Android und iOS App"
 
 #: src/components/layouts/Network.vue:14
-msgid "Back to Addresses"
+msgid "Back to addresses"
 msgstr "Zurück zu Adressen"
 
 #: src/components/layouts/AccountOverview.vue:25
@@ -227,7 +226,7 @@ msgstr "Verbunden mit"
 
 #: src/components/NetworkStats.vue:46
 msgid "connecting"
-msgstr ""
+msgstr "verbinden"
 
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
@@ -251,7 +250,7 @@ msgid "Create a Cashlink"
 msgstr "Cashlink erstellen"
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
-msgid "Create a new Account"
+msgid "Create a new account"
 msgstr "Neues Konto erstellen"
 
 #: src/components/LegacyAccountNotice.vue:6
@@ -314,12 +313,12 @@ msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
 #: src/components/modals/SendModal.vue:20
-msgid "Enter Address"
+msgid "Enter address"
 msgstr "Adresse eingeben"
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
-msgstr ""
+msgstr "hergestellt"
 
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
@@ -375,7 +374,7 @@ msgstr "Für Anfänger"
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
-msgstr ""
+msgstr "Forumsbeitrag"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -418,7 +417,7 @@ msgstr "Großartig, du hast es geschafft!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
-"Handling multiple Addresses is now convenient and easy – with one password "
+"Handling multiple addresses is now convenient and easy – with one password "
 "and shared login information."
 msgstr ""
 "Mit nur einem Passwort und einem Login ist es ist jetzt ganz einfach und "
@@ -429,13 +428,15 @@ msgid "Historic value"
 msgstr "Historischer Wert"
 
 #: src/components/modals/MigrationWelcomeModal.vue:33
-msgid "hold, manage and aggregate Addresses."
-msgstr "Adressen verwalten und zusammenfassen."
+msgid "hold, manage and aggregate addresses."
+msgstr "halten und fassen Adressen zusammen."
 
 #: src/components/modals/BetaNoticeModal.vue:18
 msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr ""
+"Falls du Fehler entdeckst oder Ideen hast, teil sie mit uns in diesem "
+"{forum-thread}."
 
 #: src/components/layouts/Settings.vue:45
 msgid "Import Contacts"
@@ -446,16 +447,17 @@ msgid "Import contacts that you exported from the Safe."
 msgstr "Importiere Kontakte, die du aus dem Safe exportiert hast."
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
-msgid "Import it to any browser and enter your password to connect to Nimiq."
+msgid ""
+"Import it to any browser and enter your password to use the same addresses."
 msgstr ""
-"Einfach in einem anderen Browser importieren, Passwort eingeben, und schon "
-"bist du mit Nimiq verbunden."
+"Einfach in einem anderen Browser importieren und Passwort eingeben um "
+"Zugriff auf die selben Adressen zu erlangen."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
 msgstr "Verbesserte Barrierefreiheit"
 
-#: src/components/modals/TradeModal.vue:109
+#: src/components/modals/TradeModal.vue:110
 msgid "In cooperation with"
 msgstr "In Kooperation mit"
 
@@ -479,8 +481,8 @@ msgstr "Es ist schnell, sicher und macht dich wirklich unabhängig."
 msgid "Language"
 msgstr "Sprache"
 
-#: src/components/modals/NetworkInfoModal.vue:16
-#: src/components/modals/TradeModal.vue:106
+#: src/components/modals/NetworkInfoModal.vue:19
+#: src/components/modals/TradeModal.vue:107
 msgid "Learn more"
 msgstr "Mehr erfahren"
 
@@ -513,7 +515,7 @@ msgstr "Ausloggen"
 
 #: src/components/NetworkStats.vue:44
 msgid "lost"
-msgstr ""
+msgstr "unterbrochen"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -521,10 +523,11 @@ msgstr "Mehrere Adressen"
 
 #: src/components/modals/MigrationWelcomeModal.vue:21
 msgid ""
-"Multiple Addresses and Login Files\n"
-"are supported by new Accounts only."
+"Multiple addresses and Login Files\n"
+"are supported by new accounts only."
 msgstr ""
-"Mehrere Adressen und Login-Datei werden nur von neuen Konten unterstützt."
+"Mehrere Adressen und Login-Datei\n"
+"werden nur von neuen Konten unterstützt."
 
 #: src/components/modals/SendModal.vue:53
 msgid "Name this contact..."
@@ -558,11 +561,11 @@ msgstr ""
 
 #: src/components/modals/TradeModal.vue:100
 msgid ""
-"Nimiq OASIS enables decentra­lized buying and selling directly from your "
-"wallet."
+"Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
+"from your wallet."
 msgstr ""
-"Nimiq OASIS macht es möglich direkt von deinem Wallet aus dezentral zu "
-"kaufen und zu verkaufen."
+"Nimiq OASIS macht es möglich direkt von deinem Wallet aus dezentral "
+"Kryptowährungen zu kaufen und zu verkaufen."
 
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -697,11 +700,11 @@ msgid "Search"
 msgstr "Suchen"
 
 #: src/components/SearchBar.vue:17
-msgid "Search Transactions"
+msgid "Search transactions"
 msgstr "Transaktionen suchen"
 
 #: src/components/SearchBar.vue:15
-msgid "Search Transactions by Contact, Address, etc."
+msgid "Search transactions by contact, address, etc."
 msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 
 #: src/components/layouts/AddressOverview.vue:86
@@ -716,7 +719,7 @@ msgstr "Alles senden"
 msgid "Send and receive NIM directly on the blockchain."
 msgstr "Sende und empfange NIM direkt auf der Blockchain."
 
-#: src/components/modals/NetworkInfoModal.vue:13
+#: src/components/modals/NetworkInfoModal.vue:16
 msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
@@ -778,7 +781,7 @@ msgid "Share your address with the sender."
 msgstr "Teile deine Adresse mit dem Sender."
 
 #: src/components/modals/ReceiveModal.vue:44
-msgid "Share your payment link"
+msgid "Share your Payment Link"
 msgstr "Teile deinen Zahlungslink"
 
 #: src/components/ContactBook.vue:14
@@ -802,7 +805,7 @@ msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
 #: src/components/modals/SendModal.vue:164
-msgid "Speed up your transaction"
+msgid "Speed up your Transaction"
 msgstr "Beschleunige deine Transaktion"
 
 #: src/components/LegacyAccountNotice.vue:29
@@ -813,7 +816,7 @@ msgstr "Stake deine NIM für Zinsen und um das Netzwerk zu sichern."
 msgid "Staking"
 msgstr "Staking"
 
-#: src/components/modals/TradeModal.vue:103
+#: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr "Starttermin für EU-Bankkonten ist das 3. Quartal 2020."
 
@@ -823,7 +826,7 @@ msgstr "Verwahre, sende und empfange NIM."
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
-msgstr ""
+msgstr "abgleichen"
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
@@ -835,8 +838,8 @@ msgstr "Testnet"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
-"The new and improved Accounts\n"
-"can have multiple Addresses."
+"The new and improved accounts\n"
+"can have multiple addresses."
 msgstr ""
 "Die neuen und verbesserten Konten \n"
 "können mehrere Adressen haben."
@@ -844,7 +847,7 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:47
 msgid ""
 "The new Login Files are an easy and convenient way to gain access to your "
-"Account and its Addresses."
+"account and its addresses."
 msgstr ""
 "Die neuen Login-Dateien bietet eine einfache und bequeme Möglichkeit, auf "
 "dein Konto und deine Adressen zuzugreifen."
@@ -860,6 +863,8 @@ msgid ""
 "The Wallet is still in Beta. Your funds are safe, there just might be some "
 "visual issues."
 msgstr ""
+"Die Wallet ist noch Beta. Deine Guthaben sind sicher, aber es könnten noch "
+"kleine, optische Fehler auftreten."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -900,7 +905,7 @@ msgstr "Guthaben überweisen"
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
-msgstr ""
+msgstr "Teile deine Karte auf Twitter!"
 
 #: src/components/modals/TransactionModal.vue:319
 #: src/components/TransactionListItem.vue:140
@@ -922,12 +927,14 @@ msgid ""
 "Welcome to the\n"
 "new Nimiq Wallet"
 msgstr ""
+"Willkommen in der\n"
+"neuen Nimiq Wallet!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"
 msgstr "Sonst noch was?"
 
-#: src/components/modals/NetworkInfoModal.vue:7
+#: src/components/modals/NetworkInfoModal.vue:10
 msgid "You are a part of the Nimiq Blockchain."
 msgstr "Du bist ein Teil der Nimiq Blockchain."
 
@@ -948,13 +955,13 @@ msgid "You will send {amount} NIM"
 msgstr "Du sendest {amount} NIM"
 
 #: src/components/layouts/AccountOverview.vue:8
-msgid "Your Account is not safe yet!"
+msgid "Your account is not safe yet!"
 msgstr "Dein Konto ist noch nicht sicher!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:68
 msgid ""
-"Your Accounts are now legacy Accounts. Easily switch, edit and create "
-"Accounts with the new Account picker."
+"Your accounts are now legacy accounts. Easily switch, edit and create "
+"accounts with the new account picker."
 msgstr ""
 "Deine Konten sind nun Legacy-Konten. Mit der neuen Kontoauswahl kannst du "
 "ganz einfach Konten wechseln, bearbeiten und erstellen."
@@ -963,7 +970,7 @@ msgstr ""
 msgid "Your browser"
 msgstr "Dein Browser"
 
-#: src/components/modals/NetworkInfoModal.vue:9
+#: src/components/modals/NetworkInfoModal.vue:12
 msgid ""
 "Your browser connects directly to a set of peers from all around the world. "
 "This makes you a first-class citizen of the blockchain."
@@ -973,7 +980,7 @@ msgstr ""
 "wirklichen Mitglied der Blockchain-Welt."
 
 #: src/components/modals/WelcomeModal.vue:19
-msgid "Your browser is a node"
+msgid "Your browser is a Node"
 msgstr "Dein Browser is Teil des Netzwerks"
 
 #: src/components/modals/WelcomeModal.vue:78

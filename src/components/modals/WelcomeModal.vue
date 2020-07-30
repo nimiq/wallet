@@ -16,7 +16,7 @@
             </template>
 
             <template v-if="page === 2">
-                {{ $t('Your browser is a node') }}
+                {{ $t('Your browser is a Node') }}
                 <p slot="more" class="nq-notice info">
                     {{ $t('Connect directly to the Nimiq blockchain.\nBe independent from any middleman.') }}
                 </p>

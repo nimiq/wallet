@@ -67,7 +67,7 @@
                 </div>
 
                 <button class="nq-button-s add-account" @click="onboard" @mousedown.prevent>
-                    {{ $t('Add Account') }}
+                    {{ $t('Add account') }}
                 </button>
             </Modal>
         </transition>

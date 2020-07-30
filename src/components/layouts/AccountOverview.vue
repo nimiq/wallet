@@ -5,7 +5,7 @@
             class="backup-warning file nq-orange-bg flex-row"
         >
             <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">{{ $t('Your Account is not safe yet!') }}</span>
+            <span class="alert-text">{{ $t('Your account is not safe yet!') }}</span>
             <div class="flex-grow"></div>
             <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)" @mousedown.prevent>
                 {{ $t('Save now') }}<ArrowRightSmallIcon/>

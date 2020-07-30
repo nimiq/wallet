@@ -12,9 +12,9 @@
             :placeholder="width < 50
                 ? ''
                 : width > 340
-                    ? $t('Search Transactions by Contact, Address, etc.')
+                    ? $t('Search transactions by contact, address, etc.')
                     : width > 150
-                        ? $t('Search Transactions')
+                        ? $t('Search transactions')
                         : $t('Search')"
             @input="$emit('input', $event.target.value)" />
     </div>

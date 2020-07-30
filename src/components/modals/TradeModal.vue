@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">
-                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="Kucoin" target="_blank">
+                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank">
                         <img src="../../assets/exchanges/kucoin.svg">
                     </a>
                     <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank">
@@ -97,7 +97,8 @@
                 <label>{{ $t('Coming\u00a0soon') }}</label>
                 <h2 class="nq-h2">{{ $t('Buy and sell with your wallet.') }}</h2>
                 <p class="nq-text">
-                    {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling directly from your wallet.') }}
+                    {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling of crypto directly from your '
+                        + 'wallet.') }}
                 </p>
                 <p class="nq-text">
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}

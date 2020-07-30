@@ -11,7 +11,7 @@
                     @click="$router.push('/').catch(() => {})"
                     @mousedown.prevent
                 >
-                    {{ $t('Back to Addresses') }}
+                    {{ $t('Back to addresses') }}
                 </button>
                 <button class="reset info-button" @click="showNetworkInfo = true">
                     <InfoCircleIcon/>

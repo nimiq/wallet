@@ -4,7 +4,7 @@
             <template v-if="page === 1">
                 {{ $t('One Account, many Addresses') }}
                 <p slot="more" class="nq-notice info">
-                    {{ $t('The new and improved Accounts\ncan have multiple Addresses.') }}
+                    {{ $t('The new and improved accounts\ncan have multiple addresses.') }}
                 </p>
             </template>
 
@@ -18,7 +18,7 @@
             <template v-if="page === 3">
                 {{ $t('Old and new Accounts') }}
                 <p slot="more" class="nq-notice info">
-                    {{ $t('Multiple Addresses and Login Files\nare supported by new Accounts only.') }}
+                    {{ $t('Multiple addresses and Login Files\nare supported by new accounts only.') }}
                 </p>
             </template>
         </PageHeader>
@@ -26,11 +26,11 @@
         <PageBody v-if="page === 1" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('Handling multiple Addresses is now convenient and easy – with one password and shared login'
+                    {{ $t('Handling multiple addresses is now convenient and easy – with one password and shared login'
                     + ' information.') }}
                 </p>
                 <p class="nq-text">
-                    <strong>{{ $t('Accounts') }}</strong> {{ $t('hold, manage and aggregate Addresses.') }}
+                    <strong>{{ $t('Accounts') }}</strong> {{ $t('hold, manage and aggregate addresses.') }}
                 </p>
                 <p class="nq-text">
                     <strong>{{ $t('Addresses') }}</strong> {{ $t('send and receive transactions.') }}
@@ -44,11 +44,11 @@
         <PageBody v-else-if="page === 2" class="left-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('The new Login Files are an easy and convenient way to gain access to your Account and its'
-                    + ' Addresses.') }}
+                    {{ $t('The new Login Files are an easy and convenient way to gain access to your account and its'
+                    + ' addresses.') }}
                 </p>
                 <p class="nq-text">
-                    {{ $t('Import it to any browser and enter your password to connect to Nimiq.') }}
+                    {{ $t('Import it to any browser and enter your password to use the same addresses.') }}
                 </p>
                 <p class="nq-text">
                     <BlueLink
@@ -65,8 +65,8 @@
         <PageBody v-else-if="page === 3" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('Your Accounts are now legacy Accounts. Easily switch, edit and create Accounts with the new'
-                    + ' Account picker.') }}
+                    {{ $t('Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new'
+                    + ' account picker.') }}
                 </p>
                 <p class="nq-text">
                     {{ $t('Account creation was massively improved. Give\n'

@@ -4,7 +4,7 @@
         class="nq-button light-blue"
         @click="onboard"
         @mousedown.prevent
-    >{{ $t('Create a new Account') }}</button>
+    >{{ $t('Create a new account') }}</button>
     <button v-else class="nq-button light-blue" @click="onTransferFunds" @mousedown.prevent>
         {{ $t('Transfer funds') }}
     </button>

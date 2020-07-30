@@ -41,7 +41,7 @@
 
         <template v-if="receiveLinkOverlayOpened" slot="overlay">
             <PageHeader class="link-overlay">
-                {{ $t('Share your payment link') }}
+                {{ $t('Share your Payment Link') }}
                 <div slot="more">
                     {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
                 </div>

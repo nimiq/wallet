@@ -8,8 +8,10 @@
             </button>
         </h2>
         <div class="fiat-amount" ref="$fiatAmountContainer">
-            <FiatConvertedAmount
-                :amount="accountBalance"
+            <FiatAmount
+                :amount="fiatAmount"
+                :currency="fiatCurrency"
+                :locale="language"
                 ref="$fiatAmount"
                 :style="{ fontSize: `${fiatAmountFontSize}rem` }"
                 value-mask
@@ -21,18 +23,40 @@
 <script lang="ts">
 import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import { FiatAmount } from '@nimiq/vue-components';
 // re add <BalanceDistribution /> once Bitcoin is avalable
 // import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useFiatStore } from '../stores/Fiat';
+import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+
+        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+
+        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
+        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+        const fiatAmount = computed(() => {
+            const nimFiatAmount = nimExchangeRate.value !== undefined
+                ? (accountBalance.value / 1e5) * nimExchangeRate.value
+                : undefined;
+            const btcFiatAmount = btcExchangeRate.value !== undefined
+                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                : undefined;
+
+            console.log(exchangeRates.value, nimFiatAmount, btcFiatAmount);
+            if (nimFiatAmount === undefined || btcFiatAmount === undefined) return undefined;
+
+            return nimFiatAmount + btcFiatAmount;
+        });
 
         const $fiatAmountContainer = ref<HTMLDivElement>(null);
         const $fiatAmount = ref<Vue>(null);
@@ -61,10 +85,12 @@ export default defineComponent({
         });
         onUnmounted(() => window.removeEventListener('resize', updateFontSize));
 
-        const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
+        const { amountsHidden, toggleAmountsHidden, language } = useSettingsStore();
 
         return {
-            accountBalance,
+            fiatAmount,
+            fiatCurrency,
+            language,
             $fiatAmount,
             $fiatAmountContainer,
             fiatAmountFontSize,
@@ -74,7 +100,7 @@ export default defineComponent({
     },
     components: {
         // BalanceDistribution,
-        FiatConvertedAmount,
+        FiatAmount,
         PrivacyOffIcon,
         PrivacyOnIcon,
     },

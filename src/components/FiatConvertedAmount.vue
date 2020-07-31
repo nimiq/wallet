@@ -28,7 +28,7 @@ export default defineComponent({
     setup(props) {
         const fiatStore = useFiatStore();
 
-        const fiatCurrency = computed(() => fiatStore.currency.value);
+        const fiatCurrency = fiatStore.currency;
         const exchangeRate = computed(() => fiatStore.exchangeRates.value[props.currency]?.[fiatCurrency.value]);
         const fiatAmount = computed(() => exchangeRate.value !== undefined && typeof props.amount === 'number'
             ? (props.amount / 1e5) * exchangeRate.value

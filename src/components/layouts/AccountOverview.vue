@@ -48,11 +48,14 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-row">
                 <BitcoinIcon/>
                 Bitcoin
                 <div class="flex-grow"></div>
-                <label>{{ $t('Coming soon') }}</label>
+                <div class="balances">
+                    <Amount :amount="btcAccountBalance" currency="btc" value-mask/>
+                    <FiatConvertedAmount class="fiat-balance" :amount="btcAccountBalance" currency="btc" value-mask/>
+                </div>
             </div>
             <div v-else>
                 <LegacyAccountUpgradeButton/>
@@ -83,6 +86,8 @@ import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
+import Amount from '../Amount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
@@ -90,12 +95,14 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
         const { activeAccountInfo, activeAccountId } = useAccountStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -131,6 +138,7 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            btcAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
         };
@@ -148,6 +156,8 @@ export default defineComponent({
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
         Portal,
+        Amount,
+        FiatConvertedAmount,
     },
 });
 </script>
@@ -260,11 +270,11 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.bitcoin-teaser {
+.bitcoin-account {
     height: 15rem;
     box-shadow: 0 -1.5px 0 var(--text-10);
     align-items: center;
-    color: var(--text-40);
+    color: var(--text-70);
     font-size: var(--body-size);
     font-weight: 600;
     padding: 0 4rem;
@@ -277,18 +287,27 @@ export default defineComponent({
     }
 
     svg {
-        color: var(--text-20); // Bitcoin color is #F7931A
+        color: #F7931A;
         margin-right: 2rem;
     }
 
-    label {
-        text-transform: uppercase;
-        font-size: var(--small-label-size);
+    .balances {
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .amount {
+        --size: var(--body-size);
+        display: block;
+        line-height: 1.2;
         font-weight: bold;
-        letter-spacing: 0.06em;
-        padding: 0.75rem 1.75rem;
-        box-shadow: 0 0 0 1.5px var(--text-10);
-        border-radius: 500px;
+    }
+
+    .fiat-balance {
+        --size: var(--small-size);
+        font-size: var(--size);
+        font-weight: 600;
+        opacity: 0.5;
     }
 }
 
@@ -359,7 +378,7 @@ export default defineComponent({
         margin-top: -2rem;
     }
 
-    .bitcoin-teaser label {
+    .bitcoin-account .balances {
         display: none;
     }
 }
@@ -369,7 +388,7 @@ export default defineComponent({
         margin-top: 0;
     }
 
-    .bitcoin-teaser {
+    .bitcoin-account {
         height: 11rem;
         padding: 0 1.75rem;
         margin: 0 0.5rem;

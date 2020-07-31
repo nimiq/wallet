@@ -177,7 +177,7 @@ export default defineComponent({
 
         transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
 
-        .has-scrollbar & {
+        .has-scrollbar &:not(.add-address-button) {
             width: calc(100% + 6px);
         }
     }

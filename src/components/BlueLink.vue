@@ -18,6 +18,7 @@ export default defineComponent({
         align-items: center;
         text-decoration: none !important;
         font-weight: bold;
+        display: block;
 
         .nq-icon {
             display: inline;

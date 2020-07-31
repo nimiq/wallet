@@ -18,7 +18,8 @@
   "main": "src/main.ts",
   "dependencies": {
     "@linusborg/vue-simple-portal": "^0.1.4",
-    "@nimiq/hub-api": "^1.2.0",
+    "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
+    "@nimiq/hub-api": "link:../hub/client",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.5.0",
     "@nimiq/style": "^0.8.2",

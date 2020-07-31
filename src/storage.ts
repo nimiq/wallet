@@ -5,6 +5,7 @@ import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore, ContactsState } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
 import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
+import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -13,6 +14,7 @@ const StorageKeys = {
     SETTINGS: 'wallet_settings_v01',
     FIAT: 'wallet_exchange-rates_v01',
     CASHLINKS: 'wallet_cashlinks_v01',
+    BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
 };
 
 const PersistentStorageKeys = {
@@ -151,6 +153,25 @@ export function initStorage() {
     unsubscriptions.push(
         cashlinkStore.subscribe(() => {
             localStorage.setItem(StorageKeys.CASHLINKS, JSON.stringify(cashlinkStore.state));
+        }),
+    );
+
+    /**
+     * BTC ADDRESSES
+     */
+    const btcAddressStore = useBtcAddressStore();
+
+    // Load addresses from storage
+    const storedBtcAddressState = localStorage.getItem(StorageKeys.BTCADDRESSINFOS);
+    if (storedBtcAddressState) {
+        const btcAddressState: BtcAddressState = JSON.parse(storedBtcAddressState);
+        btcAddressStore.patch(btcAddressState);
+    }
+
+    unsubscriptions.push(
+        // Write addresses to storage when updated
+        btcAddressStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.BTCADDRESSINFOS, JSON.stringify(btcAddressStore.state));
         }),
     );
 }

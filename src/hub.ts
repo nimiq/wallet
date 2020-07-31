@@ -3,6 +3,7 @@ import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/Re
 import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
+import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
@@ -46,9 +47,11 @@ function onError(error: 'Connection was closed' | Error) {
 function processAndStoreAccounts(accounts: Account[], replaceState = false): void {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
+    const btcAddressInfos: BtcAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
+    const btcAddressStore = useBtcAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];
@@ -60,9 +63,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
                 address: address.address,
                 type: AddressType.BASIC,
                 label: address.label,
-                balance: addressStore.state.addressInfos[address.address]
-                    ? addressStore.state.addressInfos[address.address].balance
-                    : null,
+                balance: addressStore.state.addressInfos[address.address]?.balance || null,
             });
         }
 
@@ -86,10 +87,18 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
             addressInfos.push({
                 ...contract,
-                balance: addressStore.state.addressInfos[contract.address]
-                    ? addressStore.state.addressInfos[contract.address].balance
-                    : null,
+                balance: addressStore.state.addressInfos[contract.address]?.balance || null,
             });
+        }
+
+        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+            for (const btcAddress of account.btcAddresses[chain]) {
+                btcAddressInfos.push({
+                    address: btcAddress,
+                    used: btcAddressStore.state.addressInfos[btcAddress]?.used || false,
+                    utxos: btcAddressStore.state.addressInfos[btcAddress]?.utxos || [],
+                });
+            }
         }
 
         accountInfos.push({
@@ -100,18 +109,23 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
             addresses,
+            btcAddresses: { ...account.btcAddresses },
         });
     }
 
     if (replaceState) {
         accountStore.setAccountInfos(accountInfos);
         addressStore.setAddressInfos(addressInfos);
+        btcAddressStore.setAddressInfos(btcAddressInfos);
     } else {
         for (const accountInfo of accountInfos) {
             accountStore.addAccountInfo(accountInfo);
         }
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
+        }
+        for (const btcAddressInfo of btcAddressInfos) {
+            btcAddressStore.addAddressInfo(btcAddressInfo);
         }
     }
 }

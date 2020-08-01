@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
 import { NetworkClient } from '@nimiq/network-client';
-
 import { SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
+
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';

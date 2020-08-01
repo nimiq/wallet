@@ -52,7 +52,6 @@ export default defineComponent({
                 ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
                 : undefined;
 
-            console.log(exchangeRates.value, nimFiatAmount, btcFiatAmount);
             if (nimFiatAmount === undefined || btcFiatAmount === undefined) return undefined;
 
             return nimFiatAmount + btcFiatAmount;

@@ -30,8 +30,14 @@ export default defineComponent({
 
         const fiatCurrency = fiatStore.currency;
         const exchangeRate = computed(() => fiatStore.exchangeRates.value[props.currency]?.[fiatCurrency.value]);
+        const currencyDecimals = computed(() => {
+            switch (props.currency) {
+                case CryptoCurrency.BTC: return 8;
+                default: return 5;
+            }
+        });
         const fiatAmount = computed(() => exchangeRate.value !== undefined && typeof props.amount === 'number'
-            ? (props.amount / 1e5) * exchangeRate.value
+            ? (props.amount / 10 ** currencyDecimals.value) * exchangeRate.value
             : undefined,
         );
 

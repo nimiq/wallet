@@ -5,7 +5,7 @@
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar v-model="searchString"/>
                 <button
-                    v-if="unclaimedCashlinkCount"
+                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
@@ -17,6 +17,7 @@
                     ) }}
                 </button>
                 <button
+                    v-if="activeCurrency === 'nim'"
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
@@ -32,8 +33,9 @@
             </div>
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
-                    <Identicon :address="activeAddressInfo.address" />
-                    <button class="reset identicon-menu flex-row"
+                    <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
+                    <BitcoinIcon v-else/>
+                    <button v-if="activeCurrency === 'nim'" class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
@@ -48,18 +50,25 @@
                 </div>
                 <div class="meta">
                     <div class="flex-row">
-                        <div class="label">{{activeAddressInfo.label}}</div>
-                        <Amount :amount="activeAddressInfo.balance" value-mask/>
+                        <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
+                        <div v-else class="label">Bitcoin</div>
+                        <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
+                        <Amount v-else :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
-                        <Copyable :text="activeAddressInfo.address" :key="activeAddressInfo.address">
+                        <Copyable v-if="activeCurrency === 'nim'"
+                            :text="activeAddressInfo.address" :key="activeAddressInfo.address"
+                        >
                             <div class="address" v-responsive="{'masked': el => el.width < addressMaskedWidth}">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
-                        <FiatConvertedAmount :amount="activeAddressInfo.balance" value-mask/>
+                        <FiatConvertedAmount v-if="activeCurrency === 'nim'"
+                            :amount="activeAddressInfo.balance" value-mask/>
+                        <FiatConvertedAmount v-else
+                            :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
                 </div>
             </div>
@@ -67,7 +76,7 @@
                 <SearchBar v-model="searchString"/>
 
                 <button
-                    v-if="unclaimedCashlinkCount"
+                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
@@ -91,10 +100,15 @@
             </div>
             <div class="scroll-mask top"></div>
             <TransactionList
+                v-if="activeCurrency === 'nim'"
                 :searchString="searchString"
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
+            />
+            <BtcTransactionList
+                v-else
+                :searchString="searchString"
             />
         </template>
         <template v-else>
@@ -122,23 +136,27 @@ import { Portal } from '@linusborg/vue-simple-portal';
 // @ts-ignore missing types for this package
 import { ResponsiveDirective } from 'vue-responsive-components';
 
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
+import BtcTransactionList from '../BtcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'address-overview',
     setup() {
-        const { activeAccountId } = useAccountStore();
+        const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const searchString = ref('');
 
@@ -172,6 +190,7 @@ export default defineComponent({
                 : 322);
 
         return {
+            activeCurrency,
             searchString,
             activeAccountId,
             activeAddressInfo,
@@ -182,11 +201,13 @@ export default defineComponent({
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
             addressMaskedWidth,
+            btcAccountBalance,
         };
     },
     components: {
         ArrowRightSmallIcon,
         Identicon,
+        BitcoinIcon,
         GearIcon,
         RenameIcon,
         Copyable,
@@ -194,6 +215,7 @@ export default defineComponent({
         FiatConvertedAmount,
         SearchBar,
         TransactionList,
+        BtcTransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
@@ -299,6 +321,14 @@ export default defineComponent({
                 opacity: 0.5;
                 transition: opacity 0.3s var(--nimiq-ease);
             }
+        }
+
+        > svg {
+            width: 10.5rem;
+            height: 10.5rem;
+            color: #F7931A; // Bitcoin orange
+            margin: -0.25rem 0.375rem;
+            display: block;
         }
     }
 

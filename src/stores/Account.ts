@@ -1,10 +1,12 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
 import { useAddressStore } from './Address'; // eslint-disable-line import/no-cycle
+import { CryptoCurrency } from '../lib/Constants';
 
 export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
     activeAccountId: string | null,
+    activeCurrency: CryptoCurrency,
 }
 
 // Mirror of Hub WalletType, which is not exported
@@ -25,6 +27,7 @@ export const useAccountStore = createStore({
     state: () => ({
         accountInfos: {},
         activeAccountId: null,
+        activeCurrency: CryptoCurrency.NIM,
     } as AccountState),
     getters: {
         accountInfos: (state) => state.accountInfos,
@@ -32,6 +35,7 @@ export const useAccountStore = createStore({
         activeAccountInfo: (state) => state.activeAccountId
             ? state.accountInfos[state.activeAccountId]
             : null,
+        activeCurrency: (state) => state.activeCurrency,
     },
     actions: {
         selectAccount(accountId: string) {

@@ -48,7 +48,7 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-row">
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-row" @click="selectBitcoin">
                 <BitcoinIcon/>
                 Bitcoin
                 <div class="flex-grow"></div>
@@ -97,11 +97,12 @@ import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { CryptoCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
-        const { activeAccountInfo, activeAccountId } = useAccountStore();
+        const { activeAccountInfo, activeAccountId, state: accounts$ } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -112,6 +113,16 @@ export default defineComponent({
         const { width } = useWindowSize();
 
         function onAddressSelected() {
+            accounts$.activeCurrency = CryptoCurrency.NIM;
+
+            if (width.value <= 700) { // Full mobile breakpoint
+                context.root.$router.push('/transactions');
+            }
+        }
+
+        function selectBitcoin() {
+            accounts$.activeCurrency = CryptoCurrency.BTC;
+
             if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');
             }
@@ -141,6 +152,7 @@ export default defineComponent({
             btcAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
+            selectBitcoin,
         };
     },
     components: {
@@ -287,7 +299,7 @@ export default defineComponent({
     }
 
     svg {
-        color: #F7931A;
+        color: #F7931A; // Bitcoin orange
         margin-right: 2rem;
     }
 

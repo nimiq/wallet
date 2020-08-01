@@ -21,12 +21,12 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <!-- <Identicon :address="peerAddress" /> -->
+        <Avatar :label="''"/>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">
-                {{ peerAddress[0] }}
-                <small v-if="peerAddress.length > 1">+{{ peerAddress.length - 1 }}</small>
+                {{ peerAddresses[0] }}
+                <small v-if="peerAddresses.length > 1">+{{ peerAddresses.length - 1 }}</small>
             </div>
 
             <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
@@ -37,10 +37,10 @@
 
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="isIncoming ? amountReceived : amountSent" value-mask/>
+            <Amount :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask/>
             <transition name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING"
-                    :amount="isIncoming ? amountReceived : amountSent" value-mask
+                    :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask
                 />
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -66,8 +66,9 @@ import {
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction, TransactionState, useBtcTransactionsStore } from '../stores/BtcTransactions';
+import { Transaction, TransactionState } from '../stores/BtcTransactions';
 import { twoDigit } from '../lib/NumberFormatting';
+import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import HistoricValueIcon from './icons/HistoricValueIcon.vue';
@@ -80,7 +81,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const { activeInternalAddresses, activeExternalAddresses } = useBtcAddressStore();
@@ -94,21 +95,20 @@ export default defineComponent({
         const isIncoming = computed(() => outputsReceived.value.length > 0);
 
         const outputsSent = computed(() => isIncoming
-            ? [] : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)));
+            ? []
+            : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
+        );
         const amountSent = computed(() => isIncoming
-            ? 0 : outputsSent.value.reduce((sum, output) => sum + output.value, 0));
+            ? 0
+            : outputsSent.value.reduce((sum, output) => sum + output.value, 0),
+        );
 
         // Peer
         const peerAddresses = computed(() => isIncoming.value
             ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address));
-        const peerLabel = '' /* computed(() => {
+        const peerLabel = ''; /* computed(() => {
             // Label cashlinks
-            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
-                return isIncoming.value
-                    ? context.root.$t('Cashlink')
-                    : context.root.$t('Unclaimed Cashlink');
-            }
 
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
@@ -155,6 +155,8 @@ export default defineComponent({
             dateDay,
             dateMonth,
             dateTime,
+            amountReceived,
+            amountSent,
             fiatCurrency,
             fiatValue,
             isIncoming,
@@ -167,6 +169,7 @@ export default defineComponent({
         CircleSpinner,
         // CrossIcon,
         // AlertTriangleIcon,
+        Avatar,
         Amount,
         FiatConvertedAmount,
         FiatAmount,
@@ -237,35 +240,9 @@ svg {
         display: block;
     }
 
-    .identicon {
-        position: relative;
-        width: 6rem;
-        height: 6rem;
+    .avatar {
         flex-shrink: 0;
-
-        img {
-            height: 100%
-        }
-
-        svg {
-            height: 100%;
-            width: 100%;
-        }
-
-        .cashlink {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            bottom: -0.375rem;
-            right: -0.125rem;
-            color: white;
-            background: var(--nimiq-blue-bg);
-            border: 0.25rem solid var(--bg-primary);
-            border-radius: 2rem;
-            height: 2.5rem;
-            width: 2.5rem;
-        }
+        margin: 0.375rem 1.375rem;
     }
 
     .data {
@@ -366,7 +343,7 @@ svg {
 
     &.expired,
     &.invalidated {
-        .identicon {
+        .avatar {
             filter: saturate(0);
             opacity: 0.5;
         }
@@ -390,9 +367,11 @@ svg {
             margin: 0rem 0.75rem;
         }
 
-        .identicon {
-            width: 5.5rem;
-            height: 5.5rem;
+        .avatar {
+            width: 5rem;
+            height: 5rem;
+            font-size: 1.75rem;
+            margin: 0.25rem 1rem;
         }
     }
 }

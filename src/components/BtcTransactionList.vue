@@ -29,14 +29,14 @@
                     </div>
                 </div>
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div v-if="!item.sender" class="month-label flex-row">
+                    <div v-if="!item.inputs" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
                             <span>{{ $t('Fetching') }}</span>
                         </div>
                     </div>
-                    <TransactionListItem v-else :transaction="item"/>
+                    <BtcTransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
 
@@ -73,12 +73,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ /* watch */ } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import Config from 'config';
 import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useBtcTransactionsStore /* , Transaction */, TransactionState } from '../stores/BtcTransactions';
+import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useWindowSize } from '../composables/useWindowSize';
 
@@ -148,7 +148,7 @@ export default defineComponent({
             .filter((tx) => tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress))));
 
         // Apply search filter
-        const filteredTxs = computed(() => {
+        const filteredTxs = computed(() => { // eslint-disable-line arrow-body-style
             /* if (!props.searchString) */ return txsForActiveAddress.value;
 
             // const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');

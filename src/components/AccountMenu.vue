@@ -93,10 +93,11 @@ import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
+import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
-        const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
+        const { accountInfos, activeAccountInfo, activeAccountId, selectAccount, state: accounts$ } = useAccountStore();
         const { state: addressState, accountBalance } = useAddressStore();
 
         const $button = ref<HTMLButtonElement>(null);
@@ -137,6 +138,7 @@ export default defineComponent({
             selectAccount(id);
             closeMenu();
             goToAccount(false);
+            accounts$.activeCurrency = CryptoCurrency.NIM;
         }
 
         return {

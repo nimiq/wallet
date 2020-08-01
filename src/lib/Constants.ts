@@ -12,3 +12,5 @@ export const ENV_DEV = 'dev';
 
 export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';
 export const TESTNET_ORIGIN = 'https://wallet.nimiq-testnet.com';
+
+export const BTC_ADDRESS_GAP = 5; // TODO: Update to standard 20

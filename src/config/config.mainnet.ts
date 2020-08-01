@@ -5,4 +5,7 @@ export default {
     environment: ENV_MAIN,
     networkEndpoint: 'https://network.nimiq.com',
     reportToSentry: true,
+
+    enableBitcoin: true,
+    bitcoinNetwork: 'bitcoin' as 'testnet' | 'bitcoin',
 };

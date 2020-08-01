@@ -2,6 +2,7 @@ import { createStore } from 'pinia';
 import { getExchangeRates } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions'; // eslint-disable-line import/no-cycle
+import { useBtcTransactionsStore } from './BtcTransactions'; // eslint-disable-line import/no-cycle
 
 export type FiatState = {
     currency: FiatCurrency,
@@ -61,6 +62,7 @@ export const useFiatStore = createStore({
             this.state.currency = currency;
             this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
+            useBtcTransactionsStore().calculateFiatAmounts();
         },
         async updateExchangeRates(failGracefully = true) {
             try {

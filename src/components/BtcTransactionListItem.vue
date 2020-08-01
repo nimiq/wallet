@@ -21,32 +21,27 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <div class="identicon">
-            <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink">
-                <CashlinkXSmallIcon/>
-            </div>
-        </div>
+        <!-- <Identicon :address="peerAddress" /> -->
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
-            <div v-else class="address">{{ peerAddress }}</div>
-            <div class="time-and-message">
-                <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
-                <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
-                <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
-                <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
-                <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
-
-                <span v-if="data" class="message">
-                    <strong class="dot">&middot;</strong>{{ data }}
-                </span>
+            <div v-else class="address">
+                {{ peerAddress[0] }}
+                <small v-if="peerAddress.length > 1">+{{ peerAddress.length - 1 }}</small>
             </div>
+
+            <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
+            <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
+            <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
+            <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
+            <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" value-mask/>
+            <Amount :amount="isIncoming ? amountReceived : amountSent" value-mask/>
             <transition name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING"
+                    :amount="isIncoming ? amountReceived : amountSent" value-mask
+                />
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
@@ -64,27 +59,19 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import {
     CircleSpinner,
-    AlertTriangleIcon,
-    CashlinkXSmallIcon,
-    Identicon,
+    // AlertTriangleIcon,
     FiatAmount,
-    CrossIcon,
+    // CrossIcon,
 } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
-import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
+import { Transaction, TransactionState, useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { twoDigit } from '../lib/NumberFormatting';
-import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import HistoricValueIcon from './icons/HistoricValueIcon.vue';
-import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
-import { isCashlinkData } from '../lib/CashlinkDetection';
-import { useCashlinkStore } from '../stores/Cashlink';
+import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
 export default defineComponent({
     props: {
@@ -94,45 +81,28 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
+        const constants = { FIAT_PRICE_UNAVAILABLE };
 
-        const { activeAddress, state: addresses$ } = useAddressStore();
-        const { getLabel } = useContactsStore();
+        const { activeInternalAddresses, activeExternalAddresses } = useBtcAddressStore();
 
-        const state = computed(() => props.transaction.state);
+        const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 
-        const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
+        const outputsReceived = computed(() =>
+            props.transaction.outputs.filter((output) => activeExternalAddresses.value.includes(output.address)));
+        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
 
-        // Data
-        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
-        const data = computed(() => {
-            if (isCashlink.value) {
-                const { state: cashlinks$ } = useCashlinkStore();
-                const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
-                const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
-                return hubCashlink ? hubCashlink.message : '';
-            }
-            return parseData(props.transaction.data.raw);
-        });
+        const isIncoming = computed(() => outputsReceived.value.length > 0);
 
-        // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
-        const relatedTx = computed(() => {
-            if (!props.transaction.relatedTransactionHash) return null;
-            return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
-        });
+        const outputsSent = computed(() => isIncoming
+            ? [] : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)));
+        const amountSent = computed(() => isIncoming
+            ? 0 : outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         // Peer
-        const peerAddress = computed(() => isCashlink.value
-            ? relatedTx.value
-                ? isIncoming.value
-                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
-            : isIncoming.value
-                ? props.transaction.sender
-                : props.transaction.recipient);
-        const peerLabel = computed(() => {
+        const peerAddresses = computed(() => isIncoming.value
+            ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
+            : outputsSent.value.map((output) => output.address));
+        const peerLabel = '' /* computed(() => {
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
@@ -152,7 +122,7 @@ export default defineComponent({
             if (globalLabel) return globalLabel;
 
             return false;
-        });
+        }); */
 
         // Date
         const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
@@ -164,10 +134,17 @@ export default defineComponent({
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => props.transaction.fiatValue
-            ? props.transaction.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
+
+        const fiatValue = computed(() => {
+            const outputsToCount = isIncoming.value ? outputsReceived.value : outputsSent.value;
+            let value = 0;
+            for (const output of outputsToCount) {
+                if (!output.fiatValue || output.fiatValue[fiatCurrency.value] === undefined) return undefined;
+                if (output.fiatValue[fiatCurrency.value] === FIAT_PRICE_UNAVAILABLE) return FIAT_PRICE_UNAVAILABLE;
+                value += output.fiatValue[fiatCurrency.value]!;
+            }
+            return value;
+        });
 
         const { language } = useSettingsStore();
 
@@ -178,26 +155,21 @@ export default defineComponent({
             dateDay,
             dateMonth,
             dateTime,
-            data,
             fiatCurrency,
             fiatValue,
-            isCashlink,
             isIncoming,
             language,
-            peerAddress,
+            peerAddresses,
             peerLabel,
         };
     },
     components: {
         CircleSpinner,
-        CrossIcon,
-        AlertTriangleIcon,
+        // CrossIcon,
+        // AlertTriangleIcon,
         Amount,
         FiatConvertedAmount,
-        CashlinkXSmallIcon,
-        Identicon,
         FiatAmount,
-        UnclaimedCashlinkIcon,
         HistoricValueIcon,
     },
 });
@@ -316,20 +288,10 @@ svg {
             word-spacing: -0.2em;
         }
 
-        .time-and-message {
+        .time {
             font-size: var(--small-size);
             opacity: .5;
-            white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-
-            .time {
-                font-weight: 600;
-            }
-
-            .dot {
-                margin: 0 0.875rem;
-                opacity: 0.6;
-            }
+            font-weight: 600;
         }
     }
 

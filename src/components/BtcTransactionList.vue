@@ -8,18 +8,6 @@
             :buffer="scrollerBuffer"
             ref="scroller"
         >
-            <template v-if="showUnclaimedCashlinkList" v-slot:before>
-                <div class="unclaimed-cashlink-list">
-                    <CrossCloseButton class="top-right nq-orange" @click="$emit('close-unclaimed-cashlink-list')"/>
-                    <div class="month-label nq-orange"><label>{{ $t('Pending Cashlinks') }}</label></div>
-                    <TransactionListItem
-                        v-for="tx in unclaimedCashlinkTxs"
-                        :transaction="tx"
-                        :key="tx.transactionHash"
-                    />
-                </div>
-            </template>
-
             <template v-slot:default="{ item, index }">
                 <div
                     class="list-element loading"
@@ -30,7 +18,7 @@
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
                     </div>
-                    <HexagonIcon class="identicon"/>
+                    <HexagonIcon class="identicon"/><!-- TODO: Replace by avatar circle -->
                     <div class="data flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
@@ -56,28 +44,27 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <p class="nq-text">
-                        {{ $t('Invite a friend with a') }}
-                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
-                        {{ $t('or visit an exchange and get more.') }}
-                    </p>
-                    <router-link to="trade" class="nq-button light-blue">
-                        {{ $t('Buy NIM') }}
-                    </router-link>
+                    <!-- <router-link to="trade" class="nq-button light-blue">
+                        {{ $t('Buy BTC') }}
+                    </router-link> -->
                 </div>
             </template>
         </RecycleScroller>
 
         <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
-            <span>{{ $t('Receive some free NIM to get started.') }}</span>
+            <!-- <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
             <a v-if="isMainnet"
                 :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank"
                 class="nq-button green"
                 @mousedown.prevent
             >{{ $t('Receive free NIM') }}</a>
-            <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
+            <a v-else
+                href="https://testnet-faucet.mempool.co/" target="_blank"
+                class="nq-button green"
+                @mousedown.prevent
+            >{{ $t('Get free test BTC') }}</a> -->
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
@@ -86,21 +73,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ watch } from '@vue/composition-api';
-import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
-import TransactionListItem from '@/components/TransactionListItem.vue';
+import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ /* watch */ } from '@vue/composition-api';
+import { CircleSpinner } from '@nimiq/vue-components';
+import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import Config from 'config';
-import TestnetFaucet from './TestnetFaucet.vue';
-import CrossCloseButton from './CrossCloseButton.vue';
-import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore /* , Transaction */, TransactionState } from '../stores/Transactions';
-import { useContactsStore } from '../stores/Contacts';
-import { useNetworkStore } from '../stores/Network';
-import { parseData } from '../lib/DataFormatting';
-import { ENV_MAIN } from '../lib/Constants';
-import { isFundingCashlink } from '../lib/CashlinkDetection';
-import { createCashlink } from '../hub';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useBtcTransactionsStore /* , Transaction */, TransactionState } from '../stores/BtcTransactions';
+import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useWindowSize } from '../composables/useWindowSize';
 
 function processTimestamp(timestamp: number) {
@@ -148,16 +127,11 @@ export default defineComponent({
             type: String,
             default: '',
         },
-        showUnclaimedCashlinkList: {
-            type: Boolean,
-            default: false,
-        },
     },
     setup(props, context) {
-        const { activeAddress, state: addresses$, activeAddressInfo } = useAddressStore();
-        const { state: transactions$ } = useTransactionsStore();
-        const { isFetchingTxHistory } = useNetworkStore();
-        const { getLabel: getContactLabel } = useContactsStore();
+        const { activeAddresses } = useBtcAddressStore();
+        const { state: btcTransactions$ } = useBtcTransactionsStore();
+        const { isFetchingTxHistory } = useBtcNetworkStore();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -169,46 +143,34 @@ export default defineComponent({
             : 68, // 64px + 4px margin between items
         );
 
-        // Get all transactions for the active address
-        const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
-            .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
-
-        const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
-            .filter((tx) =>
-                tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw))
-            .slice(0).sort((a, b) =>
-                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER)));
-
-        // Count unclaimed cashlinks
-        watch(() => {
-            const count = unclaimedCashlinkTxs.value.length;
-            context.emit('unclaimed-cashlink-count', count);
-        });
+        // Get all transactions for the active addresses
+        const txsForActiveAddress = computed(() => Object.values(btcTransactions$.transactions)
+            .filter((tx) => tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress))));
 
         // Apply search filter
         const filteredTxs = computed(() => {
-            if (!props.searchString) return txsForActiveAddress.value;
+            /* if (!props.searchString) */ return txsForActiveAddress.value;
 
-            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
-
-            return txsForActiveAddress.value.filter((tx) => {
-                const senderLabel = addresses$.addressInfos[tx.sender]
-                    ? addresses$.addressInfos[tx.sender].label
-                    : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
-
-                const recipientLabel = addresses$.addressInfos[tx.recipient]
-                    ? addresses$.addressInfos[tx.recipient].label
-                    : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
-
-                const concatenatedTxStrings = `
-                    ${tx.sender.replace(/\s/g, '')}
-                    ${tx.recipient.replace(/\s/g, '')}
-                    ${senderLabel ? senderLabel.toUpperCase() : ''}
-                    ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-                    ${parseData(tx.data.raw).toUpperCase()}
-                `;
-                return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
-            });
+            // const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
+            //
+            // return txsForActiveAddress.value.filter((tx) => {
+            //     const senderLabel = addresses$.addressInfos[tx.sender]
+            //         ? addresses$.addressInfos[tx.sender].label
+            //         : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
+            //
+            //     const recipientLabel = addresses$.addressInfos[tx.recipient]
+            //         ? addresses$.addressInfos[tx.recipient].label
+            //         : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
+            //
+            //     const concatenatedTxStrings = `
+            //         ${tx.sender.replace(/\s/g, '')}
+            //         ${tx.recipient.replace(/\s/g, '')}
+            //         ${senderLabel ? senderLabel.toUpperCase() : ''}
+            //         ${recipientLabel ? recipientLabel.toUpperCase() : ''}
+            //         ${parseData(tx.data.raw).toUpperCase()}
+            //     `;
+            //     return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
+            // });
         });
 
         const transactions = computed(() => {
@@ -226,12 +188,12 @@ export default defineComponent({
             // Sort transactions by descending timestamp
             const txs = filteredTxs.value.slice(0).sort((a, b) => {
                 const aHeight = a.blockHeight
-                    || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
-                        && a.validityStartHeight)
+                    // || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
+                    //     && a.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
                 const bHeight = b.blockHeight
-                    || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
-                        && b.validityStartHeight)
+                    // || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
+                    //     && b.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
 
                 return bHeight - aHeight;
@@ -245,21 +207,21 @@ export default defineComponent({
             let n = 0;
             let hasThisMonthLabel = false;
 
-            if (txs[n].state === TransactionState.PENDING) {
+            if (!txs[n].timestamp) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
                 isLatestMonth = false;
                 hasThisMonthLabel = true;
-                while (txs[n] && txs[n].state === TransactionState.PENDING) {
+                while (txs[n] && !txs[n].timestamp) {
                     transactionsWithMonths.push(txs[n]);
                     n++;
                 }
             }
 
-            // Skip expired & invalidated txs
-            while (txs[n] && !txs[n].timestamp) {
-                transactionsWithMonths.push(txs[n]);
-                n++;
-            }
+            // // Skip expired & invalidated txs
+            // while (txs[n] && !txs[n].timestamp) {
+            //     transactionsWithMonths.push(txs[n]);
+            //     n++;
+            // }
 
             if (!txs[n]) return transactionsWithMonths; // Address has no more txs
 
@@ -273,12 +235,12 @@ export default defineComponent({
             }
 
             while (n < txs.length) {
-                // Skip expired & invalidated txs
-                if (!txs[n].timestamp) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                    continue;
-                }
+                // // Skip expired & invalidated txs
+                // if (!txs[n].timestamp) {
+                //     transactionsWithMonths.push(txs[n]);
+                //     n++;
+                //     continue;
+                // }
 
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
 
@@ -363,46 +325,31 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        const isMainnet = Config.environment === ENV_MAIN;
-
-        function onCreateCashlink() {
-            createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);
-        }
+        const isMainnet = Config.bitcoinNetwork === 'bitcoin';
 
         // Scroll to top when
         // - Active address changes
         // - Unclaimed Cashlinks list is opened
         const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
-        watch(activeAddress, () => {
-            if (scroller.value) {
-                scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
-            }
-        });
-        watch(() => props.showUnclaimedCashlinkList, (show) => {
-            if (show && scroller.value) {
-                scroller.value.scrollToPosition(0, true);
-            }
-        });
+        // watch(activeAccountId, () => {
+        //     if (scroller.value) {
+        //         scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
+        //     }
+        // });
 
         return {
-            activeAddress,
             scrollerBuffer,
             itemSize,
             transactions,
             $el,
             isFetchingTxHistory,
             isMainnet,
-            unclaimedCashlinkTxs,
-            onCreateCashlink,
             scroller,
         };
     },
     components: {
-        TransactionListItem,
-        TestnetFaucet,
-        CrossCloseButton,
+        BtcTransactionListItem,
         CircleSpinner,
-        HexagonIcon,
     },
 });
 </script>

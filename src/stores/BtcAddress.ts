@@ -45,6 +45,12 @@ export const useBtcAddressStore = createStore({
                     external: [],
                 };
         },
+        activeInternalAddresses: (state, { addressSet }): string[] =>
+            (addressSet.value as BtcAddressSet).internal.map((btcAddressInfo) => btcAddressInfo.address),
+        activeExternalAddresses: (state, { addressSet }): string[] =>
+            (addressSet.value as BtcAddressSet).external.map((btcAddressInfo) => btcAddressInfo.address),
+        activeAddresses: (state, { activeInternalAddresses, activeExternalAddresses }): string[] =>
+            (activeInternalAddresses.value as string[]).concat((activeExternalAddresses.value as string[])),
         accountBalance: (state, { addressSet }) => {
             const internalBalance = (addressSet.value as BtcAddressSet).internal
                 .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos

@@ -94,5 +94,8 @@ export const useAccountStore = createStore({
                 }
             }
         },
+        setActiveCurrency(currency: CryptoCurrency) {
+            this.state.activeCurrency = currency;
+        },
     },
 });

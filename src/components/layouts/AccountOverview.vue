@@ -48,14 +48,31 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-row" @click="selectBitcoin">
-                <BitcoinIcon/>
-                Bitcoin
-                <div class="flex-grow"></div>
-                <div class="balances">
-                    <Amount :amount="btcAccountBalance" currency="btc" value-mask/>
-                    <FiatConvertedAmount class="fiat-balance" :amount="btcAccountBalance" currency="btc" value-mask/>
-                </div>
+            <div
+                v-if="canHaveMultipleAddresses"
+                class="bitcoin-account flex-column"
+                @click="selectBitcoin"
+            >
+                <button
+                    class="bitcoin-account-item reset flex-row"
+                    :class="{ active: activeCurrency === CryptoCurrency.BTC }"
+                >
+                    <BitcoinIcon/>
+                    Bitcoin
+                    <div class="flex-grow"></div>
+                    <div class="balances">
+                        <Amount
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
+                        <FiatConvertedAmount class="fiat-balance"
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
+                    </div>
+                </button>
             </div>
             <div v-else>
                 <LegacyAccountUpgradeButton/>
@@ -98,11 +115,13 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
-        const { activeAccountInfo, activeAccountId, state: accounts$ } = useAccountStore();
+        const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
+        const { state: $addresses } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -113,7 +132,7 @@ export default defineComponent({
         const { width } = useWindowSize();
 
         function onAddressSelected() {
-            accounts$.activeCurrency = CryptoCurrency.NIM;
+            setActiveCurrency(CryptoCurrency.NIM);
 
             if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');
@@ -121,7 +140,8 @@ export default defineComponent({
         }
 
         function selectBitcoin() {
-            accounts$.activeCurrency = CryptoCurrency.BTC;
+            setActiveCurrency(CryptoCurrency.BTC);
+            $addresses.activeAddress = null;
 
             if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');
@@ -153,6 +173,8 @@ export default defineComponent({
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,
+            activeCurrency,
+            CryptoCurrency,
         };
     },
     components: {
@@ -284,18 +306,64 @@ export default defineComponent({
 
 .bitcoin-account {
     height: 15rem;
-    box-shadow: 0 -1.5px 0 var(--text-10);
-    align-items: center;
+    padding: 3rem 2rem;
+    margin: 0 -2rem;
     color: var(--text-70);
     font-size: var(--body-size);
     font-weight: 600;
-    padding: 0 4rem;
-    margin: 0 -2rem;
-    flex-shrink: 0;
+    box-shadow: 0 -1.5px 0 var(--text-10);
 
     @media (max-width: 1319px) {
-        padding: 3rem;
+        padding: 3rem 1rem;
         margin: 0 -1rem;
+    }
+
+    .bitcoin-account-item {
+        position: relative;
+        width: 100%;
+        padding: 0 2rem;
+        flex-shrink: 0;
+        flex-grow: 1;
+        align-items: center;
+        border-radius: 0.75rem;
+        transition: {
+            property: color, background;
+            duration: 400ms;
+            timing-function: var(--nimiq-ease);
+        };
+
+        &:not(.active):hover {
+            color: var(--text-100);
+            background: var(--nimiq-highlight-bg);
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: -1;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            box-shadow: none;
+            opacity: 0;
+
+            transition: {
+                property: opacity, box-shadow;
+                duration: 350ms;
+                timing-function: cubic-bezier(0.4, 0, 0, 1);
+            };
+        }
+
+        &.active::before {
+            opacity: 1;
+            box-shadow:
+                0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+                0px 1.5px 3px rgba(0, 0, 0, 0.05),
+                0px 4px 16px rgba(0, 0, 0, 0.07);
+        }
     }
 
     svg {
@@ -404,6 +472,10 @@ export default defineComponent({
         height: 11rem;
         padding: 0 1.75rem;
         margin: 0 0.5rem;
+
+        .bitcoin-account-item::before {
+            display: none;
+        }
     }
 
     .mobile-action-bar {

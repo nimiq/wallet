@@ -4,8 +4,8 @@
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
-            :class="{'active': activeAddress === addressInfo.address}"
-            @click="selectAddress(addressInfo.address); $emit('address-selected', addressInfo.address);"
+            :class="{ 'active': activeAddress === addressInfo.address }"
+            @click="selectAddress(addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"/>
         <button
             v-if="showAddAddressButton"
@@ -19,7 +19,8 @@
         </button>
         <div v-if="!embedded"
             class="active-box"
-            :style="`transform: scaleY(${backgroundYScale}) translateY(${backgroundYOffset}px)`"
+            :class="{ enabled: activeCurrency === CryptoCurrency.NIM }"
+            :style="`--backgroundYScale: ${backgroundYScale}; --backgroundYOffset: ${backgroundYOffset}px`"
         ></div>
         <div class="scroll-mask bottom"></div>
     </div>
@@ -32,6 +33,8 @@ import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
+import { useAccountStore } from '../stores/Account';
+import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
     props: {
@@ -46,6 +49,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
+        const { activeCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
@@ -81,7 +85,7 @@ export default defineComponent({
             backgroundYScale.value = scalingRatio;
         }
         if (!props.embedded) {
-            watch(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+            watch(activeAddress, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
             window.addEventListener(
                 'resize',
                 () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
@@ -104,14 +108,24 @@ export default defineComponent({
             });
         });
 
+        function selectNimAddress(address: string) {
+            adjustBackgroundOffsetAndScale(address);
+            setTimeout(() => {
+                selectAddress(address);
+                context.emit('address-selected', address);
+            }, 0);
+        }
+
         return {
             root,
             scrollbarVisible,
-            selectAddress,
+            selectAddress: selectNimAddress,
             addressInfos: processedAddressInfos,
             activeAddress,
             backgroundYOffset,
             backgroundYScale,
+            activeCurrency,
+            CryptoCurrency,
         };
     },
     components: {
@@ -190,8 +204,10 @@ export default defineComponent({
         background: none !important;
     }
 
-
     .active-box {
+        --backgroundYScale: 1;
+        --backgroundYOffset: 0px;
+
         width: calc(100% - 2 * var(--padding-sides));
         height: 9rem;
         position: absolute;
@@ -200,14 +216,25 @@ export default defineComponent({
         z-index: 0;
         border-radius: 0.75rem;
         background: var(--bg-card);
-        box-shadow:
-            0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
-            0px 1.5px 3px rgba(0, 0, 0, 0.05),
-            0px 4px 16px rgba(0, 0, 0, 0.07);
-
+        opacity: 0;
+        box-shadow: none;
         transform-origin: center top;
-        transition: transform 350ms cubic-bezier(0.4, 0, 0, 1);
+        transform: scaleY(var(--backgroundYScale)) translateY(var(--backgroundYOffset));
         will-change: transform;
+
+        transition-property: opacity, box-shadow;
+        transition-duration: 350ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0, 1);
+
+        &.enabled {
+            transition-property: transform, opacity, box-shadow;
+
+            opacity: 1;
+            box-shadow:
+                0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+                0px 1.5px 3px rgba(0, 0, 0, 0.05),
+                0px 4px 16px rgba(0, 0, 0, 0.07);
+        }
 
         .has-scrollbar & {
             width: calc(100% - 2 * var(--padding-sides) + 6px); // 6px = scrollbar width

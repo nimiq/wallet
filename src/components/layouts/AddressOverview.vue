@@ -1,6 +1,7 @@
 <template>
-    <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
-        <template v-if="activeAddressInfo">
+    <div class="address-overview"
+        :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
+        <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar v-model="searchString"/>
@@ -104,7 +105,7 @@
             </div>
             <div class="scroll-mask top"></div>
             <TransactionList
-                v-if="activeCurrency === 'nim'"
+                v-if="activeCurrency === CryptoCurrency.NIM"
                 :searchString="searchString"
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
@@ -154,6 +155,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useWindowSize } from '../../composables/useWindowSize';
+import { CryptoCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'address-overview',
@@ -206,6 +208,7 @@ export default defineComponent({
             hideUnclaimedCashlinkList,
             addressMaskedWidth,
             btcAccountBalance,
+            CryptoCurrency,
         };
     },
     components: {

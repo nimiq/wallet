@@ -76,11 +76,12 @@
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
-import Config from 'config';
+// import Config from 'config';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useWindowSize } from '../composables/useWindowSize';
+// import { ENV_MAIN } from '../lib/Constants';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -325,7 +326,7 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        const isMainnet = Config.bitcoinNetwork === 'bitcoin';
+        // const isMainnet = Config.environment === ENV_MAIN;
 
         // Scroll to top when
         // - Active address changes
@@ -343,7 +344,7 @@ export default defineComponent({
             transactions,
             $el,
             isFetchingTxHistory,
-            isMainnet,
+            // isMainnet,
             scroller,
         };
     },

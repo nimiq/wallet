@@ -7,7 +7,7 @@ import { useAccountStore } from './stores/Account';
 import { useBtcAddressStore } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { BTC_ADDRESS_GAP } from './lib/Constants';
+import { BTC_ADDRESS_GAP, ENV_MAIN } from './lib/Constants';
 import { loadBitcoinJS } from './lib/BitcoinJSLoader';
 
 let isLaunched = false;
@@ -27,8 +27,8 @@ export async function getElectrumClient() {
 
     const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
     const client = new NimiqElectrumClient.ElectrumApi({
-        token: Config.bitcoinNetwork === 'testnet' ? 'testnet' : 'mainnet',
-        network: Config.bitcoinNetwork,
+        token: Config.environment === ENV_MAIN ? 'mainnet' : 'testnet',
+        network: Config.environment === ENV_MAIN ? 'bitcoin' : 'testnet',
     });
     resolver!(client);
 

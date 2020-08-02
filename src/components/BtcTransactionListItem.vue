@@ -88,20 +88,32 @@ export default defineComponent({
 
         const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 
-        const outputsReceived = computed(() =>
-            props.transaction.outputs.filter((output) => activeExternalAddresses.value.includes(output.address)));
-        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
+        const inputsSent = computed(() => props.transaction.inputs.filter((input) =>
+            input.address && (activeInternalAddresses.value.includes(input.address)
+                || activeExternalAddresses.value.includes(input.address)
+            ),
+        ));
 
-        const isIncoming = computed(() => outputsReceived.value.length > 0);
+        const isIncoming = computed(() => inputsSent.value.length === 0);
+
+        const outputsReceived = computed(() => {
+            if (!isIncoming.value) return [];
+
+            const receivedToExternal = props.transaction.outputs
+                .filter((output) => activeExternalAddresses.value.includes(output.address));
+
+            if (receivedToExternal.length > 0) return receivedToExternal;
+
+            return props.transaction.outputs
+                .filter((output) => activeInternalAddresses.value.includes(output.address));
+        });
+        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
 
         const outputsSent = computed(() => isIncoming.value
             ? []
             : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
         );
-        const amountSent = computed(() => isIncoming.value
-            ? 0
-            : outputsSent.value.reduce((sum, output) => sum + output.value, 0),
-        );
+        const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         // Peer
         const peerAddresses = computed(() => isIncoming.value

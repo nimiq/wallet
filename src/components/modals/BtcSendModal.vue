@@ -5,17 +5,21 @@
             <PageBody class="flex-column">
                 <section class="address-section">
                     <BtcAddressInput
+                        :placeholder="$t('Enter recipient address...')"
                         @paste="/* (event, text) => parseRequestUri(text, event) */"
+                        @input="resetAddress"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
                 </section>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
-                        <AmountInput v-if="activeCurrency === 'btc'" v-model="amount" ref="amountInputRef">
-                            <span v-if="activeCurrency !== 'btc'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="btc"
+                        <AmountInput v-if="activeCurrency === 'btc'"
+                            v-model="amount" :decimals="8" ref="amountInputRef"
+                        >
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
+                                currency="btc"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -25,9 +29,10 @@
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
                         <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
-                            <span v-if="activeCurrency !== 'btc'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="btc"
+                            <span slot="prefix" class="tilde">~</span>
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
+                                currency="btc"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -40,9 +45,10 @@
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'btc'" key="fiat-amount">
-                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
                             <span v-if="fee">
-                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="8"/> {{ $t('fee') }}
+                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="8" :currencyDecimals="8"/>
+                                {{ $t('fee') }}
                             </span>
                         </span>
                         <span v-else key="btc-amount">
@@ -89,7 +95,7 @@
 }
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onMounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -111,7 +117,7 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
-import { sendBtcTransaction } from '../../hub';
+// import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export enum RecipientType {
@@ -134,11 +140,15 @@ export default defineComponent({
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
-        watch(recipientWithLabel, (newVal, oldVal) => {
-            if (newVal === null || oldVal === null) return;
-            if (newVal.type !== RecipientType.CONTACT) return;
-            // setContact(newVal.address, newVal.label);
-        }, { deep: true });
+        // watch(recipientWithLabel, (newVal, oldVal) => {
+        //     if (newVal === null || oldVal === null) return;
+        //     if (newVal.type !== RecipientType.CONTACT) return;
+        //     // setContact(newVal.address, newVal.label);
+        // }, { deep: true });
+
+        function resetAddress() {
+            recipientWithLabel.value = null;
+        }
 
         function onAddressEntered(address: string) {
             // Find label across contacts, own addresses
@@ -227,7 +237,13 @@ export default defineComponent({
 
         const hasHeight = computed(() => !!network$.height);
 
-        const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
+        const canSend = computed(() =>
+            recipientWithLabel.value
+            && recipientWithLabel.value.address
+            && hasHeight.value
+            && amount.value
+            && amount.value <= maxSendableAmount.value,
+        );
 
         // function parseRequestUri(uri: string, event?: ClipboardEvent) {
         //     uri = uri.replace(`${window.location.origin}/`, '');
@@ -278,6 +294,10 @@ export default defineComponent({
             elementRef.value.focus();
         }
 
+        onMounted(() => {
+            focus(addressInputRef);
+        });
+
         /**
          * Status Screen
          */
@@ -288,49 +308,49 @@ export default defineComponent({
         const statusMainActionText = ref(context.root.$t('Retry'));
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
 
-        async function sign() {
-            // Show loading screen
-            statusScreenOpened.value = true;
-            statusState.value = State.LOADING;
+        async function sign() {}
+        //     // Show loading screen
+        //     statusScreenOpened.value = true;
+        //     statusState.value = State.LOADING;
 
-            try {
-                const plainTx = await sendBtcTransaction({
-                    inputs: [],
-                    outputs: [{
-                        recipient: recipientWithLabel.value!.address,
-                        // recipientType: 0 | 1 | 2 | undefined,
-                        recipientLabel: recipientWithLabel.value!.label,
-                        value: amount.value,
-                    }],
-                });
+        //     try {
+        //         const plainTx = await sendBtcTransaction({
+        //             inputs: [],
+        //             outputs: [{
+        //                 recipient: recipientWithLabel.value!.address,
+        //                 // recipientType: 0 | 1 | 2 | undefined,
+        //                 recipientLabel: recipientWithLabel.value!.label,
+        //                 value: amount.value,
+        //             }],
+        //         });
 
-                if (!plainTx) {
-                    statusScreenOpened.value = false;
-                    return;
-                }
+        //         if (!plainTx) {
+        //             statusScreenOpened.value = false;
+        //             return;
+        //         }
 
-                // Show success screen
-                statusState.value = State.SUCCESS;
-                statusTitle.value = recipientWithLabel.value!.label
-                    ? context.root.$t('Sent {btc} BTC to {name}', {
-                        btc: amount.value / 1e8,
-                        name: recipientWithLabel.value!.label,
-                    })
-                    : context.root.$t('Sent {btc} BTC', {
-                        btc: amount.value / 1e8,
-                    });
+        //         // Show success screen
+        //         statusState.value = State.SUCCESS;
+        //         statusTitle.value = recipientWithLabel.value!.label
+        //             ? context.root.$t('Sent {btc} BTC to {name}', {
+        //                 btc: amount.value / 1e8,
+        //                 name: recipientWithLabel.value!.label,
+        //             })
+        //             : context.root.$t('Sent {btc} BTC', {
+        //                 btc: amount.value / 1e8,
+        //             });
 
-                // Close modal
-                setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
-            } catch (error) {
-                // console.debug(error);
+        //         // Close modal
+        //         setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+        //     } catch (error) {
+        //         // console.debug(error);
 
-                // Show error screen
-                statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong');
-                statusMessage.value = error.message;
-            }
-        }
+        //         // Show error screen
+        //         statusState.value = State.WARNING;
+        //         statusTitle.value = context.root.$t('Something went wrong');
+        //         statusMessage.value = error.message;
+        //     }
+        // }
 
         function onStatusMainAction() {
             sign();
@@ -345,6 +365,7 @@ export default defineComponent({
             RecipientType,
 
             // Recipient Input
+            resetAddress,
             onAddressEntered,
             // parseRequestUri,
 
@@ -396,13 +417,6 @@ export default defineComponent({
         StatusScreen,
     },
 });
-
-/*
-    TODO:
-    * Styling of SendTx
-    * properly implementy the change Sender functionality (design pending)
-    * close button and Scan QR Code collide.
- */
 </script>
 
 <style lang="scss" scoped>
@@ -417,23 +431,17 @@ export default defineComponent({
         }
     }
 
-    .page-header {
-        padding-bottom: 1.5rem;
-    }
-
     .page-body {
         justify-content: space-between;
-        align-items: center;
         flex-grow: 1;
-        // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
-        padding: 0.375rem 3rem 3rem;
     }
 
     .address-section {
         text-align: center;
 
-        .address-input {
-            margin-top: 2.25rem;
+        .btc-address-input {
+            width: 100%;
+            font-size: 15px;
         }
     }
 
@@ -520,6 +528,12 @@ export default defineComponent({
     }
 
     @media (max-width: 700px) { // Full Mobile Breakpoint
+        .address-section {
+            .btc-address-input {
+                font-size: 14px;
+            }
+        }
+
         .status-screen {
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;

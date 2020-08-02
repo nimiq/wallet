@@ -91,8 +91,7 @@
 
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
-                    :disabled="!activeAddressInfo
-                        || (activeCurrency === 'nim' && !activeAddressInfo.balance)
+                    :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                         || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}

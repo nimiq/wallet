@@ -206,7 +206,7 @@ export default defineComponent({
 
         const isIncoming = computed(() => outputsReceived.value.length > 0);
 
-        const inputsSent = computed(() => isIncoming
+        const inputsSent = computed(() => isIncoming.value
             ? []
             : transaction.value.inputs.filter((input) =>
                 input.address && (activeInternalAddresses.value.includes(input.address)
@@ -215,11 +215,11 @@ export default defineComponent({
             ),
         );
 
-        const outputsSent = computed(() => isIncoming
+        const outputsSent = computed(() => isIncoming.value
             ? []
             : transaction.value.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
         );
-        const amountSent = computed(() => isIncoming
+        const amountSent = computed(() => isIncoming.value
             ? 0
             : outputsSent.value.reduce((sum, output) => sum + output.value, 0),
         );

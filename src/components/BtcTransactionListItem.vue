@@ -94,11 +94,11 @@ export default defineComponent({
 
         const isIncoming = computed(() => outputsReceived.value.length > 0);
 
-        const outputsSent = computed(() => isIncoming
+        const outputsSent = computed(() => isIncoming.value
             ? []
             : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
         );
-        const amountSent = computed(() => isIncoming
+        const amountSent = computed(() => isIncoming.value
             ? 0
             : outputsSent.value.reduce((sum, output) => sum + output.value, 0),
         );

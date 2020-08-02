@@ -263,6 +263,13 @@ svg {
         .address {
             font-family: 'Fira Mono', monospace;
             word-spacing: -0.2em;
+
+            small {
+                color: var(--text-50);
+                font-weight: 500;
+                margin-left: -0.25em;
+                font-size: var(--small-size);
+            }
         }
 
         .time {

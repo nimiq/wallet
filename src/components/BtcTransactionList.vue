@@ -18,7 +18,7 @@
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
                     </div>
-                    <HexagonIcon class="identicon"/><!-- TODO: Replace by avatar circle -->
+                    <div class="avatar"></div>
                     <div class="data flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
@@ -438,7 +438,7 @@ export default defineComponent({
         align-items: center;
 
         .placeholder,
-        .identicon {
+        .avatar {
             animation-name: loading;
             animation-duration: 1s;
             animation-iteration-count: infinite;
@@ -487,11 +487,12 @@ export default defineComponent({
                 }
             }
         }
-        .identicon {
+        .avatar {
             margin: 0 1rem;
-            height: 6rem;
-            width: 6rem;
-            color: var(--text-6);
+            width: 5.25rem;
+            height: 5.25rem;
+            border-radius: 50%;
+            background: var(--text-6);
         }
         .data {
             flex-grow: 1;
@@ -499,9 +500,9 @@ export default defineComponent({
 
             .placeholder {
                 &:last-child {
-                    width: 30%;
+                    width: 10%;
                     min-width: 5rem;
-                    max-width: 20rem;
+                    max-width: 10rem;
                 }
             }
         }

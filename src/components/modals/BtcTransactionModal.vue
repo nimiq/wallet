@@ -58,26 +58,35 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Copyable v-for="address in peerAddresses" :key="address" :text="address">
+                    <Copyable v-for="address in peerAddresses.slice(0, 3)" :key="address" :text="address">
                         <ShortAddress :address="address"/>
                     </Copyable>
+                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
+                    </a>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="output in outputsReceived" :key="output.address" :text="output.address">
-                        <ShortAddress :address="output.address"/>
+                    <Copyable v-for="out in outputsReceived.slice(0, 3)" :key="out.address" :text="out.address">
+                        <ShortAddress :address="out.address"/>
                     </Copyable>
+                    <a v-if="outputsReceived.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: outputsReceived.length - 3}) }}
+                    </a>
                 </div>
             </div>
             <div v-else class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="input in inputsSent" :key="input.address" :text="input.address">
+                    <Copyable v-for="input in inputsSent.slice(0, 3)" :key="input.address" :text="input.address">
                         <ShortAddress :address="input.address"/>
                     </Copyable>
+                    <a v-if="inputsSent.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: inputsSent.length - 3}) }}
+                    </a>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -89,9 +98,12 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Copyable v-for="address in peerAddresses" :key="address" :text="address">
+                    <Copyable v-for="address in peerAddresses.slice(0, 3)" :key="address" :text="address">
                         <ShortAddress :address="address"/>
                     </Copyable>
+                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
+                    </a>
                 </div>
             </div>
 
@@ -144,8 +156,7 @@
                 <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
 
                 <BlueLink
-                    :href="`https://blockstream.info${env === ENV_MAIN ? '' : '/testnet'}` +
-                        `/tx/${transaction.transactionHash}`"
+                    :href="blockExplorerLink"
                     target="_blank"
                 >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
@@ -273,8 +284,11 @@ export default defineComponent({
 
         const { language, amountsHidden } = useSettingsStore();
 
+        const blockExplorerLink = computed(() =>
+            `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
+            + `/tx/${transaction.value.transactionHash}`);
+
         return {
-            ENV_MAIN,
             transaction,
             constants,
             state,
@@ -294,8 +308,8 @@ export default defineComponent({
             confirmations,
             // peerIsContact,
             // setContact,
-            env: Config.environment,
             amountsHidden,
+            blockExplorerLink,
         };
     },
     components: {
@@ -405,6 +419,12 @@ export default defineComponent({
 .address-info {
     align-items: center;
     width: 19rem;
+
+    .nq-link {
+        font-size: var(--small-size);
+        color: inherit;
+        opacity: 0.5;
+    }
 }
 
 .avatar,

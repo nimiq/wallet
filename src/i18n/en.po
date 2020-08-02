@@ -2,7 +2,8 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/TransactionModal.vue:179
+#: src/components/modals/BtcTransactionModal.vue:148
+#: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -11,8 +12,13 @@ msgid "{count} Peer | {count} Peers"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:14
-#: src/components/layouts/AddressOverview.vue:76
+#: src/components/layouts/AddressOverview.vue:85
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
+msgstr ""
+
+#: src/components/modals/BtcTransactionModal.vue:65
+#: src/components/modals/BtcTransactionModal.vue:99
+msgid "+{n} more"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:29
@@ -68,7 +74,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:60
+#: src/components/layouts/AccountOverview.vue:63
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -93,15 +99,20 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:54
 #: src/components/LegacyAccountNotice.vue:21
+#: src/components/modals/BtcTransactionModal.vue:71
+#: src/components/modals/BtcTransactionModal.vue:80
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/BtcTransactionModal.vue:145
+#: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/BtcTransactionModal.vue:155
+#: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr ""
 
@@ -133,7 +144,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:318
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -171,7 +182,6 @@ msgstr ""
 msgid "Clear Cache"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/LegacyAccountNotice.vue:28
 #: src/components/modals/WelcomeModal.vue:40
@@ -182,6 +192,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:45
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
 msgstr ""
@@ -241,6 +252,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:133
 #: src/components/modals/TransactionModal.vue:164
 msgid "Current value"
 msgstr ""
@@ -286,14 +298,17 @@ msgstr ""
 msgid "established"
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:34
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:35
 #: src/components/modals/TransactionModal.vue:58
 msgid "Expired"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:35
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
 msgstr ""
@@ -322,10 +337,12 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:36
 #: src/components/TransactionList.vue:48
 msgid "Fetching"
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:47
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr ""
@@ -385,6 +402,7 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:127
 #: src/components/modals/TransactionModal.vue:159
 msgid "Historic value"
 msgstr ""
@@ -421,6 +439,7 @@ msgstr ""
 msgid "Insufficient balance."
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:35
 #: src/components/TransactionListItem.vue:38
 msgid "invalid"
 msgstr ""
@@ -446,7 +465,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:103
+#: src/components/layouts/AddressOverview.vue:121
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -508,6 +527,7 @@ msgstr ""
 msgid "Nimiq OASIS enables decentra­lized buying and selling of crypto directly from your wallet."
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:70
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr ""
@@ -516,6 +536,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:32
 #: src/components/TransactionListItem.vue:35
 msgid "not sent"
 msgstr ""
@@ -544,6 +565,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:33
 #: src/components/TransactionListItem.vue:36
 msgid "pending"
 msgstr ""
@@ -552,6 +574,7 @@ msgstr ""
 msgid "Pending Cashlinks"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:27
 #: src/components/modals/TransactionModal.vue:50
 msgid "Pending..."
 msgstr ""
@@ -564,7 +587,7 @@ msgstr ""
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:89
+#: src/components/layouts/AddressOverview.vue:102
 msgid "Receive"
 msgstr ""
 
@@ -581,6 +604,7 @@ msgstr ""
 msgid "Receive some free NIM to get started."
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:38
 #: src/components/modals/TransactionModal.vue:61
 msgid "received at {dateAndTime}"
 msgstr ""
@@ -590,8 +614,8 @@ msgid "Reference currency"
 msgstr ""
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:28
-#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:29
+#: src/components/layouts/AddressOverview.vue:46
 msgid "Rename"
 msgstr ""
 
@@ -633,7 +657,7 @@ msgstr ""
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:86
+#: src/components/layouts/AddressOverview.vue:97
 msgid "Send"
 msgstr ""
 
@@ -675,6 +699,7 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:43
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
 msgstr ""
@@ -714,7 +739,11 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:104
+#: src/components/modals/TransactionModal.vue:133
+msgid "Show Link"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:122
 msgid "Signup"
 msgstr ""
 
@@ -788,6 +817,8 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:212
+#: src/components/BtcTransactionList.vue:234
 #: src/components/TransactionList.vue:249
 #: src/components/TransactionList.vue:271
 msgid "This month"
@@ -797,10 +828,12 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:13
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
 msgstr ""
@@ -813,9 +846,14 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:319
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
+msgstr ""
+
+#: src/components/modals/BtcTransactionModal.vue:60
+#: src/components/modals/BtcTransactionModal.vue:94
+msgid "Unknown"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35
@@ -848,6 +886,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:46
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr ""
@@ -884,6 +923,7 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
+#: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr ""

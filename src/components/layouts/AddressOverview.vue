@@ -51,7 +51,7 @@
                 <div class="meta">
                     <div class="flex-row">
                         <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
-                        <div v-else class="label">Bitcoin</div>
+                        <div v-else class="label">{{ $t('Bitcoin') }}</div>
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-else :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
@@ -89,12 +89,16 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push('/send')" @mousedown.prevent
-                    :disabled="!activeAddressInfo || !activeAddressInfo.balance"
+                    @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
+                    :disabled="!activeAddressInfo
+                        || (activeCurrency === 'nim' && !activeAddressInfo.balance)
+                        || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
-                <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
+                <button class="receive nq-button-s flex-row"
+                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
+                >
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>

@@ -2,44 +2,21 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
-            <template v-if="peerAddress === constants.CASHLINK_ADDRESS">
-                <label><i>&nbsp;</i>{{
-                    peerLabel || peerAddress.substring(0, 9)
-                }}</label>
-            </template>
-
-            <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}" :tag="false">
+            <i18n v-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
+                        peerLabel || peerAddresses[0].substring(0, 6)
                     }}</label>
                 </template>
             </i18n>
 
-            <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}" :tag="false">
+            <i18n v-else path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
+                        peerLabel || peerAddresses[0].substring(0, 6)
                     }}</label>
                 </template>
             </i18n>
-
-            <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}" :tag="false">
-                <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
-                </template>
-            </i18n>
-
-            <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}" :tag="false">
-                <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
-                </template>
-            </i18n>
-            <!-- TODO: find a way to avoid the template#address repetition -->
 
             <span
                 v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
@@ -73,78 +50,63 @@
         <PageBody class="flex-column" :class="state">
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <div class="identicon">
-                        <Identicon :address="peerAddress"/>
-                        <div v-if="isCashlink" class="cashlink">
-                            <CashlinkSmallIcon/>
-                        </div>
-                    </div>
-                    <input type="text" class="nq-input-s vanishing"
+                    <Avatar :label="peerLabel"/>
+                    <!-- <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
-                        :placeholder="$t('Add contact')"
+                        :placeholder="$t('Unknown')"
                         :value="peerLabel || ''"
                         @input="setContact(peerAddress, $event.target.value)"
-                    />
-                    <span v-else class="label">{{ peerLabel }}</span>
-                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                        <AddressDisplay :address="peerAddress"/>
+                    /> -->
+                    <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
+                    <Copyable v-for="address in peerAddresses" :key="address" :text="address">
+                        <ShortAddress :address="address"/>
                     </Copyable>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <Identicon :address="activeAddressInfo.address"/>
-                    <span class="label">{{ activeAddressInfo.label }}</span>
-                    <Copyable :text="activeAddressInfo.address">
-                        <AddressDisplay :address="activeAddressInfo.address"/>
+                    <BitcoinIcon/>
+                    <span class="label">{{ $t('Bitcoin') }}</span>
+                    <Copyable v-for="output in outputsReceived" :key="output.address" :text="output.address">
+                        <ShortAddress :address="output.address"/>
                     </Copyable>
                 </div>
             </div>
             <div v-else class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <Identicon :address="activeAddressInfo.address"/>
-                    <span class="label">{{ activeAddressInfo.label }}</span>
-                    <Copyable :text="activeAddressInfo.address">
-                        <AddressDisplay :address="activeAddressInfo.address"/>
+                    <BitcoinIcon/>
+                    <span class="label">{{ $t('Bitcoin') }}</span>
+                    <Copyable v-for="input in inputsSent" :key="input.address" :text="input.address">
+                        <ShortAddress :address="input.address"/>
                     </Copyable>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <div class="identicon">
-                        <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-                        <Identicon v-else :address="peerAddress"/>
-                        <div v-if="isCashlink" class="cashlink">
-                            <CashlinkSmallIcon/>
-                        </div>
-                    </div>
-                    <input type="text" class="nq-input-s vanishing"
+                    <Avatar :label="peerLabel"/>
+                    <!-- <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
                         :placeholder="$t('Add contact')"
                         :value="peerLabel || ''"
                         @input="setContact(peerAddress, $event.target.value)"
-                    />
-                    <span v-else class="label">{{ peerLabel }}</span>
-                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                        <AddressDisplay :address="peerAddress"/>
+                    /> -->
+                    <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
+                    <Copyable v-for="address in peerAddresses" :key="address" :text="address">
+                        <ShortAddress :address="address"/>
                     </Copyable>
-                    <button
-                        v-else-if="hubCashlink && hubCashlink.value"
-                        class="nq-button-s manage-cashlink"
-                        @click="manageCashlink(hubCashlink.address)"
-                        @mousedown.prevent>{{ $t('Show Link') }}</button>
                 </div>
             </div>
 
-            <div class="amount-and-message flex-column">
-                <Amount :amount="transaction.value" :class="{
+            <div class="amount-block flex-column">
+                <Amount :amount="isIncoming ? amountReceived : amountSent" :class="{
                     isIncoming,
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
                     'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
                         && isIncoming,
-                }" value-mask/>
+                }" currency="btc" value-mask/>
                 <transition name="fade">
                     <FiatConvertedAmount
                         v-if="state === TransactionState.PENDING"
-                        :amount="transaction.value"
+                        :amount="isIncoming ? amountReceived : amountSent"
+                        currency="btc"
                         value-mask/>
                     <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                     <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -160,13 +122,12 @@
                         </Tooltip>
                         <strong class="dot">&middot;</strong>
                         <Tooltip>
-                            <FiatConvertedAmount slot="trigger" :amount="transaction.value" value-mask/>
+                            <FiatConvertedAmount slot="trigger"
+                                :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask/>
                             {{ $t('Current value') }}
                         </Tooltip>
                     </div>
                 </transition>
-
-                <div class="message">{{ data }}</div>
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
@@ -180,10 +141,11 @@
                 <span class="confirmations">
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
-                <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
+                <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
 
                 <BlueLink
-                    :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"
+                    :href="`https://blockstream.info${env === ENV_MAIN ? '' : '/testnet'}` +
+                        `/tx/${transaction.transactionHash}`"
                     target="_blank"
                 >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
@@ -193,41 +155,34 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { AddressBook, BrowserDetection } from '@nimiq/utils';
 import {
     PageHeader,
     PageBody,
-    Identicon,
     ArrowRightIcon,
     Copyable,
-    AddressDisplay,
     FiatAmount,
     Tooltip,
     InfoCircleSmallIcon,
     CircleSpinner,
     LabelInput,
-    CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
-import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
-import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
-import { useAddressStore } from '../../stores/Address';
-import { useContactsStore } from '../../stores/Contacts';
+import Avatar from '../Avatar.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import ShortAddress from '../ShortAddress.vue';
+import { useBtcTransactionsStore, TransactionState } from '../../stores/BtcTransactions';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { useNetworkStore } from '../../stores/Network';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
-import { isCashlinkData } from '../../lib/CashlinkDetection';
-import { useCashlinkStore } from '../../stores/Cashlink';
-import { manageCashlink } from '../../hub';
+import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -237,90 +192,43 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
-        const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
+    setup(props) {
+        const constants = { FIAT_PRICE_UNAVAILABLE };
+        const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
-        const { activeAddressInfo, state: addresses$ } = useAddressStore();
-        const { getLabel, setContact } = useContactsStore();
+        const { activeInternalAddresses, activeExternalAddresses } = useBtcAddressStore();
 
-        const state = computed(() => transaction.value.state);
+        const state = computed(() => transaction.value.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 
-        const isIncoming = computed(() => transaction.value.recipient === activeAddressInfo.value!.address);
+        const outputsReceived = computed(() =>
+            transaction.value.outputs.filter((output) => activeExternalAddresses.value.includes(output.address)));
+        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
 
-        // Data & Cashlink Data
-        const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
-        const hubCashlink = computed(() => {
-            if (!isCashlink.value) return null;
+        const isIncoming = computed(() => outputsReceived.value.length > 0);
 
-            const { state: cashlinks$ } = useCashlinkStore();
-            const cashlinkAddress = isIncoming.value ? transaction.value.sender : transaction.value.recipient;
-            const cashlink = cashlinks$.hubCashlinks[cashlinkAddress];
+        const inputsSent = computed(() => isIncoming
+            ? []
+            : transaction.value.inputs.filter((input) =>
+                input.address && (activeInternalAddresses.value.includes(input.address)
+                    || activeExternalAddresses.value.includes(input.address)
+                ),
+            ),
+        );
 
-            if (cashlink) return cashlink;
-
-            /**
-             * In all browsers in iOS and also in Safari for Mac, we are unable to access
-             * stored cashlinks from the Hub, because those browsers deny access to
-             * IndexedDB in iframes (and we can't store the cashlinks in cookies like we
-             * do for accounts & addresses, as that would occupy valuable cookie space,
-             * which is limited to 4kb).
-             * What we do instead in those browsers is to always show the "Show Link" button
-             * as long as we are uncertain if the Hub has this cashlink or not. Because
-             * when the user clicks the button and opens the Hub, we get one of three results:
-             * 1. The Hub errors, and we know that the Hub DOES NOT have the cashlink.
-             *    This is handled in the hub interface (/hub.ts) in the manageCashlink() method,
-             *    by storing a dummy cashlink object with a value of 0 (explained below).
-             * 2. The Hub returns a cashlink object, which we can store and now know that the
-             *    Hub DOES have the cashlink data.
-             * 3. The user closes the popup with the window controls instead of with the "Done"
-             *    button in the Hub, which gives us no info and does not change anything.
-             *
-             * # Why set the value to 0?
-             * To identify which cashlinks are stored in the Hub and which aren't, we are
-             * using the cashlink value, since for real cashlinks this cannot be 0. So when
-             * the cashlink's value is 0, we know this is a not-stored cashlink.
-             */
-            if (BrowserDetection.isIOS() || BrowserDetection.isSafari()) {
-                return {
-                    address: cashlinkAddress,
-                    message: '',
-                    value: 1,
-                };
-            }
-
-            return null;
-        });
-        const data = computed(() => {
-            if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
-            return parseData(transaction.value.data.raw);
-        });
-
-        // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
-        const relatedTx = computed(() => {
-            if (!transaction.value.relatedTransactionHash) return null;
-            return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
-        });
+        const outputsSent = computed(() => isIncoming
+            ? []
+            : transaction.value.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
+        );
+        const amountSent = computed(() => isIncoming
+            ? 0
+            : outputsSent.value.reduce((sum, output) => sum + output.value, 0),
+        );
 
         // Peer
-        const peerAddress = computed(() => isCashlink.value
-            ? relatedTx.value
-                ? isIncoming.value
-                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
-            : isIncoming.value
-                ? transaction.value.sender
-                : transaction.value.recipient);
-        const peerLabel = computed(() => {
-            // Label cashlinks
-            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
-                return isIncoming.value
-                    ? context.root.$t('Cashlink')
-                    : context.root.$t('Unclaimed Cashlink');
-            }
-
+        const peerAddresses = computed(() => isIncoming.value
+            ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
+            : outputsSent.value.map((output) => output.address));
+        const peerLabel = ''; /* computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;
@@ -333,8 +241,8 @@ export default defineComponent({
             if (globalLabel) return globalLabel;
 
             return false;
-        });
-        const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
+        }); */
+        // const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
@@ -344,12 +252,19 @@ export default defineComponent({
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => transaction.value.fiatValue
-            ? transaction.value.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
 
-        const { state: network$ } = useNetworkStore();
+        const fiatValue = computed(() => {
+            const outputsToCount = isIncoming.value ? outputsReceived.value : outputsSent.value;
+            let value = 0;
+            for (const output of outputsToCount) {
+                if (!output.fiatValue || output.fiatValue[fiatCurrency.value] === undefined) return undefined;
+                if (output.fiatValue[fiatCurrency.value] === FIAT_PRICE_UNAVAILABLE) return FIAT_PRICE_UNAVAILABLE;
+                value += output.fiatValue[fiatCurrency.value]!;
+            }
+            return value;
+        });
+
+        const { state: network$ } = useBtcNetworkStore();
         const confirmations = computed(() =>
             transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
 
@@ -363,20 +278,19 @@ export default defineComponent({
             TransactionState,
             datum,
             time,
-            data,
+            outputsReceived,
+            amountReceived,
+            inputsSent,
+            amountSent,
             fiatCurrency,
             fiatValue,
-            isCashlink,
             isIncoming,
             language,
-            peerAddress,
+            peerAddresses,
             peerLabel,
-            activeAddressInfo,
             confirmations,
-            peerIsContact,
-            setContact,
-            hubCashlink,
-            manageCashlink,
+            // peerIsContact,
+            // setContact,
             env: Config.environment,
             amountsHidden,
         };
@@ -385,20 +299,19 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         ArrowRightIcon,
-        Identicon,
+        Avatar,
+        BitcoinIcon,
         PageBody,
         PageHeader,
         Modal,
         Copyable,
-        AddressDisplay,
+        ShortAddress,
         FiatAmount,
         Tooltip,
         InfoCircleSmallIcon,
         CircleSpinner,
         CrossIcon,
         LabelInput,
-        CashlinkSmallIcon,
-        UnclaimedCashlinkIcon,
         HistoricValueIcon,
         BlueLink,
     },
@@ -463,7 +376,7 @@ export default defineComponent({
             opacity: 0.3;
         }
 
-        .amount-and-message {
+        .amount-block {
             opacity: 0.4;
         }
     }
@@ -491,44 +404,24 @@ export default defineComponent({
     width: 19rem;
 }
 
-.identicon {
+.avatar,
+.address-info > svg {
     position: relative;
-    width: 9rem;
-    height: 9rem;
-    margin: -0.5rem 0; // Identicon should be 72x63
+    width: 8rem;
+    height: 8rem;
 
-    > .identicon {
-        margin: 0;
-    }
-
-    img {
-        display: block;
-        height: 100%
-    }
-
-    svg {
-        width: 100%;
-        height: 100%;
-    }
-
-    .cashlink {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        bottom: -0.675rem;
-        right: -0.25rem;
-        color: white;
-        background: var(--nimiq-blue-bg);
-        border: 0.375rem solid white;
-        border-radius: 3rem;
-        height: 3.75rem;
-        width: 3.75rem;
-    }
+    // svg {
+    //     width: 100%;
+    //     height: 100%;
+    // }
 }
 
-.label,
-.nq-input-s {
+.address-info > svg {
+    color: #F7931A; // Bitcoin orange
+}
+
+.label /* ,
+.nq-input-s */ {
     font-size: var(--body-size);
     font-weight: 600;
     text-align: center;
@@ -540,42 +433,38 @@ export default defineComponent({
     overflow: hidden;
     width: 100%;
     mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+    &.unlabelled {
+        font-style: italic;
+    }
 }
 
-.nq-input-s {
-    margin: 1.25rem 0 0.375rem;
-    max-width: 100%;
-}
+// .nq-input-s {
+//     margin: 1.25rem 0 0.375rem;
+//     max-width: 100%;
+// }
 
-.nq-input-s:not(:focus):not(:hover) {
-    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
-}
+// .nq-input-s:not(:focus):not(:hover) {
+//     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+// }
 
 .copyable {
-    padding: 0rem;
+    padding: 0.5rem 1rem;
 
-    &:hover .address-display,
-    &:focus .address-display,
-    &.copied .address-display {
+    &:hover .short-address,
+    &:focus .short-address,
+    &.copied .short-address {
         opacity: 1;
         font-weight: 500;
     }
 }
 
-.address-display {
+.short-address {
     font-size: var(--body-size);
     transition: opacity .3s var(--nimiq-ease);
 }
 
-.address-display /deep/ .chunk {
-    margin: 0.5rem 0;
-}
-
-.manage-cashlink {
-    margin-top: 3rem;
-}
-
-.amount-and-message {
+.amount-block {
     align-items: center;
 
     .amount {
@@ -653,14 +542,6 @@ export default defineComponent({
     }
 }
 
-.message {
-    margin: 1rem 0;
-    text-align: center;
-    font-size: var(--body-size);
-    line-height: 1.375;
-    word-break: break-word;
-}
-
 .info-tooltip {
     position: absolute;
     left: 2rem;
@@ -702,10 +583,10 @@ export default defineComponent({
         opacity: 0.6;
     }
 
-    .fee {
-        display: inline-block;
-        margin-top: 1.25rem;
-    }
+    // .fee {
+    //     display: inline-block;
+    //     margin-top: 1.25rem;
+    // }
 
     .blue-link {
         color: var(--nimiq-light-blue-on-dark);

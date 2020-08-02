@@ -2,7 +2,7 @@
     <button
         class="reset transaction"
         :class="state"
-        @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
+        @click="$router.push({name: 'btc-transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
@@ -21,7 +21,7 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <Avatar :label="''"/>
+        <Avatar :label="peerLabel"/>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">
@@ -108,8 +108,6 @@ export default defineComponent({
             ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address));
         const peerLabel = ''; /* computed(() => {
-            // Label cashlinks
-
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
             if (ownedAddressInfo) return ownedAddressInfo.label;

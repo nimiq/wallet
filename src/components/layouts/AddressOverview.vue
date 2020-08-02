@@ -616,6 +616,14 @@ export default defineComponent({
 
         .identicon-wrapper {
             margin-right: 1.5rem;
+
+            > svg {
+                width: 5.25rem;
+                height: 5.25rem;
+                color: #F7931A; // Bitcoin orange
+                margin: 0 0.25rem;
+                display: block;
+            }
         }
 
         .identicon-menu {

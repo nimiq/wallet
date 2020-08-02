@@ -409,11 +409,7 @@ export default defineComponent({
     position: relative;
     width: 8rem;
     height: 8rem;
-
-    // svg {
-    //     width: 100%;
-    //     height: 100%;
-    // }
+    font-size: 3.75rem;
 }
 
 .address-info > svg {
@@ -461,6 +457,7 @@ export default defineComponent({
 
 .short-address {
     font-size: var(--body-size);
+    opacity: 0.5;
     transition: opacity .3s var(--nimiq-ease);
 }
 

@@ -103,7 +103,8 @@ export default defineComponent({
         }));
 
         const requestLink = computed(
-            () => createRequestLink(activeAddressInfo.value!.address, requestLinkOptions.value));
+            () => createRequestLink(activeAddressInfo.value!.address, requestLinkOptions.value),
+        );
 
         return {
             activeAddressInfo,

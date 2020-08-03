@@ -30,8 +30,8 @@ const DisclaimerModal = () =>
 // Bitcoin Modals
 const BtcSendModal = () =>
     import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
-// const BtcReceiveModal = () =>
-//     import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
+const BtcReceiveModal = () =>
+    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
@@ -125,13 +125,13 @@ const routes: RouteConfig[] = [{
             },
             name: 'btc-send',
             meta: { column: Columns.DYNAMIC },
-        // }, {
-        //     path: '/btc-receive',
-        //     components: {
-        //         modal: BtcReceiveModal,
-        //     },
-        //     name: 'btc-receive',
-        //     meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/btc-receive',
+            components: {
+                modal: BtcReceiveModal,
+            },
+            name: 'btc-receive',
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/btc-transaction/:hash',
             components: {

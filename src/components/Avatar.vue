@@ -49,7 +49,7 @@ export default defineComponent({
     }
 
     .unlabelled {
-        background-image: url('data:image/svg+xml,<svg width="24" height="25" viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg"><path opacity=".25" fill="%231F2348" fill-rule="evenodd" clip-rule="evenodd" d="M6.46 18.47c-.41.4-.78.85-1.09 1.32-.13.2-.4.25-.57.09a10.5 10.5 0 1114.4 0c-.17.16-.44.11-.57-.09a7.97 7.97 0 00-12.16-1.33zM12 24.24a12 12 0 100-24 12 12 0 000 24zm0-9.75a4.5 4.5 0 100-9 4.5 4.5 0 000 9z"/></svg>');
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 63"><path opacity=".25" fill="%231F2348" fill-rule="evenodd" isolation="isolate" d="M17,47.9a20.59,20.59,0,0,0-2.86,3.49,1,1,0,0,1-1.51.22,27.49,27.49,0,1,1,37.74,0,1,1,0,0,1-1.51-.23A20.82,20.82,0,0,0,17,47.9ZM31.5,63A31.5,31.5,0,1,0,0,31.5,31.5,31.5,0,0,0,31.5,63Zm0-25.41a12,12,0,1,0-12-12A12,12,0,0,0,31.5,37.59Z"/></svg>');
         background-size: 100%;
         background-repeat: no-repeat;
     }

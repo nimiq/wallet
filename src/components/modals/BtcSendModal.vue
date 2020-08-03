@@ -103,7 +103,7 @@ import {
     LabelInput,
     Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, CurrencyInfo } from '@nimiq/utils';
+import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import Avatar from '../Avatar.vue';
@@ -115,9 +115,9 @@ import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
-import { useSettingsStore } from '../../stores/Settings';
+// import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
-// import { sendBtcTransaction } from '../../hub';
+import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export enum RecipientType {
@@ -127,13 +127,13 @@ export enum RecipientType {
 }
 
 export default defineComponent({
-    name: 'send-modal',
-    props: {
-        requestUri: {
-            type: String,
-            required: false,
-        },
-    },
+    name: 'send-btc-modal',
+    // props: {
+    //     requestUri: {
+    //         type: String,
+    //         required: false,
+    //     },
+    // },
     setup(props, context) {
         const { state: addresses$, addressSet, accountBalance } = useBtcAddressStore();
         const { state: network$ } = useBtcNetworkStore();
@@ -308,49 +308,48 @@ export default defineComponent({
         const statusMainActionText = ref(context.root.$t('Retry'));
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
 
-        async function sign() {}
-        //     // Show loading screen
-        //     statusScreenOpened.value = true;
-        //     statusState.value = State.LOADING;
+        async function sign() {
+            // Show loading screen
+            statusScreenOpened.value = true;
+            statusState.value = State.LOADING;
 
-        //     try {
-        //         const plainTx = await sendBtcTransaction({
-        //             inputs: [],
-        //             outputs: [{
-        //                 recipient: recipientWithLabel.value!.address,
-        //                 // recipientType: 0 | 1 | 2 | undefined,
-        //                 recipientLabel: recipientWithLabel.value!.label,
-        //                 value: amount.value,
-        //             }],
-        //         });
+            try {
+                const plainTx = await sendBtcTransaction({
+                    inputs: [],
+                    output: {
+                        address: recipientWithLabel.value!.address,
+                        label: recipientWithLabel.value!.label,
+                        value: amount.value,
+                    },
+                });
 
-        //         if (!plainTx) {
-        //             statusScreenOpened.value = false;
-        //             return;
-        //         }
+                if (!plainTx) {
+                    statusScreenOpened.value = false;
+                    return;
+                }
 
-        //         // Show success screen
-        //         statusState.value = State.SUCCESS;
-        //         statusTitle.value = recipientWithLabel.value!.label
-        //             ? context.root.$t('Sent {btc} BTC to {name}', {
-        //                 btc: amount.value / 1e8,
-        //                 name: recipientWithLabel.value!.label,
-        //             })
-        //             : context.root.$t('Sent {btc} BTC', {
-        //                 btc: amount.value / 1e8,
-        //             });
+                // Show success screen
+                statusState.value = State.SUCCESS;
+                statusTitle.value = recipientWithLabel.value!.label
+                    ? context.root.$t('Sent {btc} BTC to {name}', {
+                        btc: amount.value / 1e8,
+                        name: recipientWithLabel.value!.label,
+                    })
+                    : context.root.$t('Sent {btc} BTC', {
+                        btc: amount.value / 1e8,
+                    });
 
-        //         // Close modal
-        //         setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
-        //     } catch (error) {
-        //         // console.debug(error);
+                // Close modal
+                setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+            } catch (error) {
+                // console.debug(error);
 
-        //         // Show error screen
-        //         statusState.value = State.WARNING;
-        //         statusTitle.value = context.root.$t('Something went wrong');
-        //         statusMessage.value = error.message;
-        //     }
-        // }
+                // Show error screen
+                statusState.value = State.WARNING;
+                statusTitle.value = context.root.$t('Something went wrong');
+                statusMessage.value = error.message;
+            }
+        }
 
         function onStatusMainAction() {
             sign();

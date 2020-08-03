@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
 import { ElectrumApi } from '@nimiq/electrum-client';
+import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
 import { useAccountStore } from './stores/Account';
@@ -122,4 +123,10 @@ export async function launchElectrum() {
             // TODO: Subscribe to the next X & last Y external addresses
         }
     });
+}
+
+export async function sendTransaction(tx: SignedBtcTransaction) {
+    await launchElectrum();
+    const client = await getElectrumClient();
+    return client.broadcastTransaction(tx.serializedTx);
 }

@@ -95,7 +95,7 @@
 }
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onMounted, onUnmounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -120,6 +120,7 @@ import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { getElectrumClient } from '../../electrum';
 
 export enum RecipientType {
     CONTACT,
@@ -210,7 +211,63 @@ export default defineComponent({
 
         const amountMenuOpened = ref(false);
 
-        const feeOptions = computed(() => []);
+        const feeHistogram = ref([] as Array<[number, number]>);
+
+        let isFetchingHistogram = false;
+        async function fetchFeeHistogram() {
+            if (isFetchingHistogram) return;
+            isFetchingHistogram = true;
+
+            const histogram = await (await getElectrumClient()).getFeeHistogram();
+            feeHistogram.value = histogram;
+
+            isFetchingHistogram = false;
+        }
+        fetchFeeHistogram();
+
+        const histogramInterval = setInterval(async () => {
+            fetchFeeHistogram();
+        }, 30 * 1000); // Update every 30 seconds
+
+        onUnmounted(() => {
+            clearInterval(histogramInterval);
+        });
+
+        const feeOptions = computed(() => {
+            // Estimate the fees for the next 24 hours = 144 blocks max
+
+            // Actual size is 1mil, but we calculate with 1/3 to simulate continously incoming txs.
+            const blockSize = 333333; // vsize = vbytes
+
+            let bracketIndex = 0;
+            let blockIndex = 1;
+            const blocks: number[] = [];
+
+            let runningSize = 0;
+            while (bracketIndex <= feeHistogram.value.length) {
+                const bracket = feeHistogram.value[bracketIndex];
+                if (!bracket) {
+                    // Set fee for block as the start fee of the last bracket
+                    blocks[blockIndex] = Math.floor(feeHistogram.value[bracketIndex - 1]?.[0] || 1);
+                    break;
+                }
+
+                runningSize += bracket[1]; // Summarize bracket vsize
+
+                if (runningSize > blockSize) {
+                    // Set fee for block as the start fee of the oversized bracket
+                    blocks[blockIndex] = Math.floor(bracket[0]);
+                    runningSize = bracket[1]; // eslint-disable-line prefer-destructuring
+                    blockIndex += 1; // Go to next block
+                }
+
+                bracketIndex += 1;
+            }
+
+            return blocks;
+        });
+
+        watch(feeOptions, (opts) => console.log(opts), {lazy: true});
 
         const activeCurrency = ref('btc');
         const fiatAmount = ref(0);

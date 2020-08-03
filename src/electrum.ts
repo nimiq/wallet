@@ -125,7 +125,9 @@ export async function launchElectrum() {
                         }
                     })
                     .catch(() => fetchedAccounts.delete(accountId))
-                    .then(() => btcNetwork$.fetchingTxHistory--);
+                    // Delay resetting fetchingTxHistory to prevent flickering of status,
+                    // because we are only checking one address after the other currently.
+                    .then(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
 
                 if (gap >= allowedGap) break;
             }

@@ -240,7 +240,9 @@ export default defineComponent({
 
         // Peer
         const peerAddresses = computed(() => isIncoming.value
-            ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
+            ? transaction.value.inputs
+                .map((input) => input.address)
+                .filter((address, index, array) => !!address && array.indexOf(address) !== index) as string[]
             : outputsSent.value.map((output) => output.address));
         const peerLabel = ''; /* computed(() => {
             // Search other stored addresses

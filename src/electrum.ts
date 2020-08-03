@@ -67,8 +67,16 @@ export async function launchElectrum() {
         if (fetchedAccounts.has(accountId)) return;
         fetchedAccounts.add(accountId);
 
-        const { addressSet } = btcAddressStore;
 
+        const { addressSet, activeAddresses } = btcAddressStore;
+
+        // Check pending transactions
+        // Get all transactions for the active addresses
+        const pendingTransactions = Object.values(btcTransactionsStore.state.transactions)
+            .filter((tx) => !tx.timestamp
+                && tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress)));
+
+        // Check tx history
         for (const chain of ['internal' as 'internal', 'external' as 'external']) {
             let gap = 0;
             const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 1;
@@ -77,9 +85,12 @@ export async function launchElectrum() {
                 const { address } = addressInfo;
 
                 if (addressInfo.used && !addressInfo.utxos.length) {
-                    gap = 0;
-                    // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
-                    continue;
+                    const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
+                    if (!hasPendingTransactions) {
+                        gap = 0;
+                        // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
+                        continue;
+                    }
                 }
 
                 const knownTxDetails = addressInfo.used

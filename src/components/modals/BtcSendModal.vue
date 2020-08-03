@@ -47,7 +47,7 @@
                         <span v-if="activeCurrency === 'btc'" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
                             <span v-if="fee">
-                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="8" :currencyDecimals="8"/>
+                                +<FiatConvertedAmount :amount="fee" currency="btc"/>
                                 {{ $t('fee') }}
                             </span>
                         </span>
@@ -63,7 +63,7 @@
                     </span>
                 </section>
 
-                <div class="flex-row">
+                <!-- <div class="flex-row"> -->
                     <button
                         class="nq-button light-blue"
                         :disabled="!canSend"
@@ -71,10 +71,10 @@
                         @mousedown.prevent
                     >{{ $t('Send Transaction') }}</button>
 
-                    <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
+                    <!-- <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
                         <ScanQrCodeIcon/>
-                    </button>
-                </div>
+                    </button> -->
+                <!-- </div> -->
             </PageBody>
         </div>
 
@@ -101,7 +101,6 @@ import {
     PageBody,
     ScanQrCodeIcon,
     LabelInput,
-    Amount,
 } from '@nimiq/vue-components';
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
@@ -112,13 +111,15 @@ import AmountMenu from '../AmountMenu.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcAddressStore, UTXO } from '../../stores/BtcAddress';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 // import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 
 export enum RecipientType {
     CONTACT,
@@ -178,9 +179,32 @@ export default defineComponent({
         }
 
         const amount = ref(0);
-        const feePerByte = ref(0);
+        const feePerByte = ref(1);
 
-        const fee = computed(() => feePerByte.value * 138);
+        const availableUtxos = computed(() => {
+            const utxos = [] as Array<UTXO & { address: string }>;
+            for (const addressInfo of addressSet.value.internal) {
+                utxos.push(...addressInfo.utxos.map((utxo) => ({
+                    ...utxo,
+                    address: addressInfo.address,
+                })));
+            }
+            for (const addressInfo of addressSet.value.external) {
+                utxos.push(...addressInfo.utxos.map((utxo) => ({
+                    ...utxo,
+                    address: addressInfo.address,
+                })));
+            }
+            return utxos;
+        });
+
+        const requiredInputs = computed(() => selectOutputs(availableUtxos.value, amount.value, feePerByte.value));
+
+        const fee = computed(() => estimateFees(
+            requiredInputs.value.utxos.length || 1,
+            requiredInputs.value.changeAmount > 0 ? 2 : 1,
+            feePerByte.value,
+        ));
 
         const maxSendableAmount = computed(() => Math.max((accountBalance.value || 0) - fee.value, 0));
 
@@ -315,18 +339,34 @@ export default defineComponent({
 
             try {
                 const plainTx = await sendBtcTransaction({
-                    inputs: [],
+                    inputs: requiredInputs.value.utxos.map((utxo) => ({
+                        address: utxo.address,
+                        transactionHash: utxo.transactionHash,
+                        outputIndex: utxo.index,
+                        outputScript: utxo.witness.script,
+                        value: utxo.witness.value,
+                    })),
                     output: {
                         address: recipientWithLabel.value!.address,
                         label: recipientWithLabel.value!.label,
                         value: amount.value,
                     },
+                    ...(requiredInputs.value.changeAmount > 0 ? {
+                        changeOutput: {
+                            // FIXME: If no unused change address is found, need to request new ones from Hub!
+                            address: addressSet.value.internal.find((addressInfo) => !addressInfo.used)!.address,
+                            value: requiredInputs.value.changeAmount,
+                        },
+                    } : {}),
                 });
 
                 if (!plainTx) {
                     statusScreenOpened.value = false;
                     return;
                 }
+
+                const { addTransactions } = useBtcTransactionsStore();
+                addTransactions([plainTx]);
 
                 // Show success screen
                 statusState.value = State.SUCCESS;
@@ -412,7 +452,6 @@ export default defineComponent({
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
-        Amount,
         StatusScreen,
     },
 });

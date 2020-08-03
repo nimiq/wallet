@@ -288,7 +288,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:309
+#: src/components/modals/BtcSendModal.vue:333
 #: src/components/modals/SendModal.vue:480
 msgid "Edit transaction"
 msgstr ""
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:308
+#: src/components/modals/BtcSendModal.vue:332
 #: src/components/modals/SendModal.vue:479
 msgid "Retry"
 msgstr ""
@@ -700,9 +700,17 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:305
+#: src/components/modals/BtcSendModal.vue:329
 #: src/components/modals/SendModal.vue:476
 msgid "Sending Transaction"
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:378
+msgid "Sent {btc} BTC"
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:374
+msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:511
@@ -765,6 +773,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
+#: src/components/modals/BtcSendModal.vue:389
 #: src/components/modals/SendModal.vue:522
 msgid "Something went wrong"
 msgstr ""

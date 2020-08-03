@@ -151,9 +151,7 @@ export async function launchNetwork() {
 }
 
 export async function sendTransaction(tx: SignedTransaction) {
-    launchNetwork();
-
-    const client = NetworkClient.Instance;
-
+    await launchNetwork();
+    const client = await getNetworkClient();
     return client.sendTransaction(tx.serializedTx);
 }

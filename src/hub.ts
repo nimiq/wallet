@@ -1,12 +1,14 @@
-import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
+import HubApi, { Account, SignTransactionRequest, SignBtcTransactionRequest } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
+// import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
+import { sendTransaction as sendBtcTx } from './electrum';
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 import router from './router';
 
@@ -309,6 +311,7 @@ export async function logout(accountId: string) {
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const transactionStore = useTransactionsStore();
+    // const btcTransactionStore = useBtcTransactionsStore();
     const cashlinkStore = useCashlinkStore();
 
     const addressesToDelete = accountStore.state.accountInfos[accountId].addresses;
@@ -353,4 +356,14 @@ export async function logout(accountId: string) {
     if (!Object.values(accountStore.state.accountInfos).length) {
         onboard(true);
     }
+}
+
+export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'appName'>) {
+    const signedTransaction = await hubApi.signBtcTransaction({
+        appName: APP_NAME,
+        ...tx,
+    }).catch(onError);
+    if (!signedTransaction) return null;
+
+    return sendBtcTx(signedTransaction);
 }

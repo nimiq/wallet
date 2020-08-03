@@ -13,7 +13,7 @@
                 ref="$input">
         </form>
         <slot v-if="$slots.suffix" name="suffix"/>
-        <span v-else class="nim">NIM</span>
+        <span v-else class="ticker">NIM</span>
     </div>
 </template>
 
@@ -181,7 +181,7 @@ input {
     display: flex;
 }
 
-.amount-input .nim {
+.amount-input .ticker {
     margin-left: 1rem;
     font-size: 4rem;
     font-weight: 700;

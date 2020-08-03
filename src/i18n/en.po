@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/BtcTransactionModal.vue:148
+#: src/components/modals/BtcTransactionModal.vue:154
 #: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
@@ -11,13 +11,15 @@ msgstr ""
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:14
-#: src/components/layouts/AddressOverview.vue:85
+#: src/components/layouts/AddressOverview.vue:15
+#: src/components/layouts/AddressOverview.vue:86
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:105
 #: src/components/modals/BtcTransactionModal.vue:65
-#: src/components/modals/BtcTransactionModal.vue:99
+#: src/components/modals/BtcTransactionModal.vue:76
+#: src/components/modals/BtcTransactionModal.vue:88
 msgid "+{n} more"
 msgstr ""
 
@@ -41,7 +43,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:140
+#: src/components/modals/SendModal.vue:139
 msgid "Add a public message..."
 msgstr ""
 
@@ -74,7 +76,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:63
+#: src/components/layouts/AccountOverview.vue:80
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -99,19 +101,19 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:71
-#: src/components/modals/BtcTransactionModal.vue:80
+#: src/components/modals/BtcTransactionModal.vue:83
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:145
+#: src/components/modals/BtcTransactionModal.vue:151
 #: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:155
+#: src/components/modals/BtcTransactionModal.vue:161
 #: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr ""
@@ -136,7 +138,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:166
+#: src/components/modals/SendModal.vue:165
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
@@ -170,7 +172,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:156
+#: src/components/modals/SendModal.vue:155
 msgid "Choose an Address"
 msgstr ""
 
@@ -252,7 +254,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:133
+#: src/components/modals/BtcTransactionModal.vue:139
 #: src/components/modals/TransactionModal.vue:164
 msgid "Current value"
 msgstr ""
@@ -286,12 +288,17 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/BtcSendModal.vue:333
+#: src/components/modals/SendModal.vue:480
 msgid "Edit transaction"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:20
 msgid "Enter address"
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:8
+msgid "Enter recipient address..."
 msgstr ""
 
 #: src/components/NetworkStats.vue:47
@@ -333,7 +340,8 @@ msgstr ""
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:122
+#: src/components/modals/BtcSendModal.vue:51
+#: src/components/modals/SendModal.vue:121
 msgid "fee"
 msgstr ""
 
@@ -402,7 +410,7 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:127
+#: src/components/modals/BtcTransactionModal.vue:133
 #: src/components/modals/TransactionModal.vue:159
 msgid "Historic value"
 msgstr ""
@@ -435,7 +443,8 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:130
+#: src/components/modals/BtcSendModal.vue:59
+#: src/components/modals/SendModal.vue:129
 msgid "Insufficient balance."
 msgstr ""
 
@@ -614,8 +623,8 @@ msgid "Reference currency"
 msgstr ""
 
 #: src/components/AccountMenu.vue:43
-#: src/components/layouts/AddressOverview.vue:29
-#: src/components/layouts/AddressOverview.vue:46
+#: src/components/layouts/AddressOverview.vue:30
+#: src/components/layouts/AddressOverview.vue:47
 msgid "Rename"
 msgstr ""
 
@@ -627,7 +636,8 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/BtcSendModal.vue:332
+#: src/components/modals/SendModal.vue:479
 msgid "Retry"
 msgstr ""
 
@@ -662,7 +672,8 @@ msgid "Send"
 msgstr ""
 
 #: src/components/AmountMenu.vue:13
-#: src/components/modals/SendModal.vue:132
+#: src/components/modals/BtcSendModal.vue:61
+#: src/components/modals/SendModal.vue:131
 msgid "Send all"
 msgstr ""
 
@@ -678,8 +689,10 @@ msgstr ""
 msgid "send and receive transactions."
 msgstr ""
 
+#: src/components/modals/BtcSendModal.vue:4
+#: src/components/modals/BtcSendModal.vue:72
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:151
+#: src/components/modals/SendModal.vue:150
 msgid "Send Transaction"
 msgstr ""
 
@@ -687,15 +700,24 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/BtcSendModal.vue:329
+#: src/components/modals/SendModal.vue:476
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/BtcSendModal.vue:378
+msgid "Sent {btc} BTC"
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:374
+msgid "Sent {btc} BTC to {name}"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:511
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:507
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -751,11 +773,12 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/BtcSendModal.vue:389
+#: src/components/modals/SendModal.vue:522
 msgid "Something went wrong"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:164
+#: src/components/modals/SendModal.vue:163
 msgid "Speed up your Transaction"
 msgstr ""
 
@@ -817,6 +840,10 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
+#: src/components/BtcAddressInput.vue:4
+msgid "This is not a valid address"
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:212
 #: src/components/BtcTransactionList.vue:234
 #: src/components/TransactionList.vue:249
@@ -851,8 +878,8 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
+#: src/components/modals/BtcTransactionModal.vue:100
 #: src/components/modals/BtcTransactionModal.vue:60
-#: src/components/modals/BtcTransactionModal.vue:94
 msgid "Unknown"
 msgstr ""
 
@@ -891,7 +918,11 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:126
+#: src/components/modals/BtcSendModal.vue:55
+msgid "You will send {amount} BTC"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:125
 msgid "You will send {amount} NIM"
 msgstr ""
 

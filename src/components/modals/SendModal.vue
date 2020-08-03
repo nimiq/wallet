@@ -90,8 +90,7 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
                         <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef">
-                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="nim"
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -102,8 +101,8 @@
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
                         <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
-                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="nim"
+                            <span slot="prefix" class="tilde">~</span>
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -628,13 +627,6 @@ export default defineComponent({
         StatusScreen,
     },
 });
-
-/*
-    TODO:
-    * Styling of SendTx
-    * properly implementy the change Sender functionality (design pending)
-    * close button and Scan QR Code collide.
- */
 </script>
 
 <style lang="scss" scoped>

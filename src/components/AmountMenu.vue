@@ -2,7 +2,7 @@
     <div class="amount-menu">
         <button class="reset button flex-row">{{ activeCurrency.toUpperCase() }}</button>
         <div v-if="open" class="menu">
-            <button class="reset flex-row" @click="$emit('fee-selection')">
+            <button v-if="currency === 'nim'" class="reset flex-row" @click="$emit('fee-selection')">
                 <!-- eslint-disable-next-line max-len -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="15.25" y1="3.25" x2="7.75" y2="3.25"/><line class="cls-1" x1="12.25" y1="7.75" x2="0.75" y2="7.75"/><line class="cls-1" x1="13.75" y1="12.25" x2="4.75" y2="12.25"/></g></svg>
                 {{ $t('Set fee') }}
@@ -15,9 +15,9 @@
             <div class="separator"></div>
             <div class="flex-row currencies">
                 <button
-                    class="reset" :class="{'active': activeCurrency === 'nim'}"
-                    @click="$emit('currency', 'nim')"
-                >NIM</button>
+                    class="reset" :class="{'active': activeCurrency === currency}"
+                    @click="$emit('currency', currency)"
+                >{{ currency.toUpperCase() }}</button>
                 <button
                     v-for="fiatCurrency of [fiatCurrency, ...otherFiatCurrencies]" :key="fiatCurrency"
                     class="reset" :class="{'active': activeCurrency === fiatCurrency}"
@@ -30,13 +30,17 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { FiatCurrency } from '../lib/Constants';
+import { FiatCurrency, CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
     props: {
         open: {
             type: Boolean,
             default: false,
+        },
+        currency: {
+            type: String as () => CryptoCurrency,
+            default: CryptoCurrency.NIM,
         },
         activeCurrency: {
             type: String,

@@ -69,11 +69,11 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="out in outputsReceived.slice(0, 3)" :key="out.address" :text="out.address">
-                        <ShortAddress :address="out.address"/>
+                    <Copyable v-for="address in ownAddresses.slice(0, 3)" :key="address" :text="address">
+                        <ShortAddress :address="address"/>
                     </Copyable>
-                    <a v-if="outputsReceived.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: outputsReceived.length - 3}) }}
+                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
                     </a>
                 </div>
             </div>
@@ -81,11 +81,11 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="input in inputsSent.slice(0, 3)" :key="input.address" :text="input.address">
-                        <ShortAddress :address="input.address"/>
+                    <Copyable v-for="address in ownAddresses.slice(0, 3)" :key="address" :text="address">
+                        <ShortAddress :address="address"/>
                     </Copyable>
-                    <a v-if="inputsSent.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: inputsSent.length - 3}) }}
+                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
+                        {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
                     </a>
                 </div>
                 <ArrowRightIcon class="arrow"/>
@@ -239,11 +239,10 @@ export default defineComponent({
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         // Peer
-        const peerAddresses = computed(() => isIncoming.value
-            ? transaction.value.inputs
-                .map((input) => input.address)
-                .filter((address, index, array) => !!address && array.indexOf(address) !== index) as string[]
-            : outputsSent.value.map((output) => output.address));
+        const peerAddresses = computed(() => (isIncoming.value
+            ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
+            : outputsSent.value.map((output) => output.address)
+        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
         const peerLabel = ''; /* computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
@@ -259,6 +258,11 @@ export default defineComponent({
             return false;
         }); */
         // const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
+
+        const ownAddresses = computed(() => (isIncoming.value
+            ? outputsReceived.value.map((output) => output.address)
+            : inputsSent.value.map((input) => input.address).filter((address) => !!address) as string[]
+        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
@@ -307,6 +311,7 @@ export default defineComponent({
             language,
             peerAddresses,
             peerLabel,
+            ownAddresses,
             confirmations,
             // peerIsContact,
             // setContact,

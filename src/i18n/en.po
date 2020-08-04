@@ -289,7 +289,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:76
+#: src/components/modals/BtcSendModal.vue:79
 msgid "Duration and fees are estimates."
 msgstr ""
 
@@ -301,7 +301,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:410
+#: src/components/modals/BtcSendModal.vue:420
 #: src/components/modals/SendModal.vue:480
 msgid "Edit transaction"
 msgstr ""
@@ -310,7 +310,7 @@ msgstr ""
 msgid "Enter address"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:8
+#: src/components/modals/BtcSendModal.vue:11
 msgid "Enter recipient address..."
 msgstr ""
 
@@ -455,11 +455,11 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:72
+#: src/components/modals/BtcSendModal.vue:75
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:55
+#: src/components/modals/BtcSendModal.vue:58
 #: src/components/modals/SendModal.vue:129
 msgid "Insufficient balance."
 msgstr ""
@@ -534,6 +534,10 @@ msgstr ""
 msgid "Name this contact..."
 msgstr ""
 
+#: src/components/modals/BtcSendModal.vue:9
+msgid "Name this recipient..."
+msgstr ""
+
 #: src/components/ContactBook.vue:28
 msgid "Name your contact"
 msgstr ""
@@ -542,7 +546,7 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:69
+#: src/components/modals/BtcSendModal.vue:72
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
@@ -672,7 +676,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:409
+#: src/components/modals/BtcSendModal.vue:419
 #: src/components/modals/SendModal.vue:479
 msgid "Retry"
 msgstr ""
@@ -709,7 +713,7 @@ msgid "Send"
 msgstr ""
 
 #: src/components/AmountMenu.vue:13
-#: src/components/modals/BtcSendModal.vue:57
+#: src/components/modals/BtcSendModal.vue:60
 #: src/components/modals/SendModal.vue:131
 msgid "Send all"
 msgstr ""
@@ -727,7 +731,7 @@ msgid "send and receive transactions."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:4
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:91
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:150
 msgid "Send Transaction"
@@ -737,16 +741,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:406
+#: src/components/modals/BtcSendModal.vue:416
 #: src/components/modals/SendModal.vue:476
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:455
+#: src/components/modals/BtcSendModal.vue:465
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:451
+#: src/components/modals/BtcSendModal.vue:461
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -816,7 +820,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:466
+#: src/components/modals/BtcSendModal.vue:476
 #: src/components/modals/SendModal.vue:522
 msgid "Something went wrong"
 msgstr ""
@@ -973,7 +977,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:51
+#: src/components/modals/BtcSendModal.vue:54
 msgid "You will send {amount} BTC"
 msgstr ""
 

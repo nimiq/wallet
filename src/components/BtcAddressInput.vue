@@ -101,14 +101,10 @@ export default defineComponent({
     }
 
     .label-input {
-        /deep/ .width-finder,
         /deep/ input {
-            width: 100%;
-        }
-
-        /deep/ input {
+            width: 100% !important;
             font-family: 'Fira Mono', monospace;
-            padding: 1.5rem 2rem;
+            padding: 1.75rem 2rem;
 
             &::placeholder {
                 font-size: var(--body-size);

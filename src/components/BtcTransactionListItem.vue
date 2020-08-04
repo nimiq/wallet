@@ -21,7 +21,7 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <Avatar :label="peerLabel"/>
+        <Avatar :label="peerLabel || ''"/>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">
@@ -73,6 +73,7 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { useAccountStore } from '../stores/Account';
 
 export default defineComponent({
     props: {
@@ -84,7 +85,12 @@ export default defineComponent({
     setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
-        const { activeInternalAddresses, activeExternalAddresses } = useBtcAddressStore();
+        const {
+            state: btcAddresses$,
+            activeInternalAddresses,
+            activeExternalAddresses,
+            getRecipientLabel,
+        } = useBtcAddressStore();
 
         const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 
@@ -119,20 +125,32 @@ export default defineComponent({
         const peerAddresses = computed(() => isIncoming.value
             ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address));
-        const peerLabel = ''; /* computed(() => {
+        const peerLabel = computed(() => {
+            // Search recipient labels
+            for (const address of peerAddresses.value) {
+                const label = getRecipientLabel.value(address);
+                if (label) return label;
+            }
+
             // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) return ownedAddressInfo.label;
+            for (const address of peerAddresses.value) {
+                const ownedAddressInfo = btcAddresses$.addressInfos[address];
+                if (ownedAddressInfo) {
+                    // Find account label
+                    const { accountInfos } = useAccountStore();
+                    return Object.values(accountInfos.value)
+                        .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
+                        || Object.values(accountInfos.value)
+                            .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                }
+            }
 
-            // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
-
-            // Search global address book
-            const globalLabel = AddressBook.getLabel(peerAddress.value);
-            if (globalLabel) return globalLabel;
+            // // Search global address book
+            // const globalLabel = AddressBook.getLabel(peerAddress.value);
+            // if (globalLabel) return globalLabel;
 
             return false;
-        }); */
+        });
 
         // Date
         const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));

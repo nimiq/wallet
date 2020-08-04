@@ -4,6 +4,9 @@
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="flex-column">
                 <section class="address-section">
+                    <BtcLabelInput v-if="recipientWithLabel"
+                        v-model="recipientWithLabel.label"
+                        :placeholder="$t('Name this recipient...')"/>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
                         @paste="/* (event, text) => parseRequestUri(text, event) */"
@@ -123,7 +126,7 @@ import {
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
-import Avatar from '../Avatar.vue';
+import BtcLabelInput from '../BtcLabelInput.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import FeeSelector from '../FeeSelector.vue';
@@ -156,38 +159,45 @@ export default defineComponent({
     //     },
     // },
     setup(props, context) {
-        const { state: addresses$, addressSet, accountBalance } = useBtcAddressStore();
+        const {
+            state: addresses$,
+            addressSet,
+            accountBalance,
+            setRecipientLabel,
+            getRecipientLabel,
+        } = useBtcAddressStore();
         const { state: network$ } = useBtcNetworkStore();
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
-        // watch(recipientWithLabel, (newVal, oldVal) => {
-        //     if (newVal === null || oldVal === null) return;
-        //     if (newVal.type !== RecipientType.CONTACT) return;
-        //     // setContact(newVal.address, newVal.label);
-        // }, { deep: true });
+        watch(recipientWithLabel, (newVal, oldVal) => {
+            if (newVal === null || oldVal === null) return;
+            if (newVal.type !== RecipientType.CONTACT) return;
+            setRecipientLabel(newVal.address, newVal.label);
+        }, { deep: true });
 
         function resetAddress() {
             recipientWithLabel.value = null;
         }
 
         function onAddressEntered(address: string) {
-            // Find label across contacts, own addresses
+            // Find label across recipient labels, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
             if (ownedAddressInfo) {
+                // Find account label
                 const { accountInfos } = useAccountStore();
                 label = Object.values(accountInfos.value)
                     .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))!.label;
-                type = RecipientType.OWN_ADDRESS;
+                type = RecipientType.CONTACT; // Allow overwriting suggested account label
             }
-            // // Search contacts
-            // if (getLabel.value(address)) {
-            //     label = getLabel.value(address)!;
-            //     type = RecipientType.CONTACT;
-            // }
+            // Search recipient labels
+            if (getRecipientLabel.value(address)) {
+                label = getRecipientLabel.value(address)!;
+                type = RecipientType.CONTACT;
+            }
             // // Search global address book
             // const globalLabel = AddressBook.getLabel(address);
             // if (globalLabel) {
@@ -483,6 +493,7 @@ export default defineComponent({
             // Recipient Input
             resetAddress,
             onAddressEntered,
+            recipientWithLabel,
             // parseRequestUri,
 
             // Amount Input
@@ -524,8 +535,8 @@ export default defineComponent({
         PageBody,
         PageFooter,
         BtcAddressInput,
+        BtcLabelInput,
         ScanQrCodeIcon,
-        Avatar,
         LabelInput,
         AmountInput,
         AmountMenu,

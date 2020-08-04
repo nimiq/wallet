@@ -51,7 +51,7 @@
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
                     :placeholder="$t('Name this contact...')"
-                     ref="labelInputRef"/>
+                    ref="labelInputRef"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <Copyable :text="recipientWithLabel.address">
                     <AddressDisplay :address="recipientWithLabel.address"/>

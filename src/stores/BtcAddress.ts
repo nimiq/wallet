@@ -3,6 +3,7 @@ import { useAccountStore } from './Account'; // eslint-disable-line import/no-cy
 
 export type BtcAddressState = {
     addressInfos: {[id: string]: BtcAddressInfo},
+    recipientLabels: {[address: string]: string},
 }
 
 export type BtcAddressSet = {
@@ -29,6 +30,7 @@ export const useBtcAddressStore = createStore({
     id: 'btcAddresses',
     state: () => ({
         addressInfos: {},
+        recipientLabels: {},
     } as BtcAddressState),
     getters: {
         addressSet: (state): BtcAddressSet => {
@@ -61,6 +63,9 @@ export const useBtcAddressStore = createStore({
 
             return internalBalance + externalBalance;
         },
+        recipientLabels: (state): Readonly<{ [address: string]: string }> => state.recipientLabels,
+        getRecipientLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
+            state.recipientLabels[address],
     },
     actions: {
         addAddressInfo(addressInfo: BtcAddressInfo) {
@@ -97,6 +102,23 @@ export const useBtcAddressStore = createStore({
                 delete addressInfos[address];
             }
             this.state.addressInfos = addressInfos;
+        },
+        setRecipientLabel(address: string, label: string) {
+            // console.debug('Updating recipient label', address, label);
+            if (!label.trim()) {
+                // Remove contact
+                const labels = { ...this.state.recipientLabels };
+                delete labels[address];
+                this.state.recipientLabels = labels;
+                return;
+            }
+
+            // Need to assign whole object for change detection of new labels.
+            // TODO: Simply set new contact in Vue 3.
+            this.state.recipientLabels = {
+                ...this.state.recipientLabels,
+                [address.trim()]: label.trim(),
+            };
         },
     },
 });

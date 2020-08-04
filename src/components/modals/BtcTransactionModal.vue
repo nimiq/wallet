@@ -50,7 +50,7 @@
         <PageBody class="flex-column" :class="state">
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <Avatar :label="peerLabel"/>
+                    <Avatar :label="peerLabel || ''"/>
                     <!-- <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
                         :placeholder="$t('Unknown')"
@@ -194,6 +194,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
+import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -207,7 +208,12 @@ export default defineComponent({
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
-        const { activeInternalAddresses, activeExternalAddresses } = useBtcAddressStore();
+        const {
+            state: btcAddresses$,
+            activeInternalAddresses,
+            activeExternalAddresses,
+            getRecipientLabel,
+        } = useBtcAddressStore();
 
         const state = computed(() => transaction.value.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 
@@ -243,20 +249,32 @@ export default defineComponent({
             ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
-        const peerLabel = ''; /* computed(() => {
+        const peerLabel = computed(() => {
+            // Search recipient labels
+            for (const address of peerAddresses.value) {
+                const label = getRecipientLabel.value(address);
+                if (label) return label;
+            }
+
             // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) return ownedAddressInfo.label;
+            for (const address of peerAddresses.value) {
+                const ownedAddressInfo = btcAddresses$.addressInfos[address];
+                if (ownedAddressInfo) {
+                    // Find account label
+                    const { accountInfos } = useAccountStore();
+                    return Object.values(accountInfos.value)
+                        .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
+                        || Object.values(accountInfos.value)
+                            .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                }
+            }
 
-            // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
-
-            // Search global address book
-            const globalLabel = AddressBook.getLabel(peerAddress.value);
-            if (globalLabel) return globalLabel;
+            // // Search global address book
+            // const globalLabel = AddressBook.getLabel(peerAddress.value);
+            // if (globalLabel) return globalLabel;
 
             return false;
-        }); */
+        });
         // const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
 
         const ownAddresses = computed(() => (isIncoming.value

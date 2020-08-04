@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/TransactionModal.vue:179
+#: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -97,11 +97,11 @@ msgstr ""
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr ""
 
@@ -133,7 +133,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:318
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -813,7 +813,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:319
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr ""

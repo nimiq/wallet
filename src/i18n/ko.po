@@ -11,7 +11,7 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/TransactionModal.vue:179
+#: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}개의 승인 | {count}개의 승인"
 
@@ -112,11 +112,11 @@ msgstr "백업"
 msgid "Bitcoin"
 msgstr "비트코인"
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr "블록 #{height}"
 
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr "블록 탐색기"
 
@@ -150,7 +150,7 @@ msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영�
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
-#: src/components/modals/TransactionModal.vue:318
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -872,7 +872,7 @@ msgstr "자금 이체하기"
 msgid "Tweet your map!"
 msgstr "지도를 트윗하세요!"
 
-#: src/components/modals/TransactionModal.vue:319
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "미인수 캐시링크"

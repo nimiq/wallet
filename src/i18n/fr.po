@@ -12,7 +12,7 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/components/modals/TransactionModal.vue:179
+#: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmation | {count} Confirmations"
 
@@ -117,11 +117,11 @@ msgstr "Sauvegarder"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr "Bloc #{height}"
 
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
-#: src/components/modals/TransactionModal.vue:318
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -204,7 +204,7 @@ msgstr "Bientôt disponible"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "Bientôt disponible"
+msgstr "Bientôt"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
@@ -904,7 +904,7 @@ msgstr "Transférer des fonds"
 msgid "Tweet your map!"
 msgstr "Tweetez votre carte !"
 
-#: src/components/modals/TransactionModal.vue:319
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"

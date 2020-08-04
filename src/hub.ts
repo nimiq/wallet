@@ -165,7 +165,7 @@ export async function onboard(asRedirect = false) {
     }
 
     const accounts = await hubApi.onboard({ appName: APP_NAME }).catch(onError);
-    if (!accounts) return;
+    if (!accounts) return false;
 
     processAndStoreAccounts(accounts);
 
@@ -174,6 +174,8 @@ export async function onboard(asRedirect = false) {
         // which also have no exports.
         router.push('/welcome');
     }
+
+    return true;
 }
 
 export async function addAddress(accountId: string) {
@@ -181,7 +183,7 @@ export async function addAddress(accountId: string) {
         appName: APP_NAME,
         accountId,
     }).catch(onError);
-    if (!addedAddress) return;
+    if (!addedAddress) return false;
 
     const addressInfo: AddressInfo = {
         address: addedAddress.address,
@@ -196,6 +198,8 @@ export async function addAddress(accountId: string) {
 
     const accountStore = useAccountStore();
     accountStore.addAddressToAccount(accountId, addressInfo.address);
+
+    return true;
 }
 
 export async function backup(accountId: string, options: { wordsOnly?: boolean, fileOnly?: boolean }) {
@@ -204,10 +208,12 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
         accountId,
         ...options,
     }).catch(onError);
-    if (!exportResult) return;
+    if (!exportResult) return false;
 
     const accountStore = useAccountStore();
     accountStore.patchAccount(accountId, exportResult);
+
+    return true;
 }
 
 export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>) {
@@ -265,7 +271,7 @@ export async function rename(accountId: string, address?: string) {
         accountId,
         address,
     }).catch(onError);
-    if (!account) return;
+    if (!account) return false;
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
@@ -274,6 +280,8 @@ export async function rename(accountId: string, address?: string) {
     for (const info of account.addresses.concat(account.contracts)) {
         addressStore.patchAddress(info.address, { label: info.label });
     }
+
+    return true;
 }
 
 export async function changePassword(accountId: string) {
@@ -288,9 +296,9 @@ export async function logout(accountId: string) {
         appName: APP_NAME,
         accountId,
     }).catch(onError);
-    if (!loggedOut) return;
+    if (!loggedOut) return false;
 
-    if (!loggedOut.success) return;
+    if (!loggedOut.success) return false;
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
@@ -338,5 +346,8 @@ export async function logout(accountId: string) {
 
     if (!Object.values(accountStore.state.accountInfos).length) {
         onboard(true);
+        return;
     }
+
+    return true;
 }

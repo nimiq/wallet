@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners">
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose>
         <PageHeader
             :backArrow="page > 1"
             @back="page -= 1"
@@ -146,9 +146,12 @@ export default defineComponent({
                 context.root.$router.back();
             } else if (page.value === 3) {
                 // Go to backup
-                await backup(activeAccountInfo.value!.id, {});
-                // Close modal
-                context.root.$router.back();
+                const backedUp = await backup(activeAccountInfo.value!.id, {});
+
+                if (backedUp) {
+                    // Close modal
+                    context.root.$router.back();
+                }
             } else {
                 page.value += 1;
             }

@@ -16,7 +16,7 @@
                     : accountInfo.label
                 }}
             </div>
-            <FiatConvertedAmount :amount="accountBalance" value-mask/>
+            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" :locale="language" value-mask/>
         </div>
         <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
     </component>
@@ -24,14 +24,17 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { AlertTriangleIcon, Identicon } from '@nimiq/vue-components';
+import { AlertTriangleIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import getBackgroundClass from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore, BtcAddressSet } from '../stores/BtcAddress';
+import { useFiatStore } from '../stores/Fiat';
+import { CryptoCurrency } from '../lib/Constants';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -52,19 +55,69 @@ export default defineComponent({
         const addressInfos = computed(() => accountInfo.value.addresses.map((addr) => addressState.addressInfos[addr]));
         const firstAddressInfo = computed(() => addressInfos.value[0]);
         const backgroundClass = computed(() => getBackgroundClass(firstAddressInfo.value.address));
-        const accountBalance = computed(() => addressInfos.value.reduce((sum, acc) => sum + (acc.balance || 0), 0));
+        const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, acc) => sum + (acc.balance || 0), 0));
+
+        const addressSet = computed(() => {
+            if (accountInfo.value.type === AccountType.LEGACY) return [];
+
+            const { state: btcAddressState } = useBtcAddressStore();
+            return accountInfo.value.btcAddresses
+                ? {
+                    internal: accountInfo.value.btcAddresses.internal
+                        .map((addr) => btcAddressState.addressInfos[addr]),
+                    external: accountInfo.value.btcAddresses.external
+                        .map((addr) => btcAddressState.addressInfos[addr]),
+                }
+                : {
+                    internal: [],
+                    external: [],
+                };
+        });
+        const btcAccountBalance = computed(() => {
+            if (accountInfo.value.type === AccountType.LEGACY) return 0;
+
+            const internalBalance = (addressSet.value as BtcAddressSet).internal
+                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
+                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
+            const externalBalance = (addressSet.value as BtcAddressSet).external
+                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
+                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
+
+            return internalBalance + externalBalance;
+        });
+
+        // TODO: Dedupe double code with AccountBalance
+        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
+        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+        const fiatAccountBalance = computed(() => {
+            const nimFiatAmount = nimExchangeRate.value !== undefined
+                ? (nimAccountBalance.value / 1e5) * nimExchangeRate.value
+                : undefined;
+            const btcFiatAmount = btcExchangeRate.value !== undefined
+                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                : undefined;
+
+            if (nimFiatAmount === undefined || btcFiatAmount === undefined) return 0;
+
+            return nimFiatAmount + btcFiatAmount;
+        });
+
+        const { language } = useSettingsStore();
 
         return {
             accountInfo,
             firstAddressInfo,
             backgroundClass,
-            accountBalance,
+            fiatAccountBalance,
+            fiatCurrency,
+            language,
             AccountType,
         };
     },
     components: {
         LoginFileIcon,
-        FiatConvertedAmount,
+        FiatAmount,
         AlertTriangleIcon,
         Identicon,
         LedgerIcon,

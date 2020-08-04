@@ -46,10 +46,6 @@
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'btc'" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
-                            <span v-if="fee">
-                                +<FiatConvertedAmount :amount="fee" currency="btc"/>
-                                {{ $t('fee') }}
-                            </span>
                         </span>
                         <span v-else key="btc-amount">
                             {{ $t('You will send {amount} BTC', { amount: amount / 1e8 }) }}
@@ -63,19 +59,38 @@
                     </span>
                 </section>
 
-                <!-- <div class="flex-row"> -->
-                    <button
-                        class="nq-button light-blue"
-                        :disabled="!canSend"
-                        @click="sign"
-                        @mousedown.prevent
-                    >{{ $t('Send Transaction') }}</button>
-
-                    <!-- <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
-                        <ScanQrCodeIcon/>
-                    </button> -->
-                <!-- </div> -->
+                <section class="fee-section flex-row">
+                    <FeeSelector :fees="feeOptions" @fee="(fee) => feePerByte = fee"/>
+                    <div class="flex-grow"></div>
+                    <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
+                    <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
+                        <InfoCircleSmallIcon slot="trigger"/>
+                        <span class="tooltip-header">
+                            {{ $t('Network fee: {sats} sat/vByte', { sats: feePerByte }) }}
+                        </span>
+                        <p>
+                            {{ $t('Increase the speed of your transaction by paying a higher network fee. '
+                                + 'The fees go directly to the miners.') }}
+                        </p>
+                        <p>
+                            {{ $t('Duration and fees are estimates.') }}
+                        </p>
+                    </Tooltip>
+                </section>
             </PageBody>
+
+            <PageFooter class="flex-row">
+                <button
+                    class="nq-button light-blue"
+                    :disabled="!canSend"
+                    @click="sign"
+                    @mousedown.prevent
+                >{{ $t('Send Transaction') }}</button>
+
+                <!-- <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
+                    <ScanQrCodeIcon/>
+                </button> -->
+            </PageFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -99,8 +114,11 @@ import { defineComponent, ref, watch, computed, Ref, onMounted, onUnmounted } fr
 import {
     PageHeader,
     PageBody,
+    PageFooter,
     ScanQrCodeIcon,
     LabelInput,
+    Tooltip,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
 import Modal from './Modal.vue';
@@ -108,6 +126,7 @@ import BtcAddressInput from '../BtcAddressInput.vue';
 import Avatar from '../Avatar.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
+import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -236,19 +255,20 @@ export default defineComponent({
         const feeOptions = computed(() => {
             // Estimate the fees for the next 24 hours = 144 blocks max
 
-            // Actual size is 1mil, but we calculate with 1/3 to simulate continously incoming txs.
-            const blockSize = 333333; // vsize = vbytes
+            // Actual size is 1mil, but we calculate with 2/5 to simulate continously incoming txs.
+            const BLOCK_SIZE = 400000; // vsize = vbytes
 
             let bracketIndex = 0;
-            let blockIndex = 1;
+            let delay = 1;
+            let blockSize = BLOCK_SIZE;
             const blocks: number[] = [];
 
             let runningSize = 0;
-            while (bracketIndex <= feeHistogram.value.length) {
+            while (bracketIndex <= feeHistogram.value.length && delay <= 144) { // 144 = 24h
                 const bracket = feeHistogram.value[bracketIndex];
                 if (!bracket) {
                     // Set fee for block as the start fee of the last bracket
-                    blocks[blockIndex] = Math.floor(feeHistogram.value[bracketIndex - 1]?.[0] || 1);
+                    blocks[delay] = Math.floor(feeHistogram.value[bracketIndex - 1]?.[0] || 1);
                     break;
                 }
 
@@ -256,9 +276,11 @@ export default defineComponent({
 
                 if (runningSize > blockSize) {
                     // Set fee for block as the start fee of the oversized bracket
-                    blocks[blockIndex] = Math.floor(bracket[0]);
+                    blocks[delay] = Math.floor(bracket[0]);
                     runningSize = bracket[1]; // eslint-disable-line prefer-destructuring
-                    blockIndex += 1; // Go to next block
+                    delay += 1; // Go to next block
+                    // Reduce blockSize the higher the delay to simulate incoming txs until inclusion
+                    blockSize = BLOCK_SIZE / (delay * 0.5);
                 }
 
                 bracketIndex += 1;
@@ -266,8 +288,6 @@ export default defineComponent({
 
             return blocks;
         });
-
-        watch(feeOptions, (opts) => console.log(opts), {lazy: true});
 
         const activeCurrency = ref('btc');
         const fiatAmount = ref(0);
@@ -502,13 +522,17 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
+        PageFooter,
         BtcAddressInput,
         ScanQrCodeIcon,
         Avatar,
         LabelInput,
         AmountInput,
         AmountMenu,
+        FeeSelector,
         FiatConvertedAmount,
+        Tooltip,
+        InfoCircleSmallIcon,
         StatusScreen,
     },
 });
@@ -521,14 +545,14 @@ export default defineComponent({
         height: 100%;
 
         .nq-button {
-            margin-top: 0;
-            width: calc(100% - 4rem);
+            margin: 0 4rem 3rem;
         }
     }
 
     .page-body {
         justify-content: space-between;
         flex-grow: 1;
+        padding-bottom: 2rem;
     }
 
     .address-section {
@@ -592,16 +616,6 @@ export default defineComponent({
             z-index: 1;
         }
 
-        .secondary-amount {
-            font-weight: 600;
-            opacity: 0.5;
-
-            .fiat-amount,
-            .amount {
-                margin-left: -0.2em;
-            }
-        }
-
         .insufficient-balance-warning {
             font-weight: 600;
 
@@ -619,6 +633,42 @@ export default defineComponent({
             .amount-input /deep/ input {
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
+        }
+    }
+
+    .secondary-amount {
+        font-weight: 600;
+        opacity: 0.5;
+
+        .fiat-amount,
+        .amount {
+            margin-left: -0.2em;
+        }
+    }
+
+    .fee-section {
+        padding: 0 1rem;
+        align-items: center;
+
+        .secondary-amount {
+            margin-right: 1rem;
+        }
+    }
+
+    .tooltip {
+        /deep/ .trigger .nq-icon {
+            opacity: 0.4;
+        }
+
+        span {
+            font-size: var(--small-size);
+        }
+
+        p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+            opacity: 0.6;
+            font-size: 1.625rem;
         }
     }
 

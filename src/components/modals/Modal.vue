@@ -121,6 +121,7 @@ export default defineComponent({
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 5;
     background: rgba(31, 35, 72, 0.5);
     border-radius: 1rem;
 }

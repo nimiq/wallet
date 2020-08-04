@@ -70,9 +70,12 @@
                                         <div class="address-created">created 1min ago</div><!-- TODO -->
                                     </div>
                                 </transition>
-                                <Copyable :text="address" class="address-short">
-                                    <ShortAddress :address="address"/>
-                                </Copyable>
+                                <Tooltip class="address-short" preferredPosition="top left">
+                                    <Copyable :text="address" slot="trigger">
+                                        <ShortAddress :address="address"/>
+                                    </Copyable>
+                                    {{ address }}
+                                </Tooltip>
                             </div>
                         </transition-group>
 
@@ -289,14 +292,18 @@ export default defineComponent({
         line-height: 1.4;
         font-weight: 600;
         opacity: 0.6;
-        margin-top: 1rem;
+        margin-top: 2rem;
     }
 }
 
 .page-body {
+    --short-transition-duration: 300ms;
+    --long-transition-duration: 600ms;
+
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
+    padding-top: 0;
 }
 
 .address {
@@ -315,7 +322,7 @@ export default defineComponent({
 
     transition: {
         property: background-color, color;
-        duration: 300ms;
+        duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
     };
 
@@ -432,9 +439,15 @@ export default defineComponent({
     .flex-column {
         background-color: white;
         justify-content: center;
+        align-items: flex-start;
 
         &.fade-enter-active {
             position: absolute;
+        }
+
+        &.fade-enter-active,
+        &.fade-leave-active {
+            transition-duration: var(--short-transition-duration);
         }
     }
 }
@@ -460,11 +473,42 @@ export default defineComponent({
 .address-label {
     font-size: var(--body-size);
     line-height: calc(var(--body-size) + 1rem);
+    position: relative;
     cursor: pointer;
+
+    transition: {
+        property: transform, color;
+        duration: var(--short-transition-duration);
+        timing-function: var(--nimiq-ease);
+    };
+
+    &:hover {
+        transform: translateX(.5rem);
+        color: var(--nimiq-light-blue);
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        background-image: var(--nimiq-light-blue-bg);
+        top: 0;
+        right: -1rem;
+        bottom: 0;
+        left: -.5rem;
+        opacity: 0;
+        border-radius: .5rem;
+
+        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
+    }
+
+    &:hover::before {
+        opacity: .07;
+    }
 
     &.unlabelled {
         font-style: italic;
     }
+
 }
 
 .address-created {
@@ -472,21 +516,51 @@ export default defineComponent({
     font-size: var(--small-size);
 }
 
-.address-short.copyable {
-    padding: .5rem;
-
-    .short-address {
-        font-weight: normal;
-        font-size: var(--body-size);
-        color: var(--text-70);
+.address-short {
+    &.tooltip /deep/ .tooltip-box {
+        font-size: var(--small-size);
+        padding: .5rem 1rem;
     }
 
-    &:hover .short-address,
-    &:focus .short-address,
-    &.copied .short-address {
-        opacity: 1;
-        font-weight: 500;
-        // color: var(--text-70);
+    .copyable {
+        padding: .5rem;
+        border-radius: 0.375rem;
+        background-color: transparent;
+
+        transition: background-color var(--short-transition-duration) var(--nimiq-ease);
+
+        .rename & {
+            background-color: var(--nimiq-light-blue);
+        }
+
+        .short-address {
+            font-weight: normal;
+            font-size: var(--body-size);
+            color: var(--text-70);
+
+            transition: all var(--short-transition-duration) var(--nimiq-ease);
+
+            .rename & {
+                color: white;
+                font-weight: 500;
+
+                /deep/ .background {
+                    display: none;
+                }
+            }
+        }
+
+        &:hover .short-address,
+        &:focus .short-address,
+        &.copied .short-address {
+            font-weight: 500;
+            color: var(--nimiq-light-blue);
+
+            .rename & {
+                color: white;
+            }
+        }
+
     }
 }
 
@@ -606,10 +680,11 @@ footer {
 
 /* vue transition - tranlsateY-fade-list */
 .tranlsateY-fade-list-enter-active,
-.tranlsateY-fade-list-leave-active {
+.tranlsateY-fade-list-leave-active,
+.tranlsateY-fade-list-move {
     transition: {
         property: opacity, transform;
-        duration: 600ms;
+        duration: var(--long-transition-duration);
         timing-function: var(--nimiq-ease);
     };
 }

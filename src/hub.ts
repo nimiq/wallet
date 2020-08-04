@@ -161,7 +161,7 @@ export async function onboard(asRedirect = false) {
     if (asRedirect === true) {
         const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
         hubApi.onboard({ appName: APP_NAME }, behavior);
-        return;
+        return null;
     }
 
     const accounts = await hubApi.onboard({ appName: APP_NAME }).catch(onError);
@@ -346,7 +346,7 @@ export async function logout(accountId: string) {
 
     if (!Object.values(accountStore.state.accountInfos).length) {
         onboard(true);
-        return;
+        return null;
     }
 
     return true;

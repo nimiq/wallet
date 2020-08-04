@@ -21,8 +21,9 @@
                     <span>{{ $t('This is a single-use address') }}</span>
                     <Tooltip preferredPosition="bottom left" :autoWidth="true">
                         <template slot="trigger"><InfoCircleSmallIcon /></template>
-                        <p>Use a new Bitcoin address for every transaction to improve privacy.</p>
-                        <p>Although reusing addresses won’t result in a loss of funds, it is highly recommended not to do so.</p>
+                        <p>{{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}</p>
+                        <p>{{ $t('Although reusing addresses won’t result in a loss of funds,'
+                                + ' it is highly recommended not to do so.') }}</p>
                     </Tooltip>
                 </div>
 
@@ -214,7 +215,6 @@ export default defineComponent({
                         label.focus();
                     }
                 });
-
             }
         }
 

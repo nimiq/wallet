@@ -248,6 +248,7 @@ export default defineComponent({
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
         const { state: network$ } = useNetworkStore();
+        const { amountsHidden, skipRecipientLabeling } = useSettingsStore();
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
@@ -295,7 +296,7 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (!label) {
+            if (!skipRecipientLabeling.value && !label) {
                 recipientDetailsOpened.value = true;
             } else {
                 page.value = Pages.AMOUNT_INPUT;
@@ -541,8 +542,6 @@ export default defineComponent({
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
         }
-
-        const { amountsHidden } = useSettingsStore();
 
         return {
             // General

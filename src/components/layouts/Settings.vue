@@ -42,6 +42,20 @@
 
                 <div class="setting">
                     <div class="description">
+                        <label class="nq-h2" for="skipLabeling">{{ $t('Ask for labels') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Ask for a label when sending to an unknown address?') }}
+                        </p>
+                    </div>
+
+                    <select id="skipLabeling" name="skipLabeling" @input="setSkipRecipientLabeling($event.target.value)">
+                        <option :value="true" :selected="skipRecipientLabeling">{{ $t('No') }}</option>
+                        <option :value="false" :selected="!skipRecipientLabeling">{{ $t('Yes') }}</option>
+                    </select>
+                </div>
+
+                <div class="setting">
+                    <div class="description">
                         <label class="nq-h2" for="contact-import">{{ $t('Import Contacts') }}</label>
                         <p class="nq-text">
                             {{ $t('Import contacts that you exported from the Safe.') }}

@@ -48,7 +48,11 @@
                         </p>
                     </div>
 
-                    <select id="askForLabeling" name="askForLabeling" @input="setAskForRecipientLabeling(!!$event.target.value)">
+                    <select
+                        id="askForLabeling"
+                        name="askForLabeling"
+                        @input="setAskForRecipientLabeling(!!$event.target.value)"
+                    >
                         <option value="1" :selected="!askForRecipientLabeling">{{ $t('Yes') }}</option>
                         <option value="0" :selected="askForRecipientLabeling">{{ $t('No') }}</option>
                     </select>

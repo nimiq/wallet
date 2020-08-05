@@ -123,6 +123,7 @@ export default defineComponent({
         display: block;
         margin-top: 0.75rem;
         opacity: 0;
+        font-weight: 600;
 
         transition: opacity 0.3s var(--nimiq-ease);
 

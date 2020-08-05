@@ -1,7 +1,7 @@
 <template>
-    <div class="btc-label-input">
+    <div class="btc-label-input" :class="{disabled}">
         <Avatar :label="localValue"/>
-        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue"/>
+        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled"/>
     </div>
 </template>
 
@@ -15,6 +15,10 @@ export default defineComponent({
         value: {
             type: String,
             default: '',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {
@@ -54,6 +58,17 @@ export default defineComponent({
         /deep/ input {
             width: 100% !important;
             padding: 1.75rem 2rem 1.75rem 5.75rem;
+        }
+
+        &.disabled {
+            .avatar {
+                filter: saturate(0);
+                opacity: 0.5;
+            }
+
+            /deep/ input {
+                color: var(--text-50);
+            }
         }
     }
 </style>

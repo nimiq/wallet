@@ -82,6 +82,7 @@ msgid "All new features are exclusive to new accounts. Upgrade now, it only take
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:25
+#: src/components/modals/BtcSendModal.vue:29
 msgid "Although reusing addresses won’t result in a loss of funds, it is highly recommended not to do so."
 msgstr ""
 
@@ -289,7 +290,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:79
+#: src/components/modals/BtcSendModal.vue:97
 msgid "Duration and fees are estimates."
 msgstr ""
 
@@ -301,7 +302,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:420
+#: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:480
 msgid "Edit transaction"
 msgstr ""
@@ -310,7 +311,7 @@ msgstr ""
 msgid "Enter address"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:11
+#: src/components/modals/BtcSendModal.vue:12
 msgid "Enter recipient address..."
 msgstr ""
 
@@ -455,11 +456,11 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:75
+#: src/components/modals/BtcSendModal.vue:93
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:58
+#: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SendModal.vue:129
 msgid "Insufficient balance."
 msgstr ""
@@ -546,7 +547,7 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:72
+#: src/components/modals/BtcSendModal.vue:90
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
@@ -676,7 +677,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:419
+#: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:479
 msgid "Retry"
 msgstr ""
@@ -713,7 +714,7 @@ msgid "Send"
 msgstr ""
 
 #: src/components/AmountMenu.vue:13
-#: src/components/modals/BtcSendModal.vue:60
+#: src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:131
 msgid "Send all"
 msgstr ""
@@ -730,8 +731,8 @@ msgstr ""
 msgid "send and receive transactions."
 msgstr ""
 
+#: src/components/modals/BtcSendModal.vue:109
 #: src/components/modals/BtcSendModal.vue:4
-#: src/components/modals/BtcSendModal.vue:91
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:150
 msgid "Send Transaction"
@@ -741,16 +742,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:416
+#: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:476
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:465
+#: src/components/modals/BtcSendModal.vue:486
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:461
+#: src/components/modals/BtcSendModal.vue:482
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -820,7 +821,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:476
+#: src/components/modals/BtcSendModal.vue:497
 #: src/components/modals/SendModal.vue:522
 msgid "Something went wrong"
 msgstr ""
@@ -883,6 +884,10 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr ""
 
+#: src/components/modals/BtcSendModal.vue:22
+msgid "This address has already been used"
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr ""
@@ -943,6 +948,7 @@ msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:24
+#: src/components/modals/BtcSendModal.vue:26
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 
@@ -977,7 +983,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:54
+#: src/components/modals/BtcSendModal.vue:72
 msgid "You will send {amount} BTC"
 msgstr ""
 

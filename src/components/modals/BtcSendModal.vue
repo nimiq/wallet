@@ -6,13 +6,31 @@
                 <section class="address-section">
                     <BtcLabelInput v-if="recipientWithLabel"
                         v-model="recipientWithLabel.label"
-                        :placeholder="$t('Name this recipient...')"/>
+                        :placeholder="$t('Name this recipient...')"
+                        :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"/>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
                         @paste="/* (event, text) => parseRequestUri(text, event) */"
                         @input="resetAddress"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
+                    <span
+                        v-if="recipientWithLabel && recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
+                        class="reused-address nq-orange flex-row"
+                    >
+                        <AlertTriangleIcon/>
+                        {{ $t('This address has already been used') }}
+                        <Tooltip preferredPosition="bottom left" :styles="{width: '205px', 'text-align': 'left'}">
+                            <InfoCircleSmallIcon slot="trigger"/>
+                            <span class="header">
+                                {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                            </span>
+                            <p>
+                                {{ $t('Although reusing addresses won’t result in a loss of funds, '
+                                    + 'it is highly recommended not to do so.') }}
+                            </p>
+                        </Tooltip>
+                    </span>
                 </section>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
@@ -68,7 +86,7 @@
                     <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
                     <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
                         <InfoCircleSmallIcon slot="trigger"/>
-                        <span class="tooltip-header">
+                        <span class="header">
                             {{ $t('Network fee: {sats} sat/vByte', { sats: feePerByte }) }}
                         </span>
                         <p>
@@ -118,6 +136,7 @@ import {
     PageHeader,
     PageBody,
     PageFooter,
+    AlertTriangleIcon,
     ScanQrCodeIcon,
     LabelInput,
     Tooltip,
@@ -145,8 +164,8 @@ import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { getElectrumClient } from '../../electrum';
 
 export enum RecipientType {
-    CONTACT,
-    OWN_ADDRESS,
+    NEW_CONTACT,
+    KNOWN_CONTACT,
     GLOBAL_ADDRESS,
 }
 
@@ -172,7 +191,7 @@ export default defineComponent({
 
         watch(recipientWithLabel, (newVal, oldVal) => {
             if (newVal === null || oldVal === null) return;
-            if (newVal.type !== RecipientType.CONTACT) return;
+            if (newVal.type !== RecipientType.NEW_CONTACT) return;
             setRecipientLabel(newVal.address, newVal.label);
         }, { deep: true });
 
@@ -183,20 +202,22 @@ export default defineComponent({
         function onAddressEntered(address: string) {
             // Find label across recipient labels, own addresses
             let label = '';
-            let type = RecipientType.CONTACT; // Can be stored as a new contact by default
+            let type = RecipientType.NEW_CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
             if (ownedAddressInfo) {
                 // Find account label
                 const { accountInfos } = useAccountStore();
                 label = Object.values(accountInfos.value)
-                    .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))!.label;
-                type = RecipientType.CONTACT; // Allow overwriting suggested account label
+                    .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
+                    || Object.values(accountInfos.value)
+                        .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                type = RecipientType.NEW_CONTACT; // Allow overwriting suggested account label
             }
             // Search recipient labels
             if (getRecipientLabel.value(address)) {
                 label = getRecipientLabel.value(address)!;
-                type = RecipientType.CONTACT;
+                type = RecipientType.KNOWN_CONTACT; // Show warning and disable input
             }
             // // Search global address book
             // const globalLabel = AddressBook.getLabel(address);
@@ -536,6 +557,7 @@ export default defineComponent({
         PageFooter,
         BtcAddressInput,
         BtcLabelInput,
+        AlertTriangleIcon,
         ScanQrCodeIcon,
         LabelInput,
         AmountInput,
@@ -571,7 +593,23 @@ export default defineComponent({
 
         .btc-address-input {
             width: 100%;
-            font-size: 15px;
+        font-size: 15px;
+    }
+
+    .reused-address {
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        margin-top: -2.5rem;
+
+        > .nq-icon {
+            margin-right: 0.5rem;
+        }
+
+        .tooltip {
+            margin-left: 0.5rem;
+                font-size: var(--small-size);
+            }
         }
     }
 
@@ -664,14 +702,14 @@ export default defineComponent({
         .secondary-amount {
             margin-right: 1rem;
         }
-    }
 
-    .tooltip {
         /deep/ .trigger .nq-icon {
             opacity: 0.4;
         }
+    }
 
-        span {
+    .tooltip {
+        .header {
             font-size: var(--small-size);
         }
 

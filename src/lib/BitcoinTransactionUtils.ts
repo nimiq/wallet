@@ -76,3 +76,27 @@ export function selectOutputs(utxos: Readonly<Array<UTXO & { address: string }>>
         changeAmount,
     };
 }
+
+type BitcoinParams = { recipient: string, amount?: number, label?: string, message?: string };
+
+export function parseBitcoinUrl(str: string): BitcoinParams {
+    str = str.replace(`${window.location.origin}/`, '');
+    const url = new URL(str);
+
+    if (!url.protocol.startsWith('bitcoin:')) {
+        throw new Error('Invalid protocol: not a valid bitcoin URL');
+    }
+
+    const address = url.pathname;
+    const amount = url.searchParams.get('amount') || undefined;
+    const label = url.searchParams.get('label') || undefined;
+
+    if (!address) throw new Error('Invalid address: URL did not contain an address'); // address is required
+
+    const parsedAmount = amount ? Math.round(parseFloat(amount) * 1e8) : undefined;
+    if (typeof parsedAmount === 'number' && Number.isNaN(parsedAmount)) throw new Error('Invalid amount');
+
+    const parsedLabel = label ? decodeURIComponent(label) : undefined;
+
+    return { recipient: address, amount: parsedAmount, label: parsedLabel };
+}

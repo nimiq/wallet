@@ -44,6 +44,7 @@ export default defineComponent({
 <style lang="scss" scoped>
     .btc-label-input {
         position: relative;
+        font-weight: 600;
 
         .avatar {
             position: absolute;

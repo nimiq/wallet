@@ -413,9 +413,11 @@ export default defineComponent({
                         recipientWithLabel.value!.label = parsedRequestLink.label;
                     }
                 }
+
                 if (parsedRequestLink.amount) {
                     amount.value = parsedRequestLink.amount;
                 }
+
                 if (parsedRequestLink.message) {
                     message.value = parsedRequestLink.message;
                 }

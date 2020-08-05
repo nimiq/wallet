@@ -12,6 +12,7 @@ import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { BIP49_ADDRESS_VERSIONS, BIP84_ADDRESS_PREFIX } from '../../../hub/src/lib/bitcoin/BitcoinConstants';
 import { ENV_MAIN } from '../lib/Constants';
+import { parseBitcoinUrl } from '../lib/BitcoinTransactionUtils';
 
 /* global BitcoinJS */
 
@@ -74,6 +75,16 @@ export default defineComponent({
         function onPaste(event: ClipboardEvent) {
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
+
+            try {
+                const { recipient } = parseBitcoinUrl(pastedData);
+                event.preventDefault();
+                address.value = recipient;
+                checkAddress();
+            } catch (err) {
+                // Ignore
+            }
+
             context.emit('paste', event, pastedData);
         }
 

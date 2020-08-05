@@ -10,7 +10,7 @@
                         :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"/>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
-                        @paste="/* (event, text) => parseRequestUri(text, event) */"
+                        @paste="(event, text) => parseRequestUri(text, event)"
                         @input="resetAddress"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
@@ -159,7 +159,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { getElectrumClient } from '../../electrum';
 
@@ -171,12 +171,12 @@ export enum RecipientType {
 
 export default defineComponent({
     name: 'send-btc-modal',
-    // props: {
-    //     requestUri: {
-    //         type: String,
-    //         required: false,
-    //     },
-    // },
+    props: {
+        requestUri: {
+            type: String,
+            required: false,
+        },
+    },
     setup(props, context) {
         const {
             state: addresses$,
@@ -377,30 +377,36 @@ export default defineComponent({
             && amount.value <= maxSendableAmount.value,
         );
 
-        // function parseRequestUri(uri: string, event?: ClipboardEvent) {
-        //     uri = uri.replace(`${window.location.origin}/`, '');
-        //     const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
-        //     if (parsedRequestLink) {
-        //         if (event) {
-        //             // Prevent paste event being applied to the recipient label field, that now became focussed.
-        //             event.preventDefault();
-        //         }
+        async function parseRequestUri(uri: string, event?: ClipboardEvent) {
+            try {
+                const parsedRequestLink = parseBitcoinUrl(uri);
+                if (event) {
+                    event.stopPropagation(); // Prevent pasting
+                }
 
-        //         if (parsedRequestLink.recipient) {
-        //             onAddressEntered(parsedRequestLink.recipient);
-        //             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-        //                 recipientWithLabel.value!.label = parsedRequestLink.label;
-        //             }
-        //         }
-        //         if (parsedRequestLink.amount) {
-        //             amount.value = parsedRequestLink.amount;
-        //         }
-        //     }
-        // }
+                if (parsedRequestLink.amount) {
+                    amount.value = parsedRequestLink.amount;
+                }
 
-        // if (props.requestUri) {
-        //     parseRequestUri(props.requestUri);
-        // }
+                if (parsedRequestLink.recipient) {
+                    // Wait for onAddressEntered to trigger
+                    let i = 0;
+                    while (!recipientWithLabel.value && i < 10) {
+                        await context.root.$nextTick(); // eslint-disable-line no-await-in-loop
+                        i += 1;
+                    }
+                    if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
+                        recipientWithLabel.value!.label = parsedRequestLink.label;
+                    }
+                }
+            } catch (err) {
+                // Ignore
+            }
+        }
+
+        if (props.requestUri) {
+            parseRequestUri(props.requestUri);
+        }
 
         /**
          * Autofocus
@@ -515,7 +521,7 @@ export default defineComponent({
             resetAddress,
             onAddressEntered,
             recipientWithLabel,
-            // parseRequestUri,
+            parseRequestUri,
 
             // Amount Input
             amount,

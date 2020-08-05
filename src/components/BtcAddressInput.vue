@@ -105,6 +105,7 @@ export default defineComponent({
             width: 100% !important;
             font-family: 'Fira Mono', monospace;
             padding: 1.75rem 2rem;
+            line-height: 2.5rem;
 
             &::placeholder {
                 font-size: var(--body-size);

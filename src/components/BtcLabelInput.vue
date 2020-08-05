@@ -1,7 +1,7 @@
 <template>
     <div class="btc-label-input" :class="{disabled}">
-        <Avatar :label="localValue"/>
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled"/>
+        <Avatar :label="localValue"/>
     </div>
 </template>
 

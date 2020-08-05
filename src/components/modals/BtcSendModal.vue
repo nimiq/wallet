@@ -3,7 +3,7 @@
         <div class="page flex-column">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="flex-column">
-                <section class="address-section">
+                <section class="address-section" :class="{'extended': recipientWithLabel}">
                     <BtcLabelInput v-if="recipientWithLabel"
                         v-model="recipientWithLabel.label"
                         :placeholder="$t('Name this recipient...')"
@@ -593,22 +593,50 @@ export default defineComponent({
 
         .btc-address-input {
             width: 100%;
-        font-size: 15px;
-    }
-
-    .reused-address {
-        justify-content: center;
-        align-items: center;
-        font-weight: 600;
-        margin-top: -2.5rem;
-
-        > .nq-icon {
-            margin-right: 0.5rem;
+            font-size: 15px;
+            position: relative; // For correct z-index positioning
         }
 
-        .tooltip {
-            margin-left: 0.5rem;
+        .btc-label-input {
+            margin-bottom: -0.25rem;
+        }
+
+        .reused-address {
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-top: -2.5rem;
+
+            > .nq-icon {
+                margin-right: 0.5rem;
+            }
+
+            .tooltip {
+                margin-left: 0.5rem;
                 font-size: var(--small-size);
+            }
+        }
+
+        &.extended {
+            .btc-address-input /deep/ input {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                background: white;
+            }
+
+            .btc-label-input /deep/ input {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                background: white;
+            }
+
+            .btc-address-input:focus-within {
+                z-index: 2;
+            }
+
+            .btc-label-input:hover,
+            .btc-label-input:focus-within {
+                z-index: 1;
             }
         }
     }

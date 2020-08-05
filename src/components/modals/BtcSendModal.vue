@@ -451,6 +451,17 @@ export default defineComponent({
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;
 
+            let changeAddress: string;
+            if (requiredInputs.value.changeAmount > 0) {
+                const nextUnusedChangeAddress = addressSet.value.internal
+                    .find((addressInfo) => !addressInfo.used)?.address;
+                if (!nextUnusedChangeAddress) {
+                    // FIXME: If no unused change address is found, need to request new ones from Hub!
+                    throw new Error('No more unused change addresses (not yet implemented)');
+                }
+                changeAddress = nextUnusedChangeAddress;
+            }
+
             try {
                 const plainTx = await sendBtcTransaction({
                     inputs: requiredInputs.value.utxos.map((utxo) => ({
@@ -467,8 +478,7 @@ export default defineComponent({
                     },
                     ...(requiredInputs.value.changeAmount > 0 ? {
                         changeOutput: {
-                            // FIXME: If no unused change address is found, need to request new ones from Hub!
-                            address: addressSet.value.internal.find((addressInfo) => !addressInfo.used)!.address,
+                            address: changeAddress!,
                             value: requiredInputs.value.changeAmount,
                         },
                     } : {}),

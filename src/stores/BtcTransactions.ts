@@ -28,7 +28,7 @@ export enum TransactionState {
 export const useBtcTransactionsStore = createStore({
     id: 'btcTransactions',
     state: () => ({
-        transactions: {} as {[id: string]: Transaction},
+        transactions: {} as {[hash: string]: Transaction},
     }),
     getters: {
         // activeAccount: state => state.accounts[state.activeAccountId],

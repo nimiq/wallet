@@ -122,6 +122,10 @@
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
 
+        <router-link to="/">
+            <CrossCloseButton />
+        </router-link>
+
         <Portal>
             <transition name="modal">
                 <router-view name="modal"/>
@@ -136,6 +140,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
+import CrossCloseButton from '../CrossCloseButton.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
@@ -228,6 +233,7 @@ export default defineComponent({
     components: {
         MenuIcon,
         Portal,
+        CrossCloseButton,
     },
 });
 </script>
@@ -444,6 +450,10 @@ input[type="file"] {
     a {
         color: inherit;
     }
+}
+
+.cross-close-button {
+    color: var(--text-40);
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint

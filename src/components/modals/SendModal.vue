@@ -296,7 +296,7 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (!askForRecipientLabeling.value && !label) {
+            if (askForRecipientLabeling.value && !label) {
                 recipientDetailsOpened.value = true;
             } else {
                 page.value = Pages.AMOUNT_INPUT;

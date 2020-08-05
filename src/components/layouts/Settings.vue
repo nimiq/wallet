@@ -42,15 +42,15 @@
 
                 <div class="setting">
                     <div class="description">
-                        <label class="nq-h2" for="skipLabeling">{{ $t('Ask for labels') }}</label>
+                        <label class="nq-h2" for="askForLabeling">{{ $t('Ask for labels') }}</label>
                         <p class="nq-text">
                             {{ $t('Ask for a label when sending to an unknown address?') }}
                         </p>
                     </div>
 
-                    <select id="skipLabeling" name="skipLabeling" @input="setSkipRecipientLabeling($event.target.value)">
-                        <option :value="true" :selected="skipRecipientLabeling">{{ $t('No') }}</option>
-                        <option :value="false" :selected="!skipRecipientLabeling">{{ $t('Yes') }}</option>
+                    <select id="askForLabeling" name="askForLabeling" @input="setAskForRecipientLabeling(!!$event.target.value)">
+                        <option value="1" :selected="!askForRecipientLabeling">{{ $t('Yes') }}</option>
+                        <option value="0" :selected="askForRecipientLabeling">{{ $t('No') }}</option>
                     </select>
                 </div>
 

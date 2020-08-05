@@ -742,7 +742,7 @@ export default defineComponent({
         }
 
         p {
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             margin-bottom: 0;
             opacity: 0.6;
             font-size: 1.625rem;

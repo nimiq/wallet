@@ -19,9 +19,11 @@
             <transition name="fade">
                 <div class="address-sub-label flex-row blue" v-if="!addressCopied">
                     <span>{{ $t('This is a single-use address') }}</span>
-                    <Tooltip preferredPosition="bottom left" :autoWidth="true">
+                    <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
                         <template slot="trigger"><InfoCircleSmallIcon /></template>
-                        <p>{{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}</p>
+                        <span class="header">
+                            {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                        </span>
                         <p>{{ $t('Although reusing addresses won’t result in a loss of funds,'
                                 + ' it is highly recommended not to do so.') }}</p>
                     </Tooltip>
@@ -360,18 +362,16 @@ export default defineComponent({
         margin-left: 0.75rem;
     }
 
-    .tooltip /deep/ .tooltip-box {
+    .tooltip {
+        .header {
+            font-size: var(--small-size);
+        }
+
         p {
-            width: 22.5rem;
-        }
-
-        p:first-child {
-            margin-top: 0;
-        }
-
-        p:last-child {
-            font-weight: 500;
+            margin-top: 0.75rem;
             margin-bottom: 0;
+            opacity: 0.6;
+            font-size: 1.625rem;
         }
     }
 }
@@ -386,6 +386,7 @@ export default defineComponent({
 .no-recently-copied-address {
     color: var(--text-40);
     font-size: var(--body-size);
+    font-weight: 600;
     padding: 0 4.75rem;
     text-align: center;
     margin: auto 0;

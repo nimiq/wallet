@@ -103,6 +103,19 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             }
         }
 
+        // Check if we know more BTC addresses in the Wallet than the Hub
+        const existingAccount = accountStore.state.accountInfos[account.accountId];
+        if (existingAccount && existingAccount.btcAddresses) {
+            account.btcAddresses = {
+                internal: existingAccount.btcAddresses.internal.length > account.btcAddresses.internal.length
+                    ? existingAccount.btcAddresses.internal
+                    : account.btcAddresses.internal,
+                external: existingAccount.btcAddresses.external.length > account.btcAddresses.external.length
+                    ? existingAccount.btcAddresses.external
+                    : account.btcAddresses.external,
+            };
+        }
+
         accountInfos.push({
             id: account.accountId,
             // @ts-ignore Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
@@ -118,7 +131,6 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     if (replaceState) {
         accountStore.setAccountInfos(accountInfos);
         addressStore.setAddressInfos(addressInfos);
-        btcAddressStore.setAddressInfos(btcAddressInfos);
     } else {
         for (const accountInfo of accountInfos) {
             accountStore.addAccountInfo(accountInfo);
@@ -126,10 +138,11 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
         }
-        for (const btcAddressInfo of btcAddressInfos) {
-            btcAddressStore.addAddressInfo(btcAddressInfo);
-        }
     }
+
+    // On iOS & Safari we cannot update the list of derived Bitcoin addresses in the Hub, when
+    // deriving new addresses via the iframe. We therefor
+    btcAddressStore.addAddressInfos(btcAddressInfos);
 }
 
 export async function syncFromHub() {

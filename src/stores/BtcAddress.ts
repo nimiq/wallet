@@ -68,24 +68,17 @@ export const useBtcAddressStore = createStore({
             state.recipientLabels[address],
     },
     actions: {
-        addAddressInfo(addressInfo: BtcAddressInfo) {
-            // Need to assign whole object for change detection of new addresses.
-            // TODO: Simply set new addressInfo in Vue 3.
-            this.state.addressInfos = {
-                ...this.state.addressInfos,
-                [addressInfo.address]: addressInfo,
-            };
-        },
-        setAddressInfos(addressInfos: BtcAddressInfo[]) {
+        addAddressInfos(addressInfos: BtcAddressInfo[]) {
             const newAddressInfos: {[address: string]: BtcAddressInfo} = {};
 
             for (const addressInfo of addressInfos) {
                 newAddressInfos[addressInfo.address] = addressInfo;
             }
 
-            this.state.addressInfos = newAddressInfos;
-
-            // TODO: Remove transactions that became obsolete because their address was removed?
+            this.state.addressInfos = {
+                ...this.state.addressInfos,
+                ...newAddressInfos,
+            };
         },
         patchAddress(address: string, patch: Partial<BtcAddressInfo>) {
             if (!this.state.addressInfos[address]) return;

@@ -9,11 +9,16 @@
         </PageHeader>
         <PageBody class="flex-column">
             <Copyable class="address"
-                :class="{ 'already-copied': !!recentlyCopiedAddresses[activeExternalAddress] }"
-                :text="activeExternalAddress"
-                @click.native="copyAddress"
+                :text="currentlyShownAddress"
+                @click.native="copyActiveAddressCallback"
             >
-                {{ activeExternalAddress }}
+                <transition-group name="translateY">
+                    <div
+                        v-for="address in [currentlyShownAddress]"
+                        :key="address"
+                        :class="{ 'already-copied': !!recentlyCopiedAddresses[address] }"
+                    >{{ address }}</div>
+                </transition-group>
             </Copyable>
 
             <transition name="fade">
@@ -37,7 +42,7 @@
             <div class="recently-copied-addresses flex-column">
                 <transition name="fade">
                     <p class="no-recently-copied-address"
-                        v-if="!recentlyCopiedAddressesList.length">
+                        v-if="!recentlyCopiedAddressesListSorted.length">
                         {{ $t('Recent addresses will be listed here, until they receive a transaction.') }}
                     </p>
 
@@ -47,8 +52,8 @@
 
                         <transition-group name="tranlsateY-fade-list">
                             <div class="address-item flex-row"
-                                :class="{ rename }"
                                 v-for="{ address, label, rename } in recentlyCopiedAddressesListSorted"
+                                :class="{ rename }"
                                 :key="address"
                             >
                                 <transition name="fade">
@@ -56,8 +61,8 @@
                                         <LabelInput :placeholder="$t('Label the sender')"
                                             v-model="recentlyCopiedAddresses[address].label"
                                             :ref="`address-label-${address}`"
-                                            @blur.native.capture="recentlyCopiedAddresses[address].rename = false"
-                                            @keyup.native.enter="recentlyCopiedAddresses[address].rename = false"
+                                            @blur.native.capture="hideRenameAddressLabelInput(address)"
+                                            @keyup.native.enter="hideRenameAddressLabelInput(address)"
                                         />
                                     </div>
                                     <div class="flex-column" key="not-renaming" v-else>
@@ -95,7 +100,7 @@
         <!-- copied from ReceiveModal.vue -->
         <PageBody v-if="addressQrCodeOverlayOpened" class="address-qr-overlay flex-column" slot="overlay">
             <QrCode
-                :data="activeExternalAddress"
+                :data="currentlyShownAddress"
                 :size="520"
                 :fill="'#1F2348' /* nimiq-blue */"
                 class="qr-code"
@@ -149,22 +154,59 @@ import {
 } from '@nimiq/vue-components';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcAddressStore, BtcAddressInfo } from '../../stores/BtcAddress';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import ShortAddress from '../ShortAddress.vue';
+import { BTC_ADDRESS_GAP } from '../../lib/Constants';
 
 interface BtcCopiedAddressInfo {
     address: string;
-    copiedAt: number;
+    timestamp: number;
     label: string;
     rename: boolean;
 }
 
 export default defineComponent({
     setup(props, context) {
-        const { activeExternalAddresses } = useBtcAddressStore();
-        const activeExternalAddress = ref(activeExternalAddresses.value[0]);
+        const {
+            addressSet: { value: { external } },
+            senderLabels,
+            setSenderLabel,
+            copiedAddresses,
+            setCopiedAddress,
+        } = useBtcAddressStore();
+
+        // Copy address / address copied
+        const addressCopied = ref<boolean>(false);
+        const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
+        const recentlyCopiedAddresses: Ref<{ [address: string]: BtcCopiedAddressInfo }> = computed(() =>
+            (Object.keys(copiedAddresses.value) || []).map((address) => ({
+                get label() { return senderLabels.value[this.address] || ''; },
+                set label(value) { setSenderLabel(this.address, value); },
+                get rename() { return shownLabelInputByAddress.value[this.address]; },
+                set rename(value) { shownLabelInputByAddress.value[this.address] = value; },
+                timestamp: copiedAddresses.value[address],
+                address,
+            })).reduce((acc: any, cur) => (acc[cur.address] = cur) && acc, {}),
+        );
+        const recentlyCopiedAddressesListSorted = computed(() =>
+            Object.values(recentlyCopiedAddresses.value).sort(({ timestamp }) => -timestamp),
+        );
+
+        const activeExternalAddresses = computed(() =>
+            external
+                .slice(external.length - BTC_ADDRESS_GAP)
+                .filter(({ used, address }: BtcAddressInfo) => !used && !recentlyCopiedAddresses.value[address])
+                .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
+        );
+        const currentlyShownAddress = ref(activeExternalAddresses.value[0]
+            || external.find(({ used, address }: BtcAddressInfo) =>
+                !used && recentlyCopiedAddresses.value[address] && !recentlyCopiedAddresses.value[address].label,
+            )?.address
+            || external.find(({ used }: BtcAddressInfo) => !used)?.address
+            || external[external.length - 1].address,
+        );
 
         // Modals booleans
         const addressQrCodeOverlayOpened = ref<boolean>(false);
@@ -182,83 +224,69 @@ export default defineComponent({
         }));
 
         const requestLink = computed(
-            () => createRequestLink(activeExternalAddress.value, requestLinkOptions.value),
+            () => createRequestLink(currentlyShownAddress.value, requestLinkOptions.value),
         );
 
-        // Copy address / address copied
-        const addressCopied = ref<boolean>(false);
-        const recentlyCopiedAddresses: Ref<Record<string, BtcCopiedAddressInfo>> = ref(new Set());
-        const recentlyCopiedAddressesList: Ref<readonly BtcCopiedAddressInfo[]> = computed(() =>
-            Object.values(recentlyCopiedAddresses.value),
-        );
-        const recentlyCopiedAddressesListSorted = computed(() =>
-            (recentlyCopiedAddressesList.value as BtcCopiedAddressInfo[]).sort((addressInfo) => -addressInfo.copiedAt),
-        );
+        // Show the LabelInput for the given address and focus it
+        function showRenameAddressLabelInput(address: string) {
+            shownLabelInputByAddress.value = {
+                ...shownLabelInputByAddress.value,
+                [address]: true,
+            };
+            context.root.$nextTick(() => {
+                const refs = (context.refs[`address-label-${address}`] as Vue[] | undefined);
 
-        function copyAddress() {
+                if (refs && refs.length) {
+                    (refs[0] as LabelInput).focus();
+                }
+            });
+        }
+
+        // Hide the LabelInput for the given address
+        function hideRenameAddressLabelInput(address: string) {
+            shownLabelInputByAddress.value = {
+                ...shownLabelInputByAddress.value,
+                [address]: false,
+            };
+        }
+
+        /* Copy the address in the .address copyable */
+        function copyActiveAddressCallback() {
             if (!addressCopied.value) {
                 addressCopied.value = true;
             }
 
-            if (!recentlyCopiedAddresses.value[activeExternalAddress.value]) {
-                recentlyCopiedAddresses.value = {
-                    ...recentlyCopiedAddresses.value,
-                    [activeExternalAddress.value]: {
-                        address: activeExternalAddress.value,
-                        copiedAt: Date.now(),
-                        label: '',
-                        rename: true,
-                    },
-                };
-
-                context.root.$nextTick(() => {
-                    const refs = (context.refs[`address-label-${activeExternalAddress.value}`] as Vue[] | undefined);
-
-                    if (refs && refs.length) {
-                        const label = (refs[0] as LabelInput);
-
-                        label.focus();
-                    }
-                });
+            if (!recentlyCopiedAddresses.value[currentlyShownAddress.value]) {
+                setCopiedAddress(currentlyShownAddress.value, Date.now());
+                showRenameAddressLabelInput(currentlyShownAddress.value);
             }
         }
 
         // Show Next External Address in the Copyable Box
         function showNextExternalAddress() {
-            activeExternalAddress.value = activeExternalAddresses.value.find(
-                (address: string) => !recentlyCopiedAddresses.value[address],
-            ) || activeExternalAddresses.value[activeExternalAddresses.value.length - 1];
-        }
+            const nextActiveExternalAddress = activeExternalAddresses.value
+                .find((address: string) => !recentlyCopiedAddresses.value[address]);
 
-        // Show the LabelInput for the given address
-        function showRenameAddressLabelInput(address: string) {
-            recentlyCopiedAddresses.value[address].rename = true;
-            context.root.$nextTick(() => {
-                const refs = (context.refs[`address-label-${address}`] as Vue[] | undefined);
-
-                if (refs && refs.length) {
-                    const label = (refs[0] as LabelInput);
-
-                    label.focus();
-                }
-            });
+            if (nextActiveExternalAddress) {
+                currentlyShownAddress.value = nextActiveExternalAddress;
+            }
         }
 
         return {
             origin: window.location.origin,
-            activeExternalAddress,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
             amount,
             message,
             requestLink,
-            copyAddress,
+            copyActiveAddressCallback,
             addressCopied,
             recentlyCopiedAddresses,
-            recentlyCopiedAddressesList,
             recentlyCopiedAddressesListSorted,
             showNextExternalAddress,
             showRenameAddressLabelInput,
+            hideRenameAddressLabelInput,
+            currentlyShownAddress,
         };
     },
     components: {
@@ -307,6 +335,8 @@ export default defineComponent({
 }
 
 .address {
+    --padding: 1.5rem;
+
     width: 100%;
     margin-top: 5rem;
     border-radius: 5px;
@@ -315,8 +345,10 @@ export default defineComponent({
     background-color: var(--nimiq-highlight-bg);
     font-weight: 500;
     color: var(--text-100);
+    height: calc(var(--body-size) + 4px + (var(--padding) * 2));
+    padding: 0;
 
-    &.already-copied {
+    .already-copied {
         color: var(--text-35);
     }
 
@@ -329,6 +361,39 @@ export default defineComponent({
     &:hover,
     &:focus {
         background-color: transparent;
+    }
+
+    & /deep/ > span {
+        position: relative;
+        overflow: hidden;
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: var(--padding);
+
+        div {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+
+            &.translateY-enter-active,
+            &.translateY-leave-active {
+                transition: transform var(--long-transition-duration) var(--nimiq-ease);
+            }
+
+            &.translateY-enter-to,
+            &.translateY-leave {
+                transform: translateX(-50%);
+            }
+
+            &.translateY-enter {
+                transform: translateX(-50%) translateY(calc((var(--body-size) + 4px + (var(--padding) * 2)) * -1));
+            }
+
+            &.translateY-leave-to {
+                transform: translateX(-50%) translateY(calc(var(--body-size) + 4px + (var(--padding) * 2)));
+            }
+        }
     }
 }
 

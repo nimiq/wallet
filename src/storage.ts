@@ -199,6 +199,10 @@ export function initStorage() {
             localStorage.setItem(StorageKeys.BTCADDRESSINFOS, JSON.stringify(btcAddressStore.state));
         }),
     );
+
+    /**
+     * BTC Labels
+     */
 }
 
 export function clearStorage() {

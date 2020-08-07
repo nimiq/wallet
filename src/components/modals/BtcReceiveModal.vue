@@ -52,7 +52,7 @@
 
                         <transition-group name="tranlsateY-fade-list">
                             <div class="address-item flex-row"
-                                v-for="{ address, label, rename } in recentlyCopiedAddressesListSorted"
+                                v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
                                 :class="{ rename }"
                                 :key="address"
                             >
@@ -72,7 +72,7 @@
                                         >
                                             {{ label || $t("Unlabelled") }}
                                         </div>
-                                        <div class="address-created">created 1min ago</div><!-- TODO -->
+                                        <div class="address-created">{{ timelabel }}</div>
                                     </div>
                                 </transition>
                                 <Tooltip class="address-short" preferredPosition="top left">
@@ -140,7 +140,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, onUnmounted } from '@vue/composition-api';
 import {
     PageBody,
     PageHeader,
@@ -163,6 +163,7 @@ import { BTC_ADDRESS_GAP } from '../../lib/Constants';
 interface BtcCopiedAddressInfo {
     address: string;
     timestamp: number;
+    timelabel: string; // readonly
     label: string;
     rename: boolean;
 }
@@ -177,6 +178,55 @@ export default defineComponent({
             setCopiedAddress,
         } = useBtcAddressStore();
 
+        const second = 1000;
+        const minute = 60 * second;
+        const hour = 60 * minute;
+        const day = 24 * hour;
+        const now = ref(Date.now());
+
+        const secondInterval = setInterval(() => {
+            now.value = Date.now();
+        }, 1 * second);
+
+        onUnmounted(() => {
+            clearInterval(secondInterval);
+        });
+
+        // return a string generated from a timestamp
+        function getTimeLabel(timestamp: number): string {
+            const difference = now.value - timestamp;
+
+            if (difference < 1 * second) {
+                return context.root.$tc('Created just now');
+            }
+            if (difference < 1 * minute) {
+                return context.root.$tc(
+                    'Created {count} second ago | Created {count} seconds ago',
+                    Math.trunc(difference / second),
+                );
+            }
+            if (difference < 1 * hour) {
+                return context.root.$tc(
+                    'Created {count} minute ago | Created {count} minutes ago',
+                    Math.trunc(difference / minute),
+                );
+            }
+            if (difference < 1 * day) {
+                return context.root.$tc(
+                    'Created {count} hour ago | Created {count} hours ago',
+                    Math.trunc(difference / hour),
+                );
+            }
+            if (difference >= 1 * day) {
+                return context.root.$tc(
+                    'Created {count} day ago | Created {count} days ago',
+                    Math.trunc(difference / day),
+                );
+            }
+
+            return context.root.$tc('Created some time ago');
+        }
+
         // Copy address / address copied
         const addressCopied = ref<boolean>(false);
         const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
@@ -186,6 +236,7 @@ export default defineComponent({
                 set label(value) { setSenderLabel(this.address, value); },
                 get rename() { return shownLabelInputByAddress.value[this.address]; },
                 set rename(value) { shownLabelInputByAddress.value[this.address] = value; },
+                get timelabel() { return getTimeLabel(this.timestamp); },
                 timestamp: copiedAddresses.value[address],
                 address,
             })).reduce((acc: any, cur) => (acc[cur.address] = cur) && acc, {}),
@@ -194,12 +245,15 @@ export default defineComponent({
             Object.values(recentlyCopiedAddresses.value).sort(({ timestamp }) => -timestamp),
         );
 
+        // Available addresses to display
         const activeExternalAddresses = computed(() =>
             external
                 .slice(external.length - BTC_ADDRESS_GAP)
                 .filter(({ used, address }: BtcAddressInfo) => !used && !recentlyCopiedAddresses.value[address])
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
         );
+
+        // Currently displayed address
         const currentlyShownAddress = ref(activeExternalAddresses.value[0]
             || external.find(({ used, address }: BtcAddressInfo) =>
                 !used && recentlyCopiedAddresses.value[address] && !recentlyCopiedAddresses.value[address].label,

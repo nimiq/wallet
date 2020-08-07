@@ -81,7 +81,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:25
+#: src/components/modals/BtcReceiveModal.vue:32
 #: src/components/modals/BtcSendModal.vue:29
 msgid "Although reusing addresses won’t result in a loss of funds, it is highly recommended not to do so."
 msgstr ""
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Create a new account and transfer your funds. New features and possibilities await."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:31
+#: src/components/modals/BtcReceiveModal.vue:38
 msgid "Create a new single-use address."
 msgstr ""
 
@@ -255,9 +255,33 @@ msgstr ""
 msgid "Create backup"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:84
+#: src/components/modals/BtcReceiveModal.vue:94
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:221
+msgid "Created {count} day ago | Created {count} days ago"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:215
+msgid "Created {count} hour ago | Created {count} hours ago"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:209
+msgid "Created {count} minute ago | Created {count} minutes ago"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:203
+msgid "Created {count} second ago | Created {count} seconds ago"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:200
+msgid "Created just now"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:227
+msgid "Created some time ago"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:50
@@ -302,8 +326,8 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:441
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/BtcSendModal.vue:447
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr ""
 
@@ -478,7 +502,7 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:54
+#: src/components/modals/BtcReceiveModal.vue:61
 msgid "Label the sender"
 msgstr ""
 
@@ -651,11 +675,11 @@ msgstr ""
 msgid "received at {dateAndTime}"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:39
+#: src/components/modals/BtcReceiveModal.vue:46
 msgid "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:44
+#: src/components/modals/BtcReceiveModal.vue:51
 msgid "RECENTLY COPIED"
 msgstr ""
 
@@ -677,8 +701,8 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:479
+#: src/components/modals/BtcSendModal.vue:446
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr ""
 
@@ -690,7 +714,7 @@ msgstr ""
 msgid "Save now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:98
+#: src/components/modals/BtcReceiveModal.vue:108
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
 "Scan the code to send\n"
@@ -742,24 +766,24 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:476
+#: src/components/modals/BtcSendModal.vue:443
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:486
+#: src/components/modals/BtcSendModal.vue:502
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:482
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:511
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:507
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -785,7 +809,7 @@ msgstr ""
 msgid "Share a single-use address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:106
+#: src/components/modals/BtcReceiveModal.vue:116
 #: src/components/modals/ReceiveModal.vue:46
 msgid ""
 "Share the link or QR code with the sender.\n"
@@ -796,7 +820,7 @@ msgstr ""
 msgid "Share your address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:104
+#: src/components/modals/BtcReceiveModal.vue:114
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your Payment Link"
 msgstr ""
@@ -821,8 +845,8 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:497
-#: src/components/modals/SendModal.vue:522
+#: src/components/modals/BtcSendModal.vue:513
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr ""
 
@@ -892,7 +916,7 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:21
+#: src/components/modals/BtcReceiveModal.vue:26
 msgid "This is a single-use address"
 msgstr ""
 
@@ -939,7 +963,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:66
+#: src/components/modals/BtcReceiveModal.vue:73
 msgid "Unlabelled"
 msgstr ""
 
@@ -947,7 +971,7 @@ msgstr ""
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:24
+#: src/components/modals/BtcReceiveModal.vue:30
 #: src/components/modals/BtcSendModal.vue:26
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""

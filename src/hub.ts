@@ -8,7 +8,7 @@ import { useTransactionsStore } from './stores/Transactions';
 // import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
-import { sendTransaction as sendBtcTx } from './electrum';
+import { sendTransaction as sendBtcTx } from './electrum'; // eslint-disable-line import/no-cycle
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 import router from './router';
 
@@ -379,4 +379,49 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);
+}
+
+export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external') {
+    const accountStore = useAccountStore();
+    const accountInfo = accountStore.state.accountInfos[accountId];
+
+    const existingAddresses = accountInfo.btcAddresses[chain];
+
+    const result = await hubApi.addBtcAddresses({
+        appName: APP_NAME,
+        accountId,
+        chain,
+        firstIndex: existingAddresses.length - 1, // Fetch one earlier to compare to the last known one
+    });
+
+    const newAddresses = result.addresses;
+
+    if (existingAddresses[existingAddresses.length - 1] !== newAddresses.shift()) {
+        throw new Error(
+            `UNEXPECTED: BTC address at end of list does not match derived address at its index (${chain} chain)`,
+        );
+    }
+
+    const btcAddressInfos: BtcAddressInfo[] = newAddresses.map((address) => ({
+        address,
+        used: false,
+        utxos: [],
+    }));
+
+    // Add address infos first
+    const btcAddressStore = useBtcAddressStore();
+    btcAddressStore.addAddressInfos(btcAddressInfos);
+
+    // Add raw addresses to account's address list to recalculate the BTC address set
+    accountStore.patchAccount(accountId, {
+        btcAddresses: {
+            ...accountInfo.btcAddresses,
+            [chain]: [
+                ...accountInfo.btcAddresses[chain],
+                ...newAddresses,
+            ],
+        },
+    });
+
+    return btcAddressInfos;
 }

@@ -5,11 +5,12 @@ import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
 import { useAccountStore } from './stores/Account';
-import { useBtcAddressStore } from './stores/BtcAddress';
+import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
-import { useBtcTransactionsStore } from './stores/BtcTransactions';
+import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
 import { BTC_ADDRESS_GAP, ENV_MAIN } from './lib/Constants';
 import { loadBitcoinJS } from './lib/BitcoinJSLoader';
+import { addBtcAddresses } from './hub'; // eslint-disable-line import/no-cycle
 
 let isLaunched = false;
 let clientPromise: Promise<ElectrumApi>;
@@ -79,6 +80,71 @@ export async function sendTransaction(tx: SignedBtcTransaction) {
     return plainTx;
 }
 
+async function checkHistory(
+    addressInfos: BtcAddressInfo[],
+    pendingTransactions: Transaction[],
+    gap: number,
+    allowedGap: number,
+    onError: () => void,
+): Promise<number> {
+    const client = await getElectrumClient();
+    const { state: btcNetwork$ } = useBtcNetworkStore();
+    const btcTransactionsStore = useBtcTransactionsStore();
+
+    for (const addressInfo of addressInfos) {
+        const { address } = addressInfo;
+
+        if (addressInfo.used && !addressInfo.utxos.length) {
+            const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
+            if (!hasPendingTransactions) {
+                gap = 0;
+                // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
+                continue;
+            }
+        }
+
+        const knownTxDetails = addressInfo.used
+            ? Object.values(btcTransactionsStore.state.transactions)
+                .filter((tx) => tx.addresses.includes(address))
+                .map((tx) => ({
+                    blockHeight: tx.blockHeight || 0,
+                    transactionHash: tx.transactionHash,
+                }))
+            : [];
+
+        // const lastConfirmedHeight = knownTxDetails
+        //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
+        //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+
+        btcNetwork$.fetchingTxHistory++;
+
+        console.debug('Fetching transaction history for', address, knownTxDetails);
+        // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
+        //        (even when cross-account transactions are already present)
+        // eslint-disable-next-line no-await-in-loop
+        await client.getHistory(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
+            .then((txDetails) => { // eslint-disable-line no-loop-func
+                btcTransactionsStore.addTransactions(txDetails);
+
+                const used = addressInfo.used || txDetails.length > 0;
+
+                if (used) {
+                    gap = 0;
+                } else {
+                    gap += 1;
+                }
+            })
+            .catch(onError)
+            // Delay resetting fetchingTxHistory to prevent flickering of status,
+            // because we are only checking one address after the other currently.
+            .then(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
+
+        if (gap >= allowedGap) break;
+    }
+
+    return gap;
+}
+
 export async function launchElectrum() {
     if (isLaunched) return;
     isLaunched = true;
@@ -120,59 +186,26 @@ export async function launchElectrum() {
 
         // Check tx history
         for (const chain of ['internal' as 'internal', 'external' as 'external']) {
-            let gap = 0;
             const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 1;
 
-            for (const addressInfo of addressSet.value[chain]) {
-                const { address } = addressInfo;
+            let gap = 0;
+            let addressInfos = addressSet.value[chain];
+            do {
+                gap = await checkHistory( // eslint-disable-line no-await-in-loop
+                    addressInfos,
+                    pendingTransactions,
+                    gap,
+                    allowedGap,
+                    () => fetchedAccounts.delete(accountId),
+                );
 
-                if (addressInfo.used && !addressInfo.utxos.length) {
-                    const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
-                    if (!hasPendingTransactions) {
-                        gap = 0;
-                        // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
-                        continue;
-                    }
+                if (gap < allowedGap) {
+                    // Get new addresses from Hub iframe and continue detection
+                    btcNetwork$.fetchingTxHistory++;
+                    addressInfos = await addBtcAddresses(accountId, chain); // eslint-disable-line no-await-in-loop
+                    setTimeout(() => btcNetwork$.fetchingTxHistory--, 100);
                 }
-
-                const knownTxDetails = addressInfo.used
-                    ? Object.values(btcTransactionsStore.state.transactions)
-                        .filter((tx) => tx.addresses.includes(address))
-                        .map((tx) => ({
-                            blockHeight: tx.blockHeight || 0,
-                            transactionHash: tx.transactionHash,
-                        }))
-                    : [];
-
-                // const lastConfirmedHeight = knownTxDetails
-                //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
-                //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-
-                btcNetwork$.fetchingTxHistory++;
-
-                console.debug('Fetching transaction history for', address, knownTxDetails);
-                // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
-                //        (even when cross-account transactions are already present)
-                // eslint-disable-next-line no-await-in-loop
-                await client.getHistory(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
-                    .then((txDetails) => { // eslint-disable-line no-loop-func
-                        btcTransactionsStore.addTransactions(txDetails);
-
-                        const used = addressInfo.used || txDetails.length > 0;
-
-                        if (used) {
-                            gap = 0;
-                        } else {
-                            gap += 1;
-                        }
-                    })
-                    .catch(() => fetchedAccounts.delete(accountId))
-                    // Delay resetting fetchingTxHistory to prevent flickering of status,
-                    // because we are only checking one address after the other currently.
-                    .then(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
-
-                if (gap >= allowedGap) break;
-            }
+            } while (gap < allowedGap);
         }
 
         // Subscribe to addresses that now have UTXOs
@@ -191,8 +224,8 @@ export async function launchElectrum() {
     // Subscribe to all unused external addresses until the gap limit
     const unusedExternalAddresses = computed(() => {
         let gap = 0;
-        return addressSet.value.external.filter((addressInfo) => {
-            if (gap > BTC_ADDRESS_GAP) return false;
+        const addresses = addressSet.value.external.filter((addressInfo) => {
+            if (gap >= BTC_ADDRESS_GAP) return false;
             if (addressInfo.used) {
                 gap = 0;
                 return false;
@@ -200,6 +233,12 @@ export async function launchElectrum() {
             gap += 1;
             return true;
         }).map((addressInfo) => addressInfo.address);
+
+        if (gap < BTC_ADDRESS_GAP) {
+            addBtcAddresses(useAccountStore().activeAccountId.value!, 'external');
+        }
+
+        return addresses;
     });
     watch([unusedExternalAddresses, isFetchingTxHistory], async ([addresses, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
@@ -210,8 +249,18 @@ export async function launchElectrum() {
     });
 
     // Subscribe to the next unused internal address per account
-    const nextUnusedChangeAddress = computed(() => addressSet.value.internal
-        .find((addressInfo) => !addressInfo.used)?.address);
+    // (This is not really necessary, since an internal address can only receive txs from an external
+    // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
+    const nextUnusedChangeAddress = computed(() => {
+        const address = addressSet.value.internal
+            .find((addressInfo) => !addressInfo.used)?.address;
+
+        if (!address) {
+            addBtcAddresses(useAccountStore().activeAccountId.value!, 'internal');
+        }
+
+        return address;
+    });
     watch([nextUnusedChangeAddress, isFetchingTxHistory], async ([address, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!address) return;

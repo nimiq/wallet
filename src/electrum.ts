@@ -178,6 +178,9 @@ export async function launchElectrum() {
 
         const { addressSet, activeAddresses } = btcAddressStore;
 
+        // If this account does't have any Bitcoin addresses, there's nothing to check.
+        if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
+
         // Check pending transactions
         // Get all transactions for the active addresses
         const pendingTransactions = Object.values(btcTransactionsStore.state.transactions)
@@ -224,6 +227,8 @@ export async function launchElectrum() {
 
     // Subscribe to all unused external addresses until the gap limit
     const unusedExternalAddresses = computed(() => {
+        if (!addressSet.value.external.length) return null;
+
         let gap = 0;
         const addresses = addressSet.value.external.filter((addressInfo) => {
             if (gap >= BTC_ADDRESS_GAP) return false;
@@ -253,6 +258,8 @@ export async function launchElectrum() {
     // (This is not really necessary, since an internal address can only receive txs from an external
     // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
     const nextUnusedChangeAddress = computed(() => {
+        if (!addressSet.value.internal.length) return null;
+
         const address = addressSet.value.internal
             .find((addressInfo) => !addressInfo.used)?.address;
 

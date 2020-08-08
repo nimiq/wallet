@@ -50,7 +50,7 @@
                         <div class="scroll-mask top"></div>
                         <h2 class="nq-h2">{{ $t('RECENTLY COPIED') }}</h2>
 
-                        <transition-group name="tranlsateY-fade-list">
+                        <transition-group name="tranlsateY-fade-list" tag="div">
                             <div class="address-item flex-row"
                                 v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
                                 :class="{ rename }"
@@ -95,6 +95,26 @@
                 </button>
                 <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true"><QrCodeIcon/></button>
             </footer>
+
+            <Tooltip class="info-tooltip" preferredPosition="bottom right">
+                <InfoCircleSmallIcon slot="trigger"/>
+                <div class="flex-column">
+                    <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
+                        + 'Reuse of addresses does not result in a loss of funds.') }}</p>
+                    <div class="flex-column">
+                        <div class="flex-row">
+                            <RefreshIcon />
+                            <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                        </div>
+                        <div class="flex-row">
+                            <BracketsIcon />
+                            <p>{{
+                                $t('Use labels instead of contacts to easily identify transactions in your history.')
+                            }}</p>
+                        </div>
+                    </div>
+                </div>
+            </Tooltip>
         </PageBody>
 
         <!-- copied from ReceiveModal.vue -->
@@ -156,6 +176,7 @@ import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Cur
 import Modal from './Modal.vue';
 import { useBtcAddressStore, BtcAddressInfo } from '../../stores/BtcAddress';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { BTC_ADDRESS_GAP } from '../../lib/Constants';
@@ -357,6 +378,7 @@ export default defineComponent({
         RefreshIcon,
         LabelInput,
         ShortAddress,
+        BracketsIcon,
     },
 });
 </script>
@@ -700,6 +722,49 @@ footer {
         svg {
             width: 4rem;
             height: auto;
+        }
+    }
+}
+
+.info-tooltip {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+
+    /deep/ .trigger svg {
+        opacity: .3;
+    }
+
+    /deep/ .tooltip-box {
+        width: 26.25rem;
+        font-size: var(--small-size);
+        font-weight: 600;
+        transform: translate(-1rem, 2rem);
+
+        p {
+            margin: 0;
+        }
+
+        p:first-child,
+        .flex-row:first-child {
+            margin-bottom: 1rem;
+        }
+
+        .flex-row {
+            align-items: flex-start;
+
+            p {
+                flex-basis: 80%;
+            }
+
+            svg {
+                width: 2rem;
+                height: auto;
+                flex-grow: 1;
+                fill: currentColor;
+                opacity: 0.6;
+                margin: 0 1rem;
+            }
         }
     }
 }

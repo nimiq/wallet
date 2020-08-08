@@ -260,27 +260,27 @@ msgstr ""
 msgid "Create payment link"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:221
+#: src/components/modals/BtcReceiveModal.vue:242
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:215
+#: src/components/modals/BtcReceiveModal.vue:236
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:209
+#: src/components/modals/BtcReceiveModal.vue:230
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:203
+#: src/components/modals/BtcReceiveModal.vue:224
 msgid "Created {count} second ago | Created {count} seconds ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:200
+#: src/components/modals/BtcReceiveModal.vue:221
 msgid "Created just now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:227
+#: src/components/modals/BtcReceiveModal.vue:248
 msgid "Created some time ago"
 msgstr ""
 
@@ -300,6 +300,10 @@ msgstr ""
 #: src/components/layouts/Settings.vue:122
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:107
+msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
@@ -714,7 +718,7 @@ msgstr ""
 msgid "Save now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:108
+#: src/components/modals/BtcReceiveModal.vue:128
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
 "Scan the code to send\n"
@@ -809,7 +813,7 @@ msgstr ""
 msgid "Share a single-use address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:116
+#: src/components/modals/BtcReceiveModal.vue:136
 #: src/components/modals/ReceiveModal.vue:46
 msgid ""
 "Share the link or QR code with the sender.\n"
@@ -820,7 +824,7 @@ msgstr ""
 msgid "Share your address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:114
+#: src/components/modals/BtcReceiveModal.vue:134
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your Payment Link"
 msgstr ""
@@ -980,6 +984,10 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr ""
 
+#: src/components/modals/BtcReceiveModal.vue:112
+msgid "Use labels instead of contacts to easily identify transactions in your history."
+msgstr ""
+
 #: src/components/modals/BetaNoticeModal.vue:13
 msgid ""
 "Welcome to the\n"
@@ -988,6 +996,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:84
 msgid "What else?"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:102
+msgid "With Bitcoin, a new address is used for every transaction to improve privacy.Reuse of addresses does not result in a loss of funds."
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:10

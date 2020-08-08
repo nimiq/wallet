@@ -733,6 +733,14 @@ footer {
 
     /deep/ .trigger svg {
         opacity: .3;
+
+        transition: color var(--short-transition-duration) var(--nimiq-ease);
+    }
+
+    & /deep/ .trigger:hover svg,
+    & /deep/ .trigger:focus svg,
+    &.shown /deep/ .trigger svg {
+        opacity: .6;
     }
 
     /deep/ .tooltip-box {

@@ -381,7 +381,7 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
     return sendBtcTx(signedTransaction);
 }
 
-export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external') {
+export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {
     const accountStore = useAccountStore();
     const accountInfo = accountStore.state.accountInfos[accountId];
 
@@ -394,13 +394,13 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
         firstIndex: existingAddresses.length - 1, // Fetch one earlier to compare to the last known one
     });
 
-    const newAddresses = result.addresses;
-
-    if (existingAddresses[existingAddresses.length - 1] !== newAddresses.shift()) {
+    if (existingAddresses[existingAddresses.length - 1] !== result.addresses[0]) {
         throw new Error(
             `UNEXPECTED: BTC address at end of list does not match derived address at its index (${chain} chain)`,
         );
     }
+
+    const newAddresses = result.addresses.slice(1, count ? count + 1 : undefined);
 
     const btcAddressInfos: BtcAddressInfo[] = newAddresses.map((address) => ({
         address,

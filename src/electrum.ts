@@ -202,7 +202,8 @@ export async function launchElectrum() {
                 if (gap < allowedGap) {
                     // Get new addresses from Hub iframe and continue detection
                     btcNetwork$.fetchingTxHistory++;
-                    addressInfos = await addBtcAddresses(accountId, chain); // eslint-disable-line no-await-in-loop
+                    // eslint-disable-next-line no-await-in-loop
+                    addressInfos = await addBtcAddresses(accountId, chain, allowedGap - gap);
                     setTimeout(() => btcNetwork$.fetchingTxHistory--, 100);
                 }
             } while (gap < allowedGap);
@@ -235,7 +236,7 @@ export async function launchElectrum() {
         }).map((addressInfo) => addressInfo.address);
 
         if (gap < BTC_ADDRESS_GAP) {
-            addBtcAddresses(useAccountStore().activeAccountId.value!, 'external');
+            addBtcAddresses(useAccountStore().activeAccountId.value!, 'external', BTC_ADDRESS_GAP - gap);
         }
 
         return addresses;

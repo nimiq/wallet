@@ -10,17 +10,28 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { LabelInput } from '@nimiq/vue-components';
 import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
-import { BIP49_ADDRESS_VERSIONS, BIP84_ADDRESS_PREFIX } from '../../../hub/src/lib/bitcoin/BitcoinConstants';
 import { ENV_MAIN } from '../lib/Constants';
 import { parseBitcoinUrl } from '../lib/BitcoinTransactionUtils';
 
 /* global BitcoinJS */
 
+export const BIP49_ADDRESS_VERSIONS = {
+    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
+    MAIN: [0, 5], // 0 = BIP44, 5 = BIP49
+    TEST: [111, 196], // 111 = BIP44, 196 = BIP49
+};
+
+export const BIP84_ADDRESS_PREFIX = {
+    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
+    MAIN: 'bc',
+    TEST: 'tb',
+};
+
 function validateAddress(address: string, network: 'MAIN' | 'TEST') {
     try {
         // @ts-ignore BitcoinJS is not defined
         const parsedAddress = BitcoinJS.address.fromBase58Check(address);
-        return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version);
+        return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version); // Check includes legacy BIP44 versions
     } catch (error) {
         // Ignore
     }

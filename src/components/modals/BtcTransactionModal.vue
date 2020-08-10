@@ -90,7 +90,7 @@
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <Avatar :label="peerLabel"/>
+                    <Avatar :label="peerLabel || ''"/>
                     <!-- <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
                         :placeholder="$t('Add contact')"

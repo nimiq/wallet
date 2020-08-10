@@ -1,5 +1,5 @@
 import HubApi, { Account, SignTransactionRequest, SignBtcTransactionRequest } from '@nimiq/hub-api';
-import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
+import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';

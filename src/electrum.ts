@@ -172,14 +172,14 @@ export async function launchElectrum() {
     watch(activeAccountInfo, async () => {
         if (!activeAccountInfo.value) return;
 
-        const accountId = activeAccountInfo.value.id;
-        if (fetchedAccounts.has(accountId)) return;
-        fetchedAccounts.add(accountId);
-
         const { addressSet, activeAddresses } = btcAddressStore;
 
         // If this account does't have any Bitcoin addresses, there's nothing to check.
         if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
+
+        const accountId = activeAccountInfo.value.id;
+        if (fetchedAccounts.has(accountId)) return;
+        fetchedAccounts.add(accountId);
 
         // Check pending transactions
         // Get all transactions for the active addresses

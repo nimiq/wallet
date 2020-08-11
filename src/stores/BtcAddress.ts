@@ -38,13 +38,12 @@ export const useBtcAddressStore = createStore({
     } as BtcAddressState),
     getters: {
         addressSet: (state): BtcAddressSet => {
-            const accountStore = useAccountStore();
-            return accountStore.activeAccountInfo.value
+            const { activeAccountInfo } = useAccountStore();
+            const accountInfo = activeAccountInfo.value;
+            return accountInfo && accountInfo.btcAddresses
                 ? {
-                    internal: accountStore.activeAccountInfo.value.btcAddresses.internal
-                        .map((addr) => state.addressInfos[addr]),
-                    external: accountStore.activeAccountInfo.value.btcAddresses.external
-                        .map((addr) => state.addressInfos[addr]),
+                    internal: accountInfo.btcAddresses.internal.map((addr) => state.addressInfos[addr]),
+                    external: accountInfo.btcAddresses.external.map((addr) => state.addressInfos[addr]),
                 }
                 : {
                     internal: [],

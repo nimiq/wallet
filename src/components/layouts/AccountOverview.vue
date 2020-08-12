@@ -53,13 +53,13 @@
                     class="bitcoin-account-item reset flex-row"
                     :class="{
                         'active': activeCurrency === CryptoCurrency.BTC,
-                        'requires-activation': activeAccountInfo.btcAddresses.external.length === 0 }"
+                        'requires-activation': !hasBitcoinAddresses }"
                     @click="selectBitcoin"
                 >
                     <BitcoinIcon/>
                     {{ $t('Bitcoin') }}
                     <div class="flex-grow"></div>
-                    <div class="balances" v-if="activeAccountInfo.btcAddresses.external.length > 0">
+                    <div class="balances" v-if="hasBitcoinAddresses">
                         <Amount
                             :amount="btcAccountBalance"
                             :currency="CryptoCurrency.BTC"
@@ -131,6 +131,10 @@ export default defineComponent({
 
         const canHaveMultipleAddresses = computed(() => !isLegacyAccount.value);
 
+        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
+            && (activeAccountInfo.value.btcAddresses || false)
+            && activeAccountInfo.value.btcAddresses.external.length > 0);
+
         const { width } = useWindowSize();
 
         function onAddressSelected() {
@@ -182,6 +186,7 @@ export default defineComponent({
             selectBitcoin,
             activeCurrency,
             CryptoCurrency,
+            hasBitcoinAddresses,
             enableBitcoin,
         };
     },

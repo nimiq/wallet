@@ -43,6 +43,10 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
+#: src/components/layouts/AccountOverview.vue:75
+msgid "Activate"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:139
 msgid "Add a public message..."
 msgstr ""
@@ -76,7 +80,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:80
+#: src/components/layouts/AccountOverview.vue:82
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -106,6 +110,7 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
+#: src/components/layouts/AccountOverview.vue:60
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:71

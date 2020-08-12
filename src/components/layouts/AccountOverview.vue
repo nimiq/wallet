@@ -48,19 +48,18 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div
-                v-if="canHaveMultipleAddresses"
-                class="bitcoin-account flex-column"
-                @click="selectBitcoin"
-            >
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-column">
                 <button
                     class="bitcoin-account-item reset flex-row"
-                    :class="{ active: activeCurrency === CryptoCurrency.BTC }"
+                    :class="{
+                        'active': activeCurrency === CryptoCurrency.BTC,
+                        'requires-activation': activeAccountInfo.btcAddresses.external.length === 0 }"
+                    @click="selectBitcoin"
                 >
                     <BitcoinIcon/>
-                    Bitcoin
+                    {{ $t('Bitcoin') }}
                     <div class="flex-grow"></div>
-                    <div class="balances">
+                    <div class="balances" v-if="activeAccountInfo.btcAddresses.external.length > 0">
                         <Amount
                             :amount="btcAccountBalance"
                             :currency="CryptoCurrency.BTC"
@@ -72,6 +71,9 @@
                             value-mask
                         />
                     </div>
+                    <button v-else class="nq-button-pill light-blue" @click.stop="enableBitcoin()">
+                        {{ $t('Activate') }}
+                    </button>
                 </button>
             </div>
             <div v-else>
@@ -110,7 +112,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
-import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no-cycle
+import { backup, addAddress, activateBitcoin } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -161,6 +163,11 @@ export default defineComponent({
 
         watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
 
+        async function enableBitcoin() {
+            const activated = await activateBitcoin(activeAccountId.value!);
+            if (activated) selectBitcoin();
+        }
+
         return {
             activeAccountInfo,
             AccountType,
@@ -175,6 +182,7 @@ export default defineComponent({
             selectBitcoin,
             activeCurrency,
             CryptoCurrency,
+            enableBitcoin,
         };
     },
     components: {
@@ -332,9 +340,17 @@ export default defineComponent({
             timing-function: var(--nimiq-ease);
         };
 
-        &:not(.active):hover {
+        &:not(.active):not(.requires-activation):hover {
             color: var(--text-100);
             background: var(--nimiq-highlight-bg);
+        }
+
+        &.requires-activation {
+            pointer-events: none;
+
+            button {
+                pointer-events: all;
+            }
         }
 
         &::before {

@@ -128,21 +128,23 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         });
     }
 
+    // On iOS & Safari we cannot update the list of derived Bitcoin addresses in the Hub, when
+    // deriving new addresses via the iframe. We therefore cannot simply overwrite all stored
+    // Bitcoin address infos in the Wallet, as that would likely delete previously additional
+    // derived ones.
+    btcAddressStore.addAddressInfos(btcAddressInfos);
+
     if (replaceState) {
-        accountStore.setAccountInfos(accountInfos);
         addressStore.setAddressInfos(addressInfos);
+        accountStore.setAccountInfos(accountInfos);
     } else {
-        for (const accountInfo of accountInfos) {
-            accountStore.addAccountInfo(accountInfo);
-        }
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
         }
+        for (const accountInfo of accountInfos) {
+            accountStore.addAccountInfo(accountInfo);
+        }
     }
-
-    // On iOS & Safari we cannot update the list of derived Bitcoin addresses in the Hub, when
-    // deriving new addresses via the iframe. We therefor
-    btcAddressStore.addAddressInfos(btcAddressInfos);
 }
 
 export async function syncFromHub() {
@@ -379,6 +381,18 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);
+}
+
+export async function activateBitcoin(accountId: string) {
+    const account = await hubApi.activateBitcoin({
+        appName: APP_NAME,
+        accountId,
+    }).catch(onError);
+    if (!account) return false;
+
+    processAndStoreAccounts([account]);
+
+    return true;
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

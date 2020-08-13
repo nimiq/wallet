@@ -1,10 +1,12 @@
 <template>
     <button class="cross-close-button reset" v-on="$listeners">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2">
-                <line class="cls-1" x1="1" y1="1" x2="11" y2="11"/>
-                <line class="cls-1" x1="11" y1="1" x2="1" y2="11"/>
-            </g>
+            <path d="M1 1l10 10M11 1L1 11"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-miterlimit="10"
+                stroke-width="2"/>
         </svg>
     </button>
 </template>

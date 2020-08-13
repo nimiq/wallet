@@ -4,6 +4,8 @@
             <button class="reset menu-button" @click="$router.push({name: 'settings', query: {sidebar: true}})">
                 <MenuIcon/>
             </button>
+
+            <CrossCloseButton @click="$router.push('/').catch(() => {})"/>
         </div>
 
         <div class="column left-column flex-column">
@@ -121,10 +123,6 @@
             <strong>&middot;</strong>
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
-
-        <router-link to="/">
-            <CrossCloseButton />
-        </router-link>
 
         <Portal>
             <transition name="modal">
@@ -452,16 +450,13 @@ input[type="file"] {
     }
 }
 
-.cross-close-button {
-    color: var(--text-40);
-}
-
 @media (max-width: 1160px) { // Half mobile breakpoint
     .settings {
         padding: 5rem 3rem 3rem 4rem;
     }
 
     .mobile-menu-bar {
+        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -482,6 +477,10 @@ input[type="file"] {
             width: 3.5rem;
             height: 2.75rem;
             box-sizing: content-box;
+        }
+
+        button.cross-close-button {
+            font-size: 2rem;
         }
     }
 

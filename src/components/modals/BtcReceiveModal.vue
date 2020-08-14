@@ -278,7 +278,6 @@ export default defineComponent({
         // Available addresses to display
         const availableExternalAddresses = computed(() =>
             external
-                .slice(external.length - BTC_ADDRESS_GAP)
                 .filter(({ used, address }: BtcAddressInfo) => !used && !recentlyCopiedAddresses.value[address])
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
         );

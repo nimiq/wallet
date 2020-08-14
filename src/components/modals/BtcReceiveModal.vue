@@ -180,7 +180,6 @@ import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import ShortAddress from '../ShortAddress.vue';
-import { BTC_ADDRESS_GAP } from '../../lib/Constants';
 
 interface BtcCopiedAddressInfo {
     address: string;

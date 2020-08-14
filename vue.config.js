@@ -14,7 +14,7 @@ let release;
 if (process.env.NODE_ENV !== 'production') {
     release = 'dev';
 } else if (process.env.CI) {
-    release = 'ci';
+    release = child_process.execSync("git branch --show-current").toString().split('\n')[0];
 } else {
     release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
 }

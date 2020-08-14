@@ -2,12 +2,12 @@
 # Translators:
 # Sören Schwert <hello@soerenschwert.de>, 2020
 # Matheo <matheo@nimiq.com>, 2020
-# Daniel, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/107022/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -680,7 +680,7 @@ msgstr "Intente de nuevo"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr "Guarde el Archivo de Sesión"
+msgstr "Guarde el Archivo de Sesión"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"

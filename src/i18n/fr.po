@@ -680,7 +680,7 @@ msgstr "Réessayer"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr "Enregistrer le Fichier de Connexion"
+msgstr "Enregistrer le Fichier de Connexion"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"

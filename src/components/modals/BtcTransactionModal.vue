@@ -213,6 +213,7 @@ export default defineComponent({
             activeInternalAddresses,
             activeExternalAddresses,
             getRecipientLabel,
+            getSenderLabel,
         } = useBtcAddressStore();
 
         const state = computed(() => transaction.value.timestamp ? TransactionState.MINED : TransactionState.PENDING);
@@ -244,16 +245,29 @@ export default defineComponent({
         );
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
+        const ownAddresses = computed(() => (isIncoming.value
+            ? outputsReceived.value.map((output) => output.address)
+            : inputsSent.value.map((input) => input.address).filter((address) => !!address) as string[]
+        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
+
         // Peer
         const peerAddresses = computed(() => (isIncoming.value
             ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
         const peerLabel = computed(() => {
-            // Search recipient labels
-            for (const address of peerAddresses.value) {
-                const label = getRecipientLabel.value(address);
-                if (label) return label;
+            if (isIncoming.value) {
+                // Search sender labels
+                for (const address of ownAddresses.value) {
+                    const label = getSenderLabel.value(address);
+                    if (label) return label;
+                }
+            } else {
+                // Search recipient labels
+                for (const address of peerAddresses.value) {
+                    const label = getRecipientLabel.value(address);
+                    if (label) return label;
+                }
             }
 
             // Search other stored addresses
@@ -276,11 +290,6 @@ export default defineComponent({
             return false;
         });
         // const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
-
-        const ownAddresses = computed(() => (isIncoming.value
-            ? outputsReceived.value.map((output) => output.address)
-            : inputsSent.value.map((input) => input.address).filter((address) => !!address) as string[]
-        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));

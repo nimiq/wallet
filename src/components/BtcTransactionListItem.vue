@@ -90,6 +90,7 @@ export default defineComponent({
             activeInternalAddresses,
             activeExternalAddresses,
             getRecipientLabel,
+            getSenderLabel,
         } = useBtcAddressStore();
 
         const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
@@ -126,10 +127,19 @@ export default defineComponent({
             ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
             : outputsSent.value.map((output) => output.address));
         const peerLabel = computed(() => {
-            // Search recipient labels
-            for (const address of peerAddresses.value) {
-                const label = getRecipientLabel.value(address);
-                if (label) return label;
+            if (isIncoming.value) {
+                // Search sender labels
+                const ownAddresses = outputsReceived.value.map((output) => output.address);
+                for (const address of ownAddresses) {
+                    const label = getSenderLabel.value(address);
+                    if (label) return label;
+                }
+            } else {
+                // Search recipient labels
+                for (const address of peerAddresses.value) {
+                    const label = getRecipientLabel.value(address);
+                    if (label) return label;
+                }
             }
 
             // Search other stored addresses

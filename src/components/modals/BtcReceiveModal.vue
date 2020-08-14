@@ -175,6 +175,7 @@ import {
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useBtcAddressStore, BtcAddressInfo } from '../../stores/BtcAddress';
+import { useAccountStore } from '../../stores/Account';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
@@ -198,6 +199,8 @@ export default defineComponent({
             copiedAddresses,
             setCopiedAddress,
         } = useBtcAddressStore();
+
+        const { activeAccountInfo } = useAccountStore();
 
         const second = 1000;
         const minute = 60 * second;
@@ -251,23 +254,29 @@ export default defineComponent({
         // Copy address / address copied
         const addressCopied = ref<boolean>(false);
         const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
-        const recentlyCopiedAddresses: Ref<{ [address: string]: BtcCopiedAddressInfo }> = computed(() =>
-            (Object.keys(copiedAddresses.value) || []).map((address) => ({
-                get label() { return senderLabels.value[this.address] || ''; },
-                set label(value) { setSenderLabel(this.address, value); },
-                get rename() { return shownLabelInputByAddress.value[this.address]; },
-                set rename(value) { shownLabelInputByAddress.value[this.address] = value; },
-                get timelabel() { return getTimeLabel(this.timestamp); },
-                timestamp: copiedAddresses.value[address],
-                address,
-            })).reduce((acc: any, cur) => (acc[cur.address] = cur) && acc, {}),
+        const recentlyCopiedAddresses = computed(() =>
+            (Object.keys(copiedAddresses.value) || [])
+                .filter((address) => activeAccountInfo.value!.btcAddresses.external.includes(address))
+                .map((address) => ({
+                    get label() { return senderLabels.value[this.address] || ''; },
+                    set label(value) { setSenderLabel(this.address, value); },
+                    get rename() { return shownLabelInputByAddress.value[this.address]; },
+                    set rename(value) { shownLabelInputByAddress.value[this.address] = value; },
+                    get timelabel() { return getTimeLabel(this.timestamp); },
+                    timestamp: copiedAddresses.value[address],
+                    address,
+                }))
+                .reduce(
+                    (acc, cur) => (acc[cur.address] = cur) && acc,
+                    {} as {[address: string]: BtcCopiedAddressInfo},
+                ),
         );
         const recentlyCopiedAddressesListSorted = computed(() =>
             Object.values(recentlyCopiedAddresses.value).sort(({ timestamp }) => -timestamp),
         );
 
         // Available addresses to display
-        const activeExternalAddresses = computed(() =>
+        const availableExternalAddresses = computed(() =>
             external
                 .slice(external.length - BTC_ADDRESS_GAP)
                 .filter(({ used, address }: BtcAddressInfo) => !used && !recentlyCopiedAddresses.value[address])
@@ -275,7 +284,7 @@ export default defineComponent({
         );
 
         // Currently displayed address
-        const currentlyShownAddress = ref(activeExternalAddresses.value[0]
+        const currentlyShownAddress = ref(availableExternalAddresses.value[0]
             || external.find(({ used, address }: BtcAddressInfo) =>
                 !used && recentlyCopiedAddresses.value[address] && !recentlyCopiedAddresses.value[address].label,
             )?.address
@@ -339,7 +348,7 @@ export default defineComponent({
 
         // Show Next External Address in the Copyable Box
         function showNextExternalAddress() {
-            const nextActiveExternalAddress = activeExternalAddresses.value
+            const nextActiveExternalAddress = availableExternalAddresses.value
                 .find((address: string) => !recentlyCopiedAddresses.value[address]);
 
             if (nextActiveExternalAddress) {

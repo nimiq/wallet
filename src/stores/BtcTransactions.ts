@@ -65,7 +65,7 @@ export const useBtcTransactionsStore = createStore({
             this.calculateFiatAmounts();
 
             // Update UTXOs and `used` status on affected addresses
-            const { state: btcAddresses$, patchAddress } = useBtcAddressStore();
+            const { state: btcAddresses$, patchAddress, removeCopiedAddresses } = useBtcAddressStore();
 
             // Remove UTXOs in inputs from addresses
             const inputsByAddress = new Map<string, PlainInput[]>();
@@ -85,6 +85,7 @@ export const useBtcTransactionsStore = createStore({
                 patchAddress(address, {
                     utxos: utxos.filter((utxo) => !inputs.some((input) =>
                         input.transactionHash === utxo.transactionHash && input.outputIndex === utxo.index)),
+                    used: true,
                 });
             }
 
@@ -137,6 +138,7 @@ export const useBtcTransactionsStore = createStore({
                     used: true,
                 });
             }
+            removeCopiedAddresses([...inputsByAddress.keys(), ...utxosByAddress.keys()]);
         },
 
         async calculateFiatAmounts() {

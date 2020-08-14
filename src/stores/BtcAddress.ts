@@ -145,5 +145,12 @@ export const useBtcAddressStore = createStore({
                 };
             }
         },
+        removeCopiedAddresses(addresses: string[]) {
+            const copiedAddresses = { ...this.state.copiedAddresses };
+            for (const address of addresses) {
+                delete copiedAddresses[address];
+            }
+            this.state.copiedAddresses = copiedAddresses;
+        },
     },
 });

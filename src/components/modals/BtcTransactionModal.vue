@@ -189,12 +189,13 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { useBtcTransactionsStore, TransactionState } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcLabelsStore } from '../../stores/BtcLabels';
+import { useAccountStore } from '../../stores/Account';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
-import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -212,9 +213,12 @@ export default defineComponent({
             state: btcAddresses$,
             activeInternalAddresses,
             activeExternalAddresses,
+        } = useBtcAddressStore();
+
+        const {
             getRecipientLabel,
             getSenderLabel,
-        } = useBtcAddressStore();
+        } = useBtcLabelsStore();
 
         const state = computed(() => transaction.value.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 

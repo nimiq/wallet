@@ -67,13 +67,14 @@ import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState } from '../stores/BtcTransactions';
+import { useBtcLabelsStore } from '../stores/BtcLabels';
+import { useAccountStore } from '../stores/Account';
 import { twoDigit } from '../lib/NumberFormatting';
 import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
-import { useAccountStore } from '../stores/Account';
 
 export default defineComponent({
     props: {
@@ -89,9 +90,12 @@ export default defineComponent({
             state: btcAddresses$,
             activeInternalAddresses,
             activeExternalAddresses,
+        } = useBtcAddressStore();
+
+        const {
             getRecipientLabel,
             getSenderLabel,
-        } = useBtcAddressStore();
+        } = useBtcLabelsStore();
 
         const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
 

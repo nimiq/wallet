@@ -153,6 +153,7 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore, UTXO } from '../../stores/BtcAddress';
+import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 // import { useSettingsStore } from '../../stores/Settings';
@@ -182,9 +183,11 @@ export default defineComponent({
             state: addresses$,
             addressSet,
             accountBalance,
+        } = useBtcAddressStore();
+        const {
             setRecipientLabel,
             getRecipientLabel,
-        } = useBtcAddressStore();
+        } = useBtcLabelsStore();
         const { state: network$ } = useBtcNetworkStore();
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);

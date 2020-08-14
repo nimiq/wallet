@@ -7,6 +7,7 @@ import { useFiatStore, FiatState } from './stores/Fiat';
 import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
+import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -21,6 +22,7 @@ const StorageKeys = {
 
 const PersistentStorageKeys = {
     CONTACTS: 'wallet_contacts_v01',
+    BTCLABELS: 'wallet_btclabels_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];
@@ -203,6 +205,18 @@ export function initStorage() {
     /**
      * BTC Labels
      */
+    const btcLabelsStore = useBtcLabelsStore();
+    const storedBtcLabelsState = localStorage.getItem(PersistentStorageKeys.BTCLABELS);
+    if (storedBtcLabelsState) {
+        const btcLablesState: BtcLabelsState = JSON.parse(storedBtcLabelsState);
+        btcLabelsStore.patch(btcLablesState);
+    }
+
+    unsubscriptions.push(
+        btcLabelsStore.subscribe(() => {
+            localStorage.setItem(PersistentStorageKeys.BTCLABELS, JSON.stringify(btcLabelsStore.state));
+        }),
+    );
 }
 
 export function clearStorage() {

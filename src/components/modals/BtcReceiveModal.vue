@@ -175,6 +175,7 @@ import {
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useBtcAddressStore, BtcAddressInfo } from '../../stores/BtcAddress';
+import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useAccountStore } from '../../stores/Account';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
@@ -191,13 +192,14 @@ interface BtcCopiedAddressInfo {
 
 export default defineComponent({
     setup(props, context) {
+        const { addressSet: { value: { external } } } = useBtcAddressStore();
+
         const {
-            addressSet: { value: { external } },
             senderLabels,
             setSenderLabel,
             copiedAddresses,
             setCopiedAddress,
-        } = useBtcAddressStore();
+        } = useBtcLabelsStore();
 
         const { activeAccountInfo } = useAccountStore();
 

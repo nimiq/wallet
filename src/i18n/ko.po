@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Kyungil Choi <hanpama@gmail.com>, 2020
 # Daniel, 2020
+# Kyungil Choi <hanpama@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2020\n"
+"Last-Translator: Kyungil Choi <hanpama@gmail.com>, 2020\n"
 "Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/107022/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ko\n"
@@ -28,7 +28,7 @@ msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 �
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 채팅 & 전화 지원"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -73,7 +73,7 @@ msgstr "주소를 사용할 수 없나요?"
 msgid "Addresses"
 msgstr "주소"
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr "전체"
 
@@ -146,7 +146,7 @@ msgid ""
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
@@ -168,7 +168,7 @@ msgstr "{address}로의 캐시링크"
 msgid "Change password"
 msgstr "비밀번호 변경"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
 msgstr "언어 설정을 바꿉니다."
 
@@ -180,11 +180,11 @@ msgstr "받는 사람을 고르세요"
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
-#: src/components/layouts/Settings.vue:96
+#: src/components/layouts/Settings.vue:98
 msgid "Clear"
 msgstr "지우기"
 
-#: src/components/layouts/Settings.vue:90
+#: src/components/layouts/Settings.vue:92
 msgid "Clear Cache"
 msgstr "캐시 비우기"
 
@@ -266,11 +266,11 @@ msgstr "신용 카드 허용"
 msgid "Current value"
 msgstr "현재 가치"
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "개발자"
 
-#: src/components/layouts/Settings.vue:122
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "면책 조항"
@@ -291,11 +291,11 @@ msgstr "로그인 파일 다운로드"
 msgid "Edit contacts"
 msgstr "연락처 수정"
 
-#: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr "거래 수정"
 
@@ -351,7 +351,7 @@ msgstr "불러 오는 중"
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
 
@@ -367,7 +367,7 @@ msgstr "포럼 스레드"
 msgid "Full Node"
 msgstr "완전 노드"
 
-#: src/components/layouts/Settings.vue:11
+#: src/components/layouts/Settings.vue:13
 msgid "General"
 msgstr "일반"
 
@@ -421,18 +421,18 @@ msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr "버그를 찾거나 의견이 있으시면 {forum-thread}에 공유해 주세요."
 
-#: src/components/layouts/Settings.vue:45
+#: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "연락처 불러오기"
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
 msgstr "금고에서 내보냈던 연락처를 불러오세요."
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid ""
 "Import it to any browser and enter your password to use the same addresses."
-msgstr ""
+msgstr "아무 브라우저에서나 불러온 후 비밀번호를 입력해 같은 주소를 사용하세요."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
@@ -458,7 +458,7 @@ msgstr "초대할 친구에게 보낼"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "빠르고 안전하며 진정한 독립성을 제공합니다."
 
-#: src/components/layouts/Settings.vue:15
+#: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "언어"
 
@@ -479,7 +479,7 @@ msgstr "시작합니다! 당신의 Nimiq 계정을 만드세요:"
 msgid "Light Node"
 msgstr "경량 노드"
 
-#: src/components/layouts/Settings.vue:52
+#: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "파일 불러오기"
 
@@ -550,7 +550,7 @@ msgstr ""
 msgid "No transactions found"
 msgstr "찾은 거래 없음"
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:39
 msgid "None"
 msgstr "없음"
 
@@ -558,7 +558,7 @@ msgstr "없음"
 msgid "not sent"
 msgstr "전송되지 않음"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -632,7 +632,7 @@ msgstr "무료 NIM을 얼마 받고 시작하세요."
 msgid "received at {dateAndTime}"
 msgstr "{dateAndTime}에 받음"
 
-#: src/components/layouts/Settings.vue:103
+#: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
 msgstr "참조 통화"
 
@@ -646,11 +646,11 @@ msgstr "이름 바꾸기"
 msgid "Request failed"
 msgstr "요청 실패"
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:94
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr "재시도"
 
@@ -712,15 +712,15 @@ msgstr "거래 전송"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr "거래 전송 중"
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM을 보냄"
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim}NIM을 {name}에게 보냄"
 
@@ -761,7 +761,7 @@ msgstr "지불 링크 공유하기"
 msgid "Show all my addresses"
 msgstr "내 주소 모두 표시"
 
-#: src/components/layouts/Settings.vue:30
+#: src/components/layouts/Settings.vue:32
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
@@ -773,7 +773,7 @@ msgstr "가입"
 msgid "Skip for now"
 msgstr "지금은 넘어가기"
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
 

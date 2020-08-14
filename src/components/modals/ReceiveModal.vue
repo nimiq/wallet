@@ -47,6 +47,7 @@
                 </div>
             </PageHeader>
             <PageBody class="flex-column link-overlay">
+                <div class="dynamic-spacer"></div>
                 <div class="inputs">
                     <div class="separator"></div>
                     <AmountInput v-model="amount" :maxFontSize="5"/>
@@ -54,6 +55,7 @@
                 </div>
                 <!-- <AmountInput v-model="amount" />
                 <labelInput v-model="message" placeholder="add a message" /> -->
+                <div class="dynamic-spacer"></div>
                 <QrCode
                     :data="requestLink"
                     :size="400"
@@ -226,68 +228,80 @@ export default defineComponent({
     }
 }
 
-.page-body.link-overlay {
-    justify-content: space-between;
-    align-items: center;
-    overflow: visible;
-
-    .inputs {
-        width: calc(100% + 4rem);
-        margin: -1rem -2rem 2rem;
-        position: relative;
-
-        .separator:first-child {
-            height: 2px;
-            margin-bottom: 1.5rem;
-            box-shadow: inset 0 1.5px 0 var(--text-10);
-        }
-
-        .separator:last-child {
-            height: 2px;
-            margin-top: 1.5rem;
-            box-shadow: inset 0 -1.5px 0 var(--text-10);
-        }
-
-        .amount-input {
-            font-size: 5rem;
-
-            /deep/ .nim {
-                font-size: 0.5em;
-                margin-left: 0.5rem;
-                margin-right: calc(-1.9em - 0.5rem);
-            }
-
-            /deep/ .nq-input {
-                padding: 0;
-            }
-
-            /deep/ .width-finder {
-                padding: 0 1rem;
-            }
-        }
+.link-overlay {
+    &.page-header {
+        padding: 4rem 3rem 2rem;
     }
 
-    .qr-code {
-        flex-shrink: 1;
-        // min-height: 0;
+    &.page-body {
+        padding: 1rem 3rem 3rem;
+        justify-content: space-between;
+        align-items: center;
+        overflow: visible;
 
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 200px = 400px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides (100px = 200px / 2).
-        transform: scale(0.5);
-        margin: -100px;
-    }
+        .dynamic-spacer {
+            flex-grow: 1;
+            max-height: 1rem;
+        }
 
-    .copyable {
-        flex-shrink: 0;
-        max-width: 100%;
-        word-wrap: break-word;
-        color: rgba(31, 35, 72, 0.5);
-        text-align: center;
-        font-size: var(--h2-size);
-        margin-top: 2rem;
+        .inputs {
+            width: calc(100% + 4rem);
+            margin: -1rem -2rem 4rem;
+            position: relative;
+
+            .separator:first-child {
+                height: 2px;
+                margin-bottom: 1.5rem;
+                box-shadow: inset 0 1.5px 0 var(--text-10);
+            }
+
+            .separator:last-child {
+                height: 2px;
+                margin-top: 1.5rem;
+                box-shadow: inset 0 -1.5px 0 var(--text-10);
+            }
+
+            .amount-input {
+                font-size: 5rem;
+
+                /deep/ .nim {
+                    font-size: 0.5em;
+                    margin-left: 0.5rem;
+                    margin-right: calc(-1.9em - 0.5rem);
+                }
+
+                /deep/ .nq-input {
+                    padding: 0;
+                }
+
+                /deep/ .width-finder {
+                    padding: 0 1rem;
+                }
+            }
+        }
+
+        .qr-code {
+            flex-shrink: 1;
+            // min-height: 0;
+
+            // The QrCode is rendered at 2x size and then scaled to half its size,
+            // to be sharp on retina displays:
+            // 2 x 200px = 400px
+            // But now we need to make it behave as half its size as well, that's
+            // why we use negative margins on all sides (100px = 200px / 2).
+            transform: scale(0.5);
+            margin: -100px;
+        }
+
+        .copyable {
+            flex-shrink: 0;
+            max-width: 100%;
+            word-wrap: break-word;
+            color: rgba(31, 35, 72, 0.5);
+            text-align: center;
+            font-size: var(--h2-size);
+            margin-top: 2rem;
+        }
     }
 }
 </style>

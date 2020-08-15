@@ -155,25 +155,12 @@ export default defineComponent({
         });
 
         // Date
+        const { language } = useSettingsStore();
         const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
-        const dateMonth = computed(() => {
-            switch (date.value && date.value.getMonth()) {
-                case 0: return context.root.$t('Jan');
-                case 1: return context.root.$t('Feb');
-                case 2: return context.root.$t('Mar');
-                case 3: return context.root.$t('Apr');
-                case 4: return context.root.$t('May');
-                case 5: return context.root.$t('Jun');
-                case 6: return context.root.$t('Jul');
-                case 7: return context.root.$t('Aug');
-                case 8: return context.root.$t('Sep');
-                case 9: return context.root.$t('Oct');
-                case 10: return context.root.$t('Nov');
-                case 11: return context.root.$t('Dec');
-                default: return null;
-            }
-        });
+        const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
+        const dateMonth = computed(() => date.value && monthFormatter.value
+            && monthFormatter.value.format(date.value as Date));
         const dateTime = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
@@ -183,8 +170,6 @@ export default defineComponent({
             ? props.transaction.fiatValue[fiatCurrency.value]
             : undefined,
         );
-
-        const { language } = useSettingsStore();
 
         return {
             constants,

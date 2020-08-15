@@ -107,14 +107,6 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr "Android und iOS App"
 
-#: src/components/TransactionListItem.vue:165
-msgid "Apr"
-msgstr "Apr"
-
-#: src/components/TransactionListItem.vue:169
-msgid "Aug"
-msgstr "Aug"
-
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Zurück zu Adressen"
@@ -285,10 +277,6 @@ msgstr "Kreditkartenzahlung möglich"
 msgid "Current value"
 msgstr "Aktueller Wert"
 
-#: src/components/TransactionListItem.vue:173
-msgid "Dec"
-msgstr "Dez"
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Entwickler"
@@ -363,10 +351,6 @@ msgstr "Faucet nicht verfügbar"
 #: src/components/TestnetFaucet.vue:72
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet nicht verfügbar (falsches Netzwerk)"
-
-#: src/components/TransactionListItem.vue:163
-msgid "Feb"
-msgstr "Feb"
 
 #: src/components/modals/SendModal.vue:122
 msgid "fee"
@@ -493,18 +477,6 @@ msgstr "Lade Freunde mit einem "
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Es ist schnell, sicher und macht dich wirklich unabhängig."
 
-#: src/components/TransactionListItem.vue:162
-msgid "Jan"
-msgstr "Jan"
-
-#: src/components/TransactionListItem.vue:168
-msgid "Jul"
-msgstr "Jul"
-
-#: src/components/TransactionListItem.vue:167
-msgid "Jun"
-msgstr "Jun"
-
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "Sprache"
@@ -544,14 +516,6 @@ msgstr "Ausloggen"
 #: src/components/NetworkStats.vue:44
 msgid "lost"
 msgstr "unterbrochen"
-
-#: src/components/TransactionListItem.vue:164
-msgid "Mar"
-msgstr "Mär"
-
-#: src/components/TransactionListItem.vue:166
-msgid "May"
-msgstr "Mai"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -614,14 +578,6 @@ msgstr "Keine"
 #: src/components/TransactionListItem.vue:35
 msgid "not sent"
 msgstr "nicht gesendet"
-
-#: src/components/TransactionListItem.vue:172
-msgid "Nov"
-msgstr "Nov"
-
-#: src/components/TransactionListItem.vue:171
-msgid "Oct"
-msgstr "Okt"
 
 #: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
@@ -798,10 +754,6 @@ msgstr "{nim} NIM an {name} versendet"
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
 msgstr "gesendet am {dateAndTime}"
-
-#: src/components/TransactionListItem.vue:170
-msgid "Sep"
-msgstr "Sep"
 
 #: src/components/modals/SendModal.vue:63
 #: src/components/modals/SendModal.vue:74

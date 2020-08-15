@@ -85,6 +85,14 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr ""
 
+#: src/components/TransactionListItem.vue:165
+msgid "Apr"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:169
+msgid "Aug"
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr ""
@@ -245,6 +253,10 @@ msgstr ""
 msgid "Current value"
 msgstr ""
 
+#: src/components/TransactionListItem.vue:173
+msgid "Dec"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr ""
@@ -316,6 +328,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:72
 msgid "Faucet unavailable (wrong network)"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:163
+msgid "Feb"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:122
@@ -433,6 +449,18 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
+#: src/components/TransactionListItem.vue:162
+msgid "Jan"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:168
+msgid "Jul"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:167
+msgid "Jun"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr ""
@@ -470,6 +498,14 @@ msgstr ""
 
 #: src/components/NetworkStats.vue:44
 msgid "lost"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:164
+msgid "Mar"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:166
+msgid "May"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
@@ -518,6 +554,14 @@ msgstr ""
 
 #: src/components/TransactionListItem.vue:35
 msgid "not sent"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:172
+msgid "Nov"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:171
+msgid "Oct"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:205
@@ -677,6 +721,10 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
+msgstr ""
+
+#: src/components/TransactionListItem.vue:170
+msgid "Sep"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:63

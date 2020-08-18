@@ -160,7 +160,12 @@ export default defineComponent({
         }
 
         function sortedFiatCurrency() {
-            return Object.values(FiatCurrency).sort();
+            const sorted = Object.values(FiatCurrency).sort();
+
+            const denylist = [
+                'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'MYR', 'SAR',
+            ];
+            return sorted.filter((code) => !denylist.includes(code.toUpperCase()));
         }
 
         const $fileInput = ref<HTMLInputElement | null>(null);
@@ -268,6 +273,10 @@ export default defineComponent({
 
     &.right-column {
         flex-shrink: 2;
+        max-height: 100%;
+        overflow-y: auto;
+
+        @extend %custom-scrollbar;
     }
 }
 
@@ -519,6 +528,11 @@ input[type="file"] {
         &.left-column,
         &.right-column {
             flex-shrink: 0;
+        }
+
+        &.right-column {
+            max-height: unset;
+            overflow-y: unset;
         }
 
         &.left-column {

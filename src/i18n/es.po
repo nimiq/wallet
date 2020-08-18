@@ -2,12 +2,12 @@
 # Translators:
 # Sören Schwert <hello@soerenschwert.de>, 2020
 # Matheo <matheo@nimiq.com>, 2020
-# Daniel, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/107022/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -30,7 +30,7 @@ msgstr "{count} Cashlink en trámite | {count} Cashlinks en trámite"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Soporte Chat & Teléfono"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:201
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -75,7 +75,7 @@ msgstr "Dirección no disponible?"
 msgid "Addresses"
 msgstr "Direcciones"
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr "todo"
 
@@ -155,7 +155,7 @@ msgstr ""
 "Al agregar una cuota a la transacción, puede influenciar que tan rápidamente"
 " será procesada."
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:181
 msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
@@ -177,7 +177,7 @@ msgstr "Cashlink hacia {address}"
 msgid "Change password"
 msgstr "Cambiar contraseña"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
 msgstr "Cambiar ajustes de lenguaje."
 
@@ -189,11 +189,11 @@ msgstr "Elija un Destinatario"
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
-#: src/components/layouts/Settings.vue:96
+#: src/components/layouts/Settings.vue:98
 msgid "Clear"
 msgstr "Borrar"
 
-#: src/components/layouts/Settings.vue:90
+#: src/components/layouts/Settings.vue:92
 msgid "Clear Cache"
 msgstr "Borrar Cache"
 
@@ -243,7 +243,7 @@ msgstr "Continuar"
 
 #: src/components/modals/WelcomeModal.vue:101
 msgid "Continue to Login File"
-msgstr "Continuar a el Archivo de Sesión"
+msgstr "Continuar a el Archivo de Sesión"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -277,11 +277,11 @@ msgstr "Tarjeta de Crédito aceptada"
 msgid "Current value"
 msgstr "Valor actual"
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Programador"
 
-#: src/components/layouts/Settings.vue:122
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Aviso legal"
@@ -296,13 +296,13 @@ msgstr "Descargue y almacene de forma segura. No lo comparta - no lo pierda."
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
-msgstr "Descargue su Archivo de Sesión"
+msgstr "Descargue su Archivo de Sesión"
 
 #: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr "Editar contactos"
 
-#: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
@@ -362,7 +362,7 @@ msgstr "Recolectando"
 msgid "Fiat value unavailable"
 msgstr "Valor en moneda fiduciaria no disponible"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:187
 msgid "File contains no contacts."
 msgstr "El archivo no contiene contactos."
 
@@ -378,7 +378,7 @@ msgstr "tema en el foro"
 msgid "Full Node"
 msgstr "Nodo Completo"
 
-#: src/components/layouts/Settings.vue:11
+#: src/components/layouts/Settings.vue:13
 msgid "General"
 msgstr "General"
 
@@ -436,11 +436,11 @@ msgstr ""
 "Si encuentras un error o quieres compartir tu opinión, por favor hazlo en "
 "este {forum-thread}."
 
-#: src/components/layouts/Settings.vue:45
+#: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Importar Contactos"
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importe contactos que exporto de la Nimiq Safe"
 
@@ -475,7 +475,7 @@ msgstr "Invite a un amigo a"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Es rápido, seguro y le hace realmente independiente."
 
-#: src/components/layouts/Settings.vue:15
+#: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "Idioma"
 
@@ -496,7 +496,7 @@ msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 msgid "Light Node"
 msgstr "Nodo Ligero"
 
-#: src/components/layouts/Settings.vue:52
+#: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Cargar archivo"
 
@@ -570,7 +570,7 @@ msgstr ""
 msgid "No transactions found"
 msgstr "No se encontraron transacciones"
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:39
 msgid "None"
 msgstr "Ninguna"
 
@@ -578,7 +578,7 @@ msgstr "Ninguna"
 msgid "not sent"
 msgstr "no enviado"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:210
 msgid "OK! Contacts imported successfully."
 msgstr "¡OK! Los Contactos fueron importados exitosamente."
 
@@ -644,7 +644,7 @@ msgstr "Reciba NIM gratis"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr "Reciba NIM gratis"
+msgstr "Reciba NIM"
 
 #: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
@@ -654,7 +654,7 @@ msgstr "Reciba algunos NIM gratis para comenzar"
 msgid "received at {dateAndTime}"
 msgstr "recibido en {dateAndTime}"
 
-#: src/components/layouts/Settings.vue:103
+#: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
 msgstr "Moneda de referencia"
 
@@ -668,7 +668,7 @@ msgstr "Renombrar"
 msgid "Request failed"
 msgstr "Petición fallida"
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:94
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Reinicialice los ajustes de su billetera y recargue los datos de la cadena "
@@ -680,7 +680,7 @@ msgstr "Intente de nuevo"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr "Guarde el Archivo de Sesión"
+msgstr "Guarde el Archivo de Sesión"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
@@ -787,7 +787,7 @@ msgstr "Comparta su Link de Pago"
 msgid "Show all my addresses"
 msgstr "Mostrar todas mis cuentas"
 
-#: src/components/layouts/Settings.vue:30
+#: src/components/layouts/Settings.vue:32
 msgid "Show Decimals"
 msgstr "Mostrar Decimales"
 

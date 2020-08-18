@@ -29,7 +29,7 @@ msgstr "{count} Cashlink | {count} Cashlinks"
 msgid "24/7 Chat & Phone Support"
 msgstr "Support 24/7 par Chat & Téléphone"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:201
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -74,7 +74,7 @@ msgstr "Adresse indisponible ?"
 msgid "Addresses"
 msgstr "Adresses"
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr "Toutes"
 
@@ -153,7 +153,7 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité de traitement de votre "
 "transaction."
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:181
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -175,7 +175,7 @@ msgstr "Cashlink à destination de {address}"
 msgid "Change password"
 msgstr "Changer le mot de passe"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
 msgstr "Modifier vos paramètres de langue."
 
@@ -187,11 +187,11 @@ msgstr "Choisissez un destinataire"
 msgid "Choose an Address"
 msgstr "Choisissez une Adresse"
 
-#: src/components/layouts/Settings.vue:96
+#: src/components/layouts/Settings.vue:98
 msgid "Clear"
 msgstr "Vider"
 
-#: src/components/layouts/Settings.vue:90
+#: src/components/layouts/Settings.vue:92
 msgid "Clear Cache"
 msgstr "Vider le cache"
 
@@ -241,7 +241,7 @@ msgstr "Continue"
 
 #: src/components/modals/WelcomeModal.vue:101
 msgid "Continue to Login File"
-msgstr "Continuer vers le Fichier de connexion"
+msgstr "Continuer vers le fichier de connexion"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -275,11 +275,11 @@ msgstr "Carte de crédit acceptée"
 msgid "Current value"
 msgstr "Valeur actuelle"
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Développeur"
 
-#: src/components/layouts/Settings.vue:122
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -296,13 +296,13 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
-msgstr "Téléchargez votre Fichier de Connexion"
+msgstr "Téléchargez votre Fichier de Connexion"
 
 #: src/components/ContactBook.vue:43
 msgid "Edit contacts"
 msgstr "Éditer les contacts"
 
-#: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs NIM."
 
@@ -362,7 +362,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Fiat value unavailable"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:187
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -378,7 +378,7 @@ msgstr "fil de discussion du forum"
 msgid "Full Node"
 msgstr "Noeud Complet"
 
-#: src/components/layouts/Settings.vue:11
+#: src/components/layouts/Settings.vue:13
 msgid "General"
 msgstr "Général"
 
@@ -436,11 +436,11 @@ msgstr ""
 "Si vous trouvez un bug ou avez un retour à nous faire, merci de nous en "
 "parler dans ce {forum-thread}."
 
-#: src/components/layouts/Settings.vue:45
+#: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Importer des contacts"
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importer des contacts que vous avez exporté depuis le Safe."
 
@@ -475,7 +475,7 @@ msgstr "Inviter un amis avec un"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "C'est rapide, sûr et vous rend vraiment indépendant."
 
-#: src/components/layouts/Settings.vue:15
+#: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "Langage"
 
@@ -496,7 +496,7 @@ msgstr "Commençons ! Créez votre compte Nimiq :"
 msgid "Light Node"
 msgstr "Light Node"
 
-#: src/components/layouts/Settings.vue:52
+#: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Charger le fichier"
 
@@ -570,7 +570,7 @@ msgstr ""
 msgid "No transactions found"
 msgstr "Aucune transaction trouvée"
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:39
 msgid "None"
 msgstr "Aucun"
 
@@ -578,7 +578,7 @@ msgstr "Aucun"
 msgid "not sent"
 msgstr "non envoyée"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:210
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -654,7 +654,7 @@ msgstr "Recevoir des NIM gratuits pour commencer."
 msgid "received at {dateAndTime}"
 msgstr "reçu à {dateAndTime}"
 
-#: src/components/layouts/Settings.vue:103
+#: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
 msgstr "Devise de référence"
 
@@ -668,7 +668,7 @@ msgstr "Renommer"
 msgid "Request failed"
 msgstr "Requête échouée"
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:94
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Réinitialisez les paramètres de votre wallet et rechargez les données depuis"
@@ -680,7 +680,7 @@ msgstr "Réessayer"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr "Enregistrer le Fichier de Connexion"
+msgstr "Enregistrer le Fichier de Connexion"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
@@ -787,7 +787,7 @@ msgstr "Partagez votre Lien de Paiement"
 msgid "Show all my addresses"
 msgstr "Afficher toutes mes adresses"
 
-#: src/components/layouts/Settings.vue:30
+#: src/components/layouts/Settings.vue:32
 msgid "Show Decimals"
 msgstr "Afficher les décimales"
 

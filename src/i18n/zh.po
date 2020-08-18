@@ -29,7 +29,7 @@ msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话 支持"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:201
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -74,7 +74,7 @@ msgstr "地址无法使用？"
 msgid "Addresses"
 msgstr "地址"
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr "全部"
 
@@ -147,7 +147,7 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以影响交易的处理速度"
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:181
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
@@ -169,7 +169,7 @@ msgstr "现金连结至 {address}"
 msgid "Change password"
 msgstr "更改密码"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
 msgstr "更改您的语言设置。"
 
@@ -181,11 +181,11 @@ msgstr "选择收件人"
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/Settings.vue:96
+#: src/components/layouts/Settings.vue:98
 msgid "Clear"
 msgstr "清除"
 
-#: src/components/layouts/Settings.vue:90
+#: src/components/layouts/Settings.vue:92
 msgid "Clear Cache"
 msgstr "清除缓存"
 
@@ -267,11 +267,11 @@ msgstr "接受信用卡"
 msgid "Current value"
 msgstr "当前价值"
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "开发者"
 
-#: src/components/layouts/Settings.vue:122
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -292,7 +292,7 @@ msgstr "下载您的登录文件"
 msgid "Edit contacts"
 msgstr "编辑联络人"
 
-#: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数数量。"
 
@@ -352,7 +352,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:187
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -368,7 +368,7 @@ msgstr "论坛帖子"
 msgid "Full Node"
 msgstr "完整节点"
 
-#: src/components/layouts/Settings.vue:11
+#: src/components/layouts/Settings.vue:13
 msgid "General"
 msgstr "一般"
 
@@ -422,11 +422,11 @@ msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr "如果你发现任何错误或者有反馈，请在这个{论坛帖子}中分享。"
 
-#: src/components/layouts/Settings.vue:45
+#: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "导入联系人"
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
 msgstr "导入从保险柜 (Safe) 中导出的联系人。"
 
@@ -459,7 +459,7 @@ msgstr "使用...邀请朋友"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "快速、安全，让你真正独立。"
 
-#: src/components/layouts/Settings.vue:15
+#: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "语言"
 
@@ -480,7 +480,7 @@ msgstr "让我们开始吧！创建您的Nimiq帐户："
 msgid "Light Node"
 msgstr "轻节点"
 
-#: src/components/layouts/Settings.vue:52
+#: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "加载文件"
 
@@ -551,7 +551,7 @@ msgstr "Nimiq绿洲 (OASIS) 使您可以直接从您的钱包实现加密货币�
 msgid "No transactions found"
 msgstr "交易未找到"
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:39
 msgid "None"
 msgstr "无"
 
@@ -559,7 +559,7 @@ msgstr "无"
 msgid "not sent"
 msgstr "未发送"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:210
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -632,7 +632,7 @@ msgstr "领取一些免费的NIM来开始"
 msgid "received at {dateAndTime}"
 msgstr "在 {dateAndTime} 已收到"
 
-#: src/components/layouts/Settings.vue:103
+#: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
 msgstr "参考货币"
 
@@ -646,7 +646,7 @@ msgstr "重新命名"
 msgid "Request failed"
 msgstr "请求失败"
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:94
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置您的钱包设置并从区块链重新加载数据。"
 
@@ -761,7 +761,7 @@ msgstr "分享您的付款链接"
 msgid "Show all my addresses"
 msgstr "显示我所有的地址"
 
-#: src/components/layouts/Settings.vue:30
+#: src/components/layouts/Settings.vue:32
 msgid "Show Decimals"
 msgstr "显示小数"
 

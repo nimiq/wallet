@@ -4,6 +4,8 @@
             <button class="reset menu-button" @click="$router.push({name: 'settings', query: {sidebar: true}})">
                 <MenuIcon/>
             </button>
+
+            <CrossCloseButton @click="$router.push('/').catch(() => {})"/>
         </div>
 
         <div class="column left-column flex-column">
@@ -136,6 +138,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
+import CrossCloseButton from '../CrossCloseButton.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
@@ -157,7 +160,12 @@ export default defineComponent({
         }
 
         function sortedFiatCurrency() {
-            return Object.values(FiatCurrency).sort();
+            const sorted = Object.values(FiatCurrency).sort();
+
+            const denylist = [
+                'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'MYR', 'SAR',
+            ];
+            return sorted.filter((code) => !denylist.includes(code.toUpperCase()));
         }
 
         const $fileInput = ref<HTMLInputElement | null>(null);
@@ -228,6 +236,7 @@ export default defineComponent({
     components: {
         MenuIcon,
         Portal,
+        CrossCloseButton,
     },
 });
 </script>
@@ -264,6 +273,10 @@ export default defineComponent({
 
     &.right-column {
         flex-shrink: 2;
+        max-height: 100%;
+        overflow-y: auto;
+
+        @extend %custom-scrollbar;
     }
 }
 
@@ -452,6 +465,7 @@ input[type="file"] {
     }
 
     .mobile-menu-bar {
+        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -472,6 +486,10 @@ input[type="file"] {
             width: 3.5rem;
             height: 2.75rem;
             box-sizing: content-box;
+        }
+
+        button.cross-close-button {
+            font-size: 2rem;
         }
     }
 
@@ -510,6 +528,11 @@ input[type="file"] {
         &.left-column,
         &.right-column {
             flex-shrink: 0;
+        }
+
+        &.right-column {
+            max-height: unset;
+            overflow-y: unset;
         }
 
         &.left-column {

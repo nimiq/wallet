@@ -949,16 +949,16 @@
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.2.tgz#140ab7cbe71a9b1db6e0bca34ba880cfff64037a"
   integrity sha512-nQjMQjmU3ZuYRMG+8uADM/fVv6Taq70qKdPGuRR/gLUJZMg/2qxZaGHDikg4kVNLFbo9pjzjotJDMqtNwlVSew==
 
-"@nimiq/utils@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.5.0.tgz#10e0e234d95e878e57130ebb32ff3d7224a5101b"
-  integrity sha512-t5X2OjtKWZvKvr2t7Tk/rTTYlE2o2BCHl7bsmqZNrAwH0NhCsCGncZhK8Zki0GYldPyYizf5YlALJMvbzByviQ==
+"@nimiq/utils@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.6.0.tgz#d5c5964d6b88f7be2d69e82474326edac1f5ed24"
+  integrity sha512-pDdQmc5jJRX0vODvbZ27XNiIjW0IYLAj6A4XFmvnYoVtRLtEecFirMw5kGEuRKRAWBUOp93MQ2xJpkNZ4CjrOw==
   dependencies:
     big-integer "^1.6.44"
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#931460390b2806f352cf61b99e8c740c1af28294"
+  resolved "https://github.com/nimiq/vue-components#2fec1e7fe157db98d6db8a23d205311d439f6a98"
   dependencies:
     "@nimiq/style" "^0.8.2"
     big-integer "^1.6.44"
@@ -2148,10 +2148,10 @@ bluebird@^3.1.1, bluebird@^3.5.5:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1:
-  version "4.11.8"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
-  integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
+bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
+  version "4.11.9"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
+  integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
 
 bn.js@^4.11.8, bn.js@^4.4.0:
   version "4.11.9"
@@ -3638,9 +3638,9 @@ electron-to-chromium@^1.3.341:
   integrity sha512-6O0IInybavGdYtcbI4ryF/9e3Qi8/soi6C68ELRseJuTwQPKq39uGgVVeQHG28t69Sgsky09nXBRhUiFXsZyFQ==
 
 elliptic@^6.0.0:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.2.tgz#05c5678d7173c049d8ca433552224a495d0e3762"
-  integrity sha512-f4x70okzZbIQl/NSRLkI/+tteV/9WqL98zx+SQ69KbXxmVrmjwsNUPn/gYJJ0sHvEak24cZgHIPegRePAtA/xw==
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.3.tgz#cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6"
+  integrity sha512-IMqzv5wNQf+E6aHeIqATs0tOLeOTwj1QKbRcS3jBbYkl5oLAserA8yJTT7/VyHUYG91PRmPyeQDObKLPpeS4dw==
   dependencies:
     bn.js "^4.4.0"
     brorand "^1.0.1"

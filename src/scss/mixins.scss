@@ -30,20 +30,15 @@
             width: 6px;
         }
 
-        /* Track */
-        &::-webkit-scrollbar-track {
-            background: var(--text-20);
-        }
-
         /* Handle */
         &::-webkit-scrollbar-thumb {
-            background: var(--text-60);
+            background: var(--text-40);
             border-radius: 6px;
         }
 
         /* Handle on hover */
         &::-webkit-scrollbar-thumb:hover {
-            background: var(--text-80);
+            background: var(--text-50);
         }
     }
 }

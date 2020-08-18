@@ -1,1 +1,17 @@
-<svg id="flags" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:none;}.cls-3{fill:#cf142b;}.cls-4{fill:#00247d;}</style></defs><g id="uk"><rect class="cls-1" width="300" height="299.97"/><rect id="SVGID" class="cls-2" width="300" height="300"/><polygon class="cls-3" points="0 241.59 83.2 199.97 82.89 199.97 49.58 199.97 0 224.81 0 241.59"/><polygon class="cls-3" points="0 75.11 0 91.79 16.53 100.06 49.84 100.06 0 75.11"/><polygon class="cls-4" points="0 252.81 0 299.97 99.86 299.97 99.86 202.87 0 252.81"/><polygon class="cls-4" points="0 0 0 47.16 99.86 97.1 99.86 0 0 0"/><polygon class="cls-3" points="300 119.92 179.83 119.92 179.83 0 119.86 0 119.86 119.92 0 119.92 0 179.89 119.86 179.89 119.86 299.97 179.83 299.97 179.83 179.89 300 179.89 300 119.92"/><polygon class="cls-3" points="300 208.42 283.05 199.94 249.74 199.94 300 225.1 300 208.42"/><polygon class="cls-3" points="300 58.3 216.8 99.99 250.11 99.99 300 75.03 300 58.3"/><polygon class="cls-4" points="300 252.96 199.83 202.87 199.83 299.97 300 299.97 300 252.96"/><polygon class="cls-4" points="300 0 199.83 0 199.83 97.1 300 47 300 0"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <style>
+      .cls-3{fill:#cf142b}.cls-4{fill:#00247d}
+    </style>
+  </defs>
+  <path fill="#fff" d="M0 0h300v300H0z"/>
+  <path class="cls-3" d="M0 242l83-42H50L0 225v17z"/>
+  <path class="cls-3" d="M0 75v17l17 8h33L0 75z"/>
+  <path class="cls-4" d="M0 253v47h100v-97L0 253z"/>
+  <path class="cls-4" d="M0 0v47l100 50V0H0z"/>
+  <path class="cls-3" d="M300 120H180V0h-60v120H0v60h120v120h60V180h120v-60z"/>
+  <path class="cls-3" d="M300 208l-17-8h-33l50 25v-17z"/>
+  <path class="cls-3" d="M300 58l-83 42h33l50-25V58z"/>
+  <path class="cls-4" d="M300 253l-100-50v97h100v-47z"/>
+  <path class="cls-4" d="M300 0H200v97l100-50V0z"/>
+</svg>

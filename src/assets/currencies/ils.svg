@@ -1,1 +1,12 @@
-<svg id="flags" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#0038b8;}.cls-3{fill-opacity:0;stroke:#0038b8;stroke-width:8.75px;}</style></defs><g id="israel"><rect id="_5" data-name="5" class="cls-1" width="300" height="300"/><rect id="_4" data-name="4" class="cls-2" y="28.12" width="300" height="46.88"/><rect id="_3" data-name="3" class="cls-2" y="225" width="300" height="46.88"/><polygon id="_2" data-name="2" class="cls-3" points="150 204.64 197.32 122.68 102.68 122.68 150 204.64"/><polygon id="_1" data-name="1" class="cls-3" points="150 95.36 102.68 177.32 197.32 177.32 150 95.36"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <style>
+      .cls-2{fill:#0038b8}.cls-3{fill-opacity:0;stroke:#0038b8;stroke-width:8.75px}
+    </style>
+  </defs>
+    <path fill="#fff" d="M0 0h300v300H0z"/>
+    <path class="cls-2" d="M0 28.1h300V75H0z"/>
+    <path class="cls-2" d="M0 225h300v46.9H0z"/>
+    <path class="cls-3" d="M150 204.6l47.3-82h-94.6l47.3 82z"/>
+    <path class="cls-3" d="M150 95.4l-47.3 82h94.6l-47.3-82z"/>
+</svg>

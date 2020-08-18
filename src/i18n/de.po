@@ -1,8 +1,8 @@
 # 
 # Translators:
-# Sven <sven@nimiq.com>, 2020
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
+# Sven <sven@nimiq.com>, 2020
 # Daniel, 2020
 # 
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/components/modals/TransactionModal.vue:179
+#: src/components/modals/TransactionModal.vue:181
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bestätigung | {count} Bestätigungen"
 
@@ -30,7 +30,7 @@ msgstr "{count} ausstehender Cashlink | {count} ausstehende Cashlinks"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat- & Telefonservice"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:201
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -56,7 +56,7 @@ msgstr "Öffentliche Nachricht hinzufügen..."
 
 #: src/components/AccountMenu.vue:70
 msgid "Add account"
-msgstr "Konto hinzufügen"
+msgstr "Konto hinzufügen"
 
 #: src/components/AddressList.vue:18
 msgid "Add address"
@@ -75,7 +75,7 @@ msgstr "Adresse nicht bekannt?"
 msgid "Addresses"
 msgstr "Adressen"
 
-#: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr "alle"
 
@@ -113,17 +113,17 @@ msgstr "Zurück zu Adressen"
 
 #: src/components/layouts/AccountOverview.vue:25
 msgid "Backup"
-msgstr "Sicherung"
+msgstr "Backup"
 
 #: src/components/LegacyAccountNotice.vue:21
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:178
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/TransactionModal.vue:188
 msgid "Block explorer"
 msgstr "Block Explorer"
 
@@ -141,7 +141,7 @@ msgstr "Kaufen & Verkaufen"
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
-msgstr "Kaufe und verkaufe mit deinem Wallet."
+msgstr "Kaufe und verkaufe in deiner Wallet."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -155,11 +155,11 @@ msgstr ""
 "Indem du eine Transaktionsgebühr hinzufügst, kannst du beeinflussen, wie "
 "schnell deine Transaktion verarbeitet wird."
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:181
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:318
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -177,7 +177,7 @@ msgstr "Cashlink an {address}"
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
 msgstr "Ändere deine Spracheinstellung."
 
@@ -189,11 +189,11 @@ msgstr "Empfänger auswählen"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/Settings.vue:96
+#: src/components/layouts/Settings.vue:98
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/components/layouts/Settings.vue:90
+#: src/components/layouts/Settings.vue:92
 msgid "Clear Cache"
 msgstr "Zwischenspeicher löschen"
 
@@ -206,7 +206,7 @@ msgstr "Bald verfügbar"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "Bald verfügbar"
+msgstr "Bald"
 
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
@@ -263,7 +263,7 @@ msgstr ""
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr "Sicherung erstellen"
+msgstr "Backup erstellen"
 
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
@@ -277,11 +277,11 @@ msgstr "Kreditkartenzahlung möglich"
 msgid "Current value"
 msgstr "Aktueller Wert"
 
-#: src/components/layouts/Settings.vue:86
+#: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Entwickler"
 
-#: src/components/layouts/Settings.vue:122
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
@@ -304,7 +304,7 @@ msgstr "Login-Datei herunterladen"
 msgid "Edit contacts"
 msgstr "Kontakte bearbeiten"
 
-#: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
@@ -364,7 +364,7 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:187
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
@@ -380,7 +380,7 @@ msgstr "Forumsbeitrag"
 msgid "Full Node"
 msgstr "Full Node"
 
-#: src/components/layouts/Settings.vue:11
+#: src/components/layouts/Settings.vue:13
 msgid "General"
 msgstr "Allgemein"
 
@@ -396,7 +396,7 @@ msgstr "Hol dir NIM und BTC"
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "Get NIM on {exchange}"
-msgstr "Kaufe NIM auf {exchange}"
+msgstr "Zu {exchange}"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
@@ -438,11 +438,11 @@ msgstr ""
 "Falls du Fehler entdeckst oder Ideen hast, teil sie mit uns in diesem "
 "{forum-thread}."
 
-#: src/components/layouts/Settings.vue:45
+#: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Kontakte importieren"
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importiere Kontakte, die du aus dem Safe exportiert hast."
 
@@ -477,7 +477,7 @@ msgstr "Lade Freunde mit einem "
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Es ist schnell, sicher und macht dich wirklich unabhängig."
 
-#: src/components/layouts/Settings.vue:15
+#: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "Sprache"
 
@@ -498,7 +498,7 @@ msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 msgid "Light Node"
 msgstr "Light Node"
 
-#: src/components/layouts/Settings.vue:52
+#: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Datei laden"
 
@@ -564,14 +564,14 @@ msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
 msgstr ""
-"Nimiq OASIS macht es möglich direkt von deinem Wallet aus dezentral "
-"Kryptowährungen zu kaufen und zu verkaufen."
+"Mit Nimiq OASIS kannst du Kryptowährungen direkt in deiner Wallet dezentral "
+"kaufen und verkaufen."
 
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr "Keine Transaktionen gefunden"
 
-#: src/components/layouts/Settings.vue:37
+#: src/components/layouts/Settings.vue:39
 msgid "None"
 msgstr "Keine"
 
@@ -579,7 +579,7 @@ msgstr "Keine"
 msgid "not sent"
 msgstr "nicht gesendet"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:210
 msgid "OK! Contacts imported successfully."
 msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
@@ -656,7 +656,7 @@ msgstr "Erhalte ein paar kostenlose NIM für den Anfang."
 msgid "received at {dateAndTime}"
 msgstr "erhalten am {dateAndTime}"
 
-#: src/components/layouts/Settings.vue:103
+#: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
 msgstr "Referenzwährung"
 
@@ -670,7 +670,7 @@ msgstr "Umbenennen"
 msgid "Request failed"
 msgstr "Anfrage fehlgeschlagen"
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:94
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
@@ -788,7 +788,7 @@ msgstr "Teile deinen Zahlungslink"
 msgid "Show all my addresses"
 msgstr "Alle meine Adressen anzeigen"
 
-#: src/components/layouts/Settings.vue:30
+#: src/components/layouts/Settings.vue:32
 msgid "Show Decimals"
 msgstr "Nachkommastellen"
 
@@ -830,7 +830,7 @@ msgstr "abgleichen"
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
-msgstr "Sag uns hier bescheid"
+msgstr "Sag uns hier Bescheid"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -907,7 +907,7 @@ msgstr "Guthaben überweisen"
 msgid "Tweet your map!"
 msgstr "Teile deine Karte auf Twitter!"
 
-#: src/components/modals/TransactionModal.vue:319
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"

@@ -35,6 +35,7 @@ import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
+import router from '../router';
 
 export default defineComponent({
     props: {
@@ -84,12 +85,21 @@ export default defineComponent({
             backgroundYOffset.value = offset;
             backgroundYScale.value = scalingRatio;
         }
+
         if (!props.embedded) {
             watch(activeAddress, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
             window.addEventListener(
                 'resize',
                 () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
             );
+            /* Update the .active-box after the decimals setting is changed */
+            router.afterEach((to, from) => {
+                if (from.name === 'settings' && from.query.sidebar && to.name === 'root' && activeAddress.value) {
+                    context.root.$nextTick(() =>
+                        activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
+                    );
+                }
+            });
         }
 
         const root = ref<HTMLElement>(null);
@@ -191,7 +201,7 @@ export default defineComponent({
 
         transition: color 400ms var(--nimiq-ease), background 400ms var(--nimiq-ease);
 
-        .has-scrollbar & {
+        .has-scrollbar &:not(.add-address-button) {
             width: calc(100% + 6px);
         }
     }

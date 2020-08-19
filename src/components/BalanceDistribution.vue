@@ -1,98 +1,121 @@
 <template>
     <div class="balance-distribution">
-        <div class="currency nim" :style="{width: balanceDistribution.nim * 80 + '%'}">
-            <span class="nq-label">NIM</span>
+        <div class="currency flex-column nim" :style="{width: Math.max(0.12, balanceDistribution.nim) * 100 + '%'}">
             <div class="distribution" >
                 <div v-for="account of nimBalanceDistribution"
-                    :key="account.address"
-                    :style="{width: account.percentage * 100 + '%'}">
+                    :key="account.addressInfo.address"
+                    :style="{width: (nimPercentageSum < 1
+                        ? 1 / nimBalanceDistribution.length
+                        : account.percentage
+                    ) * 100 + '%'}">
                     <Tooltip preferredPosition="top right">
-                        <div :class="getBackgroundClass(account.addressInfo.address)" slot="icon" class="bar"></div>
+                        <div
+                            class="bar"
+                            :class="[
+                                getBackgroundClass(account.addressInfo.address),
+                                {'empty': !account.addressInfo.balance},
+                            ]"
+                            slot="trigger"></div>
                         <div class="flex-row">
                             <Identicon :address="account.addressInfo.address"/>
                             <div class="flex-column">
                                 <span class="nq-text-s">{{account.addressInfo.label}}</span>
-                                <FiatConvertedAmount :amount="account.addressInfo.balance" />
+                                <FiatConvertedAmount :amount="account.addressInfo.balance" value-mask/>
                             </div>
                         </div>
                     </Tooltip>
                 </div>
             </div>
-            <span class="nq-label">{{Math.round(balanceDistribution.nim * 100)}}%</span>
+            <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
         </div>
-        <div class="exchange" :style="{
-                paddingLeft: (balanceDistribution.nim < .05 ? 5 - balanceDistribution.nim * 100 + '%' : undefined),
-                paddingRight: (balanceDistribution.btc < .05 ? 5 - balanceDistribution.btc * 100 + '%' : undefined),
-            }">
-            <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})" @mousedown.prevent>
+        <div class="exchange">
+            <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})" @mousedown.prevent disabled>
                 <TransferIcon/>
             </button>
         </div>
-        <div class="currency btc" :style="{width: balanceDistribution.btc * 80 + '%'}">
-            <span class="nq-label">BTC</span>
+        <div class="currency flex-column btc" :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}">
             <div class="distribution">
-                <div v-for="account of btcBalanceDistribution"
-                    :key="account.addressInfo.address"
-                    :style="{width: account.percentage * 100 + '%'}">
-                    <Tooltip preferredPosition="top right">
-                        <div :class="getBackgroundClass(account.addressInfo.address)" slot="icon" class="bar"></div>
-                        <div class="flex-column">
-                            <span class="nq-text-s">{{account.addressInfo.label}}</span>
-                            <FiatConvertedAmount :amount="account.addressInfo.balance" />
+                <div style="width: 100%">
+                    <Tooltip preferredPosition="top left">
+                        <div class="bar btc" :class="{'empty': !btcAccountBalance}" slot="trigger"></div>
+                        <div class="flex-row">
+                            <BitcoinIcon/>
+                            <div class="flex-column">
+                                <span class="nq-text-s">{{ $t('Bitcoin') }}</span>
+                                <FiatConvertedAmount :amount="btcAccountBalance" currency="btc" value-mask/>
+                            </div>
                         </div>
                     </Tooltip>
                 </div>
             </div>
-            <span class="nq-label">{{Math.round(balanceDistribution.btc * 100)}}%</span>
+            <Amount :decimals="0" :amount="btcAccountBalance" :currency="'btc'" :currencyDecimals="8" value-mask/>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { Identicon, Tooltip, TransferIcon } from '@nimiq/vue-components';
+import { Identicon, Tooltip, TransferIcon, Amount } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import BitcoinIcon from './icons/BitcoinIcon.vue';
 import { useAddressStore, AddressInfo } from '../stores/Address';
+import { useFiatStore } from '../stores/Fiat';
+import { CryptoCurrency } from '../lib/Constants';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
         const { addressInfos, accountBalance } = useAddressStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+
+        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
+        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+
+        const nimFiatAccountBalance = computed(() => nimExchangeRate.value !== undefined
+            ? (accountBalance.value / 1e5) * nimExchangeRate.value
+            : undefined,
+        );
+        const btcFiatAccountBalance = computed(() => btcExchangeRate.value !== undefined
+            ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+            : undefined,
+        );
+
+        const totalFiatAccountBalance = computed(() => {
+            if (nimFiatAccountBalance.value === undefined || btcFiatAccountBalance.value === undefined) {
+                return undefined;
+            }
+            return nimFiatAccountBalance.value + btcFiatAccountBalance.value;
+        });
 
         const balanceDistribution = computed((): { btc: number, nim: number } => ({
-            nim: .9,
-            btc: .1,
+            nim: totalFiatAccountBalance.value
+                ? (nimFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
+                : 0,
+            btc: totalFiatAccountBalance.value
+                ? (btcFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
+                : 0,
         }));
 
         const nimBalanceDistribution = computed((): Array<{addressInfo: AddressInfo, percentage: number}> =>
-            Object.values(addressInfos.value).map((value) => ({
-                percentage: accountBalance.value === 0 ? 0 : (value.balance || 0) / accountBalance.value,
-                addressInfo: value,
+            addressInfos.value.map((addressInfo) => ({
+                addressInfo,
+                percentage: accountBalance.value ? (addressInfo.balance || 0) / accountBalance.value : 0,
             })),
         );
 
-        // TODO move this to a proper place and actually define the properties
-        type BtcAccountInfo = {
-            address: string,
-            label: string,
-            balance: number,
-        };
-
-        const btcBalanceDistribution = computed((): Array<{addressInfo: BtcAccountInfo, percentage: number}> => [{
-            addressInfo: {
-                label: 'Bitcoin',
-                address: 'btc-address', // This string triggers the orange
-                balance: 0,
-            },
-            percentage: 1,
-        }]);
+        const nimPercentageSum = computed(() =>
+            nimBalanceDistribution.value.reduce((sum, account) => sum + (account.addressInfo.balance || 0), 0));
 
         return {
             getBackgroundClass,
             balanceDistribution,
+            accountBalance,
+            btcAccountBalance,
             nimBalanceDistribution,
-            btcBalanceDistribution,
+            nimPercentageSum,
         };
     },
     components: {
@@ -100,7 +123,9 @@ export default defineComponent({
         Identicon,
         Tooltip,
         TransferIcon,
-    } as any,
+        Amount,
+        BitcoinIcon,
+    },
 });
 </script>
 
@@ -110,35 +135,35 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
 
-    .nq-label {
-        font-weight: 600;
-    }
-
     .exchange {
-        width: 20%;
-        display: flex;
         flex-direction: row;
         align-content: center;
         justify-content: space-around;
+        padding: 0 1rem;
+        margin-top: -0.5rem;
 
         button {
             display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 0;
             width: 4rem;
             height: 4rem;
             border-radius: 2rem;
-            justify-content: center;
-            align-items: center;
+
+            &::before {
+                display: none;
+            }
         }
     }
 
     .currency {
-        display: flex;
-        flex-direction: column;
-        align-content: center;
         justify-content: space-around;
+        align-content: center;
+        align-self: flex-start;
+        margin-top: 0.5rem;
 
-        .distribution  {
+        .distribution {
             display: flex;
             flex-direction: row;
             width: 100%;
@@ -150,12 +175,15 @@ export default defineComponent({
             .tooltip {
                 width: 100%;
 
-                > a:after {
-                    border-color: white transparent transparent transparent;
-                    z-index: 2;
+                /deep/ .trigger {
+                    display: block;
                 }
 
-                .tooltip-box {
+                /deep/ .trigger::after {
+                    background: white;
+                }
+
+                /deep/ .tooltip-box {
                     background: white;
                     color: var(--nimiq-blue);
                 }
@@ -164,11 +192,13 @@ export default defineComponent({
                     align-items: center;
                 }
 
-                .identicon {
+                .identicon,
+                svg {
                     width: 4rem;
                     height: 4rem;
                     margin-right: 1rem;
                     flex-shrink: 0;
+                    color: #F7931A; // Bitcoin orange
                 }
 
                 .nq-text-s {
@@ -177,9 +207,11 @@ export default defineComponent({
                 }
 
                 .fiat-amount {
+                    --size: var(--small-label-size);
                     font-size: var(--small-label-size);
                     opacity: .6;
                     font-weight: 600;
+                    text-align: left;
                 }
             }
 
@@ -188,19 +220,31 @@ export default defineComponent({
                 align-self: center;
                 border-radius: .5rem;
                 height: 0.5rem;
+                min-width: 0.5rem;
+
+                &.btc {
+                    background: #F7931A; // Bitcoin orange
+                }
+
+                &.empty {
+                    background: var(--text-30) !important;
+                }
             }
         }
 
-        > span {
+        .amount {
+            color: var(--text-40);
+            font-weight: bold;
+            --size: var(--small-size);
             font-size: var(--small-size);
-            white-space: nowrap;
             margin-left: 0.125rem;
             margin-right: 0.125rem;
+            text-align: left;
         }
 
         &.btc {
             align-self: flex-end;
-            > span {
+            > .amount {
                 text-align: right;
                 align-self: flex-end;
             }

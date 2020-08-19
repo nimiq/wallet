@@ -17,6 +17,7 @@
                 value-mask
             />
         </div>
+        <BalanceDistribution/>
     </div>
 </template>
 
@@ -24,8 +25,7 @@
 import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
-// re add <BalanceDistribution /> once Bitcoin is avalable
-// import BalanceDistribution from './BalanceDistribution.vue';
+import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
@@ -98,7 +98,7 @@ export default defineComponent({
         };
     },
     components: {
-        // BalanceDistribution,
+        BalanceDistribution,
         FiatAmount,
         PrivacyOffIcon,
         PrivacyOnIcon,
@@ -172,6 +172,10 @@ export default defineComponent({
     // Fixed line-height, so that the block height doesn't change when
     // the font-size is dynamically adjusted for number length.
     line-height: 7rem;
+}
+
+.balance-distribution {
+    margin-top: calc(var(--item-margin) / 4);
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint

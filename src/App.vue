@@ -363,10 +363,10 @@ body {
 }
 
 // Overwrites for AccountBalance
-.value-masked .account-balance [value-mask] {
+.value-masked .account-balance > .fiat-amount > [value-mask] {
     line-height: 0;
 }
-.value-masked .account-balance [value-mask]::after {
+.value-masked .account-balance > .fiat-amount > [value-mask]::after {
     letter-spacing: 0.375em;
     margin-right: -0.375em;
 }

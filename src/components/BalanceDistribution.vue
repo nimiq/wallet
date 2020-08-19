@@ -4,7 +4,7 @@
             <div class="distribution" >
                 <div v-for="account of nimBalanceDistribution"
                     :key="account.addressInfo.address"
-                    :style="{width: (nimPercentageSum < 1
+                    :style="{width: (nimPercentageSum < 0.99
                         ? 1 / nimBalanceDistribution.length
                         : account.percentage
                     ) * 100 + '%'}">
@@ -29,8 +29,8 @@
             <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
         </div>
         <div class="exchange">
-            <button class="nq-button-s" @click="$router.push('/trade').catch((err)=>{})" @mousedown.prevent disabled>
-                <TransferIcon/>
+            <button class="nq-button-s" @click="$router.push('/trade').catch(() => {})" @mousedown.prevent>
+                <TradeIcon/>
             </button>
         </div>
         <div class="currency flex-column btc" :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}">
@@ -55,10 +55,11 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { Identicon, Tooltip, TransferIcon, Amount } from '@nimiq/vue-components';
+import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import TradeIcon from './icons/TradeIcon.vue';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
@@ -93,10 +94,10 @@ export default defineComponent({
         const balanceDistribution = computed((): { btc: number, nim: number } => ({
             nim: totalFiatAccountBalance.value
                 ? (nimFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
-                : 0,
+                : 0.5,
             btc: totalFiatAccountBalance.value
                 ? (btcFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
-                : 0,
+                : 0.5,
         }));
 
         const nimBalanceDistribution = computed((): Array<{addressInfo: AddressInfo, percentage: number}> =>
@@ -122,9 +123,9 @@ export default defineComponent({
         FiatConvertedAmount,
         Identicon,
         Tooltip,
-        TransferIcon,
         Amount,
         BitcoinIcon,
+        TradeIcon,
     },
 });
 </script>
@@ -150,6 +151,12 @@ export default defineComponent({
             width: 4rem;
             height: 4rem;
             border-radius: 2rem;
+
+            svg {
+                width: 2rem;
+                height: 2rem;
+                color: var(--text-60);
+            }
 
             &::before {
                 display: none;

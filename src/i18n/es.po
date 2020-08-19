@@ -30,7 +30,7 @@ msgstr "{count} Cashlink en trámite | {count} Cashlinks en trámite"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Soporte Chat & Teléfono"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -155,7 +155,7 @@ msgstr ""
 "Al agregar una cuota a la transacción, puede influenciar que tan rápidamente"
 " será procesada."
 
-#: src/components/layouts/Settings.vue:181
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
@@ -306,7 +306,7 @@ msgstr "Editar contactos"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr "Editar transacción"
 
@@ -362,7 +362,7 @@ msgstr "Recolectando"
 msgid "Fiat value unavailable"
 msgstr "Valor en moneda fiduciaria no disponible"
 
-#: src/components/layouts/Settings.vue:187
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "El archivo no contiene contactos."
 
@@ -578,7 +578,7 @@ msgstr "Ninguna"
 msgid "not sent"
 msgstr "no enviado"
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "¡OK! Los Contactos fueron importados exitosamente."
 
@@ -674,7 +674,7 @@ msgstr ""
 "Reinicialice los ajustes de su billetera y recargue los datos de la cadena "
 "de bloques."
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr "Intente de nuevo"
 
@@ -738,15 +738,15 @@ msgstr "Enviar Transacción"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envíe, reciba y almacene BTC en su billetera."
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr "Se enviaron {nim} NIM"
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr "Se enviaron {nim} NIM a {name}"
 
@@ -799,7 +799,7 @@ msgstr "Regístrate"
 msgid "Skip for now"
 msgstr "Saltar por ahora"
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
 

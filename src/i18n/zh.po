@@ -29,7 +29,7 @@ msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话 支持"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -147,7 +147,7 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以影响交易的处理速度"
 
-#: src/components/layouts/Settings.vue:181
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
@@ -296,7 +296,7 @@ msgstr "编辑联络人"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数数量。"
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -352,7 +352,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:187
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -559,7 +559,7 @@ msgstr "无"
 msgid "not sent"
 msgstr "未发送"
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -650,7 +650,7 @@ msgstr "请求失败"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置您的钱包设置并从区块链重新加载数据。"
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr "重试"
 
@@ -712,15 +712,15 @@ msgstr "发送交易"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从您的钱包中发送、接收和持有BTC。"
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr "发送 {nim} NIM"
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送 {nim} NIM 至 {name}"
 
@@ -773,7 +773,7 @@ msgstr "注册"
 msgid "Skip for now"
 msgstr "暂时跳过"
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr "出了些问题"
 

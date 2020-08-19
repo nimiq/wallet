@@ -28,7 +28,7 @@ msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 �
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 채팅 & 전화 지원"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -146,7 +146,7 @@ msgid ""
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/layouts/Settings.vue:181
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
@@ -295,7 +295,7 @@ msgstr "연락처 수정"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr "거래 수정"
 
@@ -351,7 +351,7 @@ msgstr "불러 오는 중"
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:187
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
 
@@ -558,7 +558,7 @@ msgstr "없음"
 msgid "not sent"
 msgstr "전송되지 않음"
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -650,7 +650,7 @@ msgstr "요청 실패"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr "재시도"
 
@@ -712,15 +712,15 @@ msgstr "거래 전송"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr "거래 전송 중"
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM을 보냄"
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim}NIM을 {name}에게 보냄"
 
@@ -773,7 +773,7 @@ msgstr "가입"
 msgid "Skip for now"
 msgstr "지금은 넘어가기"
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
 

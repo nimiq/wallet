@@ -140,7 +140,7 @@ import { Portal } from '@linusborg/vue-simple-portal';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
-import { FiatCurrency } from '../../lib/Constants';
+import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
@@ -161,11 +161,7 @@ export default defineComponent({
 
         function sortedFiatCurrency() {
             const sorted = Object.values(FiatCurrency).sort();
-
-            const denylist = [
-                'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'MYR', 'SAR',
-            ];
-            return sorted.filter((code) => !denylist.includes(code.toUpperCase()));
+            return sorted.filter((code) => !FIAT_CURRENCY_DENYLIST.includes(code.toUpperCase()));
         }
 
         const $fileInput = ref<HTMLInputElement | null>(null);

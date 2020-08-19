@@ -1,7 +1,7 @@
 <template>
     <div class="amount-menu">
         <button class="reset button flex-row">{{ activeCurrency.toUpperCase() }}</button>
-        <div v-if="open" class="menu">
+        <div v-if="open" class="menu flex-column">
             <button v-if="currency === 'nim'" class="reset flex-row" @click="$emit('fee-selection')">
                 <!-- eslint-disable-next-line max-len -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="15.25" y1="3.25" x2="7.75" y2="3.25"/><line class="cls-1" x1="12.25" y1="7.75" x2="0.75" y2="7.75"/><line class="cls-1" x1="13.75" y1="12.25" x2="4.75" y2="12.25"/></g></svg>
@@ -59,6 +59,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/mixins.scss';
+
 .button {
     align-items: center;
     cursor: pointer;
@@ -103,6 +105,7 @@ export default defineComponent({
         text-align: left;
         padding: 0.5rem;
         align-items: center;
+        flex-shrink: 0;
 
         transition: opacity var(--attr-duration) var(--nimiq-ease);
 
@@ -123,10 +126,25 @@ export default defineComponent({
         opacity: 0.16;
         border-radius: 1rem;
         margin: 1rem 0;
+        flex-shrink: 0;
     }
 
     .currencies {
         flex-wrap: wrap;
+        overflow-y: auto;
+        margin-right: -1rem;
+
+        @extend %custom-scrollbar;
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
 
         button {
             width: 50%;

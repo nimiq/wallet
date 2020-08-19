@@ -128,6 +128,7 @@ export default defineComponent({
     .currencies {
         flex-wrap: wrap;
         overflow-y: auto;
+        margin-right: -1rem;
 
         @extend %custom-scrollbar;
 

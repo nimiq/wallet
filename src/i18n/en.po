@@ -19,7 +19,7 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -129,7 +129,7 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:181
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -274,7 +274,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:482
 msgid "Edit transaction"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:187
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr ""
 
@@ -520,7 +520,7 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -603,7 +603,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:481
 msgid "Retry"
 msgstr ""
 
@@ -663,15 +663,15 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:513
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:509
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -722,7 +722,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:524
 msgid "Something went wrong"
 msgstr ""
 

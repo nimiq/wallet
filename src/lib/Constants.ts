@@ -12,3 +12,7 @@ export const ENV_DEV = 'dev';
 
 export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';
 export const TESTNET_ORIGIN = 'https://wallet.nimiq-testnet.com';
+
+export const FIAT_CURRENCY_DENYLIST = [
+    'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'SAR',
+];

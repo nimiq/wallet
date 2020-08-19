@@ -220,7 +220,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { FiatCurrency } from '../../lib/Constants';
+import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -353,7 +353,8 @@ export default defineComponent({
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
         const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency));
+            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
+                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         const fiatCurrencyInfo = computed(() => {
             if (activeCurrency.value === 'nim') {
@@ -884,6 +885,7 @@ export default defineComponent({
             right: 3rem;
             bottom: 3rem;
             z-index: 1;
+            max-height: calc(100% - 6rem);
         }
 
         .secondary-amount {

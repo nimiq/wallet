@@ -2,7 +2,6 @@ import { PlainAddressInfo } from '@nimiq/network-client';
 import bitmap from '../data/NetworkBitMap';
 import { useGeoIp, GeoIpResponse } from '../composables/useGeoIp';
 import RobinsonProjection from './RobinsonProjection';
-import { countryIso2Name } from './CountryIsoNames';
 
 /** how long the tangent to the control point is in relation to the distance between the two points */
 const CURVINESS_FACTOR = .2;
@@ -64,13 +63,13 @@ export { NodeType };
 /**
  * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
  */
-type Node = PlainAddressInfo & {
+export type Node = PlainAddressInfo & {
     hexagon: NodeHexagon,
     type: NodeType,
     locationData: {
         country?: string,
-        countryFull?: string,
         city?: string,
+        i18nCityNames?: { [language: string]: string },
     },
     host?: string,
 }
@@ -462,8 +461,8 @@ export default class NetworkMap {
                     hexagon: selfHexagon,
                     locationData: {
                         country: response.country,
-                        countryFull: countryIso2Name(response.country),
                         city: response.city,
+                        i18nCityNames: response.city_names,
                     },
                     type: NodeType.SELF,
                 });
@@ -533,10 +532,12 @@ export default class NetworkMap {
 
                         if (response.country) {
                             node.locationData.country = response.country;
-                            node.locationData.countryFull = countryIso2Name(response.country);
                         }
                         if (response.city) {
                             node.locationData.city = response.city;
+                        }
+                        if (response.city_names) {
+                            node.locationData.i18nCityNames = response.city_names;
                         }
 
                         hexagon.addNode(node);

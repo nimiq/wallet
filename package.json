@@ -17,6 +17,7 @@
   },
   "main": "src/main.ts",
   "dependencies": {
+    "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/hub-api": "^1.2.0",
     "@nimiq/iqons": "^1.5.2",

@@ -39,7 +39,7 @@
                 </a>
             </transition>
 
-            <div class="recently-copied-addresses flex-column">
+            <div class="recently-copied-addresses flex-column" ref="addressList">
                 <transition name="fade">
                     <p class="no-recently-copied-address"
                         v-if="!recentlyCopiedAddressesListSorted.length">
@@ -75,7 +75,10 @@
                                         <div class="address-created">{{ timelabel }}</div>
                                     </div>
                                 </transition>
-                                <Tooltip class="address-short" preferredPosition="top left">
+                                <Tooltip class="address-short"
+                                    preferredPosition="top"
+                                    :container="$refs.addressList ? { $el: $refs.addressList } : null"
+                                >
                                     <Copyable :text="address" slot="trigger">
                                         <ShortAddress :address="address"/>
                                     </Copyable>
@@ -756,7 +759,10 @@ footer {
         width: 26.25rem;
         font-size: var(--small-size);
         font-weight: 600;
-        transform: translate(-1rem, 2rem);
+
+        @media (min-width: 701px) {
+            transform: translate(-1rem, 2rem);
+        }
 
         p {
             margin: 0;

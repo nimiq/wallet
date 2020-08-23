@@ -556,6 +556,9 @@ export default defineComponent({
     width: 100%;
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
+
+    @extend %custom-scrollbar;
 }
 
 .no-recently-copied-address {
@@ -682,6 +685,14 @@ export default defineComponent({
     &.tooltip /deep/ .tooltip-box {
         font-size: var(--small-size);
         padding: .5rem 1rem;
+    }
+
+    &.tooltip.top /deep/ .tooltip-box {
+        transform: translate(-2rem, -2rem);
+    }
+
+    &.tooltip.bottom /deep/ .tooltip-box {
+        transform: translate(-2rem, 2rem);
     }
 
     .copyable {

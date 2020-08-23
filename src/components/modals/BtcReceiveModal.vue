@@ -550,11 +550,6 @@ export default defineComponent({
     padding: 0 4.75rem;
     text-align: center;
     margin: auto 0;
-
-    &.fade-enter-active,
-    &.fade-leave-active {
-        transition-delay: 1s;
-    }
 }
 
 .address-list {
@@ -562,7 +557,6 @@ export default defineComponent({
     &.fade-leave-active {
         position: absolute;
         width: 100%;
-        transition-delay: 1s;
     }
 
     h2 {

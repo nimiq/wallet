@@ -106,7 +106,7 @@ export default defineComponent({
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
 
     /* Default: >= 1500px */
-    --sidebar-width: 23rem;
+    --sidebar-width: 24rem;
     --account-column-width: 70rem;
     --address-column-width: 150rem;
 

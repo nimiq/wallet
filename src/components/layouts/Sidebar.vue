@@ -242,7 +242,7 @@ export default defineComponent({
 }
 
 .trade-actions .nq-button-s {
-    margin: 0.5rem 1rem 1rem;
+    margin: 0.5rem .625rem 1rem;
     background: rgba(255, 255, 255, .1);
 
     &:active,
@@ -250,6 +250,10 @@ export default defineComponent({
     &:hover {
         background: rgba(255, 255, 255, .2);
     }
+}
+
+button > :first-child {
+    flex-shrink: 0;
 }
 
 .account-menu,

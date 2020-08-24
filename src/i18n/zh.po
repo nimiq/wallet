@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Matheo <matheo@nimiq.com>, 2020
-# Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/107022/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -835,7 +835,7 @@ msgstr "钱包仍处于测试阶段。您的资金是安全的，只是视觉上
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr "我们有多种选择，您可以使用信用卡或交易加密货币，也可以在 {link} 上找到更多的交易所。"
 

@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Daniel, 2020
 # Kyungil Choi <hanpama@gmail.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Kyungil Choi <hanpama@gmail.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/107022/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ko\n"
@@ -835,7 +835,7 @@ msgstr "지갑은 아직 베타 단계입니다. 당신의 자산은 안전하�
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr "여러 선택지가 있습니다. 신용 카드를 활용하거나 암호화폐를 거래하세요. {link}에서 거래소를 더 찾아볼 수 있습니다."
 

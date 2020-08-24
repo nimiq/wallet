@@ -1,10 +1,10 @@
-#
+# 
 # Translators:
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
 # Sven <sven@nimiq.com>, 2020
 # Daniel, 2020
-#
+# 
 msgid ""
 msgstr ""
 "Last-Translator: Daniel, 2020\n"
@@ -868,7 +868,7 @@ msgstr ""
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr ""
 "Es gibt viele Möglichkeiten, benutze deine Kreditkarte oder tausche mit "

@@ -865,7 +865,7 @@ msgstr ""
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr ""
 "Il existe de nombreuses options, utilisez une carte de crédit ou échangez "

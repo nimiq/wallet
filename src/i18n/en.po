@@ -777,7 +777,7 @@ msgid "The Wallet is still in Beta. Your funds are safe, there just might be som
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:8
-msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
+msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:19

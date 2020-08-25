@@ -1,18 +1,18 @@
 # 
 # Translators:
 # Talleyrand <baptistekugener@wanadoo.fr>, 2020
-# Matheo <matheo@nimiq.com>, 2020
 # Daniel, 2020
+# Matheo <matheo@nimiq.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2020\n"
+"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/107022/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/components/modals/TransactionModal.vue:181
+#: src/components/modals/TransactionModal.vue:185
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmation | {count} Confirmations"
 
@@ -29,7 +29,7 @@ msgstr "{count} Cashlink | {count} Cashlinks"
 msgid "24/7 Chat & Phone Support"
 msgstr "Support 24/7 par Chat & Téléphone"
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:213
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -105,6 +105,10 @@ msgstr "Et {BTC}, l'étalon-or de la crypto et une bonne réserve de valeur."
 msgid "Android and iOS App"
 msgstr "Application Android et IOS"
 
+#: src/components/layouts/Settings.vue:130
+msgid "Automatic"
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Retour aux adresses"
@@ -117,11 +121,11 @@ msgstr "Sauvegarder"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:178
+#: src/components/modals/TransactionModal.vue:182
 msgid "Block #{height}"
 msgstr "Bloc #{height}"
 
-#: src/components/modals/TransactionModal.vue:188
+#: src/components/modals/TransactionModal.vue:192
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
@@ -153,11 +157,11 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité de traitement de votre "
 "transaction."
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:193
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -271,7 +275,11 @@ msgstr "Créer lien de paiement"
 msgid "Credit Card accepted"
 msgstr "Carte de crédit acceptée"
 
-#: src/components/modals/TransactionModal.vue:164
+#: src/components/layouts/Settings.vue:121
+msgid "Currency Format"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:168
 msgid "Current value"
 msgstr "Valeur actuelle"
 
@@ -279,7 +287,7 @@ msgstr "Valeur actuelle"
 msgid "Developer"
 msgstr "Développeur"
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:140
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -362,7 +370,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Fiat value unavailable"
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:199
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -421,7 +429,7 @@ msgstr ""
 "Gérer plusieurs adresses est maintenant pratique et facile - avec un mot de "
 "passe et les informations de connexion partagées."
 
-#: src/components/modals/TransactionModal.vue:159
+#: src/components/modals/TransactionModal.vue:163
 msgid "Historic value"
 msgstr "Valeur historique"
 
@@ -499,6 +507,10 @@ msgstr "Light Node"
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Charger le fichier"
+
+#: src/components/layouts/Settings.vue:131
+msgid "Localized"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -578,7 +590,7 @@ msgstr "Aucun"
 msgid "not sent"
 msgstr "non envoyée"
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:222
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -823,6 +835,10 @@ msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
 msgid "Store, send and receive NIM."
 msgstr "Stockez, envoyez et recevez des NIM."
 
+#: src/components/layouts/Settings.vue:123
+msgid "Switch between automatic and localized currency formatting."
+msgstr ""
+
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "synchronisation"
@@ -904,7 +920,7 @@ msgstr "Transférer des fonds"
 msgid "Tweet your map!"
 msgstr "Tweetez votre carte !"
 
-#: src/components/modals/TransactionModal.vue:321
+#: src/components/modals/TransactionModal.vue:325
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"

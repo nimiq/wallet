@@ -13,7 +13,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/components/modals/TransactionModal.vue:181
+#: src/components/modals/TransactionModal.vue:185
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bestätigung | {count} Bestätigungen"
 
@@ -24,13 +24,13 @@ msgstr "{count} Teilnehmer | {count} Teilnehmer"
 #: src/components/layouts/AddressOverview.vue:14
 #: src/components/layouts/AddressOverview.vue:76
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr "{count} ausstehender Cashlink | {count} ausstehende Cashlinks"
+msgstr "{count} offener Cashlink | {count} offene Cashlinks"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat- & Telefonservice"
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:213
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -107,6 +107,10 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr "Android und iOS App"
 
+#: src/components/layouts/Settings.vue:130
+msgid "Automatic"
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Zurück zu Adressen"
@@ -119,11 +123,11 @@ msgstr "Backup"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:178
+#: src/components/modals/TransactionModal.vue:182
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/TransactionModal.vue:188
+#: src/components/modals/TransactionModal.vue:192
 msgid "Block explorer"
 msgstr "Block Explorer"
 
@@ -155,11 +159,11 @@ msgstr ""
 "Indem du eine Transaktionsgebühr hinzufügst, kannst du beeinflussen, wie "
 "schnell deine Transaktion verarbeitet wird."
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:193
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -267,13 +271,17 @@ msgstr "Backup erstellen"
 
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
-msgstr "Bezahlungslink erstellen"
+msgstr "Zahlungslink erstellen"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/modals/TransactionModal.vue:164
+#: src/components/layouts/Settings.vue:121
+msgid "Currency Format"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:168
 msgid "Current value"
 msgstr "Aktueller Wert"
 
@@ -281,7 +289,7 @@ msgstr "Aktueller Wert"
 msgid "Developer"
 msgstr "Entwickler"
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:140
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
@@ -364,7 +372,7 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:199
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
@@ -400,7 +408,7 @@ msgstr "Zu {exchange}"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
-msgstr "Feedback? Fehler gefunden?"
+msgstr "Feedback? Bugs?"
 
 #: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/WelcomeModal.vue:97
@@ -423,7 +431,7 @@ msgstr ""
 "Mit nur einem Passwort und einem Login ist es ist jetzt ganz einfach und "
 "bequem mehrere Addressen zu haben."
 
-#: src/components/modals/TransactionModal.vue:159
+#: src/components/modals/TransactionModal.vue:163
 msgid "Historic value"
 msgstr "Historischer Wert"
 
@@ -502,6 +510,10 @@ msgstr "Light Node"
 msgid "Load file"
 msgstr "Datei laden"
 
+#: src/components/layouts/Settings.vue:131
+msgid "Localized"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
@@ -564,8 +576,8 @@ msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
 msgstr ""
-"Mit Nimiq OASIS kannst du Kryptowährungen direkt in deiner Wallet dezentral "
-"kaufen und verkaufen."
+"Mit Nimiq OASIS kann dezentral und direkt aus dem Wallet gekauft und "
+"verkauft werden."
 
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -579,7 +591,7 @@ msgstr "Keine"
 msgid "not sent"
 msgstr "nicht gesendet"
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:222
 msgid "OK! Contacts imported successfully."
 msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
@@ -642,11 +654,11 @@ msgstr "Empfangen"
 
 #: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
 msgid "Receive free NIM"
-msgstr "Kostenlos NIM bekommen"
+msgstr "Kostenlos NIM erhalten"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr "NIM bekommen"
+msgstr "NIM erhalten"
 
 #: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
@@ -685,7 +697,7 @@ msgstr "Login-Datei speichern"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
-msgstr "Jetzt speichern"
+msgstr "Jetzt sichern"
 
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
@@ -737,7 +749,7 @@ msgstr "Transaktion senden"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr "Sende, empfange und verwahre BTC in deinem Wallet."
+msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
 #: src/components/modals/SendModal.vue:478
 msgid "Sending Transaction"
@@ -753,7 +765,7 @@ msgstr "{nim} NIM an {name} versendet"
 
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
-msgstr "versandt am {dateAndTime}"
+msgstr "gesendet am {dateAndTime}"
 
 #: src/components/modals/SendModal.vue:63
 #: src/components/modals/SendModal.vue:74
@@ -773,8 +785,8 @@ msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
-"Teile den Link oder OR-Code mit dem Sender. \n"
-"Optional kannst du auch einen Betrag angeben."
+"Teile den Link oder QR-Code mit dem Sender. \n"
+"Füge optional einen Betrag hinzu."
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
@@ -818,11 +830,15 @@ msgstr "Staking"
 
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
-msgstr "Starttermin für EU-Bankkonten ist das 3. Quartal 2020."
+msgstr "Los geht's in Q3 2020 mit SEPA Instant Konten."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "Verwahre, sende und empfange NIM."
+
+#: src/components/layouts/Settings.vue:123
+msgid "Switch between automatic and localized currency formatting."
+msgstr ""
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -872,7 +888,7 @@ msgid ""
 " exchanges on {link}"
 msgstr ""
 "Es gibt viele Möglichkeiten, benutze deine Kreditkarte oder tausche mit "
-"andere Kryptowährungen. Weitere Tauschbörsen findest du unter {link}"
+"anderen Kryptowährungen. Weitere Tauschbörsen findest du unter {link}"
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
@@ -907,7 +923,7 @@ msgstr "Guthaben überweisen"
 msgid "Tweet your map!"
 msgstr "Teile deine Karte auf Twitter!"
 
-#: src/components/modals/TransactionModal.vue:321
+#: src/components/modals/TransactionModal.vue:325
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"

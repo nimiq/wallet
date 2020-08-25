@@ -11,7 +11,7 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/TransactionModal.vue:181
+#: src/components/modals/TransactionModal.vue:185
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}개의 승인 | {count}개의 승인"
 
@@ -28,7 +28,7 @@ msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 �
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 채팅 & 전화 지원"
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:213
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -100,6 +100,10 @@ msgstr "그리고 {BTC}, 암호화폐의 금본위이자 가치의 견고한 저
 msgid "Android and iOS App"
 msgstr "안드로이드와 iOS 앱"
 
+#: src/components/layouts/Settings.vue:130
+msgid "Automatic"
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "주소로 돌아가기"
@@ -112,11 +116,11 @@ msgstr "백업"
 msgid "Bitcoin"
 msgstr "비트코인"
 
-#: src/components/modals/TransactionModal.vue:178
+#: src/components/modals/TransactionModal.vue:182
 msgid "Block #{height}"
 msgstr "블록 #{height}"
 
-#: src/components/modals/TransactionModal.vue:188
+#: src/components/modals/TransactionModal.vue:192
 msgid "Block explorer"
 msgstr "블록 탐색기"
 
@@ -146,11 +150,11 @@ msgid ""
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:193
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -262,7 +266,11 @@ msgstr "지불 링크 생성"
 msgid "Credit Card accepted"
 msgstr "신용 카드 허용"
 
-#: src/components/modals/TransactionModal.vue:164
+#: src/components/layouts/Settings.vue:121
+msgid "Currency Format"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:168
 msgid "Current value"
 msgstr "현재 가치"
 
@@ -270,7 +278,7 @@ msgstr "현재 가치"
 msgid "Developer"
 msgstr "개발자"
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:140
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "면책 조항"
@@ -351,7 +359,7 @@ msgstr "불러 오는 중"
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:199
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
 
@@ -408,7 +416,7 @@ msgid ""
 "and shared login information."
 msgstr "이제 하나의 비밀번호와 공유 로그인 정보로 여러 주소를 쉽고 편리하게 다룰 수 있습니다."
 
-#: src/components/modals/TransactionModal.vue:159
+#: src/components/modals/TransactionModal.vue:163
 msgid "Historic value"
 msgstr "당시 가치"
 
@@ -482,6 +490,10 @@ msgstr "경량 노드"
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "파일 불러오기"
+
+#: src/components/layouts/Settings.vue:131
+msgid "Localized"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -558,7 +570,7 @@ msgstr "없음"
 msgid "not sent"
 msgstr "전송되지 않음"
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:222
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -797,6 +809,10 @@ msgstr "2020년 3분기에 유럽 은행 계좌와 시작합니다"
 msgid "Store, send and receive NIM."
 msgstr "NIM을 보관하고 주고 받으세요."
 
+#: src/components/layouts/Settings.vue:123
+msgid "Switch between automatic and localized currency formatting."
+msgstr ""
+
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "동기화 중"
@@ -872,7 +888,7 @@ msgstr "자금 이체하기"
 msgid "Tweet your map!"
 msgstr "지도를 트윗하세요!"
 
-#: src/components/modals/TransactionModal.vue:321
+#: src/components/modals/TransactionModal.vue:325
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "미인수 캐시링크"

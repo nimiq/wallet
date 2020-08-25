@@ -159,7 +159,7 @@ export default defineComponent({
                 }
             }
 
-            // // Search global address book
+            // TODO: Search global address book
             // const globalLabel = AddressBook.getLabel(peerAddress.value);
             // if (globalLabel) return globalLabel;
 

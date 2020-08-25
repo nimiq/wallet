@@ -81,6 +81,8 @@ import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useAccountStore } from '../stores/Account';
+import { useBtcLabelsStore } from '../stores/BtcLabels';
 // import { ENV_MAIN } from '../lib/Constants';
 
 function processTimestamp(timestamp: number) {
@@ -130,7 +132,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddresses } = useBtcAddressStore();
+        const { state: btcAddresses$, activeAddresses } = useBtcAddressStore();
         const { state: btcTransactions$ } = useBtcTransactionsStore();
         const { isFetchingTxHistory } = useBtcNetworkStore();
 
@@ -149,29 +151,44 @@ export default defineComponent({
             .filter((tx) => tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress))));
 
         // Apply search filter
-        const filteredTxs = computed(() => { // eslint-disable-line arrow-body-style
-            /* if (!props.searchString) */ return txsForActiveAddress.value;
+        const filteredTxs = computed(() => {
+            if (!props.searchString) return txsForActiveAddress.value;
 
-            // const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
-            //
-            // return txsForActiveAddress.value.filter((tx) => {
-            //     const senderLabel = addresses$.addressInfos[tx.sender]
-            //         ? addresses$.addressInfos[tx.sender].label
-            //         : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
-            //
-            //     const recipientLabel = addresses$.addressInfos[tx.recipient]
-            //         ? addresses$.addressInfos[tx.recipient].label
-            //         : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
-            //
-            //     const concatenatedTxStrings = `
-            //         ${tx.sender.replace(/\s/g, '')}
-            //         ${tx.recipient.replace(/\s/g, '')}
-            //         ${senderLabel ? senderLabel.toUpperCase() : ''}
-            //         ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-            //         ${parseData(tx.data.raw).toUpperCase()}
-            //     `;
-            //     return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
-            // });
+            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
+
+            const {
+                getRecipientLabel,
+                getSenderLabel,
+            } = useBtcLabelsStore();
+
+            return txsForActiveAddress.value.filter((tx) => {
+                const labels = tx.addresses.map((address) => {
+                    const recipientLabel = getRecipientLabel.value(address);
+                    if (recipientLabel) return recipientLabel;
+
+                    const senderLabel = getSenderLabel.value(address);
+                    if (senderLabel) return senderLabel;
+
+
+                    const ownedAddressInfo = btcAddresses$.addressInfos[address];
+                    if (ownedAddressInfo) {
+                        // Find account label
+                        const { accountInfos } = useAccountStore();
+                        return Object.values(accountInfos.value)
+                            .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
+                            || Object.values(accountInfos.value)
+                                .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                    }
+
+                    // TODO: Search global address book
+                }).filter((label) => Boolean(label)) as string[];
+
+                const concatenatedTxStrings = `
+                    ${tx.addresses.map((address) => address.toUpperCase()).join('')}
+                    ${labels.map((label) => label.toUpperCase()).join('')}
+                `;
+                return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
+            });
         });
 
         const transactions = computed(() => {

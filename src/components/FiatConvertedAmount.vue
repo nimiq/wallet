@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="language"/>
+        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="fiatLocale"/>
         <div v-else class="fiat-amount placeholder"></div>
     </transition>
 </template>
@@ -41,12 +41,12 @@ export default defineComponent({
             : undefined,
         );
 
-        const { language } = useSettingsStore();
+        const { fiatLocale } = useSettingsStore();
 
         return {
             fiatAmount,
             fiatCurrency,
-            language,
+            fiatLocale,
         };
     },
     components: { FiatAmount } as any,

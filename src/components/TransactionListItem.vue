@@ -53,7 +53,7 @@
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <HistoricValueIcon/>
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language" value-mask/>
+                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="fiatLocale" value-mask/>
                 </div>
             </transition>
         </div>
@@ -169,7 +169,7 @@ export default defineComponent({
             : undefined,
         );
 
-        const { language } = useSettingsStore();
+        const { fiatLocale } = useSettingsStore();
 
         return {
             constants,
@@ -183,7 +183,7 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
-            language,
+            fiatLocale,
             peerAddress,
             peerLabel,
         };

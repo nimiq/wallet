@@ -16,7 +16,7 @@
                     : accountInfo.label
                 }}
             </div>
-            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" :locale="language" value-mask/>
+            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" :locale="fiatLocale" value-mask/>
         </div>
         <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
     </component>
@@ -103,7 +103,7 @@ export default defineComponent({
             return nimFiatAmount + btcFiatAmount;
         });
 
-        const { language } = useSettingsStore();
+        const { fiatLocale } = useSettingsStore();
 
         return {
             accountInfo,
@@ -111,7 +111,7 @@ export default defineComponent({
             backgroundClass,
             fiatAccountBalance,
             fiatCurrency,
-            language,
+            fiatLocale,
             AccountType,
         };
     },

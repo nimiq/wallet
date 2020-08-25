@@ -128,7 +128,11 @@
                         <Tooltip>
                             <template slot="trigger">
                                 <HistoricValueIcon/>
-                                <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language" value-mask/>
+                                <FiatAmount
+                                    :amount="fiatValue"
+                                    :currency="fiatCurrency"
+                                    :locale="fiatLocale"
+                                    value-mask/>
                             </template>
                             {{ $t('Historic value') }}
                         </Tooltip>
@@ -319,7 +323,7 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
 
-        const { language, amountsHidden } = useSettingsStore();
+        const { fiatLocale, amountsHidden } = useSettingsStore();
 
         const blockExplorerLink = computed(() =>
             `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
@@ -339,7 +343,7 @@ export default defineComponent({
             fiatCurrency,
             fiatValue,
             isIncoming,
-            language,
+            fiatLocale,
             peerAddresses,
             peerLabel,
             ownAddresses,

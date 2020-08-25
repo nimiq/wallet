@@ -154,7 +154,11 @@
                         <Tooltip>
                             <template slot="trigger">
                                 <HistoricValueIcon/>
-                                <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="language" value-mask/>
+                                <FiatAmount
+                                    :amount="fiatValue"
+                                    :currency="fiatCurrency"
+                                    :locale="fiatLocale"
+                                    value-mask/>
                             </template>
                             {{ $t('Historic value') }}
                         </Tooltip>
@@ -353,7 +357,7 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
 
-        const { language, amountsHidden } = useSettingsStore();
+        const { fiatLocale, amountsHidden } = useSettingsStore();
 
         return {
             ENV_MAIN,
@@ -368,7 +372,7 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
-            language,
+            fiatLocale,
             peerAddress,
             peerLabel,
             activeAddressInfo,

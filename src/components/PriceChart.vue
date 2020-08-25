@@ -23,7 +23,7 @@
                         :amount="currentPrice"
                         :currency="fiatCurrency"
                         :maxRelativeDeviation="0.001"
-                        :locale="language"
+                        :locale="fiatLocale"
                     />
                 </transition>
                 <transition name="fade">
@@ -233,7 +233,7 @@ export default defineComponent({
             }
         });
 
-        const { language } = useSettingsStore();
+        const { fiatLocale } = useSettingsStore();
 
         return {
             $svg,
@@ -246,7 +246,7 @@ export default defineComponent({
             history,
             priceChange,
             priceChangeClass,
-            language,
+            fiatLocale,
         };
     },
     components: {

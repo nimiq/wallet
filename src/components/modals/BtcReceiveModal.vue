@@ -163,7 +163,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, Ref, onUnmounted } from '@vue/composition-api';
 import {
     PageBody,
     PageHeader,
@@ -295,10 +295,6 @@ export default defineComponent({
             || external[external.length - 1].address,
         );
 
-        // Modals booleans
-        const addressQrCodeOverlayOpened = ref<boolean>(false);
-        const receiveLinkOverlayOpened = ref<boolean>(false);
-
         // requestLink
         const amount = ref<string>(0);
         const message = ref<string>('');
@@ -358,6 +354,25 @@ export default defineComponent({
                 currentlyShownAddress.value = nextActiveExternalAddress;
             }
         }
+
+        // Modals booleans
+        const addressQrCodeOverlayOpened = ref<boolean>(false);
+        const receiveLinkOverlayOpened = ref<boolean>(false);
+
+        // Watching for sub-modals openings to set the actively shown address as copied
+        watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
+            (booleans, prevBooleans) => {
+                if (booleans && prevBooleans) {
+                    const [qrCodeOpened, receiveLinkOpened] = booleans;
+                    const [prevQrCodeOpened, prevReceiveLinkOpened] = prevBooleans;
+
+                    if ((qrCodeOpened === true && prevQrCodeOpened === false)
+                        || (receiveLinkOpened === true && prevReceiveLinkOpened === false)) {
+                        copyActiveAddressCallback();
+                    }
+                }
+            },
+        );
 
         return {
             origin: window.location.origin,

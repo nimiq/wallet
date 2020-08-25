@@ -28,7 +28,7 @@ export const useSettingsStore = createStore({
         decimals: (state): Readonly<number> => state.decimals,
         language: (state): Readonly<string> => state.language,
         localizedFiat: (state): Readonly<boolean> => state.localizedFiat,
-        fiatLocale: (state): Readonly<string> => state.localizedFiat ? state.language : '',
+        fiatLocale: (state): Readonly<string | undefined> => state.localizedFiat ? state.language : undefined,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
     },

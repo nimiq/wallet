@@ -77,6 +77,10 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
+#: src/components/modals/DisclaimerModal.vue:21
+msgid "All translations are for information purposes only. The English text is the controlling version."
+msgstr ""
+
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""

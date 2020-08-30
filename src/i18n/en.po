@@ -85,10 +85,6 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:130
-msgid "Automatic"
-msgstr ""
-
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr ""
@@ -247,6 +243,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:121
 msgid "Currency Format"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:130
+msgid "Currency specific"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:168
@@ -445,6 +445,10 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:131
+msgid "Language specific"
+msgstr ""
+
 #: src/components/modals/NetworkInfoModal.vue:19
 #: src/components/modals/TradeModal.vue:107
 msgid "Learn more"
@@ -464,10 +468,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
-msgstr ""
-
-#: src/components/layouts/Settings.vue:131
-msgid "Localized"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
@@ -759,7 +759,7 @@ msgid "Store, send and receive NIM."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:123
-msgid "Switch between automatic and localized currency formatting."
+msgid "Switch between currency specific and language specific formatting."
 msgstr ""
 
 #: src/components/NetworkStats.vue:45

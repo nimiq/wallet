@@ -11,7 +11,7 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/TransactionModal.vue:181
+#: src/components/modals/TransactionModal.vue:185
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}개의 승인 | {count}개의 승인"
 
@@ -24,11 +24,15 @@ msgstr "{count}개의 피어 | {count}개의 피어"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 캐시링크"
 
+#: src/components/modals/TransactionModal.vue:187
+msgid "{fee} fee"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 채팅 & 전화 지원"
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:213
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -88,6 +92,12 @@ msgid ""
 "seconds."
 msgstr "모든 새 기능은 새로운 계정에만 제공됩니다. 지금 업그레이드 하세요. 몇 초면 됩니다."
 
+#: src/components/modals/DisclaimerModal.vue:21
+msgid ""
+"All translations are for information purposes only. The English text is the "
+"controlling version."
+msgstr ""
+
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "복구 단어, 비밀번호와 로그인 파일은 항상 백업하세요."
@@ -112,11 +122,11 @@ msgstr "백업"
 msgid "Bitcoin"
 msgstr "비트코인"
 
-#: src/components/modals/TransactionModal.vue:178
+#: src/components/modals/TransactionModal.vue:182
 msgid "Block #{height}"
 msgstr "블록 #{height}"
 
-#: src/components/modals/TransactionModal.vue:188
+#: src/components/modals/TransactionModal.vue:196
 msgid "Block explorer"
 msgstr "블록 탐색기"
 
@@ -146,11 +156,11 @@ msgid ""
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:193
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:328
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -262,7 +272,15 @@ msgstr "지불 링크 생성"
 msgid "Credit Card accepted"
 msgstr "신용 카드 허용"
 
-#: src/components/modals/TransactionModal.vue:164
+#: src/components/layouts/Settings.vue:121
+msgid "Currency Format"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:130
+msgid "Currency specific"
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:168
 msgid "Current value"
 msgstr "현재 가치"
 
@@ -270,7 +288,7 @@ msgstr "현재 가치"
 msgid "Developer"
 msgstr "개발자"
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:140
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "면책 조항"
@@ -295,7 +313,7 @@ msgstr "연락처 수정"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
-#: src/components/modals/SendModal.vue:482
+#: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
 msgstr "거래 수정"
 
@@ -315,27 +333,31 @@ msgstr "만료"
 msgid "Expired"
 msgstr "만료"
 
+#: src/components/modals/SendModal.vue:358
+msgid "express"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
 msgstr "실패"
 
-#: src/components/TestnetFaucet.vue:116
-msgid "Faucet error - please try again"
-msgstr "수도꼭지 오류 - 다시 시도해 주세요"
+#: src/components/TestnetFaucet.vue:137
+msgid "Faucet error - please try again."
+msgstr ""
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
 msgstr "수도꼭지가 비었습니다"
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
 msgstr "현재 위치에서는 수도꼭지를 사용할 수 없습니다"
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
 msgstr "수도꼭지 사용 불가"
 
-#: src/components/TestnetFaucet.vue:72
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
 msgstr "수도꼭지 사용 불가(잘못된 네트워크)"
 
@@ -347,11 +369,12 @@ msgstr "수수료"
 msgid "Fetching"
 msgstr "불러 오는 중"
 
+#: src/components/modals/TransactionModal.vue:151
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:199
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
 
@@ -362,6 +385,10 @@ msgstr "초심자용"
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
 msgstr "포럼 스레드"
+
+#: src/components/modals/SendModal.vue:348
+msgid "free"
+msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -408,7 +435,7 @@ msgid ""
 "and shared login information."
 msgstr "이제 하나의 비밀번호와 공유 로그인 정보로 여러 주소를 쉽고 편리하게 다룰 수 있습니다."
 
-#: src/components/modals/TransactionModal.vue:159
+#: src/components/modals/TransactionModal.vue:163
 msgid "Historic value"
 msgstr "당시 가치"
 
@@ -461,6 +488,10 @@ msgstr "빠르고 안전하며 진정한 독립성을 제공합니다."
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr "언어"
+
+#: src/components/layouts/Settings.vue:131
+msgid "Language specific"
+msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:19
 #: src/components/modals/TradeModal.vue:107
@@ -558,7 +589,7 @@ msgstr "없음"
 msgid "not sent"
 msgstr "전송되지 않음"
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:222
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -613,6 +644,7 @@ msgstr ""
 "상호작용할 수 있도록만 합니다."
 
 #: src/components/layouts/AddressOverview.vue:89
+#: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "받기"
 
@@ -642,7 +674,7 @@ msgstr "참조 통화"
 msgid "Rename"
 msgstr "이름 바꾸기"
 
-#: src/components/TestnetFaucet.vue:124
+#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr "요청 실패"
 
@@ -650,7 +682,7 @@ msgstr "요청 실패"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "재시도"
 
@@ -683,6 +715,7 @@ msgid "Search transactions by contact, address, etc."
 msgstr "연락처, 주소 등으로 검색"
 
 #: src/components/layouts/AddressOverview.vue:86
+#: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "보내기"
 
@@ -712,15 +745,15 @@ msgstr "거래 전송"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
-#: src/components/modals/SendModal.vue:478
+#: src/components/modals/SendModal.vue:490
 msgid "Sending Transaction"
 msgstr "거래 전송 중"
 
-#: src/components/modals/SendModal.vue:513
+#: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM을 보냄"
 
-#: src/components/modals/SendModal.vue:509
+#: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim}NIM을 {name}에게 보냄"
 
@@ -765,6 +798,10 @@ msgstr "내 주소 모두 표시"
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
+#: src/components/modals/TransactionModal.vue:133
+msgid "Show Link"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr "가입"
@@ -773,7 +810,7 @@ msgstr "가입"
 msgid "Skip for now"
 msgstr "지금은 넘어가기"
 
-#: src/components/modals/SendModal.vue:524
+#: src/components/modals/SendModal.vue:536
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
 
@@ -789,6 +826,10 @@ msgstr "NIM 지분을 걸어 보상을 받고 네트워크를 지키세요."
 msgid "Staking"
 msgstr "지분 걸기"
 
+#: src/components/modals/SendModal.vue:353
+msgid "standard"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr "2020년 3분기에 유럽 은행 계좌와 시작합니다"
@@ -796,6 +837,10 @@ msgstr "2020년 3분기에 유럽 은행 계좌와 시작합니다"
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "NIM을 보관하고 주고 받으세요."
+
+#: src/components/layouts/Settings.vue:123
+msgid "Switch between currency specific and language specific formatting."
+msgstr ""
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -833,6 +878,10 @@ msgid ""
 "visual issues."
 msgstr "지갑은 아직 베타 단계입니다. 당신의 자산은 안전하지만 화면 상의 문제가 조금 있을 수도 있습니다."
 
+#: src/components/TestnetFaucet.vue:133
+msgid "There are currently no free NIM available."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:8
 msgid ""
 "There are many options, use a credit card or trade crypto. You can find more"
@@ -851,6 +900,10 @@ msgstr "본 계정은 구 계정입니다"
 #: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "이달"
+
+#: src/components/TestnetFaucet.vue:128
+msgid "This service is currently not available in your region."
+msgstr ""
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -872,7 +925,7 @@ msgstr "자금 이체하기"
 msgid "Tweet your map!"
 msgstr "지도를 트윗하세요!"
 
-#: src/components/modals/TransactionModal.vue:321
+#: src/components/modals/TransactionModal.vue:329
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "미인수 캐시링크"
@@ -908,6 +961,10 @@ msgstr "당신은 Nimiq 테스트넷에 접속중입니다."
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
 msgstr "구 계정을 사용중입니다"
+
+#: src/components/TestnetFaucet.vue:122
+msgid "You can receive more free NIM in {waitTime} hours."
+msgstr ""
 
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"

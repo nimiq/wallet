@@ -306,23 +306,23 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:116
-msgid "Faucet error - please try again"
-msgstr ""
-
-#: src/components/TestnetFaucet.vue:76
-msgid "Faucet is empty"
+#: src/components/TestnetFaucet.vue:137
+msgid "Faucet error - please try again."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:80
+msgid "Faucet is empty"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:72
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -609,7 +609,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:124
+#: src/components/TestnetFaucet.vue:142
+#: src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr ""
 
@@ -799,6 +800,10 @@ msgstr ""
 msgid "The Wallet is still in Beta. Your funds are safe, there just might be some visual issues."
 msgstr ""
 
+#: src/components/TestnetFaucet.vue:133
+msgid "There are currently no free NIM available."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:8
 msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
 msgstr ""
@@ -814,6 +819,10 @@ msgstr ""
 #: src/components/TransactionList.vue:249
 #: src/components/TransactionList.vue:271
 msgid "This month"
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:128
+msgid "This service is currently not available in your region."
 msgstr ""
 
 #: src/components/AccountBalance.vue:4
@@ -869,6 +878,10 @@ msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:122
+msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
 #: src/components/TransactionList.vue:58

@@ -223,6 +223,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { i18n } from '../../i18n/i18n-setup';
 
 export enum RecipientType {
     CONTACT,
@@ -342,11 +343,22 @@ export default defineComponent({
         const amountMenuOpened = ref(false);
         const feeSelectionOpened = ref(false);
 
-        const feeOptions: SelectBar.SelectBarOption[] = [
-            { color: 'nq-light-blue-bg', text: 'free', value: 0, index: 0 },
-            { color: 'nq-green-bg', text: 'standard', value: 1, index: 1 },
-            { color: 'nq-gold-bg', text: 'express', value: 2, index: 2 },
-        ];
+        const feeOptions: SelectBar.SelectBarOption[] = [{
+            color: 'nq-light-blue-bg',
+            get text() { return i18n.t('free') as string; },
+            value: 0,
+            index: 0,
+        }, {
+            color: 'nq-green-bg',
+            get text() { return i18n.t('standard') as string; },
+            value: 1,
+            index: 1,
+        }, {
+            color: 'nq-gold-bg',
+            get text() { return i18n.t('express') as string; },
+            value: 2,
+            index: 2,
+        }];
 
         const activeCurrency = ref('nim');
         const fiatAmount = ref(0);

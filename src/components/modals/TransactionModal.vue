@@ -130,7 +130,7 @@
                         v-else-if="hubCashlink && hubCashlink.value"
                         class="nq-button-s manage-cashlink"
                         @click="manageCashlink(hubCashlink.address)"
-                        @mousedown.prevent>Show Link</button>
+                        @mousedown.prevent>{{ $t('Show Link') }}</button>
                 </div>
             </div>
 
@@ -148,7 +148,7 @@
                         value-mask/>
                     <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                     <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
-                        Fiat value unavailable
+                        {{ $t('Fiat value unavailable') }}
                     </div>
                     <div v-else class="fiat-amount flex-row">
                         <Tooltip>
@@ -180,7 +180,11 @@
                 <span class="confirmations">
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
-                <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span>
+                <i18n v-if="transaction.fee" class="fee" tag="span" path="{fee} fee">
+                    <template #fee>
+                        <Amount :amount="transaction.fee"/>
+                    </template>
+                </i18n>
 
                 <BlueLink
                     :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"

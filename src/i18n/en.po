@@ -15,6 +15,10 @@ msgstr ""
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
+#: src/components/modals/TransactionModal.vue:183
+msgid "{fee} fee"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
 msgstr ""
@@ -101,7 +105,7 @@ msgstr ""
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:188
+#: src/components/modals/TransactionModal.vue:192
 msgid "Block explorer"
 msgstr ""
 
@@ -133,7 +137,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
@@ -274,7 +278,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:493
 msgid "Edit transaction"
 msgstr ""
 
@@ -292,6 +296,10 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Expired"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:358
+msgid "express"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:58
@@ -326,6 +334,7 @@ msgstr ""
 msgid "Fetching"
 msgstr ""
 
+#: src/components/modals/TransactionModal.vue:151
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr ""
@@ -340,6 +349,10 @@ msgstr ""
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:348
+msgid "free"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -565,6 +578,7 @@ msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:89
+#: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
 
@@ -603,7 +617,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:480
+#: src/components/modals/SendModal.vue:492
 msgid "Retry"
 msgstr ""
 
@@ -634,6 +648,7 @@ msgid "Search transactions by contact, address, etc."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:86
+#: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
 
@@ -663,15 +678,15 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:477
+#: src/components/modals/SendModal.vue:489
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:524
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:508
+#: src/components/modals/SendModal.vue:520
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -714,6 +729,10 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
+#: src/components/modals/TransactionModal.vue:133
+msgid "Show Link"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr ""
@@ -722,7 +741,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:523
+#: src/components/modals/SendModal.vue:535
 msgid "Something went wrong"
 msgstr ""
 
@@ -736,6 +755,10 @@ msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:353
+msgid "standard"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:104
@@ -813,7 +836,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:321
+#: src/components/modals/TransactionModal.vue:325
 #: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr ""

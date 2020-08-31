@@ -238,30 +238,31 @@ export default defineComponent({
             if (!isIncoming.value) return [];
 
             const receivedToExternal = transaction.value.outputs
-                .filter((output) => activeExternalAddresses.value.includes(output.address));
+                .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
 
             if (receivedToExternal.length > 0) return receivedToExternal;
 
             return transaction.value.outputs
-                .filter((output) => activeInternalAddresses.value.includes(output.address));
+                .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
         });
         const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
 
         const outputsSent = computed(() => isIncoming.value
             ? []
-            : transaction.value.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
+            : transaction.value.outputs.filter((output) =>
+                !output.address || !activeInternalAddresses.value.includes(output.address)),
         );
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         const ownAddresses = computed(() => (isIncoming.value
-            ? outputsReceived.value.map((output) => output.address)
-            : inputsSent.value.map((input) => input.address).filter((address) => !!address) as string[]
+            ? outputsReceived.value.map((output) => output.address || output.script)
+            : inputsSent.value.map((input) => input.address || input.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
         // Peer
         const peerAddresses = computed(() => (isIncoming.value
-            ? transaction.value.inputs.map((input) => input.address).filter((address) => !!address) as string[]
-            : outputsSent.value.map((output) => output.address)
+            ? transaction.value.inputs.map((input) => input.address || input.script)
+            : outputsSent.value.map((output) => output.address || output.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
         const peerLabel = computed(() => {
             if (isIncoming.value) {

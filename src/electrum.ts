@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { watch, computed } from '@vue/composition-api';
-import { ElectrumApi, Receipt } from '@nimiq/electrum-client';
+import { ElectrumClient, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
@@ -13,13 +13,13 @@ import { loadBitcoinJS } from './lib/BitcoinJSLoader';
 import { addBtcAddresses } from './hub'; // eslint-disable-line import/no-cycle
 
 let isLaunched = false;
-let clientPromise: Promise<ElectrumApi>;
+let clientPromise: Promise<ElectrumClient>;
 
 export async function getElectrumClient() {
     if (clientPromise) return clientPromise;
 
-    let resolver: (client: ElectrumApi) => void;
-    clientPromise = new Promise<ElectrumApi>((resolve) => {
+    let resolver: (client: ElectrumClient) => void;
+    clientPromise = new Promise<ElectrumClient>((resolve) => {
         resolver = resolve;
     });
 
@@ -28,53 +28,39 @@ export async function getElectrumClient() {
     await loadBitcoinJS();
 
     const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
-    const client = new NimiqElectrumClient.ElectrumApi({
-        token: Config.environment === ENV_MAIN ? 'mainnet' : 'testnet',
-        network: Config.environment === ENV_MAIN ? 'bitcoin' : 'testnet',
-    });
+    NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'mainnet' : 'testnet']();
+    const client = new NimiqElectrumClient.ElectrumClient({});
     resolver!(client);
 
     return clientPromise;
 }
 
-export async function fetchTransaction(hash: string, height?: number) {
-    const client = await getElectrumClient();
-    const tx = await client.getTransaction(hash, (height || 0) > 0 ? height : undefined);
+export async function transactionListener(tx: TransactionDetails) {
     useBtcTransactionsStore().addTransactions([tx]);
 }
 
-export async function receiptsHandler(receipts: Receipt[] | null) {
-    if (!receipts) return; // No transactions for this address
-
-    const btcTransactionsStore = useBtcTransactionsStore();
-
-    // For each receipt, check our store if we have the same information.
-    // If not, request this transaction from the network.
-    for (const receipt of receipts) {
-        const tx = btcTransactionsStore.state.transactions[receipt.transactionHash];
-        if (!tx || tx.blockHeight !== receipt.blockHeight) {
-            fetchTransaction(receipt.transactionHash, receipt.blockHeight);
-        }
-    }
-}
-
 const subscribedAddresses = new Set<string>();
-export async function subscribeToAddress(address: string) {
-    if (subscribedAddresses.has(address)) return;
-    subscribedAddresses.add(address);
+export async function subscribeToAddresses(addresses: string[]) {
+    const newAddresses: string[] = [];
+    for (const address of addresses) {
+        if (subscribedAddresses.has(address)) continue;
+        subscribedAddresses.add(address);
+        newAddresses.push(address);
+    }
+    if (!newAddresses.length) return;
 
     const client = await getElectrumClient();
-    client.subscribeReceipts(address, receiptsHandler);
+    client.addTransactionListener(transactionListener, newAddresses);
 }
 
 export async function sendTransaction(tx: SignedBtcTransaction) {
     const client = await getElectrumClient();
-    const plainTx = await client.broadcastTransaction(tx.serializedTx);
+    const plainTx = await client.sendTransaction(tx.serializedTx);
 
     // Subscribe to one of our sender addresses, so we get updates about this transaction
     const address = plainTx.inputs.find((input) => input.address)?.address;
     if (address) {
-        subscribeToAddress(address);
+        subscribeToAddresses([address]);
     }
 
     return plainTx;
@@ -106,10 +92,6 @@ async function checkHistory(
         const knownTxDetails = addressInfo.used
             ? Object.values(btcTransactionsStore.state.transactions)
                 .filter((tx) => tx.addresses.includes(address))
-                .map((tx) => ({
-                    blockHeight: tx.blockHeight || 0,
-                    transactionHash: tx.transactionHash,
-                }))
             : [];
 
         // const lastConfirmedHeight = knownTxDetails
@@ -122,7 +104,7 @@ async function checkHistory(
         // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
         // eslint-disable-next-line no-await-in-loop
-        await client.getHistory(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
+        await client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => { // eslint-disable-line no-loop-func
                 btcTransactionsStore.addTransactions(txDetails);
 
@@ -156,12 +138,14 @@ export async function launchElectrum() {
     const btcTransactionsStore = useBtcTransactionsStore();
     const btcAddressStore = useBtcAddressStore();
 
-    btcNetwork$.consensus = 'syncing';
-
-    client.subscribeHeaders((header) => {
+    client.addHeadChangedListener((header) => {
         console.debug('BTC Head is now at', header.blockHeight);
         btcNetwork$.height = header.blockHeight;
-        btcNetwork$.consensus = 'established';
+    });
+
+    client.addConsensusChangedListener((state) => {
+        console.log('BTC Consensus', state);
+        btcNetwork$.consensus = state;
     });
 
     // TODO: Subscribe to new addresses?
@@ -213,13 +197,15 @@ export async function launchElectrum() {
         }
 
         // Subscribe to addresses that now have UTXOs
+        const addressesToWatch: string[] = [];
         for (const chain of ['internal' as 'internal', 'external' as 'external']) {
             for (const addressInfo of addressSet.value[chain]) {
                 if (addressInfo.utxos.length > 0) {
-                    subscribeToAddress(addressInfo.address);
+                    addressesToWatch.push(addressInfo.address);
                 }
             }
         }
+        subscribeToAddresses(addressesToWatch);
     });
 
     const { addressSet } = btcAddressStore;
@@ -249,9 +235,7 @@ export async function launchElectrum() {
     watch([unusedExternalAddresses, isFetchingTxHistory], async ([addresses, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!addresses) return;
-        for (const address of addresses as string[]) {
-            subscribeToAddress(address);
-        }
+        subscribeToAddresses(addresses);
     });
 
     // Subscribe to the next unused internal address per account
@@ -272,6 +256,6 @@ export async function launchElectrum() {
     watch([nextUnusedChangeAddress, isFetchingTxHistory], async ([address, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!address) return;
-        subscribeToAddress(address);
+        subscribeToAddresses([address]);
     });
 }

@@ -264,22 +264,22 @@ export default defineComponent({
 
         const amountMenuOpened = ref(false);
 
-        const feeHistogram = ref([] as Array<[number, number]>);
+        const mempoolFees = ref([] as Array<[number, number]>);
 
         let isFetchingHistogram = false;
-        async function fetchFeeHistogram() {
+        async function fetchMempoolFees() {
             if (isFetchingHistogram) return;
             isFetchingHistogram = true;
 
-            const histogram = await (await getElectrumClient()).getFeeHistogram();
-            feeHistogram.value = histogram;
+            const histogram = await (await getElectrumClient()).getMempoolFees();
+            mempoolFees.value = histogram;
 
             isFetchingHistogram = false;
         }
-        fetchFeeHistogram();
+        fetchMempoolFees();
 
         const histogramInterval = setInterval(async () => {
-            fetchFeeHistogram();
+            fetchMempoolFees();
         }, 30 * 1000); // Update every 30 seconds
 
         onUnmounted(() => {
@@ -298,11 +298,11 @@ export default defineComponent({
             const blocks: number[] = [];
 
             let runningSize = 0;
-            while (bracketIndex <= feeHistogram.value.length && delay <= 144) { // 144 = 24h
-                const bracket = feeHistogram.value[bracketIndex];
+            while (bracketIndex <= mempoolFees.value.length && delay <= 144) { // 144 = 24h
+                const bracket = mempoolFees.value[bracketIndex];
                 if (!bracket) {
                     // Set fee for block as the start fee of the last bracket
-                    blocks[delay] = Math.floor(feeHistogram.value[bracketIndex - 1]?.[0] || 1);
+                    blocks[delay] = Math.floor(mempoolFees.value[bracketIndex - 1]?.[0] || 1);
                     break;
                 }
 

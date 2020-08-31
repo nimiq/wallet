@@ -900,7 +900,7 @@
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.0.1"
-  resolved "https://github.com/nimiq/electrum-client#4a36bf927af20248095d95c636b65d7de84c586c"
+  resolved "https://github.com/nimiq/electrum-client#dd88c7984ce22b6cef1107ae77d4df62fe884a6b"
   dependencies:
     bitcoinjs-lib "^5.1.10"
 

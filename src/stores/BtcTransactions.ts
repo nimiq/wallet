@@ -3,13 +3,13 @@
 import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { PlainTransaction, PlainOutput, PlainInput } from '@nimiq/electrum-client';
+import { TransactionDetails, PlainOutput, PlainInput } from '@nimiq/electrum-client';
 import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore, UTXO } from './BtcAddress';
 import { useBtcLabelsStore } from './BtcLabels';
 
-export type Transaction = Omit<PlainTransaction, 'outputs'> & {
+export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
     outputs: (PlainOutput & {
         fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
@@ -35,7 +35,7 @@ export const useBtcTransactionsStore = createStore({
         // activeAccount: state => state.accounts[state.activeAccountId],
     },
     actions: {
-        addTransactions(txs: PlainTransaction[]) {
+        addTransactions(txs: TransactionDetails[]) {
             if (!txs.length) return;
 
             const txDetails = txs.map((tx) => {
@@ -43,7 +43,7 @@ export const useBtcTransactionsStore = createStore({
                 const inputAddresses = tx.inputs
                     .map((input) => input.address)
                     .filter((address) => !!address) as string[];
-                const outputAddresses = tx.outputs.map((output) => output.address);
+                const outputAddresses = tx.outputs.map((output) => output.address || output.script);
 
                 return {
                     ...tx,
@@ -113,6 +113,9 @@ export const useBtcTransactionsStore = createStore({
                     if (knownInputKeys.has(`${tx.transactionHash}:${output.index}`)) continue;
 
                     const { address } = output;
+
+                    // Skip this output if it has no address
+                    if (!address) continue;
 
                     if (btcAddresses$.addressInfos[address]) {
                         const utxos = utxosByAddress.get(address) || [];

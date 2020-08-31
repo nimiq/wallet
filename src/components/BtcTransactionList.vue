@@ -180,8 +180,9 @@ export default defineComponent({
                                 .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
                     }
 
+                    return undefined;
                     // TODO: Search global address book
-                }).filter((label) => Boolean(label)) as string[];
+                }).filter((label) => label) as string[];
 
                 const concatenatedTxStrings = `
                     ${tx.addresses.map((address) => address.toUpperCase()).join('')}

@@ -111,30 +111,32 @@ export default defineComponent({
             if (!isIncoming.value) return [];
 
             const receivedToExternal = props.transaction.outputs
-                .filter((output) => activeExternalAddresses.value.includes(output.address));
+                .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
 
             if (receivedToExternal.length > 0) return receivedToExternal;
 
             return props.transaction.outputs
-                .filter((output) => activeInternalAddresses.value.includes(output.address));
+                .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
         });
         const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
 
         const outputsSent = computed(() => isIncoming.value
             ? []
-            : props.transaction.outputs.filter((output) => !activeInternalAddresses.value.includes(output.address)),
+            : props.transaction.outputs.filter((output) =>
+                !output.address || !activeInternalAddresses.value.includes(output.address)),
         );
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         // Peer
         const peerAddresses = computed(() => isIncoming.value
-            ? props.transaction.inputs.map((input) => input.address).filter((address) => !!address) as string[]
-            : outputsSent.value.map((output) => output.address));
+            ? props.transaction.inputs.map((input) => input.address || input.script)
+            : outputsSent.value.map((output) => output.address || output.script));
         const peerLabel = computed(() => {
             if (isIncoming.value) {
                 // Search sender labels
                 const ownAddresses = outputsReceived.value.map((output) => output.address);
                 for (const address of ownAddresses) {
+                    if (!address) continue;
                     const label = getSenderLabel.value(address);
                     if (label) return label;
                 }

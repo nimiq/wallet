@@ -23,7 +23,6 @@
                         :amount="currentPrice"
                         :currency="fiatCurrency"
                         :maxRelativeDeviation="0.001"
-                        :locale="fiatLocale"
                     />
                 </transition>
                 <transition name="fade">
@@ -42,7 +41,6 @@ import { getHistoricExchangeRates } from '@nimiq/utils';
 import { FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
-import { useSettingsStore } from '../stores/Settings';
 
 export enum TimeRange {
     '24h' = '24h',
@@ -233,8 +231,6 @@ export default defineComponent({
             }
         });
 
-        const { fiatLocale } = useSettingsStore();
-
         return {
             $svg,
             $path,
@@ -246,7 +242,6 @@ export default defineComponent({
             history,
             priceChange,
             priceChangeClass,
-            fiatLocale,
         };
     },
     components: {

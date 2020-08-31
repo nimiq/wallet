@@ -157,7 +157,6 @@
                                 <FiatAmount
                                     :amount="fiatValue"
                                     :currency="fiatCurrency"
-                                    :locale="fiatLocale"
                                     value-mask/>
                             </template>
                             {{ $t('Historic value') }}
@@ -357,7 +356,7 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
 
-        const { fiatLocale, amountsHidden } = useSettingsStore();
+        const { amountsHidden } = useSettingsStore();
 
         return {
             ENV_MAIN,
@@ -372,7 +371,6 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
-            fiatLocale,
             peerAddress,
             peerLabel,
             activeAddressInfo,

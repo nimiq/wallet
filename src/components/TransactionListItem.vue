@@ -53,7 +53,7 @@
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <HistoricValueIcon/>
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="fiatLocale" value-mask/>
+                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
         </div>
@@ -73,7 +73,6 @@ import {
 import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
-import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { parseData } from '../lib/DataFormatting';
@@ -169,8 +168,6 @@ export default defineComponent({
             : undefined,
         );
 
-        const { fiatLocale } = useSettingsStore();
-
         return {
             constants,
             state,
@@ -183,7 +180,6 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
-            fiatLocale,
             peerAddress,
             peerLabel,
         };

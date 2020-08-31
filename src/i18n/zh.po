@@ -12,7 +12,7 @@ msgstr ""
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}个确认 | {count}个确认"
 
@@ -29,7 +29,7 @@ msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话 支持"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -101,10 +101,6 @@ msgstr "而{BTC}，则是加密技术的黄金标准和健全的价值存储。"
 msgid "Android and iOS App"
 msgstr "Android和iOS应用"
 
-#: src/components/layouts/Settings.vue:130
-msgid "Automatic"
-msgstr ""
-
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "返回地址"
@@ -117,11 +113,11 @@ msgstr "备份"
 msgid "Bitcoin"
 msgstr "比特币"
 
-#: src/components/modals/TransactionModal.vue:182
+#: src/components/modals/TransactionModal.vue:181
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:191
 msgid "Block explorer"
 msgstr "区块链链浏览器"
 
@@ -135,7 +131,7 @@ msgstr "浏览器"
 
 #: src/components/layouts/Sidebar.vue:31
 msgid "Buy & Sell"
-msgstr "买 & 卖"
+msgstr "买&卖"
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
@@ -151,13 +147,13 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以影响交易的处理速度"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
-#: src/components/modals/TransactionModal.vue:324
+#: src/components/modals/TransactionModal.vue:323
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:138
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -267,11 +263,7 @@ msgstr "创建付款链接"
 msgid "Credit Card accepted"
 msgstr "接受信用卡"
 
-#: src/components/layouts/Settings.vue:121
-msgid "Currency Format"
-msgstr ""
-
-#: src/components/modals/TransactionModal.vue:168
+#: src/components/modals/TransactionModal.vue:167
 msgid "Current value"
 msgstr "当前价值"
 
@@ -279,7 +271,7 @@ msgstr "当前价值"
 msgid "Developer"
 msgstr "开发者"
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -360,7 +352,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:199
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -409,7 +401,7 @@ msgstr "已取得！"
 
 #: src/components/modals/WelcomeModal.vue:11
 msgid "Great, you’re here!"
-msgstr "太好了，您来了！"
+msgstr "很高兴在这里看到您！"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
@@ -417,7 +409,7 @@ msgid ""
 "and shared login information."
 msgstr "现在使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址。"
 
-#: src/components/modals/TransactionModal.vue:163
+#: src/components/modals/TransactionModal.vue:162
 msgid "Historic value"
 msgstr "历史价值"
 
@@ -491,10 +483,6 @@ msgstr "轻节点"
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "加载文件"
-
-#: src/components/layouts/Settings.vue:131
-msgid "Localized"
-msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -571,7 +559,7 @@ msgstr "无"
 msgid "not sent"
 msgstr "未发送"
 
-#: src/components/layouts/Settings.vue:222
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -809,10 +797,6 @@ msgstr "将从2020年 第三季度 欧盟 银行 帐户开始"
 msgid "Store, send and receive NIM."
 msgstr "存储、发送和接收NIM。"
 
-#: src/components/layouts/Settings.vue:123
-msgid "Switch between automatic and localized currency formatting."
-msgstr ""
-
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "正在同步"
@@ -888,8 +872,8 @@ msgstr "转移资金"
 msgid "Tweet your map!"
 msgstr "推特您的地图！"
 
-#: src/components/modals/TransactionModal.vue:325
-#: src/components/TransactionListItem.vue:140
+#: src/components/modals/TransactionModal.vue:324
+#: src/components/TransactionListItem.vue:139
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 

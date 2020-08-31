@@ -13,7 +13,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bestätigung | {count} Bestätigungen"
 
@@ -30,7 +30,7 @@ msgstr "{count} offener Cashlink | {count} offene Cashlinks"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat- & Telefonservice"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -100,16 +100,11 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:41
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
-msgstr ""
-"Und {BTC}, der defacto Crypto-Goldstandard sowie eine solide Wertanlage."
+msgstr "Und {BTC}, den Crypto-Goldstandard."
 
 #: src/components/modals/TradeModal.vue:30
 msgid "Android and iOS App"
 msgstr "Android und iOS App"
-
-#: src/components/layouts/Settings.vue:130
-msgid "Automatic"
-msgstr ""
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
@@ -123,11 +118,11 @@ msgstr "Backup"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:182
+#: src/components/modals/TransactionModal.vue:181
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:191
 msgid "Block explorer"
 msgstr "Block Explorer"
 
@@ -159,13 +154,13 @@ msgstr ""
 "Indem du eine Transaktionsgebühr hinzufügst, kannst du beeinflussen, wie "
 "schnell deine Transaktion verarbeitet wird."
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:324
+#: src/components/modals/TransactionModal.vue:323
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:138
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -221,12 +216,12 @@ msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
 msgstr ""
-"Verbinde dich direkt mit der Blockchain, komplett unabhängig von "
-"irgendwelchen Mittelsmännern."
+"Verbinde dich direkt mit der Blockchain,\n"
+"komplett unabhängig von Mittelsmännern."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
-msgstr "Verbunden mit"
+msgstr "Verbunden"
 
 #: src/components/NetworkStats.vue:46
 msgid "connecting"
@@ -277,11 +272,7 @@ msgstr "Zahlungslink erstellen"
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/layouts/Settings.vue:121
-msgid "Currency Format"
-msgstr ""
-
-#: src/components/modals/TransactionModal.vue:168
+#: src/components/modals/TransactionModal.vue:167
 msgid "Current value"
 msgstr "Aktueller Wert"
 
@@ -289,7 +280,7 @@ msgstr "Aktueller Wert"
 msgid "Developer"
 msgstr "Entwickler"
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
@@ -300,13 +291,11 @@ msgstr "Fertig"
 
 #: src/components/modals/WelcomeModal.vue:81
 msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr ""
-"Lade sie herunter und bewahre sie sicher auf. Teile sie nicht mit anderen..."
-" und verliere sie nicht."
+msgstr "Lade sie runter und verwahre sie gut. "
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
-msgstr "Login-Datei herunterladen"
+msgstr "Login-Datei speichern"
 
 #: src/components/ContactBook.vue:43
 msgid "Edit contacts"
@@ -372,7 +361,7 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:199
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
@@ -431,7 +420,7 @@ msgstr ""
 "Mit nur einem Passwort und einem Login ist es ist jetzt ganz einfach und "
 "bequem mehrere Addressen zu haben."
 
-#: src/components/modals/TransactionModal.vue:163
+#: src/components/modals/TransactionModal.vue:162
 msgid "Historic value"
 msgstr "Historischer Wert"
 
@@ -483,7 +472,7 @@ msgstr "Lade Freunde mit einem "
 
 #: src/components/modals/WelcomeModal.vue:67
 msgid "It is fast, safe and makes you truly independent."
-msgstr "Es ist schnell, sicher und macht dich wirklich unabhängig."
+msgstr "Sie ist schnell, sicher und macht dich unabhängig."
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
@@ -510,16 +499,11 @@ msgstr "Light Node"
 msgid "Load file"
 msgstr "Datei laden"
 
-#: src/components/layouts/Settings.vue:131
-msgid "Localized"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
-msgstr ""
-"Mit deiner Login-Datei kannst du dich auf all deinen Geräten anmelden."
+msgstr "Nutze sie, um dich auf weiteren Geräten einzuloggen."
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -591,7 +575,7 @@ msgstr "Keine"
 msgid "not sent"
 msgstr "nicht gesendet"
 
-#: src/components/layouts/Settings.vue:222
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
@@ -836,10 +820,6 @@ msgstr "Los geht's in Q3 2020 mit SEPA Instant Konten."
 msgid "Store, send and receive NIM."
 msgstr "Verwahre, sende und empfange NIM."
 
-#: src/components/layouts/Settings.vue:123
-msgid "Switch between automatic and localized currency formatting."
-msgstr ""
-
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "abgleichen"
@@ -871,8 +851,8 @@ msgstr ""
 #: src/components/modals/WelcomeModal.vue:61
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
-"Die Nimiq Wallet ist mehr als nur eine Web-Wallet, sie ist direkt Teil des "
-"Nimiq-Netzwerkes mit einer eingebauten Light-Node."
+"Die Nimiq Wallet ist mehr als nur eine Web-Wallet: Sie ist als Light-Node "
+"direkter Teil des Nimiq-Netzwerks."
 
 #: src/components/modals/BetaNoticeModal.vue:16
 msgid ""
@@ -923,16 +903,14 @@ msgstr "Guthaben überweisen"
 msgid "Tweet your map!"
 msgstr "Teile deine Karte auf Twitter!"
 
-#: src/components/modals/TransactionModal.vue:325
-#: src/components/TransactionListItem.vue:140
+#: src/components/modals/TransactionModal.vue:324
+#: src/components/TransactionListItem.vue:139
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
-msgstr ""
-"Verwende {NIM}, die super schnelle Bezahlwährung die direkt im Browser "
-"funktioniert."
+msgstr "Nutze {NIM}, die super schnelle Browser-Währung."
 
 #: src/components/modals/WelcomeModal.vue:84
 msgid "Use it to access your account from any device."

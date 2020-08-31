@@ -29,12 +29,16 @@
                     {{ $t('Handling multiple addresses is now convenient and easy – with one password and shared login'
                     + ' information.') }}
                 </p>
-                <p class="nq-text">
-                    <strong>{{ $t('Accounts') }}</strong> {{ $t('hold, manage and aggregate addresses.') }}
-                </p>
-                <p class="nq-text">
-                    <strong>{{ $t('Addresses') }}</strong> {{ $t('send and receive transactions.') }}
-                </p>
+                <i18n tag="p" path="{accounts} hold, manage and aggregate addresses." class="nq-text">
+                    <template #accounts>
+                        <strong>{{ $t('Accounts') }}</strong>
+                    </template>
+                </i18n>
+                <i18n tag="p" path="{addresses} send and receive transactions." class="nq-text">
+                    <template #addresses>
+                        <strong>{{ $t('Addresses') }}</strong>
+                    </template>
+                </i18n>
             </div>
             <div class="visual address-ring">
                 <img src="../../assets/slides/account-ring-half.svg" key="account-ring">
@@ -137,6 +141,7 @@ export default defineComponent({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         overflow: hidden;
     }
 
@@ -168,11 +173,11 @@ export default defineComponent({
     .visual img {
         width: 100%;
         height: 100%;
-        margin-top: -1rem;
     }
 
     .visual.address-ring {
         width: 18rem;
+        height: 100%;
     }
 
     .visual.login-file {
@@ -185,6 +190,7 @@ export default defineComponent({
     .visual.account-menu {
         width: 18rem;
         height: 48rem;
+        align-self: flex-start;
     }
 
     .nq-button {

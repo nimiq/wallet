@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -19,7 +19,7 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -97,11 +97,11 @@ msgstr ""
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:182
+#: src/components/modals/TransactionModal.vue:181
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:191
 msgid "Block explorer"
 msgstr ""
 
@@ -129,13 +129,13 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:324
+#: src/components/modals/TransactionModal.vue:323
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:138
 msgid "Cashlink"
 msgstr ""
 
@@ -241,15 +241,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:121
-msgid "Currency Format"
-msgstr ""
-
-#: src/components/layouts/Settings.vue:130
-msgid "Currency specific"
-msgstr ""
-
-#: src/components/modals/TransactionModal.vue:168
+#: src/components/modals/TransactionModal.vue:167
 msgid "Current value"
 msgstr ""
 
@@ -257,7 +249,7 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -338,7 +330,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:199
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr ""
 
@@ -393,7 +385,7 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:163
+#: src/components/modals/TransactionModal.vue:162
 msgid "Historic value"
 msgstr ""
 
@@ -443,10 +435,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
-msgstr ""
-
-#: src/components/layouts/Settings.vue:131
-msgid "Language specific"
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:19
@@ -532,7 +520,7 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:222
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -758,10 +746,6 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:123
-msgid "Switch between currency specific and language specific formatting."
-msgstr ""
-
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr ""
@@ -829,8 +813,8 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:325
-#: src/components/TransactionListItem.vue:140
+#: src/components/modals/TransactionModal.vue:324
+#: src/components/TransactionListItem.vue:139
 msgid "Unclaimed Cashlink"
 msgstr ""
 

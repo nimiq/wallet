@@ -10,7 +10,6 @@ export enum ColorMode {
 export type SettingsState = {
     decimals: 0 | 2 | 5,
     language: string, // locale
-    localizedFiat: boolean, // Whether to apply the set language to formatted fiat displays
     colorMode: ColorMode,
     amountsHidden: boolean,
 };
@@ -20,15 +19,12 @@ export const useSettingsStore = createStore({
     state: (): SettingsState => ({
         decimals: 0,
         language: detectLanguage(),
-        localizedFiat: false,
         colorMode: ColorMode.AUTOMATIC,
         amountsHidden: false,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
         language: (state): Readonly<string> => state.language,
-        localizedFiat: (state): Readonly<boolean> => state.localizedFiat,
-        fiatLocale: (state): Readonly<string> => state.localizedFiat ? state.language : '',
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
     },
@@ -47,9 +43,6 @@ export const useSettingsStore = createStore({
         },
         toggleAmountsHidden() {
             this.state.amountsHidden = !this.state.amountsHidden;
-        },
-        setLocalizedFiat(localizedFiat: boolean) {
-            this.state.localizedFiat = localizedFiat;
         },
     },
 });

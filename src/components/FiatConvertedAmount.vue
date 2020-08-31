@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency" :locale="fiatLocale"/>
+        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency"/>
         <div v-else class="fiat-amount placeholder"></div>
     </transition>
 </template>
@@ -9,7 +9,6 @@
 import { FiatAmount } from '@nimiq/vue-components';
 import { defineComponent, computed } from '@vue/composition-api';
 import { useFiatStore } from '../stores/Fiat';
-import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
@@ -30,12 +29,9 @@ export default defineComponent({
             : undefined,
         );
 
-        const { fiatLocale } = useSettingsStore();
-
         return {
             fiatAmount,
             fiatCurrency,
-            fiatLocale,
         };
     },
     components: { FiatAmount } as any,

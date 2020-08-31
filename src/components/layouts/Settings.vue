@@ -115,22 +115,6 @@
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
-
-                <div class="setting">
-                    <div class="description">
-                        <label class="nq-h2" for="localizeFiat">{{ $t('Currency Format') }}</label>
-                        <p class="nq-text">
-                            {{ $t('Switch between currency specific and language specific formatting.') }}
-                        </p>
-                    </div>
-
-                    <select id="localizeFiat" name="localizeFiat"
-                        @input="setLocalizedFiat($event.target.value === '1')"
-                    >
-                        <option value="0" :selected="!localizedFiat">{{ $t('Currency specific') }}</option>
-                        <option value="1" :selected="localizedFiat">{{ $t('Language specific') }}</option>
-                    </select>
-                </div>
             </section>
         </div>
 

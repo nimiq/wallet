@@ -613,6 +613,7 @@ export default defineComponent({
         justify-content: space-between;
         flex-grow: 1;
         padding-bottom: 2rem;
+        overflow: visible;
     }
 
     .address-section {
@@ -874,6 +875,10 @@ export default defineComponent({
 
         /deep/ .trigger .nq-icon {
             opacity: 0.4;
+        }
+
+        /deep/ .tooltip-box {
+            transform: translate(4rem, -2rem);
         }
     }
 

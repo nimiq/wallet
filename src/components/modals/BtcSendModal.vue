@@ -610,6 +610,8 @@ export default defineComponent({
     }
 
     .page-body {
+        --short-transition-duration: 300ms;
+
         justify-content: space-between;
         flex-grow: 1;
         padding-bottom: 2rem;
@@ -635,7 +637,7 @@ export default defineComponent({
 
                 will-change: #{$animatedProps};
                 transition: {
-                    duration: 300ms;
+                    duration: var(--short-transition-duration);
                     timing-function: var(--nimiq-ease);
                     property: #{$animatedProps};
                 }
@@ -768,7 +770,7 @@ export default defineComponent({
         /* Vue transition: slide */
         &.slide-enter-active,
         &.slide-leave-active {
-            transition: top 300ms var(--nimiq-ease);
+            transition: top var(--short-transition-duration) var(--nimiq-ease);
         }
 
         &.slide-enter-to,

@@ -55,6 +55,7 @@ export async function subscribeToAddresses(addresses: string[]) {
 
 export async function sendTransaction(tx: SignedBtcTransaction) {
     const client = await getElectrumClient();
+    await client.waitForConsensusEstablished();
     const plainTx = await client.sendTransaction(tx.serializedTx);
 
     // Subscribe to one of our sender addresses, so we get updates about this transaction
@@ -103,6 +104,8 @@ async function checkHistory(
         console.debug('Fetching transaction history for', address, knownTxDetails);
         // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
+        // eslint-disable-next-line no-await-in-loop
+        await client.waitForConsensusEstablished();
         // eslint-disable-next-line no-await-in-loop
         await client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => { // eslint-disable-line no-loop-func

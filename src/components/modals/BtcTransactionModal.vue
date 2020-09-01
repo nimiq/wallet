@@ -131,7 +131,6 @@
                                 <FiatAmount
                                     :amount="fiatValue"
                                     :currency="fiatCurrency"
-                                    :locale="fiatLocale"
                                     value-mask/>
                             </template>
                             {{ $t('Historic value') }}
@@ -324,7 +323,7 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
 
-        const { fiatLocale, amountsHidden } = useSettingsStore();
+        const { amountsHidden } = useSettingsStore();
 
         const blockExplorerLink = computed(() =>
             `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
@@ -344,7 +343,6 @@ export default defineComponent({
             fiatCurrency,
             fiatValue,
             isIncoming,
-            fiatLocale,
             peerAddresses,
             peerLabel,
             ownAddresses,

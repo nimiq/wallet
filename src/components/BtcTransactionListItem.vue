@@ -48,7 +48,7 @@
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <HistoricValueIcon/>
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" :locale="fiatLocale" value-mask/>
+                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
         </div>
@@ -65,7 +65,6 @@ import {
 } from '@nimiq/vue-components';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
-import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState } from '../stores/BtcTransactions';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import { useAccountStore } from '../stores/Account';
@@ -190,8 +189,6 @@ export default defineComponent({
             return value;
         });
 
-        const { fiatLocale } = useSettingsStore();
-
         return {
             constants,
             state,
@@ -204,7 +201,6 @@ export default defineComponent({
             fiatCurrency,
             fiatValue,
             isIncoming,
-            fiatLocale,
             peerAddresses,
             peerLabel,
         };

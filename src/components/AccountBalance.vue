@@ -11,7 +11,6 @@
             <FiatAmount
                 :amount="fiatAmount"
                 :currency="fiatCurrency"
-                :locale="fiatLocale"
                 ref="$fiatAmount"
                 :style="{ fontSize: `${fiatAmountFontSize}rem` }"
                 value-mask
@@ -84,12 +83,11 @@ export default defineComponent({
         });
         onUnmounted(() => window.removeEventListener('resize', updateFontSize));
 
-        const { amountsHidden, toggleAmountsHidden, fiatLocale } = useSettingsStore();
+        const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
 
         return {
             fiatAmount,
             fiatCurrency,
-            fiatLocale,
             $fiatAmount,
             $fiatAmountContainer,
             fiatAmountFontSize,

@@ -16,7 +16,7 @@
                     : accountInfo.label
                 }}
             </div>
-            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" :locale="fiatLocale" value-mask/>
+            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" value-mask/>
         </div>
         <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
     </component>
@@ -34,7 +34,6 @@ import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore, BtcAddressSet } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
-import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -103,15 +102,12 @@ export default defineComponent({
             return nimFiatAmount + btcFiatAmount;
         });
 
-        const { fiatLocale } = useSettingsStore();
-
         return {
             accountInfo,
             firstAddressInfo,
             backgroundClass,
             fiatAccountBalance,
             fiatCurrency,
-            fiatLocale,
             AccountType,
         };
     },

@@ -705,11 +705,11 @@ export default defineComponent({
                 &:hover,
                 &:focus-within {
                     z-index: 2;
+                }
 
-                    /deep/ input {
-                        border-bottom-left-radius: .5rem;
-                        border-bottom-right-radius: .5rem;
-                    }
+                &:focus-within /deep/ input {
+                    border-bottom-left-radius: .5rem;
+                    border-bottom-right-radius: .5rem;
                 }
             }
 

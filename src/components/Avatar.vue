@@ -1,5 +1,6 @@
 <template>
     <div class="avatar" :class="[unlabelled ? 'unlabelled' : 'initial', backgroundColor]">
+        <svg v-if="unlabelled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 63"><path opacity=".25" fill="#1F2348" fill-rule="evenodd" isolation="isolate" d="M17,47.9a20.59,20.59,0,0,0-2.86,3.49,1,1,0,0,1-1.51.22,27.49,27.49,0,1,1,37.74,0,1,1,0,0,1-1.51-.23A20.82,20.82,0,0,0,17,47.9ZM31.5,63A31.5,31.5,0,1,0,0,31.5,31.5,31.5,0,0,0,31.5,63Zm0-25.41a12,12,0,1,0-12-12A12,12,0,0,0,31.5,37.59Z"/></svg>
         <span v-if="initial" class="initial">{{ initial }}</span>
     </div>
 </template>
@@ -48,9 +49,8 @@ export default defineComponent({
         color: white;
     }
 
-    .unlabelled {
-        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 63"><path opacity=".25" fill="%231F2348" fill-rule="evenodd" isolation="isolate" d="M17,47.9a20.59,20.59,0,0,0-2.86,3.49,1,1,0,0,1-1.51.22,27.49,27.49,0,1,1,37.74,0,1,1,0,0,1-1.51-.23A20.82,20.82,0,0,0,17,47.9ZM31.5,63A31.5,31.5,0,1,0,0,31.5,31.5,31.5,0,0,0,31.5,63Zm0-25.41a12,12,0,1,0-12-12A12,12,0,0,0,31.5,37.59Z"/></svg>');
-        background-size: 100%;
-        background-repeat: no-repeat;
+    .unlabelled svg {
+        width: 100%;
+        height: auto;
     }
 </style>

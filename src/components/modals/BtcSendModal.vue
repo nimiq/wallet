@@ -36,7 +36,9 @@
                             </p>
                         </Tooltip>
                     </span>
-                    <div class="fake-border" v-if="recipientWithLabel"></div>
+                    <transition name="slide">
+                        <div class="fake-border" v-if="recipientWithLabel"></div>
+                    </transition>
                 </section>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
@@ -617,6 +619,40 @@ export default defineComponent({
         text-align: center;
         position: relative;
 
+        .btc-label-input {
+            $inputHeight: 5.875rem;
+            margin-bottom: -0.25rem;
+
+            & /deep/ form {
+                background-color: white;
+            }
+
+            /* Vue transition: slide-n-fade */
+            &.slide-n-fade-enter-active,
+            &.slide-n-fade-leave-active {
+                $animatedProps: height, opacity;
+
+                will-change: #{$animatedProps};
+                transition: {
+                    duration: 300ms;
+                    timing-function: var(--nimiq-ease);
+                    property: #{$animatedProps};
+                }
+            }
+
+            &.slide-n-fade-enter-to,
+            &.slide-n-fade-leave {
+                height: #{$inputHeight};
+                opacity: 1;
+            }
+
+            &.slide-n-fade-enter,
+            &.slide-n-fade-leave-to {
+                height: 0.25rem;
+                opacity: 0;
+            }
+        }
+
         .btc-address-input {
             width: 100%;
             font-size: 15px;
@@ -625,14 +661,6 @@ export default defineComponent({
             & /deep/ input {
                 transition: all 200ms, width 50ms;
             }
-
-            & /deep/ form {
-                background-color: white;
-            }
-        }
-
-        .btc-label-input {
-            margin-bottom: -0.25rem;
 
             & /deep/ form {
                 background-color: white;
@@ -656,57 +684,66 @@ export default defineComponent({
         }
 
         &.extended {
-            .btc-address-input /deep/ input {
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-            }
-
-            .btc-label-input /deep/ input {
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .btc-address-input:focus-within {
-                z-index: 2;
-
+            .btc-label-input {
                 /deep/ input {
-                    border-top-left-radius: .5rem;
-                    border-top-right-radius: .5rem;
+                    border-bottom-left-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+
+                &:hover,
+                &:focus-within {
+                    z-index: 2;
+
+                    /deep/ input {
+                        border-bottom-left-radius: .5rem;
+                        border-bottom-right-radius: .5rem;
+                    }
                 }
             }
 
-            .btc-label-input:hover,
-            .btc-label-input:focus-within {
-                z-index: 2;
-            }
+            .btc-address-input {
+                /deep/ input {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                }
 
-            .btc-label-input:focus-within /deep/ input {
-                border-bottom-left-radius: .5rem;
-                border-bottom-right-radius: .5rem;
-            }
+                &:focus-within {
+                    z-index: 2;
 
+                    /deep/ input {
+                        border-top-left-radius: .5rem;
+                        border-top-right-radius: .5rem;
+                    }
+                }
+            }
         }
     }
 
     .fake-border {
         $borderSize: 0.5rem;
         $borderColor: white;
+        $animatedProps: border-radius, box-shadow;
         $inputBoxShadowSize: .25rem;
+        $inputHeight: 5.875rem;
 
         height: #{$inputBoxShadowSize};
         width: calc(100% - #{$inputBoxShadowSize});
 
-        z-index: 3;
         position: absolute;
-        top: #{5.875rem - $inputBoxShadowSize};
+        top: #{$inputHeight - $inputBoxShadowSize};
         left: #{$inputBoxShadowSize / 2};
+        z-index: 3;
 
         border-radius: 0;
         box-shadow: 0 0 0 0 #{$borderColor};
-
         transition: {
-            property: box-shadow, border-radius;
+            property: #{$animatedProps};
             duration: 200ms;
+        }
+
+        .btc-label-input:focus-within ~ &,
+        .btc-address-input:focus-within ~ & {
+            will-change: #{$animatedProps}
         }
 
         .btc-address-input:focus-within ~ & {
@@ -725,6 +762,22 @@ export default defineComponent({
                 0 #{$borderSize / 2 + $inputBoxShadowSize}
                 0 #{$borderSize / 2}
                 $borderColor;
+        }
+
+        /* Vue transition: slide */
+        &.slide-enter-active,
+        &.slide-leave-active {
+            transition: top 300ms var(--nimiq-ease);
+        }
+
+        &.slide-enter-to,
+        &.slide-leave {
+            top: #{$inputHeight - $inputBoxShadowSize};
+        }
+
+        &.slide-enter,
+        &.slide-leave-to {
+            top: 0;
         }
     }
 
@@ -848,30 +901,5 @@ export default defineComponent({
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;
         }
-    }
-
-    /* transitions */
-    .slide-n-fade-enter-active,
-    .slide-n-fade-leave-active {
-        $animatedProps: height, opacity, border-bottom-left-radius, border-bottom-right-radius;
-
-        will-change: $animatedProps;
-        transition: {
-            duration: 300ms;
-            timing-function: var(--nimiq-ease);
-            property: $animatedProps;
-       }
-    }
-
-    .slide-n-fade-enter-to,
-    .slide-n-fade-leave {
-        height: 5.875rem;
-        opacity: 1;
-    }
-
-    .slide-n-fade-enter,
-    .slide-n-fade-leave-to {
-        height: 0.25rem;
-        opacity: 0;
     }
 </style>

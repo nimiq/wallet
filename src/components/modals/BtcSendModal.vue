@@ -106,6 +106,15 @@
                         </p>
                     </Tooltip>
                 </section>
+
+                <Tooltip class="info-tooltip" preferredPosition="bottom right">
+                    <InfoCircleSmallIcon slot="trigger"/>
+                    <div class="flex-column">
+                        <p>Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily.</p>
+                        <p>Nimiq wallet does not support transaction messages for Bitcoin.</p>
+                        <p>Transactions take >10 min. due to Bitcoin’s block time.</p>
+                    </div>
+                </Tooltip>
             </PageBody>
 
             <PageFooter class="flex-row">
@@ -884,7 +893,7 @@ export default defineComponent({
         }
     }
 
-    .tooltip {
+    .tooltip:not(.info-tooltip) {
         .header {
             font-size: var(--small-size);
         }
@@ -894,6 +903,48 @@ export default defineComponent({
             margin-bottom: 0;
             opacity: 0.6;
             font-size: 1.625rem;
+        }
+    }
+
+    .info-tooltip {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+
+        /deep/ .trigger svg {
+            opacity: .3;
+
+            transition: color var(--short-transition-duration) var(--nimiq-ease);
+        }
+
+        & /deep/ .trigger:hover svg,
+        & /deep/ .trigger:focus svg,
+        &.shown /deep/ .trigger svg {
+            opacity: .6;
+        }
+
+        /deep/ .tooltip-box {
+            width: 25.875rem;
+            font-size: var(--small-size);
+            font-weight: 600;
+            line-height: 2.5rem;
+            color: white;
+
+            @media (min-width: 701px) {
+                transform: translate(-1rem, 2rem);
+            }
+
+            p {
+                margin: 1rem auto;
+            }
+
+            p:first-child {
+                margin-top: 0;
+            }
+
+            p:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 

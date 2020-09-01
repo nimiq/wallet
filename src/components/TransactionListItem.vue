@@ -73,6 +73,7 @@ import {
 import { AddressBook } from '@nimiq/utils';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
+import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
 import { twoDigit } from '../lib/NumberFormatting';
 import { parseData } from '../lib/DataFormatting';
@@ -154,10 +155,12 @@ export default defineComponent({
         });
 
         // Date
+        const { language } = useSettingsStore();
         const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
-        const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-        const dateMonth = computed(() => date.value && MONTHS[date.value.getMonth()]);
+        const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
+        const dateMonth = computed(() => date.value && monthFormatter.value
+            && monthFormatter.value.format(date.value as Date));
         const dateTime = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
@@ -238,6 +241,7 @@ svg {
         > .month {
             font-size: var(--small-label-size);
             letter-spacing: 0.0667em;
+            text-transform: uppercase;
         }
     }
 

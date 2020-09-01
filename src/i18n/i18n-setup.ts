@@ -8,17 +8,17 @@ export const Languages = [{
     code: 'en',
     name: 'English',
 }, {
-    code: 'de',
-    name: 'Deutsch',
-}, {
-    code: 'fr',
-    name: 'Français',
-}, {
+//     code: 'de',
+//     name: 'Deutsch',
+// }, {
+//     code: 'fr',
+//     name: 'Français',
+// }, {
     code: 'zh',
     name: '简体中文',
-}, {
-    code: 'es',
-    name: 'Español',
+// }, {
+//     code: 'es',
+//     name: 'Español',
 // }, {
 //     code: 'ru',
 //     name: 'Русский',
@@ -70,11 +70,15 @@ export async function loadLanguage(lang: string): Promise<string> {
 }
 
 export function detectLanguage(): string {
-    return i18n.locale || DEFAULT_LANGUAGE; // FIXME: Remove when enabling i18n
     const langCookie = Cookie.getCookie('lang');
-    const langRaw = window.navigator.language;
-    const langParts = langRaw.split('-');
-    return langCookie || langParts[0];
+    const fallbackLang = window.navigator.language.split('-')[0];
+
+    let lang = langCookie || fallbackLang;
+    // If the language is not supported set it to the default one
+    if (!SUPPORTED_LANGUAGES.includes(lang)) {
+        lang = DEFAULT_LANGUAGE;
+    }
+    return lang;
 }
 
 // If the user changed the language in another window/tab then load and enable new language

@@ -12,7 +12,15 @@ msgstr ""
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/MigrationWelcomeModal.vue:32
+msgid "{accounts} hold, manage and aggregate addresses."
+msgstr "{accounts} 保存，管理和汇总地址。"
+
+#: src/components/modals/MigrationWelcomeModal.vue:37
+msgid "{addresses} send and receive transactions."
+msgstr "{addresss} 发送和接收交易。"
+
+#: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}个确认 | {count}个确认"
 
@@ -25,11 +33,15 @@ msgstr "{count}个端点 | {count}个端点"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 
+#: src/components/modals/TransactionModal.vue:186
+msgid "{fee} fee"
+msgstr "{fee} 费用"
+
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话 支持"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -37,7 +49,7 @@ msgstr ""
 "此地址“ {address}”的联系人已经使用了其他名称。\n"
 "                            您要更换吗？"
 
-#: src/components/modals/MigrationWelcomeModal.vue:72
+#: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
@@ -45,7 +57,7 @@ msgstr ""
 "帐户创建得到了极大的改善，\n"
 "尝试看看并体验Nimiq的所有新功能。"
 
-#: src/components/modals/MigrationWelcomeModal.vue:33
+#: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
 msgstr "账户"
 
@@ -70,7 +82,7 @@ msgstr "添加联络人"
 msgid "Address unavailable?"
 msgstr "地址无法使用？"
 
-#: src/components/modals/MigrationWelcomeModal.vue:36
+#: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
 msgstr "地址"
 
@@ -89,6 +101,12 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟。"
 
+#: src/components/modals/DisclaimerModal.vue:21
+msgid ""
+"All translations are for information purposes only. The English text is the "
+"controlling version."
+msgstr "所有翻译仅供参考，以英文版本为主。"
+
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "请随时备份您的恢复字，密码和登录文件。"
@@ -100,10 +118,6 @@ msgstr "而{BTC}，则是加密技术的黄金标准和健全的价值存储。"
 #: src/components/modals/TradeModal.vue:30
 msgid "Android and iOS App"
 msgstr "Android和iOS应用"
-
-#: src/components/layouts/Settings.vue:130
-msgid "Automatic"
-msgstr ""
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
@@ -117,11 +131,11 @@ msgstr "备份"
 msgid "Bitcoin"
 msgstr "比特币"
 
-#: src/components/modals/TransactionModal.vue:182
+#: src/components/modals/TransactionModal.vue:181
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:195
 msgid "Block explorer"
 msgstr "区块链链浏览器"
 
@@ -135,7 +149,7 @@ msgstr "浏览器"
 
 #: src/components/layouts/Sidebar.vue:31
 msgid "Buy & Sell"
-msgstr "买 & 卖"
+msgstr "买&卖"
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
@@ -151,13 +165,13 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以影响交易的处理速度"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
-#: src/components/modals/TransactionModal.vue:324
+#: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:138
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -232,7 +246,7 @@ msgstr "共识"
 msgid "Contacts"
 msgstr "联系信息"
 
-#: src/components/modals/MigrationWelcomeModal.vue:83
+#: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/WelcomeModal.vue:94
 msgid "Continue"
 msgstr "继续"
@@ -267,11 +281,7 @@ msgstr "创建付款链接"
 msgid "Credit Card accepted"
 msgstr "接受信用卡"
 
-#: src/components/layouts/Settings.vue:121
-msgid "Currency Format"
-msgstr ""
-
-#: src/components/modals/TransactionModal.vue:168
+#: src/components/modals/TransactionModal.vue:167
 msgid "Current value"
 msgstr "当前价值"
 
@@ -279,7 +289,7 @@ msgstr "当前价值"
 msgid "Developer"
 msgstr "开发者"
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -304,7 +314,7 @@ msgstr "编辑联络人"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数数量。"
 
-#: src/components/modals/SendModal.vue:482
+#: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -324,27 +334,31 @@ msgstr "已过期"
 msgid "Expired"
 msgstr "已过期"
 
+#: src/components/modals/SendModal.vue:358
+msgid "express"
+msgstr "快速"
+
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
 msgstr "失败"
 
-#: src/components/TestnetFaucet.vue:116
-msgid "Faucet error - please try again"
-msgstr "水龙头错误－请重试"
+#: src/components/TestnetFaucet.vue:137
+msgid "Faucet error - please try again."
+msgstr "水龙头错误——请再试一次。"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
 msgstr "水龙头是空的"
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
 msgstr "您所在的位置无法使用水龙头"
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
 msgstr "水龙头无法使用"
 
-#: src/components/TestnetFaucet.vue:72
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
 msgstr "水龙头无法使用（网络错误）"
 
@@ -356,11 +370,12 @@ msgstr "费用"
 msgid "Fetching"
 msgstr "正在取得"
 
+#: src/components/modals/TransactionModal.vue:151
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:199
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -371,6 +386,10 @@ msgstr "给初学者"
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
 msgstr "论坛帖子"
+
+#: src/components/modals/SendModal.vue:348
+msgid "free"
+msgstr "免费"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -403,13 +422,13 @@ msgstr "得到反馈了吗？发现错误了？"
 msgid "Got it"
 msgstr "已取得"
 
-#: src/components/modals/MigrationWelcomeModal.vue:85
+#: src/components/modals/MigrationWelcomeModal.vue:89
 msgid "Got it!"
 msgstr "已取得！"
 
 #: src/components/modals/WelcomeModal.vue:11
 msgid "Great, you’re here!"
-msgstr "太好了，您来了！"
+msgstr "很高兴在这里看到您！"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
@@ -417,13 +436,9 @@ msgid ""
 "and shared login information."
 msgstr "现在使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址。"
 
-#: src/components/modals/TransactionModal.vue:163
+#: src/components/modals/TransactionModal.vue:162
 msgid "Historic value"
 msgstr "历史价值"
-
-#: src/components/modals/MigrationWelcomeModal.vue:33
-msgid "hold, manage and aggregate addresses."
-msgstr "保存，管理和汇总地址。"
 
 #: src/components/modals/BetaNoticeModal.vue:18
 msgid ""
@@ -438,7 +453,7 @@ msgstr "导入联系人"
 msgid "Import contacts that you exported from the Safe."
 msgstr "导入从保险柜 (Safe) 中导出的联系人。"
 
-#: src/components/modals/MigrationWelcomeModal.vue:51
+#: src/components/modals/MigrationWelcomeModal.vue:55
 msgid ""
 "Import it to any browser and enter your password to use the same addresses."
 msgstr "导入到任意浏览器中，输入密码即可使用相同的地址。"
@@ -476,7 +491,7 @@ msgstr "语言"
 msgid "Learn more"
 msgstr "了解更多"
 
-#: src/components/modals/MigrationWelcomeModal.vue:57
+#: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
@@ -491,10 +506,6 @@ msgstr "轻节点"
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "加载文件"
-
-#: src/components/layouts/Settings.vue:131
-msgid "Localized"
-msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -571,7 +582,7 @@ msgstr "无"
 msgid "not sent"
 msgstr "未发送"
 
-#: src/components/layouts/Settings.vue:222
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -625,6 +636,7 @@ msgstr ""
 "Nimiq仅是让您通过浏览器，轻松地创建、保存和访问您的信息，并与区块链互动的桥梁。"
 
 #: src/components/layouts/AddressOverview.vue:89
+#: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
 
@@ -654,7 +666,7 @@ msgstr "参考货币"
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/components/TestnetFaucet.vue:124
+#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr "请求失败"
 
@@ -662,7 +674,7 @@ msgstr "请求失败"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置您的钱包设置并从区块链重新加载数据。"
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "重试"
 
@@ -695,6 +707,7 @@ msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
 #: src/components/layouts/AddressOverview.vue:86
+#: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
 
@@ -711,10 +724,6 @@ msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr "在没有中间人的情况下发送和接收NIM，享受真正的去中心。"
 
-#: src/components/modals/MigrationWelcomeModal.vue:36
-msgid "send and receive transactions."
-msgstr "发送和接收交易"
-
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:151
 msgid "Send Transaction"
@@ -724,15 +733,15 @@ msgstr "发送交易"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从您的钱包中发送、接收和持有BTC。"
 
-#: src/components/modals/SendModal.vue:478
+#: src/components/modals/SendModal.vue:490
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/SendModal.vue:513
+#: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
 msgstr "发送 {nim} NIM"
 
-#: src/components/modals/SendModal.vue:509
+#: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送 {nim} NIM 至 {name}"
 
@@ -777,6 +786,10 @@ msgstr "显示我所有的地址"
 msgid "Show Decimals"
 msgstr "显示小数"
 
+#: src/components/modals/TransactionModal.vue:133
+msgid "Show Link"
+msgstr "显示链接"
+
 #: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr "注册"
@@ -785,7 +798,7 @@ msgstr "注册"
 msgid "Skip for now"
 msgstr "暂时跳过"
 
-#: src/components/modals/SendModal.vue:524
+#: src/components/modals/SendModal.vue:536
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -801,6 +814,10 @@ msgstr "质押NIM取得奖励，并确保网络安全。"
 msgid "Staking"
 msgstr "质押"
 
+#: src/components/modals/SendModal.vue:353
+msgid "standard"
+msgstr "标准"
+
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr "将从2020年 第三季度 欧盟 银行 帐户开始"
@@ -808,10 +825,6 @@ msgstr "将从2020年 第三季度 欧盟 银行 帐户开始"
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "存储、发送和接收NIM。"
-
-#: src/components/layouts/Settings.vue:123
-msgid "Switch between automatic and localized currency formatting."
-msgstr ""
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -833,7 +846,7 @@ msgstr ""
 "新的和改进的账户\n"
 "可以持有多个地址"
 
-#: src/components/modals/MigrationWelcomeModal.vue:47
+#: src/components/modals/MigrationWelcomeModal.vue:51
 msgid ""
 "The new Login Files are an easy and convenient way to gain access to your "
 "account and its addresses."
@@ -849,9 +862,13 @@ msgid ""
 "visual issues."
 msgstr "钱包仍处于测试阶段。您的资金是安全的，只是视觉上可能有一些的问题。"
 
+#: src/components/TestnetFaucet.vue:133
+msgid "There are currently no free NIM available."
+msgstr "目前没有免费的NIM"
+
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr "我们有多种选择，您可以使用信用卡或交易加密货币，也可以在 {link} 上找到更多的交易所。"
 
@@ -867,6 +884,10 @@ msgstr "这是一个传统账户（ Legacy Account）"
 #: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "本月份"
+
+#: src/components/TestnetFaucet.vue:128
+msgid "This service is currently not available in your region."
+msgstr "您所在的地区目前还没有提供这项服务"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -888,8 +909,8 @@ msgstr "转移资金"
 msgid "Tweet your map!"
 msgstr "推特您的地图！"
 
-#: src/components/modals/TransactionModal.vue:325
-#: src/components/TransactionListItem.vue:140
+#: src/components/modals/TransactionModal.vue:328
+#: src/components/TransactionListItem.vue:139
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 
@@ -909,7 +930,7 @@ msgstr ""
 "欢迎来到\n"
 "新的Nimiq钱包"
 
-#: src/components/modals/MigrationWelcomeModal.vue:84
+#: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr "还有什么？"
 
@@ -925,6 +946,10 @@ msgstr "您正在连接到Nimiq测试网。"
 msgid "You are using a Legacy Account "
 msgstr "您正在使用传统账户"
 
+#: src/components/TestnetFaucet.vue:122
+msgid "You can receive more free NIM in {waitTime} hours."
+msgstr "您可以在{waitTime}小时内收到更多的免费NIM"
+
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr "您现在拥有加密货币了！"
@@ -937,7 +962,7 @@ msgstr "您将发送 {amount} NIM"
 msgid "Your account is not safe yet!"
 msgstr "您的帐户还不安全！"
 
-#: src/components/modals/MigrationWelcomeModal.vue:68
+#: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Your accounts are now legacy accounts. Easily switch, edit and create "
 "accounts with the new account picker."

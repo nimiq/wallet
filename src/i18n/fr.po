@@ -1,18 +1,26 @@
 # 
 # Translators:
 # Talleyrand <baptistekugener@wanadoo.fr>, 2020
-# Daniel, 2020
 # Matheo <matheo@nimiq.com>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
+"Last-Translator: Daniel, 2020\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/107022/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/MigrationWelcomeModal.vue:32
+msgid "{accounts} hold, manage and aggregate addresses."
+msgstr ""
+
+#: src/components/modals/MigrationWelcomeModal.vue:37
+msgid "{addresses} send and receive transactions."
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmation | {count} Confirmations"
 
@@ -25,11 +33,15 @@ msgstr "{count} Pair | {count} Pairs"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink | {count} Cashlinks"
 
+#: src/components/modals/TransactionModal.vue:186
+msgid "{fee} fee"
+msgstr "{fee} frais"
+
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
 msgstr "Support 24/7 par Chat & Téléphone"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:197
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -37,7 +49,7 @@ msgstr ""
 "Un contact avec l'adresse \"{address}\", mais un nom différent existe déjà.\n"
 "                            Voulez-vous le remplacer ?"
 
-#: src/components/modals/MigrationWelcomeModal.vue:72
+#: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
@@ -45,7 +57,7 @@ msgstr ""
 "La création de compte a été fortement améliorée. \n"
 "Essayez-la et tester les nouvelles fonctionnalités Nimiq."
 
-#: src/components/modals/MigrationWelcomeModal.vue:33
+#: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
 msgstr "Comptes"
 
@@ -70,7 +82,7 @@ msgstr "Ajouter un contact"
 msgid "Address unavailable?"
 msgstr "Adresse indisponible ?"
 
-#: src/components/modals/MigrationWelcomeModal.vue:36
+#: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
 msgstr "Adresses"
 
@@ -91,6 +103,14 @@ msgstr ""
 "Les nouvelles fonctionnalités sont exclusives aux comptes multi-adresses. "
 "Essayez-les, cela ne prend que quelques secondes."
 
+#: src/components/modals/DisclaimerModal.vue:21
+msgid ""
+"All translations are for information purposes only. The English text is the "
+"controlling version."
+msgstr ""
+"Toutes les traductions sont à titre informatif uniquement. Le texte anglais "
+"est la version de contrôle."
+
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
@@ -105,10 +125,6 @@ msgstr "Et {BTC}, l'étalon-or de la crypto et une bonne réserve de valeur."
 msgid "Android and iOS App"
 msgstr "Application Android et IOS"
 
-#: src/components/layouts/Settings.vue:130
-msgid "Automatic"
-msgstr ""
-
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Retour aux adresses"
@@ -121,11 +137,11 @@ msgstr "Sauvegarder"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/TransactionModal.vue:182
+#: src/components/modals/TransactionModal.vue:181
 msgid "Block #{height}"
 msgstr "Bloc #{height}"
 
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:195
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
@@ -157,13 +173,13 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité de traitement de votre "
 "transaction."
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
-#: src/components/modals/TransactionModal.vue:324
+#: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:138
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -238,7 +254,7 @@ msgstr "Consensus"
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/components/modals/MigrationWelcomeModal.vue:83
+#: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/WelcomeModal.vue:94
 msgid "Continue"
 msgstr "Continue"
@@ -275,11 +291,7 @@ msgstr "Créer lien de paiement"
 msgid "Credit Card accepted"
 msgstr "Carte de crédit acceptée"
 
-#: src/components/layouts/Settings.vue:121
-msgid "Currency Format"
-msgstr ""
-
-#: src/components/modals/TransactionModal.vue:168
+#: src/components/modals/TransactionModal.vue:167
 msgid "Current value"
 msgstr "Valeur actuelle"
 
@@ -287,7 +299,7 @@ msgstr "Valeur actuelle"
 msgid "Developer"
 msgstr "Développeur"
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:124
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -314,7 +326,7 @@ msgstr "Éditer les contacts"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs NIM."
 
-#: src/components/modals/SendModal.vue:482
+#: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -334,27 +346,31 @@ msgstr "expiré"
 msgid "Expired"
 msgstr "Expiré"
 
+#: src/components/modals/SendModal.vue:358
+msgid "express"
+msgstr "express"
+
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
 msgstr "Échoué"
 
-#: src/components/TestnetFaucet.vue:116
-msgid "Faucet error - please try again"
-msgstr "Erreur du Faucet - veuillez réessayer"
+#: src/components/TestnetFaucet.vue:137
+msgid "Faucet error - please try again."
+msgstr "Erreur du Faucet - veuillez réessayer."
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
 msgstr "Le Faucet est vide"
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
 msgstr "Faucet non disponible depuis votre localisation"
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
 msgstr "Faucet indisponible"
 
-#: src/components/TestnetFaucet.vue:72
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet indisponible (mauvais réseau)"
 
@@ -366,11 +382,12 @@ msgstr "frais"
 msgid "Fetching"
 msgstr "Récupération"
 
+#: src/components/modals/TransactionModal.vue:151
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "Fiat value unavailable"
 
-#: src/components/layouts/Settings.vue:199
+#: src/components/layouts/Settings.vue:183
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -381,6 +398,10 @@ msgstr "Pour les débutants"
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
 msgstr "fil de discussion du forum"
+
+#: src/components/modals/SendModal.vue:348
+msgid "free"
+msgstr "gratuit"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -413,7 +434,7 @@ msgstr "Vous avez des commentaires ? Ou trouvé un bug ?"
 msgid "Got it"
 msgstr "Compris"
 
-#: src/components/modals/MigrationWelcomeModal.vue:85
+#: src/components/modals/MigrationWelcomeModal.vue:89
 msgid "Got it!"
 msgstr "Compris !"
 
@@ -429,13 +450,9 @@ msgstr ""
 "Gérer plusieurs adresses est maintenant pratique et facile - avec un mot de "
 "passe et les informations de connexion partagées."
 
-#: src/components/modals/TransactionModal.vue:163
+#: src/components/modals/TransactionModal.vue:162
 msgid "Historic value"
 msgstr "Valeur historique"
-
-#: src/components/modals/MigrationWelcomeModal.vue:33
-msgid "hold, manage and aggregate addresses."
-msgstr "conserver, gérer et regrouper les adresses."
 
 #: src/components/modals/BetaNoticeModal.vue:18
 msgid ""
@@ -452,7 +469,7 @@ msgstr "Importer des contacts"
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importer des contacts que vous avez exporté depuis le Safe."
 
-#: src/components/modals/MigrationWelcomeModal.vue:51
+#: src/components/modals/MigrationWelcomeModal.vue:55
 msgid ""
 "Import it to any browser and enter your password to use the same addresses."
 msgstr ""
@@ -492,7 +509,7 @@ msgstr "Langage"
 msgid "Learn more"
 msgstr "En apprendre plus"
 
-#: src/components/modals/MigrationWelcomeModal.vue:57
+#: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
@@ -507,10 +524,6 @@ msgstr "Light Node"
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Charger le fichier"
-
-#: src/components/layouts/Settings.vue:131
-msgid "Localized"
-msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -590,7 +603,7 @@ msgstr "Aucun"
 msgid "not sent"
 msgstr "non envoyée"
 
-#: src/components/layouts/Settings.vue:222
+#: src/components/layouts/Settings.vue:206
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -647,6 +660,7 @@ msgstr ""
 "enregistrer et accéder à vos informations et d'interagir avec la blockchain."
 
 #: src/components/layouts/AddressOverview.vue:89
+#: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Recevoir"
 
@@ -676,7 +690,7 @@ msgstr "Devise de référence"
 msgid "Rename"
 msgstr "Renommer"
 
-#: src/components/TestnetFaucet.vue:124
+#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr "Requête échouée"
 
@@ -686,7 +700,7 @@ msgstr ""
 "Réinitialisez les paramètres de votre wallet et rechargez les données depuis"
 " la blockchain."
 
-#: src/components/modals/SendModal.vue:481
+#: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -719,6 +733,7 @@ msgid "Search transactions by contact, address, etc."
 msgstr "Rechercher des transactions via contacts, adresses, etc..."
 
 #: src/components/layouts/AddressOverview.vue:86
+#: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Envoyer"
 
@@ -737,10 +752,6 @@ msgstr ""
 "Envoyez et recevez des NIM sans intermédiaire et profitez d'une véritable "
 "décentralisation."
 
-#: src/components/modals/MigrationWelcomeModal.vue:36
-msgid "send and receive transactions."
-msgstr "envoyer et recevoir des transactions"
-
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:151
 msgid "Send Transaction"
@@ -750,15 +761,15 @@ msgstr "Envoyer la Transaction"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
 
-#: src/components/modals/SendModal.vue:478
+#: src/components/modals/SendModal.vue:490
 msgid "Sending Transaction"
 msgstr "Transaction en cours."
 
-#: src/components/modals/SendModal.vue:513
+#: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM envoyés"
 
-#: src/components/modals/SendModal.vue:509
+#: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
@@ -803,6 +814,10 @@ msgstr "Afficher toutes mes adresses"
 msgid "Show Decimals"
 msgstr "Afficher les décimales"
 
+#: src/components/modals/TransactionModal.vue:133
+msgid "Show Link"
+msgstr "Afficher le lien"
+
 #: src/components/layouts/AddressOverview.vue:104
 msgid "Signup"
 msgstr "S'inscrire"
@@ -811,7 +826,7 @@ msgstr "S'inscrire"
 msgid "Skip for now"
 msgstr "Ignorer pour l'instant"
 
-#: src/components/modals/SendModal.vue:524
+#: src/components/modals/SendModal.vue:536
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -827,6 +842,10 @@ msgstr "Utilisez vos fonds pour sécurisez le réseau et gagner du NIM."
 msgid "Staking"
 msgstr "Staking"
 
+#: src/components/modals/SendModal.vue:353
+msgid "standard"
+msgstr "standard"
+
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
 msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
@@ -834,10 +853,6 @@ msgstr "En commençant avec les comptes bancaires EU dans le Q3 2020."
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
 msgstr "Stockez, envoyez et recevez des NIM."
-
-#: src/components/layouts/Settings.vue:123
-msgid "Switch between automatic and localized currency formatting."
-msgstr ""
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -859,7 +874,7 @@ msgstr ""
 "Le nouveau type de compte\n"
 "peut posséder plusieurs adresses à la fois."
 
-#: src/components/modals/MigrationWelcomeModal.vue:47
+#: src/components/modals/MigrationWelcomeModal.vue:51
 msgid ""
 "The new Login Files are an easy and convenient way to gain access to your "
 "account and its addresses."
@@ -879,9 +894,13 @@ msgstr ""
 "Le wallet est encore en Beta. Vos fonds sont en sécurité, mais il se peut "
 "qu'il y ait des problèmes visuels."
 
+#: src/components/TestnetFaucet.vue:133
+msgid "There are currently no free NIM available."
+msgstr "Il n'y a actuellement aucun NIM gratuit disponible."
+
 #: src/components/modals/TradeModal.vue:8
 msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
+"There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr ""
 "Il existe de nombreuses options, utilisez une carte de crédit ou échangez "
@@ -899,6 +918,10 @@ msgstr "Ceci est un ancien type de compte."
 #: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "Ce mois-ci"
+
+#: src/components/TestnetFaucet.vue:128
+msgid "This service is currently not available in your region."
+msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -920,8 +943,8 @@ msgstr "Transférer des fonds"
 msgid "Tweet your map!"
 msgstr "Tweetez votre carte !"
 
-#: src/components/modals/TransactionModal.vue:325
-#: src/components/TransactionListItem.vue:140
+#: src/components/modals/TransactionModal.vue:328
+#: src/components/TransactionListItem.vue:139
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
 
@@ -944,7 +967,7 @@ msgstr ""
 "Bienvenue dans le\n"
 "nouveau Wallet Nimiq"
 
-#: src/components/modals/MigrationWelcomeModal.vue:84
+#: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr "Quoi d'autre ?"
 
@@ -960,6 +983,10 @@ msgstr "Vous êtes en train de vous connecter au Testnet Nimiq."
 msgid "You are using a Legacy Account "
 msgstr "Vous utilisez un ancien type de compte."
 
+#: src/components/TestnetFaucet.vue:122
+msgid "You can receive more free NIM in {waitTime} hours."
+msgstr "Vous pourrez recevoir plus de NIM gratuit dans {waitTime} heures."
+
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr "Vous possédez maintenant de la crypto !"
@@ -972,7 +999,7 @@ msgstr "Vous enverrez {amount} NIM"
 msgid "Your account is not safe yet!"
 msgstr "Votre compte n'est pas encore sûr !"
 
-#: src/components/modals/MigrationWelcomeModal.vue:68
+#: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Your accounts are now legacy accounts. Easily switch, edit and create "
 "accounts with the new account picker."

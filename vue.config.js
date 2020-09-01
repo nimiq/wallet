@@ -14,7 +14,8 @@ let release;
 if (process.env.NODE_ENV !== 'production') {
     release = 'dev';
 } else if (process.env.CI) {
-    release = 'ci';
+    // CI environment variables are documented at https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+    release = `${process.env.CI_COMMIT_BRANCH}-${process.env.CI_PIPELINE_ID}-${process.env.CI_COMMIT_SHORT_SHA}`;
 } else {
     release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
 }
@@ -22,7 +23,7 @@ if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
 }
 
-console.log('Building for:', buildName);
+console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
     configureWebpack: {

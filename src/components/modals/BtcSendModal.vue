@@ -4,14 +4,19 @@
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="flex-column">
                 <section class="address-section" :class="{'extended': recipientWithLabel}">
-                    <BtcLabelInput v-if="recipientWithLabel"
-                        v-model="recipientWithLabel.label"
-                        :placeholder="$t('Name this recipient...')"
-                        :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"/>
+                    <transition name="slide-n-fade">
+                        <BtcLabelInput v-if="recipientWithLabel"
+                            v-model="recipientWithLabel.label"
+                            @click.capture.native="selectedInput = 'bottom'"
+                            :placeholder="$t('Name this recipient...')"
+                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
+                            ref="labelInputRef"/>
+                    </transition>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @input="resetAddress"
+                        @click.capture.native="selectedInput = 'top'"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
                     <span
@@ -31,6 +36,7 @@
                             </p>
                         </Tooltip>
                     </span>
+                    <div class="fake-border" v-if="recipientWithLabel"></div>
                 </section>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
@@ -128,7 +134,6 @@
         </div>
     </Modal>
 </template>
-}
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, Ref, onMounted, onUnmounted } from '@vue/composition-api';
@@ -610,15 +615,28 @@ export default defineComponent({
 
     .address-section {
         text-align: center;
+        position: relative;
 
         .btc-address-input {
             width: 100%;
             font-size: 15px;
             position: relative; // For correct z-index positioning
+
+            & /deep/ input {
+                transition: all 200ms, width 50ms;
+            }
+
+            & /deep/ form {
+                background-color: white;
+            }
         }
 
         .btc-label-input {
             margin-bottom: -0.25rem;
+
+            & /deep/ form {
+                background-color: white;
+            }
         }
 
         .reused-address {
@@ -641,23 +659,72 @@ export default defineComponent({
             .btc-address-input /deep/ input {
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
-                background: white;
             }
 
             .btc-label-input /deep/ input {
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
-                background: white;
             }
 
             .btc-address-input:focus-within {
                 z-index: 2;
+
+                /deep/ input {
+                    border-top-left-radius: .5rem;
+                    border-top-right-radius: .5rem;
+                }
             }
 
             .btc-label-input:hover,
             .btc-label-input:focus-within {
-                z-index: 1;
+                z-index: 2;
             }
+
+            .btc-label-input:focus-within /deep/ input {
+                border-bottom-left-radius: .5rem;
+                border-bottom-right-radius: .5rem;
+            }
+
+        }
+    }
+
+    .fake-border {
+        $borderSize: 0.5rem;
+        $borderColor: white;
+        $inputBoxShadowSize: .25rem;
+
+        height: #{$inputBoxShadowSize};
+        width: calc(100% - #{$inputBoxShadowSize});
+
+        z-index: 3;
+        position: absolute;
+        top: #{5.875rem - $inputBoxShadowSize};
+        left: #{$inputBoxShadowSize / 2};
+
+        border-radius: 0;
+        box-shadow: 0 0 0 0 #{$borderColor};
+
+        transition: {
+            property: box-shadow, border-radius;
+            duration: 200ms;
+        }
+
+        .btc-address-input:focus-within ~ & {
+            border-top-left-radius: #{$inputBoxShadowSize};
+            border-top-right-radius: #{$inputBoxShadowSize};
+            box-shadow:
+                0 #{($borderSize / 2 + $inputBoxShadowSize) * -1}
+                0 #{$borderSize / 2}
+                $borderColor;
+        }
+
+        .btc-label-input:focus-within ~ & {
+            border-bottom-left-radius: $inputBoxShadowSize;
+            border-bottom-right-radius: $inputBoxShadowSize;
+            box-shadow:
+                0 #{$borderSize / 2 + $inputBoxShadowSize}
+                0 #{$borderSize / 2}
+                $borderColor;
         }
     }
 
@@ -781,5 +848,30 @@ export default defineComponent({
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;
         }
+    }
+
+    /* transitions */
+    .slide-n-fade-enter-active,
+    .slide-n-fade-leave-active {
+        $animatedProps: height, opacity, border-bottom-left-radius, border-bottom-right-radius;
+
+        will-change: $animatedProps;
+        transition: {
+            duration: 300ms;
+            timing-function: var(--nimiq-ease);
+            property: $animatedProps;
+       }
+    }
+
+    .slide-n-fade-enter-to,
+    .slide-n-fade-leave {
+        height: 5.875rem;
+        opacity: 1;
+    }
+
+    .slide-n-fade-enter,
+    .slide-n-fade-leave-to {
+        height: 0.25rem;
+        opacity: 0;
     }
 </style>

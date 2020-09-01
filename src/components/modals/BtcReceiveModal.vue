@@ -255,7 +255,7 @@ export default defineComponent({
             return context.root.$tc('Created some time ago');
         }
 
-        // Copy address / address copied
+        // Copied addresses
         const addressCopied = ref<boolean>(false);
         const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
         const recentlyCopiedAddresses = computed(() =>
@@ -317,10 +317,10 @@ export default defineComponent({
                 [address]: true,
             };
             context.root.$nextTick(() => {
-                const refs = (context.refs[`address-label-${address}`] as Vue[] | undefined);
+                const refs = (context.refs[`address-label-${address}`] as LabelInput[] | undefined);
 
                 if (refs && refs.length) {
-                    (refs[0] as LabelInput).focus();
+                    refs[0].focus();
                 }
             });
         }
@@ -333,7 +333,7 @@ export default defineComponent({
             };
         }
 
-        /* Copy the address in the .address copyable */
+        // Copy the address in the .address copyable
         function copyActiveAddressCallback() {
             if (!addressCopied.value) {
                 addressCopied.value = true;

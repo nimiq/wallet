@@ -171,7 +171,7 @@ msgstr "文件格式错误，无法导入联系人。"
 
 #: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:138
+#: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -407,11 +407,6 @@ msgstr "获取 NIM"
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
 msgstr "获取 NIM 和 BTC"
-
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "Get NIM on {exchange}"
-msgstr "在 {exchange} 上获取 NIM"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
@@ -889,6 +884,11 @@ msgstr "本月份"
 msgid "This service is currently not available in your region."
 msgstr "您所在的地区目前还没有提供这项服务"
 
+#: src/components/modals/TradeModal.vue:36
+#: src/components/modals/TradeModal.vue:56
+msgid "To {exchange}"
+msgstr ""
+
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
 msgstr "总余额"
@@ -910,7 +910,7 @@ msgid "Tweet your map!"
 msgstr "推特您的地图！"
 
 #: src/components/modals/TransactionModal.vue:328
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 

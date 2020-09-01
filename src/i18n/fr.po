@@ -179,7 +179,7 @@ msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
 #: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:138
+#: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -419,11 +419,6 @@ msgstr "Y aller"
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
 msgstr "Obtenir des NIM et BTC"
-
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "Get NIM on {exchange}"
-msgstr "Aller sur {exchange}"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
@@ -923,6 +918,11 @@ msgstr "Ce mois-ci"
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
+#: src/components/modals/TradeModal.vue:36
+#: src/components/modals/TradeModal.vue:56
+msgid "To {exchange}"
+msgstr "Aller sur {exchange}"
+
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
 msgstr "Solde total"
@@ -944,7 +944,7 @@ msgid "Tweet your map!"
 msgstr "Tweetez votre carte !"
 
 #: src/components/modals/TransactionModal.vue:328
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
 

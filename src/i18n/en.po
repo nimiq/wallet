@@ -151,7 +151,7 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:138
+#: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
 msgstr ""
 
@@ -382,11 +382,6 @@ msgstr ""
 
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "Get NIM on {exchange}"
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:32
@@ -829,6 +824,11 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
+#: src/components/modals/TradeModal.vue:36
+#: src/components/modals/TradeModal.vue:56
+msgid "To {exchange}"
+msgstr ""
+
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
 msgstr ""
@@ -850,7 +850,7 @@ msgid "Tweet your map!"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:328
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr ""
 

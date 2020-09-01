@@ -33,7 +33,7 @@
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
                             @mousedown.prevent
-                        >{{ $t('Get NIM on {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                     <div class="separator"></div>
                     <div class="exchange changehero flex-column">
@@ -53,7 +53,7 @@
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://changehero.io/?to=nim" target="_blank"
                             @mousedown.prevent
-                        >{{ $t('Get NIM on {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">

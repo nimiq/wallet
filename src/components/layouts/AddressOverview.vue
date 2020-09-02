@@ -452,6 +452,7 @@ export default defineComponent({
         font-size: var(--body-size);
         padding: 0.5rem;
         font-weight: 600;
+        word-break: keep-all;
         border-radius: 0.5rem;
         z-index: 1;
         pointer-events: none;

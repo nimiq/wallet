@@ -1,13 +1,13 @@
 <template>
     <div class="mobile-action-bar flex-row">
         <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
-            <ArrowRightSmallIcon />Receive
+            <ArrowRightSmallIcon />{{ $t('Receive') }}
         </button>
         <button class="send nq-button-pill light-blue flex-row"
             @click="$router.push('/send')" @mousedown.prevent
             :disabled="!activeAddressInfo || !activeAddressInfo.balance"
         >
-            <ArrowRightSmallIcon />Send
+            <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>
         <button class="reset scan-qr" @click="$router.push('/scan')">
             <ScanQrCodeIcon/>

@@ -61,6 +61,24 @@ module.exports = {
                 },
             ]]);
 
+        config
+            .plugin('prefetch')
+            .tap(options => {
+                // Ignore rarely used files.
+                // Note that for production build, also the hash in the filename needs to be matched by the regexes.
+                const blacklist = options[0].fileBlacklist || [];
+                options[0].fileBlacklist = [
+                    ...blacklist,
+                    /\.map$/,
+                    /settings.*?\.(js|css)$/,
+                    /(migration-)?welcome-modal.*?\.(js|css)$/,
+                    /disclaimer-modal.*?\.(js|css)$/,
+                    /country-names-.+?\.js$/, // only needed for Intl.DisplayNames polyfill and only one of them needed
+                    /lang-[^-]+-po.*?\.js$/, // only one of them needed
+                ];
+                return options
+            });
+
         config.module
             .rule('eslint')
             .use('eslint-loader')

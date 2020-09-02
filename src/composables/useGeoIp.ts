@@ -5,6 +5,7 @@ export type GeoIpResponse = {
     },
     country?: string,
     city?: string,
+    city_names?: { [language: string]: string },
 }
 
 const CACHE_MAX_SIZE = 1000;

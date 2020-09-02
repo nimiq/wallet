@@ -34,13 +34,17 @@ type FaucetInfoResponse = {
 type FaucetTapResponse = {
     success: false,
     msg: string,
-    error: 'VAPTCHA_UNAVAILABLE'
+    error?: 'VAPTCHA_UNAVAILABLE'
         | 'INVALID_CAPTCHA'
         | 'INVALID_ADDRESS'
-        | 'RATE_LIMIT'
         | 'GEOBLOCKED'
         | 'OUT_OF_FUNDS'
         | 'TRANSACTION_FAILED',
+} | {
+    success: false,
+    msg: string,
+    error: 'RATE_LIMIT',
+    wait: number,
 } | {
     success: true,
     msg: string,
@@ -110,12 +114,32 @@ export default defineComponent({
                 }
 
                 loading.value = false;
+                errorMsg.value = '';
+                unavailableMsg.value = '';
 
-                if (result.error === 'TRANSACTION_FAILED') {
-                    // Reset button for user to try again
-                    unavailableMsg.value = context.root.$t('Faucet error - please try again');
-                } else {
-                    errorMsg.value = result.msg; // Disables button and shows the error message.
+                switch (result.error) {
+                    case 'RATE_LIMIT':
+                        errorMsg.value = context.root.$t(
+                            'You can receive more free NIM in {waitTime} hours.',
+                            { waitTime: Math.ceil(result.wait / 3600) },
+                        );
+                        break;
+                    case 'GEOBLOCKED':
+                        errorMsg.value = context.root.$t(
+                            'This service is currently not available in your region.',
+                        );
+                        break;
+                    case 'OUT_OF_FUNDS':
+                        errorMsg.value = context.root.$t('There are currently no free NIM available.');
+                        break;
+                    case 'TRANSACTION_FAILED':
+                        // Set unavailableMsg instead of errorMsg to keep button active for user to try again
+                        unavailableMsg.value = context.root.$t('Faucet error - please try again.');
+                        break;
+                    default:
+                        // 'INVALID_CAPTCHA', 'VAPTCHA_UNAVAILABLE', 'INVALID_ADDRESS' or unspecified errors should
+                        // not occur via this frontend, therefore no need to translate them.
+                        errorMsg.value = `${context.root.$t('Request failed')}: ${result.msg}`;
                 }
 
                 return false;
@@ -154,9 +178,12 @@ button {
 
 .unavailable,
 .error {
+    padding: 0 5rem;
     font-weight: 600;
+    text-align: center;
 
     svg {
+        display: inline-block;
         width: 2.5rem;
         height: 2.5rem;
         margin-right: 1rem;

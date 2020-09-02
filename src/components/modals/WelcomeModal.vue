@@ -104,7 +104,7 @@
                 {{ $t('Skip for now') }}
                 <CaretRightSmallIcon/>
             </a>
-            <!-- <div v-if="page === 1" class="flex-row flags">
+            <div v-if="page === 1" class="flex-row flags">
                 <Tooltip v-for="lang in Languages" :key="lang.code"
                     preferredPosition="bottom"
                     :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
@@ -114,7 +114,7 @@
                         class="flag" :class="{'active': settings$.language === lang.code}">
                     {{ lang.name }}
                 </Tooltip>
-            </div> -->
+            </div>
         </PageFooter>
     </Modal>
 </template>
@@ -200,6 +200,7 @@ export default defineComponent({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         overflow: hidden;
     }
 
@@ -226,17 +227,16 @@ export default defineComponent({
 
     .visual img {
         width: 100%;
-        margin-top: -1rem;
     }
 
     .visual.nim-and-btc {
         width: 11.75rem;
+        height: 28rem;
         position: relative
     }
 
     .visual.browser-network {
         width: 13.75rem;
-        margin-top: -6rem;
     }
 
     .visual.login-file {

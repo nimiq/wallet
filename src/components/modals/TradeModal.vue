@@ -5,7 +5,7 @@
                 <header>
                     <h1 class="nq-h1">{{ $t('Get NIM and BTC') }}</h1>
                     <!-- eslint-disable-next-line max-len -->
-                    <i18n path="There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
+                    <i18n :path="'There are many options, use a credit card or trade\u00a0crypto. You can find more exchanges on {link}'"
                         tag="p" class="nq-text intro"
                     >
                         <template v-slot:link>
@@ -33,7 +33,7 @@
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
                             @mousedown.prevent
-                        >{{ $t('Get NIM on {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                     <div class="separator"></div>
                     <div class="exchange changehero flex-column">
@@ -53,7 +53,7 @@
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://changehero.io/?to=nim" target="_blank"
                             @mousedown.prevent
-                        >{{ $t('Get NIM on {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">
@@ -162,7 +162,7 @@ export default defineComponent({
 
     .intro {
         color: inherit;
-        max-width: 42.5rem;
+        max-width: 50rem;
         line-height: 1.4;
         margin-top: 1rem;
 

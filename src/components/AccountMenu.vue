@@ -326,10 +326,9 @@ export default defineComponent({
 
 .menu .item {
     align-items: center;
-    line-height: 3.75rem;
+    line-height: 1.2;
     width: 100%;
-    padding: 0.625rem 1.25rem;
-    white-space: nowrap;
+    padding: 1.125rem 1.25rem;
     border-radius: 0.5rem;
     color: var(--text-70);
 
@@ -356,6 +355,7 @@ export default defineComponent({
 
 .menu .item .alert {
     margin-left: auto;
+    flex-shrink: 0;
     font-size: 2.5rem;
     color: var(--nimiq-orange);
 }
@@ -364,6 +364,7 @@ export default defineComponent({
     width: 2.75rem;
     height: 3rem;
     margin: -0.125rem 1rem -0.125rem 0;
+    flex-shrink: 0;
     opacity: 0.6;
 }
 

@@ -19,7 +19,7 @@
                             {{ $t('Change your language setting.') }}
                         </p>
                     </div>
-                    <select id="language" name="language" @input="setLanguage($event.target.value)" disabled>
+                    <select id="language" name="language" @input="setLanguage($event.target.value)">
                         <option
                             v-for="lang in Languages" :key="lang.code"
                             :value="lang.code" :selected="language === lang.code"

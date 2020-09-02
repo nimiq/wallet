@@ -16,6 +16,10 @@
                 <!-- eslint-disable-next-line max-len -->
                 {{ $t('Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development.') }}
             </p>
+            <p class="nq-text">
+                <!-- eslint-disable-next-line max-len -->
+                {{ $t('All translations are for information purposes only. The English text is the controlling version.') }}
+            </p>
         </PageBody>
     </Modal>
 </template>

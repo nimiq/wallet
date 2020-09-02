@@ -47,7 +47,7 @@
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
-                    <HistoricValueIcon/>
+                    <!-- <HistoricValueIcon/> -->
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
@@ -72,7 +72,7 @@ import { twoDigit } from '../lib/NumberFormatting';
 import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+// import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 
 export default defineComponent({
@@ -213,7 +213,7 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         FiatAmount,
-        HistoricValueIcon,
+        // HistoricValueIcon,
     },
 });
 </script>

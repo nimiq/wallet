@@ -153,7 +153,7 @@
                     <div v-else class="fiat-amount flex-row">
                         <Tooltip>
                             <template slot="trigger">
-                                <HistoricValueIcon/>
+                                <!-- <HistoricValueIcon/> -->
                                 <FiatAmount
                                     :amount="fiatValue"
                                     :currency="fiatCurrency"
@@ -161,11 +161,11 @@
                             </template>
                             {{ $t('Historic value') }}
                         </Tooltip>
-                        <strong class="dot">&middot;</strong>
-                        <Tooltip>
+                        <!-- <strong class="dot">&middot;</strong> -->
+                        <!-- <Tooltip>
                             <FiatConvertedAmount slot="trigger" :amount="transaction.value" value-mask/>
                             {{ $t('Current value') }}
-                        </Tooltip>
+                        </Tooltip> -->
                     </div>
                 </transition>
 
@@ -221,7 +221,7 @@ import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
-import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
+// import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
@@ -405,7 +405,7 @@ export default defineComponent({
         LabelInput,
         CashlinkSmallIcon,
         UnclaimedCashlinkIcon,
-        HistoricValueIcon,
+        // HistoricValueIcon,
         BlueLink,
     },
 });

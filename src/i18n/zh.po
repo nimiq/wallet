@@ -281,10 +281,6 @@ msgstr "创建付款链接"
 msgid "Credit Card accepted"
 msgstr "接受信用卡"
 
-#: src/components/modals/TransactionModal.vue:167
-msgid "Current value"
-msgstr "当前价值"
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "开发者"

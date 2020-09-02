@@ -291,10 +291,6 @@ msgstr "Créer lien de paiement"
 msgid "Credit Card accepted"
 msgstr "Carte de crédit acceptée"
 
-#: src/components/modals/TransactionModal.vue:167
-msgid "Current value"
-msgstr "Valeur actuelle"
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Développeur"

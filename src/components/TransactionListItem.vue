@@ -52,7 +52,7 @@
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
-                    <HistoricValueIcon/>
+                    <!-- <HistoricValueIcon/> -->
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
@@ -80,7 +80,7 @@ import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
-import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+// import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
@@ -197,7 +197,7 @@ export default defineComponent({
         Identicon,
         FiatAmount,
         UnclaimedCashlinkIcon,
-        HistoricValueIcon,
+        // HistoricValueIcon,
     },
 });
 </script>

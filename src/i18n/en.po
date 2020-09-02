@@ -257,10 +257,6 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:167
-msgid "Current value"
-msgstr ""
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr ""

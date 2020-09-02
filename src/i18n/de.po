@@ -292,10 +292,6 @@ msgstr "Zahlungslink erstellen"
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/modals/TransactionModal.vue:167
-msgid "Current value"
-msgstr "Aktueller Wert"
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Entwickler"

@@ -1,8 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <path fill="#f0f0f0" d="M0 0h512v512H0z"/>
-  <path d="M114 256L0 85v342z"/>
-  <path fill="#ffda44" d="M161 256L0 14v71l114 171L0 427v71z"/>
-  <path d="M510 306l2-2v-98H223L85 0H0v14l161 242L0 498v14h85l138-206h287z" fill="#6da544"/>
-  <path fill="#0052b4" d="M503 356H236L133 512h379V356z"/>
-  <path fill="#d80027" d="M503 156h9V0H133l103 156z"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F0F0F0;}
+	.st1{fill:#FFDA44;}
+	.st2{fill:#6DA544;}
+	.st3{fill:#0052B4;}
+	.st4{fill:#D80027;}
+</style>
+<polygon class="st0" points="512,156 512,206 223,206 85,0 133,0 236,156 "/>
+<polygon class="st0" points="512,304 512,356 236,356 133,512 85,512 223,306 510,306 "/>
+<path d="M114,256L0,85v342L114,256z"/>
+<path class="st1" d="M161,256L0,14v71l114,171L0,427v71L161,256z"/>
+<path class="st2" d="M510,306l2-2v-98H223L85,0H0v14l161,242L0,498v14h85l138-206H510z"/>
+<path class="st3" d="M503,356H236L133,512h379V356H503z"/>
+<path class="st4" d="M503,156h9V0H133l103,156H503z"/>
 </svg>

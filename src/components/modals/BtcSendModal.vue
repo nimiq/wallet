@@ -37,7 +37,10 @@
                         </Tooltip>
                     </span>
                     <transition name="slide">
-                        <div class="fake-border" v-if="recipientWithLabel"></div>
+                        <div class="fake-border"
+                            v-if="recipientWithLabel"
+                            :style="`--inputHeight: ${labelInputHeight}px`">
+                        </div>
                     </transition>
                 </section>
 
@@ -440,6 +443,7 @@ export default defineComponent({
         const addressInputRef: Ref<LabelInput | null> = ref(null);
         const labelInputRef: Ref<LabelInput | null> = ref(null);
         const amountInputRef: Ref<AmountInput | null> = ref(null);
+        const labelInputHeight = computed(() => labelInputRef.value?.$el.children[0].clientHeight);
 
         const { width } = useWindowSize();
 
@@ -574,6 +578,8 @@ export default defineComponent({
             addressInputRef,
             labelInputRef,
             amountInputRef,
+
+            labelInputHeight,
 
             // Status Screen
             statusScreenOpened,
@@ -732,17 +738,18 @@ export default defineComponent({
     }
 
     .fake-border {
-        $borderSize: 0.5rem;
+        $borderSize: 4px;
         $borderColor: white;
         $animatedProps: border-radius, box-shadow;
-        $inputBoxShadowSize: .25rem;
-        $inputHeight: 5.875rem;
+        $inputBoxShadowSize: 2px;
+        $defaultInputHeight: 6rem;
+
+        --inputHeight: #{$defaultInputHeight};
 
         height: #{$inputBoxShadowSize};
         width: calc(100% - #{$inputBoxShadowSize});
 
         position: absolute;
-        top: #{$inputHeight - $inputBoxShadowSize};
         left: #{$inputBoxShadowSize / 2};
         z-index: 3;
 
@@ -782,9 +789,10 @@ export default defineComponent({
             transition: top var(--short-transition-duration) var(--nimiq-ease);
         }
 
+        &,
         &.slide-enter-to,
         &.slide-leave {
-            top: #{$inputHeight - $inputBoxShadowSize};
+            top: calc(var(--inputHeight) - #{$inputBoxShadowSize});
         }
 
         &.slide-enter,

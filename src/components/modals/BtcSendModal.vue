@@ -211,11 +211,11 @@ export default defineComponent({
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
-        watch(recipientWithLabel, (newVal, oldVal) => {
-            if (newVal === null || oldVal === null) return;
-            if (newVal.type !== RecipientType.NEW_CONTACT) return;
-            setRecipientLabel(newVal.address, newVal.label);
-        }, { deep: true });
+        function saveRecipientLabel() {
+            if (recipientWithLabel.value === null) return;
+            if (recipientWithLabel.value.type !== RecipientType.NEW_CONTACT) return;
+            setRecipientLabel(recipientWithLabel.value.address, recipientWithLabel.value.label);
+        }
 
         function resetAddress() {
             recipientWithLabel.value = null;
@@ -515,6 +515,7 @@ export default defineComponent({
 
                 const { addTransactions } = useBtcTransactionsStore();
                 addTransactions([plainTx]);
+                saveRecipientLabel();
 
                 // Show success screen
                 statusState.value = State.SUCCESS;

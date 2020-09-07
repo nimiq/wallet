@@ -1,6 +1,5 @@
 # 
 # Translators:
-# Matheo <matheo@nimiq.com>, 2020
 # Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
 # 
@@ -39,7 +38,7 @@ msgstr "{fee} 费用"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
-msgstr "24/7文字和电话 支持"
+msgstr "24/7文字和电话支持"
 
 #: src/components/layouts/Settings.vue:197
 msgid ""
@@ -54,7 +53,7 @@ msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
-"帐户创建得到了极大的改善，\n"
+"帐户创建得到了大规模的改善，\n"
 "尝试看看并体验Nimiq的所有新功能。"
 
 #: src/components/modals/MigrationWelcomeModal.vue:34
@@ -92,7 +91,7 @@ msgstr "全部"
 
 #: src/components/modals/WelcomeModal.vue:49
 msgid "All in one easy place."
-msgstr "全部放在一个簡單的地方"
+msgstr "全部都在一个簡單的地方"
 
 #: src/components/layouts/AccountOverview.vue:60
 #: src/components/LegacyAccountNotice.vue:37
@@ -137,7 +136,7 @@ msgstr "区块＃{height}"
 
 #: src/components/modals/TransactionModal.vue:195
 msgid "Block explorer"
-msgstr "区块链链浏览器"
+msgstr "区块链浏览器"
 
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
@@ -163,7 +162,7 @@ msgstr "购买 NIM"
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
-msgstr "通过增加交易费用，您可以影响交易的处理速度"
+msgstr "通过增加交易费用，您可以提升交易的处理速度"
 
 #: src/components/layouts/Settings.vue:177
 msgid "Cannot import contacts, wrong file format."
@@ -177,11 +176,11 @@ msgstr "现金链接"
 
 #: src/components/modals/TransactionModal.vue:11
 msgid "Cashlink from {address}"
-msgstr "来自 {address} 的现金链接"
+msgstr "来自{address}的现金链接"
 
 #: src/components/modals/TransactionModal.vue:19
 msgid "Cashlink to {address}"
-msgstr "现金连结至 {address}"
+msgstr "发送至{address}的现金链接"
 
 #: src/components/AccountMenu.vue:50
 msgid "Change password"
@@ -193,7 +192,7 @@ msgstr "更改您的语言设置。"
 
 #: src/components/modals/SendModal.vue:40
 msgid "Choose a Recipient"
-msgstr "选择收件人"
+msgstr "选择接收者"
 
 #: src/components/modals/SendModal.vue:156
 msgid "Choose an Address"
@@ -228,11 +227,11 @@ msgid ""
 "Be independent from any middleman."
 msgstr ""
 "直接连接到Nimiq区块链，\n"
-"无须任何中间人。"
+"无需通过任何中间人。"
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
-msgstr "以连接至"
+msgstr "已连接至"
 
 #: src/components/NetworkStats.vue:46
 msgid "connecting"
@@ -253,29 +252,29 @@ msgstr "继续"
 
 #: src/components/modals/WelcomeModal.vue:101
 msgid "Continue to Login File"
-msgstr "继续登录文件"
+msgstr "前往登录文件"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
-msgstr "创建现金链接"
+msgstr "建立现金链接"
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
 msgid "Create a new account"
-msgstr "创建新账户"
+msgstr "建立新账户"
 
 #: src/components/LegacyAccountNotice.vue:6
 msgid ""
 "Create a new account and transfer your funds. New features and possibilities"
 " await."
-msgstr "创建一个新帐户并转移您的资金。新功能和可能性正在等着您。"
+msgstr "建立一个新帐户并转移您的资金。新功能和可能性正在等着您。"
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr "创建备份"
+msgstr "建立备份"
 
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
-msgstr "创建付款链接"
+msgstr "建立付款链接"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "Credit Card accepted"
@@ -308,7 +307,7 @@ msgstr "编辑联络人"
 
 #: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
-msgstr "编辑NIM值可见的小数数量。"
+msgstr "编辑NIM值可见的小数位数。"
 
 #: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
@@ -340,7 +339,7 @@ msgstr "失败"
 
 #: src/components/TestnetFaucet.vue:137
 msgid "Faucet error - please try again."
-msgstr "水龙头错误——请再试一次。"
+msgstr "水龙头错误－请重试"
 
 #: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
@@ -377,7 +376,7 @@ msgstr "文件不包含任何联系人。"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
-msgstr "给初学者"
+msgstr "初学者友好"
 
 #: src/components/modals/BetaNoticeModal.vue:22
 msgid "forum thread"
@@ -406,7 +405,7 @@ msgstr "获取 NIM 和 BTC"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
-msgstr "得到反馈了吗？发现错误了？"
+msgstr "您有反馈吗？发现错误了？"
 
 #: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/WelcomeModal.vue:97
@@ -419,7 +418,7 @@ msgstr "已取得！"
 
 #: src/components/modals/WelcomeModal.vue:11
 msgid "Great, you’re here!"
-msgstr "很高兴在这里看到您！"
+msgstr "太棒了，您在这里！"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
@@ -434,7 +433,7 @@ msgstr "历史价值"
 #: src/components/modals/BetaNoticeModal.vue:18
 msgid ""
 "If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr "如果你发现任何错误或者有反馈，请在这个{论坛帖子}中分享。"
+msgstr "如果你发现任何错误或者有反馈，请在这个{forum-thread}中分享。"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -442,7 +441,7 @@ msgstr "导入联系人"
 
 #: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
-msgstr "导入从保险柜 (Safe) 中导出的联系人。"
+msgstr "导入从保险箱中导出的联系人"
 
 #: src/components/modals/MigrationWelcomeModal.vue:55
 msgid ""
@@ -455,7 +454,7 @@ msgstr "改善的可及性"
 
 #: src/components/modals/TradeModal.vue:110
 msgid "In cooperation with"
-msgstr "与...合作"
+msgstr "合作伙伴"
 
 #: src/components/modals/SendModal.vue:130
 msgid "Insufficient balance."
@@ -471,7 +470,7 @@ msgstr "使用...邀请朋友"
 
 #: src/components/modals/WelcomeModal.vue:67
 msgid "It is fast, safe and makes you truly independent."
-msgstr "快速、安全，让你真正独立。"
+msgstr "快速、安全，让您真正独立。"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
@@ -512,7 +511,7 @@ msgstr "登出"
 
 #: src/components/NetworkStats.vue:44
 msgid "lost"
-msgstr "丢失"
+msgstr "遗失"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -552,14 +551,14 @@ msgid ""
 "hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are"
 " under active development."
 msgstr ""
-"Nimiq对任何损失概不负责：Nimiq，wallet.nimiq.com，hub.nimiq.com & "
-"keyguard.nimiq.com，以及一些正在积极开发的函式库。"
+"Nimiq对任何损失概不负责：Nimiq, wallet.nimiq.com, hub.nimiq.com "
+"&keyguard.nimiq.com，以及一些正在积极开发的函式库。"
 
 #: src/components/modals/TradeModal.vue:100
 msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
-msgstr "Nimiq绿洲 (OASIS) 使您可以直接从您的钱包实现加密货币的去中心化买卖。"
+msgstr "Nimiq OASIS 使您可以直接从您的钱包实现加密货币的去中心化买卖。"
 
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -623,8 +622,8 @@ msgid ""
 "the blockchain."
 msgstr ""
 "请注意，wallet.nimiq.com、hub.nimiq.com和keyguard.nimiq.com不是 "
-"\"托管钱包\"。您没有创建托管账户，也没有将您的资金交给Nimiq保管，您持有您设备上的帐户控制资金的钥匙。 "
-"Nimiq仅是让您通过浏览器，轻松地创建、保存和访问您的信息，并与区块链互动的桥梁。"
+"\"托管钱包\"。您并未创建托管账户或是将资金交给Nimiq保管，您持有设备上帐户控制资金的钥匙。 "
+"Nimiq仅让您能够轻松地通过浏览器创建、保存、访问您的信息，并且与区块链互动。"
 
 #: src/components/layouts/AddressOverview.vue:89
 #: src/components/MobileActionBar.vue:4
@@ -641,11 +640,11 @@ msgstr "接收NIM"
 
 #: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
-msgstr "领取一些免费的NIM来开始"
+msgstr "领取一些免费的NIM来开始吧！"
 
 #: src/components/modals/TransactionModal.vue:61
 msgid "received at {dateAndTime}"
-msgstr "在 {dateAndTime} 已收到"
+msgstr "已在{dateAndTime}收到"
 
 #: src/components/layouts/Settings.vue:105
 msgid "Reference currency"
@@ -675,7 +674,7 @@ msgstr "储存登录文件"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
-msgstr "马上储存"
+msgstr "马上储存账户"
 
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
@@ -730,15 +729,15 @@ msgstr "正在发送交易"
 
 #: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
-msgstr "发送 {nim} NIM"
+msgstr "发送{nim}NIM"
 
 #: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
-msgstr "发送 {nim} NIM 至 {name}"
+msgstr "发送{nim}NIM至{name}"
 
 #: src/components/modals/TransactionModal.vue:66
 msgid "sent at {dateAndTime}"
-msgstr "在 {dateAndTime} 发送"
+msgstr "在{dateAndTime}发送"
 
 #: src/components/modals/SendModal.vue:63
 #: src/components/modals/SendModal.vue:74
@@ -759,11 +758,11 @@ msgid ""
 "Optionally include an amount. "
 msgstr ""
 "与发送者分享链接或QR码，\n"
-"也可选择包括金额。"
+"您也可以预先输入金额。"
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
-msgstr "与发件人分享您的地址"
+msgstr "与发送者分享您的地址"
 
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your Payment Link"
@@ -811,11 +810,11 @@ msgstr "标准"
 
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
-msgstr "将从2020年 第三季度 欧盟 银行 帐户开始"
+msgstr "将从2020年第三季度开始启用欧盟银行账户"
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
-msgstr "存储、发送和接收NIM。"
+msgstr "存储、发送和接收NIM"
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -823,7 +822,7 @@ msgstr "正在同步"
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
-msgstr "在这里告诉我们"
+msgstr "请在这里告诉我们"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -845,7 +844,7 @@ msgstr "新的登录文件是个用来访问您的账户及地址简单方便的
 
 #: src/components/modals/WelcomeModal.vue:61
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
-msgstr "Nimiq钱包不仅仅是一个网络钱包，它还是一个网络节点。"
+msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点。"
 
 #: src/components/modals/BetaNoticeModal.vue:16
 msgid ""
@@ -869,7 +868,7 @@ msgstr "没有 “忘记密码” 的选项"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
-msgstr "这是一个传统账户（ Legacy Account）"
+msgstr "这是一个传统账户"
 
 #: src/components/TransactionList.vue:249
 #: src/components/TransactionList.vue:271
@@ -878,12 +877,12 @@ msgstr "本月份"
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
-msgstr "您所在的地区目前还没有提供这项服务"
+msgstr "您所在的地区目前尚未提供这项服务"
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
-msgstr ""
+msgstr "返回{exchange}"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -891,11 +890,11 @@ msgstr "总余额"
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Transaction from {address}"
-msgstr "来自 {address} 的交易"
+msgstr "来自{address}的交易"
 
 #: src/components/modals/TransactionModal.vue:35
 msgid "Transaction to {address}"
-msgstr "交易到 {address}"
+msgstr "发送到{address}的交易"
 
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
@@ -912,11 +911,11 @@ msgstr "未认领的现金链接"
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
-msgstr "使用{NIM}，性能优异且基于浏览器的支付硬币。"
+msgstr "使用性能优异且基于浏览器的支付硬币{NIM}。"
 
 #: src/components/modals/WelcomeModal.vue:84
 msgid "Use it to access your account from any device."
-msgstr "使用它您可以从任何设备访问您的帐户。"
+msgstr "使用登录文件，您可以从任何设备访问您的帐户。"
 
 #: src/components/modals/BetaNoticeModal.vue:13
 msgid ""
@@ -952,11 +951,11 @@ msgstr "您现在拥有加密货币了！"
 
 #: src/components/modals/SendModal.vue:126
 msgid "You will send {amount} NIM"
-msgstr "您将发送 {amount} NIM"
+msgstr "您将发送{amount}NIM"
 
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your account is not safe yet!"
-msgstr "您的帐户还不安全！"
+msgstr "您的帐户还不够安全！"
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
@@ -972,7 +971,7 @@ msgstr "您的浏览器"
 msgid ""
 "Your browser connects directly to a set of peers from all around the world. "
 "This makes you a first-class citizen of the blockchain."
-msgstr "您的浏览器直接连接到一组来自世界各地的端点，这将让你成为区块链的头等公民。"
+msgstr "您的浏览器直接连接到一组在世界他处的端点，这将让你成为区块链的头等公民。"
 
 #: src/components/modals/WelcomeModal.vue:19
 msgid "Your browser is a Node"
@@ -980,13 +979,13 @@ msgstr "您的浏览器是一个节点"
 
 #: src/components/modals/WelcomeModal.vue:78
 msgid "Your Login File, in combination with your password, grants access."
-msgstr "您的登录文件结合您的密码，授予访问权限。"
+msgstr "您的登录文件结合密码，将授予您访问权限。"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""
 "Your NIM are stored in a legacy account. Transfer them to a regular account "
 "to profit from new features."
-msgstr "您的 NIM 储存在传统账户中，将它们转移到普通账户，您将从新功能得到好处。"
+msgstr "您的NIM储存在传统账户中，将它们转移到普通账户，您将可体验新功能的好处。"
 
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"

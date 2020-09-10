@@ -43,6 +43,29 @@
     }
 }
 
+%custom-scrollbar-inverse {
+    @media (min-width: 426px) {
+        /* width */
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            --text-40: rgba(224, 220, 183, 0.4); // inverse of the one in themes.scss
+            --text-50: rgba(224, 220, 183, 0.5); // inverse of the one in themes.scss
+
+            background: var(--text-40);
+            border-radius: 6px;
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: var(--text-50);
+        }
+    }
+}
+
 @mixin scroll-mask($sticky: true, $top: true, $bottom: true) {
     .scroll-mask {
         @if $sticky {

@@ -1,12 +1,15 @@
 <template>
-    <div class="btc-address-input" :class="{invalid}">
-        <LabelInput v-model="address" :placeholder="placeholder" @input="checkAddress" @paste="onPaste" ref="input"/>
+    <div class="btc-address-input"
+        :class="{invalid}"
+        :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
+    >
+        <LabelInput v-model="address" :placeholder="placeholder" @input="onInput" @paste="onPaste" ref="$input"/>
         <span class="invalid-address nq-orange">{{ $t('This is not a valid address') }}</span>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { LabelInput } from '@nimiq/vue-components';
 import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
@@ -55,14 +58,14 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const $input: Ref<LabelInput | null> = ref(null);
+        const inputFontSizeScaleFactor: Ref<number> = ref(1);
         const address = ref('');
         const invalid = ref(false);
 
         let checkingAddress = false;
 
         function checkAddress() {
-            context.emit('input', address.value);
-
             // BTC addresses are between 26-35 characters long
             if (address.value.length < 26) {
                 invalid.value = false;
@@ -99,11 +102,29 @@ export default defineComponent({
             context.emit('paste', event, pastedData);
         }
 
+        async function onInput() {
+            context.emit('input', address.value);
+            checkAddress();
+
+            if (!$input.value) return;
+
+            inputFontSizeScaleFactor.value = 1;
+            await context.root.$nextTick();
+
+            const width = $input.value.$el.children[1].clientWidth;
+            const maxWidth = $input.value.$el.children[2].clientWidth;
+
+            inputFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
+        }
+
         return {
+            $input,
             address,
             invalid,
             checkAddress,
             onPaste,
+            onInput,
+            inputFontSizeScaleFactor,
         };
     },
     methods: {

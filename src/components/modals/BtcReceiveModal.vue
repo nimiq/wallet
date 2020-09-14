@@ -9,8 +9,10 @@
         </PageHeader>
         <PageBody class="flex-column">
             <Copyable class="address"
+                :style="{ fontSize: `calc(var(--body-size) * ${addressFontSizeScaleFactor})` }"
                 :text="currentlyShownAddress"
                 @click.native="copyActiveAddressCallback"
+                ref="$availableAddressCopyable"
             >
                 <transition-group name="translateY">
                     <div
@@ -19,6 +21,7 @@
                         :class="{ 'already-copied': !!recentlyCopiedAddresses[address] }"
                     >{{ address }}</div>
                 </transition-group>
+                <div class="width-finder" ref="$addressWidthFinder">{{ currentlyShownAddress }}</div>
             </Copyable>
 
             <transition name="fade">
@@ -163,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, Ref, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, Ref, onUnmounted, onMounted } from '@vue/composition-api';
 import {
     PageBody,
     PageHeader,
@@ -287,7 +290,8 @@ export default defineComponent({
         );
 
         // Currently displayed address
-        const currentlyShownAddress = ref(availableExternalAddresses.value[0]
+        const currentlyShownAddress = ref(
+            availableExternalAddresses.value[0]
             || external.find(({ used, address }: BtcAddressInfo) =>
                 !used && recentlyCopiedAddresses.value[address] && !recentlyCopiedAddresses.value[address].label,
             )?.address
@@ -374,6 +378,45 @@ export default defineComponent({
             },
         );
 
+        // Auto-adapt font-size for the address to always fit the grey box
+        const $availableAddressCopyable: Ref<Copyable | null> = ref(null);
+        const $addressWidthFinder: Ref<HTMLDivElement | null> = ref(null);
+        const addressFontSizeScaleFactor: Ref<number> = ref(1);
+        let addressPadding: number | null = null;
+
+        async function updateAddressFontSizeScaleFactor() {
+            if (!$availableAddressCopyable.value || !$addressWidthFinder.value) {
+                return null;
+            }
+            if (!addressPadding) {
+                addressPadding = parseInt(
+                    window.getComputedStyle($availableAddressCopyable.value.$el.children[1])
+                        .getPropertyValue('padding')
+                        .replace('px', ''),
+                    10,
+                );
+            }
+
+            addressFontSizeScaleFactor.value = 1;
+            await context.root.$nextTick();
+
+            const width = $addressWidthFinder.value.clientWidth;
+            const maxWidth = $availableAddressCopyable.value.$el.clientWidth - (addressPadding * 2);
+
+            addressFontSizeScaleFactor.value = maxWidth / width;
+
+            return addressFontSizeScaleFactor.value;
+        }
+
+        watch(currentlyShownAddress, updateAddressFontSizeScaleFactor);
+        onMounted(() => {
+            updateAddressFontSizeScaleFactor();
+            document.addEventListener('resize', updateAddressFontSizeScaleFactor);
+        });
+        onUnmounted(() => {
+            document.removeEventListener('resize', updateAddressFontSizeScaleFactor);
+        });
+
         return {
             origin: window.location.origin,
             addressQrCodeOverlayOpened,
@@ -389,6 +432,9 @@ export default defineComponent({
             showRenameAddressLabelInput,
             hideRenameAddressLabelInput,
             currentlyShownAddress,
+            $availableAddressCopyable,
+            $addressWidthFinder,
+            addressFontSizeScaleFactor,
         };
     },
     components: {
@@ -451,15 +497,15 @@ export default defineComponent({
     height: calc(var(--body-size) + 4px + (var(--padding) * 2));
     padding: 0;
 
-    .already-copied {
-        color: var(--text-35);
-    }
-
     transition: {
-        property: background-color, color;
+        property: background-color, color, font-size;
         duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
     };
+
+    .already-copied {
+        color: var(--text-35);
+    }
 
     &:hover,
     &:focus {
@@ -497,6 +543,15 @@ export default defineComponent({
                 transform: translateX(-50%) translateY(calc(var(--body-size) + 4px + (var(--padding) * 2)));
             }
         }
+    }
+
+    .width-finder {
+        position: absolute;
+        color: transparent;
+        pointer-events: none;
+        user-select: none;
+        font-size: var(--body-size);
+        font-weight: 500;
     }
 }
 

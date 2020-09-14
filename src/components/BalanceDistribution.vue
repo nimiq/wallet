@@ -29,7 +29,7 @@
             <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
         </div>
         <div class="exchange">
-            <button class="nq-button-s" @click="$router.push('/trade').catch(() => {})" @mousedown.prevent>
+            <button class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent>
                 <TradeIcon/>
             </button>
         </div>

@@ -35,6 +35,8 @@ const BtcReceiveModal = () =>
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
+const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/modals/SwapModal.vue');
+
 Vue.use(VueRouter);
 
 export enum Columns {
@@ -140,6 +142,14 @@ const routes: RouteConfig[] = [{
             name: 'btc-transaction',
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
+        }, {
+            path: '/swap',
+            components: {
+                modal: SwapModal,
+            },
+            name: 'swap',
+            props: { modal: true },
+            meta: { column: Columns.ACCOUNT },
         }],
     }, {
         path: '/settings',

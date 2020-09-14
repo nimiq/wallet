@@ -5,7 +5,7 @@
             <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>
             <div v-if="maxFontSize" class="full-width" :class="{'width-finder': maxWidth > 0}">Width</div>
             <span class="width-finder width-value" ref="$widthValue">{{ liveValue || '' }}</span>
-            <input type="text" inputmode="numeric" class="nq-input" :class="vanishing"
+            <input type="text" inputmode="numeric" class="nq-input" :class="{ vanishing }"
                 :placeholder="placeholder"
                 :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
                 :value="liveValue" @input="onInput"

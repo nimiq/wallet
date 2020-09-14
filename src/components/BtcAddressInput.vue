@@ -60,6 +60,8 @@ export default defineComponent({
     setup(props, context) {
         const $input: Ref<LabelInput | null> = ref(null);
         const inputFontSizeScaleFactor: Ref<number> = ref(1);
+        let inputPadding: number | null = null;
+
         const address = ref('');
         const invalid = ref(false);
 
@@ -108,11 +110,20 @@ export default defineComponent({
 
             if (!$input.value) return;
 
+            if (!inputPadding) {
+                inputPadding = parseInt(
+                    window.getComputedStyle($input.value.$el.children[2])
+                        .getPropertyValue('padding-left')
+                        .replace('px', ''),
+                    10,
+                );
+            }
+
             inputFontSizeScaleFactor.value = 1;
             await context.root.$nextTick();
 
             const width = $input.value.$el.children[1].clientWidth;
-            const maxWidth = $input.value.$el.children[2].clientWidth;
+            const maxWidth = $input.value.$el.children[2].clientWidth - (inputPadding * 2);
 
             inputFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
         }
@@ -144,9 +155,10 @@ export default defineComponent({
     }
 
     .label-input {
+        font-family: 'Fira Mono', monospace;
+
         /deep/ input {
             width: 100% !important;
-            font-family: 'Fira Mono', monospace;
             padding: 1.75rem 2rem;
             line-height: 2.5rem;
 

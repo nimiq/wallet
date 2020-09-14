@@ -391,7 +391,7 @@ export default defineComponent({
             if (!addressPadding) {
                 addressPadding = parseInt(
                     window.getComputedStyle($availableAddressCopyable.value.$el.children[1])
-                        .getPropertyValue('padding')
+                        .getPropertyValue('padding-left')
                         .replace('px', ''),
                     10,
                 );

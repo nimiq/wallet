@@ -844,6 +844,7 @@ export default defineComponent({
             width: auto;
             max-width: 100%;
             min-height: 5rem;
+            z-index: 5;
         }
 
         .amount-menu /deep/ .button {

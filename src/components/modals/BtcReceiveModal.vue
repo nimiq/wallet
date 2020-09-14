@@ -403,7 +403,7 @@ export default defineComponent({
             const width = $addressWidthFinder.value.clientWidth;
             const maxWidth = $availableAddressCopyable.value.$el.clientWidth - (addressPadding * 2);
 
-            addressFontSizeScaleFactor.value = maxWidth / width;
+            addressFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
 
             return addressFontSizeScaleFactor.value;
         }

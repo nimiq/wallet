@@ -28,6 +28,11 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
+#: src/components/modals/SwapModal.vue:100
+#: src/components/modals/SwapModal.vue:52
+msgid "{perc}% of exchange value."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:105
 #: src/components/modals/BtcTransactionModal.vue:65
 #: src/components/modals/BtcTransactionModal.vue:76
@@ -122,6 +127,11 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr ""
 
+#: src/components/modals/SwapModal.vue:41
+#: src/components/modals/SwapModal.vue:89
+msgid "Atomic swaps require two BTC transactions."
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr ""
@@ -159,6 +169,11 @@ msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Browser"
+msgstr ""
+
+#: src/components/modals/SwapModal.vue:37
+#: src/components/modals/SwapModal.vue:85
+msgid "BTC network fees"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:31
@@ -229,7 +244,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:58
+#: src/components/modals/SwapModal.vue:137
 msgid "Confirm"
 msgstr ""
 
@@ -374,6 +389,11 @@ msgstr ""
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
+msgstr ""
+
+#: src/components/modals/SwapModal.vue:48
+#: src/components/modals/SwapModal.vue:96
+msgid "Exchange fee"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:34
@@ -608,6 +628,11 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
+#: src/components/modals/SwapModal.vue:44
+#: src/components/modals/SwapModal.vue:92
+msgid "NIM network fees"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:28
 msgid ""
 "Nimiq does not store your personal data.\n"
@@ -686,7 +711,7 @@ msgstr ""
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:64
+#: src/components/modals/SwapModal.vue:143
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 
@@ -926,7 +951,7 @@ msgstr ""
 msgid "Tell us here"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:68
+#: src/components/modals/SwapModal.vue:144
 msgid "terms of service"
 msgstr ""
 
@@ -934,7 +959,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:15
+#: src/components/modals/SwapModal.vue:14
 msgid "The exchange rate might change depending on the swap volume."
 msgstr ""
 
@@ -972,6 +997,11 @@ msgstr ""
 msgid "This address has already been used"
 msgstr ""
 
+#: src/components/modals/SwapModal.vue:35
+#: src/components/modals/SwapModal.vue:83
+msgid "This amount includes:"
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr ""
@@ -991,7 +1021,7 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:13
+#: src/components/modals/SwapModal.vue:12
 msgid "This rate includes the exchange fee."
 msgstr ""
 
@@ -1006,6 +1036,11 @@ msgstr ""
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
+msgstr ""
+
+#: src/components/modals/SwapModal.vue:104
+#: src/components/modals/SwapModal.vue:56
+msgid "Total fees"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:5
@@ -1061,7 +1096,7 @@ msgstr ""
 msgid "Use labels instead of contacts to easily identify transactions in your history."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:6
+#: src/components/modals/SwapModal.vue:7
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 

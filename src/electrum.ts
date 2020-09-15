@@ -15,7 +15,7 @@ import { addBtcAddresses } from './hub'; // eslint-disable-line import/no-cycle
 let isLaunched = false;
 let clientPromise: Promise<ElectrumClient>;
 
-export async function getElectrumClient() {
+export async function getElectrumClient(): Promise<ElectrumClient> {
     if (clientPromise) return clientPromise;
 
     let resolver: (client: ElectrumClient) => void;

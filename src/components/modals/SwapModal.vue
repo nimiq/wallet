@@ -141,9 +141,9 @@
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
-                <div v-if="estimateError" class="footer-notice nq-orange flex-row">
+                <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
                     <AlertTriangleIcon/>
-                    {{ estimateError }}
+                    {{ estimateError || swapError }}
                 </div>
                 <div v-else class="footer-notice nq-gray flex-row">
                     <i18n path="Powered by Fastspot. Proceed to agree with its {ToS-link}." tag="span">
@@ -179,6 +179,8 @@ import {
     InfoCircleSmallIcon,
     AlertTriangleIcon,
 } from '@nimiq/vue-components';
+import { ElectrumClient, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
+import { SetupSwapRequest } from '@nimiq/hub-api';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -194,13 +196,13 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
-import { sendBtcTransaction } from '../../hub';
+import { setupSwap } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
-import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { Transaction as BtcTransaction, useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { getElectrumClient } from '../../electrum';
 import { useAddressStore } from '../../stores/Address';
-import { Estimate, getEstimate } from '../../lib/FastSpotApi';
+import { BtcHtlcDetails, cancelSwap, confirmSwap, createSwap, Currencies, Estimate, getEstimate, NimHtlcDetails, Swap } from '../../lib/FastSpotApi';
 
 enum SwapDirection {
     NIM_TO_BTC,
@@ -217,6 +219,8 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
         const direction = ref<SwapDirection>(SwapDirection.BTC_TO_NIM);
+        const swap = ref<Swap>(null);
+        const swapError = ref<string>(null);
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
@@ -305,6 +309,10 @@ export default defineComponent({
             if (debounce) {
                 clearTimeout(debounce);
             }
+
+            if (swap.value) cancelSwap(swap.value.id);
+            swap.value = null;
+            swapError.value = null;
 
             if (amount !== 0) {
                 debounce = window.setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
@@ -395,14 +403,242 @@ export default defineComponent({
         });
 
         const canSign = computed(() =>
-            !estimateError.value
+            !estimateError.value && !swapError.value
             && estimate.value
             && !fetchingEstimate.value
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );
 
-        function sign() {
-            alert('Not implemented');
+        async function sign() {
+            const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
+                try {
+                    const to = direction.value === SwapDirection.NIM_TO_BTC
+                        ? { BTC: wantBtc.value / 1e8 }
+                        : { NIM: wantNim.value / 1e5 };
+
+                    if (swap.value) cancelSwap(swap.value.id);
+                    swap.value = await createSwap(
+                        direction.value === SwapDirection.NIM_TO_BTC ? 'NIM' : 'BTC',
+                        to,
+                    );
+                    console.log(swap.value);
+                    swapError.value = null;
+                } catch (err) {
+                    console.error(err); // eslint-disable-line no-console
+                    swapError.value = err.message;
+                }
+
+                // TODO: Validate swap data against estimate
+
+                const { addressSet } = useBtcAddressStore();
+                const nimAddress = activeAddressInfo.value!.address;
+                const btcAddress = addressSet.value.external.find((info) => !info.used)!.address;
+
+                try {
+
+                    swap.value = await confirmSwap(swap.value!.id, {
+                        // Redeem
+                        asset: direction.value === SwapDirection.NIM_TO_BTC ? Currencies.BTC : Currencies.NIM,
+                        address: direction.value === SwapDirection.NIM_TO_BTC
+                            ? btcAddress
+                            : nimAddress,
+                    }, {
+                        // Refund
+                        asset: direction.value === SwapDirection.BTC_TO_NIM ? Currencies.BTC : Currencies.NIM,
+                        address: direction.value === SwapDirection.BTC_TO_NIM
+                            ? btcAddress
+                            : nimAddress,
+                    });
+                    console.log(swap.value);
+                    swapError.value = null;
+                } catch (err) {
+                    console.error(err); // eslint-disable-line no-console
+                    swapError.value = err.message;
+                    if (swap.value) cancelSwap(swap.value.id);
+                    swap.value = null;
+                }
+
+                let fund: {
+                    type: "NIM";
+                    sender: string;
+                    value: number;
+                    fee: number;
+                    extraData: string | Uint8Array;
+                    validityStartHeight: number;
+                } | {
+                    type: "BTC";
+                    inputs: {
+                        address: string;
+                        transactionHash: string;
+                        outputIndex: number;
+                        outputScript: string;
+                        value: number;
+                    }[];
+                    output: {
+                        address: string,
+                        value: number,
+                    };
+                    changeOutput?: {
+                        address: string,
+                        value: number,
+                    };
+                    htlcScript: string | Uint8Array;
+                    refundAddress: string;
+                } | null = null;
+                let redeem: {
+                    type: 'NIM',
+                    sender: string, // HTLC address
+                    recipient: string, // My address, must be redeem address of HTLC
+                    value: number, // Luna
+                    fee: number, // Luna
+                    extraData?: Uint8Array | string,
+                    validityStartHeight: number,
+                    htlcData: Uint8Array | string,
+                } | {
+                    type: 'BTC',
+                    input: {
+                        transactionHash: string,
+                        outputIndex: number,
+                        outputScript: string,
+                        value: number, // Sats
+                        witnessScript: string,
+                    };
+                    output: {
+                        address: string, // My address, must be redeem address of HTLC
+                        value: number, // Sats
+                    };
+                } | null = null;
+
+                if (direction.value === SwapDirection.NIM_TO_BTC) {
+                    // Fetch missing info from the blockchain
+                    // BTC tx hash and output data
+
+                    const htlcAddress = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!
+                        .htlc.address!;
+
+                    const { transactionHash, output } = await new Promise(async (resolve, reject) => {
+                        function listener(tx: TransactionDetails) {
+                            const htlcOutput = tx.outputs.find((output: PlainOutput) => output.address === htlcAddress);
+                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
+                                resolve({
+                                    transactionHash: tx.transactionHash,
+                                    output: htlcOutput,
+                                });
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        const client: ElectrumClient = await getElectrumClient();
+                        // First subscribe to new transactions
+                        client.addTransactionListener(listener, [htlcAddress]);
+
+                        // Then check history
+                        const history = await client.getTransactionsByAddress(htlcAddress);
+                        for (const tx of history) {
+                            if (listener(tx)) break;
+                        }
+                    });
+
+                    const nimHtlcData = swap.value!.contracts!.find((contract) => contract.asset === Currencies.NIM)!.htlc as NimHtlcDetails;
+                    fund = {
+                        type: 'NIM',
+                        sender: nimAddress,
+                        value: swap.value!.from.amount,
+                        fee: swap.value!.from.fee,
+                        extraData: nimHtlcData.data,
+                        validityStartHeight: nimHtlcData.timeoutBlock - 120,
+                    };
+
+                    const btcHtlcData = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
+                    redeem = {
+                        type: 'BTC',
+                        input: {
+                            transactionHash,
+                            outputIndex: output.index,
+                            outputScript: output.script,
+                            value: swap.value!.to.amount, // Sats
+                            witnessScript: btcHtlcData.script,
+                        },
+                        output: {
+                            address: btcAddress, // My address, must be redeem address of HTLC
+                            value: swap.value!.to.amount - swap.value!.to.finalFee, // Sats
+                        },
+                    };
+                }
+
+                if (direction.value === SwapDirection.BTC_TO_NIM) {
+                    // Assemble BTC inputs
+
+                    // let changeAddress: string;
+                    // if (requiredInputs.value.changeAmount > 0) {
+                    //     const nextUnusedChangeAddress = addressSet.value.internal
+                    //         .find((addressInfo) => !addressInfo.used)?.address;
+                    //     if (!nextUnusedChangeAddress) {
+                    //         // FIXME: If no unused change address is found, need to request new ones from Hub!
+                    //         throw new Error('No more unused change addresses (not yet implemented)');
+                    //     }
+                    //     changeAddress = nextUnusedChangeAddress;
+                    // }
+
+                    // fund = {
+                    //     type: 'BTC',
+                    //     inputs: requiredInputs.value.utxos.map((utxo) => ({
+                    //         address: utxo.address,
+                    //         transactionHash: utxo.transactionHash,
+                    //         outputIndex: utxo.index,
+                    //         outputScript: utxo.witness.script,
+                    //         value: utxo.witness.value,
+                    //     })),
+                    //     output: {
+                    //         address: recipientWithLabel.value!.address,
+                    //         label: recipientWithLabel.value!.label,
+                    //         value: amount.value,
+                    //     },
+                    //     ...(requiredInputs.value.changeAmount > 0 ? {
+                    //         changeOutput: {
+                    //             address: changeAddress!,
+                    //             value: requiredInputs.value.changeAmount,
+                    //         },
+                    //     } : {})
+                    //     htlcScript: swap.value.contracts,
+                    // };
+
+                    // Fetch missing info from the blockchain
+                    // NIM HTLC address
+                }
+
+                if (!fund || !redeem) {
+                    reject(new Error('UNEXPECTED: No funding or redeeming data objects'));
+                    return;
+                }
+
+                if (!swap.value) {
+                    reject(new Error('No swap data'));
+                    return;
+                }
+
+                const { addressInfos } = useAddressStore();
+
+                resolve({
+                    fund,
+                    redeem,
+                    fiatCurrency: currency.value,
+                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
+                    btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
+                    serviceNetworkFee: swap.value.from.networkFee,
+                    serviceExchangeFee: swap.value.from.serviceFee,
+                    nimiqAddresses: addressInfos.value.map((addressInfo) => ({
+                        address: addressInfo.address,
+                        balance: addressInfo.balance || 0,
+                    })),
+                    bitcoinAccount: {
+                        balance: accountBtcBalance.value,
+                    },
+                } as Omit<SetupSwapRequest, 'appName'>);
+            });
+
+            const transactions = setupSwap(hubRequest);
         }
 
         const statusScreenOpened = ref(false);
@@ -427,6 +663,7 @@ export default defineComponent({
             newNimBalance,
             newBtcBalance,
             estimateError,
+            swapError,
             canSign,
             sign,
             statusScreenOpened,

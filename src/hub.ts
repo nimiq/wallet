@@ -1,4 +1,10 @@
-import HubApi, { Account, SignTransactionRequest, SignBtcTransactionRequest } from '@nimiq/hub-api';
+import HubApi, {
+    Account,
+    SignTransactionRequest,
+    SignBtcTransactionRequest,
+    SetupSwapRequest,
+    SetupSwapResult,
+} from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
@@ -449,4 +455,13 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
     });
 
     return btcAddressInfos;
+}
+
+export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>): Promise<SetupSwapResult | null> {
+    return hubApi.setupSwap(new Promise((resolve, reject) => {
+        requestPromise.then((request) => resolve({
+            ...request,
+            appName: APP_NAME,
+        })).catch(reject);
+    })).catch(onError);
 }

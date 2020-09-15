@@ -350,48 +350,48 @@ export default defineComponent({
             if (!estimate.value) return 0;
 
             const fee = estimate.value.from.symbol === 'NIM' ? estimate.value.from.fee : estimate.value.to.finalFee;
-            return fee / 1e5 * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
+            return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const myBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
             const fee = estimate.value.from.symbol === 'BTC' ? estimate.value.from.fee : estimate.value.to.finalFee;
-            return fee / 1e8 * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+            return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNetworkFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const from = estimate.value.from;
+            const { from } = estimate.value;
             return from.symbol === 'NIM'
-                ? from.networkFee / 1e5 * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : from.networkFee / 1e8 * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+                ? (from.networkFee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
+                : (from.networkFee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
-            return myNimFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value) * serviceNetworkFeeFiat.value
+            return (myNimFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value)) * serviceNetworkFeeFiat.value;
         });
         const serviceBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
-            return myBtcFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value) * serviceNetworkFeeFiat.value
+            return (myBtcFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value)) * serviceNetworkFeeFiat.value;
         });
 
         const serviceExchangeFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const from = estimate.value.from;
+            const { from } = estimate.value;
             return from.symbol === 'NIM'
-                ? from.serviceFee / 1e5 * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : from.serviceFee / 1e8 * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+                ? (from.serviceFee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
+                : (from.serviceFee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceExchangeFeePercentage = computed(() => {
             if (!estimate.value) return 0;
 
-            const from = estimate.value.from;
-            return Math.round(from.serviceFee / (from.amount - from.networkFee - from.serviceFee) * 1000) / 10;
+            const { from } = estimate.value;
+            return Math.round((from.serviceFee / (from.amount - from.networkFee - from.serviceFee)) * 1000) / 10;
         });
 
         const canSign = computed(() =>
@@ -578,8 +578,9 @@ export default defineComponent({
     text-align: left;
 
     /deep/ .trigger {
+        display: block;
         font-size: 1.75rem;
-        margin-bottom: 0.125rem;
+        margin-top: 0.125rem;
     }
 
     .price-breakdown {

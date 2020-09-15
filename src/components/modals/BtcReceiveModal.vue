@@ -198,7 +198,10 @@ interface BtcCopiedAddressInfo {
 
 export default defineComponent({
     setup(props, context) {
-        const { addressSet: { value: { external } } } = useBtcAddressStore();
+        const {
+            addressSet: { value: { external } },
+            activeExternalAddresses,
+        } = useBtcAddressStore();
 
         const {
             senderLabels,
@@ -206,8 +209,6 @@ export default defineComponent({
             copiedAddresses,
             setCopiedAddress,
         } = useBtcLabelsStore();
-
-        const { activeAccountInfo } = useAccountStore();
 
         const second = 1000;
         const minute = 60 * second;
@@ -263,7 +264,7 @@ export default defineComponent({
         const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
         const recentlyCopiedAddresses = computed(() =>
             (Object.keys(copiedAddresses.value) || [])
-                .filter((address) => activeAccountInfo.value!.btcAddresses.external.includes(address))
+                .filter((address) => activeExternalAddresses.value.includes(address))
                 .map((address) => ({
                     get label() { return senderLabels.value[this.address] || ''; },
                     set label(value) { setSenderLabel(this.address, value); },

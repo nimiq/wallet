@@ -182,7 +182,6 @@ import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Cur
 import Modal from './Modal.vue';
 import { useBtcAddressStore, BtcAddressInfo } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useAccountStore } from '../../stores/Account';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
@@ -201,13 +200,13 @@ export default defineComponent({
         const {
             addressSet: { value: { external } },
             activeExternalAddresses,
+            copiedAddresses,
+            setCopiedAddress,
         } = useBtcAddressStore();
 
         const {
             senderLabels,
             setSenderLabel,
-            copiedAddresses,
-            setCopiedAddress,
         } = useBtcLabelsStore();
 
         const second = 1000;

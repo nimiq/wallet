@@ -2,7 +2,8 @@ import { createStore } from 'pinia';
 import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
 
 export type BtcAddressState = {
-    addressInfos: {[id: string]: BtcAddressInfo},
+    addressInfos: {[address: string]: BtcAddressInfo},
+    copiedAddresses: {[address: string]: number}, // { address: timestamp }
 }
 
 export type BtcAddressSet = {
@@ -29,6 +30,7 @@ export const useBtcAddressStore = createStore({
     id: 'btcAddresses',
     state: () => ({
         addressInfos: {},
+        copiedAddresses: {},
     } as BtcAddressState),
     getters: {
         addressSet: (state): BtcAddressSet => {
@@ -60,6 +62,7 @@ export const useBtcAddressStore = createStore({
 
             return internalBalance + externalBalance;
         },
+        copiedAddresses: (state): Readonly<{ [address: string]: number }> => state.copiedAddresses,
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {
@@ -89,6 +92,21 @@ export const useBtcAddressStore = createStore({
                 delete addressInfos[address];
             }
             this.state.addressInfos = addressInfos;
+        },
+        setCopiedAddress(address: string, timestamp: number) {
+            if (!this.state.copiedAddresses[address] && timestamp <= Date.now()) {
+                this.state.copiedAddresses = {
+                    ...this.state.copiedAddresses,
+                    [address]: timestamp,
+                };
+            }
+        },
+        removeCopiedAddresses(addresses: string[]) {
+            const copiedAddresses = { ...this.state.copiedAddresses };
+            for (const address of addresses) {
+                delete copiedAddresses[address];
+            }
+            this.state.copiedAddresses = copiedAddresses;
         },
     },
 });

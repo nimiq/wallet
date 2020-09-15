@@ -3,7 +3,6 @@ import { createStore } from 'pinia';
 export type BtcLabelsState = {
     recipientLabels: {[address: string]: string},
     senderLabels: {[address: string]: string},
-    copiedAddresses: {[address: string]: number}, // { address: timestamp }
 };
 
 export const useBtcLabelsStore = createStore({
@@ -11,7 +10,6 @@ export const useBtcLabelsStore = createStore({
     state: () => ({
         recipientLabels: {},
         senderLabels: {},
-        copiedAddresses: {},
     } as BtcLabelsState),
     getters: {
         recipientLabels: (state): Readonly<{ [address: string]: string }> => state.recipientLabels,
@@ -20,7 +18,6 @@ export const useBtcLabelsStore = createStore({
         senderLabels: (state): Readonly<{ [address: string]: string }> => state.senderLabels,
         getSenderLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
             state.senderLabels[address],
-        copiedAddresses: (state): Readonly<{ [address: string]: number }> => state.copiedAddresses,
     },
     actions: {
         setRecipientLabel(address: string, label: string) {
@@ -56,21 +53,6 @@ export const useBtcLabelsStore = createStore({
                 ...this.state.senderLabels,
                 [address.trim()]: label.trim(),
             };
-        },
-        setCopiedAddress(address: string, timestamp: number) {
-            if (!this.state.copiedAddresses[address] && timestamp <= Date.now()) {
-                this.state.copiedAddresses = {
-                    ...this.state.copiedAddresses,
-                    [address]: timestamp,
-                };
-            }
-        },
-        removeCopiedAddresses(addresses: string[]) {
-            const copiedAddresses = { ...this.state.copiedAddresses };
-            for (const address of addresses) {
-                delete copiedAddresses[address];
-            }
-            this.state.copiedAddresses = copiedAddresses;
         },
     },
 });

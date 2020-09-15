@@ -7,7 +7,6 @@ import { TransactionDetails, PlainOutput, PlainInput } from '@nimiq/electrum-cli
 import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore, UTXO } from './BtcAddress';
-import { useBtcLabelsStore } from './BtcLabels';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
@@ -66,8 +65,7 @@ export const useBtcTransactionsStore = createStore({
             this.calculateFiatAmounts();
 
             // Update UTXOs and `used` status on affected addresses
-            const { state: btcAddresses$, patchAddress } = useBtcAddressStore();
-            const { removeCopiedAddresses } = useBtcLabelsStore();
+            const { state: btcAddresses$, patchAddress, removeCopiedAddresses } = useBtcAddressStore();
 
             // Remove UTXOs in inputs from addresses
             const inputsByAddress = new Map<string, PlainInput[]>();

@@ -48,7 +48,9 @@
                     </Tooltip>
                 </div>
             </div>
-            <Amount :decimals="0" :amount="btcAccountBalance" :currency="'btc'" :currencyDecimals="8" value-mask/>
+            <Amount
+                :decimals="Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / 1e8))))"
+                :amount="btcAccountBalance" :currency="'btc'" :currencyDecimals="8" value-mask/>
         </div>
     </div>
 </template>

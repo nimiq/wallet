@@ -112,6 +112,16 @@ export default defineComponent({
                 const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
                 return hubCashlink ? hubCashlink.message : '';
             }
+
+            // HTLC creation
+            if ('hashRoot' in props.transaction.data) {
+                return context.root.$t('HTLC Creation');
+            }
+
+            if ('hashRoot' in props.transaction.proof) {
+                return context.root.$t('HTLC Settlement');
+            }
+
             return parseData(props.transaction.data.raw);
         });
 

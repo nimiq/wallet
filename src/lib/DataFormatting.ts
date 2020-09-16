@@ -14,7 +14,6 @@ export function parseData(data: string | Readonly<string>): string {
     if (isClaimingCashlink(data)) return 'Claiming Cashlink';
 
     const dataBytes = hex2Bytes(data);
-    // @ts-ignore Readonly<Uint8Array> is not assignable to Utf8Tools functions
     if (Utf8Tools.isValidUtf8(dataBytes, true)) return Utf8Tools.utf8ByteArrayToString(dataBytes);
 
     return '<DATA>';

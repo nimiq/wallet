@@ -300,6 +300,16 @@ export default defineComponent({
         });
         const data = computed(() => {
             if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
+
+            // HTLC creation
+            if ('hashRoot' in transaction.value.data) {
+                return context.root.$t('HTLC Creation');
+            }
+
+            if ('hashRoot' in transaction.value.proof) {
+                return context.root.$t('HTLC Settlement');
+            }
+
             return parseData(transaction.value.data.raw);
         });
 

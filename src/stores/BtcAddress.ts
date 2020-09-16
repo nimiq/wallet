@@ -1,3 +1,4 @@
+import { Ref } from '@vue/composition-api';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
 
@@ -50,16 +51,25 @@ export const useBtcAddressStore = createStore({
             (addressSet.value as BtcAddressSet).external.map((btcAddressInfo) => btcAddressInfo.address),
         activeAddresses: (state, { activeInternalAddresses, activeExternalAddresses }): string[] =>
             (activeInternalAddresses.value as string[]).concat((activeExternalAddresses.value as string[])),
-        accountBalance: (state, { addressSet }) => {
-            const internalBalance = (addressSet.value as BtcAddressSet).internal
-                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
-                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
-            const externalBalance = (addressSet.value as BtcAddressSet).external
-                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
-                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
+        accountUtxos: (state, { addressSet }) => {
+            const utxos = [] as Array<UTXO & { address: string }>;
 
-            return internalBalance + externalBalance;
+            // Note: Using concat() as it is optimized for arrays and faster than array spread
+            const addressInfos = (addressSet as Ref<BtcAddressSet>).value.internal
+                .concat((addressSet as Ref<BtcAddressSet>).value.external);
+
+            for (const addressInfo of addressInfos) {
+                if (!addressInfo.utxos.length) continue;
+
+                utxos.push(...addressInfo.utxos.map((utxo) => ({
+                    ...utxo,
+                    address: addressInfo.address,
+                })));
+            }
+            return utxos;
         },
+        accountBalance: (state, { accountUtxos }) => (accountUtxos as Ref<UTXO[]>).value
+            .reduce((sum, utxo) => sum + utxo.witness.value, 0),
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {

@@ -171,7 +171,7 @@ import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
-import { useBtcAddressStore, UTXO } from '../../stores/BtcAddress';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
@@ -201,6 +201,7 @@ export default defineComponent({
         const {
             state: addresses$,
             addressSet,
+            accountUtxos,
             accountBalance,
         } = useBtcAddressStore();
         const {
@@ -254,24 +255,7 @@ export default defineComponent({
         const amount = ref(0);
         const feePerByte = ref(1);
 
-        const availableUtxos = computed(() => {
-            const utxos = [] as Array<UTXO & { address: string }>;
-            for (const addressInfo of addressSet.value.internal) {
-                utxos.push(...addressInfo.utxos.map((utxo) => ({
-                    ...utxo,
-                    address: addressInfo.address,
-                })));
-            }
-            for (const addressInfo of addressSet.value.external) {
-                utxos.push(...addressInfo.utxos.map((utxo) => ({
-                    ...utxo,
-                    address: addressInfo.address,
-                })));
-            }
-            return utxos;
-        });
-
-        const requiredInputs = computed(() => selectOutputs(availableUtxos.value, amount.value, feePerByte.value));
+        const requiredInputs = computed(() => selectOutputs(accountUtxos.value, amount.value, feePerByte.value));
 
         const fee = computed(() => estimateFees(
             requiredInputs.value.utxos.length || 1,

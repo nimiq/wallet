@@ -1,5 +1,8 @@
 <template>
-    <div class="btc-label-input" :class="{ disabled, autocomplete: matchingLabels }" @keydown="onKeyDown">
+    <div class="btc-label-input"
+        :class="{ disabled, autocomplete: matchingLabels && matchingLabels.length > 0 }"
+        @keydown="onKeyDown"
+    >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled"/>
         <Avatar :label="localValue"/>
         <ul class="label-autocomplete" v-if="matchingLabels && matchingLabels.length > 0" ref="btcLabelAutocomplete">

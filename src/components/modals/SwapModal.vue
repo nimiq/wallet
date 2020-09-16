@@ -179,8 +179,9 @@ import {
     InfoCircleSmallIcon,
     AlertTriangleIcon,
 } from '@nimiq/vue-components';
-import { ElectrumClient, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
+import { bytesToHex, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest } from '@nimiq/hub-api';
+import { NetworkClient } from '@nimiq/network-client';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -203,6 +204,8 @@ import { Transaction as BtcTransaction, useBtcTransactionsStore } from '../../st
 import { getElectrumClient } from '../../electrum';
 import { useAddressStore } from '../../stores/Address';
 import { BtcHtlcDetails, cancelSwap, confirmSwap, createSwap, Currencies, Estimate, getEstimate, NimHtlcDetails, Swap } from '../../lib/FastSpotApi';
+import { getNetworkClient } from '../../network';
+import { useNetworkStore } from '../../stores/Network';
 
 enum SwapDirection {
     NIM_TO_BTC,
@@ -435,7 +438,6 @@ export default defineComponent({
                 const btcAddress = addressSet.value.external.find((info) => !info.used)!.address;
 
                 try {
-
                     swap.value = await confirmSwap(swap.value!.id, {
                         // Redeem
                         asset: direction.value === SwapDirection.NIM_TO_BTC ? Currencies.BTC : Currencies.NIM,
@@ -459,31 +461,31 @@ export default defineComponent({
                 }
 
                 let fund: {
-                    type: "NIM";
-                    sender: string;
-                    value: number;
-                    fee: number;
-                    extraData: string | Uint8Array;
-                    validityStartHeight: number;
+                    type: 'NIM',
+                    sender: string,
+                    value: number,
+                    fee: number,
+                    extraData: string | Uint8Array,
+                    validityStartHeight: number,
                 } | {
-                    type: "BTC";
+                    type: 'BTC',
                     inputs: {
-                        address: string;
-                        transactionHash: string;
-                        outputIndex: number;
-                        outputScript: string;
-                        value: number;
-                    }[];
+                        address: string,
+                        transactionHash: string,
+                        outputIndex: number,
+                        outputScript: string,
+                        value: number,
+                    }[],
                     output: {
                         address: string,
                         value: number,
-                    };
+                    },
                     changeOutput?: {
                         address: string,
                         value: number,
-                    };
-                    htlcScript: string | Uint8Array;
-                    refundAddress: string;
+                    },
+                    htlcScript: string | Uint8Array,
+                    refundAddress: string,
                 } | null = null;
                 let redeem: {
                     type: 'NIM',
@@ -502,12 +504,26 @@ export default defineComponent({
                         outputScript: string,
                         value: number, // Sats
                         witnessScript: string,
-                    };
+                    },
                     output: {
                         address: string, // My address, must be redeem address of HTLC
                         value: number, // Sats
-                    };
+                    },
                 } | null = null;
+
+                // Await Nimiq and Bitcoin consensus
+                const nimiqClient = await getNetworkClient();
+                if (useNetworkStore().state.consensus !== 'established') {
+                    await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                        if (state === 'established') res();
+                    }));
+                }
+                const electrumClient = await getElectrumClient();
+                if (useBtcNetworkStore().state.consensus !== 'established') {
+                    await new Promise((res) => electrumClient.on(NetworkClient.Events.CONSENSUS, (state: string) => {
+                        if (state === 'established') res();
+                    }));
+                }
 
                 if (direction.value === SwapDirection.NIM_TO_BTC) {
                     // Fetch missing info from the blockchain
@@ -529,7 +545,7 @@ export default defineComponent({
                             return false;
                         }
 
-                        const client: ElectrumClient = await getElectrumClient();
+                        const client = await getElectrumClient();
                         // First subscribe to new transactions
                         client.addTransactionListener(listener, [htlcAddress]);
 
@@ -547,7 +563,7 @@ export default defineComponent({
                         value: swap.value!.from.amount,
                         fee: swap.value!.from.fee,
                         extraData: nimHtlcData.data,
-                        validityStartHeight: nimHtlcData.timeoutBlock - 120,
+                        validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, useNetworkStore().state.height),
                     };
 
                     const btcHtlcData = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
@@ -570,42 +586,97 @@ export default defineComponent({
                 if (direction.value === SwapDirection.BTC_TO_NIM) {
                     // Assemble BTC inputs
 
-                    // let changeAddress: string;
-                    // if (requiredInputs.value.changeAmount > 0) {
-                    //     const nextUnusedChangeAddress = addressSet.value.internal
-                    //         .find((addressInfo) => !addressInfo.used)?.address;
-                    //     if (!nextUnusedChangeAddress) {
-                    //         // FIXME: If no unused change address is found, need to request new ones from Hub!
-                    //         throw new Error('No more unused change addresses (not yet implemented)');
-                    //     }
-                    //     changeAddress = nextUnusedChangeAddress;
-                    // }
-
-                    // fund = {
-                    //     type: 'BTC',
-                    //     inputs: requiredInputs.value.utxos.map((utxo) => ({
-                    //         address: utxo.address,
-                    //         transactionHash: utxo.transactionHash,
-                    //         outputIndex: utxo.index,
-                    //         outputScript: utxo.witness.script,
-                    //         value: utxo.witness.value,
-                    //     })),
-                    //     output: {
-                    //         address: recipientWithLabel.value!.address,
-                    //         label: recipientWithLabel.value!.label,
-                    //         value: amount.value,
-                    //     },
-                    //     ...(requiredInputs.value.changeAmount > 0 ? {
-                    //         changeOutput: {
-                    //             address: changeAddress!,
-                    //             value: requiredInputs.value.changeAmount,
-                    //         },
-                    //     } : {})
-                    //     htlcScript: swap.value.contracts,
-                    // };
+                    const { accountUtxos } = useBtcAddressStore();
+                    const requiredInputs = selectOutputs(
+                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit);
+                    let changeAddress: string;
+                    if (requiredInputs.changeAmount > 0) {
+                        const nextUnusedChangeAddress = addressSet.value.internal
+                            .find((addressInfo) => !addressInfo.used)?.address;
+                        if (!nextUnusedChangeAddress) {
+                            // FIXME: If no unused change address is found, need to request new ones from Hub!
+                            throw new Error('No more unused change addresses (not yet implemented)');
+                        }
+                        changeAddress = nextUnusedChangeAddress;
+                    }
 
                     // Fetch missing info from the blockchain
                     // NIM HTLC address
+                    const nimContract = swap.value!.contracts!.find((contract) => contract.asset === Currencies.NIM)!;
+
+                    const currentBlockHeight = useNetworkStore().state.height;
+
+                    const htlcAddress = await new Promise<string>(async (resolve) => {
+                        function listener(tx: ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>) {
+                            const hexData = bytesToHex(new Uint8Array(
+                                atob((nimContract.htlc as NimHtlcDetails).data).split('').map((c) => c.charCodeAt(0))));
+
+                            console.debug('Looking for data:', hexData, ', found:', tx.data.raw);
+                            if (tx.data.raw === hexData) {
+                                resolve(tx.recipient);
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        const serviceAddress = nimContract.refundAddress;
+
+                        const client = await getNetworkClient();
+                        // First subscribe to new transactions
+                        // client.addTransactionListener(listener, [serviceAddress]);
+
+                        // Then check history
+                        let history: ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>[] = [];
+
+                        let checkInterval = 1000;
+                        loop: while (true) {
+                            try {
+                                history = await client.getTransactionsByAddress(serviceAddress, currentBlockHeight - 2, history);
+                                for (const tx of history) {
+                                    if (listener(tx)) break loop;
+                                }
+                            } catch (error) {
+                                console.error(error);
+                            }
+                            await new Promise((res) => setTimeout(res, checkInterval));
+                            if (checkInterval < 5000) checkInterval += 500;
+                        }
+                    });
+
+                    const btcHtlcData = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
+                    fund = {
+                        type: 'BTC',
+                        inputs: requiredInputs.utxos.map((utxo) => ({
+                            address: utxo.address,
+                            transactionHash: utxo.transactionHash,
+                            outputIndex: utxo.index,
+                            outputScript: utxo.witness.script,
+                            value: utxo.witness.value,
+                        })),
+                        output: {
+                            address: btcHtlcData.address,
+                            value: swap.value!.from.amount,
+                        },
+                        ...(requiredInputs.changeAmount > 0 ? {
+                            changeOutput: {
+                                address: changeAddress!,
+                                value: requiredInputs.changeAmount,
+                            },
+                        } : {}),
+                        htlcScript: btcHtlcData.script,
+                        refundAddress: btcAddress,
+                    };
+
+                    const nimHtlcData = nimContract.htlc as NimHtlcDetails;
+                    redeem = {
+                        type: 'NIM',
+                        sender: htlcAddress, // HTLC address
+                        recipient: nimAddress, // My address, must be redeem address of HTLC
+                        value: swap.value!.to.amount - swap.value!.to.finalFee, // Luna
+                        fee: swap.value!.to.finalFee, // Luna
+                        validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, currentBlockHeight),
+                        htlcData: nimHtlcData.data,
+                    };
                 }
 
                 if (!fund || !redeem) {
@@ -638,7 +709,14 @@ export default defineComponent({
                 } as Omit<SetupSwapRequest, 'appName'>);
             });
 
-            const transactions = setupSwap(hubRequest);
+            const transactions = await setupSwap(hubRequest);
+            if (!transactions) {
+                // Hub popup cancelled
+                return;
+            }
+
+            console.log('YEAHHH!');
+            console.log(transactions);
         }
 
         const statusScreenOpened = ref(false);

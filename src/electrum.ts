@@ -235,7 +235,7 @@ export async function launchElectrum() {
 
         return addresses;
     });
-    watch([unusedExternalAddresses, isFetchingTxHistory], async ([addresses, isFetching]) => {
+    watch([unusedExternalAddresses, isFetchingTxHistory], ([addresses, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!addresses) return;
         subscribeToAddresses(addresses);
@@ -256,7 +256,7 @@ export async function launchElectrum() {
 
         return address;
     });
-    watch([nextUnusedChangeAddress, isFetchingTxHistory], async ([address, isFetching]) => {
+    watch([nextUnusedChangeAddress, isFetchingTxHistory], ([address, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!address) return;
         subscribeToAddresses([address]);

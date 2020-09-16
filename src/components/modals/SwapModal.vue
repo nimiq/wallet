@@ -180,7 +180,7 @@ import {
     AlertTriangleIcon,
 } from '@nimiq/vue-components';
 import { bytesToHex, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
-import { SetupSwapRequest } from '@nimiq/hub-api';
+import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
@@ -460,56 +460,8 @@ export default defineComponent({
                     swap.value = null;
                 }
 
-                let fund: {
-                    type: 'NIM',
-                    sender: string,
-                    value: number,
-                    fee: number,
-                    extraData: string | Uint8Array,
-                    validityStartHeight: number,
-                } | {
-                    type: 'BTC',
-                    inputs: {
-                        address: string,
-                        transactionHash: string,
-                        outputIndex: number,
-                        outputScript: string,
-                        value: number,
-                    }[],
-                    output: {
-                        address: string,
-                        value: number,
-                    },
-                    changeOutput?: {
-                        address: string,
-                        value: number,
-                    },
-                    htlcScript: string | Uint8Array,
-                    refundAddress: string,
-                } | null = null;
-                let redeem: {
-                    type: 'NIM',
-                    sender: string, // HTLC address
-                    recipient: string, // My address, must be redeem address of HTLC
-                    value: number, // Luna
-                    fee: number, // Luna
-                    extraData?: Uint8Array | string,
-                    validityStartHeight: number,
-                    htlcData: Uint8Array | string,
-                } | {
-                    type: 'BTC',
-                    input: {
-                        transactionHash: string,
-                        outputIndex: number,
-                        outputScript: string,
-                        value: number, // Sats
-                        witnessScript: string,
-                    },
-                    output: {
-                        address: string, // My address, must be redeem address of HTLC
-                        value: number, // Sats
-                    },
-                } | null = null;
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: HtlcSettlementInstructions | null = null;
 
                 // Await Nimiq and Bitcoin consensus
                 const nimiqClient = await getNetworkClient();

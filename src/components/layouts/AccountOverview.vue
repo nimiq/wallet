@@ -147,7 +147,6 @@ export default defineComponent({
 
         function selectBitcoin() {
             setActiveCurrency(CryptoCurrency.BTC);
-            $addresses.activeAddress = null;
 
             if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');

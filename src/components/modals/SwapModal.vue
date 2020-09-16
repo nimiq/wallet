@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened">
+    <Modal :showOverlay="swap" :emitClose="true" @close="onClose">
         <div class="page flex-column">
             <PageHeader>
                 {{ $t('Swap NIM and BTC') }}
@@ -153,18 +153,51 @@
             </PageFooter>
         </div>
 
-        <!-- <div v-if="statusScreenOpened" slot="overlay" class="page">
-            <StatusScreen
-                :title="statusTitle"
-                :state="statusState"
-                :message="statusMessage"
-                :mainAction="statusMainActionText"
-                :alternativeAction="statusAlternativeActionText"
-                @main-action="onStatusMainAction"
-                @alternative-action="onStatusAlternativeAction"
-                :lightBlue="true"
-            />
-        </div> -->
+        <div v-if="swap" slot="overlay" class="page swap-progress flex-column">
+            <PageHeader>Performing Swap...</PageHeader>
+            <PageBody>
+                <div v-if="swapStep >= SwapStep.SIGN_SWAP" class="step flex-row">
+                    <div class="status" :class="{'nq-green': swapStep > SwapStep.SIGN_SWAP}">
+                        <CircleSpinner v-if="swapStep === SwapStep.SIGN_SWAP"/>
+                        <CheckmarkIcon v-else/>
+                    </div>
+                    <span v-if="swapStep === SwapStep.SIGN_SWAP">{{ $t('Signing swap...') }}</span>
+                    <span v-else>{{ $t('Swap signed!') }}</span>
+                </div>
+                <div v-if="swapStep >= SwapStep.AWAIT_INCOMING" class="step flex-row">
+                    <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_INCOMING}">
+                        <CircleSpinner v-if="swapStep === SwapStep.AWAIT_INCOMING"/>
+                        <CheckmarkIcon v-else/>
+                    </div>
+                    <span v-if="swapStep === SwapStep.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</span>
+                    <span v-else>{{ $t('Incoming HTLC verified!') }}</span>
+                </div>
+                <div v-if="swapStep >= SwapStep.CREATE_OUTGOING" class="step flex-row">
+                    <div class="status" :class="{'nq-green': swapStep > SwapStep.CREATE_OUTGOING}">
+                        <CircleSpinner v-if="swapStep === SwapStep.CREATE_OUTGOING"/>
+                        <CheckmarkIcon v-else/>
+                    </div>
+                    <span v-if="swapStep === SwapStep.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</span>
+                    <span v-else>{{ $t('Outgoing HTLC created!') }}</span>
+                </div>
+                <div v-if="swapStep >= SwapStep.AWAIT_SECRET" class="step flex-row">
+                    <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_SECRET}">
+                        <CircleSpinner v-if="swapStep === SwapStep.AWAIT_SECRET"/>
+                        <CheckmarkIcon v-else/>
+                    </div>
+                    <span v-if="swapStep === SwapStep.AWAIT_SECRET">{{ $t('Awaiting publishing of secret...') }}</span>
+                    <span v-else>{{ $t('Swap secret published!') }}</span>
+                </div>
+                <div v-if="swapStep >= SwapStep.SETTLE_INCOMING" class="step flex-row">
+                    <div class="status" :class="{'nq-green': swapStep > SwapStep.SETTLE_INCOMING}">
+                        <CircleSpinner v-if="swapStep === SwapStep.SETTLE_INCOMING"/>
+                        <CheckmarkIcon v-else/>
+                    </div>
+                    <span v-if="swapStep === SwapStep.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</span>
+                    <span v-else>{{ $t('Swap complete!') }}</span>
+                </div>
+            </PageBody>
+        </div>
     </Modal>
 </template>
 
@@ -178,6 +211,8 @@ import {
     FiatAmount,
     InfoCircleSmallIcon,
     AlertTriangleIcon,
+    CircleSpinner,
+    CheckmarkIcon,
 } from '@nimiq/vue-components';
 import { bytesToHex, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
@@ -189,7 +224,6 @@ import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-// import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore, UTXO } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -212,6 +246,15 @@ enum SwapDirection {
     BTC_TO_NIM,
 }
 
+enum SwapStep {
+    SIGN_SWAP,
+    AWAIT_INCOMING,
+    CREATE_OUTGOING,
+    AWAIT_SECRET,
+    SETTLE_INCOMING,
+    COMPLETE,
+}
+
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
@@ -221,9 +264,10 @@ export default defineComponent({
 
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
-        const direction = ref<SwapDirection>(SwapDirection.BTC_TO_NIM);
-        const swap = ref<Swap>(null);
+        const direction = ref(SwapDirection.BTC_TO_NIM);
+        const swap = ref<Swap>(true);
         const swapError = ref<string>(null);
+        const swapStep = ref(SwapStep.SETTLE_INCOMING);
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
@@ -313,10 +357,6 @@ export default defineComponent({
                 clearTimeout(debounce);
             }
 
-            if (swap.value) cancelSwap(swap.value.id);
-            swap.value = null;
-            swapError.value = null;
-
             if (amount !== 0) {
                 debounce = window.setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
                 fetchingEstimate.value = true;
@@ -405,6 +445,11 @@ export default defineComponent({
             return Math.round((from.serviceFee / (from.amount - from.networkFee - from.serviceFee)) * 1000) / 10;
         });
 
+        function onClose() {
+            if (swap.value) return;
+            context.root.$router.back();
+        }
+
         const canSign = computed(() =>
             !estimateError.value && !swapError.value
             && estimate.value
@@ -424,40 +469,40 @@ export default defineComponent({
                         direction.value === SwapDirection.NIM_TO_BTC ? 'NIM' : 'BTC',
                         to,
                     );
-                    console.log(swap.value);
+                    console.debug('Swap:', swap.value);
                     swapError.value = null;
-                } catch (err) {
-                    console.error(err); // eslint-disable-line no-console
-                    swapError.value = err.message;
+                } catch (error) {
+                    console.error(error); // eslint-disable-line no-console
+                    swapError.value = error.message;
+                    reject(error);
                 }
 
                 // TODO: Validate swap data against estimate
 
                 const { addressSet } = useBtcAddressStore();
                 const nimAddress = activeAddressInfo.value!.address;
+                // TODO: Find unused and _uncopied_ external address
+                //       (or just use next internal? but then use over-next internal for change output?)
                 const btcAddress = addressSet.value.external.find((info) => !info.used)!.address;
 
                 try {
                     swap.value = await confirmSwap(swap.value!.id, {
                         // Redeem
                         asset: direction.value === SwapDirection.NIM_TO_BTC ? Currencies.BTC : Currencies.NIM,
-                        address: direction.value === SwapDirection.NIM_TO_BTC
-                            ? btcAddress
-                            : nimAddress,
+                        address: direction.value === SwapDirection.NIM_TO_BTC ? btcAddress : nimAddress,
                     }, {
                         // Refund
                         asset: direction.value === SwapDirection.BTC_TO_NIM ? Currencies.BTC : Currencies.NIM,
-                        address: direction.value === SwapDirection.BTC_TO_NIM
-                            ? btcAddress
-                            : nimAddress,
+                        address: direction.value === SwapDirection.BTC_TO_NIM ? btcAddress : nimAddress,
                     });
-                    console.log(swap.value);
+                    console.debug('Swap:', swap.value);
                     swapError.value = null;
-                } catch (err) {
-                    console.error(err); // eslint-disable-line no-console
-                    swapError.value = err.message;
+                } catch (error) {
+                    console.error(error); // eslint-disable-line no-console
+                    swapError.value = error.message;
                     if (swap.value) cancelSwap(swap.value.id);
                     swap.value = null;
+                    reject(error);
                 }
 
                 let fund: HtlcCreationInstructions | null = null;
@@ -671,9 +716,8 @@ export default defineComponent({
             console.log(transactions);
         }
 
-        const statusScreenOpened = ref(false);
-
         return {
+            onClose,
             satsPerNim,
             direction,
             SwapDirection,
@@ -693,10 +737,12 @@ export default defineComponent({
             newNimBalance,
             newBtcBalance,
             estimateError,
+            swap,
             swapError,
             canSign,
             sign,
-            statusScreenOpened,
+            swapStep,
+            SwapStep,
         };
     },
     components: {
@@ -714,7 +760,8 @@ export default defineComponent({
         FiatAmount,
         InfoCircleSmallIcon,
         AlertTriangleIcon,
-        // StatusScreen,
+        CircleSpinner,
+        CheckmarkIcon,
     },
 });
 </script>
@@ -905,6 +952,30 @@ export default defineComponent({
     .nq-link {
         color: inherit;
         text-decoration: underline;
+    }
+}
+
+.modal /deep/ .overlay .close-button {
+    display: none;
+}
+
+.swap-progress {
+    .step {
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--text-10);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+    .status {
+        padding: 2.5rem;
     }
 }
 </style>

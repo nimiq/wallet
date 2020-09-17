@@ -88,6 +88,27 @@ export default defineComponent({
             });
         }
 
+        async function updateInputFontSize() {
+            if (!$input.value) return;
+
+            if (!inputPadding) {
+                inputPadding = parseInt(
+                    window.getComputedStyle($input.value.$el.children[2])
+                        .getPropertyValue('padding-left')
+                        .replace('px', ''),
+                    10,
+                );
+            }
+
+            inputFontSizeScaleFactor.value = 1;
+            await context.root.$nextTick();
+
+            const width = $input.value.$el.children[1].clientWidth;
+            const maxWidth = $input.value.$el.children[2].clientWidth - (inputPadding / 2);
+
+            inputFontSizeScaleFactor.value = Math.max(Math.min(maxWidth / width, 1), 0.7);
+        }
+
         function onPaste(event: ClipboardEvent) {
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
@@ -107,25 +128,7 @@ export default defineComponent({
         async function onInput() {
             context.emit('input', address.value);
             checkAddress();
-
-            if (!$input.value) return;
-
-            if (!inputPadding) {
-                inputPadding = parseInt(
-                    window.getComputedStyle($input.value.$el.children[2])
-                        .getPropertyValue('padding-left')
-                        .replace('px', ''),
-                    10,
-                );
-            }
-
-            inputFontSizeScaleFactor.value = 1;
-            await context.root.$nextTick();
-
-            const width = $input.value.$el.children[1].clientWidth;
-            const maxWidth = $input.value.$el.children[2].clientWidth - (inputPadding * 2);
-
-            inputFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
+            await updateInputFontSize();
         }
 
         return {
@@ -140,7 +143,7 @@ export default defineComponent({
     },
     methods: {
         focus() {
-            (this.$refs.input as LabelInput).focus();
+            (this.$refs.$input as LabelInput).focus();
         },
     },
     components: {

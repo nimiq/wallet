@@ -1,5 +1,8 @@
 <template>
-    <div class="btc-label-input" :class="{ disabled, autocomplete: matchingLabels }" @keydown="onKeyDown">
+    <div class="btc-label-input"
+        :class="{ disabled, autocomplete: matchingLabels && matchingLabels.length > 0 }"
+        @keydown="onKeyDown"
+    >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled"/>
         <Avatar :label="localValue"/>
         <ul class="label-autocomplete" v-if="matchingLabels && matchingLabels.length > 0" ref="btcLabelAutocomplete">
@@ -195,8 +198,11 @@ export default defineComponent({
                 height: 2.5rem;
                 top: 30%;
                 right: 0;
-                // eslint-disable-next-line max-len
-                mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+                mask-image: url('data:image/svg+xml,
+                    <svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4
+                        4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/>
+                    </svg>');
                 mask-size: contain;
                 z-index: 10;
                 background: #1A6AD2;

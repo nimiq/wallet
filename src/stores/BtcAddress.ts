@@ -91,6 +91,8 @@ export const useBtcAddressStore = createStore({
             addressSet.value.external
                 .filter(({ used, address }: BtcAddressInfo) => !used && !copiedExternalAddresses.value[address])
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
+        nextChangeAddress: (state, { addressSet }): string | undefined =>
+            (addressSet as Ref<BtcAddressSet>).value.internal.find((addressInfo) => !addressInfo.used)?.address,
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {

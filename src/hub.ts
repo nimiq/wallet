@@ -457,7 +457,9 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
     return btcAddressInfos;
 }
 
-export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>): Promise<SetupSwapResult | null> {
+export async function setupSwap(
+    requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>,
+): Promise<SetupSwapResult | null> {
     return hubApi.setupSwap(new Promise((resolve, reject) => {
         requestPromise.then((request) => resolve({
             ...request,

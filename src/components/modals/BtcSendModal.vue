@@ -201,7 +201,6 @@ export default defineComponent({
     setup(props, context) {
         const {
             state: addresses$,
-            addressSet,
             accountUtxos,
             accountBalance,
         } = useBtcAddressStore();
@@ -462,13 +461,12 @@ export default defineComponent({
 
             let changeAddress: string;
             if (requiredInputs.value.changeAmount > 0) {
-                const nextUnusedChangeAddress = addressSet.value.internal
-                    .find((addressInfo) => !addressInfo.used)?.address;
-                if (!nextUnusedChangeAddress) {
+                const { nextChangeAddress } = useBtcAddressStore();
+                if (!nextChangeAddress.value) {
                     // FIXME: If no unused change address is found, need to request new ones from Hub!
                     throw new Error('No more unused change addresses (not yet implemented)');
                 }
-                changeAddress = nextUnusedChangeAddress;
+                changeAddress = nextChangeAddress.value;
             }
 
             try {

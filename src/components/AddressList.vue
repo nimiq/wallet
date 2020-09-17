@@ -4,7 +4,7 @@
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
-            :class="{ 'active': activeAddress === addressInfo.address }"
+            :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"/>
         <button

@@ -1,10 +1,12 @@
 <template>
-    <Modal :showOverlay="swap" :emitClose="true" @close="onClose">
+    <Modal :showOverlay="!!swap" :emitClose="true" @close="onClose">
         <div class="page flex-column">
             <PageHeader>
                 {{ $t('Swap NIM and BTC') }}
                 <div slot="more" class="flex-column">
-                    <div class="nq-notice">{{ $t('Use the slider or edit values to set up a swap.') }}</div>
+                    <div class="nq-notice font-weight-normal">
+                        {{ $t('Use the slider or edit values to set up a swap.') }}
+                    </div>
                     <div class="exchange-rate flex-row">
                         <span>1 NIM = <Amount slot="btc" :amount="Math.round(satsPerNim)" currency="btc"/></span>
                         <Tooltip :styles="{width: '22rem'}" preferredPosition="bottom left">
@@ -154,49 +156,106 @@
         </div>
 
         <div v-if="swap" slot="overlay" class="page swap-progress flex-column">
-            <PageHeader>Performing Swap...</PageHeader>
+            <PageHeader>
+                Performing Swap
+                <p v-if="swapStep !== SwapStep.COMPLETE" slot="more" class="nq-notice warning">
+                    {{ $t('Do not close this popup!') }}
+                </p>
+                <p v-else slot="more" class="nq-notice info">
+                    {{ $t('You can now close this popup.') }}
+                </p>
+            </PageHeader>
             <PageBody>
-                <div v-if="swapStep >= SwapStep.SIGN_SWAP" class="step flex-row">
+                <div class="step flex-row">
                     <div class="status" :class="{'nq-green': swapStep > SwapStep.SIGN_SWAP}">
-                        <CircleSpinner v-if="swapStep === SwapStep.SIGN_SWAP"/>
+                        <span v-if="swapStep < SwapStep.SIGN_SWAP">1</span>
+                        <CircleSpinner v-else-if="swapStep === SwapStep.SIGN_SWAP"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <span v-if="swapStep === SwapStep.SIGN_SWAP">{{ $t('Signing swap...') }}</span>
-                    <span v-else>{{ $t('Swap signed!') }}</span>
+                    <div v-if="swapStep >= SwapStep.SIGN_SWAP" class="info">
+                        <div v-if="swapStep === SwapStep.SIGN_SWAP">{{ $t('Signing swap...') }}</div>
+                        <div v-else>{{ $t('Swap signed!') }}</div>
+                    </div>
                 </div>
-                <div v-if="swapStep >= SwapStep.AWAIT_INCOMING" class="step flex-row">
+                <div class="step flex-row">
                     <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_INCOMING}">
-                        <CircleSpinner v-if="swapStep === SwapStep.AWAIT_INCOMING"/>
+                        <span v-if="swapStep < SwapStep.AWAIT_INCOMING">2</span>
+                        <CircleSpinner v-else-if="swapStep === SwapStep.AWAIT_INCOMING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <span v-if="swapStep === SwapStep.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</span>
-                    <span v-else>{{ $t('Incoming HTLC verified!') }}</span>
+                    <div v-if="swapStep >= SwapStep.AWAIT_INCOMING" class="info">
+                        <div v-if="swapStep === SwapStep.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</div>
+                        <div v-else>{{ $t('Incoming HTLC verified!') }}</div>
+                        <code v-if="remoteHtlcCreationData.hash" class="flex-row">
+                            <a class="nq-link" target="_blank"
+                                :href="explorerTxLink(remoteHtlcCreationData.asset, remoteHtlcCreationData.hash)"
+                            ><ShortAddress :address="remoteHtlcCreationData.hash"/></a>
+                            <ArrowRightSmallIcon/>
+                            <a class="nq-link" target="_blank"
+                                :href="explorerAddrLink(remoteHtlcCreationData.asset, remoteHtlcCreationData.address)"
+                            ><ShortAddress :address="remoteHtlcCreationData.address"/></a>
+                        </code>
+                    </div>
                 </div>
-                <div v-if="swapStep >= SwapStep.CREATE_OUTGOING" class="step flex-row">
+                <div class="step flex-row">
                     <div class="status" :class="{'nq-green': swapStep > SwapStep.CREATE_OUTGOING}">
-                        <CircleSpinner v-if="swapStep === SwapStep.CREATE_OUTGOING"/>
+                        <span v-if="swapStep < SwapStep.CREATE_OUTGOING">3</span>
+                        <CircleSpinner v-else-if="swapStep === SwapStep.CREATE_OUTGOING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <span v-if="swapStep === SwapStep.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</span>
-                    <span v-else>{{ $t('Outgoing HTLC created!') }}</span>
+                    <div v-if="swapStep >= SwapStep.CREATE_OUTGOING" class="info">
+                        <div v-if="swapStep === SwapStep.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</div>
+                        <div v-else>{{ $t('Outgoing HTLC created!') }}</div>
+                        <code v-if="localHtlcCreationData.hash" class="flex-row">
+                            <a class="nq-link" target="_blank"
+                                :href="explorerTxLink(localHtlcCreationData.asset, localHtlcCreationData.hash)"
+                            ><ShortAddress :address="localHtlcCreationData.hash"/></a>
+                            <ArrowRightSmallIcon/>
+                            <a class="nq-link" target="_blank"
+                                :href="explorerAddrLink(localHtlcCreationData.asset, localHtlcCreationData.address)"
+                            ><ShortAddress :address="localHtlcCreationData.address"/></a>
+                        </code>
+                    </div>
                 </div>
-                <div v-if="swapStep >= SwapStep.AWAIT_SECRET" class="step flex-row">
+                <div class="step flex-row">
                     <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_SECRET}">
-                        <CircleSpinner v-if="swapStep === SwapStep.AWAIT_SECRET"/>
+                        <span v-if="swapStep < SwapStep.AWAIT_SECRET">4</span>
+                        <CircleSpinner v-else-if="swapStep === SwapStep.AWAIT_SECRET"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <span v-if="swapStep === SwapStep.AWAIT_SECRET">{{ $t('Awaiting publishing of secret...') }}</span>
-                    <span v-else>{{ $t('Swap secret published!') }}</span>
+                    <div v-if="swapStep >= SwapStep.AWAIT_SECRET" class="info">
+                        <div v-if="swapStep === SwapStep.AWAIT_SECRET">
+                            {{ $t('Awaiting publishing of secret...') }}</div>
+                        <div v-else>{{ $t('Swap secret published!') }}</div>
+                        <code v-if="secret" class="flex-row nq-gray">
+                            {{ secret.substring(0, 32) }}
+                            {{ secret.substring(32) }}
+                        </code>
+                    </div>
                 </div>
-                <div v-if="swapStep >= SwapStep.SETTLE_INCOMING" class="step flex-row">
+                <div class="step flex-row">
                     <div class="status" :class="{'nq-green': swapStep > SwapStep.SETTLE_INCOMING}">
-                        <CircleSpinner v-if="swapStep === SwapStep.SETTLE_INCOMING"/>
+                        <span v-if="swapStep < SwapStep.SETTLE_INCOMING">5</span>
+                        <CircleSpinner v-else-if="swapStep === SwapStep.SETTLE_INCOMING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <span v-if="swapStep === SwapStep.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</span>
-                    <span v-else>{{ $t('Swap complete!') }}</span>
+                    <div v-if="swapStep >= SwapStep.SETTLE_INCOMING" class="info">
+                        <div v-if="swapStep === SwapStep.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</div>
+                        <div v-else>{{ $t('Swap complete!') }}</div>
+                        <code v-if="localHtlcSettlementData.hash" class="flex-row">
+                            <a class="nq-link" target="_blank"
+                                :href="explorerTxLink(localHtlcSettlementData.asset, localHtlcSettlementData.hash)"
+                            ><ShortAddress :address="localHtlcSettlementData.hash"/></a>
+                        </code>
+                    </div>
                 </div>
             </PageBody>
+            <PageFooter>
+                <button class="nq-button light-blue"
+                    :disabled="swapStep !== SwapStep.COMPLETE"
+                    @click="onClose(true)"
+                >{{ $t('Done') }}</button>
+            </PageFooter>
         </div>
     </Modal>
 </template>
@@ -213,10 +272,12 @@ import {
     AlertTriangleIcon,
     CircleSpinner,
     CheckmarkIcon,
+    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import { bytesToHex, PlainInput, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
+import Config from 'config';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -224,9 +285,10 @@ import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ShortAddress from '../ShortAddress.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
-import { CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
 import { selectOutputs /* , estimateFees */ } from '../../lib/BitcoinTransactionUtils';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
@@ -245,7 +307,6 @@ import {
 import { getNetworkClient, sendTransaction as sendNimTx } from '../../network';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
-import { SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 
 enum SwapDirection {
     NIM_TO_BTC,
@@ -269,72 +330,9 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
         const direction = ref(SwapDirection.BTC_TO_NIM);
-        const swap = ref<Swap | null>({
-            id: 'ce6d22b2-1aa9-4c8c-ab52-f729db3e0b6c',
-            expires: 1599483201,
-            from: {
-                symbol: 'NIM',
-                name: 'Nimiq',
-                amount: '2709.79904',
-                fee: '0',
-                feePerUnit: '0',
-                networkFee: '10.73171',
-                serviceFee: '5.4087805',
-                perFee: '0',
-            },
-            to: {
-                BTC: {
-                    amount: '0.001004',
-                    finalFee: '0.000004',
-                    finalFeeIncluded: true,
-                },
-            },
-            status: 'waiting-for-transactions',
-            contracts: [{
-                asset: 'NIM',
-                refund: {
-                    address: 'NQ41 D9UN RC7G UMHE 4XA7 R1PL DNCF TH2N 7JQ8',
-                },
-                recipient: {
-                    address: 'NQ17 D2ES UBTP N14D RG4E 2KBK 217A 2GH2 NNY1',
-                },
-                amount: 2709.79904,
-                hash: 'GTWJvUzya+i6U8qtliUi2MLQa+o2qK+i6yY4LzRXK+I=',
-                timeout: 1599484101,
-                direction: 'send',
-                status: 'pending',
-                id: 'e8ddfc94-a139-3f62-af15-4273d6c01bbb',
-                intermediary: {
-                    address: null,
-                    timeoutBlock: 1140101,
-                    // eslint-disable-next-line max-len
-                    data: 'anlssPDlYuJ5R8hvRtmP3EVjywhona4vd7BI3MCOFNcxBOoUIitb4QMZNYm9TPJr6LpTyq2WJSLYwtBr6jaor6LrJjgvNFcr4gEAEWWF',
-                    id: 'e8ddfc94-a139-3f62-af15-4273d6c01bbb',
-                },
-            }, {
-                asset: 'BTC',
-                refund: {
-                    address: 'tb1q2l6t40pr6gmf2u3efnuq72x6awwrkk83r92jvr',
-                },
-                recipient: {
-                    address: 'tb1qsn4ehj7epnnaxdsfjgjeujumsxppt2tql9m9gl',
-                },
-                amount: 0.001004,
-                hash: 'GTWJvUzya+i6U8qtliUi2MLQa+o2qK+i6yY4LzRXK+I=',
-                timeout: 1599485001,
-                direction: 'receive',
-                status: 'pending',
-                id: '2N6y3cnXQY58iKA9Pg7BkLqWbR724hsRHgF',
-                intermediary: {
-                    p2sh: '2N6y3cnXQY58iKA9Pg7BkLqWbR724hsRHgF',
-                    p2wsh: 'tb1q0hzaqgespv4a67wrc843gkjd5s668l6arm820utp32m9nss90ejq83klw7',
-                    // eslint-disable-next-line max-len
-                    scriptBytes: '6382012088a820193589bd4cf26be8ba53caad962522d8c2d06bea36a8afa2eb26382f34572be28876a91484eb9bcbd90ce7d3360992259e4b9b818215a96088ac67044934565fb17576a91457f4babc23d2369572394cf80f28daeb9c3b58f188ac68',
-                },
-            }],
-        });
+        const swap = ref<Swap>(null);
         const swapError = ref<string>(null);
-        const swapStep = ref(SwapStep.SETTLE_INCOMING);
+        const swapStep = ref(SwapStep.SIGN_SWAP);
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
@@ -512,8 +510,8 @@ export default defineComponent({
             return Math.round((from.serviceFee / (from.amount - from.networkFee - from.serviceFee)) * 1000) / 10;
         });
 
-        function onClose() {
-            if (swap.value) return;
+        function onClose(force = false) {
+            if (!force && swap.value) return;
             context.root.$router.back();
         }
 
@@ -569,10 +567,9 @@ export default defineComponent({
 
                 // TODO: Validate swap data against estimate
 
-                // const { availableExternalAddresses } = useBtcAddressStore();
-                const nimAddress = 'NQ41 D9UN RC7G UMHE 4XA7 R1PL DNCF TH2N 7JQ8'; // activeAddressInfo.value!.address;
-                // const btcAddress = availableExternalAddresses.value[0];
-                const btcAddress = 'tb1qsn4ehj7epnnaxdsfjgjeujumsxppt2tql9m9gl';
+                const { availableExternalAddresses } = useBtcAddressStore();
+                const nimAddress = activeAddressInfo.value!.address;
+                const btcAddress = availableExternalAddresses.value[0];
 
                 try {
                     swap.value = await confirmSwap(swap.value!.id, {
@@ -1037,9 +1034,18 @@ export default defineComponent({
             }
 
             swapStep.value = SwapStep.COMPLETE;
+        }
 
-            // Close modal after short timeout
-            setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+        function explorerTxLink(asset: 'NIM' | 'BTC', hash: string) {
+            return asset === 'NIM'
+                ? `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`
+                : `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
+        }
+
+        function explorerAddrLink(asset: 'NIM' | 'BTC', address: string) {
+            return asset === 'NIM'
+                ? `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${address}`
+                : `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/address/${address}`;
         }
 
         return {
@@ -1071,6 +1077,10 @@ export default defineComponent({
             SwapStep,
             remoteHtlcCreationData,
             localHtlcCreationData,
+            secret,
+            localHtlcSettlementData,
+            explorerTxLink,
+            explorerAddrLink,
         };
     },
     components: {
@@ -1090,6 +1100,8 @@ export default defineComponent({
         AlertTriangleIcon,
         CircleSpinner,
         CheckmarkIcon,
+        ShortAddress,
+        ArrowRightSmallIcon,
     },
 });
 </script>
@@ -1114,8 +1126,11 @@ export default defineComponent({
 }
 
 .page-header .nq-notice {
-    font-weight: normal;
     margin-top: 1.25rem;
+
+    &.font-weight-normal {
+        font-weight: normal;
+    }
 }
 
 .page-body {
@@ -1283,27 +1298,69 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay .close-button {
-    display: none;
+.modal /deep/ .overlay {
+    .page-header {
+        padding-bottom: 1rem;
+    }
+
+    .close-button {
+        display: none;
+    }
 }
 
 .swap-progress {
     .step {
         align-items: center;
-        padding: 1.5rem 0;
         border-bottom: 1px solid var(--text-10);
 
-        &:last-child {
+        &:last-of-type {
             border-bottom: 0;
         }
 
-        span {
-            font-weight: 600;
+        .status {
+            margin: 3rem 2.5rem;
+            font-size: 2.25rem;
+            line-height: 1;
+            width: 2.25rem;
+            text-align: center;
+            font-weight: bold;
+
+            span {
+                opacity: 0.4;
+            }
+
+            /deep/ .circle-spinner {
+                display: block;
+            }
+        }
+
+        .info {
+            padding: 1.5rem 0;
+
+            > div {
+                font-weight: 600;
+            }
         }
     }
 
-    .status {
-        padding: 2.5rem;
+    code {
+        font-family: 'Fira Mono', monospace;
+        font-size: var(--small-size);
+        margin-top: 0.5rem;
+
+        svg {
+            margin: 0.125rem 2rem 0;
+            opacity: 0.3;
+        }
+
+        &.nq-gray {
+            opacity: 0.5;
+        }
+    }
+
+    .nq-button {
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 </style>

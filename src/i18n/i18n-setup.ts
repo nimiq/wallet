@@ -16,9 +16,9 @@ export const Languages = [{
 // }, {
     code: 'zh',
     name: '简体中文',
-// }, {
-//     code: 'es',
-//     name: 'Español',
+}, {
+    code: 'es',
+    name: 'Español',
 // }, {
 //     code: 'ru',
 //     name: 'Русский',

@@ -712,30 +712,17 @@ export default defineComponent({
 
                         const client = await getNetworkClient();
                         // First subscribe to new transactions
-                        // client.addTransactionListener(listener, [serviceAddress]);
+                        client.addTransactionListener(listener, [serviceAddress]);
 
                         // Then check history
-                        let history: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>[] = [];
-
-                        let checkInterval = 1000;
-                        // eslint-disable-next-line max-len
-                        loop: while (true) { // eslint-disable-line no-restricted-syntax, no-labels, no-constant-condition
-                            try {
-                                // eslint-disable-next-line no-await-in-loop
-                                history = await client.getTransactionsByAddress(
-                                    serviceAddress,
-                                    currentBlockHeight - 2,
-                                    history,
-                                );
-                                for (const tx of history) {
-                                    if (listener(tx)) break loop; // eslint-disable-line no-labels
-                                }
-                            } catch (error) {
-                                console.error(error); // eslint-disable-line no-console
+                        try {
+                            const history = await client.getTransactionsByAddress(
+                                serviceAddress, currentBlockHeight - 2);
+                            for (const tx of history) {
+                                if (listener(tx)) break;
                             }
-                            // eslint-disable-next-line no-await-in-loop, no-loop-func
-                            await new Promise((res) => setTimeout(res, checkInterval));
-                            if (checkInterval < 5000) checkInterval += 500;
+                        } catch (error) {
+                            console.log(error); // eslint-disable-line no-console
                         }
                     });
 
@@ -862,24 +849,16 @@ export default defineComponent({
 
                     const client = await getNetworkClient();
                     // First subscribe to new transactions
-                    // client.addTransactionListener(listener, [transaction.recipient]);
+                    client.addTransactionListener(listener, [transaction.recipient]);
 
                     // Then check history
-                    let history: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>[] = [];
-
-                    const checkInterval = 5000;
-                    loop: while (true) { // eslint-disable-line no-restricted-syntax, no-labels, no-constant-condition
-                        try {
-                            // eslint-disable-next-line no-await-in-loop
-                            history = await client.getTransactionsByAddress(transaction.recipient, 0, history);
-                            for (const tx of history) {
-                                if (listener(tx)) break loop; // eslint-disable-line no-labels
-                            }
-                        } catch (error) {
-                            console.error(error); // eslint-disable-line no-console
+                    try {
+                        const history = await client.getTransactionsByAddress(transaction.recipient, 0);
+                        for (const tx of history) {
+                            if (listener(tx)) break;
                         }
-                        // eslint-disable-next-line no-await-in-loop
-                        await new Promise((res) => setTimeout(res, checkInterval));
+                    } catch (error) {
+                        console.error(error); // eslint-disable-line no-console
                     }
                 });
 
@@ -934,24 +913,16 @@ export default defineComponent({
 
                     const client = await getNetworkClient();
                     // First subscribe to new transactions
-                    // client.addTransactionListener(listener, [transaction.recipient]);
+                    client.addTransactionListener(listener, [nimHtlcAddress]);
 
                     // Then check history
-                    let history: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>[] = [];
-
-                    const checkInterval = 5000;
-                    loop: while (true) { // eslint-disable-line no-restricted-syntax, no-labels, no-constant-condition
-                        try {
-                            // eslint-disable-next-line no-await-in-loop
-                            history = await client.getTransactionsByAddress(nimHtlcAddress, 0, history);
-                            for (const tx of history) {
-                                if (listener(tx)) break loop; // eslint-disable-line no-labels
-                            }
-                        } catch (error) {
-                            console.error(error); // eslint-disable-line no-console
+                    try {
+                        const history = await client.getTransactionsByAddress(nimHtlcAddress, 0);
+                        for (const tx of history) {
+                            if (listener(tx)) break;
                         }
-                        // eslint-disable-next-line no-await-in-loop
-                        await new Promise((res) => setTimeout(res, checkInterval));
+                    } catch (error) {
+                        console.error(error); // eslint-disable-line no-console
                     }
                 });
             }

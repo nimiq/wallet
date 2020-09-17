@@ -22,7 +22,7 @@
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?3a03e2c1ce1d8ce2f6be65117c80d4e8f3f3eb04&scripts.postinstall=yarn%20install%20--ignore-scripts%20%26%26%20yarn%20build",
     "@nimiq/iqons": "^1.5.2",
-    "@nimiq/network-client": "^0.5.0",
+    "@nimiq/network-client": "^0.6.0",
     "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.6.0",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",

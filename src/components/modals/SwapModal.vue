@@ -20,6 +20,9 @@
                 </div>
             </PageHeader>
             <PageBody class="flex-column">
+                <SwapBalanceBar
+                    :direction="direction"
+                />
                 <div class="columns swap-amounts flex-row">
                     <div class="left-column" :class="!wantNim && !totalCostNim
                         ? 'nq-gray'
@@ -297,6 +300,7 @@ import AmountInput from '../AmountInput.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ShortAddress from '../ShortAddress.vue';
+import SwapBalanceBar from '../SwapBalanceBar.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
@@ -468,7 +472,8 @@ export default defineComponent({
         });
 
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
-        const newBtcBalance = computed(() => direction.value === SwapDirection.BTC_TO_NIM
+        const newBtcBalance = computed(() =>
+            direction.value === SwapDirection.BTC_TO_NIM
             ? accountBtcBalance.value - totalCostBtc.value
             : accountBtcBalance.value + wantBtc.value,
         );
@@ -913,6 +918,7 @@ export default defineComponent({
         CheckmarkIcon,
         ShortAddress,
         ArrowRightSmallIcon,
+        SwapBalanceBar,
     },
 });
 </script>

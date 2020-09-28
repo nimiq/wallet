@@ -21,7 +21,11 @@
             </PageHeader>
             <PageBody class="flex-column">
                 <SwapBalanceBar
-                    :direction="direction"
+                    :newNimBalance="newNimBalance"
+                    :newBtcBalance="newBtcBalance"
+                    :satsPerNim="satsPerNim"
+                    :limits="{ fiat: 100 }"
+                    @change="onSwapBalanceBarChange"
                 />
                 <div class="columns swap-amounts flex-row">
                     <div class="left-column" :class="!wantNim && !totalCostNim
@@ -474,8 +478,8 @@ export default defineComponent({
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
         const newBtcBalance = computed(() =>
             direction.value === SwapDirection.BTC_TO_NIM
-            ? accountBtcBalance.value - totalCostBtc.value
-            : accountBtcBalance.value + wantBtc.value,
+                ? accountBtcBalance.value - totalCostBtc.value
+                : accountBtcBalance.value + wantBtc.value,
         );
 
         const { exchangeRates, currency } = useFiatStore();
@@ -867,6 +871,20 @@ export default defineComponent({
             onClose(true);
         }
 
+        function onSwapBalanceBarChange(swapInfo: {
+            direction: SwapDirection,
+            amount: {
+                luna: number,
+                satoshi: number,
+            },
+        }) {
+            if (swapInfo.direction === SwapDirection.BTC_TO_NIM) {
+                onInput(SwapAsset.NIM, swapInfo.amount.luna);
+            } else {
+                onInput(SwapAsset.BTC, swapInfo.amount.satoshi);
+            }
+        }
+
         return {
             onClose,
             satsPerNim,
@@ -884,6 +902,7 @@ export default defineComponent({
             serviceExchangeFeeFiat,
             serviceExchangeFeePercentage,
             onInput,
+            onSwapBalanceBarChange,
             newNimBalance,
             newBtcBalance,
             estimateError,

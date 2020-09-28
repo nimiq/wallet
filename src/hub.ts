@@ -5,7 +5,7 @@ import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
-// import { useBtcTransactionsStore } from './stores/BtcTransactions';
+import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum'; // eslint-disable-line import/no-cycle
@@ -334,8 +334,9 @@ export async function logout(accountId: string) {
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const transactionStore = useTransactionsStore();
-    // const btcTransactionStore = useBtcTransactionsStore();
     const cashlinkStore = useCashlinkStore();
+    const btcAddressStore = useBtcAddressStore();
+    const btcTransactionStore = useBtcTransactionsStore();
 
     const addressesToDelete = accountStore.state.accountInfos[accountId].addresses;
 
@@ -368,12 +369,32 @@ export async function logout(accountId: string) {
         })
         .filter((address) => Boolean(address));
 
+    /**
+     * Bitcoin
+     */
+    const btcAddressesToDelete = accountStore.state.accountInfos[accountId].btcAddresses.internal
+        .concat(accountStore.state.accountInfos[accountId].btcAddresses.external);
+
+    const remainingBtcAddresses = Object.values(btcAddressStore.state.addressInfos)
+        .map((addressInfo) => addressInfo.address)
+        .filter((address) => !btcAddressesToDelete.includes(address));
+
+    const btcTransactionsToDelete = Object.values(btcTransactionStore.state.transactions)
+        .filter((tx) => {
+            for (const address of tx.addresses) {
+                if (remainingBtcAddresses.includes(address)) return false;
+            }
+            return true;
+        });
+
     // Delete account, it's addresses, their transactions and cashlinks
     for (const cashlinkAddress of pendingCashlinksToDelete) {
         cashlinkStore.removeCashlink(cashlinkAddress);
     }
     transactionStore.removeTransactions(transactionsToDelete);
     addressStore.removeAddresses(addressesToDelete);
+    btcTransactionStore.removeTransactions(btcTransactionsToDelete);
+    btcAddressStore.removeAddresses(btcAddressesToDelete);
     accountStore.removeAccount(accountId);
 
     if (!Object.values(accountStore.state.accountInfos).length) {

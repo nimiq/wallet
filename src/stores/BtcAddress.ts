@@ -110,6 +110,7 @@ export const useBtcAddressStore = createStore({
                 delete addressInfos[address];
             }
             this.state.addressInfos = addressInfos;
+            this.removeCopiedAddresses(addresses);
         },
         // set an external address as copied
         setCopiedAddress(address: string, timestamp: number = Date.now()) {

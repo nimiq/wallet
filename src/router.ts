@@ -28,6 +28,8 @@ const DisclaimerModal = () =>
     import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
 
 // Bitcoin Modals
+const BtcActivationModal = () =>
+    import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
 const BtcSendModal = () =>
     import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
 const BtcReceiveModal = () =>
@@ -117,6 +119,13 @@ const routes: RouteConfig[] = [{
                 modal: MigrationWelcomeModal,
             },
             name: 'migration-welcome',
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/btc-activation',
+            components: {
+                modal: BtcActivationModal,
+            },
+            name: 'btc-activation',
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/btc-send',

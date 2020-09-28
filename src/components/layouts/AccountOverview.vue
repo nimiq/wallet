@@ -74,9 +74,10 @@
                         />
                     </div>
                     <label v-else-if="activeAccountInfo.type === AccountType.LEDGER">{{ $t('Coming soon') }}</label>
-                    <button v-else class="nq-button-pill light-blue" @click.stop="enableBitcoin()">
-                        {{ $t('Activate') }}
-                    </button>
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click.stop="$router.push('/btc-activation')" @mousedown.prevent
+                    >{{ $t('Activate') }}</button>
                 </button>
             </div>
             <div v-else>
@@ -115,7 +116,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
-import { backup, addAddress, activateBitcoin } from '../../hub'; // eslint-disable-line import/no-cycle
+import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -170,11 +171,6 @@ export default defineComponent({
 
         watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
 
-        async function enableBitcoin() {
-            const activated = await activateBitcoin(activeAccountId.value!);
-            if (activated) selectBitcoin();
-        }
-
         return {
             activeAccountInfo,
             AccountType,
@@ -190,7 +186,6 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
-            enableBitcoin,
         };
     },
     components: {

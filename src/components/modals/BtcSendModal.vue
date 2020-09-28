@@ -280,7 +280,9 @@ export default defineComponent({
             feePerByte.value,
         ));
 
-        const maxSendableAmount = computed(() => Math.max((accountBalance.value || 0) - fee.value, 0));
+        const feeForSendingAll = computed(() => estimateFees(availableUtxos.value.length, 1, feePerByte.value));
+
+        const maxSendableAmount = computed(() => Math.max((accountBalance.value || 0) - feeForSendingAll.value, 0));
 
         const amountMenuOpened = ref(false);
 

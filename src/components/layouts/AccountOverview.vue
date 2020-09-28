@@ -53,7 +53,9 @@
                     class="bitcoin-account-item reset flex-row"
                     :class="{
                         'active': activeCurrency === CryptoCurrency.BTC,
-                        'requires-activation': !hasBitcoinAddresses }"
+                        'requires-activation': !hasBitcoinAddresses,
+                        'disabled': activeAccountInfo.type === AccountType.LEDGER,
+                    }"
                     @click="selectBitcoin"
                 >
                     <BitcoinIcon/>
@@ -71,6 +73,7 @@
                             value-mask
                         />
                     </div>
+                    <label v-else-if="activeAccountInfo.type === AccountType.LEDGER">{{ $t('Coming soon') }}</label>
                     <button v-else class="nq-button-pill light-blue" @click.stop="enableBitcoin()">
                         {{ $t('Activate') }}
                     </button>
@@ -384,6 +387,24 @@ export default defineComponent({
                 0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
                 0px 1.5px 3px rgba(0, 0, 0, 0.05),
                 0px 4px 16px rgba(0, 0, 0, 0.07);
+        }
+
+        &.disabled {
+            color: var(--text-40);
+
+            svg {
+                color: var(--text-20);
+            }
+
+            label {
+                text-transform: uppercase;
+                font-size: var(--small-label-size);
+                font-weight: bold;
+                letter-spacing: 0.06em;
+                padding: 0.75rem 1.75rem;
+                box-shadow: 0 0 0 1.5px var(--text-10);
+                border-radius: 500px;
+            }
         }
     }
 

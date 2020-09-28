@@ -1,7 +1,7 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
-        @close-overlay="addressQrCodeOverlayOpened = false; receiveLinkOverlayOpened = false; amount = 0;"
+        @close-overlay="closeOverlay"
     >
         <PageHeader>
             {{ $t('Receive BTC') }}
@@ -99,7 +99,9 @@
                 <button class="nq-button-s" @click="receiveLinkOverlayOpened = true">
                     {{ $t('Create payment link') }}
                 </button>
-                <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true"><QrCodeIcon/></button>
+                <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true;">
+                    <QrCodeIcon/>
+                </button>
             </footer>
 
             <Tooltip class="info-tooltip" preferredPosition="bottom right">
@@ -288,7 +290,7 @@ export default defineComponent({
         );
 
         // requestLink
-        const amount = ref<string>(0);
+        const amount = ref<number>(0);
         const message = ref<string>('');
 
         const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
@@ -351,6 +353,13 @@ export default defineComponent({
         const addressQrCodeOverlayOpened = ref<boolean>(false);
         const receiveLinkOverlayOpened = ref<boolean>(false);
 
+        // Close Overlay & reset the payment link value
+        async function closeOverlay() {
+            addressQrCodeOverlayOpened.value = false;
+            receiveLinkOverlayOpened.value = false;
+            amount.value = 0;
+        }
+
         // Watching for sub-modals openings to set the actively shown address as copied
         watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
             (booleans, prevBooleans) => {
@@ -358,9 +367,10 @@ export default defineComponent({
                     const [qrCodeOpened, receiveLinkOpened] = booleans;
                     const [prevQrCodeOpened, prevReceiveLinkOpened] = prevBooleans;
 
-                    if ((qrCodeOpened === true && prevQrCodeOpened === false)
-                        || (receiveLinkOpened === true && prevReceiveLinkOpened === false)) {
+                    if ((qrCodeOpened === false && prevQrCodeOpened === true)
+                        || (receiveLinkOpened === false && prevReceiveLinkOpened === true)) {
                         copyActiveAddressCallback();
+                        showNextExternalAddress();
                     }
                 }
             },
@@ -409,6 +419,7 @@ export default defineComponent({
             origin: window.location.origin,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
+            closeOverlay,
             amount,
             message,
             requestLink,

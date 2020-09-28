@@ -1,25 +1,26 @@
 import { UTXO } from '../stores/BtcAddress';
 
-export const TX_BASE_VSIZE = 12;
-export const INPUT_VSIZE = 91;
-export const OUPUT_VSIZE = 32;
+// Source for Weight Units: https://bitcoin.stackexchange.com/a/84006
+
+// These values are for native segwit transactions
+// WU = Weight Units
+export const TX_HEADER_WU = 42;
+export const INPUT_WU = 274;
+export const OUPUT_WU = 124;
+
+// For nested segwit transactions:
+// WU = Weight Units
+// export const TX_HEADER_WU = 42;
+// export const INPUT_WU = 438;
+// export const OUPUT_WU = 128;
 
 // The amount which does not warrant a change output, since it would cost more in fees to include than it's worth
-export const DUST_AMOUNT = INPUT_VSIZE * 2;
+export const DUST_AMOUNT = Math.ceil(INPUT_WU / 4) * 2;
 
 export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1) {
-    // Transaction Virtual Sizes
-    // Single input, single output: 110 bytes
-    // Single input, two outputs: 141 bytes
-    // Two inputs, single output: 178 bytes
-    // Two inputs, two outputs: 208 bytes
-
-    // Estimate fee
-    const estimatedVSize = TX_BASE_VSIZE /* Tx header */
-        + INPUT_VSIZE /* Per input */ * numInputs
-        + OUPUT_VSIZE /* Per output */ * numOutputs;
-
-    return estimatedVSize * feePerByte;
+    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + OUPUT_WU * numOutputs;
+    const vSize = Math.ceil(weightUnits / 4);
+    return vSize * feePerByte;
 }
 
 export function selectOutputs(utxos: Readonly<Array<UTXO & { address: string }>>, amount: number, feePerByte?: number) {

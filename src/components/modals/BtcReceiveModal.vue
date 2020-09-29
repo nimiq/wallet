@@ -490,6 +490,7 @@ export default defineComponent({
     border-radius: 5px;
     text-align: center;
     font-size: var(--body-size);
+    font-family: 'Fira Mono', monospace;
     background-color: var(--nimiq-highlight-bg);
     font-weight: 500;
     color: var(--text-100);
@@ -511,10 +512,16 @@ export default defineComponent({
         background-color: transparent;
     }
 
+    &:hover /deep/ .background {
+        opacity: 0.1;
+    }
+
     & /deep/ > span {
         position: relative;
         overflow: hidden;
-        display: block;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         width: 100%;
         height: 100%;
         padding: var(--padding);

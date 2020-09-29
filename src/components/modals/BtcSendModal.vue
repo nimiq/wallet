@@ -490,6 +490,7 @@ export default defineComponent({
 
             try {
                 const plainTx = await sendBtcTransaction({
+                    accountId: useAccountStore().state.activeAccountId!,
                     inputs: requiredInputs.value.utxos.map((utxo) => ({
                         address: utxo.address,
                         transactionHash: utxo.transactionHash,

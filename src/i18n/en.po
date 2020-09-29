@@ -837,11 +837,11 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:529
+#: src/components/modals/BtcSendModal.vue:530
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:525
+#: src/components/modals/BtcSendModal.vue:526
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -912,7 +912,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:540
+#: src/components/modals/BtcSendModal.vue:541
 #: src/components/modals/SendModal.vue:537
 msgid "Something went wrong"
 msgstr ""

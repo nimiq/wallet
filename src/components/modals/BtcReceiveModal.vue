@@ -295,7 +295,7 @@ export default defineComponent({
 
         const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
             type: NimiqRequestLinkType.URI,
-            amount: Number.parseInt(amount.value, 10),
+            amount: amount.value,
             currency: Currency.BTC,
             message: message.value,
         }));

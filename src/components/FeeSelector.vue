@@ -1,13 +1,13 @@
 <template>
-    <div class="fee-estimator flex-row">
+    <div class="fee-selector flex-row">
         <SpeedGauge :speed="speed"/>
+        <div class="flex-grow"></div>
         <!-- eslint-disable max-len -->
-        <button class="reset"  @click="delay = 72" :class="{'active': delay === 72}">12h</button>
-        <button class="reset"  @click="delay = 36" :class="{'active': delay === 36}">6h</button>
-        <button class="reset"  @click="delay = 6"  :class="{'active': delay === 6}" >1h</button>
-        <button class="reset"  @click="delay = 3"  :class="{'active': delay === 3}" >30m</button>
-        <button class="reset"  @click="delay = 1"  :class="{'active': delay === 1}" >10m</button>
+        <button class="reset" @click="delay = 36" :class="{'active': delay === 36}">{{ $t('6h+') }}</button>
+        <button class="reset" @click="delay = 12" :class="{'active': delay === 12}">{{ $t('2-4h') }}</button>
+        <button class="reset" @click="delay = 1"  :class="{'active': delay === 1}" >{{ $t('15m') }}</button>
         <!-- eslint-enable max-len -->
+        <div class="flex-grow"></div>
     </div>
 </template>
 
@@ -23,7 +23,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const delay = ref(6); // 1 hour
+        const delay = ref(12); // 2-4h
 
         watch([() => props.fees, delay], ([fees]) => {
             const availableDelay = Math.min((fees as number[]).length - 1, delay.value);
@@ -33,9 +33,7 @@ export default defineComponent({
         const speed = computed(() => {
             switch (delay.value) {
                 case 1: return 100;
-                case 3: return 75;
-                case 6: return 50;
-                case 36: return 25;
+                case 12: return 50;
                 default: return 0;
             }
         });
@@ -52,7 +50,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .fee-estimator {
+    .fee-selector {
+        justify-content: space-between;
         align-items: center;
     }
 
@@ -88,9 +87,9 @@ export default defineComponent({
         }
 
         &:nth-of-type(1).active { background: radial-gradient(100% 100% at 100% 100%, #265DD7 0%, #0582CA 100%); }
-        &:nth-of-type(2).active { background: radial-gradient(100% 100% at 100% 100%, #444C86 0%, #425DAD 100%); }
-        &:nth-of-type(3).active { background: radial-gradient(100% 100% at 100% 100%, #5F4B8B 0%, #4D4C96 100%); }
-        &:nth-of-type(4).active { background: radial-gradient(100% 100% at 100% 100%, #96467D 0%, #BF6D8A 100%); }
-        &:nth-of-type(5).active { background: radial-gradient(100% 100% at 100% 100%, #E0516B 0%, #FA7268 100%); }
+        // &:nth-of-type(2).active { background: radial-gradient(100% 100% at 100% 100%, #444C86 0%, #425DAD 100%); }
+        &:nth-of-type(2).active { background: radial-gradient(100% 100% at 100% 100%, #5F4B8B 0%, #4D4C96 100%); }
+        // &:nth-of-type(4).active { background: radial-gradient(100% 100% at 100% 100%, #96467D 0%, #BF6D8A 100%); }
+        &:nth-of-type(3).active { background: radial-gradient(100% 100% at 100% 100%, #E0516B 0%, #FA7268 100%); }
     }
 </style>

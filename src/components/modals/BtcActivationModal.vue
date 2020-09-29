@@ -49,8 +49,10 @@ export default defineComponent({
 
         async function enableBitcoin() {
             const activated = await activateBitcoin(activeAccountId.value!);
-            if (activated) selectBitcoin();
-            context.root.$router.back();
+            if (activated) {
+                selectBitcoin();
+                context.root.$router.back();
+            }
         }
 
         return {
@@ -103,7 +105,8 @@ svg {
 
 .nq-text {
     color: var(--nimiq-blue);
-    margin: 0 5rem 2rem;
+    margin: 0 0 2rem;
+    max-width: 34.5rem;
     white-space: pre-line;
 }
 

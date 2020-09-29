@@ -223,7 +223,7 @@ export default defineComponent({
             getSenderLabel,
         } = useBtcLabelsStore();
 
-        const state = computed(() => transaction.value.timestamp ? TransactionState.MINED : TransactionState.PENDING);
+        const state = computed(() => transaction.value.state);
 
         const inputsSent = computed(() => transaction.value.inputs.filter((input) =>
             input.address && (activeInternalAddresses.value.includes(input.address)

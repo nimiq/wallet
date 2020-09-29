@@ -121,11 +121,12 @@ const routes: RouteConfig[] = [{
             name: 'migration-welcome',
             meta: { column: Columns.ACCOUNT },
         }, {
-            path: '/btc-activation',
+            path: '/btc-activation/:isActivated?',
             components: {
                 modal: BtcActivationModal,
             },
             name: 'btc-activation',
+            props: { modal: true },
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/btc-send',

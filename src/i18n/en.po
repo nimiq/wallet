@@ -71,7 +71,7 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:20
+#: src/components/modals/BtcActivationModal.vue:25
 msgid "Activate Bitcoin"
 msgstr ""
 
@@ -91,10 +91,10 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:7
+#: src/components/modals/BtcActivationModal.vue:8
 msgid ""
 "Add Bitcoin\n"
-"to your Account"
+"to your account"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:121
@@ -187,7 +187,7 @@ msgstr ""
 msgid "Buy & Sell"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:14
+#: src/components/modals/BtcActivationModal.vue:15
 msgid ""
 "Buy and sell BTC by bank transfer.\n"
 "Coming soon!"
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:10
+#: src/components/modals/BtcActivationModal.vue:11
 msgid "Easily swap between NIM, the super performant payment coin and BTC, the gold standard of crypto."
 msgstr ""
 
@@ -497,6 +497,7 @@ msgid "Got feedback? Found a bug?"
 msgstr ""
 
 #: src/components/modals/BetaNoticeModal.vue:25
+#: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:97
 msgid "Got it"
 msgstr ""
@@ -906,6 +907,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
+#: src/components/modals/BtcActivationModal.vue:28
 #: src/components/modals/WelcomeModal.vue:104
 msgid "Skip for now"
 msgstr ""
@@ -1119,6 +1121,12 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your account is not safe yet!"
+msgstr ""
+
+#: src/components/modals/BtcActivationModal.vue:7
+msgid ""
+"Your account now\n"
+"supports Bitcoin!"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:72

@@ -4,7 +4,8 @@
         <PageBody class="flex-column">
             <BitcoinIcon/>
 
-            <h1 class="nq-h1">{{ $t('Add Bitcoin\nto your Account') }}</h1>
+            <h1 v-if="isActivated" class="nq-h1">{{ $t('Your account now\nsupports Bitcoin!') }}</h1>
+            <h1 v-else class="nq-h1">{{ $t('Add Bitcoin\nto your account') }}</h1>
 
             <p class="nq-text">
                 {{ $t('Easily swap between NIM, the super performant payment coin '
@@ -16,9 +17,15 @@
 
             <div class="flex-grow"></div>
 
-            <button class="nq-button light-blue" @click="enableBitcoin" @mousedown.prevent>
+
+            <button v-if="isActivated" class="nq-button light-blue" @click="$router.back()" @mousedown.prevent>
+                {{ $t('Got it') }}
+            </button>
+            <button v-else class="nq-button light-blue" @click="enableBitcoin" @mousedown.prevent>
                 {{ $t('Activate Bitcoin') }}
             </button>
+
+            <a v-if="!isActivated" class="nq-link" @click="$router.back()">{{ $t('Skip for now') }}</a>
         </PageBody>
     </Modal>
 </template>
@@ -34,6 +41,12 @@ import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
+    props: {
+        isActivated: {
+            // Note: this prop has no type on purpose, as it can be a string or a boolean passed from vue-router
+            default: false,
+        },
+    },
     setup(props, context) {
         const { activeAccountId, setActiveCurrency } = useAccountStore();
 
@@ -116,6 +129,9 @@ svg {
 
 .nq-link {
     font-weight: 600;
+    font-size: var(--small-size);
+    color: var(--text-60);
+    margin-bottom: -1.5rem;
 }
 
 .nq-button {

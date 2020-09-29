@@ -123,6 +123,8 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
 
+const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
+
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
@@ -169,7 +171,28 @@ export default defineComponent({
             showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
         }
 
-        watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
+        function determineIfShowBtcActivationModal() {
+            if (!activeAccountInfo.value) return;
+
+            // Showing the modal after login is handled in hub.ts
+            if (hasBitcoinAddresses.value) return;
+
+            const isEligibleAccountType = activeAccountInfo.value.type === AccountType.BIP39;
+            if (!isEligibleAccountType) return;
+
+            const alreadyShown = localStorage.getItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY) || '0';
+            if (alreadyShown === '1') return;
+
+            context.root.$router.push('/btc-activation');
+            localStorage.setItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY, '1');
+        }
+
+        function determineModalToShow() {
+            determineIfShowModalLegacyAccountNotice();
+            determineIfShowBtcActivationModal();
+        }
+
+        watch(activeAccountInfo, determineModalToShow);
 
         return {
             activeAccountInfo,

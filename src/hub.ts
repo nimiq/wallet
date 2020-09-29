@@ -21,6 +21,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
         welcomeRoute = '/welcome';
+    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+        welcomeRoute = '/btc-activation/activated';
     }
 });
 
@@ -204,6 +206,8 @@ export async function onboard(asRedirect = false) {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
         router.push('/welcome');
+    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+        router.push('/btc-activation/activated');
     }
 
     return true;

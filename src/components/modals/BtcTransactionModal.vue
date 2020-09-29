@@ -58,9 +58,15 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Copyable v-for="address in peerAddresses.slice(0, 3)" :key="address" :text="address">
-                        <ShortAddress :address="address"/>
-                    </Copyable>
+                    <Tooltip preferredPosition="bottom right"
+                        v-for="address in peerAddresses.slice(0, 3)"
+                        :key="address"
+                        :styles="{ transform: 'translate(-9.25rem, 2rem)' }"
+                    >
+                        <ShortAddress :address="address" slot="trigger"/>
+                        {{ address }}
+                    </Tooltip>
+
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
                         {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
                     </a>
@@ -69,9 +75,15 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="address in ownAddresses.slice(0, 3)" :key="address" :text="address">
-                        <ShortAddress :address="address"/>
-                    </Copyable>
+                    <Tooltip preferredPosition="bottom left"
+                        v-for="address in ownAddresses.slice(0, 3)"
+                        :key="address"
+                        :styles="{ transform: 'translate(9.25rem, 2rem)' }"
+                    >
+                        <ShortAddress :address="address" slot="trigger"/>
+                        {{ address }}
+                    </Tooltip>
+
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
                         {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
                     </a>
@@ -81,9 +93,14 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Copyable v-for="address in ownAddresses.slice(0, 3)" :key="address" :text="address">
-                        <ShortAddress :address="address"/>
-                    </Copyable>
+                    <Tooltip preferredPosition="bottom right"
+                        v-for="address in ownAddresses.slice(0, 3)"
+                        :key="address"
+                        :styles="{ transform: 'translate(-9.25rem, 2rem)' }"
+                    >
+                        <ShortAddress :address="address" slot="trigger"/>
+                        {{ address }}
+                    </Tooltip>
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
                         {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
                     </a>
@@ -98,9 +115,14 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Copyable v-for="address in peerAddresses.slice(0, 3)" :key="address" :text="address">
-                        <ShortAddress :address="address"/>
-                    </Copyable>
+                    <Tooltip preferredPosition="bottom left"
+                        v-for="address in peerAddresses.slice(0, 3)"
+                        :key="address"
+                        :styles="{ transform: 'translate(9.25rem, 2rem)' }"
+                    >
+                        <ShortAddress :address="address" slot="trigger"/>
+                        {{ address }}
+                    </Tooltip>
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
                         {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
                     </a>
@@ -173,7 +195,6 @@ import {
     PageHeader,
     PageBody,
     ArrowRightIcon,
-    Copyable,
     FiatAmount,
     Tooltip,
     InfoCircleSmallIcon,
@@ -362,7 +383,6 @@ export default defineComponent({
         PageBody,
         PageHeader,
         Modal,
-        Copyable,
         ShortAddress,
         FiatAmount,
         Tooltip,
@@ -508,19 +528,33 @@ export default defineComponent({
 //     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 // }
 
-.copyable {
-    padding: 0.5rem 1rem;
+.address-info .tooltip /deep/ {
+    .tooltip-box {
+        padding: 1rem;
+        font-size: 2rem;
+        line-height: 2rem;
+    }
 
-    &:hover .short-address,
-    &:focus .short-address,
-    &.copied .short-address {
-        opacity: 1;
-        font-weight: 500;
+    .trigger {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: background 300ms var(--nimiq-ease);
+        margin-bottom: .5rem;
+
+        &:hover,
+        &:focus,
+        &:focus-within {
+            background: var(--text-6);
+
+            .short-address {
+                opacity: .6;
+            }
+        }
     }
 }
 
 .short-address {
-    font-size: var(--body-size);
+    font-size: 2rem;
     opacity: 0.5;
     transition: opacity .3s var(--nimiq-ease);
 }

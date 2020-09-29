@@ -9,6 +9,7 @@
             <li v-for="(label, index) in matchingLabels" :key="index"
                 :class="{selected: selectedLabelIndex === index}"
                 @mouseenter="selectedLabelIndex = index"
+                @click="localValue = label"
             >
                 <Avatar :label="label"/>
                 {{ label }}

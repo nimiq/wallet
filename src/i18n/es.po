@@ -2,6 +2,7 @@
 # Translators:
 # Sören Schwert <hello@soerenschwert.de>, 2020
 # Matheo <matheo@nimiq.com>, 2020
+# Rhody Lugo <rhodylugo@gmail.com>, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
 # Daniel, 2020
 # 
@@ -15,19 +16,19 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
-msgstr ""
+msgstr "{accounts} conservan, manejan y agregan direcciones."
 
 #: src/components/modals/MigrationWelcomeModal.vue:37
 msgid "{addresses} send and receive transactions."
-msgstr ""
+msgstr "{addresses} envían y reciben transacciones."
 
 #: src/components/modals/TransactionModal.vue:184
 msgid "{count} Confirmation | {count} Confirmations"
-msgstr "{count} Confirmaciones | {count} Confirmaciones"
+msgstr "{count} Confirmación | {count} Confirmaciones"
 
 #: src/components/NetworkStats.vue:9
 msgid "{count} Peer | {count} Peers"
-msgstr "{count} Pares | {count} Pares"
+msgstr "{count} Par | {count} Pares"
 
 #: src/components/layouts/AddressOverview.vue:14
 #: src/components/layouts/AddressOverview.vue:76
@@ -36,7 +37,7 @@ msgstr "{count} Cashlink en trámite | {count} Cashlinks en trámite"
 
 #: src/components/modals/TransactionModal.vue:186
 msgid "{fee} fee"
-msgstr ""
+msgstr "{fee} cuota"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
@@ -109,6 +110,8 @@ msgid ""
 "All translations are for information purposes only. The English text is the "
 "controlling version."
 msgstr ""
+"Todas las traducciones son únicamente de carácter. Ingles es el texto "
+"principal."
 
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
@@ -179,7 +182,7 @@ msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
 #: src/components/modals/TransactionModal.vue:327
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:138
+#: src/components/TransactionListItem.vue:139
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -291,10 +294,6 @@ msgstr "Crear un link de pago"
 msgid "Credit Card accepted"
 msgstr "Tarjeta de Crédito aceptada"
 
-#: src/components/modals/TransactionModal.vue:167
-msgid "Current value"
-msgstr "Valor actual"
-
 #: src/components/layouts/Settings.vue:88
 msgid "Developer"
 msgstr "Programador"
@@ -346,7 +345,7 @@ msgstr "Expirado"
 
 #: src/components/modals/SendModal.vue:358
 msgid "express"
-msgstr ""
+msgstr "rápido"
 
 #: src/components/modals/TransactionModal.vue:58
 msgid "Failed"
@@ -354,7 +353,7 @@ msgstr "Fallido"
 
 #: src/components/TestnetFaucet.vue:137
 msgid "Faucet error - please try again."
-msgstr ""
+msgstr "Error en el faucet - intente de nuevo por favor."
 
 #: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
@@ -399,7 +398,7 @@ msgstr "tema en el foro"
 
 #: src/components/modals/SendModal.vue:348
 msgid "free"
-msgstr ""
+msgstr "gratis"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
@@ -417,11 +416,6 @@ msgstr "Obtener NIM"
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
 msgstr "Obtener NIM y BTC"
-
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "Get NIM on {exchange}"
-msgstr "Obtener NIM en {exchange}"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
@@ -844,7 +838,7 @@ msgstr "Participación"
 
 #: src/components/modals/SendModal.vue:353
 msgid "standard"
-msgstr ""
+msgstr "Estándar"
 
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts in Q3 2020."
@@ -897,7 +891,7 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
-msgstr ""
+msgstr "Actualmente no hay NIM gratis disponibles."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
@@ -922,7 +916,12 @@ msgstr "Este mes"
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
-msgstr ""
+msgstr "El servicio actualmente no esta disponible en tu región."
+
+#: src/components/modals/TradeModal.vue:36
+#: src/components/modals/TradeModal.vue:56
+msgid "To {exchange}"
+msgstr "Hacia {exchange}"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
@@ -945,7 +944,7 @@ msgid "Tweet your map!"
 msgstr "¡Twitea tu mapa!"
 
 #: src/components/modals/TransactionModal.vue:328
-#: src/components/TransactionListItem.vue:139
+#: src/components/TransactionListItem.vue:140
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink no canjeado"
 
@@ -983,7 +982,7 @@ msgstr "Esta usando una Cuenta versión antigua "
 
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
-msgstr ""
+msgstr "Puedes recibir más NIM gratis en {waitTime} horas."
 
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"

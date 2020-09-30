@@ -39,15 +39,15 @@
                 </a>
             </transition>
 
-            <div class="recently-copied-addresses flex-column" ref="addressList">
+            <div class="recently-copied-addresses flex-column">
                 <transition name="fade">
                     <p class="no-recently-copied-address"
-                        v-if="!recentlyCopiedAddressesListSorted.length">
+                        v-if="recentlyCopiedAddressesListSorted.length === 0">
                         {{ $t('Recent addresses will be listed here, until they receive a transaction.') }}
                     </p>
                     <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
-                        <div class="list">
+                        <div class="list" ref="addressList">
                             <div class="scroll-mask top"></div>
 
                             <transition-group name="translateY-fade-list" tag="div">
@@ -78,7 +78,7 @@
                                         <div class="address-created">{{ timelabel }}</div>
                                     </div>
                                     <Tooltip class="address-short"
-                                        preferredPosition="top"
+                                        preferredPosition="top left"
                                         :container="$refs.addressList ? { $el: $refs.addressList } : null"
                                     >
                                         <Copyable :text="address" slot="trigger">
@@ -572,11 +572,6 @@ export default defineComponent({
     font-weight: 600;
     color: var(--text-50);
 
-    &.fade-enter-active,
-    &.fade-leave-active {
-        transition-delay: 1s;
-    }
-
     &.fade-enter-active {
         height: 0;
         margin-top: 0;
@@ -627,6 +622,7 @@ export default defineComponent({
     flex-grow: 1;
     align-self: stretch;
     min-height: 0;
+    position: relative;
 }
 
 .no-recently-copied-address {
@@ -671,7 +667,7 @@ export default defineComponent({
     position: relative;
     justify-content: space-between;
     align-items: center;
-    height: 5rem;
+    height: 5.25rem;
 
     &:not(:last-child) {
         margin-bottom: 2rem;
@@ -689,7 +685,7 @@ export default defineComponent({
 .address-label {
     &.fade-enter-active {
         position: absolute;
-        bottom: 2rem;
+        bottom: 2.25rem;
     }
 
     &.fade-enter-active,
@@ -782,7 +778,6 @@ export default defineComponent({
         font-family: 'Fira Mono', monospace;
         letter-spacing: -0.02em;
         font-weight: normal;
-        transform: translate(1rem, -2rem);
         pointer-events: none;
     }
 
@@ -1026,7 +1021,6 @@ footer {
 .translateY-fade-list-enter-to,
 .translateY-fade-list-leave {
     opacity: 1;
-    transform: translateY(0);
 }
 
 .translateY-fade-list-enter,

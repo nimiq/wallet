@@ -146,11 +146,11 @@
                 <div class="inputs">
                     <div class="separator"></div>
                     <!-- TODO: add label to AmountInput -->
-                    <AmountInput v-model="amount" :maxFontSize="5" label="BTC"/>
+                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="8">
+                        <span slot="suffix" class="ticker">BTC</span>
+                    </AmountInput>
                     <div class="separator"></div>
                 </div>
-                <!-- <AmountInput v-model="amoun§t" />
-                <labelInput v-model="message" placeholder="add a message" /> -->
                 <QrCode
                     :data="requestLink"
                     :size="400"

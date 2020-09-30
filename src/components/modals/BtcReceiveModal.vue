@@ -62,7 +62,7 @@
                                             v-model="recentlyCopiedAddresses[address].label"
                                             :ref="`address-label-${address}`"
                                             @blur.native.capture="hideRenameAddressLabelInput(address)"
-                                            @keyup.native.enter="hideRenameAddressLabelInput(address)"
+                                            @keydown.native.enter="hideRenameAddressLabelInput(address)"
                                         />
                                     </div>
                                     <div class="flex-column" key="not-renaming" v-else>
@@ -683,6 +683,7 @@ export default defineComponent({
 
     .nq-input {
         border-radius: 0.375rem;
+        max-width: 17.5rem;
 
         &:hover,
         &:focus {
@@ -692,10 +693,17 @@ export default defineComponent({
 }
 
 .address-label {
+    max-width: 17.5rem;
+    padding-right: 1rem;
+    padding-left: 0.5rem;
+    border-radius: .5rem;
     font-size: var(--body-size);
     line-height: calc(var(--body-size) + 1rem);
-    position: relative;
     cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+    transform: translateX(-.5rem);
 
     transition: {
         property: transform, color;
@@ -704,7 +712,7 @@ export default defineComponent({
     };
 
     &:hover {
-        transform: translateX(.5rem);
+        transform: translateX(0);
         color: var(--nimiq-light-blue);
     }
 
@@ -717,7 +725,6 @@ export default defineComponent({
         bottom: 0;
         left: -.5rem;
         opacity: 0;
-        border-radius: .5rem;
 
         transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }

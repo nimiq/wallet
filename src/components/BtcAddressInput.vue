@@ -167,6 +167,7 @@ export default defineComponent({
 
             &::placeholder {
                 font-size: var(--body-size);
+                font-weight: 600;
                 font-family: Muli, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu,
                     Cantarell, "Helvetica Neue", sans-serif;
             }

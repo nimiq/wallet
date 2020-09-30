@@ -34,7 +34,7 @@
                     </Tooltip>
                 </div>
 
-                <a class="address-sub-label flex-row nq-link" @click="showNextExternalAddress" v-else>
+                <a class="address-sub-label flex-row create-new" @click="showNextExternalAddress" v-else>
                     <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
                 </a>
             </transition>
@@ -45,49 +45,50 @@
                         v-if="!recentlyCopiedAddressesListSorted.length">
                         {{ $t('Recent addresses will be listed here, until they receive a transaction.') }}
                     </p>
-
-                    <div class="address-list" v-else>
-                        <div class="scroll-mask top"></div>
+                    <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
+                        <div class="list">
+                            <div class="scroll-mask top"></div>
 
-                        <transition-group name="tranlsateY-fade-list" tag="div">
-                            <div class="address-item flex-row"
-                                v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
-                                :class="{ rename }"
-                                :key="address"
-                            >
-                                <transition name="fade">
-                                    <div class="flex-column" key="renaming" v-if="rename">
-                                        <LabelInput :placeholder="$t('Label the sender')"
-                                            v-model="recentlyCopiedAddresses[address].label"
-                                            :ref="`address-label-${address}`"
-                                            @blur.native.capture="hideRenameAddressLabelInput(address)"
-                                            @keydown.native.enter="hideRenameAddressLabelInput(address)"
-                                        />
-                                    </div>
-                                    <div class="flex-column" key="not-renaming" v-else>
-                                        <div class="address-label"
-                                            :class="{ 'unlabelled': !label }"
-                                            @click="showRenameAddressLabelInput(address)"
-                                        >
-                                            {{ label || $t("Unlabelled") }}
-                                        </div>
-                                        <div class="address-created">{{ timelabel }}</div>
-                                    </div>
-                                </transition>
-                                <Tooltip class="address-short"
-                                    preferredPosition="top"
-                                    :container="$refs.addressList ? { $el: $refs.addressList } : null"
+                            <transition-group name="tranlsateY-fade-list" tag="div">
+                                <div class="address-item flex-row"
+                                    v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
+                                    :class="{ rename }"
+                                    :key="address"
                                 >
-                                    <Copyable :text="address" slot="trigger">
-                                        <ShortAddress :address="address"/>
-                                    </Copyable>
-                                    {{ address }}
-                                </Tooltip>
-                            </div>
-                        </transition-group>
+                                    <transition name="fade">
+                                        <div class="flex-column" key="renaming" v-if="rename">
+                                            <LabelInput :placeholder="$t('Label the sender')"
+                                                v-model="recentlyCopiedAddresses[address].label"
+                                                :ref="`address-label-${address}`"
+                                                @blur.native.capture="hideRenameAddressLabelInput(address)"
+                                                @keydown.native.enter="hideRenameAddressLabelInput(address)"
+                                            />
+                                        </div>
+                                        <div class="flex-column" key="not-renaming" v-else>
+                                            <div class="address-label"
+                                                :class="{ 'unlabelled': !label }"
+                                                @click="showRenameAddressLabelInput(address)"
+                                            >
+                                                {{ label || $t("Unlabelled") }}
+                                            </div>
+                                            <div class="address-created">{{ timelabel }}</div>
+                                        </div>
+                                    </transition>
+                                    <Tooltip class="address-short"
+                                        preferredPosition="top"
+                                        :container="$refs.addressList ? { $el: $refs.addressList } : null"
+                                    >
+                                        <Copyable :text="address" slot="trigger">
+                                            <ShortAddress :address="address"/>
+                                        </Copyable>
+                                        {{ address }}
+                                    </Tooltip>
+                                </div>
+                            </transition-group>
 
-                        <div class="scroll-mask bottom"></div>
+                            <div class="scroll-mask bottom"></div>
+                        </div>
                     </div>
                 </transition>
             </div>
@@ -587,6 +588,15 @@ export default defineComponent({
         text-decoration: none;
     }
 
+    &.create-new {
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            color: var(--nimiq-light-blue);
+        }
+    }
+
     & > svg {
         margin-right: 0.75rem;
         fill: currentColor;
@@ -612,13 +622,8 @@ export default defineComponent({
 
 .recently-copied-addresses {
     flex-grow: 1;
-    width: calc(100% + 8rem);
-    padding: 0 4rem;
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    @extend %custom-scrollbar;
+    align-self: stretch;
+    min-height: 0;
 }
 
 .no-recently-copied-address {
@@ -631,6 +636,10 @@ export default defineComponent({
 }
 
 .address-list {
+    flex-grow: 1;
+    align-items: center;
+    min-height: 0;
+
     &.fade-enter-active,
     &.fade-leave-active {
         position: absolute;
@@ -638,8 +647,20 @@ export default defineComponent({
     }
 
     .nq-label {
-        margin-bottom: 4rem;
         text-align: center;
+        margin: 4rem 0 0;
+    }
+
+    .list {
+        width: calc(100% + 8rem);
+        padding: 2.5rem 4rem 0;
+        overflow-y: auto;
+
+        @extend %custom-scrollbar;
+
+        .scroll-mask.top {
+            top: -2.5rem;
+        }
     }
 }
 
@@ -745,6 +766,10 @@ export default defineComponent({
 }
 
 .address-short {
+    &.tooltip /deep/ .trigger::after {
+        pointer-events: none;
+    }
+
     &.tooltip /deep/ .tooltip-box {
         font-size: var(--small-size);
         line-height: 1;
@@ -752,14 +777,8 @@ export default defineComponent({
         font-family: 'Fira Mono', monospace;
         letter-spacing: -0.02em;
         font-weight: normal;
-    }
-
-    &.tooltip.top /deep/ .tooltip-box {
-        transform: translate(-2rem, -2rem);
-    }
-
-    &.tooltip.bottom /deep/ .tooltip-box {
-        transform: translate(-2rem, 2rem);
+        transform: translate(1rem, -2rem);
+        pointer-events: none;
     }
 
     .copyable {
@@ -801,6 +820,9 @@ export default defineComponent({
             }
         }
 
+        /deep/ .tooltip {
+            z-index: 3;
+        }
     }
 }
 

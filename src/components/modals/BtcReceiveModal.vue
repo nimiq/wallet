@@ -13,13 +13,10 @@
                 :text="currentlyShownAddress"
                 @click.native="copyActiveAddressCallback"
                 ref="$availableAddressCopyable"
+                :class="{ 'already-copied': !!recentlyCopiedAddresses[currentlyShownAddress] }"
             >
                 <transition-group name="translateY">
-                    <div
-                        v-for="address in [currentlyShownAddress]"
-                        :key="address"
-                        :class="{ 'already-copied': !!recentlyCopiedAddresses[address] }"
-                    >{{ address }}</div>
+                    <div v-for="address in [currentlyShownAddress]" :key="address">{{ address }}</div>
                 </transition-group>
                 <div class="width-finder" ref="$addressWidthFinder">{{ currentlyShownAddress }}</div>
             </Copyable>
@@ -503,8 +500,9 @@ export default defineComponent({
         timing-function: var(--nimiq-ease);
     };
 
-    .already-copied {
+    &.already-copied {
         color: var(--text-35);
+        pointer-events: none;
     }
 
     &:hover,

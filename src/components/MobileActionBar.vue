@@ -1,11 +1,11 @@
 <template>
     <div class="mobile-action-bar flex-row">
-        <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
+        <button class="receive nq-button-s flex-row" @click="receive" @mousedown.prevent>
             <ArrowRightSmallIcon />{{ $t('Receive') }}
         </button>
         <button class="send nq-button-pill light-blue flex-row"
-            @click="$router.push('/send')" @mousedown.prevent
-            :disabled="!activeAddressInfo || !activeAddressInfo.balance"
+            @click="send" @mousedown.prevent
+            :disabled="sendDisabled"
         >
             <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>
@@ -16,16 +16,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useAddressStore } from '../stores/Address';
+import { useAccountStore } from '../stores/Account';
+import { CryptoCurrency } from '../lib/Constants';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
+        const { activeCurrency } = useAccountStore();
+        const { accountBalance } = useBtcAddressStore();
+
+        function nimOrBtc<T>(nim: T, btc: T): T {
+            switch (activeCurrency.value) {
+                case CryptoCurrency.NIM: return nim;
+                case CryptoCurrency.BTC: return btc;
+                default: throw new Error('Invalid active currency');
+            }
+        }
+
+        function receive() {
+            context.root.$router.push(nimOrBtc('/receive', '/btc-receive'));
+        }
+
+        function send() {
+            context.root.$router.push(nimOrBtc('/send', '/btc-send'));
+        }
+
+        const sendDisabled = computed(() => {
+            return nimOrBtc(
+                !activeAddressInfo.value || !activeAddressInfo.value.balance,
+                !accountBalance.value,
+            );
+        });
 
         return {
-            activeAddressInfo,
+            receive,
+            send,
+            sendDisabled,
         };
     },
     components: {

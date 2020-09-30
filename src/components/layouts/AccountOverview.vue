@@ -365,6 +365,10 @@ export default defineComponent({
             timing-function: var(--nimiq-ease);
         };
 
+        &.active {
+            color: var(--text-100);
+        }
+
         &:not(.active):not(.requires-activation):hover {
             color: var(--text-100);
             background: var(--nimiq-highlight-bg);

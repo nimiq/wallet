@@ -50,7 +50,7 @@
                         <div class="list">
                             <div class="scroll-mask top"></div>
 
-                            <transition-group name="tranlsateY-fade-list" tag="div">
+                            <transition-group name="translateY-fade-list" tag="div">
                                 <div class="address-item flex-row"
                                     v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
                                     :class="{ rename }"
@@ -1008,10 +1008,10 @@ footer {
     }
 }
 
-/* vue transition - tranlsateY-fade-list */
-.tranlsateY-fade-list-enter-active,
-.tranlsateY-fade-list-leave-active,
-.tranlsateY-fade-list-move {
+/* vue transition - translateY-fade-list */
+.translateY-fade-list-enter-active,
+.translateY-fade-list-leave-active,
+.translateY-fade-list-move {
     transition: {
         property: opacity, transform;
         duration: var(--long-transition-duration);
@@ -1019,14 +1019,14 @@ footer {
     };
 }
 
-.tranlsateY-fade-list-enter-to,
-.tranlsateY-fade-list-leave {
+.translateY-fade-list-enter-to,
+.translateY-fade-list-leave {
     opacity: 1;
     transform: translateY(0);
 }
 
-.tranlsateY-fade-list-enter,
-.tranlsateY-fade-list-leave-to {
+.translateY-fade-list-enter,
+.translateY-fade-list-leave-to {
     opacity: 0;
     transform: translateY(-4rem);
 }

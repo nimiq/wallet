@@ -14,6 +14,7 @@
                     </transition>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
+                        v-model="addressInputValue"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @input="resetAddress"
                         @click.capture.native="selectedInput = 'top'"
@@ -290,7 +291,10 @@ export default defineComponent({
             if (isFetchingHistogram) return;
             isFetchingHistogram = true;
 
-            const histogram = await (await getElectrumClient()).getMempoolFees();
+            const client = await getElectrumClient();
+            await client.waitForConsensusEstablished();
+
+            const histogram = await client.getMempoolFees();
             mempoolFees.value = histogram;
 
             isFetchingHistogram = false;
@@ -400,6 +404,9 @@ export default defineComponent({
             && amount.value <= maxSendableAmount.value,
         );
 
+
+        const addressInputValue = ref(''); // Used for setting the address from a request URI
+
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             try {
                 const parsedRequestLink = parseBitcoinUrl(uri);
@@ -412,6 +419,7 @@ export default defineComponent({
                 }
 
                 if (parsedRequestLink.recipient) {
+                    addressInputValue.value = parsedRequestLink.recipient;
                     // Wait for onAddressEntered to trigger
                     let i = 0;
                     while (!recipientWithLabel.value && i < 10) {
@@ -436,13 +444,16 @@ export default defineComponent({
          */
 
         // FIXME: This should optimally be automatic with Typescript
+        interface BtcAddressInput {
+            focus(): void;
+        }
         interface AmountInput {
             focus(): void;
         }
 
-        const addressInputRef: Ref<LabelInput | null> = ref(null);
-        const labelInputRef: Ref<LabelInput | null> = ref(null);
-        const amountInputRef: Ref<AmountInput | null> = ref(null);
+        const addressInputRef = ref<BtcAddressInput>(null);
+        const labelInputRef = ref<LabelInput>(null);
+        const amountInputRef = ref<AmountInput>(null);
         const labelInputHeight = computed(() => labelInputRef.value?.$el.children[0].clientHeight);
 
         const { width } = useWindowSize();
@@ -554,6 +565,7 @@ export default defineComponent({
             RecipientType,
 
             // Recipient Input
+            addressInputValue,
             resetAddress,
             onAddressEntered,
             recipientWithLabel,

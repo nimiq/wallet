@@ -150,6 +150,16 @@ const routes: RouteConfig[] = [{
             name: 'btc-transaction',
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
+        }, {
+            path: '/bitcoin\\::requestUri',
+            components: {
+                modal: BtcSendModal,
+            },
+            name: 'send-via-btc-uri',
+            props: {
+                modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
+            },
+            meta: { column: Columns.DYNAMIC },
         }],
     }, {
         path: '/settings',

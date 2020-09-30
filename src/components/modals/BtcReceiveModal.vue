@@ -22,7 +22,7 @@
             </Copyable>
 
             <transition name="fade">
-                <div class="address-sub-label flex-row blue" v-if="!addressCopied">
+                <div class="address-sub-label flex-row blue" v-if="!recentlyCopiedAddresses[currentlyShownAddress]">
                     <span>{{ $t('This is a single-use address') }}</span>
                     <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
                         <template slot="trigger"><InfoCircleSmallIcon /></template>

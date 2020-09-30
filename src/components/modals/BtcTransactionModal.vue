@@ -58,10 +58,8 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Tooltip preferredPosition="bottom right"
-                        v-for="address in peerAddresses.slice(0, 3)"
-                        :key="address"
-                        :styles="{ transform: 'translate(-9.25rem, 2rem)' }"
+                    <Tooltip preferredPosition="bottom right" class="left-aligned"
+                        v-for="address in peerAddresses.slice(0, 3)" :key="address"
                     >
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
@@ -75,10 +73,8 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Tooltip preferredPosition="bottom left"
-                        v-for="address in ownAddresses.slice(0, 3)"
-                        :key="address"
-                        :styles="{ transform: 'translate(9.25rem, 2rem)' }"
+                    <Tooltip preferredPosition="bottom left" class="right-aligned"
+                        v-for="address in ownAddresses.slice(0, 3)" :key="address"
                     >
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
@@ -93,10 +89,8 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Tooltip preferredPosition="bottom right"
-                        v-for="address in ownAddresses.slice(0, 3)"
-                        :key="address"
-                        :styles="{ transform: 'translate(-9.25rem, 2rem)' }"
+                    <Tooltip preferredPosition="bottom right" class="left-aligned"
+                        v-for="address in ownAddresses.slice(0, 3)" :key="address"
                     >
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
@@ -115,10 +109,8 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     /> -->
                     <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
-                    <Tooltip preferredPosition="bottom left"
-                        v-for="address in peerAddresses.slice(0, 3)"
-                        :key="address"
-                        :styles="{ transform: 'translate(9.25rem, 2rem)' }"
+                    <Tooltip preferredPosition="bottom left" class="right-aligned"
+                        v-for="address in peerAddresses.slice(0, 3)" :key="address"
                     >
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
@@ -531,8 +523,11 @@ export default defineComponent({
 .address-info .tooltip /deep/ {
     .tooltip-box {
         padding: 1rem;
-        font-size: 2rem;
-        line-height: 2rem;
+        font-size: var(--small-size);
+        line-height: 1;
+        font-family: 'Fira Mono', monospace;
+        font-weight: normal;
+        letter-spacing: -0.02em;
     }
 
     .trigger {
@@ -553,8 +548,16 @@ export default defineComponent({
     }
 }
 
+.address-info .tooltip.left-aligned /deep/ .tooltip-box {
+    transform: translate(-9.25rem, 2rem);
+}
+
+.address-info .tooltip.right-aligned /deep/ .tooltip-box {
+    transform: translate(9.25rem, 2rem);
+}
+
 .short-address {
-    font-size: 2rem;
+    font-size: var(--body-size);
     opacity: 0.5;
     transition: opacity .3s var(--nimiq-ease);
 }
@@ -712,6 +715,14 @@ export default defineComponent({
 
     .address-info {
         flex-shrink: 0;
+    }
+
+    .address-info .tooltip.left-aligned /deep/ .tooltip-box {
+        transform: translate(-7.75rem, 2rem);
+    }
+
+    .address-info .tooltip.right-aligned /deep/ .tooltip-box {
+        transform: translate(7.75rem, 2rem);
     }
 
     .tooltip {

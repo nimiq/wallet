@@ -48,7 +48,7 @@
 
                     <div class="address-list" v-else>
                         <div class="scroll-mask top"></div>
-                        <h2 class="nq-h2">{{ $t('RECENTLY COPIED') }}</h2>
+                        <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
 
                         <transition-group name="tranlsateY-fade-list" tag="div">
                             <div class="address-item flex-row"
@@ -612,7 +612,8 @@ export default defineComponent({
 
 .recently-copied-addresses {
     flex-grow: 1;
-    width: 100%;
+    width: calc(100% + 8rem);
+    padding: 0 4rem;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
@@ -636,12 +637,8 @@ export default defineComponent({
         width: 100%;
     }
 
-    h2 {
-        color: var(--text-40);
-        font-size: var(--small-size);
-        margin-top: 2.625rem;
+    .nq-label {
         margin-bottom: 4rem;
-        letter-spacing: 1px;
         text-align: center;
     }
 }
@@ -743,7 +740,11 @@ export default defineComponent({
 .address-short {
     &.tooltip /deep/ .tooltip-box {
         font-size: var(--small-size);
-        padding: .5rem 1rem;
+        line-height: 1;
+        padding: 1rem;
+        font-family: 'Fira Mono', monospace;
+        letter-spacing: -0.02em;
+        font-weight: normal;
     }
 
     &.tooltip.top /deep/ .tooltip-box {
@@ -985,5 +986,12 @@ footer {
 .tranlsateY-fade-list-leave-to {
     opacity: 0;
     transform: translateY(-4rem);
+}
+
+@media (max-width: 450px) { // Breakpoint of .page-body padding
+    .recently-copied-addresses {
+        width: calc(100% + 6rem);
+        padding: 0 3rem;
+    }
 }
 </style>

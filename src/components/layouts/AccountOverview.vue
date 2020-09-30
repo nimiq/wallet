@@ -121,7 +121,6 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
-import { useAddressStore } from '../../stores/Address';
 
 const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
 
@@ -129,7 +128,6 @@ export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
         const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
-        const { state: $addresses } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)

@@ -45,12 +45,10 @@ export default defineComponent({
             context.root.$router.push(nimOrBtc('/send', '/btc-send'));
         }
 
-        const sendDisabled = computed(() => {
-            return nimOrBtc(
-                !activeAddressInfo.value || !activeAddressInfo.value.balance,
-                !accountBalance.value,
-            );
-        });
+        const sendDisabled = computed(() => nimOrBtc(
+            !activeAddressInfo.value || !activeAddressInfo.value.balance,
+            !accountBalance.value,
+        ));
 
         return {
             receive,

@@ -56,25 +56,27 @@
                                     :class="{ rename }"
                                     :key="address"
                                 >
-                                    <transition name="fade">
-                                        <div class="flex-column" key="renaming" v-if="rename">
-                                            <LabelInput :placeholder="$t('Label the sender')"
+                                    <div class="flex-column">
+                                        <transition name="fade">
+                                            <LabelInput v-if="rename"
+                                                key="renaming"
                                                 v-model="recentlyCopiedAddresses[address].label"
                                                 :ref="`address-label-${address}`"
+                                                :placeholder="$t('Label the sender')"
                                                 @blur.native.capture="hideRenameAddressLabelInput(address)"
                                                 @keydown.native.enter="hideRenameAddressLabelInput(address)"
                                             />
-                                        </div>
-                                        <div class="flex-column" key="not-renaming" v-else>
-                                            <div class="address-label"
+                                            <div v-else
+                                                key="not-renaming"
+                                                class="address-label"
                                                 :class="{ 'unlabelled': !label }"
                                                 @click="showRenameAddressLabelInput(address)"
                                             >
                                                 {{ label || $t("Unlabelled") }}
                                             </div>
-                                            <div class="address-created">{{ timelabel }}</div>
-                                        </div>
-                                    </transition>
+                                        </transition>
+                                        <div class="address-created">{{ timelabel }}</div>
+                                    </div>
                                     <Tooltip class="address-short"
                                         preferredPosition="top"
                                         :container="$refs.addressList ? { $el: $refs.addressList } : null"
@@ -669,29 +671,30 @@ export default defineComponent({
     position: relative;
     justify-content: space-between;
     align-items: center;
+    height: 5rem;
 
     &:not(:last-child) {
         margin-bottom: 2rem;
     }
 
-    &,
-    .flex-column {
-        height: 5rem;
-    }
-
     .flex-column {
         background-color: white;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: flex-start;
+        height: 100%;
+    }
+}
 
-        &.fade-enter-active {
-            position: absolute;
-        }
+.label-input,
+.address-label {
+    &.fade-enter-active {
+        position: absolute;
+        bottom: 2rem;
+    }
 
-        &.fade-enter-active,
-        &.fade-leave-active {
-            transition-duration: var(--short-transition-duration);
-        }
+    &.fade-enter-active,
+    &.fade-leave-active {
+        transition-duration: var(--short-transition-duration);
     }
 }
 
@@ -728,11 +731,11 @@ export default defineComponent({
     transform: translateX(-.5rem);
 
     transition: {
-        property: transform, color;
+        property: transform, color, opacity;
         duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
     };
-
+    .rename &,
     &:hover {
         transform: translateX(0);
         color: var(--nimiq-light-blue);
@@ -751,6 +754,7 @@ export default defineComponent({
         transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }
 
+    .rename &::before,
     &:hover::before {
         opacity: .07;
     }

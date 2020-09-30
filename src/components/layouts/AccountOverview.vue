@@ -78,6 +78,7 @@
                         class="nq-button-pill light-blue"
                         @click.stop="$router.push('/btc-activation')" @mousedown.prevent
                     >{{ $t('Activate') }}</button>
+                    <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
                 </button>
             </div>
             <div v-else>
@@ -450,6 +451,10 @@ export default defineComponent({
         font-weight: 600;
         opacity: 0.5;
     }
+
+    .mobile-arrow {
+        display: none;
+    }
 }
 
 .future-notice {
@@ -531,11 +536,22 @@ export default defineComponent({
 
     .bitcoin-account {
         height: 11rem;
-        padding: 0 1.75rem;
-        margin: 0 0.5rem;
+        padding: 0;
+        margin: 0;
+
 
         .bitcoin-account-item::before {
             display: none;
+        }
+
+        .mobile-arrow {
+            display: block;
+            border: 1rem solid transparent;
+            border-width: 0.5rem 0.75rem;
+            border-left-color: inherit;
+            margin-left: 1.5rem;
+            margin-right: -0.75rem;
+            opacity: 0.3;
         }
     }
 

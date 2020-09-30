@@ -887,15 +887,28 @@ footer {
 
             p {
                 flex-basis: 80%;
+                margin-left: 1.25rem;
             }
 
             svg {
-                width: 2rem;
-                height: auto;
-                flex-grow: 1;
                 fill: currentColor;
                 opacity: 0.6;
-                margin: 0 1rem;
+            }
+        }
+
+        .flex-row:first-child {
+            svg {
+                width: 2.75rem;
+                height: 2.75rem;
+                margin-top: 0.25rem;
+            }
+        }
+
+        .flex-row:last-child {
+            svg {
+                width: 2.25rem;
+                height: 2.25rem;
+                margin: 0.25rem 0.25rem 0;
             }
         }
     }

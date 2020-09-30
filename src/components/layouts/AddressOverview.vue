@@ -52,7 +52,7 @@
                 <div class="meta">
                     <div class="flex-row">
                         <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
-                        <div v-else class="label">{{ $t('Bitcoin') }}</div>
+                        <div v-else class="label bitcoin">{{ $t('Bitcoin') }}</div>
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-else :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
@@ -380,6 +380,11 @@ export default defineComponent({
         margin-bottom: 0.75rem;
         margin-right: 3rem;
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+        &.bitcoin {
+            position: relative;
+            top: 1.25rem;
+        }
     }
 
     .address {
@@ -648,6 +653,10 @@ export default defineComponent({
         .amount {
             font-size: var(--h2-size);
             margin-bottom: 0;
+        }
+
+        .label.bitcoin {
+            top: 0.625rem;
         }
 
         .address,

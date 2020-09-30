@@ -478,6 +478,7 @@ export default defineComponent({
     align-items: center;
     overflow: hidden;
     padding-top: 0;
+    padding-bottom: 3rem;
 }
 
 .address {

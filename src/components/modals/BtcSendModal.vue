@@ -111,12 +111,10 @@
 
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
                     <InfoCircleSmallIcon slot="trigger"/>
-                    <div class="flex-column">
-                        <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
-                            + 'Use labels instead to find transactions in your history easily.') }}</p>
-                        <p>{{ $t('Nimiq wallet does not support transaction messages for Bitcoin.') }}</p>
-                        <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
-                    </div>
+                    <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
+                        + 'Use labels instead to find transactions in your history easily.') }}</p>
+                    <p>{{ $t('Nimiq wallet does not support transaction messages for Bitcoin.') }}</p>
+                    <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
                 </Tooltip>
             </PageBody>
 

@@ -15,7 +15,7 @@
                 {{ label }}
             </li>
         </ul>
-        <div class="blue-tooltip" v-if="recipientLabels.length === 0">
+        <div class="blue-tooltip" v-if="Object.values(recipientLabels).length === 0">
             <p>{{ $t('Add a label to quickly find the transaction in your history.') }}</p>
             <p>{{ $t('With Bitcoin, there are no contacts, since addresses are only used once.') }}</p>
         </div>

@@ -17,13 +17,18 @@ export const OUPUT_WU = 124;
 // The amount which does not warrant a change output, since it would cost more in fees to include than it's worth
 export const DUST_AMOUNT = Math.ceil(INPUT_WU / 4) * 2;
 
-export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1) {
-    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + OUPUT_WU * numOutputs;
+export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1, extraWeightUnits = 0) {
+    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + OUPUT_WU * numOutputs + extraWeightUnits;
     const vSize = Math.ceil(weightUnits / 4);
     return vSize * feePerByte;
 }
 
-export function selectOutputs(utxos: Readonly<Array<UTXO & { address: string }>>, amount: number, feePerByte?: number) {
+export function selectOutputs(
+    utxos: Readonly<Array<UTXO & { address: string }>>,
+    amount: number,
+    feePerByte?: number,
+    extraWeightUnits = 0,
+) {
     // Group UTXOs by address and sort by value ASC
     const balances: {script: string, balance: number, count: number}[] = Object.values(
         utxos
@@ -56,8 +61,8 @@ export function selectOutputs(utxos: Readonly<Array<UTXO & { address: string }>>
 
         if (sum < amount) continue;
 
-        const feeWithChange = estimateFees(outputCount, 2, feePerByte);
-        const feeWithoutChange = estimateFees(outputCount, 1, feePerByte);
+        const feeWithChange = estimateFees(outputCount, 2, feePerByte, extraWeightUnits);
+        const feeWithoutChange = estimateFees(outputCount, 1, feePerByte, extraWeightUnits);
 
         if (sum >= amount + feeWithChange + DUST_AMOUNT) {
             console.debug('Found a combi that DOES require a change output'); // eslint-disable-line no-console

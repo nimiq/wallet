@@ -674,8 +674,9 @@ export default defineComponent({
                     // Assemble BTC inputs
 
                     const { accountUtxos } = useBtcAddressStore();
+                    // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
-                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit);
+                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit, 46);
                     let changeAddress: string;
                     if (requiredInputs.changeAmount > 0) {
                         const { nextChangeAddress } = useBtcAddressStore();

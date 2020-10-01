@@ -430,6 +430,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     padding-bottom: 3rem;
+    overflow-y: initial;
 
     &.expired,
     &.invalidated {

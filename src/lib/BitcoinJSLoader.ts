@@ -13,7 +13,7 @@ export async function loadBitcoinJS(): Promise<boolean> {
                 resolve(true);
             });
             script.addEventListener('error', reject);
-            script.src = '/btc/BitcoinJS.min.js';
+            script.src = '/bitcoin/BitcoinJS.min.js';
             document.body.appendChild(script);
         })
     );

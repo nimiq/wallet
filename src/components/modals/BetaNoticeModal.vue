@@ -69,7 +69,7 @@ svg {
 
 .nq-text {
     color: var(--nimiq-blue);
-    margin: 0 1.5rem 2rem 1.5rem;
+    margin: 0 1.5rem 2rem;
 }
 
 .nq-link {

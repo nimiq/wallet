@@ -53,7 +53,9 @@
                     class="bitcoin-account-item reset flex-row"
                     :class="{
                         'active': activeCurrency === CryptoCurrency.BTC,
-                        'requires-activation': !hasBitcoinAddresses }"
+                        'requires-activation': !hasBitcoinAddresses,
+                        'disabled': activeAccountInfo.type === AccountType.LEDGER,
+                    }"
                     @click="selectBitcoin"
                 >
                     <BitcoinIcon/>
@@ -71,9 +73,12 @@
                             value-mask
                         />
                     </div>
-                    <button v-else class="nq-button-pill light-blue" @click.stop="enableBitcoin()">
-                        {{ $t('Activate') }}
-                    </button>
+                    <label v-else-if="activeAccountInfo.type === AccountType.LEDGER">{{ $t('Coming soon') }}</label>
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click.stop="$router.push('/btc-activation')" @mousedown.prevent
+                    >{{ $t('Activate') }}</button>
+                    <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
                 </button>
             </div>
             <div v-else>
@@ -112,18 +117,18 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
-import { backup, addAddress, activateBitcoin } from '../../hub'; // eslint-disable-line import/no-cycle
+import { backup, addAddress } from '../../hub'; // eslint-disable-line import/no-cycle
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
-import { useAddressStore } from '../../stores/Address';
+
+const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
 
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
         const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
-        const { state: $addresses } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -164,12 +169,28 @@ export default defineComponent({
             showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
         }
 
-        watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
+        function determineIfShowBtcActivationModal() {
+            if (!activeAccountInfo.value) return;
 
-        async function enableBitcoin() {
-            const activated = await activateBitcoin(activeAccountId.value!);
-            if (activated) selectBitcoin();
+            // Showing the modal after login is handled in hub.ts
+            if (hasBitcoinAddresses.value) return;
+
+            const isEligibleAccountType = activeAccountInfo.value.type === AccountType.BIP39;
+            if (!isEligibleAccountType) return;
+
+            const alreadyShown = localStorage.getItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY) || '0';
+            if (alreadyShown === '1') return;
+
+            context.root.$router.push('/btc-activation');
+            localStorage.setItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY, '1');
         }
+
+        function determineModalToShow() {
+            determineIfShowModalLegacyAccountNotice();
+            determineIfShowBtcActivationModal();
+        }
+
+        watch(activeAccountInfo, determineModalToShow);
 
         return {
             activeAccountInfo,
@@ -186,7 +207,6 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
-            enableBitcoin,
         };
     },
     components: {
@@ -344,6 +364,10 @@ export default defineComponent({
             timing-function: var(--nimiq-ease);
         };
 
+        &.active {
+            color: var(--text-100);
+        }
+
         &:not(.active):not(.requires-activation):hover {
             color: var(--text-100);
             background: var(--nimiq-highlight-bg);
@@ -384,6 +408,24 @@ export default defineComponent({
                 0px 1.5px 3px rgba(0, 0, 0, 0.05),
                 0px 4px 16px rgba(0, 0, 0, 0.07);
         }
+
+        &.disabled {
+            color: var(--text-40);
+
+            svg {
+                color: var(--text-20);
+            }
+
+            label {
+                text-transform: uppercase;
+                font-size: var(--small-label-size);
+                font-weight: bold;
+                letter-spacing: 0.06em;
+                padding: 0.75rem 1.75rem;
+                box-shadow: 0 0 0 1.5px var(--text-10);
+                border-radius: 500px;
+            }
+        }
     }
 
     svg {
@@ -408,6 +450,10 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: 600;
         opacity: 0.5;
+    }
+
+    .mobile-arrow {
+        display: none;
     }
 }
 
@@ -490,11 +536,22 @@ export default defineComponent({
 
     .bitcoin-account {
         height: 11rem;
-        padding: 0 1.75rem;
-        margin: 0 0.5rem;
+        padding: 0;
+        margin: 0;
+
 
         .bitcoin-account-item::before {
             display: none;
+        }
+
+        .mobile-arrow {
+            display: block;
+            border: 1rem solid transparent;
+            border-width: 0.5rem 0.75rem;
+            border-left-color: inherit;
+            margin-left: 1.5rem;
+            margin-right: -0.75rem;
+            opacity: 0.3;
         }
     }
 

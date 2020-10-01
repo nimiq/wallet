@@ -59,9 +59,9 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import {
     CircleSpinner,
-    // AlertTriangleIcon,
+    AlertTriangleIcon,
     FiatAmount,
-    // CrossIcon,
+    CrossIcon,
 } from '@nimiq/vue-components';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
@@ -96,7 +96,7 @@ export default defineComponent({
             getSenderLabel,
         } = useBtcLabelsStore();
 
-        const state = computed(() => props.transaction.timestamp ? TransactionState.MINED : TransactionState.PENDING);
+        const state = computed(() => props.transaction.state);
 
         const inputsSent = computed(() => props.transaction.inputs.filter((input) =>
             input.address && (activeInternalAddresses.value.includes(input.address)
@@ -207,8 +207,8 @@ export default defineComponent({
     },
     components: {
         CircleSpinner,
-        // CrossIcon,
-        // AlertTriangleIcon,
+        CrossIcon,
+        AlertTriangleIcon,
         Avatar,
         Amount,
         FiatConvertedAmount,

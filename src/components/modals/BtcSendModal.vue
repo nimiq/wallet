@@ -93,7 +93,6 @@
 
                 <section class="fee-section flex-row">
                     <FeeSelector :fees="feeOptions" @fee="(fee) => feePerByte = fee"/>
-                    <div class="flex-grow"></div>
                     <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
                     <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
                         <InfoCircleSmallIcon slot="trigger"/>
@@ -112,12 +111,10 @@
 
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
                     <InfoCircleSmallIcon slot="trigger"/>
-                    <div class="flex-column">
-                        <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
-                            + 'Use labels instead to find transactions in your history easily.') }}</p>
-                        <p>{{ $t('Nimiq wallet does not support transaction messages for Bitcoin.') }}</p>
-                        <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
-                    </div>
+                    <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
+                        + 'Use labels instead to find transactions in your history easily.') }}</p>
+                    <p>{{ $t('Nimiq wallet does not support transaction messages for Bitcoin.') }}</p>
+                    <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
                 </Tooltip>
             </PageBody>
 
@@ -263,7 +260,9 @@ export default defineComponent({
             feePerByte.value,
         ));
 
-        const maxSendableAmount = computed(() => Math.max((accountBalance.value || 0) - fee.value, 0));
+        const feeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, feePerByte.value));
+
+        const maxSendableAmount = computed(() => Math.max((accountBalance.value || 0) - feeForSendingAll.value, 0));
 
         const amountMenuOpened = ref(false);
 
@@ -290,10 +289,10 @@ export default defineComponent({
         });
 
         const feeOptions = computed(() => {
-            // Estimate the fees for the next 24 hours = 144 blocks max
+            // Estimate the fees for the next 12 hours = 72 blocks max
 
-            // Actual size is 1mil, but we calculate with 2/5 to simulate continously incoming txs.
-            const BLOCK_SIZE = 400000; // vsize = vbytes
+            // Actual size is 1mil, but we calculate with 3/5 to simulate continously incoming txs.
+            const BLOCK_SIZE = 600000; // vsize = vbytes
 
             let bracketIndex = 0;
             let delay = 1;
@@ -301,7 +300,7 @@ export default defineComponent({
             const blocks: number[] = [];
 
             let runningSize = 0;
-            while (bracketIndex <= mempoolFees.value.length && delay <= 144) { // 144 = 24h
+            while (bracketIndex <= mempoolFees.value.length && delay <= 72) { // 72 = 12h
                 const bracket = mempoolFees.value[bracketIndex];
                 if (!bracket) {
                     // Set fee for block as the start fee of the last bracket
@@ -471,6 +470,7 @@ export default defineComponent({
 
             try {
                 const plainTx = await sendBtcTransaction({
+                    accountId: useAccountStore().state.activeAccountId!,
                     inputs: requiredInputs.value.utxos.map((utxo) => ({
                         address: utxo.address,
                         transactionHash: utxo.transactionHash,
@@ -874,8 +874,12 @@ export default defineComponent({
     }
 
     .fee-section {
-        padding: 0 1rem;
+        padding: 0 1.5rem;
         align-items: center;
+
+        .fee-selector {
+            flex-grow: 1;
+        }
 
         .secondary-amount {
             margin-right: 1rem;

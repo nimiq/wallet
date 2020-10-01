@@ -49,7 +49,7 @@
                 </div>
             </div>
             <Amount
-                :decimals="Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / 1e8))))"
+                :maxDecimals="Math.min(8, Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / 1e8)))))"
                 :amount="btcAccountBalance" :currency="'btc'" :currencyDecimals="8" value-mask/>
         </div>
     </div>

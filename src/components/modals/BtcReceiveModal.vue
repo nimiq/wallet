@@ -1,7 +1,7 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
-        @close-overlay="addressQrCodeOverlayOpened = false; receiveLinkOverlayOpened = false; amount = 0;"
+        @close-overlay="closeOverlay"
     >
         <PageHeader>
             {{ $t('Receive BTC') }}
@@ -13,19 +13,16 @@
                 :text="currentlyShownAddress"
                 @click.native="copyActiveAddressCallback"
                 ref="$availableAddressCopyable"
+                :class="{ 'already-copied': !!recentlyCopiedAddresses[currentlyShownAddress] }"
             >
                 <transition-group name="translateY">
-                    <div
-                        v-for="address in [currentlyShownAddress]"
-                        :key="address"
-                        :class="{ 'already-copied': !!recentlyCopiedAddresses[address] }"
-                    >{{ address }}</div>
+                    <div v-for="address in [currentlyShownAddress]" :key="address">{{ address }}</div>
                 </transition-group>
                 <div class="width-finder" ref="$addressWidthFinder">{{ currentlyShownAddress }}</div>
             </Copyable>
 
             <transition name="fade">
-                <div class="address-sub-label flex-row blue" v-if="!addressCopied">
+                <div class="address-sub-label flex-row blue" v-if="!recentlyCopiedAddresses[currentlyShownAddress]">
                     <span>{{ $t('This is a single-use address') }}</span>
                     <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
                         <template slot="trigger"><InfoCircleSmallIcon /></template>
@@ -37,60 +34,63 @@
                     </Tooltip>
                 </div>
 
-                <a class="address-sub-label flex-row nq-link" @click="showNextExternalAddress" v-else>
+                <a class="address-sub-label flex-row create-new" @click="showNextExternalAddress" v-else>
                     <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
                 </a>
             </transition>
 
-            <div class="recently-copied-addresses flex-column" ref="addressList">
+            <div class="recently-copied-addresses flex-column">
                 <transition name="fade">
                     <p class="no-recently-copied-address"
-                        v-if="!recentlyCopiedAddressesListSorted.length">
+                        v-if="recentlyCopiedAddressesListSorted.length === 0">
                         {{ $t('Recent addresses will be listed here, until they receive a transaction.') }}
                     </p>
+                    <div v-else class="address-list flex-column">
+                        <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
+                        <div class="list" ref="addressList">
+                            <div class="scroll-mask top"></div>
 
-                    <div class="address-list" v-else>
-                        <div class="scroll-mask top"></div>
-                        <h2 class="nq-h2">{{ $t('RECENTLY COPIED') }}</h2>
-
-                        <transition-group name="tranlsateY-fade-list" tag="div">
-                            <div class="address-item flex-row"
-                                v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
-                                :class="{ rename }"
-                                :key="address"
-                            >
-                                <transition name="fade">
-                                    <div class="flex-column" key="renaming" v-if="rename">
-                                        <LabelInput :placeholder="$t('Label the sender')"
-                                            v-model="recentlyCopiedAddresses[address].label"
-                                            :ref="`address-label-${address}`"
-                                            @blur.native.capture="hideRenameAddressLabelInput(address)"
-                                            @keyup.native.enter="hideRenameAddressLabelInput(address)"
-                                        />
-                                    </div>
-                                    <div class="flex-column" key="not-renaming" v-else>
-                                        <div class="address-label"
-                                            :class="{ 'unlabelled': !label }"
-                                            @click="showRenameAddressLabelInput(address)"
-                                        >
-                                            {{ label || $t("Unlabelled") }}
-                                        </div>
+                            <transition-group name="translateY-fade-list" tag="div">
+                                <div class="address-item flex-row"
+                                    v-for="{ address, label, rename, timelabel } in recentlyCopiedAddressesListSorted"
+                                    :class="{ rename }"
+                                    :key="address"
+                                >
+                                    <div class="flex-column">
+                                        <transition name="fade">
+                                            <LabelInput v-if="rename"
+                                                key="renaming"
+                                                v-model="recentlyCopiedAddresses[address].label"
+                                                :ref="`address-label-${address}`"
+                                                :placeholder="$t('Label the sender')"
+                                                @blur.native.capture="hideRenameAddressLabelInput(address)"
+                                                @keydown.native.enter="hideRenameAddressLabelInput(address)"
+                                            />
+                                            <div v-else
+                                                key="not-renaming"
+                                                class="address-label"
+                                                :class="{ 'unlabelled': !label }"
+                                                @click="showRenameAddressLabelInput(address)"
+                                            >
+                                                {{ label || $t("Unlabelled") }}
+                                            </div>
+                                        </transition>
                                         <div class="address-created">{{ timelabel }}</div>
                                     </div>
-                                </transition>
-                                <Tooltip class="address-short"
-                                    preferredPosition="top"
-                                    :container="$refs.addressList ? { $el: $refs.addressList } : null"
-                                >
-                                    <Copyable :text="address" slot="trigger">
-                                        <ShortAddress :address="address"/>
-                                    </Copyable>
-                                    {{ address }}
-                                </Tooltip>
-                            </div>
-                        </transition-group>
+                                    <Tooltip class="address-short"
+                                        preferredPosition="top left"
+                                        :container="$refs.addressList ? { $el: $refs.addressList } : null"
+                                    >
+                                        <Copyable :text="address" slot="trigger">
+                                            <ShortAddress :address="address"/>
+                                        </Copyable>
+                                        {{ address }}
+                                    </Tooltip>
+                                </div>
+                            </transition-group>
 
-                        <div class="scroll-mask bottom"></div>
+                            <div class="scroll-mask bottom"></div>
+                        </div>
                     </div>
                 </transition>
             </div>
@@ -99,7 +99,9 @@
                 <button class="nq-button-s" @click="receiveLinkOverlayOpened = true">
                     {{ $t('Create payment link') }}
                 </button>
-                <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true"><QrCodeIcon/></button>
+                <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true;">
+                    <QrCodeIcon/>
+                </button>
             </footer>
 
             <Tooltip class="info-tooltip" preferredPosition="bottom right">
@@ -146,11 +148,11 @@
                 <div class="inputs">
                     <div class="separator"></div>
                     <!-- TODO: add label to AmountInput -->
-                    <AmountInput v-model="amount" :maxFontSize="5" label="BTC"/>
+                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="8">
+                        <span slot="suffix" class="ticker">BTC</span>
+                    </AmountInput>
                     <div class="separator"></div>
                 </div>
-                <!-- <AmountInput v-model="amoun§t" />
-                <labelInput v-model="message" placeholder="add a message" /> -->
                 <QrCode
                     :data="requestLink"
                     :size="400"
@@ -288,12 +290,12 @@ export default defineComponent({
         );
 
         // requestLink
-        const amount = ref<string>(0);
+        const amount = ref<number>(0);
         const message = ref<string>('');
 
         const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
             type: NimiqRequestLinkType.URI,
-            amount: Number.parseInt(amount.value, 10),
+            amount: amount.value,
             currency: Currency.BTC,
             message: message.value,
         }));
@@ -351,6 +353,13 @@ export default defineComponent({
         const addressQrCodeOverlayOpened = ref<boolean>(false);
         const receiveLinkOverlayOpened = ref<boolean>(false);
 
+        // Close Overlay & reset the payment link value
+        async function closeOverlay() {
+            addressQrCodeOverlayOpened.value = false;
+            receiveLinkOverlayOpened.value = false;
+            amount.value = 0;
+        }
+
         // Watching for sub-modals openings to set the actively shown address as copied
         watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
             (booleans, prevBooleans) => {
@@ -358,9 +367,10 @@ export default defineComponent({
                     const [qrCodeOpened, receiveLinkOpened] = booleans;
                     const [prevQrCodeOpened, prevReceiveLinkOpened] = prevBooleans;
 
-                    if ((qrCodeOpened === true && prevQrCodeOpened === false)
-                        || (receiveLinkOpened === true && prevReceiveLinkOpened === false)) {
+                    if ((qrCodeOpened === false && prevQrCodeOpened === true)
+                        || (receiveLinkOpened === false && prevReceiveLinkOpened === true)) {
                         copyActiveAddressCallback();
+                        showNextExternalAddress();
                     }
                 }
             },
@@ -409,6 +419,7 @@ export default defineComponent({
             origin: window.location.origin,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
+            closeOverlay,
             amount,
             message,
             requestLink,
@@ -469,6 +480,7 @@ export default defineComponent({
     align-items: center;
     overflow: hidden;
     padding-top: 0;
+    padding-bottom: 3rem;
 }
 
 .address {
@@ -479,6 +491,7 @@ export default defineComponent({
     border-radius: 5px;
     text-align: center;
     font-size: var(--body-size);
+    font-family: 'Fira Mono', monospace;
     background-color: var(--nimiq-highlight-bg);
     font-weight: 500;
     color: var(--text-100);
@@ -491,8 +504,9 @@ export default defineComponent({
         timing-function: var(--nimiq-ease);
     };
 
-    .already-copied {
+    &.already-copied {
         color: var(--text-35);
+        pointer-events: none;
     }
 
     &:hover,
@@ -500,10 +514,16 @@ export default defineComponent({
         background-color: transparent;
     }
 
+    &:hover /deep/ .background {
+        opacity: 0.1;
+    }
+
     & /deep/ > span {
         position: relative;
         overflow: hidden;
-        display: block;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         width: 100%;
         height: 100%;
         padding: var(--padding);
@@ -552,11 +572,6 @@ export default defineComponent({
     font-weight: 600;
     color: var(--text-50);
 
-    &.fade-enter-active,
-    &.fade-leave-active {
-        transition-delay: 1s;
-    }
-
     &.fade-enter-active {
         height: 0;
         margin-top: 0;
@@ -569,6 +584,15 @@ export default defineComponent({
 
     &.change-address:hover {
         text-decoration: none;
+    }
+
+    &.create-new {
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            color: var(--nimiq-light-blue);
+        }
     }
 
     & > svg {
@@ -596,12 +620,9 @@ export default defineComponent({
 
 .recently-copied-addresses {
     flex-grow: 1;
-    width: 100%;
+    align-self: stretch;
+    min-height: 0;
     position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    @extend %custom-scrollbar;
 }
 
 .no-recently-copied-address {
@@ -614,19 +635,31 @@ export default defineComponent({
 }
 
 .address-list {
+    flex-grow: 1;
+    align-items: center;
+    min-height: 0;
+
     &.fade-enter-active,
     &.fade-leave-active {
         position: absolute;
         width: 100%;
     }
 
-    h2 {
-        color: var(--text-40);
-        font-size: var(--small-size);
-        margin-top: 2.625rem;
-        margin-bottom: 4rem;
-        letter-spacing: 1px;
+    .nq-label {
         text-align: center;
+        margin: 4rem 0 0;
+    }
+
+    .list {
+        width: calc(100% + 8rem);
+        padding: 2.5rem 4rem 0;
+        overflow-y: auto;
+
+        @extend %custom-scrollbar;
+
+        .scroll-mask.top {
+            top: -2.5rem;
+        }
     }
 }
 
@@ -634,29 +667,30 @@ export default defineComponent({
     position: relative;
     justify-content: space-between;
     align-items: center;
+    height: 5.25rem;
 
     &:not(:last-child) {
         margin-bottom: 2rem;
     }
 
-    &,
-    .flex-column {
-        height: 5rem;
-    }
-
     .flex-column {
         background-color: white;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: flex-start;
+        height: 100%;
+    }
+}
 
-        &.fade-enter-active {
-            position: absolute;
-        }
+.label-input,
+.address-label {
+    &.fade-enter-active {
+        position: absolute;
+        bottom: 2.25rem;
+    }
 
-        &.fade-enter-active,
-        &.fade-leave-active {
-            transition-duration: var(--short-transition-duration);
-        }
+    &.fade-enter-active,
+    &.fade-leave-active {
+        transition-duration: var(--short-transition-duration);
     }
 }
 
@@ -670,6 +704,7 @@ export default defineComponent({
 
     .nq-input {
         border-radius: 0.375rem;
+        max-width: 17.5rem;
 
         &:hover,
         &:focus {
@@ -679,19 +714,26 @@ export default defineComponent({
 }
 
 .address-label {
+    max-width: 17.5rem;
+    padding-right: 1rem;
+    padding-left: 0.5rem;
+    border-radius: .5rem;
     font-size: var(--body-size);
     line-height: calc(var(--body-size) + 1rem);
-    position: relative;
     cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+    transform: translateX(-.5rem);
 
     transition: {
-        property: transform, color;
+        property: transform, color, opacity;
         duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
     };
-
+    .rename &,
     &:hover {
-        transform: translateX(.5rem);
+        transform: translateX(0);
         color: var(--nimiq-light-blue);
     }
 
@@ -704,11 +746,11 @@ export default defineComponent({
         bottom: 0;
         left: -.5rem;
         opacity: 0;
-        border-radius: .5rem;
 
         transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }
 
+    .rename &::before,
     &:hover::before {
         opacity: .07;
     }
@@ -725,17 +767,18 @@ export default defineComponent({
 }
 
 .address-short {
+    &.tooltip /deep/ .trigger::after {
+        pointer-events: none;
+    }
+
     &.tooltip /deep/ .tooltip-box {
         font-size: var(--small-size);
-        padding: .5rem 1rem;
-    }
-
-    &.tooltip.top /deep/ .tooltip-box {
-        transform: translate(-2rem, -2rem);
-    }
-
-    &.tooltip.bottom /deep/ .tooltip-box {
-        transform: translate(-2rem, 2rem);
+        line-height: 1;
+        padding: 1rem;
+        font-family: 'Fira Mono', monospace;
+        letter-spacing: -0.02em;
+        font-weight: normal;
+        pointer-events: none;
     }
 
     .copyable {
@@ -777,6 +820,9 @@ export default defineComponent({
             }
         }
 
+        /deep/ .tooltip {
+            z-index: 3;
+        }
     }
 }
 
@@ -841,15 +887,28 @@ footer {
 
             p {
                 flex-basis: 80%;
+                margin-left: 1.25rem;
             }
 
             svg {
-                width: 2rem;
-                height: auto;
-                flex-grow: 1;
                 fill: currentColor;
                 opacity: 0.6;
-                margin: 0 1rem;
+            }
+        }
+
+        .flex-row:first-child {
+            svg {
+                width: 2.75rem;
+                height: 2.75rem;
+                margin-top: 0.25rem;
+            }
+        }
+
+        .flex-row:last-child {
+            svg {
+                width: 2.25rem;
+                height: 2.25rem;
+                margin: 0.25rem 0.25rem 0;
             }
         }
     }
@@ -948,10 +1007,10 @@ footer {
     }
 }
 
-/* vue transition - tranlsateY-fade-list */
-.tranlsateY-fade-list-enter-active,
-.tranlsateY-fade-list-leave-active,
-.tranlsateY-fade-list-move {
+/* vue transition - translateY-fade-list */
+.translateY-fade-list-enter-active,
+.translateY-fade-list-leave-active,
+.translateY-fade-list-move {
     transition: {
         property: opacity, transform;
         duration: var(--long-transition-duration);
@@ -959,15 +1018,21 @@ footer {
     };
 }
 
-.tranlsateY-fade-list-enter-to,
-.tranlsateY-fade-list-leave {
+.translateY-fade-list-enter-to,
+.translateY-fade-list-leave {
     opacity: 1;
-    transform: translateY(0);
 }
 
-.tranlsateY-fade-list-enter,
-.tranlsateY-fade-list-leave-to {
+.translateY-fade-list-enter,
+.translateY-fade-list-leave-to {
     opacity: 0;
     transform: translateY(-4rem);
+}
+
+@media (max-width: 450px) { // Breakpoint of .page-body padding
+    .recently-copied-addresses {
+        width: calc(100% + 6rem);
+        padding: 0 3rem;
+    }
 }
 </style>

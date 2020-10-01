@@ -257,7 +257,7 @@ export default defineComponent({
         top: 12.25rem;
         width: 14.75rem;
         height: 14.75rem;
-        opacity: 0.2;
+        color: #F7931A; /* Bitcoin orange */
     }
 
     .coming-soon {

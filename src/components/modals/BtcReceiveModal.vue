@@ -418,10 +418,10 @@ export default defineComponent({
         watch(currentlyShownAddress, updateAddressFontSizeScaleFactor);
         onMounted(() => {
             updateAddressFontSizeScaleFactor();
-            document.addEventListener('resize', updateAddressFontSizeScaleFactor);
+            window.addEventListener('resize', updateAddressFontSizeScaleFactor);
         });
         onUnmounted(() => {
-            document.removeEventListener('resize', updateAddressFontSizeScaleFactor);
+            window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
         return {

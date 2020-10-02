@@ -47,7 +47,7 @@
                     </p>
                     <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
-                        <div class="list" ref="addressList"
+                        <div class="list flex-column" ref="addressList"
                             :class="{ scroll: recentlyCopiedAddressesListSorted.length > 1 }">
                             <div class="scroll-mask top"></div>
 
@@ -662,6 +662,7 @@ export default defineComponent({
     .list {
         width: calc(100% + 8rem);
         padding: 2.5rem 4rem 0;
+        flex: 1 1 0;
 
         &.scroll {
             overflow-y: auto;
@@ -1075,7 +1076,7 @@ footer {
 }
 
 @media (max-width: 450px) { // Breakpoint of .page-body padding
-    .recently-copied-addresses {
+    .address-list .list {
         width: calc(100% + 6rem);
         padding: 0 3rem;
     }

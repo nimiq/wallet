@@ -51,7 +51,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:216
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -110,6 +110,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:101
 #: src/components/layouts/Settings.vue:41
 msgid "all"
 msgstr ""
@@ -155,6 +156,7 @@ msgstr ""
 #: src/components/BalanceDistribution.vue:44
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
+#: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:75
 #: src/components/modals/BtcTransactionModal.vue:91
@@ -205,7 +207,7 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:196
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -239,11 +241,11 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:98
+#: src/components/layouts/Settings.vue:117
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:111
 msgid "Clear Cache"
 msgstr ""
 
@@ -345,11 +347,11 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:88
+#: src/components/layouts/Settings.vue:107
 msgid "Developer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:143
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -380,6 +382,10 @@ msgstr ""
 
 #: src/components/ContactBook.vue:43
 msgid "Edit contacts"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:94
+msgid "Edit the amount of decimals visible for BTC values."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:34
@@ -457,7 +463,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:202
 msgid "File contains no contacts."
 msgstr ""
 
@@ -660,6 +666,7 @@ msgid "No transactions found"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:39
+#: src/components/layouts/Settings.vue:99
 msgid "None"
 msgstr ""
 
@@ -668,7 +675,7 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:225
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -749,7 +756,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:105
+#: src/components/layouts/Settings.vue:124
 msgid "Reference currency"
 msgstr ""
 
@@ -764,7 +771,7 @@ msgstr ""
 msgid "Request failed"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:94
+#: src/components/layouts/Settings.vue:113
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -894,6 +901,7 @@ msgid "Show all my addresses"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:32
+#: src/components/layouts/Settings.vue:92
 msgid "Show Decimals"
 msgstr ""
 

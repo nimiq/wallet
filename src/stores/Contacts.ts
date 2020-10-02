@@ -29,7 +29,7 @@ export const useContactsStore = createStore({
             // TODO: Simply set new contact in Vue 3.
             this.state.contacts = {
                 ...this.state.contacts,
-                [address.trim()]: label.trim(),
+                [address.trim()]: label,
             };
         },
     },

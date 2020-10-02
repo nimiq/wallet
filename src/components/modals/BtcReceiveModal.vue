@@ -47,7 +47,8 @@
                     </p>
                     <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
-                        <div class="list" ref="addressList">
+                        <div class="list" ref="addressList"
+                            :class="{ scroll: recentlyCopiedAddressesListSorted.length > 1 }">
                             <div class="scroll-mask top"></div>
 
                             <transition-group name="translateY-fade-list" tag="div">
@@ -58,14 +59,22 @@
                                 >
                                     <div class="flex-column">
                                         <transition name="fade">
-                                            <LabelInput v-if="rename"
-                                                key="renaming"
-                                                v-model="recentlyCopiedAddresses[address].label"
-                                                :ref="`address-label-${address}`"
-                                                :placeholder="$t('Label the sender')"
-                                                @blur.native.capture="hideRenameAddressLabelInput(address)"
-                                                @keydown.native.enter="hideRenameAddressLabelInput(address)"
-                                            />
+                                            <div v-if="rename" key="renaming" class="label-input-wrapper">
+                                                <LabelInput
+                                                    v-model="recentlyCopiedAddresses[address].label"
+                                                    :ref="`address-label-${address}`"
+                                                    :placeholder="$t('Label the sender')"
+                                                    @blur.native.capture="hideRenameAddressLabelInput(address)"
+                                                    @keydown.native.enter="hideRenameAddressLabelInput(address)"
+                                                />
+                                                <div class="blue-tooltip"
+                                                    v-if="recentlyCopiedAddressesListSorted.length === 1">
+                                                    <p>{{ $t('Add a label to quickly find the transaction '
+                                                        + 'in your history, once it was sent.') }}</p>
+                                                    <p>{{ $t('With Bitcoin, there are no contacts, since '
+                                                        + 'addresses are only used once.') }}</p>
+                                                </div>
+                                            </div>
                                             <div v-else
                                                 key="not-renaming"
                                                 class="address-label"
@@ -478,9 +487,9 @@ export default defineComponent({
 
     justify-content: flex-start;
     align-items: center;
-    overflow: hidden;
     padding-top: 0;
     padding-bottom: 3rem;
+    overflow: initial;
 }
 
 .address {
@@ -653,7 +662,10 @@ export default defineComponent({
     .list {
         width: calc(100% + 8rem);
         padding: 2.5rem 4rem 0;
-        overflow-y: auto;
+
+        &.scroll {
+            overflow-y: auto;
+        }
 
         @extend %custom-scrollbar;
 
@@ -678,10 +690,31 @@ export default defineComponent({
         justify-content: flex-end;
         align-items: flex-start;
         height: 100%;
+
+        & > div:first-child {
+            position: relative;
+        }
     }
 }
 
-.label-input,
+.blue-tooltip {
+    @include blue-tooltip();
+
+    p:first-child {
+        margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.label-input:focus + .blue-tooltip,
+.label-input:focus-within + .blue-tooltip {
+    @include blue-tooltip_open();
+}
+
+.label-input-wrapper,
 .address-label {
     &.fade-enter-active {
         position: absolute;

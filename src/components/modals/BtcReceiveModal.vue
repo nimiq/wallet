@@ -698,7 +698,13 @@ export default defineComponent({
 }
 
 .blue-tooltip {
-    @include blue-tooltip();
+    @media (min-width: 961px) {
+        @include blue-tooltip(left);
+    }
+
+    @media (max-width: 960px) {
+        @include blue-tooltip(top);
+    }
 
     p:first-child {
         margin-top: 0;
@@ -711,7 +717,13 @@ export default defineComponent({
 
 .label-input:focus + .blue-tooltip,
 .label-input:focus-within + .blue-tooltip {
-    @include blue-tooltip_open();
+    @media (min-width: 961px) {
+        @include blue-tooltip_open(left);
+    }
+
+    @media (max-width: 960px) {
+        @include blue-tooltip_open(top);
+    }
 }
 
 .label-input-wrapper,

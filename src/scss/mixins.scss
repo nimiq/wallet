@@ -96,26 +96,53 @@
 
 }
 
-@mixin blue-tooltip {
+@mixin blue-tooltip($position: left) {
     --width: 28rem;
+    --padding: 1.5rem;
+    --arrowWidth: 2.75rem;
+    --arrowHeight: 2.5rem;
+    --arrowDistance: 2rem;
+    --fadeInTranslate: .5rem;
+
     width: var(--width);
-    padding: 1.5rem;
-    position: absolute;
-    top: 50%;
-    left: calc(0px - var(--width) - 2rem);
-    z-index: 10;
+    padding: var(--padding);
+
+    pointer-events: inherit;
+    user-select: none;
+
     font-size: var(--small-size);
     font-weight: 600;
     line-height: 140%;
     text-align: left;
+
+    border-radius: 0.5rem;
     background: var(--nimiq-light-blue-bg);
     color: white;
-    border-radius: 0.5rem;
-    pointer-events: inherit;
-    user-select: none;
-
     opacity: 0;
-    transform: translateY(-50%) translateX(-.5rem);
+
+    position: absolute;
+    z-index: 10;
+
+    @if $position == left {
+        top: 50%;
+        right: calc(100% + var(--arrowDistance));
+        transform: translateY(-50%) translateX(calc(0px - var(--fadeInTranslate)));
+    }
+    @else if $position == top {
+        left: 50%;
+        bottom: calc(100% + var(--arrowDistance));
+        transform: translateY(calc(0px - var(--fadeInTranslate))) translateX(-50%);
+    }
+    @else if $position == right {
+        top: 50%;
+        left: calc(100% + var(--arrowDistance));
+        transform: translateY(-50%) translateX(var(--fadeInTranslate));
+    }
+    @else if $position == bottom {
+        left: 50%;
+        top: calc(100% + var(--arrowDistance));
+        transform: translateY(var(--fadeInTranslate)) translateX(-50%);
+    }
 
     transition: {
         property: opacity, transform;
@@ -126,10 +153,8 @@
         content: '';
         display: block;
         position: absolute;
-        width: 2.75rem;
-        height: 2.5rem;
-        top: 50%;
-        right: 0;
+        width: var(--arrowWidth);
+        height: var(--arrowHeight);
         mask-image: url('data:image/svg+xml, \
             <svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"> \
                 <path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 \
@@ -138,11 +163,38 @@
         mask-size: contain;
         z-index: 10;
         background: #1A6AD2;
-        transform: translateY(-50%) translateX(calc(100% - 0.25rem)) rotate(90deg);
+
+        @if $position == left {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%) translateX(calc(100% - .25rem)) rotate(90deg);
+        }
+        @else if $position == top {
+            left: 50%;
+            bottom: 0;
+            transform: translateY(calc(100% - .25rem)) translateX(-50%) rotate(180deg);
+        }
+        @else if $position == right {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%) translateX(calc(-100% + .25rem)) rotate(-90deg);
+        }
+        @else if $position == bottom {
+            left: 50%;
+            top: 0;
+            transform: translateY(calc(-100% + .25rem)) translateX(-50%);
+        }
+
     }
 }
 
-@mixin blue-tooltip_open {
+@mixin blue-tooltip_open($position: left) {
     opacity: 1;
-    transform: translateY(-50%) translateX(0);
+
+    @if $position == left or $position == right {
+        transform: translateY(-50%) translateX(0);
+    }
+    @else if $position == top or $position == bottom {
+        transform: translateY(0) translateX(-50%);
+    }
 }

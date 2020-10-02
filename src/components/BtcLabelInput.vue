@@ -161,69 +161,81 @@ export default defineComponent({
                 color: var(--text-50);
             }
         }
+    }
 
-        .blue-tooltip {
-            @include blue-tooltip();
-
-            p:first-child {
-                margin-top: 0;
-            }
-            p:last-child {
-                margin-bottom: 0;
-            }
+    .blue-tooltip {
+        @media (min-width: 961px) {
+            @include blue-tooltip(left);
         }
 
-        .label-input:focus-within ~ .blue-tooltip {
-            @include blue-tooltip_open();
+        @media (max-width: 960px) {
+            @include blue-tooltip(bottom);
         }
 
-        ul.label-autocomplete {
-            @extend %custom-scrollbar-inverse;
+        p:first-child {
+            margin-top: 0;
+        }
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
 
+    .label-input:focus-within ~ .blue-tooltip {
+        @media (min-width: 961px) {
+            @include blue-tooltip_open(left);
+        }
+
+        @media (max-width: 960px) {
+            @include blue-tooltip_open(bottom);
+        }
+    }
+
+    ul.label-autocomplete {
+        @extend %custom-scrollbar-inverse;
+
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        z-index: 4;
+        background: var(--nimiq-blue-bg);
+        color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
+        margin: 0;
+        margin-top: -.25rem;
+        padding: .5rem;
+        max-height: 40rem;
+        list-style-type: none;
+        overflow: auto;
+        cursor: pointer;
+
+        li {
             display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            z-index: 4;
-            background: var(--nimiq-blue-bg);
-            color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
-            margin: 0;
-            margin-top: -.25rem;
-            padding: .5rem;
-            max-height: 40rem;
-            list-style-type: none;
-            overflow: auto;
-            cursor: pointer;
+            flex-direction: row;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            background-color: rgba(#FFFFFF, 0);
 
-            li {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                padding: 1rem;
-                border-radius: 0.25rem;
-                background-color: rgba(#FFFFFF, 0);
+            transition: background-color 200ms var(--nimiq-ease);
 
-                transition: background-color 200ms var(--nimiq-ease);
-
-                &:not(:last-child) {
-                    margin-bottom: .5rem;
-                }
-
-                &:hover,
-                &.selected {
-                    background-color: rgba(#FFFFFF, .12);
-                }
+            &:not(:last-child) {
+                margin-bottom: .5rem;
             }
 
-            .avatar {
-                margin-right: 1rem;
-                height: 3rem;
-                width: 3rem;
-                font-size: 1.625rem;
-                letter-spacing: -0.05em;
+            &:hover,
+            &.selected {
+                background-color: rgba(#FFFFFF, .12);
             }
+        }
+
+        .avatar {
+            margin-right: 1rem;
+            height: 3rem;
+            width: 3rem;
+            font-size: 1.625rem;
+            letter-spacing: -0.05em;
         }
     }
 </style>

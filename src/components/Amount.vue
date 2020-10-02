@@ -25,7 +25,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { decimals } = useSettingsStore();
+        const { decimals, btcDecimals } = useSettingsStore();
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {
@@ -36,11 +36,20 @@ export default defineComponent({
 
         const displayedDecimals = computed(() => {
             if (props.amount === null) return 0;
+
             if (props.currency === CryptoCurrency.BTC) {
-                if (props.amount > 0 && props.amount < 0.0001 * 10 ** currencyDecimals.value) return 8;
+                if (props.amount === 0) return btcDecimals.value;
+                if (props.amount < 0.000001 * 1e8) return 8;
+                if (props.amount < 0.0001 * 1e8) return Math.max(btcDecimals.value, 6);
+                if (props.amount < 0.01 * 1e8) return Math.max(btcDecimals.value, 4);
+                if (props.amount < 1 * 1e8) return Math.max(btcDecimals.value, 2);
+                return btcDecimals.value;
             }
-            if (props.amount > 0 && props.amount < 0.01 * 10 ** currencyDecimals.value) return 5;
-            if (props.amount > 0 && props.amount < 1 * 10 ** currencyDecimals.value) return Math.max(decimals.value, 2);
+
+            // For NIM:
+            if (props.amount === 0) return decimals.value;
+            if (props.amount < 0.01 * 1e5) return 5;
+            if (props.amount < 1 * 1e5) return Math.max(decimals.value, 2);
             return decimals.value;
         });
 

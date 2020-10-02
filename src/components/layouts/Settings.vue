@@ -85,6 +85,25 @@
             </section>
 
             <section>
+                <h2 class="nq-label">{{ $t('Bitcoin') }}</h2>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="btc-decimals">{{ $t('Show Decimals') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Edit the amount of decimals visible for BTC values.') }}
+                        </p>
+                    </div>
+
+                    <select id="decimals" name="btc-decimals" @input="setBtcDecimals(parseInt($event.target.value))">
+                        <option value="0" :selected="btcDecimals === 0">{{ $t('None') }}</option>
+                        <option value="3" :selected="btcDecimals === 3">3</option>
+                        <option value="8" :selected="btcDecimals === 8">{{ $t('all') }}</option>
+                    </select>
+                </div>
+            </section>
+
+            <section>
                 <h2 class="nq-label">{{ $t('Developer') }}</h2>
 
                 <div class="setting">

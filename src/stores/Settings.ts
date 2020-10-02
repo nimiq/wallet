@@ -12,6 +12,7 @@ export type SettingsState = {
     language: string, // locale
     colorMode: ColorMode,
     amountsHidden: boolean,
+    btcDecimals: 0 | 3 | 8,
 };
 
 export const useSettingsStore = createStore({
@@ -21,12 +22,14 @@ export const useSettingsStore = createStore({
         language: detectLanguage(),
         colorMode: ColorMode.AUTOMATIC,
         amountsHidden: false,
+        btcDecimals: 0,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
         language: (state): Readonly<string> => state.language,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
+        btcDecimals: (state): Readonly<number> => state.btcDecimals,
     },
     actions: {
         setDecimals(num: 0 | 2 | 5 = 0) {
@@ -43,6 +46,9 @@ export const useSettingsStore = createStore({
         },
         toggleAmountsHidden() {
             this.state.amountsHidden = !this.state.amountsHidden;
+        },
+        setBtcDecimals(num: 0 | 3 | 8 = 0) {
+            this.state.btcDecimals = num;
         },
     },
 });

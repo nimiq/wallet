@@ -51,13 +51,15 @@
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <Avatar :label="peerLabel || ''"/>
-                    <!-- <input type="text" class="nq-input-s vanishing"
-                        v-if="peerIsContact || !peerLabel"
+                    <input type="text" class="nq-input-s vanishing"
+                        v-if="senderLabelAddress || !peerLabel"
                         :placeholder="$t('Unknown')"
                         :value="peerLabel || ''"
-                        @input="setContact(peerAddress, $event.target.value)"
-                    /> -->
-                    <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
+                        @input="setSenderLabel(senderLabelAddress || ownAddresses[0], $event.target.value)"
+                    />
+                    <span v-else class="label" :class="{'unlabelled': !peerLabel}">
+                        {{ peerLabel || $t('Unknown') }}
+                    </span>
                     <Tooltip preferredPosition="bottom right" class="left-aligned"
                         v-for="address in peerAddresses.slice(0, 3)" :key="address"
                     >
@@ -102,13 +104,15 @@
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
                     <Avatar :label="peerLabel || ''"/>
-                    <!-- <input type="text" class="nq-input-s vanishing"
-                        v-if="peerIsContact || !peerLabel"
-                        :placeholder="$t('Add contact')"
+                    <input type="text" class="nq-input-s vanishing"
+                        v-if="recipientLabelAddress || !peerLabel"
+                        :placeholder="$t('Unknown')"
                         :value="peerLabel || ''"
-                        @input="setContact(peerAddress, $event.target.value)"
-                    /> -->
-                    <span class="label" :class="{'unlabelled': !peerLabel}">{{ peerLabel || $t('Unknown') }}</span>
+                        @input="setRecipientLabel(recipientLabelAddress || peerAddresses[0], $event.target.value)"
+                    />
+                    <span v-else class="label" :class="{'unlabelled': !peerLabel}">
+                        {{ peerLabel || $t('Unknown') }}
+                    </span>
                     <Tooltip preferredPosition="bottom left" class="right-aligned"
                         v-for="address in peerAddresses.slice(0, 3)" :key="address"
                     >
@@ -232,7 +236,9 @@ export default defineComponent({
         } = useBtcAddressStore();
 
         const {
+            setRecipientLabel,
             getRecipientLabel,
+            setSenderLabel,
             getSenderLabel,
         } = useBtcLabelsStore();
 
@@ -310,7 +316,10 @@ export default defineComponent({
 
             return false;
         });
-        // const peerIsContact = computed(() => !!getLabel.value(peerAddress.value));
+        const senderLabelAddress = computed(() => isIncoming.value
+            && (ownAddresses.value.find((address) => !!getSenderLabel.value(address)) || false));
+        const recipientLabelAddress = computed(() => !isIncoming.value
+            && (peerAddresses.value.find((address) => !!getRecipientLabel.value(address)) || false));
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
@@ -364,6 +373,10 @@ export default defineComponent({
             // setContact,
             amountsHidden,
             blockExplorerLink,
+            senderLabelAddress,
+            recipientLabelAddress,
+            setSenderLabel,
+            setRecipientLabel,
         };
     },
     components: {
@@ -493,8 +506,8 @@ export default defineComponent({
     color: #F7931A; // Bitcoin orange
 }
 
-.label /* ,
-.nq-input-s */ {
+.label,
+.nq-input-s {
     font-size: var(--body-size);
     font-weight: 600;
     text-align: center;
@@ -512,14 +525,14 @@ export default defineComponent({
     }
 }
 
-// .nq-input-s {
-//     margin: 1.25rem 0 0.375rem;
-//     max-width: 100%;
-// }
+.nq-input-s {
+    margin: 1.25rem 0 0.375rem;
+    max-width: 100%;
+}
 
-// .nq-input-s:not(:focus):not(:hover) {
-//     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
-// }
+.nq-input-s:not(:focus):not(:hover) {
+    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+}
 
 .address-info .tooltip /deep/ {
     .tooltip-box {

@@ -13,6 +13,7 @@ export type SettingsState = {
     colorMode: ColorMode,
     amountsHidden: boolean,
     btcDecimals: 0 | 3 | 8,
+    btcUnit: 'btc' | 'mbtc',
 };
 
 export const useSettingsStore = createStore({
@@ -23,6 +24,7 @@ export const useSettingsStore = createStore({
         colorMode: ColorMode.AUTOMATIC,
         amountsHidden: false,
         btcDecimals: 0,
+        btcUnit: 'mbtc',
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
@@ -30,6 +32,7 @@ export const useSettingsStore = createStore({
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
         btcDecimals: (state): Readonly<number> => state.btcDecimals,
+        btcUnit: (state): Readonly<'btc' | 'mbtc'> => state.btcUnit,
     },
     actions: {
         setDecimals(num: 0 | 2 | 5 = 0) {
@@ -49,6 +52,9 @@ export const useSettingsStore = createStore({
         },
         setBtcDecimals(num: 0 | 3 | 8 = 0) {
             this.state.btcDecimals = num;
+        },
+        setBtcUnit(unit: 'btc' | 'mbtc') {
+            this.state.btcUnit = unit;
         },
     },
 });

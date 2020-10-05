@@ -2,7 +2,7 @@
     <Amount v-if="typeof amount === 'number'"
         :decimals="displayedDecimals"
         :amount="amount"
-        :currency="currency"
+        :currency="ticker"
         :currencyDecimals="currencyDecimals"/>
 </template>
 
@@ -20,16 +20,19 @@ export default defineComponent({
             required: true,
         },
         currency: {
-            type: String,
+            type: String as () => CryptoCurrency,
             required: false,
         },
     },
     setup(props) {
-        const { decimals, btcDecimals } = useSettingsStore();
+        const { decimals, btcDecimals, btcUnit } = useSettingsStore();
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {
-                case CryptoCurrency.BTC: return 8;
+                case CryptoCurrency.BTC: {
+                    if (btcUnit.value === 'mbtc') return 5;
+                    return 8;
+                }
                 default: return 5;
             }
         });
@@ -38,6 +41,15 @@ export default defineComponent({
             if (props.amount === null) return 0;
 
             if (props.currency === CryptoCurrency.BTC) {
+                // For mBTC
+                if (btcUnit.value === 'mbtc') {
+                    if (props.amount === 0) return Math.min(btcDecimals.value, 5);
+                    if (props.amount < 0.01 * 1e5) return 5;
+                    if (props.amount < 1 * 1e5) return Math.max(Math.min(btcDecimals.value, 5), 2);
+                    return Math.min(btcDecimals.value, 5);
+                }
+
+                // For BTC
                 if (props.amount === 0) return btcDecimals.value;
                 if (props.amount < 0.000001 * 1e8) return 8;
                 if (props.amount < 0.0001 * 1e8) return Math.max(btcDecimals.value, 6);
@@ -53,9 +65,15 @@ export default defineComponent({
             return decimals.value;
         });
 
+        const ticker = computed(() => {
+            if (props.currency === CryptoCurrency.BTC) return btcUnit.value;
+            return CryptoCurrency.NIM;
+        });
+
         return {
             displayedDecimals,
             currencyDecimals,
+            ticker,
         };
     },
     components: {

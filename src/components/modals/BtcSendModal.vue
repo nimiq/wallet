@@ -724,9 +724,12 @@ export default defineComponent({
 
                 &:hover,
                 &:focus-within {
-                    z-index: 2;
+                    /deep/ .label-input,
+                    /deep/ .avatar {
+                        z-index: 2;
+                    }
 
-                    &.autocomplete {
+                    /deep/ .label-autocomplete {
                         z-index: 4;
                     }
                 }

@@ -190,7 +190,11 @@ export default defineComponent({
         }
     }
 
-    ul.label-autocomplete {
+    .label-autocomplete {
+        display: none;
+    }
+
+    .label-input:focus-within ~ .label-autocomplete {
         @extend %custom-scrollbar-inverse;
 
         display: flex;

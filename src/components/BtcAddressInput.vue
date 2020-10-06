@@ -71,16 +71,6 @@ export default defineComponent({
 
         let checkingAddress = false;
 
-        watch(() => props.value, () => {
-            address.value = props.value;
-            onUpdate();
-        });
-
-        function onUpdate() {
-            checkAddress();
-            updateInputFontSize();
-        }
-
         function checkAddress() {
             // BTC addresses are at least 26 characters long
             if (address.value.length < 26) {
@@ -125,6 +115,16 @@ export default defineComponent({
             inputFontSizeScaleFactor.value = Math.max(Math.min(maxWidth / width, 1), 0.7);
         }
 
+        function onUpdate() {
+            checkAddress();
+            updateInputFontSize();
+        }
+
+        function onInput() {
+            context.emit('input', address.value);
+            onUpdate();
+        }
+
         function onPaste(event: ClipboardEvent) {
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
@@ -141,10 +141,10 @@ export default defineComponent({
             context.emit('paste', event, pastedData);
         }
 
-        function onInput() {
-            context.emit('input', address.value);
+        watch(() => props.value, () => {
+            address.value = props.value;
             onUpdate();
-        }
+        });
 
         return {
             $input,

@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, onUnmounted } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -52,17 +52,21 @@ export default defineComponent({
 
         const { width } = useWindowSize();
 
+        let activated = false;
+
         async function enableBitcoin() {
-            const activated = await activateBitcoin(activeAccountId.value!);
+            activated = await activateBitcoin(activeAccountId.value!);
             if (activated) {
                 setActiveCurrency(CryptoCurrency.BTC);
                 context.root.$router.back(); // Close modal
-
-                if (width.value <= 700) { // Full mobile breakpoint
-                    context.root.$router.push('/transactions');
-                }
             }
         }
+
+        onUnmounted(() => {
+            if (activated && width.value <= 700) { // Full mobile breakpoint
+                context.root.$router.push('/transactions');
+            }
+        });
 
         return {
             enableBitcoin,

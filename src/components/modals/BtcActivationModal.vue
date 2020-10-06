@@ -52,19 +52,15 @@ export default defineComponent({
 
         const { width } = useWindowSize();
 
-        function selectBitcoin() {
-            setActiveCurrency(CryptoCurrency.BTC);
-
-            if (width.value <= 700) { // Full mobile breakpoint
-                context.root.$router.push('/transactions');
-            }
-        }
-
         async function enableBitcoin() {
             const activated = await activateBitcoin(activeAccountId.value!);
             if (activated) {
-                selectBitcoin();
-                context.root.$router.back();
+                setActiveCurrency(CryptoCurrency.BTC);
+                context.root.$router.back(); // Close modal
+
+                if (width.value <= 700) { // Full mobile breakpoint
+                    context.root.$router.push('/transactions');
+                }
             }
         }
 

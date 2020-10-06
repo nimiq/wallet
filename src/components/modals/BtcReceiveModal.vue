@@ -21,23 +21,25 @@
                 <div class="width-finder" ref="$addressWidthFinder">{{ currentlyShownAddress }}</div>
             </Copyable>
 
-            <transition name="fade">
-                <div class="address-sub-label flex-row blue" v-if="!recentlyCopiedAddresses[currentlyShownAddress]">
-                    <span>{{ $t('This is a single-use address') }}</span>
-                    <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
-                        <template slot="trigger"><InfoCircleSmallIcon /></template>
-                        <span class="header">
-                            {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
-                        </span>
-                        <p>{{ $t('Although reusing addresses won’t result in a loss of funds,'
-                                + ' it is highly recommended not to do so.') }}</p>
-                    </Tooltip>
-                </div>
+            <div class="address-sub-label">
+                <transition name="fade">
+                    <div class="flex-row blue" v-if="!recentlyCopiedAddresses[currentlyShownAddress]">
+                        <span>{{ $t('This is a single-use address') }}</span>
+                        <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
+                            <template slot="trigger"><InfoCircleSmallIcon /></template>
+                            <span class="header">
+                                {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                            </span>
+                            <p>{{ $t('Although reusing addresses won’t result in a loss of funds,'
+                                    + ' it is highly recommended not to do so.') }}</p>
+                        </Tooltip>
+                    </div>
 
-                <a class="address-sub-label flex-row create-new" @click="showNextExternalAddress" v-else>
-                    <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
-                </a>
-            </transition>
+                    <a class="flex-row create-new" @click="showNextExternalAddress" v-else>
+                        <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
+                    </a>
+                </transition>
+            </div>
 
             <div class="recently-copied-addresses flex-column">
                 <transition name="fade">
@@ -580,34 +582,39 @@ export default defineComponent({
     font-size: var(--small-size);
     font-weight: 600;
     color: var(--text-50);
+    position: relative;
+    width: 100%;
+    height: calc(1.25rem + var(--margin-top));
 
-    &.fade-enter-active {
-        height: 0;
-        margin-top: 0;
-        transform: translateY(calc(-100% - var(--margin-top)));
+    & > * {
+        justify-content: center;
+        align-items: center;
     }
 
-    &.blue {
+    .fade-enter-active {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    .blue {
         color: var(--nimiq-light-blue);
     }
 
-    &.change-address:hover {
-        text-decoration: none;
-    }
-
-    &.create-new {
+    .create-new {
         cursor: pointer;
 
         &:hover,
         &:focus {
             color: var(--nimiq-light-blue);
         }
+
+        & > svg {
+            margin-right: 0.75rem;
+            fill: currentColor;
+        }
     }
 
-    & > svg {
-        margin-right: 0.75rem;
-        fill: currentColor;
-    }
 
     .tooltip /deep/ .trigger .nq-icon {
         margin-left: 0.75rem;

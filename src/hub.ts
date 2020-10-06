@@ -63,11 +63,13 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const address of account.addresses) {
             addresses.push(address.address);
 
+            const balance = addressStore.state.addressInfos[address.address]?.balance;
+
             addressInfos.push({
                 address: address.address,
                 type: AddressType.BASIC,
                 label: address.label,
-                balance: addressStore.state.addressInfos[address.address]?.balance || null,
+                balance: balance || (balance === 0 ? 0 : null),
             });
         }
 

@@ -134,7 +134,8 @@ export default defineComponent({
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
 
-        const canHaveMultipleAddresses = computed(() => !isLegacyAccount.value);
+        const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
+            && activeAccountInfo.value.type !== AccountType.LEGACY);
 
         const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
             && (activeAccountInfo.value.btcAddresses || false)

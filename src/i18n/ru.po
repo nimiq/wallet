@@ -62,7 +62,7 @@ msgstr "24/7 Чат и телефонная служба поддержки"
 msgid "6h+"
 msgstr "6ч+"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:230
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -90,7 +90,7 @@ msgstr "Активировать"
 msgid "Activate Bitcoin"
 msgstr "Активировать Биткоин"
 
-#: src/components/modals/BtcReceiveModal.vue:72
+#: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
 "sent."
@@ -160,7 +160,7 @@ msgstr ""
 "Перевод на русский язык осуществлён в ознакомительных целях. В случае "
 "разночтений обращайтесь к оригинальному английскому тексту."
 
-#: src/components/modals/BtcReceiveModal.vue:32
+#: src/components/modals/BtcReceiveModal.vue:33
 #: src/components/modals/BtcSendModal.vue:35
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
@@ -201,7 +201,7 @@ msgstr "Резервная копия"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:115
+#: src/components/modals/BtcSendModal.vue:118
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -209,6 +209,10 @@ msgstr ""
 "Биткоин-адреса используются лишь единожды. Поэтому они не сохраняются в "
 "контактах. Чтобы отметить транзакцию и легко найти ее в истории транзакций, "
 "используйте ярлыки."
+
+#: src/components/layouts/Settings.vue:107
+msgid "Bitcoin Unit"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:172
 #: src/components/modals/TransactionModal.vue:181
@@ -254,7 +258,7 @@ msgid ""
 "will be processed."
 msgstr "Увеличьте размер комиссии, чтобы ускорить исполнение транзакции."
 
-#: src/components/layouts/Settings.vue:196
+#: src/components/layouts/Settings.vue:210
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не удалось импортировать список контактов, некорректный формат файла!"
 
@@ -288,11 +292,11 @@ msgstr "Указать Получателя"
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
-#: src/components/layouts/Settings.vue:117
+#: src/components/layouts/Settings.vue:131
 msgid "Clear"
 msgstr "Сброс"
 
-#: src/components/layouts/Settings.vue:111
+#: src/components/layouts/Settings.vue:125
 msgid "Clear Cache"
 msgstr "Очистить Кэш"
 
@@ -359,7 +363,7 @@ msgstr ""
 "Создайте новый аккаунт и переведите туда свои средства. Новые функции и "
 "возможности ждут вас!"
 
-#: src/components/modals/BtcReceiveModal.vue:38
+#: src/components/modals/BtcReceiveModal.vue:39
 msgid "Create a new single-use address."
 msgstr "Создать новый одноразовый адрес."
 
@@ -367,32 +371,32 @@ msgstr "Создать новый одноразовый адрес."
 msgid "Create backup"
 msgstr "Создать резервную копию"
 
-#: src/components/modals/BtcReceiveModal.vue:109
+#: src/components/modals/BtcReceiveModal.vue:74
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
 msgstr "Создать платёжную ссылку"
 
-#: src/components/modals/BtcReceiveModal.vue:263
+#: src/components/modals/BtcReceiveModal.vue:221
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr "Создан {count} день назад | Создан {count} дней назад"
 
-#: src/components/modals/BtcReceiveModal.vue:257
+#: src/components/modals/BtcReceiveModal.vue:215
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr "Создан {count} час назад | Создан {count} часов назад"
 
-#: src/components/modals/BtcReceiveModal.vue:251
+#: src/components/modals/BtcReceiveModal.vue:209
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr "Создан {count} минуту назад | Создан {count} минут назад"
 
-#: src/components/modals/BtcReceiveModal.vue:245
+#: src/components/modals/BtcReceiveModal.vue:203
 msgid "Created {count} second ago | Created {count} seconds ago"
 msgstr "Создан {count} секунду назад | Создан {count} секунд назад"
 
-#: src/components/modals/BtcReceiveModal.vue:242
+#: src/components/modals/BtcReceiveModal.vue:200
 msgid "Created just now"
 msgstr "Создан только что"
 
-#: src/components/modals/BtcReceiveModal.vue:269
+#: src/components/modals/BtcReceiveModal.vue:227
 msgid "Created some time ago"
 msgstr "Создан недавно"
 
@@ -400,16 +404,16 @@ msgstr "Создан недавно"
 msgid "Credit Card accepted"
 msgstr "Принимаются кредитные карты"
 
-#: src/components/layouts/Settings.vue:107
+#: src/components/layouts/Settings.vue:121
 msgid "Developer"
 msgstr "Разработчик"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:157
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
-#: src/components/modals/BtcReceiveModal.vue:124
+#: src/components/modals/BtcReceiveModal.vue:89
 msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 "Для каждой транзакции создавайте новый адрес. Не используйте одинаковые "
@@ -429,7 +433,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr "Скачайте свой Файл Авторизации"
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:111
 msgid "Duration and fees are estimates."
 msgstr "Скорость и комиссия могут меняться"
 
@@ -453,7 +457,7 @@ msgstr "Изменить количество знаков после запят
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
-#: src/components/modals/BtcSendModal.vue:482
+#: src/components/modals/BtcSendModal.vue:485
 #: src/components/modals/SendModal.vue:495
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
@@ -524,7 +528,7 @@ msgstr "Загрузка"
 msgid "Fiat value unavailable"
 msgstr "Значение в фиатной валюте не доступно"
 
-#: src/components/layouts/Settings.vue:202
+#: src/components/layouts/Settings.vue:216
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
@@ -617,7 +621,7 @@ msgstr "Улучшенная Доступность"
 msgid "In cooperation with"
 msgstr "В сотрудничестве с"
 
-#: src/components/modals/BtcSendModal.vue:104
+#: src/components/modals/BtcSendModal.vue:107
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -625,7 +629,7 @@ msgstr ""
 "Чтобы ускорить исполнение транзакции, увеличьте размер комиссии. Комиссия "
 "идёт напрямую майнерам."
 
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:91
 #: src/components/modals/SendModal.vue:129
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
@@ -643,7 +647,7 @@ msgstr "Пригласи друга, отправив ему"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Это быстро, безопасно и делает вас по-настоящему независимым. "
 
-#: src/components/modals/BtcReceiveModal.vue:66
+#: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
 msgstr "Назовите отправителя"
 
@@ -714,7 +718,7 @@ msgstr "Укажите имя контакта"
 msgid "Network"
 msgstr "Сеть"
 
-#: src/components/modals/BtcSendModal.vue:101
+#: src/components/modals/BtcSendModal.vue:104
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Комиссия сети: {sats} sat/vByte"
 
@@ -744,7 +748,7 @@ msgstr ""
 "Nimiq OASIS позволяет децентрализованно покупать и продавать криптовалюту "
 "прямо в вашем кошельке. "
 
-#: src/components/modals/BtcSendModal.vue:117
+#: src/components/modals/BtcSendModal.vue:120
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Кошелёк Nimiq не поддерживает подпись транзакций для Биткоина."
 
@@ -763,7 +767,7 @@ msgstr "Нет"
 msgid "not sent"
 msgstr "не отправлено"
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:239
 msgid "OK! Contacts imported successfully."
 msgstr "Импорт контактов выполнен успешно."
 
@@ -846,18 +850,18 @@ msgstr "Получить немного NIM и начать пользовать
 msgid "received at {dateAndTime}"
 msgstr "получено {dateAndTime} "
 
-#: src/components/modals/BtcReceiveModal.vue:46
+#: src/components/modals/BtcReceiveModal.vue:48
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 "Здесь вы увидите ваши недавние адреса. Они будут видны здесь, пока не "
 "получат транзакцию."
 
-#: src/components/modals/BtcReceiveModal.vue:49
+#: src/components/modals/BtcReceiveModal.vue:51
 msgid "Recently copied"
 msgstr "Недавно скопировано"
 
-#: src/components/layouts/Settings.vue:124
+#: src/components/layouts/Settings.vue:138
 msgid "Reference currency"
 msgstr "Базовая валюта"
 
@@ -871,11 +875,11 @@ msgstr "Переименовать"
 msgid "Request failed"
 msgstr "Запрос не удался"
 
-#: src/components/layouts/Settings.vue:113
+#: src/components/layouts/Settings.vue:127
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
-#: src/components/modals/BtcSendModal.vue:481
+#: src/components/modals/BtcSendModal.vue:484
 #: src/components/modals/SendModal.vue:494
 msgid "Retry"
 msgstr "Повторить"
@@ -888,7 +892,7 @@ msgstr "Сохранить логин-файл"
 msgid "Save now"
 msgstr "Сохранить"
 
-#: src/components/modals/BtcReceiveModal.vue:145
+#: src/components/modals/BtcReceiveModal.vue:110
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
 "Scan the code to send\n"
@@ -907,12 +911,16 @@ msgstr "Найти транзакции"
 msgid "Search transactions by contact, address, etc."
 msgstr "Найти транзакцию по адресу, получателю и т.д."
 
+#: src/components/layouts/Settings.vue:109
+msgid "Select which unit to show Bitcoin amounts in."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:97
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Отправить"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:90
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:93
 #: src/components/modals/SendModal.vue:131
 msgid "Send all"
 msgstr "Отправить все"
@@ -928,7 +936,7 @@ msgstr ""
 "Отправляйте и получайте NIM без посредников и наслаждайтесь подлинной "
 "децентрализацией. "
 
-#: src/components/modals/BtcSendModal.vue:128
+#: src/components/modals/BtcSendModal.vue:131
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:150
@@ -939,16 +947,16 @@ msgstr "Отправить транзакцию"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
-#: src/components/modals/BtcSendModal.vue:478
+#: src/components/modals/BtcSendModal.vue:481
 #: src/components/modals/SendModal.vue:491
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
-#: src/components/modals/BtcSendModal.vue:539
+#: src/components/modals/BtcSendModal.vue:542
 msgid "Sent {btc} BTC"
 msgstr "Отправить {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:535
+#: src/components/modals/BtcSendModal.vue:538
 msgid "Sent {btc} BTC to {name}"
 msgstr "Отправить {btc} BTC на адрес {name}"
 
@@ -982,7 +990,7 @@ msgstr "Настройки"
 msgid "Share a single-use address with the sender."
 msgstr "Поделиться одноразовым адресом с отправителем."
 
-#: src/components/modals/BtcReceiveModal.vue:153
+#: src/components/modals/BtcReceiveModal.vue:118
 #: src/components/modals/ReceiveModal.vue:46
 msgid ""
 "Share the link or QR code with the sender.\n"
@@ -995,7 +1003,7 @@ msgstr ""
 msgid "Share your address with the sender."
 msgstr "Поделиться своим адресом с отправителем. "
 
-#: src/components/modals/BtcReceiveModal.vue:151
+#: src/components/modals/BtcReceiveModal.vue:116
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your Payment Link"
 msgstr "Поделиться ссылкой на свой платеж"
@@ -1022,7 +1030,7 @@ msgstr "Зарегистрироваться"
 msgid "Skip for now"
 msgstr "В данный момент пропустить"
 
-#: src/components/modals/BtcSendModal.vue:550
+#: src/components/modals/BtcSendModal.vue:553
 #: src/components/modals/SendModal.vue:537
 msgid "Something went wrong"
 msgstr "Операция не удалась"
@@ -1045,9 +1053,8 @@ msgid "standard"
 msgstr "стандартный"
 
 #: src/components/modals/TradeModal.vue:104
-msgid "Starting with EU bank accounts in Q3 2020."
+msgid "Starting with EU bank accounts soon."
 msgstr ""
-"Начиная с банковских  счетов  банков  Евросоюза в 3  квартале  2020 года."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
@@ -1118,7 +1125,7 @@ msgstr "Этот адрес уже использован"
 msgid "This is a Legacy Account"
 msgstr "Это Аккаунт \"старого\"  типа"
 
-#: src/components/modals/BtcReceiveModal.vue:26
+#: src/components/modals/BtcReceiveModal.vue:27
 msgid "This is a single-use address"
 msgstr "Этот одноразовый адрес"
 
@@ -1156,7 +1163,7 @@ msgstr "Транзакции с {address}"
 msgid "Transaction to {address}"
 msgstr "Транзакции на {address}"
 
-#: src/components/modals/BtcSendModal.vue:118
+#: src/components/modals/BtcSendModal.vue:121
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Из-за времени обработки блока Биткоина, исполнение транзакций может занимать"
@@ -1182,7 +1189,7 @@ msgstr "Невостребованные Cashlink"
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/components/modals/BtcReceiveModal.vue:84
+#: src/components/BtcCopiedAddress.vue:26
 msgid "Unlabelled"
 msgstr "Неназванный"
 
@@ -1191,7 +1198,7 @@ msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr ""
 "Используйте {NIM}, супер-производительную и браузерную монету для платежей."
 
-#: src/components/modals/BtcReceiveModal.vue:30
+#: src/components/modals/BtcReceiveModal.vue:31
 #: src/components/modals/BtcSendModal.vue:32
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
@@ -1201,7 +1208,7 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr "Используйте файл для доступа к Вашему аккаунту с любого устройства."
 
-#: src/components/modals/BtcReceiveModal.vue:129
+#: src/components/modals/BtcReceiveModal.vue:94
 msgid ""
 "Use labels instead of contacts to easily identify transactions in your "
 "history."
@@ -1221,7 +1228,7 @@ msgstr ""
 msgid "What else?"
 msgstr "Что-то еще?"
 
-#: src/components/modals/BtcReceiveModal.vue:119
+#: src/components/modals/BtcReceiveModal.vue:84
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
 "privacy.Reuse of addresses does not result in a loss of funds."
@@ -1230,8 +1237,7 @@ msgstr ""
 "что повторное использование одного и того же адреса приведёт к потере ваших "
 "средств."
 
-#: src/components/BtcLabelInput.vue:20
-#: src/components/modals/BtcReceiveModal.vue:74
+#: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""
 "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
@@ -1260,8 +1266,8 @@ msgid "You now own crypto!"
 msgstr "Теперь ты владеешь криптовалютой!"
 
 #: src/components/modals/BtcSendModal.vue:84
-msgid "You will send {amount} BTC"
-msgstr "Вы отправите {amount} BTC"
+msgid "You will send {amount}"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:125
 msgid "You will send {amount} NIM"

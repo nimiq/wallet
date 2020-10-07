@@ -758,7 +758,7 @@ msgid "standard"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:104
-msgid "Starting with EU bank accounts in Q3 2020."
+msgid "Starting with EU bank accounts soon."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:13

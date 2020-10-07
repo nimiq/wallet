@@ -48,12 +48,12 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
                         <AmountInput v-if="activeCurrency === 'btc'"
-                            v-model="amount" :decimals="8" ref="amountInputRef"
+                            v-model="amount" :decimals="btcUnit === 'mbtc' ? 5 : 8" ref="amountInputRef"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 currency="btc"
-                                :activeCurrency="activeCurrency"
+                                :activeCurrency="btcUnit"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 @fee-selection="feeSelectionOpened = true"
@@ -81,7 +81,11 @@
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
                         </span>
                         <span v-else key="btc-amount">
-                            {{ $t('You will send {amount} BTC', { amount: amount / 1e8 }) }}
+                            {{ $t(
+                                'You will send {amount}',
+                                { amount: `${amount / (btcUnit === 'mbtc' ? 1e5 : 1e8)}
+                                    ${btcUnit === 'mbtc' ? 'mBTC' : 'BTC'}` },
+                            ) }}
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -174,7 +178,7 @@ import { useBtcAddressStore, UTXO } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
-// import { useSettingsStore } from '../../stores/Settings';
+import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -560,6 +564,8 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        const { btcUnit } = useSettingsStore();
+
         return {
             // General
             RecipientType,
@@ -579,6 +585,7 @@ export default defineComponent({
             amountMenuOpened,
             feeOptions,
             activeCurrency,
+            btcUnit,
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,

@@ -43,7 +43,7 @@ export const useSettingsStore = createStore({
         colorMode: ColorMode.AUTOMATIC,
         amountsHidden: false,
         btcDecimals: 0,
-        btcUnit: BtcUnits.mbtc,
+        btcUnit: BtcUnits.btc,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,

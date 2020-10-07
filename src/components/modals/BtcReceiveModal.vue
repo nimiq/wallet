@@ -122,8 +122,8 @@
                 <div class="inputs">
                     <div class="separator"></div>
                     <!-- TODO: add label to AmountInput -->
-                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="btcUnit === 'mbtc' ? 5 : 8">
-                        <span slot="suffix" class="ticker">{{ btcUnit === 'mbtc' ? 'mBTC' : 'BTC' }}</span>
+                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="btcUnit.decimals">
+                        <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                     </AmountInput>
                     <div class="separator"></div>
                 </div>

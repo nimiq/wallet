@@ -48,12 +48,12 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
                         <AmountInput v-if="activeCurrency === 'btc'"
-                            v-model="amount" :decimals="btcUnit === 'mbtc' ? 5 : 8" ref="amountInputRef"
+                            v-model="amount" :decimals="btcUnit.decimals" ref="amountInputRef"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 currency="btc"
-                                :activeCurrency="btcUnit"
+                                :activeCurrency="btcUnit.ticker.toLowerCase()"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 @fee-selection="feeSelectionOpened = true"
@@ -83,8 +83,7 @@
                         <span v-else key="btc-amount">
                             {{ $t(
                                 'You will send {amount}',
-                                { amount: `${amount / (btcUnit === 'mbtc' ? 1e5 : 1e8)}
-                                    ${btcUnit === 'mbtc' ? 'mBTC' : 'BTC'}` },
+                                { amount: `${amount / (btcUnit.unitsToCoins)} ${btcUnit.ticker}` },
                             ) }}
                         </span>
                     </span>

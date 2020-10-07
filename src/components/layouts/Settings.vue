@@ -111,8 +111,8 @@
                     </div>
 
                     <select id="btc-unit" @input="setBtcUnit($event.target.value)">
-                        <option value="btc" :selected="btcUnit === 'btc'">BTC</option>
-                        <option value="mbtc" :selected="btcUnit === 'mbtc'">mBTC</option>
+                        <option value="btc" :selected="btcUnit.ticker === 'BTC'">BTC</option>
+                        <option value="mbtc" :selected="btcUnit.ticker === 'mBTC'">mBTC</option>
                     </select>
                 </div>
             </section>

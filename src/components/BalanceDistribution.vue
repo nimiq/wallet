@@ -50,17 +50,12 @@
             </div>
             <Amount
                 :maxDecimals="Math.min(
-                    btcUnit === 'mbtc' ? 5 : 8,
-                    Math.max(
-                        0,
-                        Math.floor(
-                            Math.log10(100 / (btcAccountBalance / (btcUnit === 'mbtc' ? 1e5 : 1e8))),
-                        ),
-                    ),
+                    btcUnit.decimals,
+                    Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / btcUnit.unitToCoins)))),
                 )"
                 :amount="btcAccountBalance"
-                :currency="btcUnit"
-                :currencyDecimals="btcUnit === 'mbtc' ? 5 : 8"
+                :currency="btcUnit.ticker.toLowerCase()"
+                :currencyDecimals="btcUnit.decimals"
                 value-mask/>
         </div>
     </div>

@@ -29,10 +29,7 @@ export default defineComponent({
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {
-                case CryptoCurrency.BTC: {
-                    if (btcUnit.value === 'mbtc') return 5;
-                    return 8;
-                }
+                case CryptoCurrency.BTC: return btcUnit.value.decimals;
                 default: return 5;
             }
         });
@@ -41,21 +38,19 @@ export default defineComponent({
             if (props.amount === null) return 0;
 
             if (props.currency === CryptoCurrency.BTC) {
-                // For mBTC
-                if (btcUnit.value === 'mbtc') {
-                    if (props.amount === 0) return Math.min(btcDecimals.value, 5);
+                const maxDecimals = Math.min(btcDecimals.value, btcUnit.value.decimals);
+                if (props.amount === 0) return maxDecimals;
+
+                if (btcUnit.value.ticker === 'mBTC') {
                     if (props.amount < 0.01 * 1e5) return 5;
-                    if (props.amount < 1 * 1e5) return Math.max(Math.min(btcDecimals.value, 5), 2);
-                    return Math.min(btcDecimals.value, 5);
+                } else {
+                    if (props.amount < 0.000001 * 1e8) return 8;
+                    if (props.amount < 0.0001 * 1e8) return Math.max(maxDecimals, 6);
+                    if (props.amount < 0.01 * 1e8) return Math.max(maxDecimals, 4);
                 }
 
-                // For BTC
-                if (props.amount === 0) return btcDecimals.value;
-                if (props.amount < 0.000001 * 1e8) return 8;
-                if (props.amount < 0.0001 * 1e8) return Math.max(btcDecimals.value, 6);
-                if (props.amount < 0.01 * 1e8) return Math.max(btcDecimals.value, 4);
-                if (props.amount < 1 * 1e8) return Math.max(btcDecimals.value, 2);
-                return btcDecimals.value;
+                if (props.amount < 1 * btcUnit.value.unitToCoins) return Math.max(maxDecimals, 2);
+                return maxDecimals;
             }
 
             // For NIM:
@@ -66,7 +61,7 @@ export default defineComponent({
         });
 
         const ticker = computed(() => {
-            if (props.currency === CryptoCurrency.BTC) return btcUnit.value;
+            if (props.currency === CryptoCurrency.BTC) return btcUnit.value.ticker.toLowerCase();
             return CryptoCurrency.NIM;
         });
 

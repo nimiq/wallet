@@ -2,7 +2,7 @@
     <Amount v-if="typeof amount === 'number'"
         :decimals="displayedDecimals"
         :amount="amount"
-        :currency="currency"
+        :currency="ticker"
         :currencyDecimals="currencyDecimals"/>
 </template>
 
@@ -20,16 +20,16 @@ export default defineComponent({
             required: true,
         },
         currency: {
-            type: String,
+            type: String as () => CryptoCurrency,
             required: false,
         },
     },
     setup(props) {
-        const { decimals, btcDecimals } = useSettingsStore();
+        const { decimals, btcDecimals, btcUnit } = useSettingsStore();
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {
-                case CryptoCurrency.BTC: return 8;
+                case CryptoCurrency.BTC: return btcUnit.value.decimals;
                 default: return 5;
             }
         });
@@ -38,12 +38,19 @@ export default defineComponent({
             if (props.amount === null) return 0;
 
             if (props.currency === CryptoCurrency.BTC) {
-                if (props.amount === 0) return btcDecimals.value;
-                if (props.amount < 0.000001 * 1e8) return 8;
-                if (props.amount < 0.0001 * 1e8) return Math.max(btcDecimals.value, 6);
-                if (props.amount < 0.01 * 1e8) return Math.max(btcDecimals.value, 4);
-                if (props.amount < 1 * 1e8) return Math.max(btcDecimals.value, 2);
-                return btcDecimals.value;
+                const maxDecimals = Math.min(btcDecimals.value, btcUnit.value.decimals);
+                if (props.amount === 0) return maxDecimals;
+
+                if (btcUnit.value.ticker === 'mBTC') {
+                    if (props.amount < 0.01 * 1e5) return 5;
+                } else {
+                    if (props.amount < 0.000001 * 1e8) return 8;
+                    if (props.amount < 0.0001 * 1e8) return Math.max(maxDecimals, 6);
+                    if (props.amount < 0.01 * 1e8) return Math.max(maxDecimals, 4);
+                }
+
+                if (props.amount < 1 * btcUnit.value.unitToCoins) return Math.max(maxDecimals, 2);
+                return maxDecimals;
             }
 
             // For NIM:
@@ -53,9 +60,15 @@ export default defineComponent({
             return decimals.value;
         });
 
+        const ticker = computed(() => {
+            if (props.currency === CryptoCurrency.BTC) return btcUnit.value.ticker.toLowerCase();
+            return CryptoCurrency.NIM;
+        });
+
         return {
             displayedDecimals,
             currencyDecimals,
+            ticker,
         };
     },
     components: {

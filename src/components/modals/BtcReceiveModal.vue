@@ -122,8 +122,8 @@
                 <div class="inputs">
                     <div class="separator"></div>
                     <!-- TODO: add label to AmountInput -->
-                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="8">
-                        <span slot="suffix" class="ticker">BTC</span>
+                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="btcUnit.decimals">
+                        <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                     </AmountInput>
                     <div class="separator"></div>
                 </div>
@@ -158,6 +158,7 @@ import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Cur
 import Modal from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
+import { useSettingsStore } from '../../stores/Settings';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
@@ -363,12 +364,15 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
+        const { btcUnit } = useSettingsStore();
+
         return {
             origin: window.location.origin,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
             closeOverlay,
             amount,
+            btcUnit,
             message,
             requestLink,
             copyActiveAddressCallback,

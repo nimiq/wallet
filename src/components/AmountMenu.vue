@@ -1,6 +1,6 @@
 <template>
     <div class="amount-menu">
-        <button class="reset button flex-row">{{ activeCurrency.toUpperCase() }}</button>
+        <button class="reset button flex-row">{{ ticker }}</button>
         <div v-if="open" class="menu flex-column">
             <button v-if="currency === 'nim'" class="reset flex-row" @click="$emit('fee-selection')">
                 <!-- eslint-disable-next-line max-len -->
@@ -15,7 +15,9 @@
             <div class="separator"></div>
             <div class="flex-row currencies">
                 <button
-                    class="reset" :class="{'active': activeCurrency === currency}"
+                    class="reset" :class="{
+                        'active': activeCurrency === currency || (currency === 'btc' && activeCurrency === 'mbtc'),
+                    }"
                     @click="$emit('currency', currency)"
                 >{{ currency.toUpperCase() }}</button>
                 <button
@@ -29,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { FiatCurrency, CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
@@ -54,6 +56,16 @@ export default defineComponent({
             type: Array as () => FiatCurrency[],
             required: true,
         },
+    },
+    setup(props) {
+        const ticker = computed(() => {
+            if (props.activeCurrency === 'mbtc') return 'mBTC';
+            return props.activeCurrency.toUpperCase();
+        });
+
+        return {
+            ticker,
+        };
     },
 });
 </script>

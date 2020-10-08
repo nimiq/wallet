@@ -49,8 +49,14 @@
                 </div>
             </div>
             <Amount
-                :maxDecimals="Math.min(8, Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / 1e8)))))"
-                :amount="btcAccountBalance" :currency="'btc'" :currencyDecimals="8" value-mask/>
+                :maxDecimals="Math.min(
+                    btcUnit.decimals,
+                    Math.max(0, Math.floor(Math.log10(100 / (btcAccountBalance / btcUnit.unitToCoins)))),
+                )"
+                :amount="btcAccountBalance"
+                :currency="btcUnit.ticker.toLowerCase()"
+                :currencyDecimals="btcUnit.decimals"
+                value-mask/>
         </div>
     </div>
 </template>
@@ -66,6 +72,7 @@ import { useAddressStore, AddressInfo } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     name: 'balance-distribution',
@@ -73,6 +80,7 @@ export default defineComponent({
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        const { btcUnit } = useSettingsStore();
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
@@ -119,6 +127,7 @@ export default defineComponent({
             btcAccountBalance,
             nimBalanceDistribution,
             nimPercentageSum,
+            btcUnit,
         };
     },
     components: {

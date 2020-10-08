@@ -15,7 +15,7 @@
                 {{ label }}
             </li>
         </ul>
-        <div class="blue-tooltip" v-if="recipientLabels.length === 0">
+        <div class="blue-tooltip" v-if="Object.values(recipientLabels).length === 0">
             <p>{{ $t('Add a label to quickly find the transaction in your history.') }}</p>
             <p>{{ $t('With Bitcoin, there are no contacts, since addresses are only used once.') }}</p>
         </div>
@@ -161,112 +161,85 @@ export default defineComponent({
                 color: var(--text-50);
             }
         }
+    }
 
-        .blue-tooltip {
-            --width: 28rem;
-            width: var(--width);
-            padding: 1.5rem;
-            position: absolute;
-            top: 100%;
-            left: calc(0px - var(--width) - 2rem);
-            z-index: 10;
-            font-size: var(--small-size);
-            line-height: 140%;
-            text-align: left;
-            background: var(--nimiq-light-blue-bg);
-            color: white;
-            border-radius: 0.5rem;
-
-            opacity: 0;
-            transform: translateY(-50%) translateX(-.5rem);
-
-            transition: {
-                property: opacity, transform;
-                duration: 200ms;
-            }
-
-            p:first-child {
-                margin-top: 0;
-            }
-            p:last-child {
-                margin-bottom: 0;
-            }
-
-            &::after {
-                content: '';
-                display: block;
-                position: absolute;
-                width: 2.75rem;
-                height: 2.5rem;
-                top: 30%;
-                right: 0;
-                mask-image: url('data:image/svg+xml,
-                    <svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4
-                        4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/>
-                    </svg>');
-                mask-size: contain;
-                z-index: 10;
-                background: #1A6AD2;
-                transform: translateY(-50%) translateX(calc(100% - 0.25rem)) rotate(90deg);
-            }
+    .blue-tooltip {
+        @media (min-width: 961px) {
+            @include blue-tooltip(left);
         }
 
-        .label-input:focus-within ~ .blue-tooltip {
-            opacity: 1;
-            pointer-events: inherit;
-            user-select: none;
-
-            transform: translateY(-50%) translateX(0);
+        @media (max-width: 960px) {
+            @include blue-tooltip(bottom);
         }
 
-        ul.label-autocomplete {
-            @extend %custom-scrollbar-inverse;
+        p:first-child {
+            margin-top: 0;
+        }
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
 
+    .label-input:focus-within ~ .blue-tooltip {
+        @media (min-width: 961px) {
+            @include blue-tooltip_open(left);
+        }
+
+        @media (max-width: 960px) {
+            @include blue-tooltip_open(bottom);
+        }
+    }
+
+    .label-autocomplete {
+        display: none;
+    }
+
+    .label-input:focus-within ~ .label-autocomplete {
+        @extend %custom-scrollbar-inverse;
+
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        z-index: 4;
+        background: var(--nimiq-blue-bg);
+        color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
+        margin: 0;
+        margin-top: -.25rem;
+        padding: .5rem;
+        max-height: 40rem;
+        list-style-type: none;
+        overflow: auto;
+        cursor: pointer;
+
+        li {
             display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            z-index: 4;
-            background: var(--nimiq-blue-bg);
-            color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
-            margin: 0;
-            margin-top: -.25rem;
-            padding: .5rem;
-            max-height: 40rem;
-            list-style-type: none;
-            overflow: auto;
-            cursor: pointer;
+            flex-direction: row;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            background-color: rgba(#FFFFFF, 0);
 
-            li {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                padding: 1rem;
-                border-radius: 0.25rem;
-                background-color: rgba(#FFFFFF, 0);
+            transition: background-color 200ms var(--nimiq-ease);
 
-                transition: background-color 200ms var(--nimiq-ease);
-
-                &:not(:last-child) {
-                    margin-bottom: .5rem;
-                }
-
-                &:hover,
-                &.selected {
-                    background-color: rgba(#FFFFFF, .12);
-                }
+            &:not(:last-child) {
+                margin-bottom: .5rem;
             }
 
-            .avatar {
-                margin-right: 1rem;
-                height: 3rem;
-                width: 3rem;
-                font-size: 1.625rem;
-                letter-spacing: -0.05em;
+            &:hover,
+            &.selected {
+                background-color: rgba(#FFFFFF, .12);
             }
+        }
+
+        .avatar {
+            margin-right: 1rem;
+            height: 3rem;
+            width: 3rem;
+            font-size: 1.625rem;
+            letter-spacing: -0.05em;
         }
     }
 </style>

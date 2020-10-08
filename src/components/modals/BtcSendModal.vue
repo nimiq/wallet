@@ -14,6 +14,7 @@
                     </transition>
                     <BtcAddressInput
                         :placeholder="$t('Enter recipient address...')"
+                        v-model="addressInputValue"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @input="resetAddress"
                         @click.capture.native="selectedInput = 'top'"
@@ -47,12 +48,12 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
                         <AmountInput v-if="activeCurrency === 'btc'"
-                            v-model="amount" :decimals="8" ref="amountInputRef"
+                            v-model="amount" :decimals="btcUnit.decimals" ref="amountInputRef"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 currency="btc"
-                                :activeCurrency="activeCurrency"
+                                :activeCurrency="btcUnit.ticker.toLowerCase()"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 @fee-selection="feeSelectionOpened = true"
@@ -80,7 +81,10 @@
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
                         </span>
                         <span v-else key="btc-amount">
-                            {{ $t('You will send {amount} BTC', { amount: amount / 1e8 }) }}
+                            {{ $t(
+                                'You will send {amount}',
+                                { amount: `${amount / (btcUnit.unitsToCoins)} ${btcUnit.ticker}` },
+                            ) }}
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -173,7 +177,7 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
-// import { useSettingsStore } from '../../stores/Settings';
+import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -273,7 +277,10 @@ export default defineComponent({
             if (isFetchingHistogram) return;
             isFetchingHistogram = true;
 
-            const histogram = await (await getElectrumClient()).getMempoolFees();
+            const client = await getElectrumClient();
+            await client.waitForConsensusEstablished();
+
+            const histogram = await client.getMempoolFees();
             mempoolFees.value = histogram;
 
             isFetchingHistogram = false;
@@ -383,6 +390,9 @@ export default defineComponent({
             && amount.value <= maxSendableAmount.value,
         );
 
+
+        const addressInputValue = ref(''); // Used for setting the address from a request URI
+
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             try {
                 const parsedRequestLink = parseBitcoinUrl(uri);
@@ -395,6 +405,7 @@ export default defineComponent({
                 }
 
                 if (parsedRequestLink.recipient) {
+                    addressInputValue.value = parsedRequestLink.recipient;
                     // Wait for onAddressEntered to trigger
                     let i = 0;
                     while (!recipientWithLabel.value && i < 10) {
@@ -419,13 +430,16 @@ export default defineComponent({
          */
 
         // FIXME: This should optimally be automatic with Typescript
+        interface BtcAddressInput {
+            focus(): void;
+        }
         interface AmountInput {
             focus(): void;
         }
 
-        const addressInputRef: Ref<LabelInput | null> = ref(null);
-        const labelInputRef: Ref<LabelInput | null> = ref(null);
-        const amountInputRef: Ref<AmountInput | null> = ref(null);
+        const addressInputRef = ref<BtcAddressInput>(null);
+        const labelInputRef = ref<LabelInput>(null);
+        const amountInputRef = ref<AmountInput>(null);
         const labelInputHeight = computed(() => labelInputRef.value?.$el.children[0].clientHeight);
 
         const { width } = useWindowSize();
@@ -531,11 +545,14 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        const { btcUnit } = useSettingsStore();
+
         return {
             // General
             RecipientType,
 
             // Recipient Input
+            addressInputValue,
             resetAddress,
             onAddressEntered,
             recipientWithLabel,
@@ -549,6 +566,7 @@ export default defineComponent({
             amountMenuOpened,
             feeOptions,
             activeCurrency,
+            btcUnit,
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
@@ -694,9 +712,12 @@ export default defineComponent({
 
                 &:hover,
                 &:focus-within {
-                    z-index: 2;
+                    /deep/ .label-input,
+                    /deep/ .avatar {
+                        z-index: 2;
+                    }
 
-                    &.autocomplete {
+                    /deep/ .label-autocomplete {
                         z-index: 4;
                     }
                 }

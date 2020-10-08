@@ -6,7 +6,7 @@
             <div class="flex-grow"></div>
             <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(0.5rem, 2rem)'}">
                 <InfoCircleIcon slot="trigger"/>
-                <p>{{ $t('You are connecting to the Nimiq Testnet.') }}</p>
+                <p>{{ $t('You are connecting to the Nimiq and Bitcoin Testnets.') }}</p>
                 <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
             </Tooltip>
         </div>

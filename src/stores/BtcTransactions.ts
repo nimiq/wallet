@@ -3,10 +3,10 @@
 import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { TransactionDetails, PlainOutput, PlainInput } from '@nimiq/electrum-client';
+import { TransactionDetails, PlainOutput } from '@nimiq/electrum-client';
 import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
-import { useBtcAddressStore, UTXO } from './BtcAddress';
+import { useBtcAddressStore } from './BtcAddress';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
@@ -25,13 +25,25 @@ export enum TransactionState {
     CONFIRMED = 'confirmed',
 }
 
+const VALID_TRANSACTION_STATES = [
+    TransactionState.PENDING,
+    TransactionState.MINED,
+    TransactionState.CONFIRMED,
+];
+
 export const useBtcTransactionsStore = createStore({
     id: 'btcTransactions',
     state: () => ({
         transactions: {} as {[hash: string]: Transaction},
     }),
     getters: {
-        // activeAccount: state => state.accounts[state.activeAccountId],
+        spentInputs: (state) => Object.values(state.transactions).reduce((set, tx) => {
+            if (!VALID_TRANSACTION_STATES.includes(tx.state)) return set;
+            for (const input of tx.inputs) {
+                set.add(`${input.transactionHash}:${input.outputIndex}`);
+            }
+            return set;
+        }, new Set<string>()),
     },
     actions: {
         addTransactions(txs: TransactionDetails[]) {
@@ -65,83 +77,21 @@ export const useBtcTransactionsStore = createStore({
             this.calculateFiatAmounts();
 
             // Update UTXOs and `used` status on affected addresses
-            const { state: btcAddresses$, patchAddress, removeCopiedAddresses } = useBtcAddressStore();
 
-            // Remove UTXOs in inputs from addresses
-            const inputsByAddress = new Map<string, PlainInput[]>();
+            const appliedTransactions: Transaction[] = [];
+            // const revertedTransactions: Transaction[] = [];
+
             for (const tx of txDetails) {
-                for (const input of tx.inputs) {
-                    const { address } = input;
-                    if (address && btcAddresses$.addressInfos[address]) {
-                        const inputs = inputsByAddress.get(address) || [];
-                        inputs.push(input);
-                        inputsByAddress.set(address, inputs);
-                    }
+                if (VALID_TRANSACTION_STATES.includes(tx.state)) {
+                    appliedTransactions.push(tx);
+                } else {
+                    // revertedTransactions.push(tx);
                 }
             }
-            // TODO: More efficient filtering of one array by not-in-other-array?
-            for (const [address, inputs] of inputsByAddress) {
-                const { utxos } = btcAddresses$.addressInfos[address];
-                patchAddress(address, {
-                    utxos: utxos.filter((utxo) => !inputs.some((input) =>
-                        input.transactionHash === utxo.transactionHash && input.outputIndex === utxo.index)),
-                    used: true,
-                });
-            }
 
-            // Build a list of all known spent outputs (= inputs)
-            // It's not enough to only take into account the inputs used in the transactions
-            // added in this method call, as for the case where an output is added for which
-            // the spending transaction is already known and has been processed, this output
-            // would still be added as an UTXO.
-            const knownInputKeys = Object.values(this.state.transactions)
-                .reduce((set, tx) => {
-                    for (const input of tx.inputs) {
-                        set.add(`${input.transactionHash}:${input.outputIndex}`);
-                    }
-                    return set;
-                }, new Set<string>());
-
-
-            // Add UTXOs to addresses from outputs
-            const utxosByAddress = new Map<string, UTXO[]>();
-            for (const tx of txDetails) {
-                for (const output of tx.outputs) {
-                    // Skip this output if an according input is already known
-                    if (knownInputKeys.has(`${tx.transactionHash}:${output.index}`)) continue;
-
-                    const { address } = output;
-
-                    // Skip this output if it has no address
-                    if (!address) continue;
-
-                    if (btcAddresses$.addressInfos[address]) {
-                        const utxos = utxosByAddress.get(address) || [];
-
-                        // Skip this output if the UTXO is already known
-                        if (btcAddresses$.addressInfos[address].utxos.some((utxo) =>
-                            utxo.transactionHash === tx.transactionHash && utxo.index === output.index)) continue;
-
-                        utxos.push({
-                            transactionHash: tx.transactionHash,
-                            index: output.index,
-                            witness: {
-                                script: output.script,
-                                value: output.value,
-                            },
-                        });
-                        utxosByAddress.set(address, utxos);
-                    }
-                }
-            }
-            for (const [address, utxos] of utxosByAddress) {
-                const existingUtxos = btcAddresses$.addressInfos[address].utxos;
-                patchAddress(address, {
-                    utxos: existingUtxos.concat(utxos),
-                    used: true,
-                });
-            }
-            removeCopiedAddresses([...inputsByAddress.keys(), ...utxosByAddress.keys()]);
+            const { applyTransactionsToUtxos/* , revertTransactionsFromUtxos */ } = useBtcAddressStore();
+            applyTransactionsToUtxos(appliedTransactions, this.spentInputs.value);
+            // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
         async calculateFiatAmounts() {

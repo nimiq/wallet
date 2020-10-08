@@ -926,7 +926,7 @@
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.0.1"
-  resolved "https://github.com/nimiq/electrum-client#2eb283e9e66eafef705f70cc6abe9b887f3eece7"
+  resolved "https://github.com/nimiq/electrum-client#582aeee704caf7701290138e026c5b8579758e08"
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
@@ -984,7 +984,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#532eb91bc9a48ebe179d02d6006456d95f4b443f"
+  resolved "https://github.com/nimiq/vue-components#213fa12c9333047d8b8052385ed81846b4159557"
   dependencies:
     "@nimiq/style" "^0.8.2"
     big-integer "^1.6.44"
@@ -2151,9 +2151,9 @@ bip174@^2.0.1:
   integrity sha512-i3X26uKJOkDTAalYAp0Er+qGMDhrbbh2o93/xiPyAN2s25KrClSpe3VXo/7mNJoqA5qfko8rLS2l3RWZgYmjKQ==
 
 bip32@^2.0.4:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/bip32/-/bip32-2.0.5.tgz#e3808a9e97a880dbafd0f5f09ca4a1e14ee275d2"
-  integrity sha512-zVY4VvJV+b2fS0/dcap/5XLlpqtgwyN8oRkuGgAS1uLOeEp0Yo6Tw2yUTozTtlrMJO3G8n4g/KX/XGFHW6Pq3g==
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/bip32/-/bip32-2.0.6.tgz#6a81d9f98c4cd57d05150c60d8f9e75121635134"
+  integrity sha512-HpV5OMLLGTjSVblmrtYRfFFKuQB+GArM0+XP8HGWfJ5vxYBqo+DesvJwOdC2WJ3bCkZShGf0QIfoIpeomVzVdA==
   dependencies:
     "@types/node" "10.12.18"
     bs58check "^2.1.1"
@@ -10199,9 +10199,9 @@ vm-browserify@^1.0.0, vm-browserify@^1.0.1:
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
 vue-class-component@^7.1.0:
-  version "7.2.5"
-  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.5.tgz#212b3548c4fdd3314774c4adbc1c3792a40b52d0"
-  integrity sha512-0CSftHY0bDTD+4FbYkuFf6+iKDjZ4h2in2YYJDRMk5daZIjrgT9LjFHvP7Rzqy9/s1pij3zDtTSLRUjsPWMwqg==
+  version "7.2.6"
+  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.6.tgz#8471e037b8e4762f5a464686e19e5afc708502e4"
+  integrity sha512-+eaQXVrAm/LldalI272PpDe3+i4mPis0ORiMYxF6Ae4hyuCh15W8Idet7wPUEs4N4YptgFHGys4UrgNQOMyO6w==
 
 vue-eslint-parser@^7.0.0:
   version "7.0.0"

@@ -34,7 +34,7 @@ export const useBtcLabelsStore = createStore({
             // TODO: Simply set new label in Vue 3.
             this.state.recipientLabels = {
                 ...this.state.recipientLabels,
-                [address.trim()]: label.trim(),
+                [address.trim()]: label,
             };
         },
         setSenderLabel(address: string, label: string) {
@@ -51,7 +51,7 @@ export const useBtcLabelsStore = createStore({
             // TODO: Simply set new label in Vue 3.
             this.state.senderLabels = {
                 ...this.state.senderLabels,
-                [address.trim()]: label.trim(),
+                [address.trim()]: label,
             };
         },
     },

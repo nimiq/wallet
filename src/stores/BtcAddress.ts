@@ -1,6 +1,7 @@
 import { Ref } from '@vue/composition-api';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
+import { Transaction } from './BtcTransactions'; // eslint-disable-line import/no-cycle
 
 export type BtcAddressState = {
     addressInfos: {[address: string]: BtcAddressInfo},
@@ -110,11 +111,64 @@ export const useBtcAddressStore = createStore({
         patchAddress(address: string, patch: Partial<BtcAddressInfo>) {
             if (!this.state.addressInfos[address]) return;
 
-            // @ts-ignore
             this.state.addressInfos[address] = {
                 ...this.state.addressInfos[address],
                 ...patch,
             };
+        },
+        applyTransactionsToUtxos(transactions: Transaction[], spentInputs: Set<string>) {
+            // Remove spent UTXOs in transactions from addresses
+            for (const { inputs } of transactions) {
+                for (const { address } of inputs) {
+                    if (!address) continue;
+                    const addressInfo = this.state.addressInfos[address];
+                    if (!addressInfo) continue;
+
+                    this.patchAddress(address, {
+                        utxos: addressInfo.utxos.filter((utxo) =>
+                            !spentInputs.has(`${utxo.transactionHash}:${utxo.index}`)),
+                        // Not setting `used` to true here, so that this address's history still gets scanned
+                    });
+                }
+            }
+
+            // Add new UTXOs in transactions to addresses
+            const utxosByAddress = new Map<string, UTXO[]>();
+            for (const { outputs, transactionHash } of transactions) {
+                for (const { address, index, script, value } of outputs) {
+                    // Skip this output if it has no address
+                    if (!address) continue;
+
+                    // Skip this output if an according input is already known
+                    if (spentInputs.has(`${transactionHash}:${index}`)) continue;
+
+                    const addressInfo = this.state.addressInfos[address];
+                    if (!addressInfo) continue;
+
+                    // Skip this output if the UTXO is already known
+                    if (addressInfo.utxos.some((utxo) =>
+                        utxo.transactionHash === transactionHash && utxo.index === index)) continue;
+
+                    const utxos = utxosByAddress.get(address) || [];
+                    utxos.push({
+                        transactionHash,
+                        index,
+                        witness: {
+                            script,
+                            value,
+                        },
+                    });
+                    utxosByAddress.set(address, utxos);
+                }
+            }
+            for (const [address, utxos] of utxosByAddress) {
+                const existingUtxos = this.state.addressInfos[address].utxos;
+                this.patchAddress(address, {
+                    utxos: existingUtxos.concat(utxos),
+                    used: true,
+                });
+            }
+            this.removeCopiedAddresses([...utxosByAddress.keys()]);
         },
         removeAddresses(addresses: string[]) {
             const addressInfos = { ...this.state.addressInfos };

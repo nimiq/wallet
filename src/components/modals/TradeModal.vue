@@ -101,7 +101,7 @@
                         + 'wallet.') }}
                 </p>
                 <p class="nq-text">
-                    {{ $t('Starting with EU\u00a0bank\u00a0accounts in\u00a0Q3\u00a02020.') }}
+                    {{ $t('Starting with EU\u00a0bank\u00a0accounts soon.') }}
                 </p>
                 <footer>
                     <BlueLink href="https://nimiq.com/oasis" target="_blank">{{ $t('Learn more') }}</BlueLink>

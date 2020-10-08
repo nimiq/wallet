@@ -13,6 +13,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import Config from 'config';
+import { ENV_MAIN } from '../lib/Constants';
 import SpeedGauge from './SpeedGauge.vue';
 
 export default defineComponent({
@@ -27,7 +29,15 @@ export default defineComponent({
 
         watch([() => props.fees, delay], ([fees]) => {
             const availableDelay = Math.min((fees as number[]).length - 1, delay.value);
-            context.emit('fee', (fees as number[])[availableDelay]);
+            let fee = (fees as number[])[availableDelay];
+
+            // Fake increasing fees in the testnet
+            if (Config.environment !== ENV_MAIN && fee < 3) {
+                if (delay.value === 1) fee = 3;
+                if (delay.value === 12) fee = 2;
+            }
+
+            context.emit('fee', fee);
         });
 
         const speed = computed(() => {

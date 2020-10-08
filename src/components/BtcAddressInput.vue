@@ -1,6 +1,6 @@
 <template>
     <div class="btc-address-input"
-        :class="{invalid}"
+        :class="{ invalid }"
         :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
     >
         <LabelInput v-model="address" :placeholder="placeholder" @input="onInput" @paste="onPaste" ref="$input"/>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LabelInput } from '@nimiq/vue-components';
 import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
@@ -56,10 +56,14 @@ export default defineComponent({
             type: String,
             required: false,
         },
+        value: {
+            type: String,
+            default: '',
+        },
     },
     setup(props, context) {
-        const $input: Ref<LabelInput | null> = ref(null);
-        const inputFontSizeScaleFactor: Ref<number> = ref(1);
+        const $input = ref<LabelInput>(null);
+        const inputFontSizeScaleFactor = ref(1);
         let inputPadding: number | null = null;
 
         const address = ref('');
@@ -68,7 +72,7 @@ export default defineComponent({
         let checkingAddress = false;
 
         function checkAddress() {
-            // BTC addresses are between 26-35 characters long
+            // BTC addresses are at least 26 characters long
             if (address.value.length < 26) {
                 invalid.value = false;
                 return;
@@ -89,6 +93,8 @@ export default defineComponent({
         }
 
         async function updateInputFontSize() {
+            await context.root.$nextTick();
+
             if (!$input.value) return;
 
             if (!inputPadding) {
@@ -109,6 +115,16 @@ export default defineComponent({
             inputFontSizeScaleFactor.value = Math.max(Math.min(maxWidth / width, 1), 0.7);
         }
 
+        function onUpdate() {
+            checkAddress();
+            updateInputFontSize();
+        }
+
+        function onInput() {
+            context.emit('input', address.value);
+            onUpdate();
+        }
+
         function onPaste(event: ClipboardEvent) {
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
@@ -125,11 +141,10 @@ export default defineComponent({
             context.emit('paste', event, pastedData);
         }
 
-        async function onInput() {
-            context.emit('input', address.value);
-            checkAddress();
-            await updateInputFontSize();
-        }
+        watch(() => props.value, () => {
+            address.value = props.value;
+            onUpdate();
+        });
 
         return {
             $input,

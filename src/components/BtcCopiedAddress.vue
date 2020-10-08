@@ -1,51 +1,45 @@
 <template>
-    <div class="address-item flex-row" :class="{ rename: addressInfo.rename }">
+    <div class="address-item flex-row">
         <div class="flex-column">
-            <transition name="fade">
-                <div v-if="addressInfo.rename" key="renaming" class="label-input-wrapper">
-                    <LabelInput
-                        v-model="addressInfo.label"
-                        ref="$labelInput"
-                        :placeholder="$t('Label the sender')"
-                        @blur.native.capture="addressInfo.rename = false"
-                        @keydown.native.enter="addressInfo.rename = false"
-                    />
-                    <div class="blue-tooltip" v-if="showTooltip">
-                        <p>{{ $t('Add a label to quickly find the transaction '
-                            + 'in your history, once it was sent.') }}</p>
-                        <p>{{ $t('With Bitcoin, there are no contacts, since '
-                            + 'addresses are only used once.') }}</p>
-                    </div>
+            <div class="label-input-wrapper flex-row">
+                <Avatar :label="addressInfo.label" />
+                <LabelInput
+                    v-model="addressInfo.label"
+                    ref="$labelInput"
+                    :placeholder="$t('Unlabelled')"
+                    @keydown.native.enter="$refs.$labelInput.blur()"
+                />
+                <div class="blue-tooltip" v-if="showTooltip">
+                    <p>{{ $t('Add a label to quickly find the transaction '
+                        + 'in your history, once it was sent.') }}</p>
+                    <p>{{ $t('With Bitcoin, there are no contacts, since '
+                        + 'addresses are only used once.') }}</p>
                 </div>
-                <div v-else
-                    key="not-renaming"
-                    class="address-label"
-                    :class="{ 'unlabelled': !addressInfo.label }"
-                    @click="addressInfo.rename = true"
-                >
-                    {{ addressInfo.label || $t("Unlabelled") }}
-                </div>
-            </transition>
+            </div>
             <div class="address-created">{{ addressInfo.timelabel }}</div>
         </div>
-        <Tooltip class="address-short" preferredPosition="top left" :container="container">
+        <Tooltip class="copyable-short-address" preferredPosition="top right" :container="container">
             <Copyable :text="addressInfo.address" slot="trigger">
                 <ShortAddress :address="addressInfo.address"/>
             </Copyable>
             {{ addressInfo.address }}
         </Tooltip>
+        <button class="delete" @click="deleteCopiedAddressAndLabel"><TrashIcon /></button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { Tooltip, Copyable, LabelInput } from '@nimiq/vue-components';
 import ShortAddress from './ShortAddress.vue';
+import Avatar from './Avatar.vue';
+import TrashIcon from './icons/TrashIcon.vue';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useBtcLabelsStore } from '../stores/BtcLabels';
 
 export type BtcCopiedAddressInfo = {
     address: string,
     label: string,
-    rename: boolean,
     timestamp: number,
     readonly timelabel: string,
 }
@@ -62,28 +56,29 @@ export default defineComponent({
             default: false,
         },
     },
-    setup(props, context) {
-        const $labelInput = ref<LabelInput | null>(null);
-        const rename = computed(() => props.addressInfo.rename);
+    setup(props/* , context */) {
+        const { removeCopiedAddresses } = useBtcAddressStore();
+        const { removeSenderLabelByAddress } = useBtcLabelsStore();
 
-        watch(rename, async (newValue) => {
-            if (newValue === true) {
-                await context.root.$nextTick();
-                if ($labelInput.value) {
-                    $labelInput.value.focus();
-                }
-            }
-        });
+        function deleteCopiedAddressAndLabel() {
+            removeSenderLabelByAddress(props.addressInfo.address);
+            removeCopiedAddresses([props.addressInfo.address]);
+        }
 
-        return {
-            $labelInput,
-        };
+        return { deleteCopiedAddressAndLabel };
     },
     components: {
+        Avatar,
         Tooltip,
         Copyable,
         LabelInput,
         ShortAddress,
+        TrashIcon,
+    },
+    methods: {
+        focus() {
+            (this.$refs.$labelInput as LabelInput).focus();
+        },
     },
 });
 </script>
@@ -102,13 +97,64 @@ export default defineComponent({
     }
 
     .flex-column {
-        background-color: white;
         justify-content: flex-end;
         align-items: flex-start;
+        flex-grow: 1;
         height: 100%;
+    }
+}
 
-        & > div:first-child {
-            position: relative;
+.label-input-wrapper {
+    position: relative;
+    align-items: center;
+    z-index: 0;
+}
+
+.avatar {
+    height: 2.25rem;
+    width: 2.25rem;
+    font-size: 1.375rem;
+    letter-spacing: -0.1em;
+    filter: grayscale(100%);
+
+    transition: var(--short-transition-duration) filter var(--nimiq-ease);
+
+    .address-item:hover &,
+    .address-item:focus &,
+    .address-item:focus-within & {
+        filter: grayscale(0%);
+    }
+}
+
+.label-input {
+    margin-left: 0.375rem;
+
+    &:not(:hover):not(:focus):not(:focus-within) {
+        /deep/ .nq-input {
+            --border-color: transparent;
+
+            &::placeholder {
+                color: var(--nimiq-blue);
+            }
+        }
+    }
+
+    /deep/ {
+        .nq-input,
+        .width-finder {
+            padding: 0.25rem .5rem;
+            font-size: var(--body-size);
+            font-weight: 600;
+        }
+
+        .nq-input {
+            border-radius: 0.375rem;
+            max-width: 17.5rem;
+
+            &:hover,
+            &:focus {
+                --border-color: var(--light-blue-40);
+            }
         }
     }
 }
@@ -142,104 +188,37 @@ export default defineComponent({
     }
 }
 
-.label-input-wrapper,
-.address-label {
-    &.fade-enter-active {
-        position: absolute;
-        bottom: 2.25rem;
-    }
-
-    &.fade-enter-active,
-    &.fade-leave-active {
-        transition-duration: var(--short-transition-duration);
-    }
-}
-
-.label-input /deep/ {
-    .nq-input,
-    .width-finder {
-        padding: 0.25rem .5rem;
-        font-size: var(--body-size);
-        font-weight: 600;
-    }
-
-    .nq-input {
-        border-radius: 0.375rem;
-        max-width: 17.5rem;
-
-        &:hover,
-        &:focus {
-            --border-color: var(--light-blue-40);
-        }
-    }
-}
-
-.address-label {
-    max-width: 17.5rem;
-    padding-right: 1rem;
-    padding-left: 0.5rem;
-    border-radius: .5rem;
-    font-size: var(--body-size);
-    line-height: calc(var(--body-size) + 1rem);
-    cursor: pointer;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    position: relative;
-    transform: translateX(-.5rem);
-
-    transition: {
-        property: transform, color, opacity;
-        duration: var(--short-transition-duration);
-        timing-function: var(--nimiq-ease);
-    };
-    .rename &,
-    &:hover {
-        transform: translateX(0);
-        color: var(--nimiq-light-blue);
-    }
-
-    &::before {
-        content: "";
-        position: absolute;
-        background-image: var(--nimiq-light-blue-bg);
-        top: 0;
-        right: -1rem;
-        bottom: 0;
-        left: -.5rem;
-        opacity: 0;
-
-        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
-    }
-
-    .rename &::before,
-    &:hover::before {
-        opacity: .07;
-    }
-
-    &.unlabelled {
-        font-style: italic;
-    }
-
-}
-
 .address-created {
     color: var(--text-60);
     font-size: var(--small-size);
 }
 
-.address-short {
-    &.tooltip /deep/ .trigger::after {
-        pointer-events: none;
-    }
+.copyable-short-address {
+    &.tooltip /deep/ {
+        .trigger {
+            transition: transform var(--short-transition-duration) var(--nimiq-ease);
+            transform: translateX(4rem);
 
-    &.tooltip /deep/ .tooltip-box {
-        font-size: var(--small-size);
-        line-height: 1;
-        padding: 1rem;
-        font-family: 'Fira Mono', monospace;
-        letter-spacing: -0.02em;
-        font-weight: normal;
-        pointer-events: none;
+            .address-item:hover &,
+            .address-item:focus &,
+            .address-item:focus-within & {
+                transform: translateX(0);
+            }
+        }
+
+        .trigger::after {
+            pointer-events: none;
+        }
+
+        .tooltip-box {
+            font-size: var(--small-size);
+            line-height: 1;
+            padding: 1rem;
+            font-family: 'Fira Mono', monospace;
+            letter-spacing: -0.02em;
+            font-weight: normal;
+            pointer-events: none;
+        }
     }
 
     .copyable {
@@ -249,25 +228,12 @@ export default defineComponent({
 
         transition: background-color var(--short-transition-duration) var(--nimiq-ease);
 
-        .rename & {
-            background-color: var(--nimiq-light-blue);
-        }
-
         .short-address {
             font-weight: normal;
             font-size: var(--body-size);
             color: var(--text-70);
 
             transition: all var(--short-transition-duration) var(--nimiq-ease);
-
-            .rename & {
-                color: white;
-                font-weight: 500;
-
-                /deep/ .background {
-                    display: none;
-                }
-            }
         }
 
         &:hover .short-address,
@@ -275,15 +241,53 @@ export default defineComponent({
         &.copied .short-address {
             font-weight: 500;
             color: var(--nimiq-light-blue);
-
-            .rename & {
-                color: white;
-            }
         }
 
         /deep/ .tooltip {
-            z-index: 3;
+            z-index: 4;
         }
     }
 }
+
+.delete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    width: 4rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+
+    transition: background var(--short-transition-duration) var(--nimiq-ease),
+                opacity var(--short-transition-duration) var(--nimiq-ease);
+
+    /deep/ svg {
+        width: auto;
+        height: 2rem;
+
+        g {
+            stroke: var(--text-40);
+
+            transition: stroke var(--short-transition-duration) var(--nimiq-ease);
+        }
+    }
+
+    &:hover {
+        background: rgba(#D94432/*Nimiq red*/, .12);
+
+        /deep/ svg g {
+            stroke: var(--nimiq-red)
+        }
+    }
+
+    .address-item:hover &,
+    .address-item:focus &,
+    .address-item:focus-within & {
+        opacity: 1;
+    }
+}
+
 </style>

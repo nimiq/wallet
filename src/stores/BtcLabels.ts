@@ -54,5 +54,10 @@ export const useBtcLabelsStore = createStore({
                 [address.trim()]: label,
             };
         },
+        removeSenderLabelByAddress(address: string) {
+            const senderLabels = { ...this.state.senderLabels };
+            delete senderLabels[address];
+            this.state.senderLabels = senderLabels;
+        },
     },
 });

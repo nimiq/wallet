@@ -56,6 +56,7 @@
                             <transition-group name="translateY-fade-list" tag="div">
                                 <BtcCopiedAddress
                                     v-for="addressInfo in recentlyCopiedAddressesListSorted"
+                                    ref="$copiedAddresses"
                                     :key="addressInfo.address"
                                     :addressInfo="addressInfo"
                                     :container="$refs.addressList ? { $el: $refs.addressList } : null"
@@ -152,11 +153,10 @@ import {
     InfoCircleSmallIcon,
     QrCodeIcon,
     QrCode,
-    LabelInput,
 } from '@nimiq/vue-components';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcAddressStore, BtcCopiedAddresses } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useSettingsStore } from '../../stores/Settings';
 import RefreshIcon from '../icons/RefreshIcon.vue';
@@ -228,20 +228,13 @@ export default defineComponent({
         }
 
         // Copied addresses
+        const $copiedAddresses = ref<{ focus(): void }[] | null>();
         const addressCopied = ref<boolean>(false);
-        const shownLabelInputByAddress: Ref<{ [address: string]: boolean }> = ref({});
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
                 .map((address) => ({
                     get label() { return senderLabels.value[this.address] || ''; },
                     set label(value) { setSenderLabel(this.address, value); },
-                    get rename() { return shownLabelInputByAddress.value[this.address]; },
-                    set rename(value) {
-                        shownLabelInputByAddress.value = {
-                            ...shownLabelInputByAddress.value,
-                            [this.address]: value,
-                        };
-                    },
                     get timelabel() { return getTimeLabel(this.timestamp); },
                     timestamp: copiedExternalAddresses.value[address],
                     address,
@@ -252,7 +245,8 @@ export default defineComponent({
                 ),
         );
         const recentlyCopiedAddressesListSorted = computed(() =>
-            Object.values(recentlyCopiedAddresses.value).sort(({ timestamp }) => -timestamp),
+            Object.values(recentlyCopiedAddresses.value)
+                .sort((addressA, addressB) => addressB.timestamp - addressA.timestamp),
         );
 
         // Currently displayed address
@@ -284,7 +278,12 @@ export default defineComponent({
 
             if (!recentlyCopiedAddresses.value[currentlyShownAddress.value]) {
                 setCopiedAddress(currentlyShownAddress.value);
-                recentlyCopiedAddresses.value[currentlyShownAddress.value].rename = true;
+                // Focus the label input of the newly copied address
+                setTimeout(() => {
+                    if ($copiedAddresses.value && $copiedAddresses.value.length > 0) {
+                        $copiedAddresses.value[$copiedAddresses.value.length - 1].focus();
+                    }
+                }, 100);
             }
         }
 
@@ -376,12 +375,11 @@ export default defineComponent({
             message,
             requestLink,
             copyActiveAddressCallback,
+            $copiedAddresses,
             addressCopied,
             recentlyCopiedAddresses,
             recentlyCopiedAddressesListSorted,
             showNextExternalAddress,
-            // showRenameAddressLabelInput,
-            // hideRenameAddressLabelInput,
             currentlyShownAddress,
             $availableAddressCopyable,
             $addressWidthFinder,
@@ -535,6 +533,7 @@ export default defineComponent({
         position: absolute;
         top: 0;
         width: 100%;
+        z-index: 3;
     }
 
     .blue {
@@ -555,12 +554,13 @@ export default defineComponent({
         }
     }
 
-
-    .tooltip /deep/ .trigger .nq-icon {
-        margin-left: 0.75rem;
-    }
-
     .tooltip {
+        z-index: 3;
+
+        /deep/ .trigger .nq-icon {
+            margin-left: 0.75rem;
+        }
+
         .header {
             font-size: var(--small-size);
         }
@@ -607,18 +607,20 @@ export default defineComponent({
     }
 
     .list {
-        width: calc(100% + 8rem);
-        padding: 2.5rem 4rem 0;
+        @extend %custom-scrollbar;
+        $paddingTop: 2.5rem;
+
         flex: 1 1 0;
+        width: calc(100% + 8rem);
+        padding: $paddingTop 4rem 0;
+        margin-top: 0.5rem;
 
         &.scroll {
             overflow-y: auto;
         }
 
-        @extend %custom-scrollbar;
-
         .scroll-mask.top {
-            top: -2.5rem;
+            transform: translateY(-#{$paddingTop});
         }
     }
 }
@@ -667,7 +669,7 @@ footer {
         font-weight: 600;
 
         @media (min-width: 701px) {
-            transform: translate(-1rem, 2rem);
+            // transform: translate(-1rem, 2rem);
         }
 
         p {
@@ -807,6 +809,7 @@ footer {
 /* vue transition - translateY-fade-list */
 .translateY-fade-list-enter-active,
 .translateY-fade-list-leave-active,
+.translateY-fade-list-leave-active ~ .address-item,
 .translateY-fade-list-move {
     transition: {
         property: opacity, transform;
@@ -818,12 +821,22 @@ footer {
 .translateY-fade-list-enter-to,
 .translateY-fade-list-leave {
     opacity: 1;
+    transform: translateY(0);
 }
 
-.translateY-fade-list-enter,
-.translateY-fade-list-leave-to {
+.translateY-fade-list-enter {
     opacity: 0;
     transform: translateY(-4rem);
+}
+
+.translateY-fade-list-leave-active {
+    opacity: 0;
+    transform-origin: top;
+    transform: scaleY(0);
+
+    & ~ .address-item {
+        transform: translateY(-7.25rem);
+    }
 }
 
 @media (max-width: 450px) { // Breakpoint of .page-body padding

@@ -11,6 +11,7 @@ export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     outputs: (PlainOutput & {
         fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
     })[],
+    swapHash?: string,
 };
 
 // TODO: Import from @nimiq/electrum-client

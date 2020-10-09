@@ -8,6 +8,7 @@ import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
 import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
+import { useSwapsStore, SwapsState } from './stores/Swaps';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -18,6 +19,7 @@ const StorageKeys = {
     CASHLINKS: 'wallet_cashlinks_v01',
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
+    SWAPS: 'wallet_swaps_v01',
 };
 
 const PersistentStorageKeys = {
@@ -215,6 +217,22 @@ export function initStorage() {
     unsubscriptions.push(
         btcLabelsStore.subscribe(() => {
             localStorage.setItem(PersistentStorageKeys.BTCLABELS, JSON.stringify(btcLabelsStore.state));
+        }),
+    );
+
+    /**
+     * Swaps
+     */
+    const swapsStore = useSwapsStore();
+    const storedSwapsState = localStorage.getItem(StorageKeys.SWAPS);
+    if (storedSwapsState) {
+        const swapsState: SwapsState = JSON.parse(storedSwapsState);
+        swapsStore.patch(swapsState);
+    }
+
+    unsubscriptions.push(
+        swapsStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.SWAPS, JSON.stringify(swapsStore.state));
         }),
     );
 }

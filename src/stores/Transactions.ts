@@ -12,6 +12,7 @@ import { useCashlinkStore } from './Cashlink';
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
     relatedTransactionHash?: string,
+    swapHash?: string,
 };
 
 // Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.

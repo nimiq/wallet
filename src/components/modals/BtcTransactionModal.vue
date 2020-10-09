@@ -603,7 +603,6 @@ export default defineComponent({
     }
 
     .identicon {
-        position: relative;
         width: 9rem;
         height: 9rem;
         margin: -0.5rem 0; // Identicon should be 72x63

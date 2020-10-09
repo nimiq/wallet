@@ -21,7 +21,11 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <Avatar :label="peerLabel || ''"/>
+        <div v-if="swapTransaction" class="identicon-container">
+            <Identicon :address="peerAddresses[0]"/>
+            <SwapSmallIcon/>
+        </div>
+        <Avatar v-else :label="peerLabel || ''"/>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">
@@ -62,6 +66,7 @@ import {
     AlertTriangleIcon,
     FiatAmount,
     CrossIcon,
+    Identicon,
 } from '@nimiq/vue-components';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
@@ -73,7 +78,11 @@ import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import SwapSmallIcon from './icons/SwapSmallIcon.vue';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { useSwapsStore } from '../stores/Swaps';
+import { useTransactionsStore } from '../stores/Transactions';
+import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     props: {
@@ -126,11 +135,38 @@ export default defineComponent({
         );
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
+        const swapTransaction = computed(() => {
+            const { swapHash } = props.transaction;
+            if (!swapHash) return null;
+
+            const swap = useSwapsStore().state.swaps[swapHash];
+            if (!swap) return null;
+
+            const swapData = isIncoming.value ? swap.in : swap.out;
+            if (!swapData) return null;
+
+            if (swapData.currency === CryptoCurrency.NIM) {
+                return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
+            }
+
+            return null;
+        });
+
         // Peer
-        const peerAddresses = computed(() => isIncoming.value
-            ? props.transaction.inputs.map((input) => input.address || input.script)
-            : outputsSent.value.map((output) => output.address || output.script));
+        const peerAddresses = computed(() => {
+            if (swapTransaction.value) {
+                return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+            }
+            return (isIncoming.value
+                ? props.transaction.inputs.map((input) => input.address || input.script)
+                : outputsSent.value.map((output) => output.address || output.script)
+            ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
+        });
         const peerLabel = computed(() => {
+            if (swapTransaction.value) {
+                return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+            }
+
             if (isIncoming.value) {
                 // Search sender labels
                 const ownAddresses = outputsReceived.value.map((output) => output.address);
@@ -203,6 +239,7 @@ export default defineComponent({
             isIncoming,
             peerAddresses,
             peerLabel,
+            swapTransaction,
         };
     },
     components: {
@@ -214,6 +251,8 @@ export default defineComponent({
         FiatConvertedAmount,
         FiatAmount,
         // HistoricValueIcon,
+        Identicon,
+        SwapSmallIcon,
     },
 });
 </script>
@@ -283,6 +322,29 @@ svg {
     .avatar {
         flex-shrink: 0;
         margin: 0.375rem 1.375rem;
+    }
+
+    .identicon-container {
+        position: relative;
+
+        > svg {
+            position: absolute;
+            right: -0.125rem;
+            bottom: -0.375rem;
+
+            width: 2.75rem; // 3rem + border
+            height: 2.75rem;
+            color: white;
+            background: var(--nimiq-blue-bg);
+            border-radius: 50%;
+            border: 0.375rem solid white;
+        }
+
+        .identicon {
+            width: 6rem;
+            height: 6rem;
+            flex-shrink: 0;
+        }
     }
 
     .data {
@@ -419,6 +481,19 @@ svg {
             height: 5rem;
             font-size: 2.25rem;
             margin: 0.25rem 1rem;
+        }
+
+        .identicon-container {
+            .identicon {
+                width: 5.5rem;
+                height: 5.5rem;
+            }
+
+            > svg {
+                border-width: 0.25rem;
+                height: 2.5rem;
+                width: 2.5rem;
+            }
         }
     }
 }

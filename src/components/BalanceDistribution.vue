@@ -30,7 +30,7 @@
         </div>
         <div class="exchange">
             <button class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent>
-                <TradeIcon/>
+                <SwapMediumIcon/>
             </button>
         </div>
         <div class="currency flex-column btc" :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}">
@@ -67,7 +67,7 @@ import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
-import TradeIcon from './icons/TradeIcon.vue';
+import SwapMediumIcon from './icons/SwapMediumIcon.vue';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
@@ -136,7 +136,7 @@ export default defineComponent({
         Tooltip,
         Amount,
         BitcoinIcon,
-        TradeIcon,
+        SwapMediumIcon,
     },
 });
 </script>
@@ -164,9 +164,9 @@ export default defineComponent({
             border-radius: 2rem;
 
             svg {
-                width: 2rem;
-                height: 2rem;
-                color: var(--text-60);
+                width: 3rem;
+                height: 3rem;
+                opacity: 0.5;
             }
 
             &::before {

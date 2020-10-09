@@ -2,7 +2,23 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
-            <template v-if="peerAddress === constants.CASHLINK_ADDRESS">
+            <i18n v-if="swapTransaction && isIncoming" path="Swap from {address}" :tag="false">
+                <template v-slot:address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="swapTransaction" path="Swap to {address}" :tag="false">
+                <template v-slot:address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddress.substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <template v-else-if="peerAddress === constants.CASHLINK_ADDRESS">
                 <label><i>&nbsp;</i>{{
                     peerLabel || peerAddress.substring(0, 9)
                 }}</label>
@@ -74,10 +90,10 @@
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <div class="identicon">
-                        <Identicon :address="peerAddress"/>
-                        <div v-if="isCashlink" class="cashlink">
-                            <CashlinkSmallIcon/>
-                        </div>
+                        <BitcoinIcon v-if="swapTransaction"/>
+                        <Identicon v-else :address="peerAddress"/>
+                        <div v-if="isCashlink" class="cashlink"><CashlinkSmallIcon/></div>
+                        <div v-if="swapTransaction" class="cashlink"><SwapMediumIcon/></div>
                     </div>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
@@ -86,7 +102,11 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
+                    <Tooltip v-if="swapTransaction" preferredPosition="bottom right" class="left-aligned">
+                        <ShortAddress :address="peerAddress" slot="trigger"/>
+                        {{ peerAddress }}
+                    </Tooltip>
+                    <Copyable v-else-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
                 </div>
@@ -111,10 +131,10 @@
                 <div class="address-info flex-column">
                     <div class="identicon">
                         <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
+                        <BitcoinIcon v-else-if="swapTransaction"/>
                         <Identicon v-else :address="peerAddress"/>
-                        <div v-if="isCashlink" class="cashlink">
-                            <CashlinkSmallIcon/>
-                        </div>
+                        <div v-if="isCashlink" class="cashlink"><CashlinkSmallIcon/></div>
+                        <div v-if="swapTransaction" class="cashlink"><SwapMediumIcon/></div>
                     </div>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="peerIsContact || !peerLabel"
@@ -123,7 +143,11 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <Copyable v-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
+                    <Tooltip v-if="swapTransaction" preferredPosition="bottom left" class="right-aligned">
+                        <ShortAddress :address="peerAddress" slot="trigger"/>
+                        {{ peerAddress }}
+                    </Tooltip>
+                    <Copyable v-else-if="peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
                     <button
@@ -173,7 +197,28 @@
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <div class="flex-spacer"></div>
+            <div v-if="swapTransaction" class="swap-transaction flex-row">
+                <div class="icon" :class="{'incoming': !isIncoming}">
+                    <GroundedArrowUpIcon v-if="isIncoming"/>
+                    <GroundedArrowDownIcon v-else/>
+                </div>
+                <div class="values">
+                    <Amount :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
+
+                    <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
+                        :amount="swapTransaction.outputs[0].value" currency="nim" value-mask/>
+                    <div v-else-if="!swapTransaction.outputs[0].fiatValue
+                        || swapTransaction.outputs[0].fiatValue[fiatCurrency] === undefined"
+                        class="fiat-amount">&nbsp;</div>
+                    <div v-else-if="
+                        swapTransaction.outputs[0].fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
+                        class="fiat-amount">Fiat value unavailable</div>
+                    <FiatAmount v-else
+                        :amount="swapTransaction.outputs[0].fiatValue[fiatCurrency]" :currency="fiatCurrency"
+                        value-mask/>
+                </div>
+            </div>
+            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -223,6 +268,11 @@ import Modal from './Modal.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
+import ShortAddress from '../ShortAddress.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -231,10 +281,12 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
 import { manageCashlink } from '../../hub';
+import { SwapBtcData, useSwapsStore } from '../../stores/Swaps';
+import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -298,17 +350,32 @@ export default defineComponent({
 
             return null;
         });
+
+        const swapTransaction = computed(() => {
+            const { swapHash } = transaction.value;
+            if (!swapHash) return null;
+
+            const swap = useSwapsStore().state.swaps[swapHash];
+            if (!swap) return null;
+
+            const swapData = (isIncoming.value ? swap.in : swap.out) as SwapBtcData;
+            if (!swapData) return null;
+
+            if (swapData.currency === CryptoCurrency.BTC) {
+                const btcTx = useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
+                if (!btcTx) return null;
+                return {
+                    ...btcTx,
+                    outputs: [btcTx.outputs[swapData.outputIndex]],
+                };
+            }
+
+            return null;
+        });
+
         const data = computed(() => {
             if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
-
-            // HTLC creation
-            if ('hashRoot' in transaction.value.data) {
-                return context.root.$t('HTLC Creation');
-            }
-
-            if ('hashRoot' in transaction.value.proof) {
-                return context.root.$t('HTLC Settlement');
-            }
+            if (swapTransaction.value) return '';
 
             return parseData(transaction.value.data.raw);
         });
@@ -321,16 +388,29 @@ export default defineComponent({
         });
 
         // Peer
-        const peerAddress = computed(() => isCashlink.value
-            ? relatedTx.value
-                ? isIncoming.value
-                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
-            : isIncoming.value
-                ? transaction.value.sender
-                : transaction.value.recipient);
+        const peerAddress = computed(() => {
+            if (swapTransaction.value) {
+                return isIncoming.value
+                    ? swapTransaction.value.inputs[0].address!
+                    : swapTransaction.value.outputs[0].address!;
+            }
+
+            if (isCashlink.value) {
+                if (relatedTx.value) {
+                    return isIncoming.value
+                        ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                        : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
+                }
+                return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+            }
+
+            return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
+        });
         const peerLabel = computed(() => {
+            if (swapTransaction.value) {
+                return context.root.$t('Bitcoin');
+            }
+
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
@@ -395,6 +475,7 @@ export default defineComponent({
             manageCashlink,
             env: Config.environment,
             amountsHidden,
+            swapTransaction,
         };
     },
     components: {
@@ -417,6 +498,11 @@ export default defineComponent({
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
         BlueLink,
+        BitcoinIcon,
+        GroundedArrowUpIcon,
+        GroundedArrowDownIcon,
+        SwapMediumIcon,
+        ShortAddress,
     },
 });
 </script>
@@ -517,14 +603,21 @@ export default defineComponent({
         margin: 0;
     }
 
-    img {
-        display: block;
-        height: 100%
-    }
-
     svg {
         width: 100%;
         height: 100%;
+    }
+
+    > svg {
+        width: 8rem;
+        height: 8rem;
+        margin: 0.5rem;
+        color: #F7931A; // Bitcoin orange
+    }
+
+    img {
+        display: block;
+        height: 100%
     }
 
     .cashlink {
@@ -729,6 +822,82 @@ export default defineComponent({
     }
 }
 
+.address-info .tooltip /deep/ {
+    .tooltip-box {
+        padding: 1rem;
+        font-size: var(--small-size);
+        line-height: 1;
+        font-family: 'Fira Mono', monospace;
+        font-weight: normal;
+        letter-spacing: -0.02em;
+        white-space:nowrap;
+        word-spacing: -0.2em;
+    }
+
+    .trigger {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: background 300ms var(--nimiq-ease);
+        margin-bottom: .5rem;
+
+        &:hover,
+        &:focus,
+        &:focus-within {
+            background: var(--text-6);
+
+            .short-address {
+                opacity: .6;
+            }
+        }
+    }
+}
+
+.address-info .tooltip.left-aligned /deep/ .tooltip-box {
+    transform: translate(-9.25rem, 2rem);
+}
+
+.address-info .tooltip.right-aligned /deep/ .tooltip-box {
+    transform: translate(9.25rem, 2rem);
+}
+
+.short-address {
+    font-size: var(--body-size);
+    opacity: 0.5;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.swap-transaction {
+    padding-top: 3rem;
+    align-items: center;
+    align-self: stretch;
+    margin: 0 -2rem;
+    box-shadow: inset 0 1.5px var(--text-16);
+
+    .icon {
+        margin-left: 2rem;
+        margin-right: 2.25rem;
+        color: var(--text-40);
+
+        &.incoming {
+            color: var(--nimiq-green);
+        }
+    }
+
+    .amount,
+    .fiat-amount {
+        display: block;
+        --size: var(--body-size);
+        font-size: var(--size);
+        font-weight: 600;
+    }
+
+    .fiat-amount {
+        --size: var(--small-size);
+        font-size: var(--size);
+        opacity: 0.5;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
         /deep/ .nq-h1 {
@@ -754,9 +923,25 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
+    .address-info .tooltip.left-aligned /deep/ .tooltip-box {
+        transform: translate(-7.75rem, 2rem);
+    }
+
+    .address-info .tooltip.right-aligned /deep/ .tooltip-box {
+        transform: translate(7.75rem, 2rem);
+    }
+
     .tooltip {
         /deep/ .tooltip-box {
             transform: translate(1rem, 2rem);
+        }
+    }
+
+    .swap-transaction {
+        margin: 0 -1rem;
+
+        .icon {
+            margin-left: 1rem;
         }
     }
 }

@@ -2,7 +2,23 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
-            <i18n v-if="isIncoming" path="Transaction from {address}" :tag="false">
+            <i18n v-if="swapTransaction && isIncoming" path="Swap from {address}" :tag="false">
+                <template v-slot:address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddresses[0].substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="swapTransaction" path="Swap to {address}" :tag="false">
+                <template v-slot:address>
+                    <label><i>&nbsp;</i>{{
+                        peerLabel || peerAddresses[0].substring(0, 9)
+                    }}</label>
+                </template>
+            </i18n>
+
+            <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddresses[0].substring(0, 6)
@@ -50,7 +66,11 @@
         <PageBody class="flex-column" :class="state">
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <Avatar :label="peerLabel || ''"/>
+                    <div v-if="swapTransaction" class="identicon-container">
+                        <Identicon :address="peerAddresses[0]"/>
+                        <SwapMediumIcon/>
+                    </div>
+                    <Avatar v-else :label="peerLabel || ''"/>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="senderLabelAddress || !peerLabel"
                         :placeholder="$t('Unknown')"
@@ -103,7 +123,11 @@
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <Avatar :label="peerLabel || ''"/>
+                    <div v-if="swapTransaction" class="identicon-container">
+                        <Identicon :address="peerAddresses[0]"/>
+                        <SwapMediumIcon/>
+                    </div>
+                    <Avatar v-else :label="peerLabel || ''"/>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="recipientLabelAddress || !peerLabel"
                         :placeholder="$t('Unknown')"
@@ -164,7 +188,25 @@
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <div class="flex-spacer"></div>
+            <div v-if="swapTransaction" class="swap-transaction flex-row">
+                <div class="icon" :class="{'incoming': !isIncoming}">
+                    <GroundedArrowUpIcon v-if="isIncoming"/>
+                    <GroundedArrowDownIcon v-else/>
+                </div>
+                <div class="values">
+                    <Amount :amount="swapTransaction.value" currency="nim" value-mask/>
+
+                    <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
+                        :amount="swapTransaction.value" currency="nim" value-mask/>
+                    <div v-else-if="!swapTransaction.fiatValue || swapTransaction.fiatValue[fiatCurrency] === undefined"
+                        class="fiat-amount">&nbsp;</div>
+                    <div v-else-if="swapTransaction.fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
+                        class="fiat-amount">Fiat value unavailable</div>
+                    <FiatAmount v-else
+                        :amount="swapTransaction.fiatValue[fiatCurrency]" :currency="fiatCurrency" value-mask/>
+                </div>
+            </div>
+            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -197,6 +239,7 @@ import {
     CircleSpinner,
     LabelInput,
     CrossIcon,
+    Identicon,
 } from '@nimiq/vue-components';
 import Config from 'config';
 import Amount from '../Amount.vue';
@@ -207,6 +250,9 @@ import BlueLink from '../BlueLink.vue';
 import Avatar from '../Avatar.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
+import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import { useBtcTransactionsStore, TransactionState } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -215,7 +261,10 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
+import { useSwapsStore } from '../../stores/Swaps';
+import { useTransactionsStore } from '../../stores/Transactions';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -277,12 +326,38 @@ export default defineComponent({
             : inputsSent.value.map((input) => input.address || input.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
+        const swapTransaction = computed(() => {
+            const { swapHash } = transaction.value;
+            if (!swapHash) return null;
+
+            const swap = useSwapsStore().state.swaps[swapHash];
+            if (!swap) return null;
+
+            const swapData = isIncoming.value ? swap.in : swap.out;
+            if (!swapData) return null;
+
+            if (swapData.currency === CryptoCurrency.NIM) {
+                return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
+            }
+
+            return null;
+        });
+
         // Peer
-        const peerAddresses = computed(() => (isIncoming.value
-            ? transaction.value.inputs.map((input) => input.address || input.script)
-            : outputsSent.value.map((output) => output.address || output.script)
-        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
+        const peerAddresses = computed(() => {
+            if (swapTransaction.value) {
+                return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+            }
+            return (isIncoming.value
+                ? transaction.value.inputs.map((input) => input.address || input.script)
+                : outputsSent.value.map((output) => output.address || output.script)
+            ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
+        });
         const peerLabel = computed(() => {
+            if (swapTransaction.value) {
+                return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+            }
+
             if (isIncoming.value) {
                 // Search sender labels
                 for (const address of ownAddresses.value) {
@@ -377,6 +452,7 @@ export default defineComponent({
             recipientLabelAddress,
             setSenderLabel,
             setRecipientLabel,
+            swapTransaction,
         };
     },
     components: {
@@ -397,6 +473,10 @@ export default defineComponent({
         LabelInput,
         // HistoricValueIcon,
         BlueLink,
+        GroundedArrowUpIcon,
+        GroundedArrowDownIcon,
+        Identicon,
+        SwapMediumIcon,
     },
 });
 </script>
@@ -447,7 +527,7 @@ export default defineComponent({
 
     &.expired,
     &.invalidated {
-        .identicon {
+        .avatar {
             filter: saturate(0);
             opacity: 0.5;
         }
@@ -506,6 +586,31 @@ export default defineComponent({
     color: #F7931A; // Bitcoin orange
 }
 
+.address-info .identicon-container {
+    position: relative;
+
+    > svg {
+        position: absolute;
+        right: 0;
+        bottom: -1.125rem;
+
+        width: 3.75rem; // 3rem + border
+        height: 3.75rem;
+        color: white;
+        background: var(--nimiq-blue-bg);
+        border-radius: 50%;
+        border: 0.375rem solid white;
+    }
+
+    .identicon {
+        position: relative;
+        width: 9rem;
+        height: 9rem;
+        margin: -0.5rem 0; // Identicon should be 72x63
+    }
+}
+
+
 .label,
 .nq-input-s {
     font-size: var(--body-size);
@@ -542,6 +647,8 @@ export default defineComponent({
         font-family: 'Fira Mono', monospace;
         font-weight: normal;
         letter-spacing: -0.02em;
+        white-space:nowrap;
+        word-spacing: -0.2em;
     }
 
     .trigger {
@@ -706,6 +813,38 @@ export default defineComponent({
     }
 }
 
+.swap-transaction {
+    padding-top: 3rem;
+    align-items: center;
+    align-self: stretch;
+    margin: 0 -2rem;
+    box-shadow: inset 0 1.5px var(--text-16);
+
+    .icon {
+        margin-left: 2rem;
+        margin-right: 2.25rem;
+        color: var(--text-40);
+
+        &.incoming {
+            color: var(--nimiq-green);
+        }
+    }
+
+    .amount,
+    .fiat-amount {
+        display: block;
+        --size: var(--body-size);
+        font-size: var(--size);
+        font-weight: 600;
+    }
+
+    .fiat-amount {
+        --size: var(--small-size);
+        font-size: var(--size);
+        opacity: 0.5;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
         /deep/ .nq-h1 {
@@ -742,6 +881,14 @@ export default defineComponent({
     .tooltip {
         /deep/ .tooltip-box {
             transform: translate(1rem, 2rem);
+        }
+    }
+
+    .swap-transaction {
+        margin: 0 -1rem;
+
+        .icon {
+            margin-left: 1rem;
         }
     }
 }

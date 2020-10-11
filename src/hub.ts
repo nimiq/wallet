@@ -99,10 +99,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         for (const chain of ['internal' as 'internal', 'external' as 'external']) {
             for (const btcAddress of account.btcAddresses[chain]) {
+                const existingAddressInfo: BtcAddressInfo | {} = btcAddressStore.state.addressInfos[btcAddress] || {};
                 btcAddressInfos.push({
                     address: btcAddress,
-                    used: btcAddressStore.state.addressInfos[btcAddress]?.used || false,
-                    utxos: btcAddressStore.state.addressInfos[btcAddress]?.utxos || [],
+                    used: false,
+                    utxos: [],
+                    ...existingAddressInfo,
                 });
             }
         }

@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
-import { useAddressStore } from './Address'; // eslint-disable-line import/no-cycle
+import { useAddressStore } from './Address';
 
 export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},

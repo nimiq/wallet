@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import { getExchangeRates } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
-import { useTransactionsStore } from './Transactions'; // eslint-disable-line import/no-cycle
+import { useTransactionsStore } from './Transactions';
 
 export type FiatState = {
     currency: FiatCurrency,

@@ -34,6 +34,7 @@ module.exports = {
         'no-return-assign': 'off',
         'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
         'import/prefer-default-export': 'off',
+        'import/no-cycle': 'off',
         'implicit-arrow-linebreak': 'off',
         'object-curly-newline': ['error', { ObjectPattern: { multiline: true } }],
         'prefer-const': ['error', { destructuring: 'all' }],

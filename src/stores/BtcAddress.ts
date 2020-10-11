@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
-import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
-import { Transaction } from './BtcTransactions'; // eslint-disable-line import/no-cycle
+import { useAccountStore } from './Account';
+import { Transaction } from './BtcTransactions';
 
 export type BtcAddressState = {
     addressInfos: {[address: string]: BtcAddressInfo},

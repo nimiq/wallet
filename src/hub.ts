@@ -8,7 +8,7 @@ import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
-import { sendTransaction as sendBtcTx } from './electrum'; // eslint-disable-line import/no-cycle
+import { sendTransaction as sendBtcTx } from './electrum';
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 import router from './router';
 

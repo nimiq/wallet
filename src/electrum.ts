@@ -10,7 +10,7 @@ import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
 import { BTC_ADDRESS_GAP, ENV_DEV, ENV_MAIN } from './lib/Constants';
 import { loadBitcoinJS } from './lib/BitcoinJSLoader';
-import { addBtcAddresses } from './hub'; // eslint-disable-line import/no-cycle
+import { addBtcAddresses } from './hub';
 
 let isLaunched = false;
 let clientPromise: Promise<ElectrumClient>;

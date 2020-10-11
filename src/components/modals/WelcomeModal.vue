@@ -105,7 +105,7 @@
             </a>
             <div v-if="page === 1" class="flex-row flags">
                 <Tooltip v-for="lang in Languages" :key="lang.code"
-                    preferredPosition="bottom"
+                    :preferredPosition="width > 700 ? 'bottom' : 'top'"
                     :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
                     @click="setLanguage(lang.code)"
                 >
@@ -129,6 +129,7 @@ import { backup } from '../../hub';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAddressStore } from '../../stores/Address';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
@@ -160,6 +161,8 @@ export default defineComponent({
 
         const { activeAddress } = useAddressStore();
 
+        const { width } = useWindowSize();
+
         return {
             page,
             reset,
@@ -170,6 +173,7 @@ export default defineComponent({
             activeAccountInfo,
             AccountType,
             activeAddress,
+            width,
         };
     },
     components: {

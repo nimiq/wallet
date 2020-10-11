@@ -1,10 +1,8 @@
-/* eslint-disable import/no-cycle */
-
 import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput } from '@nimiq/electrum-client';
-import { useFiatStore } from './Fiat'; // eslint-disable-line import/no-cycle
+import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 

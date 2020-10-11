@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
+import { useAccountStore } from './Account';
 
 export type AddressState = {
     addressInfos: {[id: string]: AddressInfo},

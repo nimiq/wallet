@@ -1,7 +1,7 @@
 import { Ref } from '@vue/composition-api';
 import { createStore } from 'pinia';
-import { useAccountStore } from './Account'; // eslint-disable-line import/no-cycle
-import { Transaction } from './BtcTransactions'; // eslint-disable-line import/no-cycle
+import { useAccountStore } from './Account';
+import { Transaction } from './BtcTransactions';
 
 export type BtcAddressState = {
     addressInfos: {[address: string]: BtcAddressInfo},
@@ -134,16 +134,18 @@ export const useBtcAddressStore = createStore({
 
             // Add new UTXOs in transactions to addresses
             const utxosByAddress = new Map<string, UTXO[]>();
+            const usedAddresses = new Set<string>();
             for (const { outputs, transactionHash } of transactions) {
                 for (const { address, index, script, value } of outputs) {
-                    // Skip this output if it has no address
                     if (!address) continue;
-
-                    // Skip this output if an according input is already known
-                    if (spentInputs.has(`${transactionHash}:${index}`)) continue;
-
                     const addressInfo = this.state.addressInfos[address];
                     if (!addressInfo) continue;
+
+                    // Skip this output if it is already spent
+                    if (spentInputs.has(`${transactionHash}:${index}`)) {
+                        usedAddresses.add(address);
+                        continue;
+                    }
 
                     // Skip this output if the UTXO is already known
                     if (addressInfo.utxos.some((utxo) =>
@@ -168,7 +170,12 @@ export const useBtcAddressStore = createStore({
                     used: true,
                 });
             }
-            this.removeCopiedAddresses([...utxosByAddress.keys()]);
+            for (const address of usedAddresses) {
+                this.patchAddress(address, {
+                    used: true,
+                });
+            }
+            this.removeCopiedAddresses([...utxosByAddress.keys(), ...usedAddresses]);
         },
         removeAddresses(addresses: string[]) {
             const addressInfos = { ...this.state.addressInfos };

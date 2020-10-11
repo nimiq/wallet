@@ -152,7 +152,7 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { onboard, rename } from '../../hub'; // eslint-disable-line import/no-cycle
+import { onboard, rename } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 

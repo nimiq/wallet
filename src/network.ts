@@ -102,6 +102,7 @@ export async function launchNetwork() {
     const subscribedCashlinks = new Set<string>();
     watch(cashlinkStore.networkTrigger, () => {
         const newAddresses: string[] = [];
+        const addressesToSubscribe: string[] = [];
         for (const address of cashlinkStore.allCashlinks.value) {
             if (fetchedCashlinks.has(address)) {
                 // In case a funding cashlink is added, but the cashlink is already known from
@@ -112,13 +113,14 @@ export async function launchNetwork() {
                     && cashlinkStore.state.claimed.includes(address)
                 ) {
                     subscribedCashlinks.add(address);
-                    client.subscribe(address);
+                    addressesToSubscribe.push(address);
                 }
                 continue;
             }
             fetchedCashlinks.add(address);
             newAddresses.push(address);
         }
+        if (addressesToSubscribe.length) client.subscribe(addressesToSubscribe);
         if (!newAddresses.length) return;
 
         console.debug(`Fetching history for ${newAddresses.length} cashlink(s)`);

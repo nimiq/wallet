@@ -8,6 +8,7 @@ import {
     handleCashlinkTransaction,
 } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from './Cashlink';
+import { useSwapsStore } from './Swaps';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
@@ -56,6 +57,26 @@ export const useTransactionsStore = createStore({
                     continue;
                 }
 
+                // Detect swaps
+                // HTLC Creation
+                if ('hashRoot' in plain.data) {
+                    const hash: string = (plain.data as { hashRoot: string }).hashRoot;
+                    useSwapsStore().addFundingData(hash, {
+                        currency: CryptoCurrency.NIM,
+                        transactionHash: plain.transactionHash,
+                    });
+                    plain.swapHash = hash;
+                }
+                // HTLC Settlement
+                if ('hashRoot' in plain.proof) {
+                    const hash: string = (plain.proof as { hashRoot: string }).hashRoot;
+                    useSwapsStore().addSettlementData(hash, {
+                        currency: CryptoCurrency.NIM,
+                        transactionHash: plain.transactionHash,
+                    });
+                    plain.swapHash = hash;
+                }
+
                 newTxs[plain.transactionHash] = plain;
             }
 
@@ -69,8 +90,7 @@ export const useTransactionsStore = createStore({
             this.calculateFiatAmounts();
 
             if (foundCashlinks) {
-                const cashlinkStore = useCashlinkStore();
-                cashlinkStore.triggerNetwork();
+                useCashlinkStore().triggerNetwork();
             }
         },
 

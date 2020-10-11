@@ -5,6 +5,8 @@ import { TransactionDetails, PlainOutput } from '@nimiq/electrum-client';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
+import { isHtlcFunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
+import { useSwapsStore } from './Swaps';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
@@ -45,7 +47,7 @@ export const useBtcTransactionsStore = createStore({
         }, new Set<string>()),
     },
     actions: {
-        addTransactions(txs: TransactionDetails[]) {
+        async addTransactions(txs: TransactionDetails[]) {
             if (!txs.length) return;
 
             const txDetails = txs.map((tx) => {
@@ -63,6 +65,28 @@ export const useBtcTransactionsStore = createStore({
 
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txDetails) {
+                // Detect swaps
+                // HTLC Creation
+                const fundingData = await isHtlcFunding(plain); // eslint-disable-line no-await-in-loop
+                if (fundingData) {
+                    useSwapsStore().addFundingData(fundingData.hash, {
+                        currency: CryptoCurrency.BTC,
+                        transactionHash: plain.transactionHash,
+                        outputIndex: fundingData.outputIndex,
+                    });
+                    plain.swapHash = fundingData.hash;
+                }
+                // HTLC Settlement
+                const settlementHash = isHtlcSettlement(plain);
+                if (settlementHash) {
+                    useSwapsStore().addSettlementData(settlementHash, {
+                        currency: CryptoCurrency.BTC,
+                        transactionHash: plain.transactionHash,
+                        outputIndex: 0,
+                    });
+                    plain.swapHash = settlementHash;
+                }
+
                 newTxs[plain.transactionHash] = plain;
             }
 

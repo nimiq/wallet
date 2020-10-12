@@ -65,7 +65,8 @@
                                     class="total-fees"
                                     :amount="myBtcFeeFiat
                                         + myNimFeeFiat
-                                        + serviceNetworkFeeFiat
+                                        + serviceBtcFeeFiat
+                                        + serviceNimFeeFiat
                                         + serviceExchangeFeeFiat"
                                     :currency="currency"/>
                             </div>
@@ -116,7 +117,8 @@
                                     class="total-fees"
                                     :amount="myBtcFeeFiat
                                         + myNimFeeFiat
-                                        + serviceNetworkFeeFiat
+                                        + serviceBtcFeeFiat
+                                        + serviceNimFeeFiat
                                         + serviceExchangeFeeFiat"
                                     :currency="currency"/>
                             </div>
@@ -348,11 +350,11 @@ export default defineComponent({
             let btc: number;
             if (estimate.value.from.symbol === 'NIM') {
                 const { from, to } = estimate.value;
-                nim = from.amount - from.networkFee;
+                nim = from.amount - from.serviceNetworkFee;
                 btc = to.amount;
             } else {
                 const { from, to } = estimate.value;
-                btc = from.amount - from.networkFee;
+                btc = from.amount - from.serviceNetworkFee;
                 nim = to.amount;
             }
 
@@ -372,7 +374,7 @@ export default defineComponent({
                 return estimate.value.from.amount + estimate.value.from.fee;
             }
             return giveNim.value + (estimate.value && estimate.value.from.symbol === 'NIM'
-                ? estimate.value.from.networkFee + estimate.value.from.fee
+                ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
                 : 0);
         });
         const totalCostBtc = computed(() => {
@@ -380,7 +382,7 @@ export default defineComponent({
                 return estimate.value.from.amount + estimate.value.from.fee;
             }
             return giveBtc.value + (estimate.value && estimate.value.from.symbol === 'BTC'
-                ? estimate.value.from.networkFee + estimate.value.from.fee
+                ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
                 : 0);
         });
 
@@ -465,49 +467,48 @@ export default defineComponent({
         const myNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'NIM' ? estimate.value.from.fee : estimate.value.to.finalFee;
+            const fee = estimate.value.from.symbol === 'NIM' ? estimate.value.from.fee : estimate.value.to.fee;
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const myBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'BTC' ? estimate.value.from.fee : estimate.value.to.finalFee;
+            const fee = estimate.value.from.symbol === 'BTC' ? estimate.value.from.fee : estimate.value.to.fee;
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
-        });
-
-        const serviceNetworkFeeFiat = computed(() => {
-            if (!estimate.value) return 0;
-
-            const { from } = estimate.value;
-            return from.symbol === 'NIM'
-                ? (from.networkFee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : (from.networkFee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
-            return (myNimFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value)) * serviceNetworkFeeFiat.value;
+
+            const fee = estimate.value.from.symbol === 'NIM'
+                ? estimate.value.from.serviceNetworkFee
+                : estimate.value.to.serviceNetworkFee;
+            return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
+
         const serviceBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
-            return (myBtcFeeFiat.value / (myNimFeeFiat.value + myBtcFeeFiat.value)) * serviceNetworkFeeFiat.value;
+
+            const fee = estimate.value.from.symbol === 'BTC'
+                ? estimate.value.from.serviceNetworkFee
+                : estimate.value.to.serviceNetworkFee;
+            return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+        });
+
+        const serviceExchangeFeePercentage = computed(() => {
+            if (!estimate.value) return 0;
+            return Math.round(estimate.value.serviceFeePercentage * 1000) / 10;
         });
 
         const serviceExchangeFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const { from } = estimate.value;
+            const { from, serviceFeePercentage } = estimate.value;
+            const feeAmount = (from.amount - from.serviceNetworkFee) * serviceFeePercentage;
             return from.symbol === 'NIM'
-                ? (from.serviceFee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : (from.serviceFee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
-        });
-
-        const serviceExchangeFeePercentage = computed(() => {
-            if (!estimate.value) return 0;
-
-            const { from } = estimate.value;
-            return Math.round((from.serviceFee / (from.amount - from.networkFee - from.serviceFee)) * 1000) / 10;
+                ? (feeAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
+                : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         function onClose(force = false) {
@@ -542,7 +543,6 @@ export default defineComponent({
         });
 
         async function sign() {
-            let remoteNimCreationTransaction: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | null = null;
             let remoteBtcCreationTransaction: TransactionDetails | null = null;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -563,6 +563,7 @@ export default defineComponent({
                     console.error(error); // eslint-disable-line no-console
                     swapError.value = error.message;
                     reject(error);
+                    return;
                 }
 
                 // TODO: Validate swap data against estimate
@@ -589,11 +590,12 @@ export default defineComponent({
                     if (swap.value) cancelSwap(swap.value.id);
                     swap.value = null;
                     reject(error);
+                    return;
                 }
 
-                if (swap.value!.contracts![0].hash !== swap.value!.contracts![1].hash) {
-                    // TODO: Fail
-                }
+                // if (swap.value!.contracts![0].hash !== swap.value!.contracts![1].hash) {
+                //     // TODO: Fail
+                // }
 
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
@@ -665,7 +667,7 @@ export default defineComponent({
                         },
                         output: {
                             address: btcAddress, // My address, must be redeem address of HTLC
-                            value: swap.value!.to.amount - swap.value!.to.finalFee, // Sats
+                            value: swap.value!.to.amount - swap.value!.to.fee, // Sats
                         },
                     };
                 }
@@ -687,47 +689,12 @@ export default defineComponent({
                         changeAddress = nextChangeAddress.value;
                     }
 
-                    // Fetch missing info from the blockchain
+                    // // Fetch missing info from the blockchain
                     // NIM HTLC address
                     const nimContract = swap.value!.contracts!
                         .find((contract) => contract.asset === Currencies.NIM)!;
 
                     const currentBlockHeight = useNetworkStore().state.height;
-
-                    const transaction = await new Promise<
-                        ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
-                    // eslint-disable-next-line no-async-promise-executor
-                    >(async (resolve$1) => {
-                        function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
-                            const hexData = bytesToHex(new Uint8Array(
-                                atob((nimContract.htlc as NimHtlcDetails).data).split('').map((c) => c.charCodeAt(0))));
-
-                            if (tx.data.raw === hexData) {
-                                resolve$1(tx);
-                                return true;
-                            }
-                            return false;
-                        }
-
-                        const serviceAddress = nimContract.refundAddress;
-
-                        const client = await getNetworkClient();
-                        // First subscribe to new transactions
-                        client.addTransactionListener(listener, [serviceAddress]);
-
-                        // Then check history
-                        try {
-                            const history = await client.getTransactionsByAddress(
-                                serviceAddress, currentBlockHeight - 2);
-                            for (const tx of history) {
-                                if (listener(tx)) break;
-                            }
-                        } catch (error) {
-                            console.log(error); // eslint-disable-line no-console
-                        }
-                    });
-
-                    remoteNimCreationTransaction = transaction;
 
                     const btcHtlcData = swap.value!.contracts!
                         .find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
@@ -757,10 +724,10 @@ export default defineComponent({
                     const nimHtlcData = nimContract.htlc as NimHtlcDetails;
                     redeem = {
                         type: 'NIM',
-                        sender: transaction.recipient, // HTLC address
+                        sender: nimHtlcData.address, // HTLC address
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swap.value!.to.amount - swap.value!.to.finalFee, // Luna
-                        fee: swap.value!.to.finalFee, // Luna
+                        value: swap.value!.to.amount - swap.value!.to.fee, // Luna
+                        fee: swap.value!.to.fee, // Luna
                         validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, currentBlockHeight),
                         htlcData: nimHtlcData.data,
                     };
@@ -776,6 +743,9 @@ export default defineComponent({
                     return;
                 }
 
+                const serviceExchangeFee = Math.round(
+                    (swap.value.from.amount - swap.value.from.serviceNetworkFee) * swap.value.serviceFeePercentage);
+
                 const { addressInfos } = useAddressStore();
 
                 resolve({
@@ -784,8 +754,8 @@ export default defineComponent({
                     fiatCurrency: currency.value,
                     nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
                     btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
-                    serviceNetworkFee: swap.value.from.networkFee,
-                    serviceExchangeFee: swap.value.from.serviceFee,
+                    serviceNetworkFee: swap.value.from.serviceNetworkFee,
+                    serviceExchangeFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,
                         balance: addressInfo.balance || 0,
@@ -831,18 +801,30 @@ export default defineComponent({
             }
 
             if (direction.value === SwapDirection.BTC_TO_NIM) {
-                const transaction = remoteNimCreationTransaction as unknown as
-                    ReturnType<Nimiq.Client.TransactionDetails['toPlain']>;
+                const nimContract = swap.value!.contracts!
+                    .find((contract) => contract.asset === Currencies.NIM)!;
 
-                if (transaction.recipient !== nimHtlcAddress) {
-                    // TODO: Fail
-                }
+                const transaction = await new Promise<
+                    ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
+                // eslint-disable-next-line no-async-promise-executor
+                >(async (resolve) => {
+                    const htlcAddress = nimContract.htlc.address;
 
-                // For Nimiq we must wait until the transaction is mined
-                await new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
                     function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
+                        if (tx.recipient !== htlcAddress) return false;
+
+                        let hexData = (nimContract.htlc as NimHtlcDetails).data;
+                        if (hexData.length !== 156) {
+                            // Convert Base64 to HEX
+                            hexData = bytesToHex(new Uint8Array(
+                                atob((nimContract.htlc as NimHtlcDetails).data).split('').map((c) => c.charCodeAt(0))));
+                        }
+
+                        // TODO: Reject when unequal (=> handle error)
+                        if (tx.data.raw !== hexData) return false;
+
                         if (tx.state === 'mined' || tx.state === 'confirmed') {
-                            resolve(true);
+                            resolve(tx);
                             return true;
                         }
                         return false;
@@ -850,16 +832,16 @@ export default defineComponent({
 
                     const client = await getNetworkClient();
                     // First subscribe to new transactions
-                    client.addTransactionListener(listener, [transaction.recipient]);
+                    client.addTransactionListener(listener, [htlcAddress]);
 
                     // Then check history
                     try {
-                        const history = await client.getTransactionsByAddress(transaction.recipient, 0);
+                        const history = await client.getTransactionsByAddress(htlcAddress, 0);
                         for (const tx of history) {
                             if (listener(tx)) break;
                         }
                     } catch (error) {
-                        console.error(error); // eslint-disable-line no-console
+                        console.log(error); // eslint-disable-line no-console
                     }
                 });
 
@@ -984,13 +966,11 @@ export default defineComponent({
             if (direction.value === SwapDirection.BTC_TO_NIM) {
                 // Place secret into NIM HTLC redeem transaction
 
-                const hashRoot = bytesToHex(new Uint8Array(
-                    atob(swap.value!.contracts![0].hash).split('').map((c) => c.charCodeAt(0))));
 
                 const serializedTx = signedTransactions.nim.serializedTx.replace(
                     '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
                     + '0000000000000000000000000000000000000000000000000000000000000000',
-                    `${hashRoot}${secret.value}`,
+                    `${swap.value!.hash!}${secret.value}`,
                 );
 
                 // TODO: Catch error
@@ -1034,7 +1014,6 @@ export default defineComponent({
             myBtcFeeFiat,
             serviceNimFeeFiat,
             serviceBtcFeeFiat,
-            serviceNetworkFeeFiat,
             serviceExchangeFeeFiat,
             serviceExchangeFeePercentage,
             onInput,

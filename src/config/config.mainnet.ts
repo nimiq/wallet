@@ -6,4 +6,9 @@ export default {
     networkEndpoint: 'https://network.nimiq.com',
     reportToSentry: true,
     enableBitcoin: true,
+
+    fastspot: {
+        apiEndpoint: 'https://v1.fastspot.io/fast/v1',
+        apiKey: '',
+    },
 };

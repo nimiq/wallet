@@ -1,9 +1,4 @@
 import Config from 'config';
-import { ENV_MAIN } from './Constants';
-
-const API_URL = Config.environment === ENV_MAIN
-    ? 'https://undefined.fastspot.io'
-    : 'https://testnet-v0.fastspot.io';
 
 export enum Currencies {
     BTC = 'BTC',
@@ -12,33 +7,32 @@ export enum Currencies {
 
 // Internal Types
 
-type FastspotFrom = {
+type FastspotFee = {
+    perUnit?: string,
+    total: string,
+    totalIsIncluded: boolean,
+};
+
+type FastspotPrice = {
     symbol: 'NIM' | 'BTC',
     name: string,
     amount: string,
-    fee: string,
-    feePerUnit: string,
-    networkFee: string,
-    serviceFee: string,
-    perFee: string, // deprecated
-};
-
-type FastspotTo = {
-    amount: string,
-    finalFee: string,
-    finalFeeIncluded: boolean,
+    fundingNetworkFee: FastspotFee,
+    operatingNetworkFee: FastspotFee,
+    finalizeNetworkFee: FastspotFee,
 };
 
 type FastspotEstimate = {
-    from: [FastspotFrom],
-    to: { [code in Currencies]?: FastspotTo },
+    from: FastspotPrice[],
+    to: FastspotPrice[],
+    serviceFeePercentage: string,
+    direction: 'forward' | 'reverse',
 };
 
 type FastspotContract = {
     refund: { address: string },
     recipient: { address: string },
     amount: number,
-    hash: string,
     timeout: number,
     direction: 'send' | 'receive',
     status: string,
@@ -46,10 +40,9 @@ type FastspotContract = {
 } & ({
     asset: 'NIM',
     intermediary: {
-        address: null,
+        address: string,
         timeoutBlock: number,
         data: string,
-        id: string,
     },
 } | {
     asset: 'BTC',
@@ -62,14 +55,19 @@ type FastspotContract = {
 
 type FastspotSwap = {
     id: string,
+    status: string,
     expires: number,
-    from: FastspotFrom,
-    to: { [code in Currencies]?: FastspotTo },
-    status: 'waiting-for-confirmation',
+    info: {
+        from: FastspotPrice[],
+        to: FastspotPrice[],
+        serviceFeePercentage: string,
+        direction: 'forward' | 'reverse',
+    },
+    hash?: string,
     contracts?: FastspotContract[],
 };
 
-type FastspotResult = FastspotEstimate | FastspotSwap;
+type FastspotResult = FastspotEstimate[] | FastspotSwap;
 
 type FastspotError = {
     status: number,
@@ -80,28 +78,22 @@ type FastspotError = {
 
 // Public Types
 
-export type FromData = {
+export type PriceData = {
     symbol: 'NIM' | 'BTC',
     amount: number,
     fee: number,
     feePerUnit: number,
-    networkFee: number,
-    serviceFee: number,
-};
-
-export type ToData = {
-    symbol: 'NIM' | 'BTC',
-    amount: number,
-    finalFee: number,
+    serviceNetworkFee: number,
 };
 
 export type Estimate = {
-    from: FromData,
-    to: ToData,
+    from: PriceData,
+    to: PriceData,
+    serviceFeePercentage: number,
 };
 
 export type NimHtlcDetails = {
-    address: null,
+    address: string,
     timeoutBlock: number,
     data: string,
 };
@@ -115,7 +107,6 @@ export type Contract = {
     refundAddress: string,
     redeemAddress: string,
     amount: number,
-    hash: string,
     timeout: number,
     direction: 'send' | 'receive',
     status: string,
@@ -131,31 +122,33 @@ export type Swap = Estimate & {
     id: string,
     expires: number,
     status: string,
+    hash?: string,
     contracts?: Contract[],
 };
 
-function convertFromData(from: FastspotFrom): FromData {
+function convertFromData(from: FastspotPrice): PriceData {
     const conversionFactor = from.symbol === Currencies.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
         symbol: from.symbol,
-        amount: convertValue(from.amount),
-        fee: convertValue(from.fee),
-        feePerUnit: convertValue(from.feePerUnit),
-        networkFee: convertValue(from.networkFee),
-        serviceFee: convertValue(from.serviceFee),
+        amount: convertValue(from.amount) - convertValue(from.fundingNetworkFee.total),
+        fee: convertValue(from.fundingNetworkFee.total),
+        feePerUnit: convertValue(from.fundingNetworkFee.perUnit || '0') || 1,
+        serviceNetworkFee: convertValue(from.finalizeNetworkFee.total),
     };
 }
 
-function convertToData(to: FastspotTo, currency: Currencies): ToData {
-    const conversionFactor = currency === Currencies.NIM ? 1e5 : 1e8;
+function convertToData(to: FastspotPrice): PriceData {
+    const conversionFactor = to.symbol === Currencies.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
-        symbol: currency,
+        symbol: to.symbol,
         amount: convertValue(to.amount),
-        finalFee: convertValue(to.finalFee),
+        fee: convertValue(to.finalizeNetworkFee.total),
+        feePerUnit: convertValue(to.finalizeNetworkFee.perUnit || '0') || 1,
+        serviceNetworkFee: convertValue(to.fundingNetworkFee.total),
     };
 }
 
@@ -167,7 +160,6 @@ function convertContract(contract: FastspotContract): Contract {
         refundAddress: contract.refund.address,
         redeemAddress: contract.recipient.address,
         amount: convertValue(contract.amount),
-        hash: contract.hash,
         timeout: contract.timeout,
         direction: contract.direction,
         status: contract.status,
@@ -189,32 +181,33 @@ function convertContract(contract: FastspotContract): Contract {
 }
 
 function convertSwap(swap: FastspotSwap): Swap {
-    const inputObject = swap.from;
-
-    const outputCurrency = Object.keys(swap.to)[0] as Currencies;
-    const outputObject = swap.to[outputCurrency]!;
+    const inputObject = swap.info.from[0];
+    const outputObject = swap.info.to[0];
 
     return {
         id: swap.id,
-        expires: Math.round(swap.expires), // `result.expires` can be a float timestamp
+        expires: Math.floor(swap.expires), // `result.expires` can be a float timestamp
         from: convertFromData(inputObject),
-        to: convertToData(outputObject, outputCurrency),
+        to: convertToData(outputObject),
         status: swap.status,
+        ...(swap.hash ? { hash: swap.hash } : {}),
         ...(swap.contracts ? { contracts: swap.contracts.map(convertContract) } : {}),
+        serviceFeePercentage: parseFloat(swap.info.serviceFeePercentage),
     };
 }
 
 async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<FastspotResult> {
-    return fetch(`${API_URL}${path}`, {
+    return fetch(`${Config.fastspot.apiEndpoint}${path}`, {
         method,
         headers: {
             'Content-Type': 'application/json',
+            'X-FAST-ApiKey': Config.fastspot.apiKey,
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
     }).then(async (res) => {
         if (!res.ok) {
             const error = await res.json() as FastspotError;
-            throw new Error(error.title);
+            throw new Error(error.detail);
         }
         return res.json();
     });
@@ -236,20 +229,20 @@ export async function getEstimate(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: 
     }
 
     const result = await api('/estimates', 'POST', {
-        from: [from],
+        from,
         to,
-        includeAllFees: true,
-    }) as FastspotEstimate;
+        includedFees: 'all',
+    }) as FastspotEstimate[];
 
-    const inputObject = result.from[0];
+    const inputObject = result[0].from[0];
     if (!inputObject) throw new Error('Insufficient market liquidity');
 
-    const outputCurrency = Object.keys(result.to)[0] as Currencies;
-    const outputObject = result.to[outputCurrency]!;
+    const outputObject = result[0].to[0];
 
     const estimate: Estimate = {
         from: convertFromData(inputObject),
-        to: convertToData(outputObject, outputCurrency),
+        to: convertToData(outputObject),
+        serviceFeePercentage: parseFloat(result[0].serviceFeePercentage),
     };
 
     return estimate;
@@ -273,7 +266,7 @@ export async function createSwap(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: n
     const result = await api('/swaps', 'POST', {
         from,
         to,
-        includeAllFees: true,
+        includedFees: 'all',
     }) as FastspotSwap;
 
     return convertSwap(result);

@@ -75,7 +75,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/BtcCopiedAddress.vue:14
+#: src/components/BtcCopiedAddress.vue:13
 msgid "Add a label to quickly find the transaction in your history, once it was sent."
 msgstr ""
 
@@ -322,7 +322,7 @@ msgstr ""
 msgid "Create backup"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:74
+#: src/components/modals/BtcReceiveModal.vue:75
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
 msgstr ""
@@ -364,7 +364,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:89
+#: src/components/modals/BtcReceiveModal.vue:90
 msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
@@ -575,10 +575,6 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:66
 msgid "It is fast, safe and makes you truly independent."
-msgstr ""
-
-#: src/components/BtcCopiedAddress.vue:9
-msgid "Label the sender"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:17
@@ -796,7 +792,7 @@ msgstr ""
 msgid "Save now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:110
+#: src/components/modals/BtcReceiveModal.vue:111
 #: src/components/modals/ReceiveModal.vue:39
 msgid ""
 "Scan the code to send\n"
@@ -892,7 +888,7 @@ msgstr ""
 msgid "Share a single-use address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:118
+#: src/components/modals/BtcReceiveModal.vue:119
 #: src/components/modals/ReceiveModal.vue:46
 msgid ""
 "Share the link or QR code with the sender.\n"
@@ -903,7 +899,7 @@ msgstr ""
 msgid "Share your address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:116
+#: src/components/modals/BtcReceiveModal.vue:117
 #: src/components/modals/ReceiveModal.vue:44
 msgid "Share your Payment Link"
 msgstr ""
@@ -1071,7 +1067,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/components/BtcCopiedAddress.vue:26
+#: src/components/BtcCopiedAddress.vue:9
 msgid "Unlabelled"
 msgstr ""
 
@@ -1088,7 +1084,7 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:94
+#: src/components/modals/BtcReceiveModal.vue:95
 msgid "Use labels instead of contacts to easily identify transactions in your history."
 msgstr ""
 
@@ -1102,11 +1098,11 @@ msgstr ""
 msgid "What else?"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:84
+#: src/components/modals/BtcReceiveModal.vue:85
 msgid "With Bitcoin, a new address is used for every transaction to improve privacy.Reuse of addresses does not result in a loss of funds."
 msgstr ""
 
-#: src/components/BtcCopiedAddress.vue:16
+#: src/components/BtcCopiedAddress.vue:15
 #: src/components/BtcLabelInput.vue:20
 msgid "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""

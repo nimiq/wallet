@@ -160,7 +160,7 @@
         <div v-if="swap" slot="overlay" class="page swap-progress flex-column">
             <PageHeader>
                 Performing Swap
-                <p v-if="swapStep !== SwapStep.COMPLETE" slot="more" class="nq-notice warning">
+                <p v-if="swap.state !== SwapState.COMPLETE" slot="more" class="nq-notice warning">
                     {{ $t('Do not close this popup!') }}
                 </p>
                 <p v-else slot="more" class="nq-notice info">
@@ -169,24 +169,24 @@
             </PageHeader>
             <PageBody>
                 <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swapStep > SwapStep.SIGN_SWAP}">
-                        <span v-if="swapStep < SwapStep.SIGN_SWAP">1</span>
-                        <CircleSpinner v-else-if="swapStep === SwapStep.SIGN_SWAP"/>
+                    <div class="status" :class="{'nq-green': swap.state > SwapState.SIGN_SWAP}">
+                        <span v-if="swap.state < SwapState.SIGN_SWAP">1</span>
+                        <CircleSpinner v-else-if="swap.state === SwapState.SIGN_SWAP"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <div v-if="swapStep >= SwapStep.SIGN_SWAP" class="info">
-                        <div v-if="swapStep === SwapStep.SIGN_SWAP">{{ $t('Signing swap...') }}</div>
+                    <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
+                        <div v-if="swap.state === SwapState.SIGN_SWAP">{{ $t('Signing swap...') }}</div>
                         <div v-else>{{ $t('Swap signed!') }}</div>
                     </div>
                 </div>
                 <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_INCOMING}">
-                        <span v-if="swapStep < SwapStep.AWAIT_INCOMING">2</span>
-                        <CircleSpinner v-else-if="swapStep === SwapStep.AWAIT_INCOMING"/>
+                    <div class="status" :class="{'nq-green': swap.state > SwapState.AWAIT_INCOMING}">
+                        <span v-if="swap.state < SwapState.AWAIT_INCOMING">2</span>
+                        <CircleSpinner v-else-if="swap.state === SwapState.AWAIT_INCOMING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <div v-if="swapStep >= SwapStep.AWAIT_INCOMING" class="info">
-                        <div v-if="swapStep === SwapStep.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</div>
+                    <div v-if="swap.state >= SwapState.AWAIT_INCOMING" class="info">
+                        <div v-if="swap.state === SwapState.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</div>
                         <div v-else>{{ $t('Incoming HTLC verified!') }}</div>
                         <code v-if="remoteHtlcCreationData.hash" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -200,13 +200,13 @@
                     </div>
                 </div>
                 <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swapStep > SwapStep.CREATE_OUTGOING}">
-                        <span v-if="swapStep < SwapStep.CREATE_OUTGOING">3</span>
-                        <CircleSpinner v-else-if="swapStep === SwapStep.CREATE_OUTGOING"/>
+                    <div class="status" :class="{'nq-green': swap.state > SwapState.CREATE_OUTGOING}">
+                        <span v-if="swap.state < SwapState.CREATE_OUTGOING">3</span>
+                        <CircleSpinner v-else-if="swap.state === SwapState.CREATE_OUTGOING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <div v-if="swapStep >= SwapStep.CREATE_OUTGOING" class="info">
-                        <div v-if="swapStep === SwapStep.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</div>
+                    <div v-if="swap.state >= SwapState.CREATE_OUTGOING" class="info">
+                        <div v-if="swap.state === SwapState.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</div>
                         <div v-else>{{ $t('Outgoing HTLC created!') }}</div>
                         <code v-if="localHtlcCreationData.hash" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -220,29 +220,29 @@
                     </div>
                 </div>
                 <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swapStep > SwapStep.AWAIT_SECRET}">
-                        <span v-if="swapStep < SwapStep.AWAIT_SECRET">4</span>
-                        <CircleSpinner v-else-if="swapStep === SwapStep.AWAIT_SECRET"/>
+                    <div class="status" :class="{'nq-green': swap.state > SwapState.AWAIT_SECRET}">
+                        <span v-if="swap.state < SwapState.AWAIT_SECRET">4</span>
+                        <CircleSpinner v-else-if="swap.state === SwapState.AWAIT_SECRET"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <div v-if="swapStep >= SwapStep.AWAIT_SECRET" class="info">
-                        <div v-if="swapStep === SwapStep.AWAIT_SECRET">
+                    <div v-if="swap.state >= SwapState.AWAIT_SECRET" class="info">
+                        <div v-if="swap.state === SwapState.AWAIT_SECRET">
                             {{ $t('Awaiting publishing of secret...') }}</div>
                         <div v-else>{{ $t('Swap secret published!') }}</div>
-                        <code v-if="secret" class="flex-row nq-gray">
-                            {{ secret.substring(0, 32) }}
-                            {{ secret.substring(32) }}
+                        <code v-if="swap.secret" class="flex-row nq-gray">
+                            {{ swap.secret.substring(0, 32) }}
+                            {{ swap.secret.substring(32) }}
                         </code>
                     </div>
                 </div>
                 <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swapStep > SwapStep.SETTLE_INCOMING}">
-                        <span v-if="swapStep < SwapStep.SETTLE_INCOMING">5</span>
-                        <CircleSpinner v-else-if="swapStep === SwapStep.SETTLE_INCOMING"/>
+                    <div class="status" :class="{'nq-green': swap.state > SwapState.SETTLE_INCOMING}">
+                        <span v-if="swap.state < SwapState.SETTLE_INCOMING">5</span>
+                        <CircleSpinner v-else-if="swap.state === SwapState.SETTLE_INCOMING"/>
                         <CheckmarkIcon v-else/>
                     </div>
-                    <div v-if="swapStep >= SwapStep.SETTLE_INCOMING" class="info">
-                        <div v-if="swapStep === SwapStep.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</div>
+                    <div v-if="swap.state >= SwapState.SETTLE_INCOMING" class="info">
+                        <div v-if="swap.state === SwapState.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</div>
                         <div v-else>{{ $t('Swap complete!') }}</div>
                         <code v-if="localHtlcSettlementData.hash" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -254,7 +254,7 @@
             </PageBody>
             <PageFooter>
                 <button class="nq-button light-blue"
-                    :disabled="swapStep !== SwapStep.COMPLETE"
+                    :disabled="swap.state !== SwapState.COMPLETE"
                     @click="onClose(true)"
                 >{{ $t('Done') }}</button>
             </PageFooter>
@@ -276,7 +276,7 @@ import {
     CheckmarkIcon,
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
-import { bytesToHex, PlainInput, PlainOutput, TransactionDetails } from '@nimiq/electrum-client';
+import { bytesToHex, PlainInput, PlainOutput, TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import Config from 'config';
@@ -304,25 +304,12 @@ import {
     Estimate,
     getEstimate,
     NimHtlcDetails,
-    Swap,
+    PreSwap,
 } from '../../lib/FastSpotApi';
 import { getNetworkClient, sendTransaction as sendNimTx } from '../../network';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
-
-enum SwapDirection {
-    NIM_TO_BTC,
-    BTC_TO_NIM,
-}
-
-enum SwapStep {
-    SIGN_SWAP,
-    AWAIT_INCOMING,
-    CREATE_OUTGOING,
-    AWAIT_SECRET,
-    SETTLE_INCOMING,
-    COMPLETE,
-}
+import { SwapState, SwapDirection, useSwapsStore, ActiveSwap } from '../../stores/Swaps';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -332,9 +319,9 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
         const direction = ref(SwapDirection.BTC_TO_NIM);
-        const swap = ref<Swap>(null);
+
+        const { activeSwap: swap, setActiveSwap } = useSwapsStore();
         const swapError = ref<string>(null);
-        const swapStep = ref(SwapStep.SIGN_SWAP);
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
@@ -535,29 +522,29 @@ export default defineComponent({
             address: '',
         });
 
-        const secret = ref('');
-
         const localHtlcSettlementData = ref({
             asset: '',
             hash: '',
         });
 
         async function sign() {
-            let remoteBtcCreationTransaction: TransactionDetails | null = null;
+            let remoteNimCreationTransaction: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | null = null;
+            let remoteBtcCreationTransaction: BtcTransactionDetails | null = null;
 
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
+                let swapSuggestion: PreSwap;
+
                 try {
                     const to = direction.value === SwapDirection.NIM_TO_BTC
                         ? { BTC: wantBtc.value / 1e8 }
                         : { NIM: wantNim.value / 1e5 };
 
-                    if (swap.value) cancelSwap(swap.value.id);
-                    swap.value = await createSwap(
+                    swapSuggestion = await createSwap(
                         direction.value === SwapDirection.NIM_TO_BTC ? 'NIM' : 'BTC',
                         to,
                     );
-                    console.debug('Swap:', swap.value); // eslint-disable-line no-console
+                    console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
                     swapError.value = null;
                 } catch (error) {
                     console.error(error); // eslint-disable-line no-console
@@ -573,7 +560,7 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    swap.value = await confirmSwap(swap.value!.id, {
+                    const confirmedSwap = await confirmSwap(swapSuggestion, {
                         // Redeem
                         asset: direction.value === SwapDirection.NIM_TO_BTC ? Currencies.BTC : Currencies.NIM,
                         address: direction.value === SwapDirection.NIM_TO_BTC ? btcAddress : nimAddress,
@@ -582,13 +569,17 @@ export default defineComponent({
                         asset: direction.value === SwapDirection.BTC_TO_NIM ? Currencies.BTC : Currencies.NIM,
                         address: direction.value === SwapDirection.BTC_TO_NIM ? btcAddress : nimAddress,
                     });
+                    setActiveSwap({
+                        ...confirmedSwap,
+                        direction: direction.value,
+                        state: SwapState.SIGN_SWAP,
+                    });
                     console.debug('Swap:', swap.value); // eslint-disable-line no-console
                     swapError.value = null;
                 } catch (error) {
                     console.error(error); // eslint-disable-line no-console
                     swapError.value = error.message;
-                    if (swap.value) cancelSwap(swap.value.id);
-                    swap.value = null;
+                    if (swapSuggestion) cancelSwap(swapSuggestion);
                     reject(error);
                     return;
                 }
@@ -610,7 +601,7 @@ export default defineComponent({
                 const electrumClient = await getElectrumClient();
                 await electrumClient.waitForConsensusEstablished();
 
-                if (direction.value === SwapDirection.NIM_TO_BTC) {
+                if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                     // Fetch missing info from the blockchain
                     // BTC tx hash and output data
 
@@ -619,7 +610,7 @@ export default defineComponent({
 
                     // eslint-disable-next-line no-async-promise-executor
                     const { transaction, output } = await new Promise(async (resolve$1) => {
-                        function listener(tx: TransactionDetails) {
+                        function listener(tx: BtcTransactionDetails) {
                             const htlcOutput = tx.outputs.find((out: PlainOutput) => out.address === htlcAddress);
                             if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
                                 resolve$1({
@@ -672,7 +663,7 @@ export default defineComponent({
                     };
                 }
 
-                if (direction.value === SwapDirection.BTC_TO_NIM) {
+                if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                     // Assemble BTC inputs
 
                     const { accountUtxos } = useBtcAddressStore();
@@ -778,17 +769,26 @@ export default defineComponent({
 
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
-            const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
+            const nimHtlcAddress = swap.value!.direction === SwapDirection.NIM_TO_BTC
                 ? signedTransactions.nim.raw.recipient
                 : signedTransactions.nim.raw.sender;
 
             const btcHtlcAddress = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!
                 .htlc.address!;
 
-            swapStep.value = SwapStep.AWAIT_INCOMING;
+            setActiveSwap({
+                ...(swap.value as ActiveSwap),
+                state: SwapState.AWAIT_INCOMING,
+                fundingSerializedTx: swap.value!.direction === SwapDirection.NIM_TO_BTC
+                    ? signedTransactions.nim.serializedTx
+                    : signedTransactions.btc.serializedTx,
+                settlementSerializedTx: swap.value!.direction === SwapDirection.BTC_TO_NIM
+                    ? signedTransactions.nim.serializedTx
+                    : signedTransactions.btc.serializedTx,
+            });
 
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
-                const transaction = remoteBtcCreationTransaction as unknown as TransactionDetails;
+            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+                const transaction = remoteBtcCreationTransaction as unknown as BtcTransactionDetails;
                 if (transaction.replaceByFee) {
                     // TODO: Must wait until mined
                 }
@@ -800,7 +800,7 @@ export default defineComponent({
                 };
             }
 
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                 const nimContract = swap.value!.contracts!
                     .find((contract) => contract.asset === Currencies.NIM)!;
 
@@ -845,6 +845,8 @@ export default defineComponent({
                     }
                 });
 
+                remoteNimCreationTransaction = transaction;
+
                 remoteHtlcCreationData.value = {
                     asset: 'NIM',
                     hash: transaction.transactionHash,
@@ -852,39 +854,51 @@ export default defineComponent({
                 };
             }
 
-            swapStep.value = SwapStep.CREATE_OUTGOING;
+            setActiveSwap({
+                ...(swap.value as ActiveSwap),
+                state: SwapState.CREATE_OUTGOING,
+                remoteFundingTx: remoteNimCreationTransaction || remoteBtcCreationTransaction!,
+            });
 
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
+            let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
+
+            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                 // TODO: Catch error
-                const sentTx = await sendNimTx(signedTransactions.nim);
+                fundingTx = await sendNimTx(signedTransactions.nim);
 
                 localHtlcCreationData.value = {
                     asset: 'NIM',
-                    hash: sentTx.transactionHash,
-                    address: sentTx.recipient,
+                    hash: fundingTx.transactionHash,
+                    address: fundingTx.recipient,
                 };
             }
 
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                 // TODO: Catch error
-                const sentTx = await sendBtcTx(signedTransactions.btc);
+                fundingTx = await sendBtcTx(signedTransactions.btc);
 
                 localHtlcCreationData.value = {
                     asset: 'BTC',
-                    hash: sentTx.transactionHash,
+                    hash: fundingTx.transactionHash,
                     address: btcHtlcAddress,
                 };
 
                 const { addTransactions } = useBtcTransactionsStore();
-                addTransactions([sentTx]);
+                addTransactions([fundingTx]);
             }
 
-            swapStep.value = SwapStep.AWAIT_SECRET;
+            setActiveSwap({
+                ...(swap.value as ActiveSwap),
+                state: SwapState.AWAIT_SECRET,
+                fundingTx: fundingTx!,
+            });
 
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
+            let secret: string;
+
+            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                 // Wait until Fastspot claims the NIM HTLC created by us
                 // eslint-disable-next-line no-async-promise-executor
-                secret.value = await new Promise<string>(async (resolve) => {
+                secret = await new Promise<string>(async (resolve) => {
                     function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
                         if (tx.sender === nimHtlcAddress && 'preImage' in tx.proof) {
                             // @ts-ignore
@@ -910,11 +924,11 @@ export default defineComponent({
                 });
             }
 
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                 // Wait until Fastspot claims the BTC HTLC created by us
                 // eslint-disable-next-line no-async-promise-executor
-                secret.value = await new Promise<string>(async (resolve) => {
-                    function listener(tx: TransactionDetails) {
+                secret = await new Promise<string>(async (resolve) => {
+                    function listener(tx: BtcTransactionDetails) {
                         const htlcInput = tx.inputs.find((input: PlainInput) => input.address === btcHtlcAddress);
                         if (htlcInput) {
                             resolve(htlcInput.witness[2] as string);
@@ -935,9 +949,15 @@ export default defineComponent({
                 });
             }
 
-            swapStep.value = SwapStep.SETTLE_INCOMING;
+            setActiveSwap({
+                ...(swap.value as ActiveSwap),
+                state: SwapState.SETTLE_INCOMING,
+                secret: secret!,
+            });
 
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
+            let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
+
+            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                 // Place secret into BTC HTLC redeem transaction
 
                 // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
@@ -945,47 +965,53 @@ export default defineComponent({
                 // const serializedTx = rawTx.toHex();
                 const serializedTx = signedTransactions.btc.serializedTx.replace(
                     '000000000000000000000000000000000000000000000000000000000000000001',
-                    `${secret.value}01`,
+                    // @ts-ignore Property 'secret' does not exist on type
+                    `${swap.value!.secret}01`,
                 );
 
                 // TODO: Catch error
-                const sentTx = await sendBtcTx({
+                settlementTx = await sendBtcTx({
                     hash: signedTransactions.btc.hash,
                     serializedTx,
                 });
 
                 localHtlcSettlementData.value = {
                     asset: 'BTC',
-                    hash: sentTx.transactionHash,
+                    hash: settlementTx.transactionHash,
                 };
 
                 const { addTransactions } = useBtcTransactionsStore();
-                addTransactions([sentTx]);
+                addTransactions([settlementTx]);
             }
 
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                 // Place secret into NIM HTLC redeem transaction
 
 
                 const serializedTx = signedTransactions.nim.serializedTx.replace(
                     '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
                     + '0000000000000000000000000000000000000000000000000000000000000000',
-                    `${swap.value!.hash!}${secret.value}`,
+                    // @ts-ignore Property 'secret' does not exist on type
+                    `${swap.value!.hash!}${swap.value!.secret}`,
                 );
 
                 // TODO: Catch error
-                const sentTx = await sendNimTx({
+                settlementTx = await sendNimTx({
                     ...signedTransactions.nim,
                     serializedTx,
                 });
 
                 localHtlcSettlementData.value = {
                     asset: 'NIM',
-                    hash: sentTx.transactionHash,
+                    hash: settlementTx.transactionHash,
                 };
             }
 
-            swapStep.value = SwapStep.COMPLETE;
+            setActiveSwap({
+                ...(swap.value as ActiveSwap),
+                state: SwapState.COMPLETE,
+                settlementTx: settlementTx!,
+            });
         }
 
         function explorerTxLink(asset: 'NIM' | 'BTC', hash: string) {
@@ -1024,11 +1050,9 @@ export default defineComponent({
             swapError,
             canSign,
             sign,
-            swapStep,
-            SwapStep,
+            SwapState,
             remoteHtlcCreationData,
             localHtlcCreationData,
-            secret,
             localHtlcSettlementData,
             explorerTxLink,
             explorerAddrLink,

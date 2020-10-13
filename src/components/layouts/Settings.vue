@@ -298,6 +298,7 @@ export default defineComponent({
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
+        max-height: calc(100% - 4rem); // for Copyright / Disclamer link
 
         section {
             padding-left: 3rem;

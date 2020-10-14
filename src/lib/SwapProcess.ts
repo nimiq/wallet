@@ -32,7 +32,7 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
         | BtcTransactionDetails
         | null = null;
 
-    if (swap.value!.to.asset === SwapAsset.BTC) {
+    if (swap.value.to.asset === SwapAsset.BTC) {
         const htlcAddress = getIncomingHtlcAddress(swap.value);
 
         // eslint-disable-next-line no-async-promise-executor
@@ -63,8 +63,8 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
         });
     }
 
-    if (swap.value!.to.asset === SwapAsset.NIM) {
-        const nimHtlcData = swap.value!.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
+    if (swap.value.to.asset === SwapAsset.NIM) {
+        const nimHtlcData = swap.value.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
 
         remoteFundingTx = await new Promise<
             ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
@@ -118,14 +118,14 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
 export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>) {
     let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
-    if (swap.value!.from.asset === SwapAsset.NIM) {
+    if (swap.value.from.asset === SwapAsset.NIM) {
         // TODO: Catch error
-        fundingTx = await sendNimTx(swap.value!.fundingSerializedTx);
+        fundingTx = await sendNimTx(swap.value.fundingSerializedTx);
     }
 
-    if (swap.value!.from.asset === SwapAsset.BTC) {
+    if (swap.value.from.asset === SwapAsset.BTC) {
         // TODO: Catch error
-        fundingTx = await sendBtcTx(swap.value!.fundingSerializedTx);
+        fundingTx = await sendBtcTx(swap.value.fundingSerializedTx);
 
         const { addTransactions } = useBtcTransactionsStore();
         addTransactions([fundingTx]);
@@ -141,7 +141,7 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
 export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>) {
     let secret: string;
 
-    if (swap.value!.from.asset === SwapAsset.NIM) {
+    if (swap.value.from.asset === SwapAsset.NIM) {
         const nimHtlcAddress = getOutgoingHtlcAddress(swap.value);
 
         // Wait until Fastspot claims the NIM HTLC created by us
@@ -172,7 +172,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
         });
     }
 
-    if (swap.value!.from.asset === SwapAsset.BTC) {
+    if (swap.value.from.asset === SwapAsset.BTC) {
         const btcHtlcAddress = getOutgoingHtlcAddress(swap.value);
 
         // Wait until Fastspot claims the BTC HTLC created by us
@@ -209,16 +209,16 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
 export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>) {
     let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
-    if (swap.value!.to.asset === SwapAsset.BTC) {
+    if (swap.value.to.asset === SwapAsset.BTC) {
         // Place secret into BTC HTLC redeem transaction
 
         // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
         // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret.value, 'hex');
         // const serializedTx = rawTx.toHex();
-        const serializedTx = swap.value!.settlementSerializedTx.replace(
+        const serializedTx = swap.value.settlementSerializedTx.replace(
             '000000000000000000000000000000000000000000000000000000000000000001',
             // @ts-ignore Property 'secret' does not exist on type
-            `${swap.value!.secret}01`,
+            `${swap.value.secret}01`,
         );
 
         // TODO: Catch error
@@ -228,14 +228,14 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
         addTransactions([settlementTx]);
     }
 
-    if (swap.value!.to.asset === SwapAsset.NIM) {
+    if (swap.value.to.asset === SwapAsset.NIM) {
         // Place secret into NIM HTLC redeem transaction
 
-        const serializedTx = swap.value!.settlementSerializedTx.replace(
+        const serializedTx = swap.value.settlementSerializedTx.replace(
             '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
             + '0000000000000000000000000000000000000000000000000000000000000000',
             // @ts-ignore Property 'secret' does not exist on type
-            `${swap.value!.hash!}${swap.value!.secret}`,
+            `${swap.value.hash!}${swap.value.secret}`,
         );
 
         // TODO: Catch error

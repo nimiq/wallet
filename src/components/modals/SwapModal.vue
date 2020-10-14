@@ -618,7 +618,7 @@ export default defineComponent({
                     const { transaction, output } = await new Promise(async (resolve$1) => {
                         function listener(tx: BtcTransactionDetails) {
                             const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
+                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount + swap.value!.to.fee) {
                                 resolve$1({
                                     transaction: tx,
                                     output: htlcOutput,
@@ -655,12 +655,12 @@ export default defineComponent({
                             transactionHash: transaction.transactionHash,
                             outputIndex: output.index,
                             outputScript: output.script,
-                            value: swap.value!.to.amount, // Sats
+                            value: swap.value!.to.amount + swap.value!.to.fee, // Sats
                             witnessScript: btcHtlcData.script,
                         },
                         output: {
                             address: btcAddress, // My address, must be redeem address of HTLC
-                            value: swap.value!.to.amount - swap.value!.to.fee, // Sats
+                            value: swap.value!.to.amount, // Sats
                         },
                     };
                 }
@@ -715,7 +715,7 @@ export default defineComponent({
                         type: 'NIM',
                         sender: nimHtlcData.address, // HTLC address
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swap.value!.to.amount - swap.value!.to.fee, // Luna
+                        value: swap.value!.to.amount, // Luna
                         fee: swap.value!.to.fee, // Luna
                         validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, currentBlockHeight),
                         htlcData: nimHtlcData.data,
@@ -767,8 +767,23 @@ export default defineComponent({
 
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
+            const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
+                ? signedTransactions.nim.raw.recipient
+                : signedTransactions.nim.raw.sender;
+
             setActiveSwap({
                 ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>),
+                // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
+                contracts: {
+                    ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts,
+                    [SwapAsset.NIM]: {
+                        ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts[SwapAsset.NIM]!,
+                        htlc: {
+                            ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts[SwapAsset.NIM]!.htlc,
+                            address: nimHtlcAddress,
+                        },
+                    },
+                },
                 state: SwapState.AWAIT_INCOMING,
                 fundingSerializedTx: swap.value!.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx

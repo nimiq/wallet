@@ -39,7 +39,7 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
         remoteFundingTx = await new Promise(async (resolve) => {
             function listener(tx: BtcTransactionDetails) {
                 const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                if (!htlcOutput || htlcOutput.value !== swap.value!.to.amount) return false;
+                if (!htlcOutput || htlcOutput.value !== swap.value.to.amount + swap.value.to.fee) return false;
 
                 if (
                     tx.replaceByFee

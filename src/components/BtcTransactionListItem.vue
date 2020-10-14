@@ -68,9 +68,10 @@ import {
     CrossIcon,
     Identicon,
 } from '@nimiq/vue-components';
+import { TransactionState } from '@nimiq/electrum-client';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
-import { Transaction, TransactionState } from '../stores/BtcTransactions';
+import { Transaction } from '../stores/BtcTransactions';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import { useAccountStore } from '../stores/Account';
 import { twoDigit } from '../lib/NumberFormatting';

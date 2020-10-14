@@ -285,13 +285,7 @@ import {
     CheckmarkIcon,
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
-import {
-    bytesToHex,
-    PlainInput,
-    PlainOutput,
-    TransactionDetails as BtcTransactionDetails,
-    TransactionState,
-} from '@nimiq/electrum-client';
+import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import Config from 'config';
@@ -308,7 +302,6 @@ import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
 import { selectOutputs /* , estimateFees */ } from '../../lib/BitcoinTransactionUtils';
-import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useAddressStore } from '../../stores/Address';
 import {
     BtcHtlcDetails,
@@ -321,10 +314,18 @@ import {
     NimHtlcDetails,
     PreSwap,
 } from '../../lib/FastSpotApi';
-import { getNetworkClient, sendTransaction as sendNimTx } from '../../network';
-import { getElectrumClient, sendTransaction as sendBtcTx } from '../../electrum';
+import { getNetworkClient } from '../../network';
+import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore, ActiveSwap } from '../../stores/Swaps';
+import {
+    getIncomingHtlcAddress,
+    getOutgoingHtlcAddress,
+    awaitIncoming,
+    createOutgoing,
+    awaitSecret,
+    settleIncoming,
+} from '../../lib/SwapProcess';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -418,7 +419,7 @@ export default defineComponent({
                     : { NIM: wantNim.value / 1e5 };
 
                 estimate.value = await getEstimate(
-                    direction.value === SwapDirection.NIM_TO_BTC ? 'NIM' : 'BTC',
+                    direction.value === SwapDirection.NIM_TO_BTC ? SwapAsset.NIM : SwapAsset.BTC,
                     to,
                 );
                 estimateError.value = null;
@@ -429,7 +430,7 @@ export default defineComponent({
             fetchingEstimate.value = false;
         }
 
-        function onInput(currency: 'NIM' | 'BTC', amount: number) {
+        function onInput(currency: SwapAsset, amount: number) {
             if (debounce) {
                 clearTimeout(debounce);
             }
@@ -441,12 +442,12 @@ export default defineComponent({
                 debounce = null;
             }
 
-            if (currency === 'NIM') {
+            if (currency === SwapAsset.NIM) {
                 wantNim.value = amount;
                 direction.value = SwapDirection.BTC_TO_NIM;
                 wantBtc.value = 0;
             }
-            if (currency === 'BTC') {
+            if (currency === SwapAsset.BTC) {
                 wantBtc.value = amount;
                 direction.value = SwapDirection.NIM_TO_BTC;
                 wantNim.value = 0;
@@ -548,7 +549,7 @@ export default defineComponent({
                         : { NIM: wantNim.value / 1e5 };
 
                     swapSuggestion = await createSwap(
-                        direction.value === SwapDirection.NIM_TO_BTC ? 'NIM' : 'BTC',
+                        direction.value === SwapDirection.NIM_TO_BTC ? SwapAsset.NIM : SwapAsset.BTC,
                         to,
                     );
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
@@ -616,7 +617,7 @@ export default defineComponent({
                     // eslint-disable-next-line no-async-promise-executor
                     const { transaction, output } = await new Promise(async (resolve$1) => {
                         function listener(tx: BtcTransactionDetails) {
-                            const htlcOutput = tx.outputs.find((out: PlainOutput) => out.address === htlcAddress);
+                            const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
                             if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
                                 resolve$1({
                                     transaction: tx,
@@ -803,244 +804,14 @@ export default defineComponent({
             }
         }
 
-        async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>) {
-            let remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
-                | BtcTransactionDetails
-                | null = null;
-
-            if (swap.value!.to.asset === SwapAsset.BTC) {
-                const htlcAddress = incomingHtlcAddress.value!;
-
-                // eslint-disable-next-line no-async-promise-executor
-                remoteFundingTx = await new Promise(async (resolve) => {
-                    function listener(tx: BtcTransactionDetails) {
-                        const htlcOutput = tx.outputs.find((out: PlainOutput) => out.address === htlcAddress);
-                        if (!htlcOutput || htlcOutput.value !== swap.value!.to.amount) return false;
-
-                        if (
-                            tx.replaceByFee
-                            // Must wait until mined
-                            && ![TransactionState.MINED, TransactionState.CONFIRMED].includes(tx.state)
-                        ) return false;
-
-                        resolve(tx);
-                        return true;
-                    }
-
-                    const electrumClient = await getElectrumClient();
-                    // First subscribe to new transactions
-                    electrumClient.addTransactionListener(listener, [htlcAddress]);
-
-                    // Then check history
-                    const history = await electrumClient.getTransactionsByAddress(htlcAddress);
-                    for (const tx of history) {
-                        if (listener(tx)) break;
-                    }
-                });
-            }
-
-            if (swap.value!.to.asset === SwapAsset.NIM) {
-                const nimHtlcData = swap.value!.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
-
-                remoteFundingTx = await new Promise<
-                    ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
-                // eslint-disable-next-line no-async-promise-executor
-                >(async (resolve) => {
-                    const htlcAddress = nimHtlcData.address;
-
-                    function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
-                        if (tx.recipient !== htlcAddress) return false;
-
-                        let hexData = nimHtlcData.data;
-                        if (hexData.length !== 156) {
-                            // Convert Base64 to HEX
-                            hexData = bytesToHex(new Uint8Array(
-                                atob(nimHtlcData.data).split('').map((c) => c.charCodeAt(0))));
-                        }
-
-                        // TODO: Reject when unequal (=> handle error)
-                        if (tx.data.raw !== hexData) return false;
-
-                        if (tx.state === TransactionState.MINED || tx.state === TransactionState.CONFIRMED) {
-                            resolve(tx);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    const client = await getNetworkClient();
-                    // First subscribe to new transactions
-                    client.addTransactionListener(listener, [htlcAddress]);
-
-                    // Then check history
-                    try {
-                        const history = await client.getTransactionsByAddress(htlcAddress, 0);
-                        for (const tx of history) {
-                            if (listener(tx)) break;
-                        }
-                    } catch (error) {
-                        console.log(error); // eslint-disable-line no-console
-                    }
-                });
-            }
-
-            setActiveSwap({
-                ...swap.value,
-                state: SwapState.CREATE_OUTGOING,
-                remoteFundingTx: remoteFundingTx!,
-            });
-        }
-
-        async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>) {
-            let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
-
-            if (swap.value!.from.asset === SwapAsset.NIM) {
-                // TODO: Catch error
-                fundingTx = await sendNimTx(swap.value!.fundingSerializedTx);
-            }
-
-            if (swap.value!.from.asset === SwapAsset.BTC) {
-                // TODO: Catch error
-                fundingTx = await sendBtcTx(swap.value!.fundingSerializedTx);
-
-                const { addTransactions } = useBtcTransactionsStore();
-                addTransactions([fundingTx]);
-            }
-
-            setActiveSwap({
-                ...swap.value,
-                state: SwapState.AWAIT_SECRET,
-                fundingTx: fundingTx!,
-            });
-        }
-
-        async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>) {
-            let secret: string;
-
-            if (swap.value!.from.asset === SwapAsset.NIM) {
-                const nimHtlcAddress = outgoingHtlcAddress.value!;
-
-                // Wait until Fastspot claims the NIM HTLC created by us
-                // eslint-disable-next-line no-async-promise-executor
-                secret = await new Promise<string>(async (resolve) => {
-                    function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
-                        if (tx.sender === nimHtlcAddress && 'preImage' in tx.proof) {
-                            // @ts-ignore
-                            resolve(tx.proof.preImage);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    const client = await getNetworkClient();
-                    // First subscribe to new transactions
-                    client.addTransactionListener(listener, [nimHtlcAddress]);
-
-                    // Then check history
-                    try {
-                        const history = await client.getTransactionsByAddress(nimHtlcAddress, 0);
-                        for (const tx of history) {
-                            if (listener(tx)) break;
-                        }
-                    } catch (error) {
-                        console.error(error); // eslint-disable-line no-console
-                    }
-                });
-            }
-
-            if (swap.value!.from.asset === SwapAsset.BTC) {
-                const btcHtlcAddress = outgoingHtlcAddress.value!;
-
-                // Wait until Fastspot claims the BTC HTLC created by us
-                // eslint-disable-next-line no-async-promise-executor
-                secret = await new Promise<string>(async (resolve) => {
-                    function listener(tx: BtcTransactionDetails) {
-                        const htlcInput = tx.inputs.find((input: PlainInput) => input.address === btcHtlcAddress);
-                        if (htlcInput) {
-                            resolve(htlcInput.witness[2] as string);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    const electrumClient = await getElectrumClient();
-                    // First subscribe to new transactions
-                    electrumClient.addTransactionListener(listener, [btcHtlcAddress]);
-
-                    // Then check history
-                    const history = await electrumClient.getTransactionsByAddress(btcHtlcAddress);
-                    for (const tx of history) {
-                        if (listener(tx)) break;
-                    }
-                });
-            }
-
-            setActiveSwap({
-                ...swap.value,
-                state: SwapState.SETTLE_INCOMING,
-                secret: secret!,
-            });
-        }
-
-        async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>) {
-            let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
-
-            if (swap.value!.to.asset === SwapAsset.BTC) {
-                // Place secret into BTC HTLC redeem transaction
-
-                // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
-                // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret.value, 'hex');
-                // const serializedTx = rawTx.toHex();
-                const serializedTx = swap.value!.settlementSerializedTx.replace(
-                    '000000000000000000000000000000000000000000000000000000000000000001',
-                    // @ts-ignore Property 'secret' does not exist on type
-                    `${swap.value!.secret}01`,
-                );
-
-                // TODO: Catch error
-                settlementTx = await sendBtcTx(serializedTx);
-
-                const { addTransactions } = useBtcTransactionsStore();
-                addTransactions([settlementTx]);
-            }
-
-            if (swap.value!.to.asset === SwapAsset.NIM) {
-                // Place secret into NIM HTLC redeem transaction
-
-                const serializedTx = swap.value!.settlementSerializedTx.replace(
-                    '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
-                    + '0000000000000000000000000000000000000000000000000000000000000000',
-                    // @ts-ignore Property 'secret' does not exist on type
-                    `${swap.value!.hash!}${swap.value!.secret}`,
-                );
-
-                // TODO: Catch error
-                settlementTx = await sendNimTx(serializedTx);
-            }
-
-            setActiveSwap({
-                ...swap.value,
-                state: SwapState.COMPLETE,
-                settlementTx: settlementTx!,
-            });
-        }
-
         const incomingHtlcAddress = computed(() => {
             if (!swap.value) return null;
-            switch (swap.value.to.asset) {
-                case SwapAsset.NIM: return swap.value.contracts[SwapAsset.NIM]!.htlc.address;
-                case SwapAsset.BTC: return swap.value.contracts[SwapAsset.BTC]!.htlc.address;
-                default: throw new Error('Unknown TO asset');
-            }
+            return getIncomingHtlcAddress(swap.value);
         });
 
         const outgoingHtlcAddress = computed(() => {
             if (!swap.value) return null;
-            switch (swap.value.from.asset) {
-                case SwapAsset.NIM: return swap.value.contracts[SwapAsset.NIM]!.htlc.address;
-                case SwapAsset.BTC: return swap.value.contracts[SwapAsset.BTC]!.htlc.address;
-                default: throw new Error('Unknown TO asset');
-            }
+            return getOutgoingHtlcAddress(swap.value);
         });
 
         function explorerTxLink(asset: SwapAsset, hash: string) {

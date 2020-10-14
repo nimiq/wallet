@@ -241,6 +241,7 @@ import {
     CrossIcon,
     Identicon,
 } from '@nimiq/vue-components';
+import { TransactionState } from '@nimiq/electrum-client';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -253,7 +254,7 @@ import ShortAddress from '../ShortAddress.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import { useBtcTransactionsStore, TransactionState } from '../../stores/BtcTransactions';
+import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useAccountStore } from '../../stores/Account';

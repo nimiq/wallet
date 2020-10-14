@@ -238,19 +238,19 @@ async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: objec
     });
 }
 
-export async function getEstimate(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: number}): Promise<Estimate> {
-    if (!['NIM', 'BTC'].includes(from)) {
-        throw new Error('From currency must be either NIM or BTC');
+export async function getEstimate(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<Estimate> {
+    if (!Object.values(SwapAsset).includes(from)) {
+        throw new Error('Invalid FROM asset');
     }
 
     if (to.NIM) to = { NIM: to.NIM };
     else if (to.BTC) to = { BTC: to.BTC };
     else {
-        throw new Error('Either NIM or BTC have to be present in the `to` object');
+        throw new Error('Invalid TO asset');
     }
 
     if (from === Object.keys(to)[0]) {
-        throw new Error('From and To currencies must be different');
+        throw new Error('FROM and TO assets must be different');
     }
 
     const result = await api('/estimates', 'POST', {
@@ -273,19 +273,19 @@ export async function getEstimate(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: 
     return estimate;
 }
 
-export async function createSwap(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: number}): Promise<PreSwap> {
-    if (!['NIM', 'BTC'].includes(from)) {
-        throw new Error('From currency must be either NIM or BTC');
+export async function createSwap(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<PreSwap> {
+    if (!Object.values(SwapAsset).includes(from)) {
+        throw new Error('Invalid FROM asset');
     }
 
     if (to.NIM) to = { NIM: to.NIM };
     else if (to.BTC) to = { BTC: to.BTC };
     else {
-        throw new Error('Either NIM or BTC have to be present in the `to` object');
+        throw new Error('Invalid TO asset');
     }
 
     if (from === Object.keys(to)[0]) {
-        throw new Error('From and To currencies must be different');
+        throw new Error('FROM and TO assets must be different');
     }
 
     const result = await api('/swaps', 'POST', {

@@ -263,7 +263,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref } from '@vue/composition-api';
+import { defineComponent, ref, computed, Ref, onMounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -322,6 +322,10 @@ export default defineComponent({
 
         const { activeSwap: swap, setActiveSwap } = useSwapsStore();
         const swapError = ref<string>(null);
+
+        onMounted(() => {
+            if (swap.value) processSwap();
+        });
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
@@ -1046,7 +1050,7 @@ export default defineComponent({
         }
 
         function finishSwap() {
-            if (swap.value) setActiveSwap(null);
+            setActiveSwap(null);
             onClose(true);
         }
 

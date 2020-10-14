@@ -130,7 +130,7 @@ export type PreSwap = Estimate & {
 
 export type Swap = PreSwap & {
     hash: string,
-    contracts: Contract[],
+    contracts: Partial<Record<SwapAsset, Contract>>,
 };
 
 function convertFromData(from: FastspotPrice): PriceData {
@@ -190,11 +190,11 @@ function convertContract(contract: FastspotContract): Contract {
 
 function convertSwap(swap: FastspotSwap): Swap;
 function convertSwap(swap: FastspotPreSwap): PreSwap;
-function convertSwap(swap: any) {
+function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
     const inputObject = swap.info.from[0];
     const outputObject = swap.info.to[0];
 
-    const preSwap = {
+    const preSwap: PreSwap = {
         id: swap.id,
         expires: Math.floor(swap.expires), // `result.expires` can be a float timestamp
         from: convertFromData(inputObject),
@@ -204,11 +204,18 @@ function convertSwap(swap: any) {
     };
 
     if ('contracts' in swap) {
-        return {
+        const contracts: Partial<Record<SwapAsset, Contract>> = {};
+        for (const contract of swap.contracts) {
+            contracts[contract.asset] = convertContract(contract);
+        }
+
+        const fullSwap: Swap = {
             ...preSwap,
             hash: swap.hash,
-            contracts: swap.contracts.map(convertContract),
-        }
+            contracts,
+        };
+
+        return fullSwap;
     }
 
     return preSwap;

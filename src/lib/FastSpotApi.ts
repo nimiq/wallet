@@ -30,7 +30,8 @@ type FastspotEstimate = {
     direction: 'forward' | 'reverse',
 };
 
-type FastspotContract = {
+type FastspotContract<T extends SwapAsset> = {
+    asset: T,
     refund: { address: string },
     recipient: { address: string },
     amount: number,
@@ -38,21 +39,16 @@ type FastspotContract = {
     direction: 'send' | 'receive',
     status: string,
     id: string,
-} & ({
-    asset: SwapAsset.NIM,
-    intermediary: {
+    intermediary: T extends SwapAsset.NIM ? {
         address: string,
         timeoutBlock: number,
         data: string,
-    },
-} | {
-    asset: SwapAsset.BTC,
-    intermediary: {
+    } : T extends SwapAsset.BTC ? {
         p2sh: string,
         p2wsh: string,
         scriptBytes: string,
-    },
-});
+    } : never,
+};
 
 type FastspotPreSwap = {
     id: string,
@@ -64,11 +60,11 @@ type FastspotPreSwap = {
         serviceFeePercentage: string,
         direction: 'forward' | 'reverse',
     },
-}
+};
 
 type FastspotSwap = FastspotPreSwap & {
     hash: string,
-    contracts: FastspotContract[],
+    contracts: FastspotContract<SwapAsset>[],
 };
 
 type FastspotResult = FastspotEstimate[] | FastspotSwap;
@@ -107,20 +103,18 @@ export type BtcHtlcDetails = {
     script: string,
 };
 
-export type Contract = {
+export type Contract<T extends SwapAsset> = {
+    asset: T,
     refundAddress: string,
     redeemAddress: string,
     amount: number,
     timeout: number,
     direction: 'send' | 'receive',
     status: string,
-} & ({
-    asset: SwapAsset.NIM,
-    htlc: NimHtlcDetails,
-} | {
-    asset: SwapAsset.BTC,
-    htlc: BtcHtlcDetails,
-});
+    htlc: T extends SwapAsset.NIM ? NimHtlcDetails
+        : T extends SwapAsset.BTC ? BtcHtlcDetails
+        : never,
+};
 
 export type PreSwap = Estimate & {
     id: string,
@@ -130,7 +124,7 @@ export type PreSwap = Estimate & {
 
 export type Swap = PreSwap & {
     hash: string,
-    contracts: Partial<Record<SwapAsset, Contract>>,
+    contracts: Partial<Record<SwapAsset, Contract<SwapAsset>>>,
 };
 
 function convertFromData(from: FastspotPrice): PriceData {
@@ -159,33 +153,30 @@ function convertToData(to: FastspotPrice): PriceData {
     };
 }
 
-function convertContract(contract: FastspotContract): Contract {
+function convertContract<T extends SwapAsset>(contract: FastspotContract<T>): Contract<T> {
     const conversionFactor = contract.asset === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: number) => Math.round(value * conversionFactor);
 
     return {
+        asset: contract.asset,
         refundAddress: contract.refund.address,
         redeemAddress: contract.recipient.address,
         amount: convertValue(contract.amount),
         timeout: contract.timeout,
         direction: contract.direction,
         status: contract.status,
+
         ...(contract.asset === SwapAsset.NIM ? {
-            asset: SwapAsset.NIM,
-            htlc: {
-                address: contract.intermediary.address,
-                timeoutBlock: contract.intermediary.timeoutBlock,
-                data: contract.intermediary.data,
-            },
+            htlc: (contract as FastspotContract<SwapAsset.NIM>).intermediary,
         } : {}),
+
         ...(contract.asset === SwapAsset.BTC ? {
-            asset: SwapAsset.BTC,
             htlc: {
-                address: contract.intermediary.p2wsh,
-                script: contract.intermediary.scriptBytes,
+                address: (contract as FastspotContract<SwapAsset.BTC>).intermediary.p2wsh,
+                script: (contract as FastspotContract<SwapAsset.BTC>).intermediary.scriptBytes,
             },
         } : {}),
-    } as Contract;
+    } as Contract<T>;
 }
 
 function convertSwap(swap: FastspotSwap): Swap;
@@ -204,7 +195,7 @@ function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
     };
 
     if ('contracts' in swap) {
-        const contracts: Partial<Record<SwapAsset, Contract>> = {};
+        const contracts: Partial<Record<SwapAsset, Contract<SwapAsset>>> = {};
         for (const contract of swap.contracts) {
             contracts[contract.asset] = convertContract(contract);
         }

@@ -37,7 +37,6 @@ export type Swap = {
 };
 
 export type ActiveSwap<T extends SwapState> = SwapObject & {
-    direction: SwapDirection,
     state: T,
 } & (T extends SwapState.AWAIT_INCOMING | SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
     ? {

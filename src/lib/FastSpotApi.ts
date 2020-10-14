@@ -1,8 +1,9 @@
 import Config from 'config';
 
-export enum Currencies {
-    BTC = 'BTC',
+export enum SwapAsset {
     NIM = 'NIM',
+    BTC = 'BTC',
+    // EUR = 'EUR',
 }
 
 // Internal Types
@@ -38,14 +39,14 @@ type FastspotContract = {
     status: string,
     id: string,
 } & ({
-    asset: 'NIM',
+    asset: SwapAsset.NIM,
     intermediary: {
         address: string,
         timeoutBlock: number,
         data: string,
     },
 } | {
-    asset: 'BTC',
+    asset: SwapAsset.BTC,
     intermediary: {
         p2sh: string,
         p2wsh: string,
@@ -82,7 +83,7 @@ type FastspotError = {
 // Public Types
 
 export type PriceData = {
-    symbol: 'NIM' | 'BTC',
+    asset: SwapAsset,
     amount: number,
     fee: number,
     feePerUnit: number,
@@ -114,10 +115,10 @@ export type Contract = {
     direction: 'send' | 'receive',
     status: string,
 } & ({
-    asset: Currencies.NIM,
+    asset: SwapAsset.NIM,
     htlc: NimHtlcDetails,
 } | {
-    asset: Currencies.BTC,
+    asset: SwapAsset.BTC,
     htlc: BtcHtlcDetails,
 });
 
@@ -133,11 +134,11 @@ export type Swap = PreSwap & {
 };
 
 function convertFromData(from: FastspotPrice): PriceData {
-    const conversionFactor = from.symbol === Currencies.NIM ? 1e5 : 1e8;
+    const conversionFactor = from.symbol === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
-        symbol: from.symbol,
+        asset: SwapAsset[from.symbol],
         amount: convertValue(from.amount) - convertValue(from.fundingNetworkFee.total),
         fee: convertValue(from.fundingNetworkFee.total),
         feePerUnit: convertValue(from.fundingNetworkFee.perUnit || '0') || 1,
@@ -146,11 +147,11 @@ function convertFromData(from: FastspotPrice): PriceData {
 }
 
 function convertToData(to: FastspotPrice): PriceData {
-    const conversionFactor = to.symbol === Currencies.NIM ? 1e5 : 1e8;
+    const conversionFactor = to.symbol === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
-        symbol: to.symbol,
+        asset: SwapAsset[to.symbol],
         amount: convertValue(to.amount),
         fee: convertValue(to.finalizeNetworkFee.total),
         feePerUnit: convertValue(to.finalizeNetworkFee.perUnit || '0') || 1,
@@ -159,7 +160,7 @@ function convertToData(to: FastspotPrice): PriceData {
 }
 
 function convertContract(contract: FastspotContract): Contract {
-    const conversionFactor = contract.asset === Currencies.NIM ? 1e5 : 1e8;
+    const conversionFactor = contract.asset === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: number) => Math.round(value * conversionFactor);
 
     return {
@@ -169,21 +170,22 @@ function convertContract(contract: FastspotContract): Contract {
         timeout: contract.timeout,
         direction: contract.direction,
         status: contract.status,
-        ...(contract.asset === 'NIM' ? {
-            asset: Currencies.NIM,
+        ...(contract.asset === SwapAsset.NIM ? {
+            asset: SwapAsset.NIM,
             htlc: {
                 address: contract.intermediary.address,
                 timeoutBlock: contract.intermediary.timeoutBlock,
                 data: contract.intermediary.data,
             },
-        } : {
-            asset: Currencies.BTC,
+        } : {}),
+        ...(contract.asset === SwapAsset.BTC ? {
+            asset: SwapAsset.BTC,
             htlc: {
                 address: contract.intermediary.p2wsh,
                 script: contract.intermediary.scriptBytes,
             },
-        }),
-    };
+        } : {}),
+    } as Contract;
 }
 
 function convertSwap(swap: FastspotSwap): Swap;
@@ -290,8 +292,8 @@ export async function createSwap(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: n
 
 export async function confirmSwap(
     swap: PreSwap,
-    redeem: { asset: Currencies, address: string },
-    refund: { asset: Currencies, address: string },
+    redeem: { asset: SwapAsset, address: string },
+    refund: { asset: SwapAsset, address: string },
 ): Promise<Swap> {
     const result = await api(`/swaps/${swap.id}`, 'POST', {
         confirm: true,

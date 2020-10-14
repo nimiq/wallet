@@ -300,7 +300,7 @@ import {
     cancelSwap,
     confirmSwap,
     createSwap,
-    Currencies,
+    SwapAsset,
     Estimate,
     getEstimate,
     NimHtlcDetails,
@@ -335,7 +335,7 @@ export default defineComponent({
 
             let nim: number;
             let btc: number;
-            if (estimate.value.from.symbol === 'NIM') {
+            if (estimate.value.from.asset === SwapAsset.NIM) {
                 const { from, to } = estimate.value;
                 nim = from.amount - from.serviceNetworkFee;
                 btc = to.amount;
@@ -357,18 +357,18 @@ export default defineComponent({
         const fetchingEstimate = ref(false);
 
         const totalCostNim = computed(() => {
-            if (!fetchingEstimate.value && estimate.value && estimate.value.from.symbol === 'NIM') {
+            if (!fetchingEstimate.value && estimate.value && estimate.value.from.asset === SwapAsset.NIM) {
                 return estimate.value.from.amount + estimate.value.from.fee;
             }
-            return giveNim.value + (estimate.value && estimate.value.from.symbol === 'NIM'
+            return giveNim.value + (estimate.value && estimate.value.from.asset === SwapAsset.NIM
                 ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
                 : 0);
         });
         const totalCostBtc = computed(() => {
-            if (!fetchingEstimate.value && estimate.value && estimate.value.from.symbol === 'BTC') {
+            if (!fetchingEstimate.value && estimate.value && estimate.value.from.asset === SwapAsset.BTC) {
                 return estimate.value.from.amount + estimate.value.from.fee;
             }
-            return giveBtc.value + (estimate.value && estimate.value.from.symbol === 'BTC'
+            return giveBtc.value + (estimate.value && estimate.value.from.asset === SwapAsset.BTC
                 ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
                 : 0);
         });
@@ -454,21 +454,21 @@ export default defineComponent({
         const myNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'NIM' ? estimate.value.from.fee : estimate.value.to.fee;
+            const fee = estimate.value.from.asset === SwapAsset.NIM ? estimate.value.from.fee : estimate.value.to.fee;
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const myBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'BTC' ? estimate.value.from.fee : estimate.value.to.fee;
+            const fee = estimate.value.from.asset === SwapAsset.BTC ? estimate.value.from.fee : estimate.value.to.fee;
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'NIM'
+            const fee = estimate.value.from.asset === SwapAsset.NIM
                 ? estimate.value.from.serviceNetworkFee
                 : estimate.value.to.serviceNetworkFee;
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
@@ -477,7 +477,7 @@ export default defineComponent({
         const serviceBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.symbol === 'BTC'
+            const fee = estimate.value.from.asset === SwapAsset.BTC
                 ? estimate.value.from.serviceNetworkFee
                 : estimate.value.to.serviceNetworkFee;
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
@@ -493,7 +493,7 @@ export default defineComponent({
 
             const { from, serviceFeePercentage } = estimate.value;
             const feeAmount = (from.amount - from.serviceNetworkFee) * serviceFeePercentage;
-            return from.symbol === 'NIM'
+            return from.asset === SwapAsset.NIM
                 ? (feeAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
                 : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
@@ -563,16 +563,15 @@ export default defineComponent({
                 try {
                     const confirmedSwap = await confirmSwap(swapSuggestion, {
                         // Redeem
-                        asset: direction.value === SwapDirection.NIM_TO_BTC ? Currencies.BTC : Currencies.NIM,
-                        address: direction.value === SwapDirection.NIM_TO_BTC ? btcAddress : nimAddress,
+                        asset: swapSuggestion.to.asset,
+                        address: swapSuggestion.to.asset === SwapAsset.NIM ? nimAddress : btcAddress,
                     }, {
                         // Refund
-                        asset: direction.value === SwapDirection.BTC_TO_NIM ? Currencies.BTC : Currencies.NIM,
-                        address: direction.value === SwapDirection.BTC_TO_NIM ? btcAddress : nimAddress,
+                        asset: swapSuggestion.from.asset,
+                        address: swapSuggestion.from.asset === SwapAsset.NIM ? nimAddress : btcAddress,
                     });
                     setActiveSwap({
                         ...confirmedSwap,
-                        direction: direction.value,
                         state: SwapState.SIGN_SWAP,
                     });
                     console.debug('Swap:', swap.value); // eslint-disable-line no-console
@@ -602,11 +601,11 @@ export default defineComponent({
                 const electrumClient = await getElectrumClient();
                 await electrumClient.waitForConsensusEstablished();
 
-                if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+                if (swap.value!.to.asset === SwapAsset.BTC) {
                     // Fetch missing info from the blockchain
                     // BTC tx hash and output data
 
-                    const htlcAddress = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!
+                    const htlcAddress = swap.value!.contracts!.find((contract) => contract.asset === SwapAsset.BTC)!
                         .htlc.address;
 
                     // eslint-disable-next-line no-async-promise-executor
@@ -636,7 +635,7 @@ export default defineComponent({
                     remoteBtcCreationTransaction = transaction;
 
                     const nimHtlcData = swap.value!.contracts!
-                        .find((contract) => contract.asset === Currencies.NIM)!.htlc as NimHtlcDetails;
+                        .find((contract) => contract.asset === SwapAsset.NIM)!.htlc as NimHtlcDetails;
                     fund = {
                         type: 'NIM',
                         sender: nimAddress,
@@ -647,7 +646,7 @@ export default defineComponent({
                     };
 
                     const btcHtlcData = swap.value!.contracts!
-                        .find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
+                        .find((contract) => contract.asset === SwapAsset.BTC)!.htlc as BtcHtlcDetails;
                     redeem = {
                         type: 'BTC',
                         input: {
@@ -664,7 +663,7 @@ export default defineComponent({
                     };
                 }
 
-                if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+                if (swap.value!.from.asset === SwapAsset.BTC) {
                     // Assemble BTC inputs
 
                     const { accountUtxos } = useBtcAddressStore();
@@ -681,15 +680,9 @@ export default defineComponent({
                         changeAddress = nextChangeAddress.value;
                     }
 
-                    // // Fetch missing info from the blockchain
-                    // NIM HTLC address
-                    const nimContract = swap.value!.contracts!
-                        .find((contract) => contract.asset === Currencies.NIM)!;
-
-                    const currentBlockHeight = useNetworkStore().state.height;
-
                     const btcHtlcData = swap.value!.contracts!
-                        .find((contract) => contract.asset === Currencies.BTC)!.htlc as BtcHtlcDetails;
+                        .find((contract) => contract.asset === SwapAsset.BTC)!.htlc as BtcHtlcDetails;
+
                     fund = {
                         type: 'BTC',
                         inputs: requiredInputs.utxos.map((utxo) => ({
@@ -713,7 +706,11 @@ export default defineComponent({
                         refundAddress: btcAddress,
                     };
 
-                    const nimHtlcData = nimContract.htlc as NimHtlcDetails;
+                    const nimHtlcData = swap.value!.contracts!
+                        .find((contract) => contract.asset === SwapAsset.NIM)!.htlc as NimHtlcDetails;
+
+                    const currentBlockHeight = useNetworkStore().state.height;
+
                     redeem = {
                         type: 'NIM',
                         sender: nimHtlcData.address, // HTLC address
@@ -773,10 +770,10 @@ export default defineComponent({
             setActiveSwap({
                 ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>),
                 state: SwapState.AWAIT_INCOMING,
-                fundingSerializedTx: swap.value!.direction === SwapDirection.NIM_TO_BTC
+                fundingSerializedTx: swap.value!.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
                     : signedTransactions.btc.serializedTx,
-                settlementSerializedTx: swap.value!.direction === SwapDirection.BTC_TO_NIM
+                settlementSerializedTx: swap.value!.to.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
                     : signedTransactions.btc.serializedTx,
             });
@@ -806,14 +803,14 @@ export default defineComponent({
         }
 
         async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>) {
-            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+            if (swap.value!.to.asset === SwapAsset.BTC) {
                 const transaction = remoteBtcCreationTransaction as unknown as BtcTransactionDetails;
                 if (transaction.replaceByFee) {
                     // TODO: Must wait until mined
                 }
 
                 const btcHtlcAddress = swap.value!.contracts!
-                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .find((contract) => contract.asset === SwapAsset.BTC)!
                     .htlc.address;
 
                 remoteHtlcCreationData.value = {
@@ -823,9 +820,9 @@ export default defineComponent({
                 };
             }
 
-            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.to.asset === SwapAsset.NIM) {
                 const nimContract = swap.value!.contracts!
-                    .find((contract) => contract.asset === Currencies.NIM)!;
+                    .find((contract) => contract.asset === SwapAsset.NIM)!;
 
                 const transaction = await new Promise<
                     ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
@@ -887,7 +884,7 @@ export default defineComponent({
         async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>) {
             let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
-            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+            if (swap.value!.from.asset === SwapAsset.NIM) {
                 // TODO: Catch error
                 fundingTx = await sendNimTx(swap.value!.fundingSerializedTx);
 
@@ -898,12 +895,12 @@ export default defineComponent({
                 };
             }
 
-            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.from.asset === SwapAsset.BTC) {
                 // TODO: Catch error
                 fundingTx = await sendBtcTx(swap.value!.fundingSerializedTx);
 
                 const btcHtlcAddress = swap.value!.contracts!
-                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .find((contract) => contract.asset === SwapAsset.BTC)!
                     .htlc.address;
 
                 localHtlcCreationData.value = {
@@ -926,9 +923,9 @@ export default defineComponent({
         async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>) {
             let secret: string;
 
-            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+            if (swap.value!.from.asset === SwapAsset.NIM) {
                 const nimHtlcAddress = swap.value!.contracts!
-                    .find((contract) => contract.asset === Currencies.NIM)!
+                    .find((contract) => contract.asset === SwapAsset.NIM)!
                     .htlc.address;
 
                 // Wait until Fastspot claims the NIM HTLC created by us
@@ -959,9 +956,9 @@ export default defineComponent({
                 });
             }
 
-            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.from.asset === SwapAsset.BTC) {
                 const btcHtlcAddress = swap.value!.contracts!
-                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .find((contract) => contract.asset === SwapAsset.BTC)!
                     .htlc.address;
 
                 // Wait until Fastspot claims the BTC HTLC created by us
@@ -998,7 +995,7 @@ export default defineComponent({
         async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>) {
             let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
-            if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+            if (swap.value!.to.asset === SwapAsset.BTC) {
                 // Place secret into BTC HTLC redeem transaction
 
                 // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
@@ -1022,9 +1019,8 @@ export default defineComponent({
                 addTransactions([settlementTx]);
             }
 
-            if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+            if (swap.value!.to.asset === SwapAsset.NIM) {
                 // Place secret into NIM HTLC redeem transaction
-
 
                 const serializedTx = swap.value!.settlementSerializedTx.replace(
                     '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'

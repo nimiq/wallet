@@ -206,7 +206,7 @@
                     <Amount :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
 
                     <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
-                        :amount="swapTransaction.outputs[0].value" currency="nim" value-mask/>
+                        :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
                     <div v-else-if="!swapTransaction.outputs[0].fiatValue
                         || swapTransaction.outputs[0].fiatValue[fiatCurrency] === undefined"
                         class="fiat-amount">&nbsp;</div>

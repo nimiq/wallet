@@ -36,32 +36,35 @@ export type Swap = {
     out?: SwapNimData | SwapBtcData,
 };
 
-export type ActiveSwap = SwapObject & {
+export type ActiveSwap<T extends SwapState> = SwapObject & {
     direction: SwapDirection,
-} & ({
-    state: SwapState.SIGN_SWAP | SwapState.EXPIRED,
-} | {
-    state: SwapState.AWAIT_INCOMING | SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE,
-    fundingSerializedTx: string,
-    settlementSerializedTx: string,
-} | {
-    state: SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE,
-    remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-} | {
-    state: SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE,
-    fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-} | {
-    state: SwapState.SETTLE_INCOMING | SwapState.COMPLETE,
-    // remoteSettlementTxHash: string,
-    secret: string,
-} | {
-    state: SwapState.COMPLETE,
-    settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-});
+    state: T,
+} & (T extends SwapState.AWAIT_INCOMING | SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+    ? {
+        fundingSerializedTx: string,
+        settlementSerializedTx: string,
+    } : {})
+& (T extends SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+    ? {
+        remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    } : {})
+& (T extends SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+    ? {
+        fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    } : {})
+& (T extends SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+    ? {
+        // remoteSettlementTxHash: string,
+        secret: string,
+    } : {})
+& (T extends SwapState.COMPLETE
+    ? {
+        settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    } : {});
 
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
-    activeSwap: ActiveSwap | null,
+    activeSwap: ActiveSwap<any> | null,
 };
 
 export const useSwapsStore = createStore({
@@ -73,7 +76,7 @@ export const useSwapsStore = createStore({
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
             state.swaps[hash],
-        activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
+        activeSwap: (state): Readonly<ActiveSwap<any> | null> => state.activeSwap,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
@@ -92,7 +95,7 @@ export const useSwapsStore = createStore({
             swap.out = data;
             this.setSwap(hash, swap);
         },
-        setActiveSwap(swap: ActiveSwap | null) {
+        setActiveSwap(swap: ActiveSwap<any> | null) {
             this.state.activeSwap = swap;
         }
     },

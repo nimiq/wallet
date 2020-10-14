@@ -255,7 +255,7 @@
             <PageFooter>
                 <button class="nq-button light-blue"
                     :disabled="swap.state !== SwapState.COMPLETE"
-                    @click="onClose(true)"
+                    @click="finishSwap"
                 >{{ $t('Done') }}</button>
             </PageFooter>
         </div>
@@ -263,7 +263,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, Ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -510,6 +510,7 @@ export default defineComponent({
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );
 
+        // FIXME: Remove global swap-process state and replace with state stored in active swap
         const remoteHtlcCreationData = ref({
             asset: '',
             hash: '',
@@ -527,10 +528,10 @@ export default defineComponent({
             hash: '',
         });
 
-        async function sign() {
-            let remoteNimCreationTransaction: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | null = null;
-            let remoteBtcCreationTransaction: BtcTransactionDetails | null = null;
+        let remoteNimCreationTransaction: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | null = null;
+        let remoteBtcCreationTransaction: BtcTransactionDetails | null = null;
 
+        async function sign() {
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
@@ -606,7 +607,7 @@ export default defineComponent({
                     // BTC tx hash and output data
 
                     const htlcAddress = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!
-                        .htlc.address!;
+                        .htlc.address;
 
                     // eslint-disable-next-line no-async-promise-executor
                     const { transaction, output } = await new Promise(async (resolve$1) => {
@@ -769,15 +770,8 @@ export default defineComponent({
 
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
-            const nimHtlcAddress = swap.value!.direction === SwapDirection.NIM_TO_BTC
-                ? signedTransactions.nim.raw.recipient
-                : signedTransactions.nim.raw.sender;
-
-            const btcHtlcAddress = swap.value!.contracts!.find((contract) => contract.asset === Currencies.BTC)!
-                .htlc.address!;
-
             setActiveSwap({
-                ...(swap.value as ActiveSwap),
+                ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>),
                 state: SwapState.AWAIT_INCOMING,
                 fundingSerializedTx: swap.value!.direction === SwapDirection.NIM_TO_BTC
                     ? signedTransactions.nim.serializedTx
@@ -787,11 +781,40 @@ export default defineComponent({
                     : signedTransactions.btc.serializedTx,
             });
 
+            processSwap();
+        }
+
+        async function processSwap() {
+            switch (swap.value!.state) {
+                case SwapState.EXPIRED:
+                    // Handle expired swap
+                    break;
+
+                // Handle regular swap process
+                // Note that each step falls through to the next when finished.
+                case SwapState.AWAIT_INCOMING:
+                    await awaitIncoming(swap as Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>);
+                case SwapState.CREATE_OUTGOING:
+                    await createOutgoing(swap as Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>);
+                case SwapState.AWAIT_SECRET:
+                    await awaitSecret(swap as Ref<ActiveSwap<SwapState.AWAIT_SECRET>>);
+                case SwapState.SETTLE_INCOMING:
+                    await settleIncoming(swap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
+                default:
+                    break;
+            }
+        }
+
+        async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>) {
             if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                 const transaction = remoteBtcCreationTransaction as unknown as BtcTransactionDetails;
                 if (transaction.replaceByFee) {
                     // TODO: Must wait until mined
                 }
+
+                const btcHtlcAddress = swap.value!.contracts!
+                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .htlc.address;
 
                 remoteHtlcCreationData.value = {
                     asset: 'BTC',
@@ -855,16 +878,18 @@ export default defineComponent({
             }
 
             setActiveSwap({
-                ...(swap.value as ActiveSwap),
+                ...swap.value,
                 state: SwapState.CREATE_OUTGOING,
                 remoteFundingTx: remoteNimCreationTransaction || remoteBtcCreationTransaction!,
             });
+        }
 
+        async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>) {
             let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
             if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
                 // TODO: Catch error
-                fundingTx = await sendNimTx(signedTransactions.nim);
+                fundingTx = await sendNimTx(swap.value!.fundingSerializedTx);
 
                 localHtlcCreationData.value = {
                     asset: 'NIM',
@@ -875,7 +900,11 @@ export default defineComponent({
 
             if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
                 // TODO: Catch error
-                fundingTx = await sendBtcTx(signedTransactions.btc);
+                fundingTx = await sendBtcTx(swap.value!.fundingSerializedTx);
+
+                const btcHtlcAddress = swap.value!.contracts!
+                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .htlc.address;
 
                 localHtlcCreationData.value = {
                     asset: 'BTC',
@@ -888,14 +917,20 @@ export default defineComponent({
             }
 
             setActiveSwap({
-                ...(swap.value as ActiveSwap),
+                ...swap.value,
                 state: SwapState.AWAIT_SECRET,
                 fundingTx: fundingTx!,
             });
+        }
 
+        async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>) {
             let secret: string;
 
             if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
+                const nimHtlcAddress = swap.value!.contracts!
+                    .find((contract) => contract.asset === Currencies.NIM)!
+                    .htlc.address;
+
                 // Wait until Fastspot claims the NIM HTLC created by us
                 // eslint-disable-next-line no-async-promise-executor
                 secret = await new Promise<string>(async (resolve) => {
@@ -925,6 +960,10 @@ export default defineComponent({
             }
 
             if (swap.value!.direction === SwapDirection.BTC_TO_NIM) {
+                const btcHtlcAddress = swap.value!.contracts!
+                    .find((contract) => contract.asset === Currencies.BTC)!
+                    .htlc.address;
+
                 // Wait until Fastspot claims the BTC HTLC created by us
                 // eslint-disable-next-line no-async-promise-executor
                 secret = await new Promise<string>(async (resolve) => {
@@ -950,11 +989,13 @@ export default defineComponent({
             }
 
             setActiveSwap({
-                ...(swap.value as ActiveSwap),
+                ...swap.value,
                 state: SwapState.SETTLE_INCOMING,
                 secret: secret!,
             });
+        }
 
+        async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>) {
             let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
             if (swap.value!.direction === SwapDirection.NIM_TO_BTC) {
@@ -963,17 +1004,14 @@ export default defineComponent({
                 // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
                 // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret.value, 'hex');
                 // const serializedTx = rawTx.toHex();
-                const serializedTx = signedTransactions.btc.serializedTx.replace(
+                const serializedTx = swap.value!.settlementSerializedTx.replace(
                     '000000000000000000000000000000000000000000000000000000000000000001',
                     // @ts-ignore Property 'secret' does not exist on type
                     `${swap.value!.secret}01`,
                 );
 
                 // TODO: Catch error
-                settlementTx = await sendBtcTx({
-                    hash: signedTransactions.btc.hash,
-                    serializedTx,
-                });
+                settlementTx = await sendBtcTx(serializedTx);
 
                 localHtlcSettlementData.value = {
                     asset: 'BTC',
@@ -988,7 +1026,7 @@ export default defineComponent({
                 // Place secret into NIM HTLC redeem transaction
 
 
-                const serializedTx = signedTransactions.nim.serializedTx.replace(
+                const serializedTx = swap.value!.settlementSerializedTx.replace(
                     '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
                     + '0000000000000000000000000000000000000000000000000000000000000000',
                     // @ts-ignore Property 'secret' does not exist on type
@@ -996,10 +1034,7 @@ export default defineComponent({
                 );
 
                 // TODO: Catch error
-                settlementTx = await sendNimTx({
-                    ...signedTransactions.nim,
-                    serializedTx,
-                });
+                settlementTx = await sendNimTx(serializedTx);
 
                 localHtlcSettlementData.value = {
                     asset: 'NIM',
@@ -1008,10 +1043,15 @@ export default defineComponent({
             }
 
             setActiveSwap({
-                ...(swap.value as ActiveSwap),
+                ...swap.value,
                 state: SwapState.COMPLETE,
                 settlementTx: settlementTx!,
             });
+        }
+
+        function finishSwap() {
+            if (swap.value) setActiveSwap(null);
+            onClose(true);
         }
 
         function explorerTxLink(asset: 'NIM' | 'BTC', hash: string) {
@@ -1056,6 +1096,7 @@ export default defineComponent({
             localHtlcSettlementData,
             explorerTxLink,
             explorerAddrLink,
+            finishSwap,
         };
     },
     components: {

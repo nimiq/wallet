@@ -64,10 +64,10 @@ export async function subscribeToAddresses(addresses: string[]) {
     client.addTransactionListener(transactionListener, newAddresses);
 }
 
-export async function sendTransaction(tx: SignedBtcTransaction) {
+export async function sendTransaction(tx: SignedBtcTransaction | string) {
     const client = await getElectrumClient();
     await client.waitForConsensusEstablished();
-    const plainTx = await client.sendTransaction(tx.serializedTx);
+    const plainTx = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 
     // Subscribe to one of our sender addresses, so we get updates about this transaction
     const address = plainTx.inputs.find((input) => input.address)?.address;

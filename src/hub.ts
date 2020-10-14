@@ -184,7 +184,7 @@ export async function syncFromHub() {
     }
 
     if (!listedAccounts.length) {
-        onboard(true); // eslint-disable-line @typescript-eslint/no-use-before-define
+        onboard(true);
         return;
     }
 

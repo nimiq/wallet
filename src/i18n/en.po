@@ -159,11 +159,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:189
+#: src/components/modals/SwapModal.vue:192
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:230
+#: src/components/modals/SwapModal.vue:236
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -402,7 +402,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/modals/SwapModal.vue:259
+#: src/components/modals/SwapModal.vue:268
 msgid "Done"
 msgstr ""
 
@@ -594,7 +594,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:190
+#: src/components/modals/SwapModal.vue:194
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -751,7 +751,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:210
+#: src/components/modals/SwapModal.vue:216
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -816,7 +816,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:245
+#: src/components/modals/SwapModal.vue:253
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -905,7 +905,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:209
+#: src/components/modals/SwapModal.vue:214
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -981,7 +981,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:178
+#: src/components/modals/SwapModal.vue:179
 msgid "Signing swap..."
 msgstr ""
 
@@ -1023,7 +1023,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:246
+#: src/components/modals/SwapModal.vue:255
 msgid "Swap complete!"
 msgstr ""
 
@@ -1036,11 +1036,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:231
+#: src/components/modals/SwapModal.vue:238
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/modals/SwapModal.vue:179
+#: src/components/modals/SwapModal.vue:181
 msgid "Swap signed!"
 msgstr ""
 

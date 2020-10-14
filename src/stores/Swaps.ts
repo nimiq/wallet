@@ -38,20 +38,30 @@ export type Swap = {
 
 export type ActiveSwap<T extends SwapState> = SwapObject & {
     state: T,
-} & (T extends SwapState.AWAIT_INCOMING | SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+} & (T extends SwapState.AWAIT_INCOMING
+             | SwapState.CREATE_OUTGOING
+             | SwapState.AWAIT_SECRET
+             | SwapState.SETTLE_INCOMING
+             | SwapState.COMPLETE
     ? {
         fundingSerializedTx: string,
         settlementSerializedTx: string,
     } : {})
-& (T extends SwapState.CREATE_OUTGOING | SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+& (T extends SwapState.CREATE_OUTGOING
+           | SwapState.AWAIT_SECRET
+           | SwapState.SETTLE_INCOMING
+           | SwapState.COMPLETE
     ? {
         remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
     } : {})
-& (T extends SwapState.AWAIT_SECRET | SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+& (T extends SwapState.AWAIT_SECRET
+           | SwapState.SETTLE_INCOMING
+           | SwapState.COMPLETE
     ? {
         fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
     } : {})
-& (T extends SwapState.SETTLE_INCOMING | SwapState.COMPLETE
+& (T extends SwapState.SETTLE_INCOMING
+           | SwapState.COMPLETE
     ? {
         // remoteSettlementTxHash: string,
         secret: string,
@@ -96,6 +106,6 @@ export const useSwapsStore = createStore({
         },
         setActiveSwap(swap: ActiveSwap<any> | null) {
             this.state.activeSwap = swap;
-        }
+        },
     },
 });

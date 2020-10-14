@@ -175,7 +175,9 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
-                        <div v-if="swap.state === SwapState.SIGN_SWAP">{{ $t('Signing swap...') }}</div>
+                        <div v-if="swap.state === SwapState.SIGN_SWAP">
+                            {{ $t('Signing swap...') }}
+                        </div>
                         <div v-else>{{ $t('Swap signed!') }}</div>
                     </div>
                 </div>
@@ -186,7 +188,9 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.AWAIT_INCOMING" class="info">
-                        <div v-if="swap.state === SwapState.AWAIT_INCOMING">{{ $t('Awaiting incoming HTLC...') }}</div>
+                        <div v-if="swap.state === SwapState.AWAIT_INCOMING">
+                            {{ $t('Awaiting incoming HTLC...') }}
+                        </div>
                         <div v-else>{{ $t('Incoming HTLC verified!') }}</div>
                         <code v-if="swap.remoteFundingTx" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -206,7 +210,9 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.CREATE_OUTGOING" class="info">
-                        <div v-if="swap.state === SwapState.CREATE_OUTGOING">{{ $t('Sending outgoing HTLC...') }}</div>
+                        <div v-if="swap.state === SwapState.CREATE_OUTGOING">
+                            {{ $t('Sending outgoing HTLC...') }}
+                        </div>
                         <div v-else>{{ $t('Outgoing HTLC created!') }}</div>
                         <code v-if="swap.fundingTx" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -227,7 +233,8 @@
                     </div>
                     <div v-if="swap.state >= SwapState.AWAIT_SECRET" class="info">
                         <div v-if="swap.state === SwapState.AWAIT_SECRET">
-                            {{ $t('Awaiting publishing of secret...') }}</div>
+                            {{ $t('Awaiting publishing of secret...') }}
+                        </div>
                         <div v-else>{{ $t('Swap secret published!') }}</div>
                         <code v-if="swap.secret" class="flex-row nq-gray">
                             {{ swap.secret.substring(0, 32) }}
@@ -242,7 +249,9 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.SETTLE_INCOMING" class="info">
-                        <div v-if="swap.state === SwapState.SETTLE_INCOMING">{{ $t('Redeeming incoming HTLC...') }}</div>
+                        <div v-if="swap.state === SwapState.SETTLE_INCOMING">
+                            {{ $t('Redeeming incoming HTLC...') }}
+                        </div>
                         <div v-else>{{ $t('Swap complete!') }}</div>
                         <code v-if="swap.settlementTx" class="flex-row">
                             <a class="nq-link" target="_blank"
@@ -779,6 +788,7 @@ export default defineComponent({
 
                 // Handle regular swap process
                 // Note that each step falls through to the next when finished.
+                /* eslint-disable no-fallthrough */
                 case SwapState.AWAIT_INCOMING:
                     await awaitIncoming(swap as Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>);
                 case SwapState.CREATE_OUTGOING:
@@ -787,13 +797,16 @@ export default defineComponent({
                     await awaitSecret(swap as Ref<ActiveSwap<SwapState.AWAIT_SECRET>>);
                 case SwapState.SETTLE_INCOMING:
                     await settleIncoming(swap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
+                /* eslint-enable no-fallthrough */
                 default:
                     break;
             }
         }
 
         async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>) {
-            let remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | null = null;
+            let remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
+                | BtcTransactionDetails
+                | null = null;
 
             if (swap.value!.to.asset === SwapAsset.BTC) {
                 const htlcAddress = incomingHtlcAddress.value!;
@@ -805,9 +818,9 @@ export default defineComponent({
                         if (!htlcOutput || htlcOutput.value !== swap.value!.to.amount) return false;
 
                         if (
-                            tx.replaceByFee &&
+                            tx.replaceByFee
                             // Must wait until mined
-                            ![TransactionState.MINED, TransactionState.CONFIRMED].includes(tx.state)
+                            && ![TransactionState.MINED, TransactionState.CONFIRMED].includes(tx.state)
                         ) return false;
 
                         resolve(tx);
@@ -1036,15 +1049,19 @@ export default defineComponent({
                     return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
                 case SwapAsset.BTC:
                     return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
+                default: throw new Error('Invalid asset');
             }
         }
 
         function explorerAddrLink(asset: SwapAsset, address: string) {
             switch (asset) {
                 case SwapAsset.NIM:
-                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${address}`;
+                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/`
+                        + `#${address}`;
                 case SwapAsset.BTC:
-                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/address/${address}`;
+                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
+                        + `/address/${address}`;
+                default: throw new Error('Invalid asset');
             }
         }
 

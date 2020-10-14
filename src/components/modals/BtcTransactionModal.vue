@@ -262,10 +262,11 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
+import { SwapAsset } from '../../lib/FastSpotApi';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -337,7 +338,7 @@ export default defineComponent({
             const swapData = isIncoming.value ? swap.in : swap.out;
             if (!swapData) return null;
 
-            if (swapData.currency === CryptoCurrency.NIM) {
+            if (swapData.asset === SwapAsset.NIM) {
                 return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
             }
 

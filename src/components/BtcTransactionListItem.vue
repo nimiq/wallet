@@ -80,10 +80,11 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
+import { SwapAsset } from '../lib/FastSpotApi';
 
 export default defineComponent({
     props: {
@@ -146,7 +147,7 @@ export default defineComponent({
             const swapData = isIncoming.value ? swap.in : swap.out;
             if (!swapData) return null;
 
-            if (swapData.currency === CryptoCurrency.NIM) {
+            if (swapData.asset === SwapAsset.NIM) {
                 return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
             }
 

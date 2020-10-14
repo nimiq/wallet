@@ -10,6 +10,7 @@ import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { NimHtlcDetails, SwapAsset } from './FastSpotApi';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
 import { getNetworkClient, sendTransaction as sendNimTx } from '../network';
+import { HTLC_ADDRESS_LENGTH } from './BtcHtlcDetection';
 
 export function getIncomingHtlcAddress(swap: ActiveSwap<any>) {
     switch (swap.to.asset) {
@@ -127,8 +128,15 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
         // TODO: Catch error
         fundingTx = await sendBtcTx(swap.value.fundingSerializedTx);
 
-        const { addTransactions } = useBtcTransactionsStore();
-        addTransactions([fundingTx]);
+        useSwapsStore().addFundingData(swap.value.hash, {
+            asset: SwapAsset.BTC,
+            transactionHash: fundingTx.transactionHash,
+            outputIndex: fundingTx.outputs.findIndex((output) => output.address?.length === HTLC_ADDRESS_LENGTH),
+        });
+        // @ts-ignore
+        fundingTx.swapHash = swap.value.hash;
+
+        useBtcTransactionsStore().addTransactions([fundingTx]);
     }
 
     useSwapsStore().setActiveSwap({
@@ -224,8 +232,7 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
         // TODO: Catch error
         settlementTx = await sendBtcTx(serializedTx);
 
-        const { addTransactions } = useBtcTransactionsStore();
-        addTransactions([settlementTx]);
+        useBtcTransactionsStore().addTransactions([settlementTx]);
     }
 
     if (swap.value.to.asset === SwapAsset.NIM) {

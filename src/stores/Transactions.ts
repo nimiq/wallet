@@ -9,6 +9,7 @@ import {
 } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from './Cashlink';
 import { useSwapsStore } from './Swaps';
+import { SwapAsset } from '../lib/FastSpotApi';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
@@ -62,7 +63,7 @@ export const useTransactionsStore = createStore({
                 if ('hashRoot' in plain.data) {
                     const hash: string = (plain.data as { hashRoot: string }).hashRoot;
                     useSwapsStore().addFundingData(hash, {
-                        currency: CryptoCurrency.NIM,
+                        asset: SwapAsset.NIM,
                         transactionHash: plain.transactionHash,
                     });
                     plain.swapHash = hash;
@@ -71,7 +72,7 @@ export const useTransactionsStore = createStore({
                 if ('hashRoot' in plain.proof) {
                     const hash: string = (plain.proof as { hashRoot: string }).hashRoot;
                     useSwapsStore().addSettlementData(hash, {
-                        currency: CryptoCurrency.NIM,
+                        asset: SwapAsset.NIM,
                         transactionHash: plain.transactionHash,
                     });
                     plain.swapHash = hash;

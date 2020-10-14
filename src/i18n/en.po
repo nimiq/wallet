@@ -182,8 +182,8 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:411
-#: src/components/TransactionListItem.vue:166
+#: src/components/modals/TransactionModal.vue:412
+#: src/components/TransactionListItem.vue:167
 msgid "Bitcoin"
 msgstr ""
 
@@ -244,9 +244,9 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:417
+#: src/components/modals/TransactionModal.vue:418
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:172
+#: src/components/TransactionListItem.vue:173
 msgid "Cashlink"
 msgstr ""
 
@@ -1171,8 +1171,8 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:418
-#: src/components/TransactionListItem.vue:173
+#: src/components/modals/TransactionModal.vue:419
+#: src/components/TransactionListItem.vue:174
 msgid "Unclaimed Cashlink"
 msgstr ""
 

@@ -7,6 +7,7 @@ import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
+import { SwapAsset } from '../lib/FastSpotApi';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
@@ -60,7 +61,7 @@ export const useBtcTransactionsStore = createStore({
                 const fundingData = await isHtlcFunding(plain); // eslint-disable-line no-await-in-loop
                 if (fundingData) {
                     useSwapsStore().addFundingData(fundingData.hash, {
-                        currency: CryptoCurrency.BTC,
+                        asset: SwapAsset.BTC,
                         transactionHash: plain.transactionHash,
                         outputIndex: fundingData.outputIndex,
                     });
@@ -70,7 +71,7 @@ export const useBtcTransactionsStore = createStore({
                 const settlementHash = isHtlcSettlement(plain);
                 if (settlementHash) {
                     useSwapsStore().addSettlementData(settlementHash, {
-                        currency: CryptoCurrency.BTC,
+                        asset: SwapAsset.BTC,
                         transactionHash: plain.transactionHash,
                         outputIndex: 0,
                     });

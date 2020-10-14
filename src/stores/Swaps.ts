@@ -1,7 +1,6 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { CryptoCurrency } from '../lib/Constants';
-import { Swap as SwapObject } from '../lib/FastSpotApi';
+import { Swap as SwapObject, SwapAsset } from '../lib/FastSpotApi';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -19,12 +18,12 @@ export enum SwapDirection {
 }
 
 export type SwapNimData = {
-    currency: CryptoCurrency.NIM,
+    asset: SwapAsset.NIM,
     transactionHash: string,
 };
 
 export type SwapBtcData = {
-    currency: CryptoCurrency.BTC,
+    asset: SwapAsset.BTC,
     transactionHash: string,
     outputIndex: number,
 };

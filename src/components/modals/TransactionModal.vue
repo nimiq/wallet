@@ -281,12 +281,13 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
 import { manageCashlink } from '../../hub';
 import { SwapBtcData, useSwapsStore } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { SwapAsset } from '../../lib/FastSpotApi';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -361,7 +362,7 @@ export default defineComponent({
             const swapData = (isIncoming.value ? swap.in : swap.out) as SwapBtcData;
             if (!swapData) return null;
 
-            if (swapData.currency === CryptoCurrency.BTC) {
+            if (swapData.asset === SwapAsset.BTC) {
                 const btcTx = useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
                 if (!btcTx) return null;
                 return {

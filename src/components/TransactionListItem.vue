@@ -84,11 +84,12 @@ import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, CryptoCurrency } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from '../stores/Cashlink';
 import { useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
+import { SwapAsset } from '../lib/FastSpotApi';
 
 export default defineComponent({
     props: {
@@ -117,7 +118,7 @@ export default defineComponent({
             const swapData = isIncoming.value ? swap.in : swap.out;
             if (!swapData) return null;
 
-            if (swapData.currency === CryptoCurrency.BTC) {
+            if (swapData.asset === SwapAsset.BTC) {
                 return useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
             }
 

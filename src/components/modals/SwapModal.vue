@@ -336,7 +336,7 @@ export default defineComponent({
         const estimateError = ref<string>(null);
         const direction = ref(SwapDirection.BTC_TO_NIM);
 
-        const { activeSwap: swap, setActiveSwap } = useSwapsStore();
+        const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
 
         onMounted(() => {
@@ -580,6 +580,12 @@ export default defineComponent({
                     setActiveSwap({
                         ...confirmedSwap,
                         state: SwapState.SIGN_SWAP,
+                    });
+                    // Add swap details to swap store
+                    setSwap(confirmedSwap.hash, {
+                        id: confirmedSwap.id,
+                        provider: 'Fastspot',
+                        // TODO: Include fees here
                     });
                     console.debug('Swap:', swap.value); // eslint-disable-line no-console
                     swapError.value = null;

@@ -1,7 +1,7 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getElectrumClient } from '../electrum';
 
-const HTLC_ADDRESS_LENGTH = 62;
+export const HTLC_ADDRESS_LENGTH = 62;
 
 export function isHtlcSettlement(tx: TransactionDetails): string | false {
     if (tx.inputs.length > 1 || tx.outputs.length > 1) return false;
@@ -29,7 +29,7 @@ export function isHtlcSettlement(tx: TransactionDetails): string | false {
 }
 
 export async function isHtlcFunding(tx: TransactionDetails): Promise<{hash: string, outputIndex: number} | false> {
-    const htlcOutput = tx.outputs.find((output) => output.address && output.address.length === HTLC_ADDRESS_LENGTH);
+    const htlcOutput = tx.outputs.find((output) => output.address?.length === HTLC_ADDRESS_LENGTH);
     if (!htlcOutput) return false;
 
     // Find HTLC details (in Bitcoin, the HTLC details are not part of the HTLC funding transaction)

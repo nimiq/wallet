@@ -18,6 +18,27 @@
                                 </p>
                             </Tooltip>
                         </div>
+                        <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom right" class="early-access">
+                            <span class="trigger flex-row" slot="trigger">
+                                <FlameIcon/>
+                                {{ $t('Early Access') }}
+                            </span>
+                            <p>{{ $t('Early Access means that there are limits in place for trades.') }}</p>
+                            <p>{{ $t('They will be increased gradually.') }}</p>
+                            <template v-if="limits">
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Daily Limit') }}</label>
+                                    <FiatConvertedAmount :amount="limits.daily" currency="nim"/>
+                                </div>
+                                <i18n path="{amount} left today" tag="p" class="explainer">
+                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
+                                </i18n>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Monthly Limit') }}</label>
+                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim"/>
+                                </div>
+                            </template>
+                        </Tooltip>
                         <div v-if="limits && displayLimits" class="pill limits flex-row">
                             {{ $t('Max.') }} <FiatConvertedAmount :amount="limits.current" currency="nim"/>
                             <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom left">
@@ -38,8 +59,8 @@
                                     <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
                                 </i18n> -->
                                 <p class="explainer">
-                                    {{ $t('During early access, these limits apply.'
-                                        + ' They will be increased gradually.') }}
+                                    {{ $t('During early access, these limits apply.') }}
+                                    {{ $t('They will be increased gradually.') }}
                                 </p>
                             </Tooltip>
                         </div>
@@ -333,6 +354,7 @@ import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import SwapBalanceBar from '../SwapBalanceBar.vue';
+import FlameIcon from '../icons/FlameIcon.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
@@ -1022,6 +1044,7 @@ export default defineComponent({
         ShortAddress,
         ArrowRightSmallIcon,
         SwapBalanceBar,
+        FlameIcon,
     },
 });
 </script>
@@ -1060,6 +1083,34 @@ export default defineComponent({
     flex-grow: 1;
     padding-bottom: 2rem;
     overflow: visible;
+}
+
+.early-access {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+
+    .trigger.flex-row {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--nimiq-orange);
+
+        svg {
+            margin-right: 0.75rem;
+        }
+    }
+
+    /deep/ > .trigger {
+        display: block;
+    }
+
+    /deep/ .tooltip-box {
+        text-align: left;
+        transform: translate(-5rem, 2rem);
+    }
+
 }
 
 .pills {
@@ -1272,6 +1323,17 @@ export default defineComponent({
     .nq-button {
         margin-left: auto;
         margin-right: auto;
+    }
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .early-access {
+        top: 1.25rem;
+        left: 1.25rem;
+
+        /deep/ .tooltip-box {
+            transform: translate(-3rem, 2rem);
+        }
     }
 }
 </style>

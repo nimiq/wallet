@@ -67,7 +67,18 @@ type FastspotSwap = FastspotPreSwap & {
     contracts: FastspotContract<SwapAsset>[],
 };
 
-type FastspotResult = FastspotEstimate[] | FastspotSwap | FastspotContract<SwapAsset>;
+type FastspotLimits<T extends SwapAsset> = {
+    asset: T,
+    current: string,
+    daily: string,
+    monthly: string,
+};
+
+type FastspotResult
+    = FastspotEstimate[]
+    | FastspotSwap
+    | FastspotContract<SwapAsset>
+    | FastspotLimits<SwapAsset>;
 
 type FastspotError = {
     status: number,
@@ -125,6 +136,13 @@ export type PreSwap = Estimate & {
 export type Swap = PreSwap & {
     hash: string,
     contracts: Partial<Record<SwapAsset, Contract<SwapAsset>>>,
+};
+
+export type Limits<T extends SwapAsset> = {
+    asset: T,
+    current: number,
+    daily: number,
+    monthly: number,
 };
 
 function convertFromData(from: FastspotPrice): PriceData {
@@ -210,6 +228,18 @@ function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
     }
 
     return preSwap;
+}
+
+function convertLimits<T extends SwapAsset>(limits: FastspotLimits<T>): Limits<T> {
+    const conversionFactor = limits.asset === SwapAsset.NIM ? 1e5 : 1e8;
+    const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
+
+    return {
+        asset: limits.asset,
+        current: convertValue(limits.current),
+        daily: convertValue(limits.daily),
+        monthly: convertValue(limits.monthly),
+    };
 }
 
 async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<FastspotResult> {
@@ -304,18 +334,20 @@ export async function confirmSwap(
 
 export async function getSwap(id: string): Promise<PreSwap | Swap> {
     const result = await api(`/swaps/${id}`, 'GET') as FastspotPreSwap | FastspotSwap;
-
     return convertSwap(result);
 }
 
 export async function cancelSwap(swap: PreSwap): Promise<PreSwap> {
     const result = await api(`/swaps/${swap.id}`, 'DELETE') as FastspotPreSwap;
-
     return convertSwap(result);
 }
 
 export async function getContract<T extends SwapAsset>(asset: T, address: string): Promise<Contract<T>> {
     const result = await api(`/contracts/${asset}/${address}`, 'GET') as FastspotContract<T>;
-
     return convertContract(result);
+}
+
+export async function getLimits<T extends SwapAsset>(asset: T, address: string): Promise<Limits<T>> {
+    const result = await api(`/limits/${asset}/${address}`, 'GET') as FastspotLimits<T>;
+    return convertLimits(result);
 }

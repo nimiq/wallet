@@ -7,15 +7,42 @@
                     <div class="nq-notice font-weight-normal">
                         {{ $t('Use the slider or edit values to set up a swap.') }}
                     </div>
-                    <div class="exchange-rate flex-row">
-                        <span>1 NIM = <Amount slot="btc" :amount="Math.round(satsPerNim)" currency="btc"/></span>
-                        <Tooltip :styles="{width: '22rem'}" preferredPosition="bottom left">
-                            <InfoCircleSmallIcon slot="trigger"/>
-                            {{ $t('This rate includes the exchange fee.') }}
-                            <p class="explainer">
-                                {{ $t('The exchange rate might change depending on the swap volume.') }}
-                            </p>
-                        </Tooltip>
+                    <div class="pills flex-row">
+                        <div class="pill exchange-rate flex-row">
+                            <span>1 NIM = <Amount slot="btc" :amount="Math.round(satsPerNim)" currency="btc"/></span>
+                            <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom left">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                <span>{{ $t('This rate includes the exchange fee.') }}</span>
+                                <p class="explainer">
+                                    {{ $t('The exchange rate might change depending on the swap volume.') }}
+                                </p>
+                            </Tooltip>
+                        </div>
+                        <div v-if="limits && displayLimits" class="pill limits flex-row">
+                            {{ $t('Max.') }} <FiatConvertedAmount :amount="limits.current" currency="nim"/>
+                            <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom left">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Daily Limit') }}</label>
+                                    <FiatConvertedAmount :amount="limits.daily" currency="nim"/>
+                                </div>
+                                <i18n path="{amount} left today" tag="p" class="explainer">
+                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
+                                </i18n>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Monthly Limit') }}</label>
+                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim"/>
+                                </div>
+                                <p class="explainer"></p>
+                                <!-- <i18n path="{amount} left this month" tag="p" class="explainer">
+                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
+                                </i18n> -->
+                                <p class="explainer">
+                                    {{ $t('During early access, these limits apply.'
+                                        + ' They will be increased gradually.') }}
+                                </p>
+                            </Tooltip>
+                        </div>
                     </div>
                 </div>
             </PageHeader>
@@ -43,7 +70,7 @@
                         <FiatConvertedAmount
                             :amount="direction === SwapDirection.NIM_TO_BTC ? totalCostNim : wantNim" currency="nim"/>
                         <Tooltip v-if="direction === SwapDirection.NIM_TO_BTC"
-                            :styles="{width: '28rem', padding: '1.5rem 2rem'}"
+                            :styles="{width: '31.5rem'}" preferredPosition="top right"
                         >
                             <InfoCircleSmallIcon slot="trigger"/>
                             <span>{{ $t('This amount includes:') }}</span>
@@ -95,7 +122,7 @@
                         <FiatConvertedAmount
                             :amount="direction === SwapDirection.BTC_TO_NIM ? totalCostBtc : wantBtc" currency="btc"/>
                         <Tooltip v-if="direction === SwapDirection.BTC_TO_NIM"
-                            :styles="{width: '28rem', padding: '1.5rem 2rem'}" preferredPosition="top left"
+                            :styles="{width: '31.5rem'}" preferredPosition="top left"
                         >
                             <InfoCircleSmallIcon slot="trigger"/>
                             <span>{{ $t('This amount includes:') }}</span>
@@ -279,7 +306,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, Ref, onMounted, watch } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -295,6 +322,7 @@ import {
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
+import allSettled from 'promise.allsettled';
 import Config from 'config';
 import Modal from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
@@ -321,6 +349,8 @@ import {
     getEstimate,
     NimHtlcDetails,
     PreSwap,
+    Limits,
+    getLimits,
 } from '../../lib/FastSpotApi';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -334,6 +364,7 @@ import {
     awaitSecret,
     settleIncoming,
 } from '../../lib/SwapProcess';
+import { useAccountStore } from '../../stores/Account';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -347,9 +378,65 @@ export default defineComponent({
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
 
+        const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
+
+        const { accountBalance: accountBtcBalance } = useBtcAddressStore();
+        const { activeAddressInfo } = useAddressStore();
+        const { exchangeRates, currency } = useFiatStore();
+
+        const displayLimits = computed(() => {
+            if (!limits.value) return false;
+
+            if (limits.value.current < (activeAddressInfo.value!.balance || 0)) return true;
+
+            const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
+            const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
+
+            if (!nimRate || !btcRate) return true;
+            const lunaPerSat = (btcRate / 1e8) / (nimRate / 1e5);
+
+            const bitcoinBalanceInLuna = accountBtcBalance.value * lunaPerSat;
+            return limits.value.current < bitcoinBalanceInLuna;
+        });
+
         onMounted(() => {
             if (swap.value) processSwap();
+            else fetchLimits();
         });
+
+        watch(exchangeRates, fetchLimits, {
+            lazy: true,
+        });
+
+        async function fetchLimits() {
+            if (!limits.value) {
+                const { activeAccountInfo } = useAccountStore();
+                if (!activeAccountInfo.value) return;
+
+                const allLimits = await allSettled(
+                    activeAccountInfo.value.addresses.map(
+                        (address) => getLimits(SwapAsset.NIM, address).then((newLimits) => ({
+                            ...newLimits,
+                            address,
+                        })),
+                    ),
+                );
+                const newLimits = allLimits
+                    .map((r) => r.status === 'fulfilled' ? r.value : null)
+                    .filter((r) => r !== null)
+                    .sort((a, b) => a!.current - b!.current)[0];
+
+                if (!newLimits) return;
+
+                limits.value = newLimits;
+            } else {
+                const newLimits = await getLimits(SwapAsset.NIM, limits.value.address);
+                limits.value = {
+                    ...newLimits,
+                    address: limits.value.address,
+                };
+            }
+        }
 
         /**
          * SWAP SETUP
@@ -357,7 +444,6 @@ export default defineComponent({
 
         const satsPerNim = computed<number | undefined>(() => {
             if (!estimate.value) {
-                const { exchangeRates, currency } = useFiatStore();
                 const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
                 const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
 
@@ -438,7 +524,7 @@ export default defineComponent({
             fetchingEstimate.value = false;
         }
 
-        function onInput(currency: SwapAsset, amount: number) {
+        function onInput(asset: SwapAsset, amount: number) {
             if (debounce) {
                 clearTimeout(debounce);
             }
@@ -450,12 +536,12 @@ export default defineComponent({
                 debounce = null;
             }
 
-            if (currency === SwapAsset.NIM) {
+            if (asset === SwapAsset.NIM) {
                 wantNim.value = amount;
                 direction.value = SwapDirection.BTC_TO_NIM;
                 wantBtc.value = 0;
             }
-            if (currency === SwapAsset.BTC) {
+            if (asset === SwapAsset.BTC) {
                 wantBtc.value = amount;
                 direction.value = SwapDirection.NIM_TO_BTC;
                 wantNim.value = 0;
@@ -466,7 +552,6 @@ export default defineComponent({
             }
         }
 
-        const { activeAddressInfo } = useAddressStore();
         const newNimBalance = computed(() => {
             if (!activeAddressInfo.value) return 0;
 
@@ -475,14 +560,11 @@ export default defineComponent({
                 : (activeAddressInfo.value.balance || 0) + wantNim.value;
         });
 
-        const { accountBalance: accountBtcBalance } = useBtcAddressStore();
         const newBtcBalance = computed(() =>
             direction.value === SwapDirection.BTC_TO_NIM
                 ? accountBtcBalance.value - totalCostBtc.value
                 : accountBtcBalance.value + wantBtc.value,
         );
-
-        const { exchangeRates, currency } = useFiatStore();
 
         const myNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
@@ -916,6 +998,8 @@ export default defineComponent({
             incomingHtlcAddress,
             outgoingHtlcAddress,
             finishSwap,
+            limits,
+            displayLimits,
         };
     },
     components: {
@@ -978,22 +1062,18 @@ export default defineComponent({
     overflow: visible;
 }
 
-.tooltip {
-    .explainer {
-        font-size: 1.625rem;
-        opacity: 0.6;
-        margin: 0.75rem 0 0;
-    }
+.pills {
+    justify-content: center;
 }
 
-.exchange-rate {
+.pill {
     align-items: center;
     align-self: center;
     font-size: var(--small-size);
     font-weight: 600;
     color: rgba(31, 35, 72, 0.6);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    border-radius: 5rem;
     box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
     margin-top: 1.5rem;
 
@@ -1004,6 +1084,22 @@ export default defineComponent({
         .nq-icon {
             display: block;
             color: var(--text-30);
+        }
+    }
+}
+
+.pill.limits {
+    color: var(--nimiq-orange);
+    box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.7);
+    margin-left: 0.75rem;
+
+    > .fiat-amount {
+        margin-left: 0.5rem;
+    }
+
+    .tooltip {
+        .nq-icon {
+            color: rgba(252, 135, 2, 0.9);
         }
     }
 }
@@ -1074,27 +1170,6 @@ export default defineComponent({
         display: block;
         font-size: 1.75rem;
         margin-top: 0.125rem;
-    }
-
-    .price-breakdown {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        column-gap: 2rem;
-        row-gap: 1.5rem;
-        white-space: nowrap;
-        margin: 1rem 0;
-
-        label {
-            font-weight: normal;
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    .explainer {
-        margin-top: -1rem;
     }
 
     hr {

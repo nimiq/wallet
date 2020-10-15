@@ -205,6 +205,20 @@
                     <FiatAmount v-else
                         :amount="swapTransaction.fiatValue[fiatCurrency]" :currency="fiatCurrency" value-mask/>
                 </div>
+                <div class="flex-grow"></div>
+                <div class="swap-info">
+                    <div v-if="swapInfo.provider" class="provider flex-row">
+                        <FastspotIcon v-if="swapInfo.provider === 'Fastspot'"/>
+                        {{ swapInfo.provider }}
+                    </div>
+                    <div v-if="swapInfo.id" class="id flex-row">
+                        <span class="ID">ID</span>
+                        <Tooltip preferredPosition="top left">
+                            <ShortAddress :address="swapInfo.id" slot="trigger"/>
+                            {{ swapInfo.id }}
+                        </Tooltip>
+                    </div>
+                </div>
             </div>
             <div v-else class="flex-spacer"></div>
 
@@ -254,6 +268,7 @@ import ShortAddress from '../ShortAddress.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
+import FastspotIcon from '../icons/FastspotIcon.vue';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -328,14 +343,15 @@ export default defineComponent({
             : inputsSent.value.map((input) => input.address || input.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
+        const swapInfo = computed(() => {
+            if (!transaction.value.swapHash) return null;
+            return useSwapsStore().state.swaps[transaction.value.swapHash] || null;
+        });
+
         const swapTransaction = computed(() => {
-            const { swapHash } = transaction.value;
-            if (!swapHash) return null;
+            if (!swapInfo.value) return null;
 
-            const swap = useSwapsStore().state.swaps[swapHash];
-            if (!swap) return null;
-
-            const swapData = isIncoming.value ? swap.in : swap.out;
+            const swapData = isIncoming.value ? swapInfo.value.in : swapInfo.value.out;
             if (!swapData) return null;
 
             if (swapData.asset === SwapAsset.NIM) {
@@ -454,6 +470,7 @@ export default defineComponent({
             recipientLabelAddress,
             setSenderLabel,
             setRecipientLabel,
+            swapInfo,
             swapTransaction,
         };
     },
@@ -477,6 +494,7 @@ export default defineComponent({
         BlueLink,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
+        FastspotIcon,
         Identicon,
         SwapMediumIcon,
     },
@@ -640,7 +658,8 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.address-info .tooltip /deep/ {
+.address-info .tooltip /deep/,
+.swap-info .tooltip /deep/ {
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -670,11 +689,11 @@ export default defineComponent({
     }
 }
 
-.address-info .tooltip.left-aligned /deep/ .tooltip-box {
+.tooltip.left-aligned /deep/ .tooltip-box {
     transform: translate(-9.25rem, 2rem);
 }
 
-.address-info .tooltip.right-aligned /deep/ .tooltip-box {
+.tooltip.right-aligned /deep/ .tooltip-box {
     transform: translate(9.25rem, 2rem);
 }
 
@@ -815,14 +834,13 @@ export default defineComponent({
 }
 
 .swap-transaction {
-    padding-top: 3rem;
+    padding: 3rem 2rem 0;
     align-items: center;
     align-self: stretch;
     margin: 0 -2rem;
     box-shadow: inset 0 1.5px var(--text-16);
 
     .icon {
-        margin-left: 2rem;
         margin-right: 2.25rem;
         color: var(--text-40);
 
@@ -843,6 +861,49 @@ export default defineComponent({
         --size: var(--small-size);
         font-size: var(--size);
         opacity: 0.5;
+    }
+
+    .swap-info {
+        font-size: var(--small-size);
+        font-weight: 600;
+
+        .provider,
+        .id {
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .provider {
+            opacity: 0.5;
+
+            svg {
+                opacity: calc(0.35 / 0.5);
+                margin-top: 0.125rem;
+                margin-right: 0.625rem;
+            }
+        }
+
+        .id {
+            .ID {
+                opacity: 0.5;
+                margin-right: 0.25rem;
+            }
+
+            .short-address {
+                font-size: inherit;
+
+                /deep/ .address {
+                    font-family: inherit;
+                }
+            }
+
+            .tooltip /deep/ .trigger {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+                margin-bottom: 0;
+                margin-right: -0.75rem;
+            }
+        }
     }
 }
 
@@ -871,11 +932,11 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
-    .address-info .tooltip.left-aligned /deep/ .tooltip-box {
+    .tooltip.left-aligned /deep/ .tooltip-box {
         transform: translate(-7.75rem, 2rem);
     }
 
-    .address-info .tooltip.right-aligned /deep/ .tooltip-box {
+    .tooltip.right-aligned /deep/ .tooltip-box {
         transform: translate(7.75rem, 2rem);
     }
 
@@ -887,10 +948,8 @@ export default defineComponent({
 
     .swap-transaction {
         margin: 0 -1rem;
-
-        .icon {
-            margin-left: 1rem;
-        }
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 }
 

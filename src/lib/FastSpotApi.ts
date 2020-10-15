@@ -1,8 +1,9 @@
 import Config from 'config';
 
-export enum Currencies {
-    BTC = 'BTC',
+export enum SwapAsset {
     NIM = 'NIM',
+    BTC = 'BTC',
+    // EUR = 'EUR',
 }
 
 // Internal Types
@@ -29,7 +30,8 @@ type FastspotEstimate = {
     direction: 'forward' | 'reverse',
 };
 
-type FastspotContract = {
+type FastspotContract<T extends SwapAsset> = {
+    asset: T,
     refund: { address: string },
     recipient: { address: string },
     amount: number,
@@ -37,23 +39,18 @@ type FastspotContract = {
     direction: 'send' | 'receive',
     status: string,
     id: string,
-} & ({
-    asset: 'NIM',
-    intermediary: {
+    intermediary: T extends SwapAsset.NIM ? {
         address: string,
         timeoutBlock: number,
         data: string,
-    },
-} | {
-    asset: 'BTC',
-    intermediary: {
+    } : T extends SwapAsset.BTC ? {
         p2sh: string,
         p2wsh: string,
         scriptBytes: string,
-    },
-});
+    } : never,
+};
 
-type FastspotSwap = {
+type FastspotPreSwap = {
     id: string,
     status: string,
     expires: number,
@@ -63,8 +60,11 @@ type FastspotSwap = {
         serviceFeePercentage: string,
         direction: 'forward' | 'reverse',
     },
-    hash?: string,
-    contracts?: FastspotContract[],
+};
+
+type FastspotSwap = FastspotPreSwap & {
+    hash: string,
+    contracts: FastspotContract<SwapAsset>[],
 };
 
 type FastspotResult = FastspotEstimate[] | FastspotSwap;
@@ -79,7 +79,7 @@ type FastspotError = {
 // Public Types
 
 export type PriceData = {
-    symbol: 'NIM' | 'BTC',
+    asset: SwapAsset,
     amount: number,
     fee: number,
     feePerUnit: number,
@@ -103,35 +103,36 @@ export type BtcHtlcDetails = {
     script: string,
 };
 
-export type Contract = {
+export type Contract<T extends SwapAsset> = {
+    asset: T,
     refundAddress: string,
     redeemAddress: string,
     amount: number,
     timeout: number,
     direction: 'send' | 'receive',
     status: string,
-} & ({
-    asset: Currencies.NIM,
-    htlc: NimHtlcDetails,
-} | {
-    asset: Currencies.BTC,
-    htlc: BtcHtlcDetails,
-});
+    htlc: T extends SwapAsset.NIM ? NimHtlcDetails
+        : T extends SwapAsset.BTC ? BtcHtlcDetails
+        : never,
+};
 
-export type Swap = Estimate & {
+export type PreSwap = Estimate & {
     id: string,
     expires: number,
     status: string,
-    hash?: string,
-    contracts?: Contract[],
+};
+
+export type Swap = PreSwap & {
+    hash: string,
+    contracts: Partial<Record<SwapAsset, Contract<SwapAsset>>>,
 };
 
 function convertFromData(from: FastspotPrice): PriceData {
-    const conversionFactor = from.symbol === Currencies.NIM ? 1e5 : 1e8;
+    const conversionFactor = from.symbol === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
-        symbol: from.symbol,
+        asset: SwapAsset[from.symbol],
         amount: convertValue(from.amount) - convertValue(from.fundingNetworkFee.total),
         fee: convertValue(from.fundingNetworkFee.total),
         feePerUnit: convertValue(from.fundingNetworkFee.perUnit || '0') || 1,
@@ -140,11 +141,11 @@ function convertFromData(from: FastspotPrice): PriceData {
 }
 
 function convertToData(to: FastspotPrice): PriceData {
-    const conversionFactor = to.symbol === Currencies.NIM ? 1e5 : 1e8;
+    const conversionFactor = to.symbol === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
 
     return {
-        symbol: to.symbol,
+        asset: SwapAsset[to.symbol],
         amount: convertValue(to.amount),
         fee: convertValue(to.finalizeNetworkFee.total),
         feePerUnit: convertValue(to.finalizeNetworkFee.perUnit || '0') || 1,
@@ -152,48 +153,63 @@ function convertToData(to: FastspotPrice): PriceData {
     };
 }
 
-function convertContract(contract: FastspotContract): Contract {
-    const conversionFactor = contract.asset === Currencies.NIM ? 1e5 : 1e8;
+function convertContract<T extends SwapAsset>(contract: FastspotContract<T>): Contract<T> {
+    const conversionFactor = contract.asset === SwapAsset.NIM ? 1e5 : 1e8;
     const convertValue = (value: number) => Math.round(value * conversionFactor);
 
     return {
+        asset: contract.asset,
         refundAddress: contract.refund.address,
         redeemAddress: contract.recipient.address,
         amount: convertValue(contract.amount),
         timeout: contract.timeout,
         direction: contract.direction,
         status: contract.status,
-        ...(contract.asset === 'NIM' ? {
-            asset: Currencies.NIM,
+
+        ...(contract.asset === SwapAsset.NIM ? {
+            htlc: (contract as FastspotContract<SwapAsset.NIM>).intermediary,
+        } : {}),
+
+        ...(contract.asset === SwapAsset.BTC ? {
             htlc: {
-                address: contract.intermediary.address,
-                timeoutBlock: contract.intermediary.timeoutBlock,
-                data: contract.intermediary.data,
+                address: (contract as FastspotContract<SwapAsset.BTC>).intermediary.p2wsh,
+                script: (contract as FastspotContract<SwapAsset.BTC>).intermediary.scriptBytes,
             },
-        } : {
-            asset: Currencies.BTC,
-            htlc: {
-                address: contract.intermediary.p2wsh,
-                script: contract.intermediary.scriptBytes,
-            },
-        }),
-    };
+        } : {}),
+    } as Contract<T>;
 }
 
-function convertSwap(swap: FastspotSwap): Swap {
+function convertSwap(swap: FastspotSwap): Swap;
+function convertSwap(swap: FastspotPreSwap): PreSwap;
+function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
     const inputObject = swap.info.from[0];
     const outputObject = swap.info.to[0];
 
-    return {
+    const preSwap: PreSwap = {
         id: swap.id,
         expires: Math.floor(swap.expires), // `result.expires` can be a float timestamp
         from: convertFromData(inputObject),
         to: convertToData(outputObject),
         status: swap.status,
-        ...(swap.hash ? { hash: swap.hash } : {}),
-        ...(swap.contracts ? { contracts: swap.contracts.map(convertContract) } : {}),
         serviceFeePercentage: parseFloat(swap.info.serviceFeePercentage),
     };
+
+    if ('contracts' in swap) {
+        const contracts: Partial<Record<SwapAsset, Contract<SwapAsset>>> = {};
+        for (const contract of swap.contracts) {
+            contracts[contract.asset] = convertContract(contract);
+        }
+
+        const fullSwap: Swap = {
+            ...preSwap,
+            hash: swap.hash,
+            contracts,
+        };
+
+        return fullSwap;
+    }
+
+    return preSwap;
 }
 
 async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<FastspotResult> {
@@ -213,19 +229,19 @@ async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: objec
     });
 }
 
-export async function getEstimate(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: number}): Promise<Estimate> {
-    if (!['NIM', 'BTC'].includes(from)) {
-        throw new Error('From currency must be either NIM or BTC');
+export async function getEstimate(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<Estimate> {
+    if (!Object.values(SwapAsset).includes(from)) {
+        throw new Error('Invalid FROM asset');
     }
 
     if (to.NIM) to = { NIM: to.NIM };
     else if (to.BTC) to = { BTC: to.BTC };
     else {
-        throw new Error('Either NIM or BTC have to be present in the `to` object');
+        throw new Error('Invalid TO asset');
     }
 
     if (from === Object.keys(to)[0]) {
-        throw new Error('From and To currencies must be different');
+        throw new Error('FROM and TO assets must be different');
     }
 
     const result = await api('/estimates', 'POST', {
@@ -248,36 +264,36 @@ export async function getEstimate(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: 
     return estimate;
 }
 
-export async function createSwap(from: 'NIM' | 'BTC', to: {NIM?: number, BTC?: number}): Promise<Swap> {
-    if (!['NIM', 'BTC'].includes(from)) {
-        throw new Error('From currency must be either NIM or BTC');
+export async function createSwap(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<PreSwap> {
+    if (!Object.values(SwapAsset).includes(from)) {
+        throw new Error('Invalid FROM asset');
     }
 
     if (to.NIM) to = { NIM: to.NIM };
     else if (to.BTC) to = { BTC: to.BTC };
     else {
-        throw new Error('Either NIM or BTC have to be present in the `to` object');
+        throw new Error('Invalid TO asset');
     }
 
     if (from === Object.keys(to)[0]) {
-        throw new Error('From and To currencies must be different');
+        throw new Error('FROM and TO assets must be different');
     }
 
     const result = await api('/swaps', 'POST', {
         from,
         to,
         includedFees: 'all',
-    }) as FastspotSwap;
+    }) as FastspotPreSwap;
 
     return convertSwap(result);
 }
 
 export async function confirmSwap(
-    id: string,
-    redeem: { asset: Currencies, address: string },
-    refund: { asset: Currencies, address: string },
+    swap: PreSwap,
+    redeem: { asset: SwapAsset, address: string },
+    refund: { asset: SwapAsset, address: string },
 ): Promise<Swap> {
-    const result = await api(`/swaps/${id}`, 'POST', {
+    const result = await api(`/swaps/${swap.id}`, 'POST', {
         confirm: true,
         beneficiary: { [redeem.asset]: redeem.address },
         refund: { [refund.asset]: refund.address },
@@ -286,14 +302,14 @@ export async function confirmSwap(
     return convertSwap(result);
 }
 
-export async function getSwap(id: string): Promise<Swap> {
-    const result = await api(`/swaps/${id}`, 'GET') as FastspotSwap;
+export async function getSwap(id: string): Promise<PreSwap | Swap> {
+    const result = await api(`/swaps/${id}`, 'GET') as FastspotPreSwap | FastspotSwap;
 
     return convertSwap(result);
 }
 
-export async function cancelSwap(id: string): Promise<Swap> {
-    const result = await api(`/swaps/${id}`, 'DELETE') as FastspotSwap;
+export async function cancelSwap(swap: PreSwap): Promise<PreSwap> {
+    const result = await api(`/swaps/${swap.id}`, 'DELETE') as FastspotPreSwap;
 
     return convertSwap(result);
 }

@@ -152,7 +152,7 @@ export async function launchNetwork() {
     });
 }
 
-export async function sendTransaction(tx: SignedTransaction) {
+export async function sendTransaction(tx: SignedTransaction | string) {
     const client = await getNetworkClient();
-    return client.sendTransaction(tx.serializedTx);
+    return client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 }

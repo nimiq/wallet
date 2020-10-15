@@ -45,6 +45,7 @@ module.exports = {
         '@typescript-eslint/ban-ts-ignore': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
 
         /*
         // TODO these rules have been used on previous versions of typescript-eslint and the linter presets and might

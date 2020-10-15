@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { TransactionDetails, PlainOutput } from '@nimiq/electrum-client';
+import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
@@ -15,16 +15,6 @@ export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     })[],
     swapHash?: string,
 };
-
-// TODO: Import from @nimiq/electrum-client
-export enum TransactionState {
-    NEW = 'new',
-    PENDING = 'pending',
-    MINED = 'mined',
-    INVALIDATED = 'invalidated',
-    EXPIRED = 'expired',
-    CONFIRMED = 'confirmed',
-}
 
 const VALID_TRANSACTION_STATES = [
     TransactionState.PENDING,

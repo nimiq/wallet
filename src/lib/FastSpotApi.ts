@@ -67,7 +67,7 @@ type FastspotSwap = FastspotPreSwap & {
     contracts: FastspotContract<SwapAsset>[],
 };
 
-type FastspotResult = FastspotEstimate[] | FastspotSwap;
+type FastspotResult = FastspotEstimate[] | FastspotSwap | FastspotContract<SwapAsset>;
 
 type FastspotError = {
     status: number,
@@ -312,4 +312,10 @@ export async function cancelSwap(swap: PreSwap): Promise<PreSwap> {
     const result = await api(`/swaps/${swap.id}`, 'DELETE') as FastspotPreSwap;
 
     return convertSwap(result);
+}
+
+export async function getContract<T extends SwapAsset>(asset: T, address: string): Promise<Contract<T>> {
+    const result = await api(`/contracts/${asset}/${address}`, 'GET') as FastspotContract<T>;
+
+    return convertContract(result);
 }

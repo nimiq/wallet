@@ -1,7 +1,16 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getElectrumClient } from '../electrum';
+import { getContract, SwapAsset } from './FastSpotApi';
 
 export const HTLC_ADDRESS_LENGTH = 62;
+
+function extractHashFromScript(script: string | number) {
+    if (!(typeof script === 'string') || script.length !== 198) return false;
+    if (script.substring(0, 14) !== '6382012088a820') return false;
+
+    // Return hashRoot
+    return script.substr(14, 64);
+}
 
 export function isHtlcSettlement(tx: TransactionDetails): string | false {
     if (tx.inputs.length > 1 || tx.outputs.length > 1) return false;
@@ -20,12 +29,7 @@ export function isHtlcSettlement(tx: TransactionDetails): string | false {
     if (witness[3] !== '01' && witness[3] !== 1) return false;
 
     // HTLC script
-    const script = witness[4];
-    if (!(typeof script === 'string') || script.length !== 198) return false;
-    if (script.substring(0, 14) !== '6382012088a820') return false;
-
-    // Return hashRoot
-    return script.substr(14, 64);
+    return extractHashFromScript(witness[4]);
 }
 
 export async function isHtlcFunding(tx: TransactionDetails): Promise<{hash: string, outputIndex: number} | false> {
@@ -34,7 +38,14 @@ export async function isHtlcFunding(tx: TransactionDetails): Promise<{hash: stri
 
     // Find HTLC details (in Bitcoin, the HTLC details are not part of the HTLC funding transaction)
 
-    // TODO: Try Fastspot API
+    // Try Fastspot API
+    try {
+        const contract = await getContract(SwapAsset.BTC, htlcOutput.address!);
+        const hash = extractHashFromScript(contract.htlc.script);
+        if (hash) return { hash, outputIndex: htlcOutput.index };
+    } catch (error) {
+        // Ignore
+    }
 
     // See if we can find the settlement transaction for the HTLC
     const electrum = await getElectrumClient();

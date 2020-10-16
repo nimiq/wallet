@@ -89,6 +89,14 @@ type FastspotError = {
 
 // Public Types
 
+// export type RequestAsset = Partial<Record<SwapAsset, number>>;
+export type RequestAsset<K extends SwapAsset> = {
+    [P in K]: (Record<P, number> &
+        Partial<Record<Exclude<K, P>, never>>) extends infer O
+            ? { [Q in keyof O]: O[Q] }
+            : never
+}[K];
+
 export type PriceData = {
     asset: SwapAsset,
     amount: number,
@@ -242,6 +250,50 @@ function convertLimits<T extends SwapAsset>(limits: FastspotLimits<T>): Limits<T
     };
 }
 
+function validateRequestPairs(
+    from: SwapAsset | RequestAsset<SwapAsset>,
+    to: SwapAsset | RequestAsset<SwapAsset>,
+): boolean {
+    let fromAsset: SwapAsset;
+    let toAsset: SwapAsset;
+
+    if (typeof from === 'string') {
+        if (!Object.values(SwapAsset).includes(from)) {
+            throw new Error('Invalid FROM asset');
+        }
+        fromAsset = from;
+    } else {
+        if (Object.keys(from).length !== 1) {
+            throw new Error('Only one asset allowed for FROM');
+        }
+        if (!Object.values(SwapAsset).includes(Object.keys(from)[0] as SwapAsset)) {
+            throw new Error('Invalid FROM asset');
+        }
+        fromAsset = Object.keys(from)[0] as SwapAsset;
+    }
+
+    if (typeof to === 'string') {
+        if (!Object.values(SwapAsset).includes(to)) {
+            throw new Error('Invalid TO asset');
+        }
+        toAsset = to;
+    } else {
+        if (Object.keys(to).length !== 1) {
+            throw new Error('Only one asset allowed for TO');
+        }
+        if (!Object.values(SwapAsset).includes(Object.keys(to)[0] as SwapAsset)) {
+            throw new Error('Invalid TO asset');
+        }
+        toAsset = Object.keys(to)[0] as SwapAsset;
+    }
+
+    if (fromAsset === toAsset) {
+        throw new Error('FROM and TO assets must be different');
+    }
+
+    return true;
+}
+
 async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<FastspotResult> {
     return fetch(`${Config.fastspot.apiEndpoint}${path}`, {
         method,
@@ -259,20 +311,13 @@ async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: objec
     });
 }
 
-export async function getEstimate(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<Estimate> {
-    if (!Object.values(SwapAsset).includes(from)) {
-        throw new Error('Invalid FROM asset');
-    }
-
-    if (to.NIM) to = { NIM: to.NIM };
-    else if (to.BTC) to = { BTC: to.BTC };
-    else {
-        throw new Error('Invalid TO asset');
-    }
-
-    if (from === Object.keys(to)[0]) {
-        throw new Error('FROM and TO assets must be different');
-    }
+export async function getEstimate(from: RequestAsset<SwapAsset>, to: SwapAsset): Promise<Estimate>
+export async function getEstimate(from: SwapAsset, to: RequestAsset<SwapAsset>): Promise<Estimate>
+export async function getEstimate(
+    from: SwapAsset | RequestAsset<SwapAsset>,
+    to: SwapAsset | RequestAsset<SwapAsset>,
+): Promise<Estimate> {
+    validateRequestPairs(from, to);
 
     const result = await api('/estimates', 'POST', {
         from,
@@ -281,9 +326,8 @@ export async function getEstimate(from: SwapAsset, to: {NIM?: number, BTC?: numb
     }) as FastspotEstimate[];
 
     const inputObject = result[0].from[0];
-    if (!inputObject) throw new Error('Insufficient market liquidity');
-
     const outputObject = result[0].to[0];
+    if (!inputObject || !outputObject) throw new Error('Insufficient market liquidity');
 
     const estimate: Estimate = {
         from: convertFromData(inputObject),
@@ -294,20 +338,13 @@ export async function getEstimate(from: SwapAsset, to: {NIM?: number, BTC?: numb
     return estimate;
 }
 
-export async function createSwap(from: SwapAsset, to: {NIM?: number, BTC?: number}): Promise<PreSwap> {
-    if (!Object.values(SwapAsset).includes(from)) {
-        throw new Error('Invalid FROM asset');
-    }
-
-    if (to.NIM) to = { NIM: to.NIM };
-    else if (to.BTC) to = { BTC: to.BTC };
-    else {
-        throw new Error('Invalid TO asset');
-    }
-
-    if (from === Object.keys(to)[0]) {
-        throw new Error('FROM and TO assets must be different');
-    }
+export async function createSwap(from: RequestAsset<SwapAsset>, to: SwapAsset): Promise<PreSwap>
+export async function createSwap(from: SwapAsset, to: RequestAsset<SwapAsset>): Promise<PreSwap>
+export async function createSwap(
+    from: SwapAsset | RequestAsset<SwapAsset>,
+    to: SwapAsset | RequestAsset<SwapAsset>,
+): Promise<PreSwap> {
+    validateRequestPairs(from, to);
 
     const result = await api('/swaps', 'POST', {
         from,

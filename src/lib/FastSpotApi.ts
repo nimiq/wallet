@@ -145,41 +145,44 @@ export type Limits<T extends SwapAsset> = {
     monthly: number,
 };
 
-function convertFromData(from: FastspotPrice): PriceData {
-    const conversionFactor = from.symbol === SwapAsset.NIM ? 1e5 : 1e8;
-    const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
+function coinsToUnits(asset: SwapAsset, value: string | number): number {
+    let conversionFactor: number;
+    switch (asset) {
+        case SwapAsset.NIM: conversionFactor = 1e5; break;
+        case SwapAsset.BTC: conversionFactor = 1e8; break;
+        default: throw new Error('Invalid asset');
+    }
+    return Math.floor((typeof value === 'string' ? Number.parseFloat(value) : value) * conversionFactor);
+}
 
+function convertFromData(from: FastspotPrice): PriceData {
+    const asset = SwapAsset[from.symbol];
     return {
-        asset: SwapAsset[from.symbol],
-        amount: convertValue(from.amount) - convertValue(from.fundingNetworkFee.total),
-        fee: convertValue(from.fundingNetworkFee.total),
-        feePerUnit: convertValue(from.fundingNetworkFee.perUnit || '0') || 1,
-        serviceNetworkFee: convertValue(from.finalizeNetworkFee.total),
+        asset,
+        amount: coinsToUnits(asset, from.amount) - coinsToUnits(asset, from.fundingNetworkFee.total),
+        fee: coinsToUnits(asset, from.fundingNetworkFee.total),
+        feePerUnit: coinsToUnits(asset, from.fundingNetworkFee.perUnit || '0') || 1,
+        serviceNetworkFee: coinsToUnits(asset, from.finalizeNetworkFee.total),
     };
 }
 
 function convertToData(to: FastspotPrice): PriceData {
-    const conversionFactor = to.symbol === SwapAsset.NIM ? 1e5 : 1e8;
-    const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
-
+    const asset = SwapAsset[to.symbol];
     return {
-        asset: SwapAsset[to.symbol],
-        amount: convertValue(to.amount),
-        fee: convertValue(to.finalizeNetworkFee.total),
-        feePerUnit: convertValue(to.finalizeNetworkFee.perUnit || '0') || 1,
-        serviceNetworkFee: convertValue(to.fundingNetworkFee.total),
+        asset,
+        amount: coinsToUnits(asset, to.amount),
+        fee: coinsToUnits(asset, to.finalizeNetworkFee.total),
+        feePerUnit: coinsToUnits(asset, to.finalizeNetworkFee.perUnit || '0') || 1,
+        serviceNetworkFee: coinsToUnits(asset, to.fundingNetworkFee.total),
     };
 }
 
 function convertContract<T extends SwapAsset>(contract: FastspotContract<T>): Contract<T> {
-    const conversionFactor = contract.asset === SwapAsset.NIM ? 1e5 : 1e8;
-    const convertValue = (value: number) => Math.round(value * conversionFactor);
-
     return {
         asset: contract.asset,
         refundAddress: contract.refund.address,
         redeemAddress: contract.recipient.address,
-        amount: convertValue(contract.amount),
+        amount: coinsToUnits(contract.asset, contract.amount),
         timeout: contract.timeout,
         direction: contract.direction,
         status: contract.status,
@@ -231,14 +234,11 @@ function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
 }
 
 function convertLimits<T extends SwapAsset>(limits: FastspotLimits<T>): Limits<T> {
-    const conversionFactor = limits.asset === SwapAsset.NIM ? 1e5 : 1e8;
-    const convertValue = (value: string) => Math.round(Number.parseFloat(value) * conversionFactor);
-
     return {
         asset: limits.asset,
-        current: convertValue(limits.current),
-        daily: convertValue(limits.daily),
-        monthly: convertValue(limits.monthly),
+        current: coinsToUnits(limits.asset, limits.current),
+        daily: coinsToUnits(limits.asset, limits.daily),
+        monthly: coinsToUnits(limits.asset, limits.monthly),
     };
 }
 

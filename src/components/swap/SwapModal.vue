@@ -28,36 +28,38 @@
                             <template v-if="limits">
                                 <div class="price-breakdown">
                                     <label>{{ $t('Daily Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.daily" currency="nim"/>
+                                    <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
                                 </div>
                                 <i18n path="{amount} left today" tag="p" class="explainer">
-                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
+                                    <FiatAmount slot="amount"
+                                        :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                                 </i18n>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Monthly Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim"/>
+                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
                                 </div>
                             </template>
                         </Tooltip>
                         <div v-if="limits && displayLimits" class="pill limits flex-row">
-                            {{ $t('Max.') }} <FiatConvertedAmount :amount="limits.current" currency="nim"/>
+                            {{ $t('Max.') }}
+                            <FiatAmount slot="amount"
+                                :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+
                             <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom left">
                                 <InfoCircleSmallIcon slot="trigger"/>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Daily Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.daily" currency="nim"/>
+                                    <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
                                 </div>
                                 <i18n path="{amount} left today" tag="p" class="explainer">
-                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
+                                    <FiatAmount slot="amount"
+                                        :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                                 </i18n>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Monthly Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim"/>
+                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
                                 </div>
                                 <p class="explainer"></p>
-                                <!-- <i18n path="{amount} left this month" tag="p" class="explainer">
-                                    <FiatConvertedAmount slot="amount" :amount="limits.current" currency="nim"/>
-                                </i18n> -->
                                 <p class="explainer">
                                     {{ $t('During early access, these limits apply.') }}
                                     {{ $t('They will be increased gradually.') }}
@@ -72,7 +74,7 @@
                     :newNimBalance="newNimBalance"
                     :newBtcBalance="newBtcBalance"
                     :satsPerNim="satsPerNim"
-                    :limits="{ fiat: 100 }"
+                    :limits="{ fiat: currentLimitFiat }"
                     @change="onSwapBalanceBarChange"
                 />
                 <div class="columns swap-amounts flex-row">
@@ -90,42 +92,17 @@
                         </AmountInput>
                         <FiatConvertedAmount
                             :amount="direction === SwapDirection.NIM_TO_BTC ? totalCostNim : wantNim" currency="nim"/>
-                        <Tooltip v-if="direction === SwapDirection.NIM_TO_BTC"
-                            :styles="{width: '31.5rem'}" preferredPosition="top right"
-                        >
-                            <InfoCircleSmallIcon slot="trigger"/>
-                            <span>{{ $t('This amount includes:') }}</span>
-                            <div class="price-breakdown">
-                                <label>{{ $t('BTC network fees') }}</label>
-                                <FiatAmount :amount="myBtcFeeFiat + serviceBtcFeeFiat" :currency="currency"/>
-                            </div>
-                            <p class="explainer">
-                                {{ $t('Atomic swaps require two BTC transactions.') }}
-                            </p>
-                            <div class="price-breakdown">
-                                <label>{{ $t('NIM network fees') }}</label>
-                                <FiatAmount :amount="myNimFeeFiat + serviceNimFeeFiat" :currency="currency"/>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Exchange fee') }}</label>
-                                <FiatAmount :amount="serviceExchangeFeeFiat" :currency="currency"/>
-                            </div>
-                            <p class="explainer">
-                                {{ $t('{perc}% of exchange value.', { perc: serviceExchangeFeePercentage }) }}
-                            </p>
-                            <hr>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Total fees') }}</label>
-                                <FiatAmount
-                                    class="total-fees"
-                                    :amount="myBtcFeeFiat
-                                        + myNimFeeFiat
-                                        + serviceBtcFeeFiat
-                                        + serviceNimFeeFiat
-                                        + serviceExchangeFeeFiat"
-                                    :currency="currency"/>
-                            </div>
-                        </Tooltip>
+                        <SwapFeesTooltip
+                            v-if="direction === SwapDirection.NIM_TO_BTC"
+                            preferredPosition="top right"
+                            :myBtcFeeFiat="myBtcFeeFiat"
+                            :myNimFeeFiat="myNimFeeFiat"
+                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                            :serviceNimFeeFiat="serviceNimFeeFiat"
+                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :currency="currency"
+                        />
                     </div>
                     <div class="right-column" :class="!wantBtc && !totalCostBtc
                         ? 'nq-gray'
@@ -142,42 +119,17 @@
                         </AmountInput>
                         <FiatConvertedAmount
                             :amount="direction === SwapDirection.BTC_TO_NIM ? totalCostBtc : wantBtc" currency="btc"/>
-                        <Tooltip v-if="direction === SwapDirection.BTC_TO_NIM"
-                            :styles="{width: '31.5rem'}" preferredPosition="top left"
-                        >
-                            <InfoCircleSmallIcon slot="trigger"/>
-                            <span>{{ $t('This amount includes:') }}</span>
-                            <div class="price-breakdown">
-                                <label>{{ $t('BTC network fees') }}</label>
-                                <FiatAmount :amount="myBtcFeeFiat + serviceBtcFeeFiat" :currency="currency"/>
-                            </div>
-                            <p class="explainer">
-                                {{ $t('Atomic swaps require two BTC transactions.') }}
-                            </p>
-                            <div class="price-breakdown">
-                                <label>{{ $t('NIM network fees') }}</label>
-                                <FiatAmount :amount="myNimFeeFiat + serviceNimFeeFiat" :currency="currency"/>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Exchange fee') }}</label>
-                                <FiatAmount :amount="serviceExchangeFeeFiat" :currency="currency"/>
-                            </div>
-                            <p class="explainer">
-                                {{ $t('{perc}% of exchange value.', { perc: serviceExchangeFeePercentage }) }}
-                            </p>
-                            <hr>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Total fees') }}</label>
-                                <FiatAmount
-                                    class="total-fees"
-                                    :amount="myBtcFeeFiat
-                                        + myNimFeeFiat
-                                        + serviceBtcFeeFiat
-                                        + serviceNimFeeFiat
-                                        + serviceExchangeFeeFiat"
-                                    :currency="currency"/>
-                            </div>
-                        </Tooltip>
+                        <SwapFeesTooltip
+                            v-if="direction === SwapDirection.BTC_TO_NIM"
+                            preferredPosition="top left"
+                            :myBtcFeeFiat="myBtcFeeFiat"
+                            :myNimFeeFiat="myNimFeeFiat"
+                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                            :serviceNimFeeFiat="serviceNimFeeFiat"
+                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :currency="currency"
+                        />
                     </div>
                 </div>
 
@@ -345,7 +297,7 @@ import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions 
 import { NetworkClient } from '@nimiq/network-client';
 import allSettled from 'promise.allsettled';
 import Config from 'config';
-import Modal from './Modal.vue';
+import Modal from '../modals/Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
 import Amount from '../Amount.vue';
@@ -353,8 +305,9 @@ import AmountInput from '../AmountInput.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ShortAddress from '../ShortAddress.vue';
-import SwapBalanceBar from '../SwapBalanceBar.vue';
+import SwapBalanceBar from './SwapBalanceBar.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
+import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
@@ -459,6 +412,16 @@ export default defineComponent({
                 };
             }
         }
+
+        const currentLimitFiat = computed(() => {
+            if (!limits.value) return null;
+            if (!limits.value.current) return 0;
+
+            const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
+            if (!nimRate) return null;
+
+            return Math.floor((limits.value.current / 1e5) * nimRate);
+        });
 
         /**
          * SWAP SETUP
@@ -591,46 +554,48 @@ export default defineComponent({
         const myNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.asset === SwapAsset.NIM ? estimate.value.from.fee : estimate.value.to.fee;
+            const data = swap.value || estimate.value;
+            const fee = data.from.asset === SwapAsset.NIM ? data.from.fee : data.to.fee;
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const myBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.asset === SwapAsset.BTC ? estimate.value.from.fee : estimate.value.to.fee;
+            const data = swap.value || estimate.value;
+            const fee = data.from.asset === SwapAsset.BTC ? data.from.fee : data.to.fee;
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.asset === SwapAsset.NIM
-                ? estimate.value.from.serviceNetworkFee
-                : estimate.value.to.serviceNetworkFee;
+            const data = swap.value || estimate.value;
+            const fee = data.from.asset === SwapAsset.NIM ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const serviceBtcFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const fee = estimate.value.from.asset === SwapAsset.BTC
-                ? estimate.value.from.serviceNetworkFee
-                : estimate.value.to.serviceNetworkFee;
+            const data = swap.value || estimate.value;
+            const fee = data.from.asset === SwapAsset.BTC ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceExchangeFeePercentage = computed(() => {
             if (!estimate.value) return 0;
-            return Math.round(estimate.value.serviceFeePercentage * 1000) / 10;
+
+            const data = swap.value || estimate.value;
+            return Math.round(data.serviceFeePercentage * 1000) / 10;
         });
 
         const serviceExchangeFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
-            const { from, serviceFeePercentage } = estimate.value;
-            const feeAmount = (from.amount - from.serviceNetworkFee) * serviceFeePercentage;
-            return from.asset === SwapAsset.NIM
+            const data = swap.value || estimate.value;
+            const feeAmount = (data.from.amount - data.from.serviceNetworkFee) * data.serviceFeePercentage;
+            return data.from.asset === SwapAsset.NIM
                 ? (feeAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
                 : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
@@ -698,6 +663,15 @@ export default defineComponent({
                     setSwap(confirmedSwap.hash, {
                         id: confirmedSwap.id,
                         provider: 'Fastspot',
+                        fees: {
+                            myBtcFeeFiat: myBtcFeeFiat.value,
+                            myNimFeeFiat: myNimFeeFiat.value,
+                            serviceBtcFeeFiat: serviceBtcFeeFiat.value,
+                            serviceNimFeeFiat: serviceNimFeeFiat.value,
+                            serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
+                            serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
+                            currency: currency.value,
+                        },
                         // TODO: Include fees here
                     });
                     console.debug('Swap:', swap.value); // eslint-disable-line no-console
@@ -978,14 +952,14 @@ export default defineComponent({
         function onSwapBalanceBarChange(swapInfo: {
             direction: SwapDirection,
             amount: {
-                luna: number,
-                satoshi: number,
+                nim: number,
+                btc: number,
             },
         }) {
             if (swapInfo.direction === SwapDirection.BTC_TO_NIM) {
-                onInput(SwapAsset.NIM, swapInfo.amount.luna);
+                onInput(SwapAsset.NIM, swapInfo.amount.nim);
             } else {
-                onInput(SwapAsset.BTC, swapInfo.amount.satoshi);
+                onInput(SwapAsset.BTC, swapInfo.amount.btc);
             }
         }
 
@@ -1022,6 +996,7 @@ export default defineComponent({
             finishSwap,
             limits,
             displayLimits,
+            currentLimitFiat,
         };
     },
     components: {
@@ -1045,6 +1020,7 @@ export default defineComponent({
         ArrowRightSmallIcon,
         SwapBalanceBar,
         FlameIcon,
+        SwapFeesTooltip,
     },
 });
 </script>
@@ -1221,21 +1197,6 @@ export default defineComponent({
         display: block;
         font-size: 1.75rem;
         margin-top: 0.125rem;
-    }
-
-    hr {
-        margin: 1.75rem -1rem 1.5rem;
-        border: unset;
-        border-top: 1px solid currentColor;
-        opacity: .2;
-    }
-
-    .fiat-amount {
-        opacity: 1;
-    }
-
-    .total-fees {
-        font-weight: bold;
     }
 }
 

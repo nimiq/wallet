@@ -31,12 +31,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, onUnmounted, ref, Ref } from '@vue/composition-api';
-import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { useFiatStore } from '@/stores/Fiat';
-import { CryptoCurrency } from '@/lib/Constants';
-import { useAddressStore, AddressInfo } from '../stores/Address';
-import getBackgroundClass from '../lib/AddressColor';
-import { SwapDirection } from '../stores/Swaps';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useFiatStore } from '../../stores/Fiat';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useAddressStore, AddressInfo } from '../../stores/Address';
+import getBackgroundClass from '../../lib/AddressColor';
+import { SwapDirection } from '../../stores/Swaps';
 
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
@@ -167,14 +167,10 @@ export default defineComponent({
             const nimPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $activeBar.clientWidth, 0), 1);
             const btcPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $bitcoinBar.clientWidth, 0), 1);
 
-            let lunaAmount = Math.round(
-                Math.abs(activeBar.value.balanceChange)
-                    + ((props.newNimBalance * nimPercent) * movingDirection),
-            );
-            let satoshiAmount = Math.round(
-                Math.abs(btcDistributionData.value.balanceChange)
-                    + ((props.newBtcBalance * btcPercent) * -movingDirection),
-            );
+            let lunaAmount = Math.abs(activeBar.value.balanceChange)
+                + ((props.newNimBalance * nimPercent) * movingDirection);
+            let satoshiAmount = Math.abs(btcDistributionData.value.balanceChange)
+                + ((props.newBtcBalance * btcPercent) * -movingDirection);
 
             if (movingDirection === RIGHT && btcDistributionData.value.balanceChange > 0 && satoshiAmount > 0) {
                 direction.value = SwapDirection.NIM_TO_BTC;
@@ -218,8 +214,8 @@ export default defineComponent({
             context.emit('change', {
                 direction: direction.value,
                 amount: {
-                    satoshi: Math.abs(satoshiAmount),
-                    luna: Math.abs(lunaAmount),
+                    btc: Math.floor(Math.abs(satoshiAmount)),
+                    nim: Math.floor(Math.abs(lunaAmount)),
                 },
             });
 
@@ -328,7 +324,7 @@ export default defineComponent({
     }
 
     .change {
-        background: url('../assets/swap-change-background.svg') repeat-x;
+        background: url('../../assets/swap-change-background.svg') repeat-x;
         height: calc(100% - .5rem);
         margin: 0 0.25rem;
         border-radius: 0.25rem;
@@ -348,7 +344,7 @@ export default defineComponent({
 
         height: var(--height);
         width: var(--width);
-        background: white url('../assets/horizontal-double-arrow.svg') no-repeat center;
+        background: white url('../../assets/horizontal-double-arrow.svg') no-repeat center;
         border-radius: 4px;
         box-shadow:
             0px 4px 16px rgba(0, 0, 0, 0.07),

@@ -37,7 +37,7 @@ const BtcReceiveModal = () =>
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
-const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/modals/SwapModal.vue');
+const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
 
 Vue.use(VueRouter);
 

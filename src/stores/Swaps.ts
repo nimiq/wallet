@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '../lib/FastSpotApi';
+import { FiatCurrency } from '../lib/Constants';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -33,6 +34,15 @@ export type Swap = {
     provider?: 'Fastspot',
     in?: SwapNimData | SwapBtcData,
     out?: SwapNimData | SwapBtcData,
+    fees?: {
+        myBtcFeeFiat: number,
+        myNimFeeFiat: number,
+        serviceBtcFeeFiat: number,
+        serviceNimFeeFiat: number,
+        serviceExchangeFeeFiat: number,
+        serviceExchangeFeePercentage: number,
+        currency: FiatCurrency,
+    },
 };
 
 export type ActiveSwap<T extends SwapState> = SwapObject & {

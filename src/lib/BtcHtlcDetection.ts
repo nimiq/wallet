@@ -1,6 +1,6 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getElectrumClient } from '../electrum';
-import { getContract, SwapAsset } from './FastSpotApi';
+import { getContract, SwapAsset } from './FastspotApi';
 
 export const HTLC_ADDRESS_LENGTH = 62;
 

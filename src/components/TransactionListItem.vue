@@ -89,7 +89,7 @@ import { isCashlinkData } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from '../stores/Cashlink';
 import { useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
-import { SwapAsset } from '../lib/FastSpotApi';
+import { SwapAsset } from '../lib/FastspotApi';
 
 export default defineComponent({
     props: {

@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { Swap as SwapObject, SwapAsset } from '../lib/FastSpotApi';
+import { Swap as SwapObject, SwapAsset } from '../lib/FastspotApi';
 import { FiatCurrency } from '../lib/Constants';
 
 export enum SwapState {

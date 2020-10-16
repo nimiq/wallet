@@ -84,7 +84,7 @@ import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
-import { SwapAsset } from '../lib/FastSpotApi';
+import { SwapAsset } from '../lib/FastspotApi';
 
 export default defineComponent({
     props: {

@@ -9,7 +9,7 @@ import {
 } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from './Cashlink';
 import { useSwapsStore } from './Swaps';
-import { SwapAsset } from '../lib/FastSpotApi';
+import { SwapAsset } from '../lib/FastspotApi';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },

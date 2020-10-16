@@ -7,7 +7,7 @@ import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
-import { SwapAsset } from '../lib/FastSpotApi';
+import { SwapAsset } from '../lib/FastspotApi';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],

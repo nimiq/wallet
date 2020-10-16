@@ -326,7 +326,7 @@ import {
     PreSwap,
     Limits,
     getLimits,
-} from '../../lib/FastSpotApi';
+} from '../../lib/FastspotApi';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';

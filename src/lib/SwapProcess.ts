@@ -7,7 +7,7 @@ import {
 import { ActiveSwap, SwapState, useSwapsStore } from '../stores/Swaps';
 import { TransactionState as NimTransactionState } from '../stores/Transactions';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
-import { NimHtlcDetails, SwapAsset } from './FastSpotApi';
+import { NimHtlcDetails, SwapAsset } from './FastspotApi';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
 import { getNetworkClient, sendTransaction as sendNimTx } from '../network';
 import { HTLC_ADDRESS_LENGTH } from './BtcHtlcDetection';

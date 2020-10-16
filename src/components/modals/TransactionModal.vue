@@ -205,17 +205,20 @@
                 <div class="values">
                     <Amount :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
 
-                    <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
-                        :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
-                    <div v-else-if="!swapTransaction.outputs[0].fiatValue
-                        || swapTransaction.outputs[0].fiatValue[fiatCurrency] === undefined"
-                        class="fiat-amount">&nbsp;</div>
-                    <div v-else-if="
-                        swapTransaction.outputs[0].fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
-                        class="fiat-amount">Fiat value unavailable</div>
-                    <FiatAmount v-else
-                        :amount="swapTransaction.outputs[0].fiatValue[fiatCurrency]" :currency="fiatCurrency"
-                        value-mask/>
+                    <div class="flex-row">
+                        <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
+                            :amount="swapTransaction.outputs[0].value" currency="btc" value-mask/>
+                        <div v-else-if="!swapTransaction.outputs[0].fiatValue
+                            || swapTransaction.outputs[0].fiatValue[fiatCurrency] === undefined"
+                            class="fiat-amount">&nbsp;</div>
+                        <div v-else-if="
+                            swapTransaction.outputs[0].fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
+                            class="fiat-amount">Fiat value unavailable</div>
+                        <FiatAmount v-else
+                            :amount="swapTransaction.outputs[0].fiatValue[fiatCurrency]" :currency="fiatCurrency"
+                            value-mask/>
+                        <SwapFeesTooltip v-if="swapInfo.fees" v-bind="swapInfo.fees" preferredPosition="top right"/>
+                    </div>
                 </div>
                 <div class="flex-grow"></div>
                 <div class="swap-info">
@@ -288,6 +291,7 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import FastspotIcon from '../icons/FastspotIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
+import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -522,6 +526,7 @@ export default defineComponent({
         FastspotIcon,
         SwapMediumIcon,
         ShortAddress,
+        SwapFeesTooltip,
     },
 });
 </script>
@@ -902,9 +907,23 @@ export default defineComponent({
         }
     }
 
+    .values .flex-row {
+        align-items: center;
+
+        .tooltip /deep/ .trigger {
+            font-size: var(--small-size);
+            display: block;
+            margin-left: 0.5rem;
+            color: var(--text-50);
+
+            &::after {
+                background: #201F45;
+            }
+        }
+    }
+
     .amount,
     .fiat-amount {
-        display: block;
         --size: var(--body-size);
         font-size: var(--size);
         font-weight: 600;

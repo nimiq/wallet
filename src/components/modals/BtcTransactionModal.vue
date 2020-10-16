@@ -196,14 +196,17 @@
                 <div class="values">
                     <Amount :amount="swapTransaction.value" currency="nim" value-mask/>
 
-                    <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
-                        :amount="swapTransaction.value" currency="nim" value-mask/>
-                    <div v-else-if="!swapTransaction.fiatValue || swapTransaction.fiatValue[fiatCurrency] === undefined"
-                        class="fiat-amount">&nbsp;</div>
-                    <div v-else-if="swapTransaction.fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
-                        class="fiat-amount">Fiat value unavailable</div>
-                    <FiatAmount v-else
-                        :amount="swapTransaction.fiatValue[fiatCurrency]" :currency="fiatCurrency" value-mask/>
+                    <div class="flex-row">
+                        <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
+                            :amount="swapTransaction.value" currency="nim" value-mask/>
+                        <div v-else-if="!swapTransaction.fiatValue || swapTransaction.fiatValue[fiatCurrency] === undefined"
+                            class="fiat-amount">&nbsp;</div>
+                        <div v-else-if="swapTransaction.fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
+                            class="fiat-amount">Fiat value unavailable</div>
+                        <FiatAmount v-else
+                            :amount="swapTransaction.fiatValue[fiatCurrency]" :currency="fiatCurrency" value-mask/>
+                        <SwapFeesTooltip v-if="swapInfo.fees" v-bind="swapInfo.fees" preferredPosition="top right"/>
+                    </div>
                 </div>
                 <div class="flex-grow"></div>
                 <div class="swap-info">
@@ -269,6 +272,7 @@ import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import FastspotIcon from '../icons/FastspotIcon.vue';
+import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -497,6 +501,7 @@ export default defineComponent({
         FastspotIcon,
         Identicon,
         SwapMediumIcon,
+        SwapFeesTooltip,
     },
 });
 </script>
@@ -849,9 +854,23 @@ export default defineComponent({
         }
     }
 
+    .values .flex-row {
+        align-items: center;
+
+        .tooltip /deep/ .trigger {
+            font-size: var(--small-size);
+            display: block;
+            margin-left: 0.5rem;
+            color: var(--text-50);
+
+            &::after {
+                background: #201F45;
+            }
+        }
+    }
+
     .amount,
     .fiat-amount {
-        display: block;
         --size: var(--body-size);
         font-size: var(--size);
         font-weight: 600;

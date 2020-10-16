@@ -1,6 +1,9 @@
 <template>
     <transition name="fade" mode="out-in">
-        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency"/>
+        <FiatAmount v-if="fiatAmount !== undefined"
+            :amount="roundDown ? Math.floor(fiatAmount) : fiatAmount"
+            :hideDecimals="roundDown"
+            :currency="fiatCurrency"/>
         <div v-else class="fiat-amount placeholder"></div>
     </transition>
 </template>
@@ -22,6 +25,10 @@ export default defineComponent({
         currency: {
             type: String as () => CryptoCurrency,
             default: CryptoCurrency.NIM,
+        },
+        roundDown: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props) {

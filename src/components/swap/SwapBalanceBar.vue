@@ -2,14 +2,14 @@
     <div class="swap-balance-bar">
         <div class="bar"
             v-for="addressInfo in nimDistributionData"
-            :key="addressInfo.value.address"
+            :key="addressInfo.address"
             ref="bars"
-            :class="[{ active: addressInfo.value.active }, addressInfo.value.backgroundClass]"
+            :class="[{ active: addressInfo.active }, addressInfo.backgroundClass]"
             :style="{ width: `${getBarWidth(addressInfo)}%` }"
-            @click="selectAddress(addressInfo.value.address)"
+            @click="selectAddress(addressInfo.address)"
         >
             <div class="change"
-                v-if="addressInfo.value.active && addressInfo.value.balanceChange > 0"
+                v-if="addressInfo.active && addressInfo.balanceChange > 0"
                 :style="{ width: `${getNimChangeBarWidth(addressInfo)}%` }"
             ></div>
         </div>
@@ -79,10 +79,10 @@ export default defineComponent({
         const btcExchangeRate = computed(() =>
             exchangeRates.value?.[CryptoCurrency.BTC][currency.value] || 0);
 
-        const nimDistributionData = computed(() => // does it really need a computed here ??
+        const nimDistributionData = computed(() =>
             addressInfos.value
                 // .filter((addressInfo) => addressInfo.type === 0) // filter no Vesting or Htlc account types
-                .map((addressInfo) => computed(() => ({
+                .map((addressInfo) => ({
                     ...addressInfo,
                     get active() {
                         return (activeAddress.value === this.address);
@@ -105,7 +105,7 @@ export default defineComponent({
                     get backgroundClass() {
                         return getBackgroundClass((this as AddressInfo).address);
                     },
-                } as ExtendedAddressInfo))),
+                } as ExtendedAddressInfo)),
         );
 
         const btcDistributionData = computed(() => ({
@@ -115,7 +115,7 @@ export default defineComponent({
         }));
 
         const totalBalance = computed(() =>
-            nimDistributionData.value.reduce((sum, data) => sum + data.value.newFiatBalance, 0)
+            nimDistributionData.value.reduce((sum, data) => sum + data.newFiatBalance, 0)
                 + btcDistributionData.value.newFiatBalance,
         );
 
@@ -160,14 +160,14 @@ export default defineComponent({
             const movingDirection = cursorPositionDiff > 0 ? RIGHT : LEFT;
 
             const $bitcoinBar = (context.refs.bitcoinBar as HTMLDivElement);
-            const activeBar = nimDistributionData.value.find((addressInfo) => addressInfo.value.active)!;
+            const activeBar = nimDistributionData.value.find((addressInfo) => addressInfo.active)!;
             const $activeBar = Array.from(context.refs.bars as HTMLDivElement[])
                 .find((bar) => bar.classList.contains('active'))!;
 
             const nimPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $activeBar.clientWidth, 0), 1);
             const btcPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $bitcoinBar.clientWidth, 0), 1);
 
-            let lunaAmount = Math.abs(activeBar.value.balanceChange)
+            let lunaAmount = Math.abs(activeBar.balanceChange)
                 + ((props.newNimBalance * nimPercent) * movingDirection);
             let satoshiAmount = Math.abs(btcDistributionData.value.balanceChange)
                 + ((props.newBtcBalance * btcPercent) * -movingDirection);
@@ -176,7 +176,7 @@ export default defineComponent({
                 direction.value = SwapDirection.NIM_TO_BTC;
             } else if (movingDirection === RIGHT) {
                 direction.value = SwapDirection.BTC_TO_NIM;
-            } else if (movingDirection === LEFT && activeBar.value.balanceChange > 0 && lunaAmount > 0) {
+            } else if (movingDirection === LEFT && activeBar.balanceChange > 0 && lunaAmount > 0) {
                 direction.value = SwapDirection.BTC_TO_NIM;
             } else if (movingDirection === LEFT) {
                 direction.value = SwapDirection.NIM_TO_BTC;
@@ -196,11 +196,11 @@ export default defineComponent({
             }
 
             if (
-                lunaAmount > (activeBar.value.balance || 0)
+                lunaAmount > (activeBar.balance || 0)
                 && direction.value === SwapDirection.NIM_TO_BTC
                 && movingDirection === LEFT
             ) {
-                lunaAmount = (activeBar.value.balance || 0);
+                lunaAmount = (activeBar.balance || 0);
                 satoshiAmount = (lunaAmount / 1e5) * props.satsPerNim;
             } else if (
                 satoshiAmount > accountBalance.value
@@ -234,19 +234,19 @@ export default defineComponent({
             cancelAnimationFrame(animationFrameHandle);
         });
 
-        const getBarWidth = (addressInfo: Ref<ExtendedAddressInfo>) => {
-            if (!addressInfo.value.active) {
-                return (addressInfo.value.newFiatBalance / totalBalance.value) * 100;
+        const getBarWidth = (addressInfo: ExtendedAddressInfo) => {
+            if (!addressInfo.active) {
+                return (addressInfo.newFiatBalance / totalBalance.value) * 100;
             }
 
             if (direction.value === SwapDirection.BTC_TO_NIM) {
-                return ((addressInfo.value.newFiatBalance) / totalBalance.value) * 100;
+                return ((addressInfo.newFiatBalance) / totalBalance.value) * 100;
             }
-            return ((addressInfo.value.newFiatBalance) / totalBalance.value) * 100;
+            return ((addressInfo.newFiatBalance) / totalBalance.value) * 100;
         };
 
-        const getNimChangeBarWidth = (addressInfo: Ref<ExtendedAddressInfo>) =>
-            ((addressInfo.value.fiatBalanceChange) / (addressInfo.value.newFiatBalance)) * 100;
+        const getNimChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
+            ((addressInfo.fiatBalanceChange) / (addressInfo.newFiatBalance)) * 100;
 
         const getBitcoinBarWidth = () =>
             ((btcDistributionData.value.newFiatBalance) / totalBalance.value) * 100;

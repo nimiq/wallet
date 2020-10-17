@@ -430,7 +430,7 @@ export default defineComponent({
     }
 
     svg {
-        color: #F7931A; // Bitcoin orange
+        color: var(--bitcoin-orange);
         margin-right: 2rem;
     }
 

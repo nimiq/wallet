@@ -107,7 +107,7 @@ export default defineComponent({
 svg {
     width: 96px;
     height: 96px;
-    color: #F7931A; // Bitcoin orange
+    color: var(--bitcoin-orange);
 }
 
 .nq-h1 {

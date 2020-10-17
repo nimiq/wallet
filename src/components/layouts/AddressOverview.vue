@@ -332,7 +332,7 @@ export default defineComponent({
         > svg {
             width: 10.5rem;
             height: 10.5rem;
-            color: #F7931A; // Bitcoin orange
+            color: var(--bitcoin-orange);
             margin: -0.25rem 0.375rem;
             display: block;
         }
@@ -628,7 +628,7 @@ export default defineComponent({
             > svg {
                 width: 5.25rem;
                 height: 5.25rem;
-                color: #F7931A; // Bitcoin orange
+                color: var(--bitcoin-orange);
                 margin: 0 0.25rem;
                 display: block;
             }

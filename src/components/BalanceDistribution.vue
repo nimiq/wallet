@@ -216,7 +216,7 @@ export default defineComponent({
                     height: 4rem;
                     margin-right: 1rem;
                     flex-shrink: 0;
-                    color: #F7931A; // Bitcoin orange
+                    color: var(--bitcoin-orange);
                 }
 
                 .nq-text-s {
@@ -241,7 +241,7 @@ export default defineComponent({
                 min-width: 0.5rem;
 
                 &.btc {
-                    background: #F7931A; // Bitcoin orange
+                    background: var(--bitcoin-orange);
                 }
 
                 &.empty {

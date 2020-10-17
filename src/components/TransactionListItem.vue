@@ -321,7 +321,7 @@ svg {
             width: 5.25rem;
             height: 5.25rem;
             margin: 0.375rem;
-            color: #F7931A; // Bitcoin orange
+            color: var(--bitcoin-orange);
         }
 
         .cashlink {

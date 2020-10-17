@@ -261,7 +261,7 @@ export default defineComponent({
         top: 12.25rem;
         width: 14.75rem;
         height: 14.75rem;
-        color: #F7931A; /* Bitcoin orange */
+        color: var(--bitcoin-orange);
     }
 
     .coming-soon {

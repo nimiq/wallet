@@ -636,7 +636,7 @@ export default defineComponent({
         width: 8rem;
         height: 8rem;
         margin: 0.5rem;
-        color: #F7931A; // Bitcoin orange
+        color: var(--bitcoin-orange);
     }
 
     img {

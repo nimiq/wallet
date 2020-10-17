@@ -608,7 +608,7 @@ export default defineComponent({
 }
 
 .address-info > svg {
-    color: #F7931A; // Bitcoin orange
+    color: var(--bitcoin-orange);
 }
 
 .address-info .identicon-container {

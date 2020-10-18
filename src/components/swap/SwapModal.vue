@@ -78,20 +78,20 @@
                     @change="onSwapBalanceBarChange"
                 />
                 <div class="columns swap-amounts flex-row">
-                    <div class="left-column" :class="!wantNim && !totalCostNim
+                    <div class="left-column" :class="!wantNim && !getNim
                         ? 'nq-gray'
                         : direction === SwapDirection.NIM_TO_BTC ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="direction === SwapDirection.NIM_TO_BTC ? totalCostNim : wantNim"
+                            :value="Math.abs(wantNim || getNim)"
                             @input="onInput('NIM', $event)"
                             :maxFontSize="2.5" :vanishing="true" :decimals="5">
-                            <span v-if="!wantNim && !totalCostNim" slot="prefix">±</span>
+                            <span v-if="!wantNim && !getNim" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">+</span>
                         </AmountInput>
                         <FiatConvertedAmount
-                            :amount="direction === SwapDirection.NIM_TO_BTC ? totalCostNim : wantNim" currency="nim"/>
+                            :amount="Math.abs(wantNim || getNim)" currency="nim"/>
                         <SwapFeesTooltip
                             v-if="direction === SwapDirection.NIM_TO_BTC"
                             preferredPosition="top right"
@@ -104,21 +104,21 @@
                             :currency="currency"
                         />
                     </div>
-                    <div class="right-column" :class="!wantBtc && !totalCostBtc
+                    <div class="right-column" :class="!wantBtc && !getBtc
                         ? 'nq-gray'
                         : direction === SwapDirection.BTC_TO_NIM ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="direction === SwapDirection.BTC_TO_NIM ? totalCostBtc : wantBtc"
+                            :value="Math.abs(wantBtc || getBtc)"
                             @input="onInput('BTC', $event)"
                             :maxFontSize="2.5" :vanishing="true" :decimals="8">
-                            <span v-if="!wantBtc && !totalCostBtc" slot="prefix">±</span>
+                            <span v-if="!wantBtc && !getBtc" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">+</span>
                             <span slot="suffix" class="ticker">BTC</span>
                         </AmountInput>
                         <FiatConvertedAmount
-                            :amount="direction === SwapDirection.BTC_TO_NIM ? totalCostBtc : wantBtc" currency="btc"/>
+                            :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
                         <SwapFeesTooltip
                             v-if="direction === SwapDirection.BTC_TO_NIM"
                             preferredPosition="top left"
@@ -312,7 +312,7 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
-import { selectOutputs /* , estimateFees */ } from '../../lib/BitcoinTransactionUtils';
+import { estimateFees, selectOutputs /* , estimateFees */ } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import {
     BtcHtlcDetails,
@@ -326,6 +326,9 @@ import {
     PreSwap,
     Limits,
     getLimits,
+    AssetList,
+    getAssets,
+    RequestAsset,
 } from '../../lib/FastspotApi';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -349,11 +352,13 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
         const direction = ref(SwapDirection.BTC_TO_NIM);
+        const fixedAsset = ref<SwapAsset>(SwapAsset.NIM);
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
 
         const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
+        const assets = ref<AssetList>(null);
 
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
         const { activeAddressInfo } = useAddressStore();
@@ -376,7 +381,10 @@ export default defineComponent({
 
         onMounted(() => {
             if (swap.value) processSwap();
-            else fetchLimits();
+            else {
+                fetchLimits();
+                fetchAssets();
+            }
         });
 
         watch(exchangeRates, fetchLimits, {
@@ -423,6 +431,10 @@ export default defineComponent({
             return Math.floor((limits.value.current / 1e5) * nimRate);
         });
 
+        async function fetchAssets() {
+            assets.value = await getAssets();
+        }
+
         /**
          * SWAP SETUP
          */
@@ -441,11 +453,11 @@ export default defineComponent({
             if (estimate.value.from.asset === SwapAsset.NIM) {
                 const { from, to } = estimate.value;
                 nim = from.amount - from.serviceNetworkFee;
-                btc = to.amount;
+                btc = to.amount + to.fee - to.serviceNetworkFee;
             } else {
                 const { from, to } = estimate.value;
                 btc = from.amount - from.serviceNetworkFee;
-                nim = to.amount;
+                nim = to.amount + to.fee - to.serviceNetworkFee;
             }
 
             return ((btc / 1e8) / (nim / 1e5)) * 1e8;
@@ -454,27 +466,10 @@ export default defineComponent({
         const wantNim = ref(0);
         const wantBtc = ref(0);
 
-        const giveNim = computed(() => satsPerNim.value ? Math.round((wantBtc.value / satsPerNim.value) * 1e5) : 0);
-        const giveBtc = computed(() => satsPerNim.value ? Math.round((wantNim.value / 1e5) * satsPerNim.value) : 0);
+        const getNim = computed(() => satsPerNim.value ? Math.round((wantBtc.value / satsPerNim.value) * 1e5) * -1 : 0);
+        const getBtc = computed(() => satsPerNim.value ? Math.round((wantNim.value / 1e5) * satsPerNim.value) * -1 : 0);
 
         const fetchingEstimate = ref(false);
-
-        const totalCostNim = computed(() => {
-            if (!fetchingEstimate.value && estimate.value && estimate.value.from.asset === SwapAsset.NIM) {
-                return estimate.value.from.amount + estimate.value.from.fee;
-            }
-            return giveNim.value + (estimate.value && estimate.value.from.asset === SwapAsset.NIM
-                ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
-                : 0);
-        });
-        const totalCostBtc = computed(() => {
-            if (!fetchingEstimate.value && estimate.value && estimate.value.from.asset === SwapAsset.BTC) {
-                return estimate.value.from.amount + estimate.value.from.fee;
-            }
-            return giveBtc.value + (estimate.value && estimate.value.from.asset === SwapAsset.BTC
-                ? estimate.value.from.serviceNetworkFee + estimate.value.from.fee
-                : 0);
-        });
 
         let debounce: number | null = null;
 
@@ -492,14 +487,65 @@ export default defineComponent({
             }
 
             fetchingEstimate.value = true;
+
+            let fundingFee: number;
+            let settlementFee: number;
+
+            if (direction.value === SwapDirection.NIM_TO_BTC) {
+                // NIM
+                fundingFee = assets.value
+                    ? assets.value[SwapAsset.NIM].feePerUnit * 244 // 244 = NIM HTLC funding tx size
+                    : 0; // Default zero fees for NIM
+
+                // BTC
+                const { accountUtxos } = useBtcAddressStore();
+                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value), assets.value ? assets.value[SwapAsset.BTC].feePerUnit : 1, 135); // 135 extra weight units for BTC HTLC settlement tx
+                settlementFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0) - Math.abs(wantBtc.value || getBtc.value) - selected.changeAmount;
+            }
+
+            if (direction.value === SwapDirection.BTC_TO_NIM) {
+                // BTC
+                const { accountUtxos } = useBtcAddressStore();
+                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value), assets.value ? assets.value[SwapAsset.BTC].feePerUnit : 1, 48); // 48 extra weight units for BTC HTLC funding tx
+                fundingFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0) - Math.abs(wantBtc.value || getBtc.value) - selected.changeAmount;
+
+                // NIM
+                settlementFee = assets.value
+                    ? assets.value[SwapAsset.NIM].feePerUnit * 233 // 233 = NIM HTLC settlement tx size
+                    : 0; // Default zero fees for NIM
+            }
+
             try {
-                const to = direction.value === SwapDirection.NIM_TO_BTC
-                    ? { BTC: wantBtc.value / 1e8 }
-                    : { NIM: wantNim.value / 1e5 };
+                let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
+                let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
+
+                if (fixedAsset.value === SwapAsset.NIM) {
+                    if (direction.value === SwapDirection.NIM_TO_BTC) {
+                        from = { NIM: Math.abs(wantNim.value) / 1e5 };
+                        to = SwapAsset.BTC;
+                    }
+                    if (direction.value === SwapDirection.BTC_TO_NIM) {
+                        from = SwapAsset.BTC;
+                        to = { NIM: wantNim.value / 1e5 };
+                    }
+                }
+
+                if (fixedAsset.value === SwapAsset.BTC) {
+                    if (direction.value === SwapDirection.BTC_TO_NIM) {
+                        from = { BTC: Math.abs(wantBtc.value) / 1e8 };
+                        to = SwapAsset.NIM;
+                    }
+                    if (direction.value === SwapDirection.NIM_TO_BTC) {
+                        from = SwapAsset.NIM;
+                        to = { BTC: wantBtc.value / 1e8 };
+                    }
+                }
+
+                if (!from || !to) throw new Error('Invalid swap parameters');
 
                 estimate.value = await getEstimate(
-                    direction.value === SwapDirection.NIM_TO_BTC ? SwapAsset.NIM : SwapAsset.BTC,
-                    to,
+                    from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                    to as SwapAsset,
                 );
                 estimateError.value = null;
             } catch (err) {
@@ -522,14 +568,26 @@ export default defineComponent({
             }
 
             if (asset === SwapAsset.NIM) {
+                fixedAsset.value = SwapAsset.NIM;
                 wantNim.value = amount;
-                direction.value = SwapDirection.BTC_TO_NIM;
                 wantBtc.value = 0;
+
+                if (amount < 0) {
+                    direction.value = SwapDirection.NIM_TO_BTC;
+                } else {
+                    direction.value = SwapDirection.BTC_TO_NIM;
+                }
             }
             if (asset === SwapAsset.BTC) {
+                fixedAsset.value = SwapAsset.BTC;
                 wantBtc.value = amount;
-                direction.value = SwapDirection.NIM_TO_BTC;
                 wantNim.value = 0;
+
+                if (amount < 0) {
+                    direction.value = SwapDirection.BTC_TO_NIM;
+                } else {
+                    direction.value = SwapDirection.NIM_TO_BTC;
+                }
             }
 
             if (!amount) {
@@ -539,17 +597,10 @@ export default defineComponent({
 
         const newNimBalance = computed(() => {
             if (!activeAddressInfo.value) return 0;
-
-            return direction.value === SwapDirection.NIM_TO_BTC
-                ? (activeAddressInfo.value.balance || 0) - totalCostNim.value
-                : (activeAddressInfo.value.balance || 0) + wantNim.value;
+            return (activeAddressInfo.value.balance || 0) + (wantNim.value || getNim.value);
         });
 
-        const newBtcBalance = computed(() =>
-            direction.value === SwapDirection.BTC_TO_NIM
-                ? accountBtcBalance.value - totalCostBtc.value
-                : accountBtcBalance.value + wantBtc.value,
-        );
+        const newBtcBalance = computed(() => accountBtcBalance.value + (wantBtc.value || getBtc.value));
 
         const myNimFeeFiat = computed(() => {
             if (!estimate.value) return 0;
@@ -764,7 +815,7 @@ export default defineComponent({
                     const { accountUtxos } = useBtcAddressStore();
                     // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
-                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit, 46);
+                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit, 48);
                     let changeAddress: string;
                     if (requiredInputs.changeAmount > 0) {
                         const { nextChangeAddress } = useBtcAddressStore();
@@ -949,18 +1000,8 @@ export default defineComponent({
             onClose(true);
         }
 
-        function onSwapBalanceBarChange(swapInfo: {
-            direction: SwapDirection,
-            amount: {
-                nim: number,
-                btc: number,
-            },
-        }) {
-            if (swapInfo.direction === SwapDirection.BTC_TO_NIM) {
-                onInput(SwapAsset.NIM, swapInfo.amount.nim);
-            } else {
-                onInput(SwapAsset.BTC, swapInfo.amount.btc);
-            }
+        function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
+            onInput(swapInfo.asset, swapInfo.amount);
         }
 
         return {
@@ -970,8 +1011,8 @@ export default defineComponent({
             SwapDirection,
             wantNim,
             wantBtc,
-            totalCostNim,
-            totalCostBtc,
+            getNim,
+            getBtc,
             currency,
             myNimFeeFiat,
             myBtcFeeFiat,

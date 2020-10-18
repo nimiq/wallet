@@ -11,11 +11,11 @@ msgid "{addresses} send and receive transactions."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:33
-#: src/components/swap/SwapModal.vue:50
+#: src/components/swap/SwapModal.vue:54
 msgid "{amount} left today"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:231
+#: src/components/modals/BtcTransactionModal.vue:234
 #: src/components/modals/TransactionModal.vue:246
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
@@ -162,11 +162,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:197
+#: src/components/swap/SwapModal.vue:199
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:241
+#: src/components/swap/SwapModal.vue:243
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -185,7 +185,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:431
+#: src/components/modals/TransactionModal.vue:432
 #: src/components/TransactionListItem.vue:167
 msgid "Bitcoin"
 msgstr ""
@@ -198,12 +198,12 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:228
+#: src/components/modals/BtcTransactionModal.vue:231
 #: src/components/modals/TransactionModal.vue:243
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:238
+#: src/components/modals/BtcTransactionModal.vue:241
 #: src/components/modals/TransactionModal.vue:257
 msgid "Block explorer"
 msgstr ""
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:437
+#: src/components/modals/TransactionModal.vue:438
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:173
 msgid "Cashlink"
@@ -293,7 +293,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:154
 msgid "Confirm"
 msgstr ""
 
@@ -387,7 +387,7 @@ msgid "Credit Card accepted"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:30
-#: src/components/swap/SwapModal.vue:47
+#: src/components/swap/SwapModal.vue:51
 msgid "Daily Limit"
 msgstr ""
 
@@ -400,7 +400,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:169
+#: src/components/swap/SwapModal.vue:171
 msgid "Do not close this popup!"
 msgstr ""
 
@@ -409,7 +409,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:273
+#: src/components/swap/SwapModal.vue:275
 msgid "Done"
 msgstr ""
 
@@ -425,7 +425,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:64
 msgid "During early access, these limits apply."
 msgstr ""
 
@@ -612,7 +612,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:199
+#: src/components/swap/SwapModal.vue:201
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -677,12 +677,12 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:43
+#: src/components/swap/SwapModal.vue:44
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:37
-#: src/components/swap/SwapModal.vue:54
+#: src/components/swap/SwapModal.vue:38
+#: src/components/swap/SwapModal.vue:59
 msgid "Monthly Limit"
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:221
+#: src/components/swap/SwapModal.vue:223
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -803,7 +803,7 @@ msgstr ""
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:158
+#: src/components/swap/SwapModal.vue:160
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 
@@ -842,7 +842,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:258
+#: src/components/swap/SwapModal.vue:260
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -931,7 +931,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:219
+#: src/components/swap/SwapModal.vue:221
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1007,7 +1007,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:184
+#: src/components/swap/SwapModal.vue:186
 msgid "Signing swap..."
 msgstr ""
 
@@ -1049,7 +1049,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:260
+#: src/components/swap/SwapModal.vue:262
 msgid "Swap complete!"
 msgstr ""
 
@@ -1062,11 +1062,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:243
+#: src/components/swap/SwapModal.vue:245
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:188
 msgid "Swap signed!"
 msgstr ""
 
@@ -1083,7 +1083,7 @@ msgstr ""
 msgid "Tell us here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:159
+#: src/components/swap/SwapModal.vue:161
 msgid "terms of service"
 msgstr ""
 
@@ -1126,7 +1126,7 @@ msgid "There is no ‘forgot password’"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:27
-#: src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:65
 msgid "They will be increased gradually."
 msgstr ""
 
@@ -1200,7 +1200,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:439
 #: src/components/TransactionListItem.vue:174
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -1268,7 +1268,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:172
+#: src/components/swap/SwapModal.vue:174
 msgid "You can now close this popup."
 msgstr ""
 

@@ -30,13 +30,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, Ref } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted } from '@vue/composition-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore, AddressInfo } from '../../stores/Address';
 import getBackgroundClass from '../../lib/AddressColor';
 import { SwapDirection } from '../../stores/Swaps';
+import { SwapAsset } from '../../lib/FastspotApi';
 
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
@@ -103,7 +104,7 @@ export default defineComponent({
                         return (this.balanceChange / 1e5) * nimExchangeRate.value;
                     },
                     get backgroundClass() {
-                        return getBackgroundClass((this as AddressInfo).address);
+                        return getBackgroundClass(this.address);
                     },
                 } as ExtendedAddressInfo)),
         );
@@ -123,7 +124,6 @@ export default defineComponent({
         let isGrabbing = false;
         let initialCursorPosition = 0;
         let currentCursorPosition = 0;
-        let cursorPositionDiff = 0;
         let animationFrameHandle = 0;
 
         function onMouseDown(event: MouseEvent) {
@@ -133,9 +133,7 @@ export default defineComponent({
         }
 
         function onMouseUp(/* event: MouseEvent */) {
-            if (isGrabbing) {
-                isGrabbing = false;
-            }
+            isGrabbing = false;
         }
 
         function onMouseMove(event: MouseEvent) {
@@ -146,16 +144,23 @@ export default defineComponent({
 
         const RIGHT = 1;
         const LEFT = -1;
-        const direction = ref<SwapDirection | null>(null);
 
-        function render() {
+        function emit(asset: SwapAsset, amount: number) {
+            context.emit('change', {
+                asset,
+                amount: Math.ceil(amount),
+            });
+        }
+
+        function render(): void {
             animationFrameHandle = requestAnimationFrame(render);
 
-            if (!isGrabbing) return;
+            if (!isGrabbing) return undefined;
 
-            cursorPositionDiff = currentCursorPosition - initialCursorPosition;
+            const cursorPositionDiff = currentCursorPosition - initialCursorPosition;
+            initialCursorPosition = currentCursorPosition;
 
-            if (cursorPositionDiff === 0) return;
+            if (cursorPositionDiff === 0) return undefined;
 
             const movingDirection = cursorPositionDiff > 0 ? RIGHT : LEFT;
 
@@ -167,59 +172,31 @@ export default defineComponent({
             const nimPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $activeBar.clientWidth, 0), 1);
             const btcPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $bitcoinBar.clientWidth, 0), 1);
 
-            let lunaAmount = Math.abs(activeBar.balanceChange)
+            const lunaAmount = activeBar.balanceChange
                 + ((props.newNimBalance * nimPercent) * movingDirection);
-            let satoshiAmount = Math.abs(btcDistributionData.value.balanceChange)
+            const satoshiAmount = btcDistributionData.value.balanceChange
                 + ((props.newBtcBalance * btcPercent) * -movingDirection);
 
-            if (movingDirection === RIGHT && btcDistributionData.value.balanceChange > 0 && satoshiAmount > 0) {
-                direction.value = SwapDirection.NIM_TO_BTC;
-            } else if (movingDirection === RIGHT) {
-                direction.value = SwapDirection.BTC_TO_NIM;
-            } else if (movingDirection === LEFT && activeBar.balanceChange > 0 && lunaAmount > 0) {
-                direction.value = SwapDirection.BTC_TO_NIM;
-            } else if (movingDirection === LEFT) {
-                direction.value = SwapDirection.NIM_TO_BTC;
-            }
-
             if (props.limits && props.limits.fiat) {
-                if ((
-                    (((lunaAmount / 1e5) * nimExchangeRate.value) > props.limits.fiat)
-                    || (((satoshiAmount / 1e8) * btcExchangeRate.value) > props.limits.fiat)
-                ) && (
-                    (direction.value === SwapDirection.NIM_TO_BTC && movingDirection === LEFT)
-                    || (direction.value === SwapDirection.BTC_TO_NIM && movingDirection === RIGHT)
-                )) {
-                    lunaAmount = (props.limits.fiat / nimExchangeRate.value) * 1e5;
-                    satoshiAmount = (props.limits.fiat / btcExchangeRate.value) * 1e8;
+                if ((lunaAmount / 1e5) * nimExchangeRate.value < -props.limits.fiat && movingDirection === LEFT) {
+                    return emit(SwapAsset.NIM, -(props.limits.fiat / nimExchangeRate.value) * 1e5);
+                }
+                if ((satoshiAmount / 1e8) * btcExchangeRate.value < -props.limits.fiat && movingDirection === RIGHT) {
+                    return emit(SwapAsset.BTC, -(props.limits.fiat / btcExchangeRate.value) * 1e8);
                 }
             }
 
-            if (
-                lunaAmount > (activeBar.balance || 0)
-                && direction.value === SwapDirection.NIM_TO_BTC
-                && movingDirection === LEFT
-            ) {
-                lunaAmount = (activeBar.balance || 0);
-                satoshiAmount = (lunaAmount / 1e5) * props.satsPerNim;
-            } else if (
-                satoshiAmount > accountBalance.value
-                && direction.value === SwapDirection.BTC_TO_NIM
-                && movingDirection === RIGHT
-            ) {
-                satoshiAmount = accountBalance.value;
-                lunaAmount = (satoshiAmount / props.satsPerNim) * 1e5;
+            if (lunaAmount < -(activeBar.balance || 0) && movingDirection === LEFT) {
+                return emit(SwapAsset.NIM, -(activeBar.balance || 0));
+            }
+            if (satoshiAmount < -accountBalance.value && movingDirection === RIGHT) {
+                return emit(SwapAsset.BTC, -accountBalance.value);
             }
 
-            context.emit('change', {
-                direction: direction.value,
-                amount: {
-                    btc: Math.floor(Math.abs(satoshiAmount)),
-                    nim: Math.floor(Math.abs(lunaAmount)),
-                },
-            });
-
-            initialCursorPosition = currentCursorPosition;
+            if (lunaAmount <= 0) {
+                return emit(SwapAsset.NIM, lunaAmount);
+            }
+            return emit(SwapAsset.BTC, satoshiAmount);
         }
 
         onMounted(() => {
@@ -234,25 +211,17 @@ export default defineComponent({
             cancelAnimationFrame(animationFrameHandle);
         });
 
-        const getBarWidth = (addressInfo: ExtendedAddressInfo) => {
-            if (!addressInfo.active) {
-                return (addressInfo.newFiatBalance / totalBalance.value) * 100;
-            }
-
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
-                return ((addressInfo.newFiatBalance) / totalBalance.value) * 100;
-            }
-            return ((addressInfo.newFiatBalance) / totalBalance.value) * 100;
-        };
+        const getBarWidth = (addressInfo: ExtendedAddressInfo) =>
+            (addressInfo.newFiatBalance / totalBalance.value) * 100;
 
         const getNimChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
-            ((addressInfo.fiatBalanceChange) / (addressInfo.newFiatBalance)) * 100;
+            (addressInfo.fiatBalanceChange / addressInfo.newFiatBalance) * 100;
 
         const getBitcoinBarWidth = () =>
-            ((btcDistributionData.value.newFiatBalance) / totalBalance.value) * 100;
+            (btcDistributionData.value.newFiatBalance / totalBalance.value) * 100;
 
         const getBitcoinChangeBarWidth = () =>
-            ((btcDistributionData.value.fiatBalanceChange) / (btcDistributionData.value.newFiatBalance)) * 100;
+            (btcDistributionData.value.fiatBalanceChange / btcDistributionData.value.newFiatBalance) * 100;
 
         return {
             SwapDirection,

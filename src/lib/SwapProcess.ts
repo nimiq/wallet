@@ -1,6 +1,5 @@
 import { Ref } from '@vue/composition-api';
 import {
-    bytesToHex,
     TransactionDetails as BtcTransactionDetails,
     TransactionState as BtcTransactionState,
 } from '@nimiq/electrum-client';
@@ -75,16 +74,10 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
 
             function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
                 if (tx.recipient !== htlcAddress) return false;
-
-                let hexData = nimHtlcData.data;
-                if (hexData.length !== 156) {
-                    // Convert Base64 to HEX
-                    hexData = bytesToHex(new Uint8Array(
-                        atob(nimHtlcData.data).split('').map((c) => c.charCodeAt(0))));
-                }
+                if (tx.value !== swap.value.to.amount + swap.value.to.fee) return false;
 
                 // TODO: Reject when unequal (=> handle error)
-                if (tx.data.raw !== hexData) return false;
+                if (tx.data.raw !== nimHtlcData.data) return false;
 
                 if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
                     resolve(tx);

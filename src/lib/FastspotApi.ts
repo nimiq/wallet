@@ -8,6 +8,12 @@ export enum SwapAsset {
 
 // Internal Types
 
+type FastspotAsset = {
+    symbol: SwapAsset,
+    name: string,
+    feePerUnit: string,
+};
+
 type FastspotFee = {
     perUnit?: string,
     total: string,
@@ -26,7 +32,7 @@ type FastspotPrice = {
 type FastspotEstimate = {
     from: FastspotPrice[],
     to: FastspotPrice[],
-    serviceFeePercentage: string,
+    serviceFeePercentage: string | number,
     direction: 'forward' | 'reverse',
 };
 
@@ -57,7 +63,7 @@ type FastspotPreSwap = {
     info: {
         from: FastspotPrice[],
         to: FastspotPrice[],
-        serviceFeePercentage: string,
+        serviceFeePercentage: string | number,
         direction: 'forward' | 'reverse',
     },
 };
@@ -75,7 +81,8 @@ type FastspotLimits<T extends SwapAsset> = {
 };
 
 type FastspotResult
-    = FastspotEstimate[]
+    = FastspotAsset[]
+    | FastspotEstimate[]
     | FastspotSwap
     | FastspotContract<SwapAsset>
     | FastspotLimits<SwapAsset>;
@@ -88,6 +95,14 @@ type FastspotError = {
 };
 
 // Public Types
+
+export type Asset = {
+    asset: SwapAsset,
+    name: string,
+    feePerUnit: number,
+};
+
+export type AssetList = {[asset in SwapAsset]: Asset};
 
 // export type RequestAsset = Partial<Record<SwapAsset, number>>;
 export type RequestAsset<K extends SwapAsset> = {
@@ -167,7 +182,9 @@ function convertFromData(from: FastspotPrice): PriceData {
     const asset = SwapAsset[from.symbol];
     return {
         asset,
-        amount: coinsToUnits(asset, from.amount) - coinsToUnits(asset, from.fundingNetworkFee.total),
+        amount: coinsToUnits(asset, from.amount) - (from.fundingNetworkFee.totalIsIncluded
+            ? coinsToUnits(asset, from.fundingNetworkFee.total)
+            : 0),
         fee: coinsToUnits(asset, from.fundingNetworkFee.total),
         feePerUnit: coinsToUnits(asset, from.fundingNetworkFee.perUnit || '0') || 1,
         serviceNetworkFee: coinsToUnits(asset, from.finalizeNetworkFee.total),
@@ -178,7 +195,9 @@ function convertToData(to: FastspotPrice): PriceData {
     const asset = SwapAsset[to.symbol];
     return {
         asset,
-        amount: coinsToUnits(asset, to.amount),
+        amount: coinsToUnits(asset, to.amount) - (to.finalizeNetworkFee.totalIsIncluded
+            ? 0
+            : coinsToUnits(asset, to.finalizeNetworkFee.total)),
         fee: coinsToUnits(asset, to.finalizeNetworkFee.total),
         feePerUnit: coinsToUnits(asset, to.finalizeNetworkFee.perUnit || '0') || 1,
         serviceNetworkFee: coinsToUnits(asset, to.fundingNetworkFee.total),
@@ -220,7 +239,7 @@ function convertSwap(swap: FastspotPreSwap | FastspotSwap): PreSwap | Swap {
         from: convertFromData(inputObject),
         to: convertToData(outputObject),
         status: swap.status,
-        serviceFeePercentage: parseFloat(swap.info.serviceFeePercentage),
+        serviceFeePercentage: parseFloat(swap.info.serviceFeePercentage as string),
     };
 
     if ('contracts' in swap) {
@@ -322,7 +341,11 @@ export async function getEstimate(
     const result = await api('/estimates', 'POST', {
         from,
         to,
-        includedFees: 'all',
+        // For reverse swaps, we include all fees (but actually pay a slightly different amount,
+        // based on the actual amount of fees we need to fund our HTLC) - and for forward swaps,
+        // we only include Fastspot's fees, as we calculate the fees we pay for our HTLC ourselves,
+        // and subtract them from the `from` amount we actually tell Fastspot.
+        includedFees: typeof from === 'string' ? 'all' : 'required',
     }) as FastspotEstimate[];
 
     const inputObject = result[0].from[0];
@@ -332,7 +355,7 @@ export async function getEstimate(
     const estimate: Estimate = {
         from: convertFromData(inputObject),
         to: convertToData(outputObject),
-        serviceFeePercentage: parseFloat(result[0].serviceFeePercentage),
+        serviceFeePercentage: parseFloat(result[0].serviceFeePercentage as string),
     };
 
     return estimate;
@@ -349,7 +372,11 @@ export async function createSwap(
     const result = await api('/swaps', 'POST', {
         from,
         to,
-        includedFees: 'all',
+        // For reverse swaps, we include all fees (but actually pay a slightly different amount,
+        // based on the actual amount of fees we need to fund our HTLC) - and for forward swaps,
+        // we only include Fastspot's fees, as we calculate the fees we pay for our HTLC ourselves,
+        // and subtract them from the `from` amount we actually tell Fastspot.
+        includedFees: typeof from === 'string' ? 'all' : 'required',
     }) as FastspotPreSwap;
 
     return convertSwap(result);
@@ -387,4 +414,17 @@ export async function getContract<T extends SwapAsset>(asset: T, address: string
 export async function getLimits<T extends SwapAsset>(asset: T, address: string): Promise<Limits<T>> {
     const result = await api(`/limits/${asset}/${address}`, 'GET') as FastspotLimits<T>;
     return convertLimits(result);
+}
+
+export async function getAssets(): Promise<AssetList> {
+    const result = await api('/assets', 'GET') as FastspotAsset[];
+    const records: Partial<AssetList> = {};
+    for (const record of result) {
+        records[record.symbol] = {
+            asset: record.symbol,
+            name: record.name,
+            feePerUnit: coinsToUnits(record.symbol, record.feePerUnit),
+        };
+    }
+    return records as AssetList;
 }

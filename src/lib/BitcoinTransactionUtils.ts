@@ -1,24 +1,20 @@
 import { UTXO } from '../stores/BtcAddress';
 
-// Source for Weight Units: https://bitcoin.stackexchange.com/a/84006
+// Source for Weight Units: https://bitcoinops.org/en/tools/calc-size/
 
 // These values are for native segwit transactions
 // WU = Weight Units
-export const TX_HEADER_WU = 42;
-export const INPUT_WU = 274;
-export const OUPUT_WU = 124;
-
-// For nested segwit transactions:
-// WU = Weight Units
-// export const TX_HEADER_WU = 42;
-// export const INPUT_WU = 438;
-// export const OUPUT_WU = 128;
+export const TX_HEADER_WU = 43;
+export const INPUT_WU = 271;
+export const LEGACY_OUTPUT_WU = 136; // P2PKH
+export const NESTED_OUTPUT_WU = 128; // P2SH
+export const NATIVE_OUPUT_WU = 124; // P2WPKH
 
 // The amount which does not warrant a change output, since it would cost more in fees to include than it's worth
 export const DUST_AMOUNT = Math.ceil(INPUT_WU / 4) * 2;
 
 export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1, extraWeightUnits = 0) {
-    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + OUPUT_WU * numOutputs + extraWeightUnits;
+    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + LEGACY_OUTPUT_WU * numOutputs + extraWeightUnits;
     const vSize = Math.ceil(weightUnits / 4);
     return vSize * feePerByte;
 }

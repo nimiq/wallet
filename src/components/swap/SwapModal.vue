@@ -312,7 +312,7 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
-import { estimateFees, selectOutputs /* , estimateFees */ } from '../../lib/BitcoinTransactionUtils';
+import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import {
     BtcHtlcDetails,
@@ -448,16 +448,28 @@ export default defineComponent({
                 return Math.round((nimRate / btcRate) * 1e8);
             }
 
+            /**
+             * Here we calculate the real exchange rate that Fastspot offers. Since we request quotes with our tx fees
+             * excluded, meaning the amounts we request are the actual contract balances, we don't need to take our fees
+             * into account here.
+             *
+             * Fastspot's exchange rate consists of the amount it eventually receives vs. the amount it looses.
+             * - The amount it receives is the amount that we fund our outgoing HTLC with (from.amount), reduced by its
+             *   own network fees: `from.amount - from.serviceNetworkFee`
+             * - The amount it pays out is the amount that it funds our incoming HTLC with (to.amount), increased by its
+             *   own network fees: `to.amount + to.serviceNetworkFee`
+             */
+
             let nim: number;
             let btc: number;
             if (estimate.value.from.asset === SwapAsset.NIM) {
                 const { from, to } = estimate.value;
                 nim = from.amount - from.serviceNetworkFee;
-                btc = to.amount + to.fee - to.serviceNetworkFee;
+                btc = to.amount + to.serviceNetworkFee;
             } else {
                 const { from, to } = estimate.value;
                 btc = from.amount - from.serviceNetworkFee;
-                nim = to.amount + to.fee - to.serviceNetworkFee;
+                nim = to.amount + to.serviceNetworkFee;
             }
 
             return ((btc / 1e8) / (nim / 1e5)) * 1e8;
@@ -466,8 +478,150 @@ export default defineComponent({
         const wantNim = ref(0);
         const wantBtc = ref(0);
 
-        const getNim = computed(() => satsPerNim.value ? Math.round((wantBtc.value / satsPerNim.value) * 1e5) * -1 : 0);
-        const getBtc = computed(() => satsPerNim.value ? Math.round((wantNim.value / 1e5) * satsPerNim.value) * -1 : 0);
+        const getNim = computed(() => {
+            if (!wantBtc.value) return 0;
+
+            let btc = wantBtc.value;
+            if (estimate.value) {
+                if (btc < 0) {
+                    /**
+                     * When I sell an asset, Fastspot eventually only receives what I spend, minus the network fees.
+                     * So we subtract them from what I want to spend (`btc` here is negative, so adding positive
+                     * values "reduces" the asset amount towards zero).
+                     */
+                    btc += (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
+                } else {
+                    /**
+                     * When I buy an asset, Fastspot also incurs the two network fees as costs, so we add them
+                     * to the amount I want to eventually receive.
+                     */
+                    btc += (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                }
+            }
+
+            let delta = satsPerNim.value ? Math.round((btc / satsPerNim.value) * 1e5) * -1 : 0;
+            if (estimate.value) {
+                if (delta < 0) {
+                    /**
+                     * When I sell an asset, I also have to pay for both network fees, so we add them to the already
+                     * negative `delta`.
+                     */
+                    delta -= (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
+                } else {
+                    /**
+                     * When I buy an asset, Fastspot incurs both network fees on top of their real exchange rate, so we
+                     * have to subtract them from the calculated NIM amount I receive.
+                     */
+                    delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                }
+            }
+            return delta;
+        });
+        const getBtc = computed(() => {
+            if (!wantNim.value) return 0;
+
+            let nim = wantNim.value;
+            if (estimate.value) {
+                if (nim < 0) {
+                    nim += (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
+                } else {
+                    nim += (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                }
+            }
+
+            let delta = satsPerNim.value ? Math.round((nim / 1e5) * satsPerNim.value) * -1 : 0;
+            if (estimate.value) {
+                if (delta < 0) {
+                    delta -= (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
+                } else {
+                    delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                }
+            }
+            return delta;
+        });
+
+        function calculateRequestData(): {
+            from: SwapAsset | RequestAsset<SwapAsset>,
+            to: RequestAsset<SwapAsset> | SwapAsset,
+            fundingFee: number,
+            settlementFee: number,
+        } { // eslint-disable-line indent
+            let fundingFee: number | null = null;
+            let settlementFee: number | null = null;
+
+            const nimFee = (estimate.value && (
+                (estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
+                || (estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
+            ))
+                || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
+                || 0; // Default zero fees for NIM
+
+            const btcFee = (estimate.value && (
+                (estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
+                || (estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
+            ))
+                || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
+                || 1;
+
+            if (direction.value === SwapDirection.NIM_TO_BTC) {
+                // NIM
+                fundingFee = nimFee * 244; // 244 = NIM HTLC funding tx size
+
+                // BTC
+                // 135 extra weight units for BTC HTLC settlement tx
+                settlementFee = estimateFees(1, 1, assets.value ? btcFee : 1, 135);
+            }
+
+            if (direction.value === SwapDirection.BTC_TO_NIM) {
+                // BTC
+                const { accountUtxos } = useBtcAddressStore();
+                // 48 extra weight units for BTC HTLC funding tx
+                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value), btcFee, 48);
+                fundingFee = selected.utxos
+                    .reduce((sum, utxo) => sum + utxo.witness.value, 0)
+                    - Math.abs(wantBtc.value || getBtc.value)
+                    - selected.changeAmount;
+
+                // NIM
+                settlementFee = nimFee * 233; // 233 = NIM HTLC settlement tx size
+            }
+
+            if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
+
+            let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
+            let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
+
+            if (fixedAsset.value === SwapAsset.NIM) {
+                if (direction.value === SwapDirection.NIM_TO_BTC) {
+                    from = { NIM: (Math.abs(wantNim.value) - fundingFee!) / 1e5 };
+                    to = SwapAsset.BTC;
+                }
+                if (direction.value === SwapDirection.BTC_TO_NIM) {
+                    from = SwapAsset.BTC;
+                    to = { NIM: (wantNim.value + settlementFee!) / 1e5 };
+                }
+            }
+
+            if (fixedAsset.value === SwapAsset.BTC) {
+                if (direction.value === SwapDirection.BTC_TO_NIM) {
+                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee!) / 1e8 };
+                    to = SwapAsset.NIM;
+                }
+                if (direction.value === SwapDirection.NIM_TO_BTC) {
+                    from = SwapAsset.NIM;
+                    to = { BTC: (wantBtc.value + settlementFee!) / 1e8 };
+                }
+            }
+
+            if (!from || !to) throw new Error('Invalid swap parameters');
+
+            return {
+                from,
+                to,
+                fundingFee,
+                settlementFee,
+            };
+        }
 
         const fetchingEstimate = ref(false);
 
@@ -488,65 +642,18 @@ export default defineComponent({
 
             fetchingEstimate.value = true;
 
-            let fundingFee: number;
-            let settlementFee: number;
-
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
-                // NIM
-                fundingFee = assets.value
-                    ? assets.value[SwapAsset.NIM].feePerUnit * 244 // 244 = NIM HTLC funding tx size
-                    : 0; // Default zero fees for NIM
-
-                // BTC
-                const { accountUtxos } = useBtcAddressStore();
-                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value), assets.value ? assets.value[SwapAsset.BTC].feePerUnit : 1, 135); // 135 extra weight units for BTC HTLC settlement tx
-                settlementFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0) - Math.abs(wantBtc.value || getBtc.value) - selected.changeAmount;
-            }
-
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
-                // BTC
-                const { accountUtxos } = useBtcAddressStore();
-                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value), assets.value ? assets.value[SwapAsset.BTC].feePerUnit : 1, 48); // 48 extra weight units for BTC HTLC funding tx
-                fundingFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0) - Math.abs(wantBtc.value || getBtc.value) - selected.changeAmount;
-
-                // NIM
-                settlementFee = assets.value
-                    ? assets.value[SwapAsset.NIM].feePerUnit * 233 // 233 = NIM HTLC settlement tx size
-                    : 0; // Default zero fees for NIM
-            }
-
             try {
-                let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
-                let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
+                const { to, from, fundingFee, settlementFee } = calculateRequestData();
 
-                if (fixedAsset.value === SwapAsset.NIM) {
-                    if (direction.value === SwapDirection.NIM_TO_BTC) {
-                        from = { NIM: Math.abs(wantNim.value) / 1e5 };
-                        to = SwapAsset.BTC;
-                    }
-                    if (direction.value === SwapDirection.BTC_TO_NIM) {
-                        from = SwapAsset.BTC;
-                        to = { NIM: wantNim.value / 1e5 };
-                    }
-                }
-
-                if (fixedAsset.value === SwapAsset.BTC) {
-                    if (direction.value === SwapDirection.BTC_TO_NIM) {
-                        from = { BTC: Math.abs(wantBtc.value) / 1e8 };
-                        to = SwapAsset.NIM;
-                    }
-                    if (direction.value === SwapDirection.NIM_TO_BTC) {
-                        from = SwapAsset.NIM;
-                        to = { BTC: wantBtc.value / 1e8 };
-                    }
-                }
-
-                if (!from || !to) throw new Error('Invalid swap parameters');
-
-                estimate.value = await getEstimate(
+                const newEstimate = await getEstimate(
                     from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
                     to as SwapAsset,
                 );
+
+                newEstimate.from.fee = fundingFee;
+                newEstimate.to.fee = settlementFee;
+                estimate.value = newEstimate;
+
                 estimateError.value = null;
             } catch (err) {
                 console.error(err); // eslint-disable-line no-console
@@ -673,14 +780,16 @@ export default defineComponent({
                 let swapSuggestion: PreSwap;
 
                 try {
-                    const to = direction.value === SwapDirection.NIM_TO_BTC
-                        ? { BTC: wantBtc.value / 1e8 }
-                        : { NIM: wantNim.value / 1e5 };
+                    const { to, from, fundingFee, settlementFee } = calculateRequestData();
 
                     swapSuggestion = await createSwap(
-                        direction.value === SwapDirection.NIM_TO_BTC ? SwapAsset.NIM : SwapAsset.BTC,
-                        to,
+                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                        to as SwapAsset,
                     );
+
+                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.to.fee = settlementFee;
+
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
                     swapError.value = null;
                 } catch (error) {
@@ -706,10 +815,14 @@ export default defineComponent({
                         asset: swapSuggestion.from.asset,
                         address: swapSuggestion.from.asset === SwapAsset.NIM ? nimAddress : btcAddress,
                     });
+                    confirmedSwap.from.fee = swapSuggestion.from.fee;
+                    confirmedSwap.to.fee = swapSuggestion.to.fee;
+
                     setActiveSwap({
                         ...confirmedSwap,
                         state: SwapState.SIGN_SWAP,
                     });
+
                     // Add swap details to swap store
                     setSwap(confirmedSwap.hash, {
                         id: confirmedSwap.id,
@@ -723,7 +836,6 @@ export default defineComponent({
                             serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
                             currency: currency.value,
                         },
-                        // TODO: Include fees here
                     });
                     console.debug('Swap:', swap.value); // eslint-disable-line no-console
                     swapError.value = null;
@@ -762,7 +874,7 @@ export default defineComponent({
                     const { transaction, output } = await new Promise(async (resolve$1) => {
                         function listener(tx: BtcTransactionDetails) {
                             const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount + swap.value!.to.fee) {
+                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
                                 resolve$1({
                                     transaction: tx,
                                     output: htlcOutput,
@@ -799,12 +911,12 @@ export default defineComponent({
                             transactionHash: transaction.transactionHash,
                             outputIndex: output.index,
                             outputScript: output.script,
-                            value: swap.value!.to.amount + swap.value!.to.fee, // Sats
+                            value: swap.value!.to.amount, // Sats
                             witnessScript: btcHtlcData.script,
                         },
                         output: {
                             address: btcAddress, // My address, must be redeem address of HTLC
-                            value: swap.value!.to.amount, // Sats
+                            value: swap.value!.to.amount - swap.value!.to.fee, // Sats
                         },
                     };
                 }

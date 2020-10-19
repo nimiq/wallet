@@ -39,7 +39,7 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
         remoteFundingTx = await new Promise(async (resolve) => {
             function listener(tx: BtcTransactionDetails) {
                 const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                if (!htlcOutput || htlcOutput.value !== swap.value.to.amount + swap.value.to.fee) return false;
+                if (!htlcOutput || htlcOutput.value !== swap.value.to.amount) return false;
 
                 if (
                     tx.replaceByFee
@@ -74,10 +74,15 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
 
             function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
                 if (tx.recipient !== htlcAddress) return false;
-                if (tx.value !== swap.value.to.amount + swap.value.to.fee) return false;
+                if (tx.value !== swap.value.to.amount) return false;
 
                 // TODO: Reject when unequal (=> handle error)
                 if (tx.data.raw !== nimHtlcData.data) return false;
+
+                useSwapsStore().setActiveSwap({
+                    ...swap.value,
+                    remoteFundingTx: tx,
+                });
 
                 if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
                     resolve(tx);

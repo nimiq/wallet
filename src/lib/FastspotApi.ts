@@ -15,7 +15,7 @@ type FastspotAsset = {
 };
 
 type FastspotFee = {
-    perUnit?: string,
+    perUnit: string,
     total: string,
     totalIsIncluded: boolean,
 };
@@ -169,24 +169,24 @@ export type Limits<T extends SwapAsset> = {
 };
 
 function coinsToUnits(asset: SwapAsset, value: string | number): number {
-    let conversionFactor: number;
+    let decimals: number;
     switch (asset) {
-        case SwapAsset.NIM: conversionFactor = 1e5; break;
-        case SwapAsset.BTC: conversionFactor = 1e8; break;
+        case SwapAsset.NIM: decimals = 5; break;
+        case SwapAsset.BTC: decimals = 8; break;
         default: throw new Error('Invalid asset');
     }
-    return Math.floor((typeof value === 'string' ? Number.parseFloat(value) : value) * conversionFactor);
+    const parts = value.toString().split('.');
+    parts[1] = (parts[1] || '').substr(0, decimals).padEnd(decimals, '0');
+    return parseInt(parts.join(''), 10);
 }
 
 function convertFromData(from: FastspotPrice): PriceData {
     const asset = SwapAsset[from.symbol];
     return {
         asset,
-        amount: coinsToUnits(asset, from.amount) - (from.fundingNetworkFee.totalIsIncluded
-            ? coinsToUnits(asset, from.fundingNetworkFee.total)
-            : 0),
+        amount: coinsToUnits(asset, from.amount),
         fee: coinsToUnits(asset, from.fundingNetworkFee.total),
-        feePerUnit: coinsToUnits(asset, from.fundingNetworkFee.perUnit || '0') || 1,
+        feePerUnit: coinsToUnits(asset, from.fundingNetworkFee.perUnit),
         serviceNetworkFee: coinsToUnits(asset, from.finalizeNetworkFee.total),
     };
 }
@@ -195,11 +195,9 @@ function convertToData(to: FastspotPrice): PriceData {
     const asset = SwapAsset[to.symbol];
     return {
         asset,
-        amount: coinsToUnits(asset, to.amount) - (to.finalizeNetworkFee.totalIsIncluded
-            ? 0
-            : coinsToUnits(asset, to.finalizeNetworkFee.total)),
+        amount: coinsToUnits(asset, to.amount),
         fee: coinsToUnits(asset, to.finalizeNetworkFee.total),
-        feePerUnit: coinsToUnits(asset, to.finalizeNetworkFee.perUnit || '0') || 1,
+        feePerUnit: coinsToUnits(asset, to.finalizeNetworkFee.perUnit),
         serviceNetworkFee: coinsToUnits(asset, to.fundingNetworkFee.total),
     };
 }
@@ -341,11 +339,7 @@ export async function getEstimate(
     const result = await api('/estimates', 'POST', {
         from,
         to,
-        // For reverse swaps, we include all fees (but actually pay a slightly different amount,
-        // based on the actual amount of fees we need to fund our HTLC) - and for forward swaps,
-        // we only include Fastspot's fees, as we calculate the fees we pay for our HTLC ourselves,
-        // and subtract them from the `from` amount we actually tell Fastspot.
-        includedFees: typeof from === 'string' ? 'all' : 'required',
+        includedFees: 'required',
     }) as FastspotEstimate[];
 
     const inputObject = result[0].from[0];
@@ -372,11 +366,7 @@ export async function createSwap(
     const result = await api('/swaps', 'POST', {
         from,
         to,
-        // For reverse swaps, we include all fees (but actually pay a slightly different amount,
-        // based on the actual amount of fees we need to fund our HTLC) - and for forward swaps,
-        // we only include Fastspot's fees, as we calculate the fees we pay for our HTLC ourselves,
-        // and subtract them from the `from` amount we actually tell Fastspot.
-        includedFees: typeof from === 'string' ? 'all' : 'required',
+        includedFees: 'required',
     }) as FastspotPreSwap;
 
     return convertSwap(result);

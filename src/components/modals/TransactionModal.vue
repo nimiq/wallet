@@ -114,7 +114,11 @@
                 <div class="address-info flex-column">
                     <Identicon :address="activeAddressInfo.address"/>
                     <span class="label">{{ activeAddressInfo.label }}</span>
-                    <Copyable :text="activeAddressInfo.address">
+                    <Tooltip v-if="swapTransaction" preferredPosition="bottom left" class="right-aligned">
+                        <ShortAddress :address="activeAddressInfo.address" slot="trigger"/>
+                        {{ activeAddressInfo.address }}
+                    </Tooltip>
+                    <Copyable v-else :text="activeAddressInfo.address">
                         <AddressDisplay :address="activeAddressInfo.address"/>
                     </Copyable>
                 </div>
@@ -123,7 +127,11 @@
                 <div class="address-info flex-column">
                     <Identicon :address="activeAddressInfo.address"/>
                     <span class="label">{{ activeAddressInfo.label }}</span>
-                    <Copyable :text="activeAddressInfo.address">
+                    <Tooltip v-if="swapTransaction" preferredPosition="bottom left" class="right-aligned">
+                        <ShortAddress :address="activeAddressInfo.address" slot="trigger"/>
+                        {{ activeAddressInfo.address }}
+                    </Tooltip>
+                    <Copyable v-else :text="activeAddressInfo.address">
                         <AddressDisplay :address="activeAddressInfo.address"/>
                     </Copyable>
                 </div>

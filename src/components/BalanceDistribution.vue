@@ -8,7 +8,10 @@
                         ? 1 / nimBalanceDistribution.length
                         : account.percentage
                     ) * 100 + '%'}">
-                    <Tooltip preferredPosition="top right">
+                    <Tooltip
+                        preferredPosition="top right"
+                        :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
+                    >
                         <div
                             class="bar"
                             :class="[
@@ -28,15 +31,21 @@
             </div>
             <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
         </div>
-        <div class="exchange">
+        <div v-if="hasBitcoinAddresses" class="exchange">
             <button class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent>
                 <SwapMediumIcon/>
             </button>
         </div>
-        <div class="currency flex-column btc" :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}">
+        <div v-if="hasBitcoinAddresses"
+            class="currency flex-column btc"
+            :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
+        >
             <div class="distribution">
                 <div style="width: 100%">
-                    <Tooltip preferredPosition="top left">
+                    <Tooltip
+                        preferredPosition="top left"
+                        :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
+                    >
                         <div class="bar btc" :class="{'empty': !btcAccountBalance}" slot="trigger"></div>
                         <div class="flex-row">
                             <BitcoinIcon/>
@@ -68,6 +77,7 @@ import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import SwapMediumIcon from './icons/SwapMediumIcon.vue';
+import { useAccountStore } from '../stores/Account';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
@@ -77,10 +87,15 @@ import { useSettingsStore } from '../stores/Settings';
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
+        const { activeAccountInfo } = useAccountStore();
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
+
+        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
+            && (activeAccountInfo.value.btcAddresses || false)
+            && activeAccountInfo.value.btcAddresses.external.length > 0);
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
@@ -124,6 +139,7 @@ export default defineComponent({
             getBackgroundClass,
             balanceDistribution,
             accountBalance,
+            hasBitcoinAddresses,
             btcAccountBalance,
             nimBalanceDistribution,
             nimPercentageSum,

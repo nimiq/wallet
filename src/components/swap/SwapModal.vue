@@ -305,6 +305,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
+import { captureException } from '@sentry/browser';
 import allSettled from 'promise.allsettled';
 import Config from 'config';
 import Modal from '../modals/Modal.vue';
@@ -1028,6 +1029,7 @@ export default defineComponent({
             try {
                 signedTransactions = await setupSwap(hubRequest);
             } catch (error) {
+                captureException(error);
                 alert(`Hub/Keyguard Error: ${error.message}`);
                 return;
             }

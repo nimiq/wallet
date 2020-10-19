@@ -166,7 +166,9 @@
 
         <div v-if="swap" slot="overlay" class="page swap-progress flex-column">
             <PageHeader>
-                Performing Swap
+                <template v-if="swap.state !== SwapState.COMPLETE">{{ $('Performing Swap') }}</template>
+                <template v-else>{{ $t('Swap Complete') }}</template>
+
                 <p v-if="swap.state !== SwapState.COMPLETE" slot="more" class="nq-notice warning">
                     {{ $t('Do not close this popup!') }}
                 </p>

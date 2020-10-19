@@ -16,7 +16,7 @@ msgid "{amount} left today"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:235
-#: src/components/modals/TransactionModal.vue:246
+#: src/components/modals/TransactionModal.vue:254
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -29,7 +29,7 @@ msgstr ""
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:248
+#: src/components/modals/TransactionModal.vue:256
 msgid "{fee} fee"
 msgstr ""
 
@@ -111,7 +111,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:100
-#: src/components/modals/TransactionModal.vue:141
+#: src/components/modals/TransactionModal.vue:149
 msgid "Add contact"
 msgstr ""
 
@@ -162,11 +162,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:204
+#: src/components/swap/SwapModal.vue:206
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:248
+#: src/components/swap/SwapModal.vue:250
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -178,14 +178,14 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:47
+#: src/components/BalanceDistribution.vue:53
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:432
+#: src/components/modals/TransactionModal.vue:440
 #: src/components/TransactionListItem.vue:167
 msgid "Bitcoin"
 msgstr ""
@@ -199,12 +199,12 @@ msgid "Bitcoin Unit"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:232
-#: src/components/modals/TransactionModal.vue:243
+#: src/components/modals/TransactionModal.vue:251
 msgid "Block #{height}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:242
-#: src/components/modals/TransactionModal.vue:257
+#: src/components/modals/TransactionModal.vue:265
 msgid "Block explorer"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:191
+#: src/components/swap/SwapModal.vue:193
 msgid "Cancel"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:446
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:173
 msgid "Cashlink"
@@ -404,7 +404,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:171
+#: src/components/swap/SwapModal.vue:173
 msgid "Do not close this popup!"
 msgstr ""
 
@@ -413,7 +413,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:280
+#: src/components/swap/SwapModal.vue:282
 msgid "Done"
 msgstr ""
 
@@ -527,7 +527,7 @@ msgid "Fetching"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:175
+#: src/components/modals/TransactionModal.vue:183
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr ""
@@ -588,7 +588,7 @@ msgid "Handling multiple addresses is now convenient and easy – with one passw
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:178
-#: src/components/modals/TransactionModal.vue:186
+#: src/components/modals/TransactionModal.vue:194
 msgid "Historic value"
 msgstr ""
 
@@ -616,7 +616,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:206
+#: src/components/swap/SwapModal.vue:208
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -781,7 +781,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:228
+#: src/components/swap/SwapModal.vue:230
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -846,7 +846,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:265
+#: src/components/swap/SwapModal.vue:267
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -935,7 +935,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:226
+#: src/components/swap/SwapModal.vue:228
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1007,15 +1007,15 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:157
+#: src/components/modals/TransactionModal.vue:165
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:190
+#: src/components/swap/SwapModal.vue:192
 msgid "Sign"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:188
 msgid "Signing swap..."
 msgstr ""
 
@@ -1057,7 +1057,11 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:267
+#: src/components/swap/SwapModal.vue:170
+msgid "Swap Complete"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:269
 msgid "Swap complete!"
 msgstr ""
 
@@ -1070,11 +1074,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:250
+#: src/components/swap/SwapModal.vue:252
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:193
+#: src/components/swap/SwapModal.vue:195
 msgid "Swap signed!"
 msgstr ""
 
@@ -1208,7 +1212,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:439
+#: src/components/modals/TransactionModal.vue:447
 #: src/components/TransactionListItem.vue:174
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -1276,7 +1280,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:174
+#: src/components/swap/SwapModal.vue:176
 msgid "You can now close this popup."
 msgstr ""
 

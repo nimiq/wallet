@@ -199,7 +199,8 @@
                     <div class="flex-row">
                         <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
                             :amount="swapTransaction.value" currency="nim" value-mask/>
-                        <div v-else-if="!swapTransaction.fiatValue || swapTransaction.fiatValue[fiatCurrency] === undefined"
+                        <div v-else-if="!swapTransaction.fiatValue
+                            || swapTransaction.fiatValue[fiatCurrency] === undefined"
                             class="fiat-amount">&nbsp;</div>
                         <div v-else-if="swapTransaction.fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
                             class="fiat-amount">Fiat value unavailable</div>

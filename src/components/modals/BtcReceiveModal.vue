@@ -156,7 +156,7 @@ import {
 } from '@nimiq/vue-components';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
-import { useBtcAddressStore, BtcCopiedAddresses } from '../../stores/BtcAddress';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useSettingsStore } from '../../stores/Settings';
 import RefreshIcon from '../icons/RefreshIcon.vue';

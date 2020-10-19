@@ -103,15 +103,21 @@ export const useSwapsStore = createStore({
                 [hash]: swap,
             };
         },
-        addFundingData(hash: string, data: SwapNimData | SwapBtcData) {
+        addFundingData(hash: string, data: SwapNimData | SwapBtcData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
-            swap.in = data;
-            this.setSwap(hash, swap);
+            this.setSwap(hash, {
+                ...swap,
+                in: data,
+                ...newSwapData,
+            });
         },
-        addSettlementData(hash: string, data: SwapNimData | SwapBtcData) {
+        addSettlementData(hash: string, data: SwapNimData | SwapBtcData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
-            swap.out = data;
-            this.setSwap(hash, swap);
+            this.setSwap(hash, {
+                ...swap,
+                out: data,
+                ...newSwapData,
+            });
         },
         setActiveSwap(swap: ActiveSwap<any> | null) {
             this.state.activeSwap = swap;

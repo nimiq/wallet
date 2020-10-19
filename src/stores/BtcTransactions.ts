@@ -6,7 +6,7 @@ import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
-import { useSwapsStore } from './Swaps';
+import { useSwapsStore, Swap } from './Swaps';
 import { SwapAsset } from '../lib/FastspotApi';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
@@ -64,7 +64,7 @@ export const useBtcTransactionsStore = createStore({
                         asset: SwapAsset.BTC,
                         transactionHash: plain.transactionHash,
                         outputIndex: fundingData.outputIndex,
-                    });
+                    }, fundingData.provider ? { provider: fundingData.provider } as Swap : undefined);
                     plain.swapHash = fundingData.hash;
                 }
                 // HTLC Settlement

@@ -32,7 +32,9 @@ export function isHtlcSettlement(tx: TransactionDetails): string | false {
     return extractHashFromScript(witness[4]);
 }
 
-export async function isHtlcFunding(tx: TransactionDetails): Promise<{hash: string, outputIndex: number} | false> {
+export async function isHtlcFunding(
+    tx: TransactionDetails,
+): Promise<{hash: string, outputIndex: number, provider?: string} | false> {
     const htlcOutput = tx.outputs.find((output) => output.address?.length === HTLC_ADDRESS_LENGTH);
     if (!htlcOutput) return false;
 
@@ -42,7 +44,7 @@ export async function isHtlcFunding(tx: TransactionDetails): Promise<{hash: stri
     try {
         const contract = await getContract(SwapAsset.BTC, htlcOutput.address!);
         const hash = extractHashFromScript(contract.htlc.script);
-        if (hash) return { hash, outputIndex: htlcOutput.index };
+        if (hash) return { hash, outputIndex: htlcOutput.index, provider: 'Fastspot' };
     } catch (error) {
         // Ignore
     }

@@ -15,7 +15,7 @@ msgstr ""
 msgid "{amount} left today"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:234
+#: src/components/modals/BtcTransactionModal.vue:235
 #: src/components/modals/TransactionModal.vue:246
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
@@ -162,11 +162,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:199
+#: src/components/swap/SwapModal.vue:201
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:243
+#: src/components/swap/SwapModal.vue:245
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -198,12 +198,12 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:231
+#: src/components/modals/BtcTransactionModal.vue:232
 #: src/components/modals/TransactionModal.vue:243
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:241
+#: src/components/modals/BtcTransactionModal.vue:242
 #: src/components/modals/TransactionModal.vue:257
 msgid "Block explorer"
 msgstr ""
@@ -240,6 +240,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:165
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:188
+msgid "Cancel"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:210
@@ -409,7 +413,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:277
 msgid "Done"
 msgstr ""
 
@@ -612,7 +616,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:201
+#: src/components/swap/SwapModal.vue:203
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -777,7 +781,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:223
+#: src/components/swap/SwapModal.vue:225
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -842,7 +846,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:260
+#: src/components/swap/SwapModal.vue:262
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -931,7 +935,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:221
+#: src/components/swap/SwapModal.vue:223
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1007,6 +1011,10 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:187
+msgid "Sign"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:186
 msgid "Signing swap..."
 msgstr ""
@@ -1049,7 +1057,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:262
+#: src/components/swap/SwapModal.vue:264
 msgid "Swap complete!"
 msgstr ""
 
@@ -1062,11 +1070,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:245
+#: src/components/swap/SwapModal.vue:247
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:190
 msgid "Swap signed!"
 msgstr ""
 

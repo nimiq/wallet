@@ -184,6 +184,8 @@
                     <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
                         <div v-if="swap.state === SwapState.SIGN_SWAP">
                             {{ $t('Signing swap...') }}
+                            <button class="nq-button-pill light-blue" @click="sign">{{ $t('Sign') }}</button>
+                            <button class="nq-button-s" @click="cancel">{{ $t('Cancel') }}</button>
                         </div>
                         <div v-else>{{ $t('Swap signed!') }}</div>
                     </div>
@@ -293,7 +295,12 @@ import {
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { SetupSwapRequest, HtlcCreationInstructions, HtlcSettlementInstructions } from '@nimiq/hub-api';
+import {
+    SetupSwapRequest,
+    HtlcCreationInstructions,
+    HtlcSettlementInstructions,
+    SetupSwapResult,
+} from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import allSettled from 'promise.allsettled';
 import Config from 'config';
@@ -779,77 +786,79 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
 
-                try {
-                    const { to, from, fundingFee, settlementFee } = calculateRequestData();
-
-                    swapSuggestion = await createSwap(
-                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                        to as SwapAsset,
-                    );
-
-                    swapSuggestion.from.fee = fundingFee;
-                    swapSuggestion.to.fee = settlementFee;
-
-                    console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                    swapError.value = null;
-                } catch (error) {
-                    console.error(error); // eslint-disable-line no-console
-                    swapError.value = error.message;
-                    reject(error);
-                    return;
-                }
-
-                // TODO: Validate swap data against estimate
-
                 const { availableExternalAddresses } = useBtcAddressStore();
                 const nimAddress = activeAddressInfo.value!.address;
                 const btcAddress = availableExternalAddresses.value[0];
 
-                try {
-                    const confirmedSwap = await confirmSwap(swapSuggestion, {
-                        // Redeem
-                        asset: swapSuggestion.to.asset,
-                        address: swapSuggestion.to.asset === SwapAsset.NIM ? nimAddress : btcAddress,
-                    }, {
-                        // Refund
-                        asset: swapSuggestion.from.asset,
-                        address: swapSuggestion.from.asset === SwapAsset.NIM ? nimAddress : btcAddress,
-                    });
-                    confirmedSwap.from.fee = swapSuggestion.from.fee;
-                    confirmedSwap.to.fee = swapSuggestion.to.fee;
+                if (!swap.value) {
+                    try {
+                        const { to, from, fundingFee, settlementFee } = calculateRequestData();
 
-                    setActiveSwap({
-                        ...confirmedSwap,
-                        state: SwapState.SIGN_SWAP,
-                    });
+                        swapSuggestion = await createSwap(
+                            from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                            to as SwapAsset,
+                        );
 
-                    // Add swap details to swap store
-                    setSwap(confirmedSwap.hash, {
-                        id: confirmedSwap.id,
-                        provider: 'Fastspot',
-                        fees: {
-                            myBtcFeeFiat: myBtcFeeFiat.value,
-                            myNimFeeFiat: myNimFeeFiat.value,
-                            serviceBtcFeeFiat: serviceBtcFeeFiat.value,
-                            serviceNimFeeFiat: serviceNimFeeFiat.value,
-                            serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
-                            serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
-                            currency: currency.value,
-                        },
-                    });
-                    console.debug('Swap:', swap.value); // eslint-disable-line no-console
-                    swapError.value = null;
-                } catch (error) {
-                    console.error(error); // eslint-disable-line no-console
-                    swapError.value = error.message;
-                    if (swapSuggestion) cancelSwap(swapSuggestion);
-                    reject(error);
-                    return;
+                        swapSuggestion.from.fee = fundingFee;
+                        swapSuggestion.to.fee = settlementFee;
+
+                        console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
+                        swapError.value = null;
+                    } catch (error) {
+                        console.error(error); // eslint-disable-line no-console
+                        swapError.value = error.message;
+                        reject(error);
+                        return;
+                    }
+
+                    // TODO: Validate swap data against estimate
+
+                    try {
+                        const confirmedSwap = await confirmSwap(swapSuggestion, {
+                            // Redeem
+                            asset: swapSuggestion.to.asset,
+                            address: swapSuggestion.to.asset === SwapAsset.NIM ? nimAddress : btcAddress,
+                        }, {
+                            // Refund
+                            asset: swapSuggestion.from.asset,
+                            address: swapSuggestion.from.asset === SwapAsset.NIM ? nimAddress : btcAddress,
+                        });
+                        confirmedSwap.from.fee = swapSuggestion.from.fee;
+                        confirmedSwap.to.fee = swapSuggestion.to.fee;
+
+                        setActiveSwap({
+                            ...confirmedSwap,
+                            state: SwapState.SIGN_SWAP,
+                        });
+
+                        // Add swap details to swap store
+                        setSwap(confirmedSwap.hash, {
+                            id: confirmedSwap.id,
+                            provider: 'Fastspot',
+                            fees: {
+                                myBtcFeeFiat: myBtcFeeFiat.value,
+                                myNimFeeFiat: myNimFeeFiat.value,
+                                serviceBtcFeeFiat: serviceBtcFeeFiat.value,
+                                serviceNimFeeFiat: serviceNimFeeFiat.value,
+                                serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
+                                serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
+                                currency: currency.value,
+                            },
+                        });
+                        console.debug('Swap:', swap.value); // eslint-disable-line no-console
+                        swapError.value = null;
+                    } catch (error) {
+                        console.error(error); // eslint-disable-line no-console
+                        swapError.value = error.message;
+                        if (swapSuggestion) cancelSwap(swapSuggestion);
+                        reject(error);
+                        return;
+                    }
+
+                    // if (swap.value!.contracts![0].hash !== swap.value!.contracts![1].hash) {
+                    //     // TODO: Fail
+                    // }
                 }
-
-                // if (swap.value!.contracts![0].hash !== swap.value!.contracts![1].hash) {
-                //     // TODO: Fail
-                // }
 
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
@@ -1012,12 +1021,16 @@ export default defineComponent({
             });
 
             // TODO: Catch Hub error
-            const signedTransactions = await setupSwap(hubRequest);
+            let signedTransactions: SetupSwapResult | null = null;
+            try {
+                signedTransactions = await setupSwap(hubRequest);
+            } catch (error) {
+                alert(`Hub/Keyguard Error: ${error.message}`);
+                return;
+            }
+
             if (!signedTransactions) {
                 // Hub popup cancelled
-
-                // TODO: Show "Sign" and "Cancel" options in progress list
-
                 return;
             }
 
@@ -1050,6 +1063,10 @@ export default defineComponent({
             });
 
             processSwap();
+        }
+
+        function cancel() {
+            setActiveSwap(null);
         }
 
         async function processSwap() {
@@ -1141,6 +1158,7 @@ export default defineComponent({
             swapError,
             canSign,
             sign,
+            cancel,
             SwapState,
             explorerTxLink,
             explorerAddrLink,
@@ -1417,6 +1435,10 @@ export default defineComponent({
                 font-weight: 600;
             }
         }
+    }
+
+    button {
+        margin-left: 2rem;
     }
 
     code {

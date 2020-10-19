@@ -184,7 +184,10 @@
                     <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
                         <div v-if="swap.state === SwapState.SIGN_SWAP">
                             {{ $t('Signing swap...') }}
-                            <button class="nq-button-pill light-blue" @click="sign">{{ $t('Sign') }}</button>
+                            <button class="nq-button-pill light-blue"
+                                :disabled="swap.expires <= (Math.floor(Date.now() / 1000) - 120)"
+                                @click="sign"
+                            >{{ $t('Sign') }}</button>
                             <button class="nq-button-s" @click="cancel">{{ $t('Cancel') }}</button>
                         </div>
                         <div v-else>{{ $t('Swap signed!') }}</div>

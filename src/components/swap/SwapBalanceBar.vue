@@ -1,43 +1,68 @@
 <template>
-    <div class="swap-balance-bar">
-        <div class="bar"
-            v-for="addressInfo in nimDistributionData"
-            :key="addressInfo.address"
-            ref="bars"
-            :class="[{ active: addressInfo.active }, addressInfo.backgroundClass]"
-            :style="{ width: `${getBarWidth(addressInfo)}%` }"
-            @click="selectAddress(addressInfo.address)"
-        >
-            <div class="change"
-                v-if="addressInfo.active && addressInfo.balanceChange > 0"
-                :style="{ width: `${getNimChangeBarWidth(addressInfo)}%` }"
-            ></div>
+    <div class="swap-balance-bar flex-column">
+        <div class="balance-bar-header flex-row">
+            <div class="nimiq">
+                <Identicon :address="activeAddressInfo.address" ref="$nimiqIcon" />
+                <label>{{ activeAddressInfo.label }}</label>
+            </div>
+            <div class="bitcoin">
+                <label>Bitcoin</label>
+                <BitcoinIcon ref="$bitcoinIcon"/>
+            </div>
         </div>
-        <div class="separator nq-light-blue-bg">
-            <div class="handle"
-                @mousedown="onMouseDown"
-            ></div>
+        <div class="connecting-lines">
+            <CurvedLine :width="nimiqConnectingLineWidth" :height="35" direction="right" />
+            <CurvedLine :width="bitcoinConnectingLineWidth" :height="35" direction="left" />
         </div>
-        <div class="bar bitcoin active"
-            ref="bitcoinBar"
-            :style="{ width: `${getBitcoinBarWidth()}%` }"
-        >
-            <div class="change" v-if="btcDistributionData.balanceChange > 0"
-                :style="{ width: `${getBitcoinChangeBarWidth()}%` }"
-            ></div>
+        <div class="balance-bar flex-row">
+            <div class="bar"
+                v-for="addressInfo in nimDistributionData"
+                :key="addressInfo.address"
+                :ref="addressInfo.active ? '$activeBar' : null"
+                :class="[{ active: addressInfo.active }, addressInfo.backgroundClass]"
+                :style="{ width: `${getNimiqBarWidth(addressInfo)}%` }"
+                @click="selectAddress(addressInfo.address)"
+            >
+                <div class="change"
+                    v-if="addressInfo.active && addressInfo.balanceChange > 0"
+                    :style="{ width: `${getNimiqChangeBarWidth(addressInfo)}%` }"
+                ></div>
+            </div>
+            <div class="separator nq-light-blue-bg">
+                <div class="handle"
+                    @mousedown="onMouseDown"
+                ></div>
+            </div>
+            <div class="bar bitcoin active"
+                ref="$bitcoinBar"
+                :style="{ width: `${bitcoinBarWidth}%` }"
+            >
+                <div class="change" v-if="btcDistributionData.balanceChange > 0"
+                    :style="{ width: `${bitcoinChangeBarWidth}%` }"
+                ></div>
+            </div>
+        </div>
+        <div class="scale flex-row">
+            <div v-for="index in 10" :key="index" class="tenth">
+                <div v-if="index === 1" class="nimiq-total-percent ">{{distributionPercents.nim}}%</div>
+                <div v-else-if="index === 10" class="bitcoin-total-percent">{{distributionPercents.btc}}%</div>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { Identicon } from '@nimiq/vue-components';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore, AddressInfo } from '../../stores/Address';
 import getBackgroundClass from '../../lib/AddressColor';
 import { SwapDirection } from '../../stores/Swaps';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { SwapAsset } from '../../lib/FastspotApi';
+import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
@@ -45,6 +70,11 @@ type ExtendedAddressInfo = AddressInfo & {
     readonly backgroundClass: string,
     readonly balanceChange: number,
     readonly fiatBalanceChange: number,
+}
+
+enum MovingDirection {
+    RIGHT = 1,
+    LEFT = -1,
 }
 
 export default defineComponent({
@@ -71,7 +101,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { addressInfos, activeAddress, selectAddress } = useAddressStore();
+        const { addressInfos, selectAddress, activeAddressInfo } = useAddressStore();
         const { accountBalance } = useBtcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
@@ -82,11 +112,11 @@ export default defineComponent({
 
         const nimDistributionData = computed(() =>
             addressInfos.value
-                // .filter((addressInfo) => addressInfo.type === 0) // filter no Vesting or Htlc account types
+                // .filter((addressInfo) => addressInfo.type === 0) // filter no Vesting or Htlc account types ?
                 .map((addressInfo) => ({
                     ...addressInfo,
                     get active() {
-                        return (activeAddress.value === this.address);
+                        return (activeAddressInfo.value?.address === this.address);
                     },
                     get newFiatBalance() {
                         if (!this.active) {
@@ -108,23 +138,33 @@ export default defineComponent({
                     },
                 } as ExtendedAddressInfo)),
         );
-
         const btcDistributionData = computed(() => ({
             newFiatBalance: (props.newBtcBalance / 1e8) * btcExchangeRate.value,
             balanceChange: (props.newBtcBalance - accountBalance.value),
             fiatBalanceChange: ((props.newBtcBalance - accountBalance.value) / 1e8) * btcExchangeRate.value,
         }));
-
-        const totalBalance = computed(() =>
-            nimDistributionData.value.reduce((sum, data) => sum + data.newFiatBalance, 0)
-                + btcDistributionData.value.newFiatBalance,
+        const nimiqTotalNewFiatBalance = computed(() =>
+            nimDistributionData.value.reduce((sum, data) => sum + data.newFiatBalance, 0),
         );
+        const totalNewFiatBalance = computed(() =>
+            nimiqTotalNewFiatBalance.value + btcDistributionData.value.newFiatBalance,
+        );
+        const distributionPercents = computed(() => ({
+            nim: Math.round((nimiqTotalNewFiatBalance.value / totalNewFiatBalance.value) * 100),
+            btc: Math.round((btcDistributionData.value.newFiatBalance / totalNewFiatBalance.value) * 100),
+        }));
 
         // handle behavior
         let isGrabbing = false;
         let initialCursorPosition = 0;
         let currentCursorPosition = 0;
         let animationFrameHandle = 0;
+
+        const $bitcoinBar = ref<HTMLDivElement | null>(null);
+        const activeBar = computed(() =>
+            nimDistributionData.value.find((addressInfo) => addressInfo.active),
+        );
+        const $activeBar = ref<HTMLDivElement[] | null>(null);
 
         function onMouseDown(event: MouseEvent) {
             isGrabbing = true;
@@ -142,9 +182,6 @@ export default defineComponent({
             currentCursorPosition = event.pageX;
         }
 
-        const RIGHT = 1;
-        const LEFT = -1;
-
         function emit(asset: SwapAsset, amount: number) {
             context.emit('change', {
                 asset,
@@ -155,42 +192,52 @@ export default defineComponent({
         function render(): void {
             animationFrameHandle = requestAnimationFrame(render);
 
-            if (!isGrabbing) return undefined;
+            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value) return undefined;
 
             const cursorPositionDiff = currentCursorPosition - initialCursorPosition;
             initialCursorPosition = currentCursorPosition;
 
             if (cursorPositionDiff === 0) return undefined;
 
-            const movingDirection = cursorPositionDiff > 0 ? RIGHT : LEFT;
+            const movingDirection = cursorPositionDiff > 0 ? MovingDirection.RIGHT : MovingDirection.LEFT;
+            const nimPercent = Math.abs(cursorPositionDiff)
+                / ($activeBar.value[0].clientWidth > 1 ? $activeBar.value[0].clientWidth : 1);
+            const btcPercent = Math.abs(cursorPositionDiff)
+                / ($bitcoinBar.value.clientWidth > 1 ? $bitcoinBar.value.clientWidth : 1);
 
-            const $bitcoinBar = (context.refs.bitcoinBar as HTMLDivElement);
-            const activeBar = nimDistributionData.value.find((addressInfo) => addressInfo.active)!;
-            const $activeBar = Array.from(context.refs.bars as HTMLDivElement[])
-                .find((bar) => bar.classList.contains('active'))!;
 
-            const nimPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $activeBar.clientWidth, 0), 1);
-            const btcPercent = Math.min(Math.max(Math.abs(cursorPositionDiff) / $bitcoinBar.clientWidth, 0), 1);
-
-            const lunaAmount = activeBar.balanceChange
+            const lunaAmount = activeBar.value.balanceChange
                 + ((props.newNimBalance * nimPercent) * movingDirection);
+
             const satoshiAmount = btcDistributionData.value.balanceChange
                 + ((props.newBtcBalance * btcPercent) * -movingDirection);
 
-            if (props.limits && props.limits.fiat) {
-                if ((lunaAmount / 1e5) * nimExchangeRate.value < -props.limits.fiat && movingDirection === LEFT) {
+            if (props.limits && typeof props.limits.fiat === 'number') {
+                if ((lunaAmount / 1e5) * nimExchangeRate.value < -props.limits.fiat
+                    && movingDirection === MovingDirection.LEFT) {
                     return emit(SwapAsset.NIM, -(props.limits.fiat / nimExchangeRate.value) * 1e5);
                 }
-                if ((satoshiAmount / 1e8) * btcExchangeRate.value < -props.limits.fiat && movingDirection === RIGHT) {
+                if ((satoshiAmount / 1e8) * btcExchangeRate.value < -props.limits.fiat
+                    && movingDirection === MovingDirection.RIGHT) {
                     return emit(SwapAsset.BTC, -(props.limits.fiat / btcExchangeRate.value) * 1e8);
                 }
             }
 
-            if (lunaAmount < -(activeBar.balance || 0) && movingDirection === LEFT) {
-                return emit(SwapAsset.NIM, -(activeBar.balance || 0));
+            if (lunaAmount < -(activeBar.value.balance || 0) && movingDirection === MovingDirection.LEFT) {
+                return emit(SwapAsset.NIM, -(activeBar.value.balance || 0));
             }
-            if (satoshiAmount < -accountBalance.value && movingDirection === RIGHT) {
+            if (satoshiAmount < -accountBalance.value && movingDirection === MovingDirection.RIGHT) {
                 return emit(SwapAsset.BTC, -accountBalance.value);
+            }
+
+            if (nimPercent >= 1 && props.newNimBalance === 0 && movingDirection === MovingDirection.RIGHT) {
+                return emit(SwapAsset.NIM, lunaAmount
+                    + (((props.newBtcBalance * btcPercent) * movingDirection) / props.satsPerNim));
+            }
+
+            if (btcPercent >= 1 && props.newBtcBalance === 0 && movingDirection === MovingDirection.LEFT) {
+                return emit(SwapAsset.BTC, satoshiAmount
+                    + (((props.newNimBalance * nimPercent * -movingDirection) / 1e5) * props.satsPerNim));
             }
 
             if (lunaAmount <= 0) {
@@ -211,43 +258,134 @@ export default defineComponent({
             cancelAnimationFrame(animationFrameHandle);
         });
 
-        const getBarWidth = (addressInfo: ExtendedAddressInfo) =>
-            (addressInfo.newFiatBalance / totalBalance.value) * 100;
-
-        const getNimChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
+        /* Bars' width */
+        const getNimiqBarWidth = (addressInfo: ExtendedAddressInfo) => {
+            const width = (addressInfo.newFiatBalance / totalNewFiatBalance.value) * 100;
+            if (width < .5) return .5;
+            return width;
+        };
+        const getNimiqChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
             (addressInfo.fiatBalanceChange / addressInfo.newFiatBalance) * 100;
+        const bitcoinBarWidth = computed(() =>
+            (btcDistributionData.value.newFiatBalance / totalNewFiatBalance.value) * 100,
+        );
+        const bitcoinChangeBarWidth = computed(() =>
+            (btcDistributionData.value.fiatBalanceChange / btcDistributionData.value.newFiatBalance) * 100,
+        );
 
-        const getBitcoinBarWidth = () =>
-            (btcDistributionData.value.newFiatBalance / totalBalance.value) * 100;
+        /* Connecting lines between icon and active bar */
+        const remSize = computed(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
 
-        const getBitcoinChangeBarWidth = () =>
-            (btcDistributionData.value.fiatBalanceChange / btcDistributionData.value.newFiatBalance) * 100;
+        const nimiqConnectingLineWidth = ref(0);
+        const bitcoinConnectingLineWidth = ref(0);
+
+        watch(() => ({ ...props }), async () => {
+            await context.root.$nextTick();
+            if ($activeBar.value && $activeBar.value[0].parentElement) {
+                const rect = $activeBar.value[0].getBoundingClientRect();
+
+                nimiqConnectingLineWidth.value = (rect.width / 2)
+                    + (rect.x - $activeBar.value[0].parentElement.getBoundingClientRect().x)
+                    - (remSize.value * 2.5);
+            }
+
+            if ($bitcoinBar.value) {
+                const rect = $bitcoinBar.value.getBoundingClientRect();
+
+                bitcoinConnectingLineWidth.value = (rect.width / 2) - (remSize.value * 2.5);
+            }
+        });
 
         return {
             SwapDirection,
             addressInfos,
             nimDistributionData,
-            activeAddress,
-            totalBalance,
+            activeAddressInfo,
+            totalNewFiatBalance,
             btcDistributionData,
             selectAddress,
             onMouseDown,
             onMouseUp,
             onMouseMove,
-            getBarWidth,
-            getNimChangeBarWidth,
-            getBitcoinBarWidth,
-            getBitcoinChangeBarWidth,
+            $activeBar,
+            $bitcoinBar,
+            getNimiqBarWidth,
+            getNimiqChangeBarWidth,
+            bitcoinBarWidth,
+            bitcoinChangeBarWidth,
+            nimiqConnectingLineWidth,
+            bitcoinConnectingLineWidth,
+            nimiqTotalNewFiatBalance,
+            distributionPercents,
         };
+    },
+    components: {
+        BitcoinIcon,
+        Identicon,
+        CurvedLine,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 
-.swap-balance-bar {
-    display: flex;
-    flex-direction: row;
+.swap-balance-bar {}
+
+.balance-bar-header {
+    --height: 5.25rem;
+    height: var(--height);
+
+    & > div {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        align-items: center;
+
+        label {
+            font-weight: 600;
+            line-height: 21px;
+        }
+    }
+
+    .nimiq {
+        max-width: 65%;
+
+        .identicon {
+            width: var(--height);
+            height: 100%;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        label {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    .bitcoin {
+        justify-content: flex-end;
+
+        svg {
+            margin-left: 2rem;
+            color: var(--bitcoin-orange);
+        }
+    }
+}
+
+.connecting-lines {
+    margin-top: .5rem;
+    margin-bottom: -3rem;
+    padding: 0 2.5rem;
+
+    svg:last-child {
+        float: right;
+
+    }
+}
+
+.balance-bar {
     align-items: center;
 }
 
@@ -260,6 +398,7 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
+    cursor: pointer;
 
     transition: opacity 300ms var(--nimiq-ease), width 10ms;
 
@@ -288,8 +427,12 @@ export default defineComponent({
     }
 
     &.bitcoin {
-        background-color: #F7931A; /* Bitcoin orange */
+        background-color: var(--bitcoin-orange);
         justify-content: flex-start;
+
+        .change {
+            background-position: right;
+        }
     }
 
     .change {
@@ -306,6 +449,7 @@ export default defineComponent({
     margin-right: 3px;
     height: 10.5rem;
     position: relative;
+    flex-shrink: 0;
 
     .handle {
         --height: 3rem;
@@ -327,6 +471,32 @@ export default defineComponent({
 
         &:active {
             cursor: grabbing;
+        }
+    }
+}
+
+.scale {
+    margin-top: -1rem;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .tenth {
+        height: 1rem;
+        line-height: 1rem;
+        width: 20%;
+
+        font-weight: bold;
+        font-size: var(--small-size);
+        letter-spacing: 0.5px;
+        color: var(--text-50);
+
+        &:not(:last-child) {
+            border-right: 1.5px solid var(--text-20);
+        }
+
+        &:last-child {
+            text-align: right;
         }
     }
 }

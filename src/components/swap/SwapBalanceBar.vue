@@ -192,6 +192,12 @@ export default defineComponent({
         function render(): void {
             animationFrameHandle = requestAnimationFrame(render);
 
+            /*
+                There is a lot of issues when updating lines width in a watcher, or turning them into computed.
+                So we're updating it in the render loop until a more optimized way to do it is found.
+            */
+            updateConnectingLinesWidth();
+
             if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value) return undefined;
 
             const cursorPositionDiff = currentCursorPosition - initialCursorPosition;
@@ -204,7 +210,6 @@ export default defineComponent({
                 / ($activeBar.value[0].clientWidth > 1 ? $activeBar.value[0].clientWidth : 1);
             const btcPercent = Math.abs(cursorPositionDiff)
                 / ($bitcoinBar.value.clientWidth > 1 ? $bitcoinBar.value.clientWidth : 1);
-
 
             const lunaAmount = activeBar.value.balanceChange
                 + ((props.newNimBalance * nimPercent) * movingDirection);
@@ -275,12 +280,10 @@ export default defineComponent({
 
         /* Connecting lines between icon and active bar */
         const remSize = computed(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
-
         const nimiqConnectingLineWidth = ref(0);
         const bitcoinConnectingLineWidth = ref(0);
 
-        watch(() => ({ ...props }), async () => {
-            await context.root.$nextTick();
+        function updateConnectingLinesWidth() {
             if ($activeBar.value && $activeBar.value[0].parentElement) {
                 const rect = $activeBar.value[0].getBoundingClientRect();
 
@@ -294,7 +297,7 @@ export default defineComponent({
 
                 bitcoinConnectingLineWidth.value = (rect.width / 2) - (remSize.value * 2.5);
             }
-        });
+        }
 
         return {
             SwapDirection,
@@ -381,7 +384,6 @@ export default defineComponent({
 
     svg:last-child {
         float: right;
-
     }
 }
 

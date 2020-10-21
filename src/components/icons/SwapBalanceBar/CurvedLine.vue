@@ -4,6 +4,7 @@
         fill="none"
         :style="{ width: `${localWidth}px`, height: `${height}px` }"
         :viewBox="`0 0 ${localWidth} ${height}`"
+        :class="direction"
     >
         <path
             stroke="#1F2348"
@@ -45,57 +46,40 @@ export default defineComponent({
         });
         const angleSize = 12;
         const y = computed(() =>
-            Math.max(3,
-                Math.min(10,
-                    angleSize - (localWidth.value / 10),
+            Math.round(
+                Math.max(3,
+                    Math.min(10,
+                        angleSize - (localWidth.value / 10),
+                    ),
                 ),
             ),
         );
         const x = computed(() =>
-            Math.max(0,
-                Math.min(12,
-                    angleSize - (localWidth.value / 10),
+            Math.round(
+                Math.max(0,
+                    Math.min(12,
+                        angleSize - (localWidth.value / 10),
+                    ),
                 ),
             ),
         );
 
-        const d = computed(() => {
-            if (props.direction === 'right') {
-                return `
-                    M 1,1
-                    v 1
-                    s
-                        0,${angleSize - y.value}
-                        ${angleSize - x.value},${angleSize}
-                    S
-                        ${localWidth.value - (((angleSize - x.value) * 2) + 1)},
-                            ${props.height - (angleSize + y.value + 3)}
-                        ${localWidth.value - (angleSize + 1) + x.value},
-                            ${props.height - (angleSize + 3)}
-                    s
-                        ${angleSize - x.value},${angleSize}
-                        ${angleSize - x.value},${angleSize}
-                    v 1
-                `;
-            }
-
-            return `
-                M ${localWidth.value - 1},1
-                v 1
-                s
-                    0,${angleSize - y.value}
-                    -${angleSize - x.value},${angleSize}
-                S
-                    ${((angleSize - x.value) * 2) + 1},
-                        ${props.height - (angleSize + y.value + 3)}
-                    ${(angleSize + 1) - x.value},
-                        ${props.height - (angleSize + 3)}
-                s
-                    -${angleSize - x.value},${angleSize}
-                    -${angleSize - x.value},${angleSize}
-                v 1
-            `;
-        });
+        const d = computed(() => `
+            M 1,1
+            v 1
+            s
+                0,${angleSize - y.value},
+                ${angleSize - x.value},${angleSize}
+            S
+                ${localWidth.value - (((angleSize - x.value) * 2) + 1)},
+                    ${props.height - (angleSize + y.value + 3)},
+                ${localWidth.value - (angleSize + 1) + x.value},
+                    ${props.height - (angleSize + 3)},
+            s
+                ${angleSize - x.value},${angleSize},
+                ${angleSize - x.value},${angleSize}
+            v 1
+        `);
 
         return {
             localWidth,
@@ -107,9 +91,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-svg
+svg,
 svg path {
-    // overflow: visible;
+    overflow: visible;
+}
+
+svg.left {
+    transform: rotateY(180deg);
+}
+
+svg path {
+    transform: translate3d(0);
+
+    transition-duration: 100ms;
+    transition-property: d, viewBox;
 }
 
 </style>

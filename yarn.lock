@@ -930,9 +930,9 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?0e9a8f655a431f5b0077e97a2ae21396c5d56ce9&scripts.postinstall=yarn%20install%20--ignore-scripts%20%26%26%20yarn%20build":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?7df275693224b222177c4390dbcc1eab75632ca0&scripts.postinstall=yarn%20install%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.2.5"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?0e9a8f655a431f5b0077e97a2ae21396c5d56ce9&scripts.postinstall=yarn%20install%20--ignore-scripts%20%26%26%20yarn%20build#f2433a5951007d7b81aff11e71718cc0a4445e60"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?7df275693224b222177c4390dbcc1eab75632ca0&scripts.postinstall=yarn%20install%20--ignore-scripts%20%26%26%20yarn%20build#6fa6ee6d12fa0f632af39b6deac67562047264da"
   dependencies:
     "@nimiq/core-web" "^1.5.3"
     "@nimiq/rpc" "^0.4.0"

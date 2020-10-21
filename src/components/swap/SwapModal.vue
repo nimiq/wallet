@@ -148,7 +148,7 @@
             <PageFooter>
                 <button
                     class="nq-button light-blue"
-                    :disabled="!canSign"
+                    :disabled="!canSign || currentlySigning"
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
@@ -299,7 +299,6 @@ import {
     CheckmarkIcon,
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
-import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import {
     SetupSwapRequest,
     HtlcCreationInstructions,
@@ -328,20 +327,18 @@ import { setupSwap } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import {
-    BtcHtlcDetails,
     cancelSwap,
-    confirmSwap,
     createSwap,
     SwapAsset,
     Estimate,
     getEstimate,
-    NimHtlcDetails,
     PreSwap,
     Limits,
     getLimits,
     AssetList,
     getAssets,
     RequestAsset,
+    getSwap,
 } from '../../lib/FastspotApi';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -369,6 +366,8 @@ export default defineComponent({
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
+
+        const currentlySigning = ref(false);
 
         const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
         const assets = ref<AssetList>(null);
@@ -788,6 +787,8 @@ export default defineComponent({
          */
 
         async function sign() {
+            currentlySigning.value = true;
+
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
@@ -796,75 +797,29 @@ export default defineComponent({
                 const nimAddress = activeAddressInfo.value!.address;
                 const btcAddress = availableExternalAddresses.value[0];
 
-                if (!swap.value) {
-                    try {
-                        const { to, from, fundingFee, settlementFee } = calculateRequestData();
+                try {
+                    const { to, from, fundingFee, settlementFee } = calculateRequestData();
 
-                        swapSuggestion = await createSwap(
-                            from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                            to as SwapAsset,
-                        );
+                    swapSuggestion = await createSwap(
+                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                        to as SwapAsset,
+                    );
 
-                        swapSuggestion.from.fee = fundingFee;
-                        swapSuggestion.to.fee = settlementFee;
+                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.to.fee = settlementFee;
 
-                        console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                        swapError.value = null;
-                    } catch (error) {
-                        console.error(error); // eslint-disable-line no-console
-                        swapError.value = error.message;
-                        reject(error);
-                        return;
-                    }
+                    console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
-                    // TODO: Validate swap data against estimate
-
-                    try {
-                        const confirmedSwap = await confirmSwap(swapSuggestion, {
-                            // Redeem
-                            asset: swapSuggestion.to.asset,
-                            address: swapSuggestion.to.asset === SwapAsset.NIM ? nimAddress : btcAddress,
-                        }, {
-                            // Refund
-                            asset: swapSuggestion.from.asset,
-                            address: swapSuggestion.from.asset === SwapAsset.NIM ? nimAddress : btcAddress,
-                        });
-                        confirmedSwap.from.fee = swapSuggestion.from.fee;
-                        confirmedSwap.to.fee = swapSuggestion.to.fee;
-
-                        setActiveSwap({
-                            ...confirmedSwap,
-                            state: SwapState.SIGN_SWAP,
-                        });
-
-                        // Add swap details to swap store
-                        setSwap(confirmedSwap.hash, {
-                            id: confirmedSwap.id,
-                            provider: 'Fastspot',
-                            fees: {
-                                myBtcFeeFiat: myBtcFeeFiat.value,
-                                myNimFeeFiat: myNimFeeFiat.value,
-                                serviceBtcFeeFiat: serviceBtcFeeFiat.value,
-                                serviceNimFeeFiat: serviceNimFeeFiat.value,
-                                serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
-                                serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
-                                currency: currency.value,
-                            },
-                        });
-                        console.debug('Swap:', swap.value); // eslint-disable-line no-console
-                        swapError.value = null;
-                    } catch (error) {
-                        console.error(error); // eslint-disable-line no-console
-                        swapError.value = error.message;
-                        if (swapSuggestion) cancelSwap(swapSuggestion);
-                        reject(error);
-                        return;
-                    }
-
-                    // if (swap.value!.contracts![0].hash !== swap.value!.contracts![1].hash) {
-                    //     // TODO: Fail
-                    // }
+                    console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
+                    swapError.value = null;
+                } catch (error) {
+                    console.error(error); // eslint-disable-line no-console
+                    swapError.value = error.message;
+                    reject(error);
+                    return;
                 }
+
+                // TODO: Validate swap data against estimate
 
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
@@ -879,70 +834,39 @@ export default defineComponent({
                 const electrumClient = await getElectrumClient();
                 await electrumClient.waitForConsensusEstablished();
 
-                if (swap.value!.to.asset === SwapAsset.BTC) {
-                    // Fetch missing info from the blockchain
-                    // BTC tx hash and output data
+                const validityStartHeight = useNetworkStore().state.height;
 
-                    const htlcAddress = incomingHtlcAddress.value!;
-
-                    // eslint-disable-next-line no-async-promise-executor
-                    const { transaction, output } = await new Promise(async (resolve$1) => {
-                        function listener(tx: BtcTransactionDetails) {
-                            const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                            if (htlcOutput && htlcOutput.value === swap.value!.to.amount) {
-                                resolve$1({
-                                    transaction: tx,
-                                    output: htlcOutput,
-                                });
-                                return true;
-                            }
-                            return false;
-                        }
-
-                        // First subscribe to new transactions
-                        electrumClient.addTransactionListener(listener, [htlcAddress]);
-
-                        // Then check history
-                        const history = await electrumClient.getTransactionsByAddress(htlcAddress);
-                        for (const tx of history) {
-                            if (listener(tx)) break;
-                        }
-                    });
-
-                    const nimHtlcData = swap.value!.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
+                if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {
                         type: 'NIM',
                         sender: nimAddress,
-                        value: swap.value!.from.amount,
-                        fee: swap.value!.from.fee,
-                        extraData: nimHtlcData.data,
-                        validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, useNetworkStore().state.height),
+                        value: swapSuggestion.from.amount,
+                        fee: swapSuggestion.from.fee,
+                        validityStartHeight,
                     };
 
-                    const btcHtlcData = swap.value!.contracts[SwapAsset.BTC]!.htlc as BtcHtlcDetails;
                     redeem = {
                         type: 'BTC',
                         input: {
-                            transactionHash: transaction.transactionHash,
-                            outputIndex: output.index,
-                            outputScript: output.script,
-                            value: swap.value!.to.amount, // Sats
-                            witnessScript: btcHtlcData.script,
+                            // transactionHash: transaction.transactionHash,
+                            // outputIndex: output.index,
+                            // outputScript: output.script,
+                            value: swapSuggestion.to.amount, // Sats
                         },
                         output: {
                             address: btcAddress, // My address, must be redeem address of HTLC
-                            value: swap.value!.to.amount - swap.value!.to.fee, // Sats
+                            value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
                         },
                     };
                 }
 
-                if (swap.value!.from.asset === SwapAsset.BTC) {
+                if (swapSuggestion.from.asset === SwapAsset.BTC) {
                     // Assemble BTC inputs
 
                     const { accountUtxos } = useBtcAddressStore();
                     // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
-                        accountUtxos.value, swap.value!.from.amount, swap.value!.from.feePerUnit, 48);
+                        accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
                     let changeAddress: string;
                     if (requiredInputs.changeAmount > 0) {
                         const { nextChangeAddress } = useBtcAddressStore();
@@ -952,8 +876,6 @@ export default defineComponent({
                         }
                         changeAddress = nextChangeAddress.value;
                     }
-
-                    const btcHtlcData = swap.value!.contracts[SwapAsset.BTC]!.htlc as BtcHtlcDetails;
 
                     fund = {
                         type: 'BTC',
@@ -965,8 +887,7 @@ export default defineComponent({
                             value: utxo.witness.value,
                         })),
                         output: {
-                            address: btcHtlcData.address,
-                            value: swap.value!.from.amount,
+                            value: swapSuggestion.from.amount,
                         },
                         ...(requiredInputs.changeAmount > 0 ? {
                             changeOutput: {
@@ -974,22 +895,15 @@ export default defineComponent({
                                 value: requiredInputs.changeAmount,
                             },
                         } : {}),
-                        htlcScript: btcHtlcData.script,
                         refundAddress: btcAddress,
                     };
 
-                    const nimHtlcData = swap.value!.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
-
-                    const currentBlockHeight = useNetworkStore().state.height;
-
                     redeem = {
                         type: 'NIM',
-                        sender: nimHtlcData.address, // HTLC address
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swap.value!.to.amount, // Luna
-                        fee: swap.value!.to.fee, // Luna
-                        validityStartHeight: Math.min(nimHtlcData.timeoutBlock - 120, currentBlockHeight),
-                        htlcData: nimHtlcData.data,
+                        value: swapSuggestion.to.amount, // Luna
+                        fee: swapSuggestion.to.fee, // Luna
+                        validityStartHeight,
                     };
                 }
 
@@ -998,23 +912,21 @@ export default defineComponent({
                     return;
                 }
 
-                if (!swap.value) {
-                    reject(new Error('No swap data'));
-                    return;
-                }
-
                 const serviceExchangeFee = Math.round(
-                    (swap.value.from.amount - swap.value.from.serviceNetworkFee) * swap.value.serviceFeePercentage);
+                    (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
+                    * swapSuggestion.serviceFeePercentage,
+                );
 
                 const { addressInfos } = useAddressStore();
 
                 resolve({
+                    swapId: swapSuggestion.id,
                     fund,
                     redeem,
                     fiatCurrency: currency.value,
                     nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
                     btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
-                    serviceNetworkFee: swap.value.from.serviceNetworkFee,
+                    serviceNetworkFee: swapSuggestion.from.serviceNetworkFee,
                     serviceExchangeFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,
@@ -1026,48 +938,85 @@ export default defineComponent({
                 } as Omit<SetupSwapRequest, 'appName'>);
             });
 
-            // TODO: Catch Hub error
             let signedTransactions: SetupSwapResult | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
             } catch (error) {
                 captureException(error);
-                alert(`Hub/Keyguard Error: ${error.message}`);
+                swapError.value = error.message;
+                cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
+                currentlySigning.value = false;
+                updateEstimate();
                 return;
             }
 
+            const { swapId } = (await hubRequest);
+
+            const swapFees = {
+                myBtcFeeFiat: myBtcFeeFiat.value,
+                myNimFeeFiat: myNimFeeFiat.value,
+                serviceBtcFeeFiat: serviceBtcFeeFiat.value,
+                serviceNimFeeFiat: serviceNimFeeFiat.value,
+                serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
+                serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
+                currency: currency.value,
+            };
+
             if (!signedTransactions) {
                 // Hub popup cancelled
+                cancelSwap({ id: swapId } as PreSwap);
+                currentlySigning.value = false;
+                updateEstimate();
                 return;
             }
 
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
+
+            // Fetch contract from Fastspot and confirm that it's confirmed
+            const confirmedSwap = await getSwap(swapId);
+            if (!('contracts' in confirmedSwap)) {
+                captureException(new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap'));
+                swapError.value = 'Invalid swap state, swap aborted!';
+                cancelSwap({ id: swapId } as PreSwap);
+                currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            // Add swap details to swap store
+            setSwap(confirmedSwap.hash, {
+                id: confirmedSwap.id,
+                provider: 'Fastspot',
+                fees: swapFees,
+            });
 
             const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
                 ? signedTransactions.nim.raw.recipient
                 : signedTransactions.nim.raw.sender;
 
             setActiveSwap({
-                ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>),
+                ...confirmedSwap,
                 // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
                 contracts: {
-                    ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts,
+                    ...confirmedSwap.contracts,
                     [SwapAsset.NIM]: {
-                        ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts[SwapAsset.NIM]!,
+                        ...confirmedSwap.contracts[SwapAsset.NIM]!,
                         htlc: {
-                            ...(swap.value as ActiveSwap<SwapState.SIGN_SWAP>).contracts[SwapAsset.NIM]!.htlc,
+                            ...confirmedSwap.contracts[SwapAsset.NIM]!.htlc,
                             address: nimHtlcAddress,
                         },
                     },
                 },
                 state: SwapState.AWAIT_INCOMING,
-                fundingSerializedTx: swap.value!.from.asset === SwapAsset.NIM
+                fundingSerializedTx: confirmedSwap.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
                     : signedTransactions.btc.serializedTx,
-                settlementSerializedTx: swap.value!.to.asset === SwapAsset.NIM
+                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
                     : signedTransactions.btc.serializedTx,
             });
+
+            setTimeout(() => currentlySigning.value = false, 1000);
 
             processSwap();
         }
@@ -1175,6 +1124,7 @@ export default defineComponent({
             limits,
             displayLimits,
             currentLimitFiat,
+            currentlySigning,
         };
     },
     components: {

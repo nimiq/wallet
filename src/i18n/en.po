@@ -799,6 +799,10 @@ msgstr ""
 msgid "Pending..."
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:169
+msgid "Performing Swap"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:10
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""

@@ -31,6 +31,7 @@
             <div class="separator nq-light-blue-bg">
                 <div class="handle"
                     @mousedown="onMouseDown"
+                    @touchstart="onMouseDown"
                 ></div>
             </div>
             <div class="bar bitcoin active"
@@ -166,20 +167,29 @@ export default defineComponent({
         );
         const $activeBar = ref<HTMLDivElement[] | null>(null);
 
-        function onMouseDown(event: MouseEvent) {
+        function onMouseDown(event: MouseEvent | TouchEvent) {
             isGrabbing = true;
-            initialCursorPosition = event.pageX;
-            currentCursorPosition = event.pageX;
+            if (event instanceof MouseEvent) {
+                initialCursorPosition = event.pageX;
+                currentCursorPosition = event.pageX;
+            } else {
+                initialCursorPosition = event.touches[0].pageX;
+                currentCursorPosition = event.touches[0].pageX;
+            }
         }
 
-        function onMouseUp(/* event: MouseEvent */) {
+        function onMouseUp(/* event: MouseEvent | TouchEvent */) {
             isGrabbing = false;
         }
 
-        function onMouseMove(event: MouseEvent) {
+        function onMouseMove(event: MouseEvent | TouchEvent) {
             if (!isGrabbing) return;
 
-            currentCursorPosition = event.pageX;
+            if (event instanceof MouseEvent) {
+                currentCursorPosition = event.pageX;
+            } else {
+                currentCursorPosition = event.touches[0].pageX;
+            }
         }
 
         function emit(asset: SwapAsset, amount: number) {
@@ -253,13 +263,17 @@ export default defineComponent({
 
         onMounted(() => {
             document.body.addEventListener('mouseup', onMouseUp);
+            document.body.addEventListener('touchend', onMouseUp);
             document.body.addEventListener('mousemove', onMouseMove);
+            document.body.addEventListener('touchmove', onMouseMove);
             render();
         });
 
         onUnmounted(() => {
             document.body.removeEventListener('mouseup', onMouseUp);
+            document.body.removeEventListener('touchend', onMouseUp);
             document.body.removeEventListener('mousemove', onMouseMove);
+            document.body.removeEventListener('touchmove', onMouseMove);
             cancelAnimationFrame(animationFrameHandle);
         });
 
@@ -452,6 +466,7 @@ export default defineComponent({
     height: 10.5rem;
     position: relative;
     flex-shrink: 0;
+    touch-action: none;
 
     .handle {
         --height: 3rem;

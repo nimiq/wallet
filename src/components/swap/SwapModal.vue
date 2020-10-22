@@ -361,7 +361,6 @@ export default defineComponent({
     setup(props, context) {
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
-        const direction = ref(SwapDirection.BTC_TO_NIM);
         const fixedAsset = ref<SwapAsset>(SwapAsset.NIM);
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
@@ -489,6 +488,12 @@ export default defineComponent({
 
         const wantNim = ref(0);
         const wantBtc = ref(0);
+
+        const direction = computed(() => {
+            if (wantNim.value < 0 || wantBtc.value > 0) return SwapDirection.NIM_TO_BTC;
+            if (wantNim.value > 0 || wantBtc.value < 0) return SwapDirection.BTC_TO_NIM;
+            return SwapDirection.NIM_TO_BTC;
+        });
 
         const getNim = computed(() => {
             if (!wantBtc.value) return 0;
@@ -690,23 +695,11 @@ export default defineComponent({
                 fixedAsset.value = SwapAsset.NIM;
                 wantNim.value = amount;
                 wantBtc.value = 0;
-
-                if (amount < 0) {
-                    direction.value = SwapDirection.NIM_TO_BTC;
-                } else {
-                    direction.value = SwapDirection.BTC_TO_NIM;
-                }
             }
             if (asset === SwapAsset.BTC) {
                 fixedAsset.value = SwapAsset.BTC;
                 wantBtc.value = amount;
                 wantNim.value = 0;
-
-                if (amount < 0) {
-                    direction.value = SwapDirection.BTC_TO_NIM;
-                } else {
-                    direction.value = SwapDirection.NIM_TO_BTC;
-                }
             }
 
             if (!amount) {

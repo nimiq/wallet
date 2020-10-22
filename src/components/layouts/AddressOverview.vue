@@ -66,8 +66,9 @@
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
-                        <FiatConvertedAmount v-if="activeCurrency === 'nim'"
+                        <FiatConvertedAmount v-if="activeCurrency === 'nim' && activeAddressInfo.balance !== null"
                             :amount="activeAddressInfo.balance" value-mask/>
+                        <span v-else-if="activeCurrency === 'nim'" class="fiat-amount"></span>
                         <FiatConvertedAmount v-else
                             :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>

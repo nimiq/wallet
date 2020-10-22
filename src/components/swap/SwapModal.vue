@@ -575,6 +575,10 @@ export default defineComponent({
             || 1,
         );
 
+        // 48 extra weight units for BTC HTLC funding tx
+        const btcFeeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
+        const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
+
         function calculateRequestData(): {
             from: SwapAsset | RequestAsset<SwapAsset>,
             to: RequestAsset<SwapAsset> | SwapAsset,
@@ -595,12 +599,12 @@ export default defineComponent({
 
             if (direction.value === SwapDirection.BTC_TO_NIM) {
                 // BTC
+                const btcAmount = Math.abs(Math.max(wantBtc.value, -btcMaxSendableAmount.value) || getBtc.value);
                 // 48 extra weight units for BTC HTLC funding tx
-                const selected = selectOutputs(accountUtxos.value, Math.abs(wantBtc.value || getBtc.value),
-                    btcFeePerUnit.value, 48);
+                const selected = selectOutputs(accountUtxos.value, btcAmount, btcFeePerUnit.value, 48);
                 fundingFee = selected.utxos
                     .reduce((sum, utxo) => sum + utxo.witness.value, 0)
-                    - Math.abs(wantBtc.value || getBtc.value)
+                    - btcAmount
                     - selected.changeAmount;
 
                 // NIM
@@ -682,12 +686,6 @@ export default defineComponent({
             }
             fetchingEstimate.value = false;
         }
-
-        // 48 extra weight units for BTC HTLC funding tx
-        // const btcFeeForSendingAll =
-        //     computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
-        // const btcMaxSendableAmount =
-        //     computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
         function onInput(asset: SwapAsset, amount: number) {
             if (debounce) {

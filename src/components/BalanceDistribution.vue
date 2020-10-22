@@ -35,7 +35,10 @@
             <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange">
-            <button class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent>
+            <button
+                :disabled="!totalFiatAccountBalance"
+                class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent
+            >
                 <SwapIcon/>
             </button>
         </div>
@@ -140,6 +143,7 @@ export default defineComponent({
 
         return {
             getBackgroundClass,
+            totalFiatAccountBalance,
             balanceDistribution,
             accountBalance,
             hasBitcoinAddresses,

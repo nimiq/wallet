@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';

@@ -1353,6 +1353,10 @@ export default defineComponent({
             display: block;
             font-size: 1.75rem;
             margin-left: 0.5rem;
+
+            svg {
+                opacity: 0.6;
+            }
         }
     }
 }

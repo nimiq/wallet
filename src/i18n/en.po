@@ -157,7 +157,7 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:44
+#: src/components/BalanceDistribution.vue:47
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/layouts/Settings.vue:88

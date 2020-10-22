@@ -90,19 +90,20 @@
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">+</span>
                         </AmountInput>
-                        <FiatConvertedAmount
-                            :amount="Math.abs(wantNim || getNim)" currency="nim"/>
-                        <SwapFeesTooltip
-                            v-if="direction === SwapDirection.NIM_TO_BTC"
-                            preferredPosition="top right"
-                            :myBtcFeeFiat="myBtcFeeFiat"
-                            :myNimFeeFiat="myNimFeeFiat"
-                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                            :serviceNimFeeFiat="serviceNimFeeFiat"
-                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
-                            :currency="currency"
-                        />
+                        <div class="flex-row">
+                            <FiatConvertedAmount
+                                :amount="Math.abs(wantNim || getNim)" currency="nim"/>
+                            <SwapFeesTooltip
+                                v-if="direction === SwapDirection.NIM_TO_BTC && (wantNim || getNim)"
+                                preferredPosition="top right"
+                                :myBtcFeeFiat="myBtcFeeFiat"
+                                :myNimFeeFiat="myNimFeeFiat"
+                                :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                                :serviceNimFeeFiat="serviceNimFeeFiat"
+                                :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                                :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                                :currency="currency"/>
+                        </div>
                     </div>
                     <div class="right-column" :class="!wantBtc && !getBtc
                         ? 'nq-gray'
@@ -117,19 +118,20 @@
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">+</span>
                             <span slot="suffix" class="ticker">BTC</span>
                         </AmountInput>
-                        <FiatConvertedAmount
-                            :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
-                        <SwapFeesTooltip
-                            v-if="direction === SwapDirection.BTC_TO_NIM"
-                            preferredPosition="top left"
-                            :myBtcFeeFiat="myBtcFeeFiat"
-                            :myNimFeeFiat="myNimFeeFiat"
-                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                            :serviceNimFeeFiat="serviceNimFeeFiat"
-                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
-                            :currency="currency"
-                        />
+                        <div class="flex-row">
+                            <FiatConvertedAmount
+                                :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
+                            <SwapFeesTooltip
+                                v-if="direction === SwapDirection.BTC_TO_NIM && (wantBtc || getBtc)"
+                                preferredPosition="top left"
+                                :myBtcFeeFiat="myBtcFeeFiat"
+                                :myNimFeeFiat="myNimFeeFiat"
+                                :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                                :serviceNimFeeFiat="serviceNimFeeFiat"
+                                :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                                :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                                :currency="currency"/>
+                        </div>
                     </div>
                 </div>
 
@@ -1264,6 +1266,10 @@ export default defineComponent({
 .right-column {
     text-align: right;
     justify-content: flex-end;
+
+    .flex-row {
+        justify-content: flex-end;
+    }
 }
 
 .swap-amounts,
@@ -1311,13 +1317,19 @@ export default defineComponent({
     }
 }
 
-.swap-amounts .tooltip {
-    text-align: left;
+.swap-amounts {
+    .flex-row {
+        align-items: center;
+    }
 
-    /deep/ .trigger {
-        display: block;
-        font-size: 1.75rem;
-        margin-top: 0.125rem;
+    .tooltip {
+        text-align: left;
+
+        /deep/ .trigger {
+            display: block;
+            font-size: 1.75rem;
+            margin-left: 0.5rem;
+        }
     }
 }
 

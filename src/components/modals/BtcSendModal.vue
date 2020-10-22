@@ -182,7 +182,6 @@ import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
-import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { getElectrumClient } from '../../electrum';
 
 export enum RecipientType {
@@ -510,8 +509,6 @@ export default defineComponent({
                     return;
                 }
 
-                const { addTransactions } = useBtcTransactionsStore();
-                addTransactions([plainTx]);
                 saveRecipientLabel();
 
                 // Show success screen

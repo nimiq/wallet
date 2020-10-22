@@ -114,7 +114,7 @@ export default defineComponent({
     height: 2.25rem;
     width: 2.25rem;
     font-size: 1.375rem;
-    letter-spacing: -0.1em;
+    letter-spacing: -0.05em;
     filter: grayscale(100%);
 
     transition: var(--short-transition-duration) filter var(--nimiq-ease);

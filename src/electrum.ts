@@ -8,7 +8,7 @@ import { useAccountStore } from './stores/Account';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
-import { BTC_ADDRESS_GAP, ENV_DEV, ENV_MAIN } from './lib/Constants';
+import { BTC_ADDRESS_GAP, ENV_MAIN } from './lib/Constants';
 import { loadBitcoinJS } from './lib/BitcoinJSLoader';
 import { addBtcAddresses } from './hub';
 
@@ -29,18 +29,7 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
 
     const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
     NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'mainnet' : 'testnet']();
-
-    let options = {};
-    if (Config.environment === ENV_DEV) {
-        options = {
-            websocketProxy: {
-                tcp: 'wss://api.nimiqwatch.com:50002',
-                ssl: 'wss://api.nimiqwatch.com:50003',
-            },
-        };
-    }
-
-    const client = new NimiqElectrumClient.ElectrumClient(options);
+    const client = new NimiqElectrumClient.ElectrumClient();
     resolver!(client);
 
     return clientPromise;

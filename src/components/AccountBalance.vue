@@ -9,12 +9,14 @@
         </h2>
         <div class="fiat-amount" ref="$fiatAmountContainer">
             <FiatAmount
+                v-if="fiatAmount !== undefined"
                 :amount="fiatAmount"
                 :currency="fiatCurrency"
                 ref="$fiatAmount"
                 :style="{ fontSize: `${fiatAmountFontSize}rem` }"
                 value-mask
             />
+            <span v-else class="fiat-amount">&nbsp;</span>
         </div>
         <BalanceDistribution/>
     </div>
@@ -22,7 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -65,6 +67,7 @@ export default defineComponent({
 
         async function updateFontSize() {
             await context.root.$nextTick();
+            if (!$fiatAmount.value) return;
 
             if (!$fiatAmountContainer.value || !$fiatAmount.value) return;
 
@@ -79,9 +82,12 @@ export default defineComponent({
 
         onMounted(() => {
             window.addEventListener('resize', updateFontSize);
-            updateFontSize();
         });
         onUnmounted(() => window.removeEventListener('resize', updateFontSize));
+
+        watch($fiatAmount, () => {
+            if (!$fiatAmount.value) updateFontSize();
+        }, { lazy: true });
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
 

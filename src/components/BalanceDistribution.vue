@@ -23,7 +23,10 @@
                             <Identicon :address="account.addressInfo.address"/>
                             <div class="flex-column">
                                 <span class="nq-text-s">{{account.addressInfo.label}}</span>
-                                <FiatConvertedAmount :amount="account.addressInfo.balance" value-mask/>
+                                <FiatConvertedAmount
+                                    v-if="account.addressInfo.balance !== null"
+                                    :amount="account.addressInfo.balance" value-mask/>
+                                <span v-else class="fiat-amount">&nbsp;</span>
                             </div>
                         </div>
                     </Tooltip>

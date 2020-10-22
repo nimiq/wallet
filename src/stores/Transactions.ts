@@ -14,7 +14,6 @@ import { SwapAsset } from '../lib/FastspotApi';
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
     relatedTransactionHash?: string,
-    swapHash?: string,
 };
 
 // Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.
@@ -66,7 +65,6 @@ export const useTransactionsStore = createStore({
                         asset: SwapAsset.NIM,
                         transactionHash: plain.transactionHash,
                     });
-                    plain.swapHash = hash;
                 }
                 // HTLC Settlement
                 if ('hashRoot' in plain.proof) {
@@ -75,7 +73,6 @@ export const useTransactionsStore = createStore({
                         asset: SwapAsset.NIM,
                         transactionHash: plain.transactionHash,
                     });
-                    plain.swapHash = hash;
                 }
 
                 newTxs[plain.transactionHash] = plain;

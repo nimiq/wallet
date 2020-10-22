@@ -108,11 +108,9 @@ export default defineComponent({
 
         const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
+        const { getSwapByTransactionHash } = useSwapsStore();
         const swapTransaction = computed(() => {
-            const { swapHash } = props.transaction;
-            if (!swapHash) return null;
-
-            const swap = useSwapsStore().state.swaps[swapHash];
+            const swap = getSwapByTransactionHash.value(props.transaction.transactionHash);
             if (!swap) return null;
 
             const swapData = isIncoming.value ? swap.in : swap.out;

@@ -348,10 +348,8 @@ export default defineComponent({
             : inputsSent.value.map((input) => input.address || input.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
 
-        const swapInfo = computed(() => {
-            if (!transaction.value.swapHash) return null;
-            return useSwapsStore().state.swaps[transaction.value.swapHash] || null;
-        });
+        const { getSwapByTransactionHash } = useSwapsStore();
+        const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
 
         const swapTransaction = computed(() => {
             if (!swapInfo.value) return null;

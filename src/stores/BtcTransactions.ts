@@ -14,7 +14,6 @@ export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     outputs: (PlainOutput & {
         fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
     })[],
-    swapHash?: string,
 };
 
 const VALID_TRANSACTION_STATES = [
@@ -65,7 +64,6 @@ export const useBtcTransactionsStore = createStore({
                         transactionHash: plain.transactionHash,
                         outputIndex: fundingData.outputIndex,
                     }, fundingData.provider ? { provider: fundingData.provider } as Swap : undefined);
-                    plain.swapHash = fundingData.hash;
                 }
                 // HTLC Settlement
                 const settlementHash = isHtlcSettlement(plain);
@@ -75,7 +73,6 @@ export const useBtcTransactionsStore = createStore({
                         transactionHash: plain.transactionHash,
                         outputIndex: 0,
                     });
-                    plain.swapHash = settlementHash;
                 }
 
                 newTxs[plain.transactionHash] = plain;

@@ -82,6 +82,7 @@ export type ActiveSwap<T extends SwapState> = SwapObject & {
 
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
+    swapByTransaction: { [transactionHash: string]: string },
     activeSwap: ActiveSwap<any> | null,
 };
 
@@ -89,11 +90,18 @@ export const useSwapsStore = createStore({
     id: 'swaps',
     state: (): SwapsState => ({
         swaps: {},
+        swapByTransaction: {},
         activeSwap: null,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
             state.swaps[hash],
+        getSwapByTransactionHash: (state): ((transactionHash: string) => Swap | null) =>
+            (transactionHash: string): Readonly<Swap> | null => {
+                const swapHash = state.swapByTransaction[transactionHash];
+                if (!swapHash) return null;
+                return state.swaps[swapHash] || null;
+            },
         activeSwap: (state): Readonly<ActiveSwap<any> | null> => state.activeSwap,
     },
     actions: {
@@ -101,6 +109,11 @@ export const useSwapsStore = createStore({
             this.state.swaps = {
                 ...this.state.swaps,
                 [hash]: swap,
+            };
+            this.state.swapByTransaction = {
+                ...this.state.swapByTransaction,
+                ...(swap.in ? { [swap.in.transactionHash]: hash } : {}),
+                ...(swap.out ? { [swap.out.transactionHash]: hash } : {}),
             };
         },
         addFundingData(hash: string, data: SwapNimData | SwapBtcData, newSwapData: Swap = {}) {

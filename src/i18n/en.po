@@ -25,7 +25,7 @@ msgid "{count} Peer | {count} Peers"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:15
-#: src/components/layouts/AddressOverview.vue:86
+#: src/components/layouts/AddressOverview.vue:87
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
@@ -178,15 +178,15 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:56
+#: src/components/BalanceDistribution.vue:59
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:440
-#: src/components/TransactionListItem.vue:167
+#: src/components/modals/TransactionModal.vue:438
+#: src/components/TransactionListItem.vue:165
 msgid "Bitcoin"
 msgstr ""
 
@@ -250,9 +250,9 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:446
+#: src/components/modals/TransactionModal.vue:444
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:173
+#: src/components/TransactionListItem.vue:171
 msgid "Cashlink"
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:121
+#: src/components/layouts/AddressOverview.vue:122
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -815,7 +815,7 @@ msgstr ""
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:102
+#: src/components/layouts/AddressOverview.vue:103
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -909,7 +909,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:98
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -1023,7 +1023,7 @@ msgstr ""
 msgid "Signing swap..."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:122
+#: src/components/layouts/AddressOverview.vue:123
 msgid "Signup"
 msgstr ""
 
@@ -1216,8 +1216,8 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:447
-#: src/components/TransactionListItem.vue:174
+#: src/components/modals/TransactionModal.vue:445
+#: src/components/TransactionListItem.vue:172
 msgid "Unclaimed Cashlink"
 msgstr ""
 

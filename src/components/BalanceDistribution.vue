@@ -36,7 +36,7 @@
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange">
             <button class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent>
-                <SwapMediumIcon/>
+                <SwapIcon/>
             </button>
         </div>
         <div v-if="hasBitcoinAddresses"
@@ -79,7 +79,7 @@ import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
-import SwapMediumIcon from './icons/SwapMediumIcon.vue';
+import SwapIcon from './icons/SwapIcon.vue';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore, AddressInfo } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
@@ -155,7 +155,7 @@ export default defineComponent({
         Tooltip,
         Amount,
         BitcoinIcon,
-        SwapMediumIcon,
+        SwapIcon,
     },
 });
 </script>
@@ -183,8 +183,6 @@ export default defineComponent({
             border-radius: 2rem;
 
             svg {
-                width: 3rem;
-                height: 3rem;
                 opacity: 0.5;
             }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="swap-balance-bar flex-column">
+    <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
             <div class="nimiq">
                 <Identicon :address="activeAddressInfo.address" ref="$nimiqIcon" />
@@ -25,6 +25,7 @@
             >
                 <div class="change"
                     v-if="addressInfo.active && addressInfo.balanceChange > 0"
+                    ref="$nimChangeBar"
                     :style="{ width: `${getNimiqChangeBarWidth(addressInfo)}%` }"
                 ></div>
             </div>
@@ -33,12 +34,18 @@
                     @mousedown="onMouseDown"
                     @touchstart="onMouseDown"
                 ></div>
+                <div class="equilibrium-point nq-light-blue-bg"
+                    :class="{ hidden: equiPointPositionX < 10 && equiPointPositionX > -10 }"
+                    :style="{ '--translateX': `${equiPointPositionX}px` }"
+                    @click="animatedReset"
+                ></div>
             </div>
             <div class="bar bitcoin active"
                 ref="$bitcoinBar"
                 :style="{ width: `${bitcoinBarWidth}%` }"
             >
-                <div class="change" v-if="btcDistributionData.balanceChange > 0"
+                <div class="change"
+                    ref="$btcChangeBar"
                     :style="{ width: `${bitcoinChangeBarWidth}%` }"
                 ></div>
             </div>
@@ -60,7 +67,6 @@ import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore, AddressInfo } from '../../stores/Address';
 import getBackgroundClass from '../../lib/AddressColor';
-import { SwapDirection } from '../../stores/Swaps';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { SwapAsset } from '../../lib/FastspotApi';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
@@ -106,14 +112,15 @@ export default defineComponent({
         const { accountBalance } = useBtcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
+        const $el = ref<HTMLDivElement | null>(null);
+
         const nimExchangeRate = computed(() =>
             exchangeRates.value?.[CryptoCurrency.NIM][currency.value] || 0);
         const btcExchangeRate = computed(() =>
             exchangeRates.value?.[CryptoCurrency.BTC][currency.value] || 0);
 
-        const nimDistributionData = computed(() =>
+        const nimDistributionData = computed<readonly ExtendedAddressInfo[]>(() =>
             addressInfos.value
-                // .filter((addressInfo) => addressInfo.type === 0) // filter no Vesting or Htlc account types ?
                 .map((addressInfo) => ({
                     ...addressInfo,
                     get active() {
@@ -162,10 +169,10 @@ export default defineComponent({
         let animationFrameHandle = 0;
 
         const $bitcoinBar = ref<HTMLDivElement | null>(null);
+        const $activeBar = ref<HTMLDivElement[] | null>(null);
         const activeBar = computed(() =>
             nimDistributionData.value.find((addressInfo) => addressInfo.active),
         );
-        const $activeBar = ref<HTMLDivElement[] | null>(null);
 
         function onMouseDown(event: MouseEvent | TouchEvent) {
             isGrabbing = true;
@@ -203,10 +210,11 @@ export default defineComponent({
             animationFrameHandle = requestAnimationFrame(render);
 
             /*
-                There is a lot of issues when updating lines width in a watcher, or turning them into computed.
-                So we're updating it in the render loop until a more optimized way to do it is found.
+                There is a lot of issues when updating those in a watcher, or turning them into computed.
+                So we're updating them in the render loop until a more optimized way to do it is found.
             */
             updateConnectingLinesWidth();
+            updateEquiPointPosition();
 
             if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value) return undefined;
 
@@ -223,7 +231,6 @@ export default defineComponent({
 
             const lunaAmount = activeBar.value.balanceChange
                 + ((props.newNimBalance * nimPercent) * movingDirection);
-
             const satoshiAmount = btcDistributionData.value.balanceChange
                 + ((props.newBtcBalance * btcPercent) * -movingDirection);
 
@@ -249,7 +256,6 @@ export default defineComponent({
                 return emit(SwapAsset.NIM, lunaAmount
                     + (((props.newBtcBalance * btcPercent) * movingDirection) / props.satsPerNim));
             }
-
             if (btcPercent >= 1 && props.newBtcBalance === 0 && movingDirection === MovingDirection.LEFT) {
                 return emit(SwapAsset.BTC, satoshiAmount
                     + (((props.newNimBalance * nimPercent * -movingDirection) / 1e5) * props.satsPerNim));
@@ -313,27 +319,64 @@ export default defineComponent({
             }
         }
 
+        /* Equilibrium point */
+        const $btcChangeBar = ref<HTMLDivElement | null>(null);
+        const $nimChangeBar = ref<HTMLDivElement[] | null>(null);
+        const equiPointPositionX = ref(0);
+        const animatingBars = ref(false);
+
+        function updateEquiPointPosition() {
+            if (!$el.value || !activeBar.value || (!$btcChangeBar.value && !$nimChangeBar.value)) {
+                return;
+            }
+
+            if (activeBar.value.balanceChange > 0 && $nimChangeBar.value && $nimChangeBar.value.length > 0) {
+                equiPointPositionX.value = -$nimChangeBar.value[0].clientWidth;
+            } else if (btcDistributionData.value.balanceChange > 0 && $btcChangeBar.value) {
+                equiPointPositionX.value = $btcChangeBar.value.clientWidth;
+            } else if (equiPointPositionX.value !== 0) {
+                equiPointPositionX.value = 0;
+            }
+        }
+
+        function animatedReset() {
+            animatingBars.value = true;
+            emit(SwapAsset.NIM, 0);
+            setTimeout(() => {
+                animatingBars.value = false;
+            }, 200);
+        }
+
         return {
-            SwapDirection,
-            addressInfos,
+            selectAddress,
+
+            $el,
+            $activeBar,
+            $bitcoinBar,
+            $btcChangeBar,
+            $nimChangeBar,
+
             nimDistributionData,
             activeAddressInfo,
-            totalNewFiatBalance,
             btcDistributionData,
-            selectAddress,
+
             onMouseDown,
             onMouseUp,
             onMouseMove,
-            $activeBar,
-            $bitcoinBar,
             getNimiqBarWidth,
             getNimiqChangeBarWidth,
             bitcoinBarWidth,
             bitcoinChangeBarWidth,
+
             nimiqConnectingLineWidth,
             bitcoinConnectingLineWidth,
+
             nimiqTotalNewFiatBalance,
             distributionPercents,
+
+            equiPointPositionX,
+            animatedReset,
+            animatingBars,
         };
     },
     components: {
@@ -346,7 +389,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-.swap-balance-bar {}
+.swap-balance-bar {
+    position: relative;
+}
 
 .balance-bar-header {
     --height: 5.25rem;
@@ -360,7 +405,7 @@ export default defineComponent({
 
         label {
             font-weight: 600;
-            line-height: 21px;
+            line-height: 2.625rem;
         }
     }
 
@@ -415,11 +460,16 @@ export default defineComponent({
     align-items: center;
     justify-content: flex-end;
     cursor: pointer;
+    transform: translate3d(0);
 
-    transition: opacity 300ms var(--nimiq-ease), width 10ms;
+    transition: opacity 300ms, width 10ms;
+
+    .animating & {
+        transition: opacity 300ms, width 300ms;
+    }
 
     &:not(:last-child) {
-        margin-right: 3px;
+        margin-right: 0.375rem;
     }
 
     &:first-child,
@@ -457,12 +507,17 @@ export default defineComponent({
         margin: 0 0.25rem;
         border-radius: 0.25rem;
         transition: width 10ms;
+        transform: translate3d(0, 0, 0);
+
+        .animating & {
+            transition: width 300ms;
+        }
     }
 }
 
 .separator {
-    width: 2px;
-    margin-right: 3px;
+    width: .25rem;
+    margin-right: 0.375rem;
     height: 10.5rem;
     position: relative;
     flex-shrink: 0;
@@ -475,11 +530,11 @@ export default defineComponent({
         height: var(--height);
         width: var(--width);
         background: white url('../../assets/horizontal-double-arrow.svg') no-repeat center;
-        border-radius: 4px;
+        border-radius: 0.5rem;
         box-shadow:
-            0px 4px 16px rgba(0, 0, 0, 0.07),
-            0px 1.5px 3px rgba(0, 0, 0, 0.05),
-            0px 0.337011px 2px rgba(0, 0, 0, 0.0254662);
+            0px .5rem 2rem rgba(0, 0, 0, 0.07),
+            0px .1875rem .375rem rgba(0, 0, 0, 0.05),
+            0px .0421rem .25rem rgba(0, 0, 0, 0.025);
 
         position: absolute;
         top: calc(50% - (var(--height) / 2));
@@ -489,6 +544,30 @@ export default defineComponent({
         &:active {
             cursor: grabbing;
         }
+    }
+}
+
+.equilibrium-point {
+    --translateX: 0;
+    height: .5rem;
+    width: .5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    bottom: .25rem;
+    left: 50%;
+    transform: translateX(-50%) translateX(var(--translateX));
+    opacity: 1;
+
+    transition-duration: 300ms;
+    transition-property: opacity, visibility;
+
+    .animating & {
+        transition-property: opacity, visibility, transform;
+    }
+
+    &.hidden {
+        opacity: 0;
     }
 }
 
@@ -505,11 +584,11 @@ export default defineComponent({
 
         font-weight: bold;
         font-size: var(--small-size);
-        letter-spacing: 0.5px;
+        letter-spacing: 0.0625rem;
         color: var(--text-50);
 
         &:not(:last-child) {
-            border-right: 1.5px solid var(--text-20);
+            border-right: 0.1875rem solid var(--text-20);
         }
 
         &:last-child {

@@ -216,7 +216,9 @@ export default defineComponent({
             updateConnectingLinesWidth();
             updateEquiPointPosition();
 
-            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value) return undefined;
+            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value || !$el.value) {
+                return undefined;
+            }
 
             const cursorPositionDiff = currentCursorPosition - initialCursorPosition;
             initialCursorPosition = currentCursorPosition;
@@ -224,16 +226,14 @@ export default defineComponent({
             if (cursorPositionDiff === 0) return undefined;
 
             const movingDirection = cursorPositionDiff > 0 ? MovingDirection.RIGHT : MovingDirection.LEFT;
-            const nimPercent = Math.abs(cursorPositionDiff)
-                / ($activeBar.value[0].clientWidth > 1 ? $activeBar.value[0].clientWidth : 1);
-            const btcPercent = Math.abs(cursorPositionDiff)
-                / ($bitcoinBar.value.clientWidth > 1 ? $bitcoinBar.value.clientWidth : 1);
+            const fiatAmount = (Math.abs(cursorPositionDiff) / $el.value.clientWidth) * totalNewFiatBalance.value;
 
             const lunaAmount = activeBar.value.balanceChange
-                + ((props.newNimBalance * nimPercent) * movingDirection);
+                + (((fiatAmount / nimExchangeRate.value) * 1e5) * movingDirection);
             const satoshiAmount = btcDistributionData.value.balanceChange
-                + ((props.newBtcBalance * btcPercent) * -movingDirection);
+                + (((fiatAmount / btcExchangeRate.value) * 1e8) * -movingDirection);
 
+            /* Limits */
             if (props.limits && typeof props.limits.fiat === 'number') {
                 if ((lunaAmount / 1e5) * nimExchangeRate.value < -props.limits.fiat
                     && movingDirection === MovingDirection.LEFT) {
@@ -245,6 +245,7 @@ export default defineComponent({
                 }
             }
 
+            /* Don't allow to send more than the available balance */
             if (lunaAmount < -(activeBar.value.balance || 0) && movingDirection === MovingDirection.LEFT) {
                 return emit(SwapAsset.NIM, -(activeBar.value.balance || 0));
             }
@@ -252,15 +253,7 @@ export default defineComponent({
                 return emit(SwapAsset.BTC, -accountBalance.value);
             }
 
-            if (nimPercent >= 1 && props.newNimBalance === 0 && movingDirection === MovingDirection.RIGHT) {
-                return emit(SwapAsset.NIM, lunaAmount
-                    + (((props.newBtcBalance * btcPercent) * movingDirection) / props.satsPerNim));
-            }
-            if (btcPercent >= 1 && props.newBtcBalance === 0 && movingDirection === MovingDirection.LEFT) {
-                return emit(SwapAsset.BTC, satoshiAmount
-                    + (((props.newNimBalance * nimPercent * -movingDirection) / 1e5) * props.satsPerNim));
-            }
-
+            /* Otherwise */
             if (lunaAmount <= 0) {
                 return emit(SwapAsset.NIM, lunaAmount);
             }
@@ -522,6 +515,7 @@ export default defineComponent({
     position: relative;
     flex-shrink: 0;
     touch-action: none;
+    z-index: 2;
 
     .handle {
         --height: 3rem;

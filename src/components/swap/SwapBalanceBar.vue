@@ -472,17 +472,17 @@ export default defineComponent({
     &:first-child,
     &:last-child {
         border-radius: 1.2rem; // css bug? increasing left border radius decrease the right one... Should be 0.5rem
-        --endBorderRadius: 5rem;
+        --end-border-radius: 5rem;
     }
 
     &:first-child {
-        border-top-left-radius: var(--endBorderRadius);
-        border-bottom-left-radius: var(--endBorderRadius);
+        border-top-left-radius: var(--end-border-radius);
+        border-bottom-left-radius: var(--end-border-radius);
     }
 
     &:last-child {
-        border-top-right-radius: var(--endBorderRadius);
-        border-bottom-right-radius: var(--endBorderRadius);
+        border-top-right-radius: var(--end-border-radius);
+        border-bottom-right-radius: var(--end-border-radius);
     }
 
     &.active {

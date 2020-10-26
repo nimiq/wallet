@@ -35,7 +35,7 @@
                     @touchstart="onMouseDown"
                 ></div>
                 <div class="equilibrium-point nq-light-blue-bg"
-                    :class="{ hidden: equiPointPositionX < 10 && equiPointPositionX > -10 }"
+                    :class="{ hidden: equiPointVisible }"
                     :style="{ '--translateX': `${equiPointPositionX}px` }"
                     @click="animatedReset"
                 ></div>
@@ -315,7 +315,10 @@ export default defineComponent({
         /* Equilibrium point */
         const $btcChangeBar = ref<HTMLDivElement | null>(null);
         const $nimChangeBar = ref<HTMLDivElement[] | null>(null);
+        const equiPointThreshold = 10;
         const equiPointPositionX = ref(0);
+        const equiPointVisible = computed(() =>
+            equiPointPositionX.value < equiPointThreshold && equiPointPositionX.value > -equiPointThreshold);
         const animatingBars = ref(false);
 
         function updateEquiPointPosition() {
@@ -368,6 +371,7 @@ export default defineComponent({
             distributionPercents,
 
             equiPointPositionX,
+            equiPointVisible,
             animatedReset,
             animatingBars,
         };

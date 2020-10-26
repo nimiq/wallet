@@ -945,7 +945,8 @@ export default defineComponent({
                     fiatCurrency: currency.value,
                     nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
                     btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
-                    serviceNetworkFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
                     serviceExchangeFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,

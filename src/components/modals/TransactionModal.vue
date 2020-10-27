@@ -243,6 +243,12 @@
                     </div>
                 </div>
             </div>
+            <button
+                v-else-if="swapInfo && !isIncoming
+                    && swapInfo.in && swapInfo.in.asset === SwapAsset.NIM && !swapInfo.out
+                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutBlockHeight <= blockHeight"
+                class="nq-button-s" @click="refundHtlc" @mousedown.prevent
+            >{{ $t('Refund') }}</button>
             <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
@@ -286,6 +292,7 @@ import {
     CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
+import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -311,10 +318,12 @@ import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
-import { manageCashlink } from '../../hub';
-import { useSwapsStore } from '../../stores/Swaps';
+import { manageCashlink, refundSwap } from '../../hub';
+import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
-import { SwapAsset } from '../../lib/FastspotApi';
+import { SwapAsset, getAssets } from '../../lib/FastspotApi';
+import { sendTransaction } from '../../network';
+import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -404,6 +413,16 @@ export default defineComponent({
             if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
             if (swapTransaction.value) return '';
 
+            if ('hashRoot' in transaction.value.data) {
+                return context.root.$t('HTLC Creation');
+            }
+            if ('creator' in transaction.value.proof) {
+                return context.root.$t('HTLC Refund');
+            }
+            if ('hashRoot' in transaction.value.proof) {
+                return context.root.$t('HTLC Settlement');
+            }
+
             return parseData(transaction.value.data.raw);
         });
 
@@ -473,11 +492,43 @@ export default defineComponent({
             : undefined,
         );
 
-        const { state: network$ } = useNetworkStore();
+        const { height: blockHeight } = useNetworkStore();
         const confirmations = computed(() =>
-            transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
+            transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
         const { amountsHidden } = useSettingsStore();
+
+        async function refundHtlc() {
+            const swapIn = swapInfo.value!.in as SwapNimData;
+            const htlcDetails = swapIn.htlc!;
+
+            // eslint-disable-next-line no-async-promise-executor
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                const assets = await getAssets();
+                const { feePerUnit } = assets[SwapAsset.NIM];
+                const fee = feePerUnit * 167; // 167 = NIM HTLC refunding tx size
+
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.NIM,
+                        sender: transaction.value.recipient, // HTLC address
+                        recipient: htlcDetails.refundAddress, // My address, must be refund address of HTLC
+                        value: transaction.value.value - fee,
+                        fee,
+                        validityStartHeight: blockHeight.value,
+                    },
+                };
+
+                resolve(request);
+            });
+
+            const tx = await refundSwap(requestPromise);
+            if (!tx) return;
+            const plainTx = await sendTransaction(tx as SignedTransaction);
+            await context.root.$nextTick();
+            context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+        }
 
         return {
             ENV_MAIN,
@@ -504,6 +555,9 @@ export default defineComponent({
             amountsHidden,
             swapInfo,
             swapTransaction,
+            blockHeight,
+            SwapAsset,
+            refundHtlc,
         };
     },
     components: {

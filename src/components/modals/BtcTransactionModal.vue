@@ -224,6 +224,12 @@
                     </div>
                 </div>
             </div>
+            <button
+                v-else-if="swapInfo && !isIncoming
+                    && swapInfo.in && swapInfo.in.asset === SwapAsset.BTC && !swapInfo.out
+                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutTimestamp <= Date.now() / 1000"
+                class="nq-button-s" @click="refundHtlc" @mousedown.prevent
+            >{{ $t('Refund') }}</button>
             <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
@@ -260,6 +266,7 @@ import {
     Identicon,
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
+import { RefundSwapRequest } from '@nimiq/hub-api';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -283,10 +290,13 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
-import { useSwapsStore } from '../../stores/Swaps';
+import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
-import { SwapAsset } from '../../lib/FastspotApi';
+import { SwapAsset, getAssets } from '../../lib/FastspotApi';
+import { estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { refundSwap } from '../../hub';
+import { sendTransaction } from '../../electrum';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -296,7 +306,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
@@ -447,6 +457,48 @@ export default defineComponent({
             `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
             + `/tx/${transaction.value.transactionHash}`);
 
+        async function refundHtlc() {
+            const swapIn = swapInfo.value!.in as SwapBtcData;
+            const htlcDetails = swapIn.htlc!;
+            const htlcOutput = outputsSent.value[0];
+
+            // eslint-disable-next-line no-async-promise-executor
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                const assets = await getAssets();
+                const { feePerUnit } = assets[SwapAsset.BTC];
+                // 102 extra weight units for BTC HTLC refund tx
+                const fee = estimateFees(1, 1, feePerUnit, 102);
+
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.BTC,
+                        input: {
+                            address: htlcOutput.address!, // HTLC address
+                            transactionHash: transaction.value.transactionHash,
+                            outputIndex: htlcOutput.index,
+                            outputScript: htlcOutput.script,
+                            value: htlcOutput.value,
+                            witnessScript: htlcDetails.script,
+                        },
+                        output: {
+                            address: useBtcAddressStore().availableExternalAddresses.value[0],
+                            value: htlcOutput.value - fee,
+                        },
+                        refundAddress: htlcDetails.refundAddress, // My address, must be refund address of HTLC
+                    },
+                };
+
+                resolve(request);
+            });
+
+            const tx = await refundSwap(requestPromise);
+            if (!tx) return;
+            const plainTx = await sendTransaction(tx);
+            await context.root.$nextTick();
+            context.root.$router.replace(`/btc-transaction/${plainTx.transactionHash}`);
+        }
+
         return {
             transaction,
             constants,
@@ -475,6 +527,8 @@ export default defineComponent({
             setRecipientLabel,
             swapInfo,
             swapTransaction,
+            SwapAsset,
+            refundHtlc,
         };
     },
     components: {

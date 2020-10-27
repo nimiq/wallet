@@ -42,6 +42,10 @@ module.exports = {
             }
         },
         devtool: 'source-map', // TEMP: only 'source-map' allowed by webpack-i18-tools, will be fixed in future versions.
+        // externals: {
+        //     'bitcoinjs-lib': 'BitcoinJS',
+        //     'buffer': 'BitcoinJS',
+        // },
     },
     chainWebpack(config) {
         config

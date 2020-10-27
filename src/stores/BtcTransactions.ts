@@ -5,8 +5,8 @@ import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electr
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
-import { isHtlcFunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
-import { useSwapsStore, Swap } from './Swaps';
+import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
+import { useSwapsStore } from './Swaps';
 import { SwapAsset } from '../lib/FastspotApi';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
@@ -55,24 +55,41 @@ export const useBtcTransactionsStore = createStore({
 
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txDetails) {
-                // Detect swaps
-                // HTLC Creation
-                const fundingData = await isHtlcFunding(plain); // eslint-disable-line no-await-in-loop
-                if (fundingData) {
-                    useSwapsStore().addFundingData(fundingData.hash, {
-                        asset: SwapAsset.BTC,
-                        transactionHash: plain.transactionHash,
-                        outputIndex: fundingData.outputIndex,
-                    }, fundingData.provider ? { provider: fundingData.provider } as Swap : undefined);
-                }
-                // HTLC Settlement
-                const settlementHash = isHtlcSettlement(plain);
-                if (settlementHash) {
-                    useSwapsStore().addSettlementData(settlementHash, {
-                        asset: SwapAsset.BTC,
-                        transactionHash: plain.transactionHash,
-                        outputIndex: 0,
-                    });
+                if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
+                    // Detect swaps
+                    // HTLC Creation
+                    const fundingData = await isHtlcFunding(plain); // eslint-disable-line no-await-in-loop
+                    if (fundingData) {
+                        useSwapsStore().addFundingData(fundingData.hash, {
+                            asset: SwapAsset.BTC,
+                            transactionHash: plain.transactionHash,
+                            outputIndex: fundingData.outputIndex,
+                            htlc: {
+                                script: fundingData.script,
+                                refundAddress: fundingData.refundAddress,
+                                redeemAddress: fundingData.redeemAddress,
+                                timeoutTimestamp: fundingData.timeoutTimestamp,
+                            },
+                        });
+                    }
+                    // HTLC Refunding
+                    const refundingData = await isHtlcRefunding(plain); // eslint-disable-line no-await-in-loop
+                    if (refundingData) {
+                        useSwapsStore().addSettlementData(refundingData.hash, {
+                            asset: SwapAsset.BTC,
+                            transactionHash: plain.transactionHash,
+                            outputIndex: refundingData.outputIndex,
+                        });
+                    }
+                    // HTLC Settlement
+                    const settlementData = await isHtlcSettlement(plain); // eslint-disable-line no-await-in-loop
+                    if (settlementData) {
+                        useSwapsStore().addSettlementData(settlementData.hash, {
+                            asset: SwapAsset.BTC,
+                            transactionHash: plain.transactionHash,
+                            outputIndex: settlementData.outputIndex,
+                        });
+                    }
                 }
 
                 newTxs[plain.transactionHash] = plain;

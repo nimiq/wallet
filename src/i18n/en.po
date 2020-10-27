@@ -15,7 +15,7 @@ msgstr ""
 msgid "{amount} left today"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:235
+#: src/components/modals/BtcTransactionModal.vue:241
 #: src/components/modals/TransactionModal.vue:254
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
@@ -198,12 +198,12 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:232
+#: src/components/modals/BtcTransactionModal.vue:238
 #: src/components/modals/TransactionModal.vue:251
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:242
+#: src/components/modals/BtcTransactionModal.vue:248
 #: src/components/modals/TransactionModal.vue:265
 msgid "Block explorer"
 msgstr ""
@@ -856,6 +856,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:138
 msgid "Reference currency"
+msgstr ""
+
+#: src/components/modals/BtcTransactionModal.vue:232
+msgid "Refund"
 msgstr ""
 
 #: src/components/AccountMenu.vue:43

@@ -10,6 +10,7 @@ import {
 import { useCashlinkStore } from './Cashlink';
 import { useSwapsStore } from './Swaps';
 import { SwapAsset } from '../lib/FastspotApi';
+import { getNetworkClient } from '../network';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
@@ -35,7 +36,7 @@ export const useTransactionsStore = createStore({
         // activeAccount: state => state.accounts[state.activeAccountId],
     },
     actions: {
-        addTransactions(txs: Transaction[]) {
+        async addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
             let foundCashlinks = false;
@@ -44,35 +45,90 @@ export const useTransactionsStore = createStore({
                 // Detect cashlinks and observe them for tx-history and new incoming tx
                 if (isCashlinkData(plain.data.raw)) {
                     foundCashlinks = true;
-                    const cashlinkTxs = handleCashlinkTransaction(plain, Object.values({
-                        ...this.state.transactions,
+                    const cashlinkTxs = handleCashlinkTransaction(plain, [
+                        ...Object.values(this.state.transactions),
                         // Need to pass processed transactions from this batch in as well,
                         // as two related txs can be added in the same batch, and the store
                         // is only updated after this loop.
-                        ...newTxs,
-                    }));
+                        ...txs,
+                    ]);
                     for (const tx of cashlinkTxs) {
                         newTxs[tx.transactionHash] = tx;
                     }
                     continue;
                 }
 
-                // Detect swaps
-                // HTLC Creation
-                if ('hashRoot' in plain.data) {
-                    const hash: string = (plain.data as { hashRoot: string }).hashRoot;
-                    useSwapsStore().addFundingData(hash, {
-                        asset: SwapAsset.NIM,
-                        transactionHash: plain.transactionHash,
-                    });
-                }
-                // HTLC Settlement
-                if ('hashRoot' in plain.proof) {
-                    const hash: string = (plain.proof as { hashRoot: string }).hashRoot;
-                    useSwapsStore().addSettlementData(hash, {
-                        asset: SwapAsset.NIM,
-                        transactionHash: plain.transactionHash,
-                    });
+                if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
+                    // Detect swaps
+                    // HTLC Creation
+                    if ('hashRoot' in plain.data) {
+                        const fundingData = plain.data as {
+                            sender: string,
+                            recipient: string,
+                            hashAlgorithm: string,
+                            hashRoot: string,
+                            hashCount: number,
+                            timeout: number,
+                        };
+                        useSwapsStore().addFundingData(fundingData.hashRoot, {
+                            asset: SwapAsset.NIM,
+                            transactionHash: plain.transactionHash,
+                            htlc: {
+                                refundAddress: fundingData.sender,
+                                redeemAddress: fundingData.recipient,
+                                timeoutBlockHeight: fundingData.timeout,
+                            },
+                        });
+                    }
+                    // HTLC Refunding
+                    if ('creator' in plain.proof) {
+                        // Find funding transaction
+                        const selector = (tx: Transaction) => tx.recipient === plain.sender && 'hashRoot' in tx.data;
+
+                        // First search known transactions
+                        let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
+
+                        // Then get funding tx from the blockchain
+                        if (!fundingTx) {
+                            const client = await getNetworkClient(); // eslint-disable-line no-await-in-loop
+                            // eslint-disable-next-line no-await-in-loop
+                            const chainTxs = await client.getTransactionsByAddress(plain.sender);
+                            fundingTx = chainTxs.find(selector);
+                        }
+
+                        if (fundingTx) {
+                            const fundingData = fundingTx.data as any as {
+                                sender: string,
+                                recipient: string,
+                                hashAlgorithm: string,
+                                hashRoot: string,
+                                hashCount: number,
+                                timeout: number,
+                            };
+                            useSwapsStore().addSettlementData(fundingData.hashRoot, {
+                                asset: SwapAsset.NIM,
+                                transactionHash: plain.transactionHash,
+                            });
+                        }
+                    }
+                    // HTLC Settlement
+                    if ('hashRoot' in plain.proof) {
+                        const settlementData = plain.proof as {
+                            type: 'regular-transfer',
+                            hashAlgorithm: string,
+                            hashDepth: number,
+                            hashRoot: string,
+                            preImage: string,
+                            signer: string,
+                            signature: string,
+                            publicKey: string,
+                            pathLength: number,
+                        };
+                        useSwapsStore().addSettlementData(settlementData.hashRoot, {
+                            asset: SwapAsset.NIM,
+                            transactionHash: plain.transactionHash,
+                        });
+                    }
                 }
 
                 newTxs[plain.transactionHash] = plain;

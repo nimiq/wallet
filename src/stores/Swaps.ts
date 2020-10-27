@@ -21,17 +21,27 @@ export enum SwapDirection {
 export type SwapNimData = {
     asset: SwapAsset.NIM,
     transactionHash: string,
+    htlc?: {
+        refundAddress: string,
+        redeemAddress: string,
+        timeoutBlockHeight: number,
+    },
 };
 
 export type SwapBtcData = {
     asset: SwapAsset.BTC,
     transactionHash: string,
     outputIndex: number,
+    htlc?: {
+        script: string,
+        refundAddress: string,
+        redeemAddress: string,
+        timeoutTimestamp: number,
+    },
 };
 
 export type Swap = {
     id?: string,
-    provider?: 'Fastspot',
     in?: SwapNimData | SwapBtcData,
     out?: SwapNimData | SwapBtcData,
     fees?: {

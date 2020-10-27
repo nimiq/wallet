@@ -19,13 +19,13 @@
                 v-for="addressInfo in nimDistributionData"
                 :key="addressInfo.address"
                 :ref="addressInfo.active ? '$activeBar' : null"
-                :class="[{ active: addressInfo.active }, addressInfo.backgroundClass]"
+                :class="[{ active: addressInfo.active }, `nq-${addressInfo.barColor}`]"
                 :style="{ width: `${getNimiqBarWidth(addressInfo)}%` }"
                 @click="selectAddress(addressInfo.address)"
             >
                 <div class="change"
-                    v-if="addressInfo.active && addressInfo.balanceChange > 0"
                     ref="$nimChangeBar"
+                    v-if="addressInfo.active && addressInfo.balanceChange > 0"
                     :style="{ width: `${getNimiqChangeBarWidth(addressInfo)}%` }"
                 ></div>
             </div>
@@ -46,6 +46,7 @@
             >
                 <div class="change"
                     ref="$btcChangeBar"
+                    v-if="btcDistributionData.balanceChange > 0"
                     :style="{ width: `${bitcoinChangeBarWidth}%` }"
                 ></div>
             </div>
@@ -62,11 +63,12 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
+// @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
+import { getBackgroundColorName } from '@nimiq/iqons';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore, AddressInfo } from '../../stores/Address';
-import getBackgroundClass from '../../lib/AddressColor';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { SwapAsset } from '../../lib/FastspotApi';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
@@ -74,7 +76,7 @@ import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
     readonly newFiatBalance: number,
-    readonly backgroundClass: string,
+    readonly barColor: string,
     readonly balanceChange: number,
     readonly fiatBalanceChange: number,
 }
@@ -141,8 +143,16 @@ export default defineComponent({
                     get fiatBalanceChange() {
                         return (this.balanceChange / 1e5) * nimExchangeRate.value;
                     },
-                    get backgroundClass() {
-                        return getBackgroundClass(this.address);
+                    get barColor() {
+                        let color = getBackgroundColorName(this.address).toLowerCase() as string;
+
+                        if (color === 'yellow') color = 'gold';
+                        else if (color === 'indigo') color = 'blue';
+                        else if (color === 'blue') color = 'light-blue';
+                        else if (color === 'teal') color = 'green';
+                        else if (color === 'green') color = 'light-green';
+
+                        return color;
                     },
                 } as ExtendedAddressInfo)),
         );
@@ -450,14 +460,16 @@ export default defineComponent({
 .bar {
     height: 4.5rem;
     border-radius: 0.5rem;
-    background-color: silver;
+    background-color: currentColor;
+    border: .25rem solid currentColor;
     opacity: 0.25;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
+    overflow: hidden;
     cursor: pointer;
-    transform: translate3d(0);
+    transform: translate3d(0, 0, 0);
 
     transition: opacity 300ms, width 10ms;
 
@@ -491,17 +503,13 @@ export default defineComponent({
 
     &.bitcoin {
         background-color: var(--bitcoin-orange);
+        border: .25rem solid var(--bitcoin-orange);
         justify-content: flex-start;
-
-        .change {
-            background-position: right;
-        }
     }
 
     .change {
-        background: url('../../assets/swap-change-background.svg') repeat-x;
-        height: calc(100% - .5rem);
-        margin: 0 0.25rem;
+        background: url('../../assets/swap-change-background.svg') repeat-x top;
+        height: 100%;
         border-radius: 0.25rem;
         transition: width 10ms;
         transform: translate3d(0, 0, 0);

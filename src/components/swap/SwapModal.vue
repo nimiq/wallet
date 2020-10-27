@@ -1006,7 +1006,6 @@ export default defineComponent({
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
-                provider: 'Fastspot',
                 fees: swapFees,
             });
 

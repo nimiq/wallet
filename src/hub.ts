@@ -3,7 +3,7 @@ import HubApi, {
     SignTransactionRequest,
     SignBtcTransactionRequest,
     SetupSwapRequest,
-    SetupSwapResult,
+    RefundSwapRequest,
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
@@ -486,10 +486,17 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
     return btcAddressInfos;
 }
 
-export async function setupSwap(
-    requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>,
-): Promise<SetupSwapResult | null> {
+export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>) {
     return hubApi.setupSwap(new Promise((resolve, reject) => {
+        requestPromise.then((request) => resolve({
+            ...request,
+            appName: APP_NAME,
+        })).catch(reject);
+    })).catch(onError);
+}
+
+export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
+    return hubApi.refundSwap(new Promise((resolve, reject) => {
         requestPromise.then((request) => resolve({
             ...request,
             appName: APP_NAME,

@@ -10,6 +10,7 @@ export const useNetworkStore = createStore({
     }),
     getters: {
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
+        height: (state): Readonly<number> => state.height,
     },
     actions: {},
 });

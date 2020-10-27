@@ -25,19 +25,13 @@
             >
                 <div class="change"
                     ref="$nimChangeBar"
-                    v-if="addressInfo.active && addressInfo.balanceChange > 0"
                     :style="{ width: `${getNimiqChangeBarWidth(addressInfo)}%` }"
                 ></div>
             </div>
-            <div class="separator nq-light-blue-bg">
+            <div class="separator nq-light-blue-bg" ref="$separator">
                 <div class="handle"
                     @mousedown="onMouseDown"
                     @touchstart="onMouseDown"
-                ></div>
-                <div class="equilibrium-point nq-light-blue-bg"
-                    :class="{ hidden: equiPointVisible }"
-                    :style="{ '--translateX': `${equiPointPositionX}px` }"
-                    @click="animatedReset"
                 ></div>
             </div>
             <div class="bar bitcoin active"
@@ -46,17 +40,32 @@
             >
                 <div class="change"
                     ref="$btcChangeBar"
-                    v-if="btcDistributionData.balanceChange > 0"
                     :style="{ width: `${bitcoinChangeBarWidth}%` }"
                 ></div>
             </div>
         </div>
         <div class="scale flex-row">
             <div v-for="index in 10" :key="index" class="tenth">
-                <div v-if="index === 1" class="nimiq-total-percent ">{{distributionPercents.nim}}%</div>
-                <div v-else-if="index === 10" class="bitcoin-total-percent">{{distributionPercents.btc}}%</div>
+                <div v-if="index === 1"
+                    class="nimiq-total-percent"
+                    :class="{
+                        hidden: distributionPercents.nim <= 3 || equiPointPositionX <= 10,
+                    }"
+                >{{distributionPercents.nim}}%</div>
+                <div v-else-if="index === 10"
+                    class="bitcoin-total-percent"
+                    :class="{
+                        hidden: distributionPercents.btc <= 3 || equiPointPositionX >= 90,
+                    }"
+                >{{distributionPercents.btc}}%</div>
             </div>
         </div>
+        <div class="equilibrium-point nq-light-blue-bg"
+            ref="$equiPoint"
+            :class="{ hidden: !equiPointVisible }"
+            :style="{ left: `${equiPointPositionX}%` }"
+            @click="animatedReset"
+        ></div>
     </div>
 </template>
 
@@ -224,7 +233,7 @@ export default defineComponent({
                 So we're updating them in the render loop until a more optimized way to do it is found.
             */
             updateConnectingLinesWidth();
-            updateEquiPointPosition();
+            updateEquiPoint();
 
             if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value || !$el.value) {
                 return undefined;
@@ -293,12 +302,16 @@ export default defineComponent({
             return width;
         };
         const getNimiqChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
-            (addressInfo.fiatBalanceChange / addressInfo.newFiatBalance) * 100;
+            addressInfo.balanceChange > 0
+                ? (addressInfo.fiatBalanceChange / addressInfo.newFiatBalance) * 100
+                : 0;
         const bitcoinBarWidth = computed(() =>
             (btcDistributionData.value.newFiatBalance / totalNewFiatBalance.value) * 100,
         );
         const bitcoinChangeBarWidth = computed(() =>
-            (btcDistributionData.value.fiatBalanceChange / btcDistributionData.value.newFiatBalance) * 100,
+            btcDistributionData.value.balanceChange > 0
+                ? (btcDistributionData.value.fiatBalanceChange / btcDistributionData.value.newFiatBalance) * 100
+                : 0,
         );
 
         /* Connecting lines between icon and active bar */
@@ -308,41 +321,51 @@ export default defineComponent({
 
         function updateConnectingLinesWidth() {
             if ($activeBar.value && $activeBar.value[0].parentElement) {
-                const rect = $activeBar.value[0].getBoundingClientRect();
-
-                nimiqConnectingLineWidth.value = (rect.width / 2)
-                    + (rect.x - $activeBar.value[0].parentElement.getBoundingClientRect().x)
-                    - (remSize.value * 2.5);
+                nimiqConnectingLineWidth.value = ($activeBar.value[0].offsetWidth / 2)
+                    + ($activeBar.value[0].offsetLeft) - (remSize.value * 2.5);
             }
 
             if ($bitcoinBar.value) {
-                const rect = $bitcoinBar.value.getBoundingClientRect();
-
-                bitcoinConnectingLineWidth.value = (rect.width / 2) - (remSize.value * 2.5);
+                bitcoinConnectingLineWidth.value = ($bitcoinBar.value.offsetWidth / 2) - (remSize.value * 2.5);
             }
         }
 
         /* Equilibrium point */
+        const $separator = ref<HTMLDivElement | null>(null);
         const $btcChangeBar = ref<HTMLDivElement | null>(null);
         const $nimChangeBar = ref<HTMLDivElement[] | null>(null);
-        const equiPointThreshold = 10;
+        const $equiPoint = ref<HTMLDivElement | null>(null);
+        const equiPointThreshold = 8;
         const equiPointPositionX = ref(0);
-        const equiPointVisible = computed(() =>
-            equiPointPositionX.value < equiPointThreshold && equiPointPositionX.value > -equiPointThreshold);
+        const equiPointVisible = ref(false);
         const animatingBars = ref(false);
 
-        function updateEquiPointPosition() {
-            if (!$el.value || !activeBar.value || (!$btcChangeBar.value && !$nimChangeBar.value)) {
+        function updateEquiPoint() {
+            if (!$el.value || !activeBar.value || (!$btcChangeBar.value && !$nimChangeBar.value) || !$separator.value) {
                 return;
             }
 
+            const { offsetLeft } = $separator.value;
+
+            /* update x position */
             if (activeBar.value.balanceChange > 0 && $nimChangeBar.value && $nimChangeBar.value.length > 0) {
-                equiPointPositionX.value = -$nimChangeBar.value[0].clientWidth;
+                equiPointPositionX.value = ((offsetLeft - $nimChangeBar.value[0].clientWidth)
+                    / $el.value.offsetWidth) * 100;
             } else if (btcDistributionData.value.balanceChange > 0 && $btcChangeBar.value) {
-                equiPointPositionX.value = $btcChangeBar.value.clientWidth;
-            } else if (equiPointPositionX.value !== 0) {
-                equiPointPositionX.value = 0;
+                equiPointPositionX.value = ((offsetLeft + $btcChangeBar.value.clientWidth)
+                    / $el.value.offsetWidth) * 100;
+            } else if (equiPointPositionX.value !== offsetLeft) {
+                equiPointPositionX.value = (offsetLeft / $el.value.offsetWidth) * 100;
             }
+
+            /* hide the point if close to the handle/separator */
+            if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / $el.value.offsetWidth) * 100
+                && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / $el.value.offsetWidth) * 100) {
+                if (equiPointVisible.value === true) equiPointVisible.value = false;
+                return;
+            }
+
+            equiPointVisible.value = true;
         }
 
         function animatedReset() {
@@ -361,6 +384,8 @@ export default defineComponent({
             $bitcoinBar,
             $btcChangeBar,
             $nimChangeBar,
+            $separator,
+            $equiPoint,
 
             nimDistributionData,
             activeAddressInfo,
@@ -505,10 +530,15 @@ export default defineComponent({
         background-color: var(--bitcoin-orange);
         border: .25rem solid var(--bitcoin-orange);
         justify-content: flex-start;
+
+        .change {
+            background-position: top right;
+        }
     }
 
     .change {
-        background: url('../../assets/swap-change-background.svg') repeat-x top;
+        background: url('../../assets/swap-change-background.svg') repeat-x top left;
+        background-size: auto 100%;
         height: 100%;
         border-radius: 0.25rem;
         transition: width 10ms;
@@ -554,22 +584,21 @@ export default defineComponent({
 }
 
 .equilibrium-point {
-    --translateX: 0;
     height: .5rem;
     width: .5rem;
     border-radius: 50%;
     cursor: pointer;
     position: absolute;
     bottom: .25rem;
-    left: 50%;
-    transform: translateX(-50%) translateX(var(--translateX));
+    left: 0;
+    transform: translateX(-50%);
     opacity: 1;
 
     transition-duration: 300ms;
     transition-property: opacity, visibility;
 
     .animating & {
-        transition-property: opacity, visibility, transform;
+        transition-property: opacity, visibility, left;
     }
 
     &.hidden {
@@ -587,7 +616,6 @@ export default defineComponent({
         height: 1rem;
         line-height: 1rem;
         width: 20%;
-
         font-weight: bold;
         font-size: var(--small-size);
         letter-spacing: 0.0625rem;
@@ -599,6 +627,15 @@ export default defineComponent({
 
         &:last-child {
             text-align: right;
+        }
+
+        & > div {
+            transition-property: visibility, opacity;
+            transition-duration: 300ms;
+
+            &.hidden {
+                opacity: 0;
+            }
         }
     }
 }

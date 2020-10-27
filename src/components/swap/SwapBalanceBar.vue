@@ -49,20 +49,23 @@
                 <div v-if="index === 1"
                     class="nimiq-total-percent"
                     :class="{
-                        hidden: distributionPercents.nim <= 3 || equiPointPositionX <= 10,
+                        hidden: distributionPercents.nim <= 5 || (equiPointPositionX < 10 && equiPointPositionX > 5),
                     }"
                 >{{distributionPercents.nim}}%</div>
                 <div v-else-if="index === 10"
                     class="bitcoin-total-percent"
                     :class="{
-                        hidden: distributionPercents.btc <= 3 || equiPointPositionX >= 90,
+                        hidden: distributionPercents.btc <= 5 || (equiPointPositionX > 90 && equiPointPositionX < 95),
                     }"
                 >{{distributionPercents.btc}}%</div>
             </div>
         </div>
         <div class="equilibrium-point nq-light-blue-bg"
             ref="$equiPoint"
-            :class="{ hidden: !equiPointVisible }"
+            :class="{
+                hidden: !equiPointVisible || equiPointPositionX <= 1
+                    || equiPointPositionX >= 95 || equiPointPositionX <= 5,
+            }"
             :style="{ left: `${equiPointPositionX}%` }"
             @click="animatedReset"
         ></div>

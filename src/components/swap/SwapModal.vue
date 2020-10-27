@@ -18,22 +18,19 @@
                                 </p>
                             </Tooltip>
                         </div>
-                        <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom right" class="early-access">
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
                             <span class="trigger flex-row" slot="trigger">
                                 <FlameIcon/>
                                 {{ $t('Early Access') }}
                             </span>
-                            <p>{{ $t('Early Access means that there are limits in place for trades.') }}</p>
-                            <p>{{ $t('They will be increased gradually.') }}</p>
+                            <p>{{ $t('Early Access means that there are limits in place for swaps.' +
+                                ' They will be increased gradually.') }}</p>
                             <template v-if="limits">
                                 <div class="price-breakdown">
                                     <label>{{ $t('Daily Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
                                 </div>
-                                <i18n path="{amount} left today" tag="p" class="explainer">
-                                    <FiatAmount slot="amount"
-                                        :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                                </i18n>
+                                <p></p>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Monthly Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
@@ -45,21 +42,18 @@
                             <FiatAmount slot="amount"
                                 :amount="currentLimitFiat" :currency="currency" hideDecimals/>
 
-                            <Tooltip :styles="{width: '29rem'}" preferredPosition="bottom left">
+                            <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left">
                                 <InfoCircleSmallIcon slot="trigger"/>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Daily Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
                                 </div>
-                                <i18n path="{amount} left today" tag="p" class="explainer">
-                                    <FiatAmount slot="amount"
-                                        :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                                </i18n>
+                                <p></p>
                                 <div class="price-breakdown">
                                     <label>{{ $t('Monthly Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
                                 </div>
-                                <p class="explainer"></p>
+                                <p></p>
                                 <p class="explainer">
                                     {{ $t('During early access, these limits apply.') }}
                                     {{ $t('They will be increased gradually.') }}
@@ -1218,7 +1212,7 @@ export default defineComponent({
         align-items: center;
         font-size: 12px;
         font-weight: bold;
-        color: var(--nimiq-orange);
+        color: #EAA617;
 
         svg {
             margin-right: 0.75rem;

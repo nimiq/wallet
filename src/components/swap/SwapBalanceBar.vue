@@ -208,13 +208,6 @@ export default defineComponent({
         }
 
         function onMouseUp(/* event: MouseEvent | TouchEvent */) {
-            /* latch the handle to the equilibrium point if close to it */
-            if (isGrabbing && $separator.value && $equiPoint.value
-                && $separator.value.offsetLeft - equiPointThreshold <= $equiPoint.value.offsetLeft
-                && $separator.value.offsetLeft + equiPointThreshold >= $equiPoint.value.offsetLeft) {
-                animatedReset();
-            }
-
             isGrabbing = false;
         }
 

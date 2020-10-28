@@ -14,6 +14,8 @@
             </transition>
         </main>
 
+        <SwapNotification/>
+
         <transition name="modal">
             <BetaNoticeModal v-if="!isBetaNoticeDismissed" emitClose @close="isBetaNoticeDismissed = true"/>
         </transition>
@@ -29,6 +31,7 @@ import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
+import SwapNotification from './components/swap/SwapNotification.vue';
 import BetaNoticeModal from './components/modals/BetaNoticeModal.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
@@ -92,6 +95,7 @@ export default defineComponent({
     },
     components: {
         Sidebar,
+        SwapNotification,
         BetaNoticeModal,
         LoadingSpinner,
     },

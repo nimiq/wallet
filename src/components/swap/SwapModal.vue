@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="!!swap" :emitClose="true" @close="onClose">
+    <Modal :showOverlay="!!swap" :emitClose="true" @close="onClose" @close-overlay="onClose">
         <div class="page flex-column">
             <PageHeader>
                 {{ $t('Swap NIM and BTC') }}
@@ -166,10 +166,10 @@
                 <template v-else>{{ $t('Swap Complete') }}</template>
 
                 <p v-if="swap.state !== SwapState.COMPLETE" slot="more" class="nq-notice warning">
-                    {{ $t('Do not close this popup!') }}
+                    {{ $t('Don\'t close your Wallet') }}
                 </p>
                 <p v-else slot="more" class="nq-notice info">
-                    {{ $t('You can now close this popup.') }}
+                    {{ $t('It\'s safe to close your wallet now') }}
                 </p>
             </PageHeader>
             <PageBody>
@@ -277,12 +277,15 @@
                     @click="finishSwap"
                 >{{ $t('Done') }}</button>
             </PageFooter>
+            <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
+                <MinimizeIcon/>
+            </button>
         </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -315,6 +318,7 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
+import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
@@ -339,14 +343,10 @@ import {
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
-import { SwapState, SwapDirection, useSwapsStore, ActiveSwap } from '../../stores/Swaps';
+import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import {
     getIncomingHtlcAddress,
     getOutgoingHtlcAddress,
-    awaitIncoming,
-    createOutgoing,
-    awaitSecret,
-    settleIncoming,
 } from '../../lib/SwapProcess';
 import { useAccountStore } from '../../stores/Account';
 
@@ -387,8 +387,7 @@ export default defineComponent({
         });
 
         onMounted(() => {
-            if (swap.value) processSwap();
-            else {
+            if (!swap.value) {
                 fetchLimits();
                 fetchAssets();
             }
@@ -696,14 +695,18 @@ export default defineComponent({
             if (asset === SwapAsset.NIM) {
                 fixedAsset.value = SwapAsset.NIM;
                 const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
-                const limit = nimRate && currentLimitFiat.value ? (currentLimitFiat.value / nimRate) * 1e5 : Infinity;
+                const limit = nimRate && currentLimitFiat.value !== null
+                    ? (currentLimitFiat.value / nimRate) * 1e5
+                    : Infinity;
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
             }
             if (asset === SwapAsset.BTC) {
                 fixedAsset.value = SwapAsset.BTC;
                 const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
-                const limit = btcRate && currentLimitFiat.value ? (currentLimitFiat.value / btcRate) * 1e8 : Infinity;
+                const limit = btcRate && currentLimitFiat.value !== null
+                    ? (currentLimitFiat.value / btcRate) * 1e8
+                    : Infinity;
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
             }
@@ -785,8 +788,7 @@ export default defineComponent({
                 : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
-        function onClose(force = false) {
-            if (swap.value && !force) return;
+        function onClose() {
             context.root.$router.back();
         }
 
@@ -1030,35 +1032,10 @@ export default defineComponent({
             });
 
             setTimeout(() => currentlySigning.value = false, 1000);
-
-            processSwap();
         }
 
         function cancel() {
             setActiveSwap(null);
-        }
-
-        async function processSwap() {
-            switch (swap.value!.state) {
-                case SwapState.EXPIRED:
-                    // Handle expired swap
-                    break;
-
-                // Handle regular swap process
-                // Note that each step falls through to the next when finished.
-                /* eslint-disable no-fallthrough */
-                case SwapState.AWAIT_INCOMING:
-                    await awaitIncoming(swap as Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>);
-                case SwapState.CREATE_OUTGOING:
-                    await createOutgoing(swap as Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>);
-                case SwapState.AWAIT_SECRET:
-                    await awaitSecret(swap as Ref<ActiveSwap<SwapState.AWAIT_SECRET>>);
-                case SwapState.SETTLE_INCOMING:
-                    await settleIncoming(swap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
-                /* eslint-enable no-fallthrough */
-                default:
-                    break;
-            }
         }
 
         const incomingHtlcAddress = computed(() => {
@@ -1095,7 +1072,7 @@ export default defineComponent({
 
         function finishSwap() {
             setActiveSwap(null);
-            onClose(true);
+            onClose();
         }
 
         function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
@@ -1161,6 +1138,7 @@ export default defineComponent({
         ArrowRightSmallIcon,
         SwapBalanceBar,
         FlameIcon,
+        MinimizeIcon,
         SwapFeesTooltip,
     },
 });
@@ -1443,6 +1421,33 @@ export default defineComponent({
     .nq-button {
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .minimize-button {
+        background: var(--text-6);
+        color: var(--text-50);
+        padding: 0;
+        height: 4rem;
+        width: 4rem;
+        border-radius: 50%;
+        transition: background .2s var(--nimiq-ease), color .2s var(--nimiq-ease);
+
+        &::before {
+            border-radius: 50%;
+        }
+
+        &:hover,
+        &:active,
+        &:focus {
+            background: var(--text-10);
+            color: var(--text-60);
+        }
+
+        &.top-right {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
     }
 }
 

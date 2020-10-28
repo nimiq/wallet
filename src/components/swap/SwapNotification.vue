@@ -205,4 +205,11 @@ export default defineComponent({
 .slide-leave-to {
     transform: translateX(45rem);
 }
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .swap-notification {
+        right: 1.5rem;
+        bottom: 10.5rem;
+    }
+}
 </style>

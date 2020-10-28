@@ -14,7 +14,7 @@ export const NATIVE_OUPUT_WU = 124; // P2WPKH
 export const DUST_AMOUNT = Math.ceil(INPUT_WU / 4) * 2;
 
 export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1, extraWeightUnits = 0) {
-    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + NATIVE_OUPUT_WU * numOutputs + extraWeightUnits;
+    const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + LEGACY_OUTPUT_WU * numOutputs + extraWeightUnits;
     const vSize = Math.ceil(weightUnits / 4);
     return vSize * feePerByte;
 }

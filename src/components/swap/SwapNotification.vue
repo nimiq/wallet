@@ -40,7 +40,7 @@ import { getElectrumClient } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { activeSwap, setActiveSwap } = useSwapsStore();
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
@@ -111,7 +111,11 @@ export default defineComponent({
                 case SwapState.SETTLE_INCOMING:
                     await settleIncoming(activeSwap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
                 case SwapState.COMPLETE:
-                    // setTimeout(() => setActiveSwap(null), 5 * 1000); // 5 seconds
+                    setTimeout(() => {
+                        // Hide notification after a timeout, if not in the SwapModal.
+                        if (context.root.$route.name === 'swap') return;
+                        setActiveSwap(null);
+                    }, 5 * 1000); // 5 seconds
                 /* eslint-enable no-fallthrough */
                 default:
                     break;

@@ -150,82 +150,62 @@
             </div>
 
             <div class="amount-block flex-column">
-                <Amount :amount="isIncoming ? amountReceived : amountSent" :class="{
+                <Amount :amount="isIncoming ? amountReceived : amountSent" class="transaction-value" :class="{
                     isIncoming,
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
                     'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
                         && isIncoming,
                 }" currency="btc" value-mask/>
-                <transition name="fade">
-                    <FiatConvertedAmount
-                        v-if="state === TransactionState.PENDING"
-                        :amount="isIncoming ? amountReceived : amountSent"
-                        currency="btc"
-                        value-mask/>
-                    <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
-                    <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
-                        Fiat value unavailable
-                    </div>
-                    <div v-else class="fiat-amount flex-row">
-                        <Tooltip>
-                            <template slot="trigger">
-                                <!-- <HistoricValueIcon/> -->
-                                <FiatAmount
-                                    :amount="fiatValue"
-                                    :currency="fiatCurrency"
-                                    value-mask/>
-                            </template>
-                            {{ $t('Historic value') }}
-                        </Tooltip>
-                        <!-- <strong class="dot">&middot;</strong> -->
-                        <!-- <Tooltip>
-                            <FiatConvertedAmount slot="trigger"
-                                :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask/>
-                            {{ $t('Current value') }}
-                        </Tooltip> -->
-                    </div>
-                </transition>
+
+                <div class="flex-row">
+                    <transition name="fade">
+                        <FiatConvertedAmount
+                            v-if="state === TransactionState.PENDING"
+                            :amount="isIncoming ? amountReceived : amountSent"
+                            currency="btc"
+                            value-mask/>
+                        <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
+                        <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                            Fiat value unavailable
+                        </div>
+                        <div v-else class="fiat-amount">
+                            <Tooltip>
+                                <template slot="trigger">
+                                    <!-- <HistoricValueIcon/> -->
+                                    <FiatAmount
+                                        :amount="fiatValue"
+                                        :currency="fiatCurrency"
+                                        value-mask/>
+                                </template>
+                                {{ $t('Historic value') }}
+                            </Tooltip>
+                        </div>
+                    </transition>
+                    <template v-if="swapTransaction">
+                        <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                            <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                        </svg>
+                        <button class="reset flex-row"
+                            @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
+                        >
+                            <div class="icon" :class="{'incoming': !isIncoming}">
+                                <GroundedArrowUpIcon v-if="isIncoming"/>
+                                <GroundedArrowDownIcon v-else/>
+                            </div>
+                            <Amount
+                                :amount="swapTransaction.value"
+                                :currency="(isIncoming ? swapInfo.in : swapInfo.out).asset.toLowerCase()"
+                                class="swapped-amount"
+                                :class="{'incoming': !isIncoming}"
+                                value-mask/>
+                        </button>
+                    </template>
+                </div>
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <div v-if="swapTransaction" class="swap-transaction flex-row">
-                <div class="icon" :class="{'incoming': !isIncoming}">
-                    <GroundedArrowUpIcon v-if="isIncoming"/>
-                    <GroundedArrowDownIcon v-else/>
-                </div>
-                <div class="values">
-                    <Amount :amount="swapTransaction.value" currency="nim" value-mask/>
-
-                    <div class="flex-row">
-                        <FiatConvertedAmount v-if="swapTransaction.state === TransactionState.PENDING"
-                            :amount="swapTransaction.value" currency="nim" value-mask/>
-                        <div v-else-if="!swapTransaction.fiatValue
-                            || swapTransaction.fiatValue[fiatCurrency] === undefined"
-                            class="fiat-amount">&nbsp;</div>
-                        <div v-else-if="swapTransaction.fiatValue[fiatCurrency] === constants.FIAT_PRICE_UNAVAILABLE"
-                            class="fiat-amount">Fiat value unavailable</div>
-                        <FiatAmount v-else
-                            :amount="swapTransaction.fiatValue[fiatCurrency]" :currency="fiatCurrency" value-mask/>
-                        <SwapFeesTooltip v-if="swapInfo.fees" v-bind="swapInfo.fees" preferredPosition="top right"/>
-                    </div>
-                </div>
-                <div class="flex-grow"></div>
-                <div class="swap-info">
-                    <div v-if="swapInfo.provider" class="provider flex-row">
-                        <FastspotIcon v-if="swapInfo.provider === 'Fastspot'"/>
-                        {{ swapInfo.provider }}
-                    </div>
-                    <div v-if="swapInfo.id" class="id flex-row">
-                        <span class="ID">ID</span>
-                        <Tooltip preferredPosition="top left">
-                            <ShortAddress :address="swapInfo.id" slot="trigger"/>
-                            {{ swapInfo.id }}
-                        </Tooltip>
-                    </div>
-                </div>
-            </div>
             <button
-                v-else-if="swapInfo && !isIncoming
+                v-if="!swapTransaction && swapInfo && !isIncoming
                     && swapInfo.in && swapInfo.in.asset === SwapAsset.BTC && !swapInfo.out
                     && swapInfo.in.htlc && swapInfo.in.htlc.timeoutTimestamp <= Date.now() / 1000"
                 class="nq-button-s" @click="refundHtlc" @mousedown.prevent
@@ -716,8 +696,7 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.address-info .tooltip /deep/,
-.swap-info .tooltip /deep/ {
+.address-info .tooltip /deep/ {
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -764,7 +743,7 @@ export default defineComponent({
 .amount-block {
     align-items: center;
 
-    .amount {
+    .amount.transaction-value {
         --size: 5rem;
         font-size: var(--size);
         line-height: 1;
@@ -793,33 +772,24 @@ export default defineComponent({
         }
     }
 
-    > .fiat-amount {
+    .flex-row {
+        align-items: center;
+    }
+
+    .fiat-amount {
         --size: var(--small-size);
         font-size: var(--size);
         font-weight: 600;
         color: var(--text-50);
-        align-items: center;
-
-        svg {
-            opacity: 0.8;
-            margin-right: 0.5rem;
-        }
-
-        .dot {
-            opacity: 0.6;
-            margin: 0 1rem;
-        }
 
         .tooltip {
             /deep/ .trigger {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
+                .fiat-amount {
+                    transition: color 0.2s var(--nimiq-ease);
+                }
 
-                transition: color 0.2s var(--nimiq-ease);
-
-                &:hover,
-                &:focus {
+                &:hover .fiat-amount,
+                &:focus .fiat-amount {
                     color: var(--text-60);
                 }
 
@@ -836,6 +806,35 @@ export default defineComponent({
                 transform: translateY(-1.5rem);
             }
         }
+    }
+
+    .dot {
+        margin: 0 1rem;
+        color: var(--text-30);
+    }
+
+    button {
+        line-height: 1;
+    }
+
+    .icon,
+    .swapped-amount {
+        color: var(--text-50);
+    }
+
+    .icon {
+        margin-right: 0.375rem;
+    }
+
+    .swapped-amount {
+        --size: var(--small-size);
+        font-size: var(--size);
+        font-weight: bold;
+    }
+
+    .icon.incoming,
+    .swapped-amount.incoming {
+        color: var(--nimiq-green);
     }
 }
 
@@ -891,94 +890,6 @@ export default defineComponent({
     }
 }
 
-.swap-transaction {
-    padding: 3rem 2rem 0;
-    align-items: center;
-    align-self: stretch;
-    margin: 0 -2rem;
-    box-shadow: inset 0 1.5px var(--text-16);
-
-    .icon {
-        margin-right: 2.25rem;
-        color: var(--text-40);
-
-        &.incoming {
-            color: var(--nimiq-green);
-        }
-    }
-
-    .values .flex-row {
-        align-items: center;
-
-        .tooltip /deep/ .trigger {
-            font-size: var(--small-size);
-            display: block;
-            margin-left: 0.5rem;
-            color: var(--text-50);
-
-            &::after {
-                background: #201F45;
-            }
-        }
-    }
-
-    .amount,
-    .fiat-amount {
-        --size: var(--body-size);
-        font-size: var(--size);
-        font-weight: 600;
-    }
-
-    .fiat-amount {
-        --size: var(--small-size);
-        font-size: var(--size);
-        opacity: 0.5;
-    }
-
-    .swap-info {
-        font-size: var(--small-size);
-        font-weight: 600;
-
-        .provider,
-        .id {
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .provider {
-            opacity: 0.5;
-
-            svg {
-                opacity: calc(0.35 / 0.5);
-                margin-top: 0.125rem;
-                margin-right: 0.625rem;
-            }
-        }
-
-        .id {
-            .ID {
-                opacity: 0.5;
-                margin-right: 0.25rem;
-            }
-
-            .short-address {
-                font-size: inherit;
-
-                /deep/ .address {
-                    font-family: inherit;
-                }
-            }
-
-            .tooltip /deep/ .trigger {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-                margin-bottom: 0;
-                margin-right: -0.75rem;
-            }
-        }
-    }
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
         /deep/ .nq-h1 {
@@ -1016,12 +927,6 @@ export default defineComponent({
         /deep/ .tooltip-box {
             transform: translate(1rem, 2rem);
         }
-    }
-
-    .swap-transaction {
-        margin: 0 -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
     }
 }
 

@@ -207,7 +207,7 @@
             <button
                 v-if="!swapTransaction && swapInfo && !isIncoming
                     && swapInfo.in && swapInfo.in.asset === SwapAsset.BTC && !swapInfo.out
-                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutTimestamp <= Date.now() / 1000"
+                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutTimestamp <= (blockTimestamp - (30 * 60))"
                 class="nq-button-s" @click="refundHtlc" @mousedown.prevent
             >{{ $t('Refund') }}</button>
             <div v-else class="flex-spacer"></div>
@@ -427,9 +427,9 @@ export default defineComponent({
             return value;
         });
 
-        const { state: network$ } = useBtcNetworkStore();
+        const { height: blockHeight, timestamp: blockTimestamp } = useBtcNetworkStore();
         const confirmations = computed(() =>
-            transaction.value.blockHeight ? network$.height - transaction.value.blockHeight + 1 : 0);
+            transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
         const { amountsHidden } = useSettingsStore();
 
@@ -509,6 +509,7 @@ export default defineComponent({
             swapTransaction,
             SwapAsset,
             refundHtlc,
+            blockTimestamp,
         };
     },
     components: {

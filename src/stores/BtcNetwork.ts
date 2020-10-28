@@ -6,10 +6,13 @@ export const useBtcNetworkStore = createStore({
         consensus: 'syncing',
         peerCount: 0,
         height: 0,
+        timestamp: 0,
         fetchingTxHistory: 0,
     }),
     getters: {
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
+        height: (state): Readonly<number> => state.height,
+        timestamp: (state): Readonly<number> => state.timestamp,
     },
     actions: {},
 });

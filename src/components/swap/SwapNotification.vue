@@ -37,6 +37,7 @@ import { awaitIncoming, awaitSecret, createOutgoing, settleIncoming } from '../.
 import { SwapAsset, Contract } from '../../lib/FastspotApi';
 import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient } from '../../electrum';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 
 export default defineComponent({
     setup() {
@@ -61,8 +62,8 @@ export default defineComponent({
             const electrum = await getElectrumClient();
             await electrum.waitForConsensusEstablished();
 
-            // FIXME: Get current timestamp from a trusted source, not the user's device
-            const now = Math.floor(Date.now() / 1000);
+            // Get current timestamp from a trusted source, not the user's device
+            const timestamp = useBtcNetworkStore().timestamp.value;
 
             // Check for swap expiry
             let isExpired = false;
@@ -74,11 +75,11 @@ export default defineComponent({
                         break;
                     }
                     case SwapAsset.BTC: {
-                        isExpired = (contract as Contract<SwapAsset.BTC>).timeout <= now;
+                        isExpired = (contract as Contract<SwapAsset.BTC>).timeout <= timestamp;
                         break;
                     }
                     // case SwapAsset.EUR: {
-                    //     isExpired = (contract as Contract<SwapAsset.EUR>).timeout <= now;
+                    //     isExpired = (contract as Contract<SwapAsset.EUR>).timeout <= timestamp;
                     //     break;
                     // }
                     default: throw new Error('Invalid swap asset');

@@ -49,7 +49,7 @@ export default defineComponent({
             Math.round(
                 Math.max(3,
                     Math.min(10,
-                        angleSize - (localWidth.value / 10),
+                        angleSize - (props.width / 10),
                     ),
                 ),
             ),
@@ -58,7 +58,7 @@ export default defineComponent({
             Math.round(
                 Math.max(0,
                     Math.min(12,
-                        angleSize - (localWidth.value / 10),
+                        angleSize - (props.width / 10),
                     ),
                 ),
             ),
@@ -71,9 +71,9 @@ export default defineComponent({
                 0,${angleSize - y.value},
                 ${angleSize - x.value},${angleSize}
             S
-                ${localWidth.value - (((angleSize - x.value) * 2) + 1)},
+                ${Math.round(props.width) - (((angleSize - x.value) * 2) + 1)},
                     ${props.height - (angleSize + y.value + 3)},
-                ${localWidth.value - (angleSize + 1) + x.value},
+                ${Math.round(props.width) - (angleSize + 1) + x.value},
                     ${props.height - (angleSize + 3)},
             s
                 ${angleSize - x.value},${angleSize},

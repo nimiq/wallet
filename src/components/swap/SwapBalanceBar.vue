@@ -478,7 +478,8 @@ export default defineComponent({
     padding: 0 2.5rem;
 
     svg:last-child {
-        float: right;
+        position: absolute;
+        right: 2.5rem;
     }
 }
 

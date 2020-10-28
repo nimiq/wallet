@@ -63,8 +63,7 @@
         <div class="equilibrium-point nq-light-blue-bg"
             ref="$equiPoint"
             :class="{
-                hidden: !equiPointVisible || equiPointPositionX <= 1
-                    || equiPointPositionX >= 95 || equiPointPositionX <= 5,
+                hidden: !equiPointVisible || equiPointPositionX <= 5 || equiPointPositionX >= 95,
             }"
             :style="{ left: `${equiPointPositionX}%` }"
             @click="animatedReset"
@@ -352,7 +351,9 @@ export default defineComponent({
 
             /* update x position */
             if (activeBar.value.balanceChange > 0 && $nimChangeBar.value && $nimChangeBar.value.length > 0) {
-                equiPointPositionX.value = ((offsetLeft - $nimChangeBar.value[0].clientWidth)
+                const nimBarIndex = nimDistributionData.value.findIndex((addressInfo) => addressInfo.active);
+
+                equiPointPositionX.value = ((offsetLeft - $nimChangeBar.value[nimBarIndex].clientWidth)
                     / $el.value.offsetWidth) * 100;
             } else if (btcDistributionData.value.balanceChange > 0 && $btcChangeBar.value) {
                 equiPointPositionX.value = ((offsetLeft + $btcChangeBar.value.clientWidth)

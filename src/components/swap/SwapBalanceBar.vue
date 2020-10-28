@@ -600,11 +600,7 @@ export default defineComponent({
     opacity: 1;
 
     transition-duration: 300ms;
-    transition-property: opacity, visibility;
-
-    .animating & {
-        transition-property: opacity, visibility, left;
-    }
+    transition-property: opacity, visibility, left;
 
     &.hidden {
         opacity: 0;

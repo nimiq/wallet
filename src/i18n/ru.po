@@ -29,11 +29,9 @@ msgid "{count} Peer | {count} Peers"
 msgstr "{count} Пир | {count} Пиров"
 
 #: src/components/layouts/AddressOverview.vue:15
-#: src/components/layouts/AddressOverview.vue:86
+#: src/components/layouts/AddressOverview.vue:87
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr ""
-"{count}  Cashlink в процессе обработки | {count} Cashlinks в процессе "
-"обработки"
+msgstr "{count}  Cashlink | {count} Cashlinks"
 
 #: src/components/modals/TransactionModal.vue:186
 msgid "{fee} fee"
@@ -95,6 +93,8 @@ msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
 "sent."
 msgstr ""
+"Добавьте ярлык, чтобы быстро найти транзакцию \n"
+"в вашей истории, как только она будет отправлена."
 
 #: src/components/BtcLabelInput.vue:19
 msgid "Add a label to quickly find the transaction in your history."
@@ -212,7 +212,7 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:107
 msgid "Bitcoin Unit"
-msgstr ""
+msgstr "Биткойн-единица"
 
 #: src/components/modals/BtcTransactionModal.vue:172
 #: src/components/modals/TransactionModal.vue:181
@@ -660,7 +660,7 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/layouts/AddressOverview.vue:121
+#: src/components/layouts/AddressOverview.vue:122
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
 
@@ -820,7 +820,7 @@ msgstr ""
 "ключами для доступа к адресам своего аккаунта. Для более быстрого и удобного"
 " доступа к блокчейну, Nimiq использует ваш браузер."
 
-#: src/components/layouts/AddressOverview.vue:102
+#: src/components/layouts/AddressOverview.vue:103
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Получить"
@@ -893,7 +893,10 @@ msgstr "Сохранить"
 msgid ""
 "Scan the code to send\n"
 "money to this address"
-msgstr "Отсканировать код, чтобы отправить деньги на этот адрес "
+msgstr ""
+"Отсканировать код, \n"
+"чтобы отправить деньги \n"
+"на этот адрес "
 
 #: src/components/SearchBar.vue:18
 msgid "Search"
@@ -909,9 +912,9 @@ msgstr "Найти транзакцию по адресу, получателю 
 
 #: src/components/layouts/Settings.vue:109
 msgid "Select which unit to show Bitcoin amounts in."
-msgstr ""
+msgstr "Выберите в каких единицах будет отображаться сумма в биткойнах."
 
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:98
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Отправить"
@@ -992,8 +995,8 @@ msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
-"Поделитесь ссылкой или QR-кодом с отправителем. По желанию, можете указать "
-"сумму. "
+"Поделитесь ссылкой или QR-кодом\n"
+"с отправителем. "
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
@@ -1017,7 +1020,7 @@ msgstr "Показывать десятичные знаки"
 msgid "Show Link"
 msgstr "Показать ссылку"
 
-#: src/components/layouts/AddressOverview.vue:122
+#: src/components/layouts/AddressOverview.vue:123
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
@@ -1050,7 +1053,7 @@ msgstr "стандартный"
 
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts soon."
-msgstr ""
+msgstr "Вначале для счетов банков ЕС."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
@@ -1246,7 +1249,7 @@ msgstr "Вы являетесь участником блокчейна Nimiq."
 
 #: src/components/layouts/Sidebar.vue:9
 msgid "You are connecting to the Nimiq and Bitcoin Testnets."
-msgstr ""
+msgstr "Вы подключаетесь к тестовой среде Nimiq и Bitcoin."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
@@ -1263,7 +1266,7 @@ msgstr "Теперь ты владеешь криптовалютой!"
 
 #: src/components/modals/BtcSendModal.vue:84
 msgid "You will send {amount}"
-msgstr ""
+msgstr "Вы перечисляете {amount}"
 
 #: src/components/modals/SendModal.vue:125
 msgid "You will send {amount} NIM"

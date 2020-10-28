@@ -47,12 +47,13 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
                 ) return false;
 
                 resolve(tx);
+                electrumClient.removeListener(handle);
                 return true;
             }
 
             const electrumClient = await getElectrumClient();
             // First subscribe to new transactions
-            electrumClient.addTransactionListener(listener, [htlcAddress]);
+            const handle = electrumClient.addTransactionListener(listener, [htlcAddress]);
 
             // Then check history
             const history = await electrumClient.getTransactionsByAddress(htlcAddress);
@@ -85,6 +86,7 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
 
                 if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
                     resolve(tx);
+                    client.removeListener(handle);
                     return true;
                 }
                 return false;
@@ -92,7 +94,7 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
 
             const client = await getNetworkClient();
             // First subscribe to new transactions
-            client.addTransactionListener(listener, [htlcAddress]);
+            const handle = await client.addTransactionListener(listener, [htlcAddress]);
 
             // Then check history
             try {
@@ -152,6 +154,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
                 if (tx.sender === nimHtlcAddress && 'preImage' in tx.proof) {
                     // @ts-ignore
                     resolve(tx.proof.preImage);
+                    client.removeListener(handle);
                     return true;
                 }
                 return false;
@@ -159,7 +162,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
 
             const client = await getNetworkClient();
             // First subscribe to new transactions
-            client.addTransactionListener(listener, [nimHtlcAddress]);
+            const handle = await client.addTransactionListener(listener, [nimHtlcAddress]);
 
             // Then check history
             try {
@@ -183,6 +186,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
                 const htlcInput = tx.inputs.find((input) => input.address === btcHtlcAddress);
                 if (htlcInput) {
                     resolve(htlcInput.witness[2] as string);
+                    electrumClient.removeListener(handle);
                     return true;
                 }
                 return false;
@@ -190,7 +194,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
 
             const electrumClient = await getElectrumClient();
             // First subscribe to new transactions
-            electrumClient.addTransactionListener(listener, [btcHtlcAddress]);
+            const handle = electrumClient.addTransactionListener(listener, [btcHtlcAddress]);
 
             // Then check history
             const history = await electrumClient.getTransactionsByAddress(btcHtlcAddress);

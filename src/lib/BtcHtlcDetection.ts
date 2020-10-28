@@ -157,8 +157,8 @@ export async function isHtlcFunding(
 
     // Try Fastspot API
     try {
-        const contract = await getContract(SwapAsset.BTC, htlcOutput.address!);
-        const { script } = contract.htlc;
+        const contractWithEstimate = await getContract(SwapAsset.BTC, htlcOutput.address!);
+        const { script } = contractWithEstimate.contract.htlc;
         const scriptParts = await decodeBtcHtlcScript(script);
         return {
             script,

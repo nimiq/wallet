@@ -3,7 +3,7 @@ import Config from 'config';
 export enum SwapAsset {
     NIM = 'NIM',
     BTC = 'BTC',
-    // EUR = 'EUR',
+    EUR = 'EUR',
 }
 
 // Internal Types
@@ -56,16 +56,16 @@ type FastspotContract<T extends SwapAsset> = {
     } : never,
 };
 
+type FastspotContractWithEstimate<T extends SwapAsset> = {
+    contract: FastspotContract<T>,
+    info: FastspotEstimate,
+}
+
 type FastspotPreSwap = {
     id: string,
     status: string,
     expires: number,
-    info: {
-        from: FastspotPrice[],
-        to: FastspotPrice[],
-        serviceFeePercentage: string | number,
-        direction: 'forward' | 'reverse',
-    },
+    info: FastspotEstimate,
 };
 
 type FastspotSwap = FastspotPreSwap & {
@@ -84,7 +84,7 @@ type FastspotResult
     = FastspotAsset[]
     | FastspotEstimate[]
     | FastspotSwap
-    | FastspotContract<SwapAsset>
+    | FastspotContractWithEstimate<SwapAsset>
     | FastspotLimits<SwapAsset>;
 
 type FastspotError = {
@@ -150,6 +150,10 @@ export type Contract<T extends SwapAsset> = {
         : never,
 };
 
+export type ContractWithEstimate<T extends SwapAsset> = Estimate & {
+    contract: Contract<T>,
+};
+
 export type PreSwap = Estimate & {
     id: string,
     expires: number,
@@ -173,6 +177,7 @@ function coinsToUnits(asset: SwapAsset, value: string | number): number {
     switch (asset) {
         case SwapAsset.NIM: decimals = 5; break;
         case SwapAsset.BTC: decimals = 8; break;
+        case SwapAsset.EUR: decimals = 2; break;
         default: throw new Error('Invalid asset');
     }
     const parts = value.toString().split('.');
@@ -396,9 +401,14 @@ export async function cancelSwap(swap: PreSwap): Promise<PreSwap> {
     return convertSwap(result);
 }
 
-export async function getContract<T extends SwapAsset>(asset: T, address: string): Promise<Contract<T>> {
-    const result = await api(`/contracts/${asset}/${address}`, 'GET') as FastspotContract<T>;
-    return convertContract(result);
+export async function getContract<T extends SwapAsset>(asset: T, address: string): Promise<ContractWithEstimate<T>> {
+    const result = await api(`/contracts/${asset}/${address}`, 'GET') as FastspotContractWithEstimate<T>;
+    return {
+        contract: convertContract(result.contract),
+        from: convertFromData(result.info.from[0]),
+        to: convertToData(result.info.to[0]),
+        serviceFeePercentage: parseFloat(result.info.serviceFeePercentage as string),
+    };
 }
 
 export async function getLimits<T extends SwapAsset>(asset: T, address: string): Promise<Limits<T>> {
@@ -410,11 +420,15 @@ export async function getAssets(): Promise<AssetList> {
     const result = await api('/assets', 'GET') as FastspotAsset[];
     const records: Partial<AssetList> = {};
     for (const record of result) {
-        records[record.symbol] = {
-            asset: record.symbol,
-            name: record.name,
-            feePerUnit: coinsToUnits(record.symbol, record.feePerUnit),
-        };
+        try {
+            records[record.symbol] = {
+                asset: record.symbol,
+                name: record.name,
+                feePerUnit: coinsToUnits(record.symbol, record.feePerUnit),
+            };
+        } catch (error) {
+            console.warn(error.message, record); // eslint-disable-line no-console
+        }
     }
     return records as AssetList;
 }

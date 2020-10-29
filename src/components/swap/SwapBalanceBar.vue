@@ -29,10 +29,16 @@
                 ></div>
             </div>
             <div class="separator nq-light-blue-bg" ref="$separator">
+                <transition name="fade">
+                    <SlideHint direction="left" v-if="distributionPercents.btc <= 2"/>
+                </transition>
                 <div class="handle"
                     @mousedown="onMouseDown"
                     @touchstart="onMouseDown"
                 ></div>
+                <transition name="fade">
+                    <SlideHint direction="right" v-if="distributionPercents.nim <= 2"/>
+                </transition>
             </div>
             <div class="bar bitcoin active"
                 ref="$bitcoinBar"
@@ -83,6 +89,7 @@ import { useAddressStore, AddressInfo } from '../../stores/Address';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { SwapAsset } from '../../lib/FastspotApi';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
+import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
@@ -419,6 +426,7 @@ export default defineComponent({
         BitcoinIcon,
         Identicon,
         CurvedLine,
+        SlideHint,
     },
 });
 </script>

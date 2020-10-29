@@ -1,5 +1,7 @@
 <template>
-    <Modal :showOverlay="!!swap" :emitClose="true" @close="onClose" @close-overlay="onClose">
+    <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
+        :showOverlay="!!swap" :emitClose="true" @close="onClose" @close-overlay="onClose"
+    >
         <div class="page flex-column">
             <PageHeader>
                 {{ $t('Swap NIM and BTC') }}
@@ -131,12 +133,12 @@
 
                 <div class="columns new-balances flex-row">
                     <div class="left-column">
-                        <Amount :amount="newNimBalance" currency="nim"/>
-                        <FiatConvertedAmount :amount="newNimBalance" currency="nim"/>
+                        <Amount :amount="newNimBalance" currency="nim" value-mask/>
+                        <FiatConvertedAmount :amount="newNimBalance" currency="nim" value-mask/>
                     </div>
                     <div class="right-column">
-                        <Amount :amount="newBtcBalance" currency="btc"/>
-                        <FiatConvertedAmount :amount="newBtcBalance" currency="btc"/>
+                        <Amount :amount="newBtcBalance" currency="btc" value-mask/>
+                        <FiatConvertedAmount :amount="newBtcBalance" currency="btc" value-mask/>
                     </div>
                 </div>
             </PageBody>
@@ -349,6 +351,7 @@ import {
     getOutgoingHtlcAddress,
 } from '../../lib/SwapProcess';
 import { useAccountStore } from '../../stores/Account';
+import { useSettingsStore } from '../../stores/Settings';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1079,6 +1082,8 @@ export default defineComponent({
             onInput(swapInfo.asset, swapInfo.amount);
         }
 
+        const { amountsHidden } = useSettingsStore();
+
         return {
             onClose,
             satsPerNim,
@@ -1115,6 +1120,7 @@ export default defineComponent({
             displayLimits,
             currentLimitFiat,
             currentlySigning,
+            amountsHidden,
         };
     },
     components: {
@@ -1275,7 +1281,8 @@ export default defineComponent({
 
 .amount-input,
 .new-balances .amount {
-    font-size: 2.5rem;
+    --size: var(--h2-size);
+    font-size: var(--size);
     font-weight: bold;
 
     /deep/ .ticker {
@@ -1291,6 +1298,10 @@ export default defineComponent({
     .nq-red & {
         color: var(--nimiq-red);
     }
+}
+
+.new-balances .fiat-amount {
+    --size: var(--body-size);
 }
 
 .new-balances .amount {

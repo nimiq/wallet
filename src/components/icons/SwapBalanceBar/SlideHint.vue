@@ -47,6 +47,7 @@ export default defineComponent({
 svg {
     height: 0.875rem;
     width: auto;
+    transform: translateX(0);
 
     &:not(:first-child) {
         margin-left: 0.5rem;
@@ -62,6 +63,23 @@ svg {
 
     &:nth-child(3) {
         opacity: .2;
+    }
+
+    @keyframes fade-n-translate {
+        100% {
+            opacity: 0;
+            transform: translateX(0.75rem);
+        }
+    }
+
+    animation-name: fade-n-translate;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+
+    @for $i from 0 through 2 {
+        &:nth-child(#{$i + 1}) {
+            animation-delay: #{$i * 100}ms;
+        }
     }
 }
 

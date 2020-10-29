@@ -12,9 +12,9 @@
                             <span>1 NIM = <Amount slot="btc" :amount="Math.round(satsPerNim)" currency="btc"/></span>
                             <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom left">
                                 <InfoCircleSmallIcon slot="trigger"/>
-                                <span>{{ $t('This rate includes the exchange fee.') }}</span>
+                                <span>{{ $t('This rate includes the swap fee.') }}</span>
                                 <p class="explainer">
-                                    {{ $t('The exchange rate might change depending on the swap volume.') }}
+                                    {{ $t('The rate might change depending on the swap volume.') }}
                                 </p>
                             </Tooltip>
                         </div>

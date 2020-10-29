@@ -14,11 +14,11 @@
             <FiatAmount :amount="myNimFeeFiat + serviceNimFeeFiat" :currency="currency"/>
         </div>
         <div class="price-breakdown">
-            <label>{{ $t('Exchange fee') }}</label>
+            <label>{{ $t('Swap fee') }}</label>
             <FiatAmount :amount="serviceExchangeFeeFiat" :currency="currency"/>
         </div>
         <p class="explainer">
-            {{ $t('{perc}% of exchange value.', { perc: serviceExchangeFeePercentage }) }}
+            {{ $t('{perc}% of swap value.', { perc: serviceExchangeFeePercentage }) }}
         </p>
         <hr>
         <div class="price-breakdown">

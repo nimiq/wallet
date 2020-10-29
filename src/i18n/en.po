@@ -29,7 +29,7 @@ msgid "{fee} fee"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:21
-msgid "{perc}% of exchange value."
+msgid "{perc}% of swap value."
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:106
@@ -468,10 +468,6 @@ msgstr ""
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
-msgstr ""
-
-#: src/components/swap/SwapFeesTooltip.vue:17
-msgid "Exchange fee"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:38
@@ -1095,6 +1091,10 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:265
 msgid "Swap complete!"
+msgstr ""
+
+#: src/components/swap/SwapFeesTooltip.vue:17
+msgid "Swap fee"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:5

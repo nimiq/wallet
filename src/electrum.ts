@@ -11,6 +11,7 @@ import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
 import { BTC_ADDRESS_GAP, ENV_MAIN } from './lib/Constants';
 import { loadBitcoinJS } from './lib/BitcoinJSLoader';
 import { addBtcAddresses } from './hub';
+import { HTLC_ADDRESS_LENGTH } from './lib/BtcHtlcDetection';
 
 let isLaunched = false;
 let clientPromise: Promise<ElectrumClient>;
@@ -58,8 +59,11 @@ export async function sendTransaction(tx: SignedBtcTransaction | string) {
     await client.waitForConsensusEstablished();
     const plainTx = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 
-    // Subscribe to one of our sender addresses, so we get updates about this transaction
-    const address = plainTx.inputs.find((input) => input.address)?.address;
+    // Subscribe to one of our addresses, so we get updates about this transaction
+    let address = plainTx.inputs.find((input) => input.address)?.address;
+    if (address && address.length === HTLC_ADDRESS_LENGTH) {
+        address = plainTx.outputs.find((output) => output.address)?.address;
+    }
     if (address) {
         subscribeToAddresses([address]);
     }

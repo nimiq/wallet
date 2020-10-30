@@ -7,7 +7,7 @@
     "pre": "yarn i18n:extract && if [ ! -f public/bitcoin/BitcoinJS.min.js ]; then yarn build:bitcoinjs; fi",
     "serve": "yarn pre && yarn vue-cli-service serve --port 8081",
     "build": "yarn pre && yarn vue-cli-service build",
-    "build:ci": "yarn pre && yarn build=testnet vue-cli-service build",
+    "build:ci": "yarn pre && build=testnet yarn vue-cli-service build",
     "build:bitcoinjs": "yarn --silent browserify bitcoinjs-parts.js -p common-shakeify -s BitcoinJS | yarn terser --compress --mangle --source-map --output public/bitcoin/BitcoinJS.min.js",
     "lint": "vue-cli-service lint --no-fix",
     "i18n:extract": "node ./node_modules/webpack-i18n-tools/index.js ./src/i18n/en.po",

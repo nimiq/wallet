@@ -39,7 +39,7 @@
                                 </div>
                             </template>
                         </Tooltip>
-                        <div v-if="limits && displayLimits" class="pill limits flex-row">
+                        <div v-if="limits" class="pill limits flex-row">
                             {{ $t('Max.') }}
                             <FiatAmount slot="amount"
                                 :amount="currentLimitFiat" :currency="currency" hideDecimals/>
@@ -374,21 +374,6 @@ export default defineComponent({
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
-
-        const displayLimits = computed(() => {
-            if (!limits.value) return false;
-
-            if (limits.value.current < (activeAddressInfo.value!.balance || 0)) return true;
-
-            const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
-            const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
-
-            if (!nimRate || !btcRate) return true;
-            const lunaPerSat = (btcRate / 1e8) / (nimRate / 1e5);
-
-            const bitcoinBalanceInLuna = accountBtcBalance.value * lunaPerSat;
-            return limits.value.current < bitcoinBalanceInLuna;
-        });
 
         onMounted(() => {
             if (!swap.value) {
@@ -1144,7 +1129,6 @@ export default defineComponent({
             outgoingHtlcAddress,
             finishSwap,
             limits,
-            displayLimits,
             currentLimitFiat,
             currentlySigning,
             amountsHidden,

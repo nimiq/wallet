@@ -19,10 +19,6 @@ export default defineComponent({
             validator: (direction: string) => ['right', 'left'].includes(direction),
         },
     },
-    setup: (props/* ,  context */) => {
-        return {
-        };
-    },
 });
 </script>
 

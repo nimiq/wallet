@@ -1094,8 +1094,8 @@ export default defineComponent({
         }
 
         function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
-            const asset = swapInfo.asset;
-            let amount = swapInfo.amount;
+            const { asset } = swapInfo;
+            let { amount } = swapInfo;
 
             // Only cap decimals on the amount when not the whole address/account balance is used
             const balance = asset === SwapAsset.NIM
@@ -1103,7 +1103,7 @@ export default defineComponent({
                 : accountBtcBalance.value;
 
             if (Math.abs(amount) < balance) {
-                amount = capDecimals(swapInfo.amount, swapInfo.asset);
+                amount = capDecimals(amount, asset);
             }
 
             onInput(asset, amount);

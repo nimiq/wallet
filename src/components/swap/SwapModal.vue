@@ -79,8 +79,8 @@
                         : direction === SwapDirection.NIM_TO_BTC ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="Math.abs(wantNim || getNim)"
-                            @input="onInput('NIM', $event)"
+                            :value="Math.abs(wantNim || capDecimals(getNim, SwapAsset.NIM))"
+                            @input="onInput(SwapAsset.NIM, $event)"
                             :maxFontSize="2.5" :vanishing="true" :decimals="5">
                             <span v-if="!wantNim && !getNim" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">-</span>
@@ -106,13 +106,13 @@
                         : direction === SwapDirection.BTC_TO_NIM ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="Math.abs(wantBtc || getBtc)"
-                            @input="onInput('BTC', $event)"
-                            :maxFontSize="2.5" :vanishing="true" :decimals="8">
+                            :value="Math.abs(wantBtc || capDecimals(getBtc, SwapAsset.BTC))"
+                            @input="onInput(SwapAsset.BTC, $event)"
+                            :maxFontSize="2.5" :vanishing="true" :decimals="btcUnit.decimals">
                             <span v-if="!wantBtc && !getBtc" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">+</span>
-                            <span slot="suffix" class="ticker">BTC</span>
+                            <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                         </AmountInput>
                         <div class="flex-row">
                             <FiatConvertedAmount
@@ -352,6 +352,7 @@ import {
 } from '../../lib/SwapProcess';
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
+import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -442,6 +443,20 @@ export default defineComponent({
 
         async function fetchAssets() {
             assets.value = await getAssets();
+        }
+
+        function capDecimals(amount: number, asset: SwapAsset) {
+            if (!amount) return 0;
+
+            const numberSign = amount / Math.abs(amount); // 1 or -1
+
+            amount = Math.abs(amount);
+
+            const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
+            const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
+            const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
+
+            return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
         }
 
         /**
@@ -1079,10 +1094,22 @@ export default defineComponent({
         }
 
         function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
-            onInput(swapInfo.asset, swapInfo.amount);
+            const asset = swapInfo.asset;
+            let amount = swapInfo.amount;
+
+            // Only cap decimals on the amount when not the whole address/account balance is used
+            const balance = asset === SwapAsset.NIM
+                ? (activeAddressInfo.value!.balance) || 0
+                : accountBtcBalance.value;
+
+            if (Math.abs(amount) < balance) {
+                amount = capDecimals(swapInfo.amount, swapInfo.asset);
+            }
+
+            onInput(asset, amount);
         }
 
-        const { amountsHidden } = useSettingsStore();
+        const { amountsHidden, btcUnit } = useSettingsStore();
 
         return {
             onClose,
@@ -1121,6 +1148,9 @@ export default defineComponent({
             currentLimitFiat,
             currentlySigning,
             amountsHidden,
+            capDecimals,
+            SwapAsset,
+            btcUnit,
         };
     },
     components: {

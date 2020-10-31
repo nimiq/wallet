@@ -14,41 +14,7 @@ import { LabelInput } from '@nimiq/vue-components';
 import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
-import { parseBitcoinUrl } from '../lib/BitcoinTransactionUtils';
-
-/* global BitcoinJS */
-
-export const BIP49_ADDRESS_VERSIONS = {
-    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
-    MAIN: [0, 5], // 0 = BIP44, 5 = BIP49
-    TEST: [111, 196], // 111 = BIP44, 196 = BIP49
-};
-
-export const BIP84_ADDRESS_PREFIX = {
-    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
-    MAIN: 'bc',
-    TEST: 'tb',
-};
-
-function validateAddress(address: string, network: 'MAIN' | 'TEST') {
-    try {
-        // @ts-ignore BitcoinJS is not defined
-        const parsedAddress = BitcoinJS.address.fromBase58Check(address);
-        return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version); // Check includes legacy BIP44 versions
-    } catch (error) {
-        // Ignore
-    }
-
-    try {
-        // @ts-ignore BitcoinJS is not defined
-        const parsedAddress = BitcoinJS.address.fromBech32(address);
-        return BIP84_ADDRESS_PREFIX[network] === parsedAddress.prefix;
-    } catch (error) {
-        // Ignore
-    }
-
-    return false;
-}
+import { parseBitcoinUrl, validateAddress } from '../lib/BitcoinTransactionUtils';
 
 export default defineComponent({
     props: {

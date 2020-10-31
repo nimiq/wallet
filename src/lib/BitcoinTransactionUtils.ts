@@ -79,6 +79,36 @@ export function selectOutputs(
     };
 }
 
+export const BIP49_ADDRESS_VERSIONS = {
+    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
+    MAIN: [0, 5], // 0 = BIP44, 5 = BIP49
+    TEST: [111, 196], // 111 = BIP44, 196 = BIP49
+};
+
+export const BIP84_ADDRESS_PREFIX = {
+    // See https://en.bitcoin.it/wiki/List_of_address_prefixes
+    MAIN: 'bc',
+    TEST: 'tb',
+};
+
+export function validateAddress(address: string, network: 'MAIN' | 'TEST') {
+    try {
+        const parsedAddress = BitcoinJS.address.fromBase58Check(address);
+        return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version); // Check includes legacy BIP44 versions
+    } catch (error) {
+        // Ignore
+    }
+
+    try {
+        const parsedAddress = BitcoinJS.address.fromBech32(address);
+        return BIP84_ADDRESS_PREFIX[network] === parsedAddress.prefix;
+    } catch (error) {
+        // Ignore
+    }
+
+    return false;
+}
+
 type BitcoinParams = { recipient: string, amount?: number, label?: string, message?: string };
 
 export function parseBitcoinUrl(str: string): BitcoinParams {

@@ -509,7 +509,7 @@ export default defineComponent({
     cursor: pointer;
     transform: translate3d(0, 0, 0);
 
-    transition: opacity 300ms, width 10ms;
+    transition: opacity 300ms;
 
     .animating & {
         transition: opacity 300ms, width 300ms;
@@ -554,7 +554,6 @@ export default defineComponent({
         background-size: auto 100%;
         height: 100%;
         border-radius: 0.25rem;
-        transition: width 10ms;
         transform: translate3d(0, 0, 0);
 
         .animating & {

@@ -19,6 +19,7 @@
                         @input="resetAddress"
                         @click.capture.native="selectedInput = 'top'"
                         @address="onAddressEntered"
+                        @scan="$router.push('/scan')"
                         ref="addressInputRef"/>
                     <span
                         v-if="recipientWithLabel && recipientWithLabel.type === RecipientType.KNOWN_CONTACT"

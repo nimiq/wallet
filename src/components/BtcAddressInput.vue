@@ -4,13 +4,18 @@
         :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
     >
         <LabelInput v-model="address" :placeholder="placeholder" @input="onInput" @paste="onPaste" ref="$input"/>
+        <transition name="fade">
+            <button v-if="!address.length" class="reset scan-qr-button" @click="$emit('scan')">
+                <ScanQrCodeIcon/>
+            </button>
+        </transition>
         <span class="invalid-address nq-orange">{{ $t('This is not a valid address') }}</span>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-import { LabelInput } from '@nimiq/vue-components';
+import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
@@ -129,6 +134,7 @@ export default defineComponent({
     },
     components: {
         LabelInput,
+        ScanQrCodeIcon,
     },
 });
 </script>
@@ -136,6 +142,7 @@ export default defineComponent({
 <style lang="scss" scoped>
     .btc-address-input {
         text-align: center;
+        position: relative;
     }
 
     .label-input {
@@ -157,6 +164,21 @@ export default defineComponent({
                 --border-color: rgba(252, 135, 2, 0.4);
                 color: var(--nimiq-orange);
             }
+        }
+    }
+
+    .scan-qr-button {
+        position: absolute;
+        right: 1.25rem;
+        top: 1.25rem;
+        font-size: 3.5rem;
+        opacity: 0.4;
+
+        transition: opacity var(--attr-duration) var(--nimiq-ease);
+
+        &:hover,
+        &:focus {
+            opacity: 0.6;
         }
     }
 

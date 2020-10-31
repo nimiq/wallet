@@ -65,19 +65,19 @@ export default defineComponent({
         );
 
         const d = computed(() => `
-            M 1,1
+            M 1 1
             v 1
             s
-                0,${angleSize - y.value},
-                ${angleSize - x.value},${angleSize}
+                0 ${angleSize - y.value}
+                ${angleSize - x.value} ${angleSize}
             S
-                ${Math.round(props.width) - (((angleSize - x.value) * 2) + 1)},
-                    ${props.height - (angleSize + y.value + 3)},
-                ${Math.round(props.width) - (angleSize + 1) + x.value},
-                    ${props.height - (angleSize + 3)},
+                ${Math.round(props.width) - (((angleSize - x.value) * 2) + 1)}
+                    ${props.height - (angleSize + y.value + 3)}
+                ${Math.round(props.width) - (angleSize + 1) + x.value}
+                    ${props.height - (angleSize + 3)}
             s
-                ${angleSize - x.value},${angleSize},
-                ${angleSize - x.value},${angleSize}
+                ${angleSize - x.value} ${angleSize}
+                ${angleSize - x.value} ${angleSize}
             v 1
         `);
 

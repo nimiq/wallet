@@ -1,13 +1,13 @@
 <template>
     <Modal class="scan-qr-modal">
         <PageBody>
-            <QrScanner @result="checkResult" @cancel="$router.back()" />
+            <QrScanner @result="checkResult" @cancel="$router.back()" ref="$QrScanner" />
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -23,6 +23,29 @@ import { parseBitcoinUrl, validateAddress } from '../../lib/BitcoinTransactionUt
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { useAccountStore } from '../../stores/Account';
+import { login } from '../../hub';
+
+function isLoginFile(result: string): boolean {
+    // LoginFile v3
+    if (result.length === 76) {
+        const bytes = atob(result).split('').map((char) => char.charCodeAt(0));
+        return bytes[0] === 3 && bytes.length === 56; // Version 3
+    }
+
+    // PIN-Encoded Account Access Files
+    if (result.length === 74 && result.startsWith('#2')) {
+        const bytes = atob(result.substr(2)).split('').map((char) => char.charCodeAt(0));
+        return (bytes[0] === 1 || bytes[0] === 2) && bytes.length === 54; // Version 1 or 2
+    }
+
+    // NIM Activation Account Access Files
+    if (result.length === 72) {
+        const bytes = atob(result).split('').map((char) => char.charCodeAt(0));
+        return (bytes[0] === 1 || bytes[0] === 2) && bytes.length === 54; // Version 1 or 2
+    }
+
+    return false;
+}
 
 export default defineComponent({
     name: 'scan-qr-modal',
@@ -92,10 +115,23 @@ export default defineComponent({
                     // Ignore
                 }
             }
+
+            if (isLoginFile(result)) {
+                login(true, result);
+                return; // eslint-disable-line no-useless-return
+            }
         };
+
+        const $QrScanner = ref<QrScanner>(null);
+
+        onMounted(() => {
+            // To be able to scan LoginFiles, on which the QR code is inversed (light on dark)
+            $QrScanner.value!.setInversionMode('both');
+        });
 
         return {
             checkResult,
+            $QrScanner,
         };
     },
     components: {

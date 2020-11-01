@@ -22,7 +22,7 @@ const hubApi = new HubApi(Config.hubEndpoint);
 
 let welcomeRoute = '';
 
-hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+function onboardRedirectResponseHandler(accounts: Account[]) {
     if (!accounts[0].wordsExported && !accounts[0].fileExported) {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
@@ -30,7 +30,11 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         welcomeRoute = '/btc-activation/activated';
     }
-});
+}
+
+hubApi.on(HubApi.RequestType.ONBOARD, onboardRedirectResponseHandler);
+hubApi.on(HubApi.RequestType.SIGNUP, onboardRedirectResponseHandler);
+hubApi.on(HubApi.RequestType.LOGIN, onboardRedirectResponseHandler);
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
     welcomeRoute = '/migration-welcome';
@@ -217,6 +221,40 @@ export async function onboard(asRedirect = false) {
         // which also have no exports.
         router.push('/welcome');
     } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+        router.push('/btc-activation/activated');
+    }
+
+    return true;
+}
+
+export async function signup(asRedirect = false) {
+    if (asRedirect === true) {
+        const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+        hubApi.signup({ appName: APP_NAME }, behavior);
+        return null;
+    }
+
+    const accounts = await hubApi.signup({ appName: APP_NAME }).catch(onError);
+    if (!accounts) return false;
+
+    processAndStoreAccounts(accounts);
+    router.push('/welcome');
+    return true;
+}
+
+export async function login(asRedirect = false, loginFileData?: string) {
+    if (asRedirect === true) {
+        const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+        hubApi.login({ appName: APP_NAME, loginFileData }, behavior);
+        return null;
+    }
+
+    const accounts = await hubApi.login({ appName: APP_NAME, loginFileData }).catch(onError);
+    if (!accounts) return false;
+
+    processAndStoreAccounts(accounts);
+
+    if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         router.push('/btc-activation/activated');
     }
 

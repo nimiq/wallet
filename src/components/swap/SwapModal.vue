@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap" :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :showOverlay="!!swap || addressListOverlayOpened" :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <div class="page flex-column">
             <PageHeader>
@@ -72,6 +72,7 @@
                     :satsPerNim="satsPerNim"
                     :limits="{ fiat: currentLimitFiat }"
                     @change="onSwapBalanceBarChange"
+                    @onActiveAddressClick="addressListOverlayOpened = true"
                 />
                 <div class="columns swap-amounts flex-row">
                     <div class="left-column" :class="!wantNim && !getNim
@@ -283,6 +284,13 @@
                 <MinimizeIcon/>
             </button>
         </div>
+
+        <div v-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list">
+            <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
+            <PageBody>
+                <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
+            </PageBody>
+        </div>
     </Modal>
 </template>
 
@@ -353,6 +361,7 @@ import {
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import AddressList from '../AddressList.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -372,7 +381,7 @@ export default defineComponent({
         const assets = ref<AssetList>(null);
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
-        const { activeAddressInfo } = useAddressStore();
+        const { activeAddressInfo, selectAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         onMounted(() => {
@@ -792,7 +801,11 @@ export default defineComponent({
         });
 
         function onClose() {
-            context.root.$router.back();
+            if (addressListOverlayOpened.value === true) {
+                addressListOverlayOpened.value = false;
+            } else {
+                context.root.$router.back();
+            }
         }
 
         const canSign = computed(() =>
@@ -1096,6 +1109,13 @@ export default defineComponent({
 
         const { amountsHidden, btcUnit } = useSettingsStore();
 
+        const addressListOverlayOpened = ref(false);
+
+        function onAddressSelected(address: string) {
+            selectAddress(address);
+            addressListOverlayOpened.value = false;
+        }
+
         return {
             onClose,
             satsPerNim,
@@ -1135,6 +1155,8 @@ export default defineComponent({
             capDecimals,
             SwapAsset,
             btcUnit,
+            addressListOverlayOpened,
+            onAddressSelected,
         };
     },
     components: {
@@ -1160,6 +1182,7 @@ export default defineComponent({
         FlameIcon,
         MinimizeIcon,
         SwapFeesTooltip,
+        AddressList,
     },
 });
 </script>
@@ -1473,6 +1496,18 @@ export default defineComponent({
             top: 2rem;
             right: 2rem;
         }
+    }
+}
+
+.address-list .page-body {
+    overflow-y: auto;
+    padding: 1rem 0 2rem;
+
+    .address-list {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 2rem;
     }
 }
 

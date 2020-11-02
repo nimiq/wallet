@@ -1,8 +1,8 @@
 <template>
     <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
-            <div class="nimiq">
-                <Identicon :address="activeAddressInfo.address" ref="$nimiqIcon" />
+            <div class="nimiq" @click="onActiveAddressClick()">
+                <Identicon :address="activeAddressInfo.address" ref="$nimiqIcon"/>
                 <label>{{ activeAddressInfo.label }}</label>
             </div>
             <div class="bitcoin">
@@ -387,6 +387,11 @@ export default defineComponent({
             }, 200);
         }
 
+        /* Emit click on active address for address selector overlay */
+        function onActiveAddressClick() {
+            context.emit('onActiveAddressClick');
+        }
+
         return {
             selectAddress,
 
@@ -420,6 +425,8 @@ export default defineComponent({
             equiPointVisible,
             animatedReset,
             animatingBars,
+
+            onActiveAddressClick,
         };
     },
     components: {
@@ -455,6 +462,25 @@ export default defineComponent({
 
     .nimiq {
         max-width: 65%;
+        position: relative;
+        cursor: pointer;
+
+        &:before {
+            content: "";
+            border-radius: 0.75rem;
+            position: absolute;
+            top: -.5rem;
+            bottom: -.5rem;
+            left: -.5rem;
+            right: -.5rem;
+            background: transparent;
+
+            transition: background 400ms;
+        }
+
+        &:hover:before {
+            background: var(--nimiq-highlight-bg);
+        }
 
         .identicon {
             width: var(--height);
@@ -467,6 +493,7 @@ export default defineComponent({
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            cursor: inherit;
         }
     }
 

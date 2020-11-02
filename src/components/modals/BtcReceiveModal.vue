@@ -668,10 +668,6 @@ footer {
         font-size: var(--small-size);
         font-weight: 600;
 
-        @media (min-width: 701px) {
-            // transform: translate(-1rem, 2rem);
-        }
-
         p {
             margin: 0;
         }
@@ -748,7 +744,7 @@ footer {
 
     .inputs {
         width: calc(100% + 4rem);
-        margin: -1rem -2rem 2rem;
+        margin: 0 -2rem 2rem;
         position: relative;
 
         .separator:first-child {

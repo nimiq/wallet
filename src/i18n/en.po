@@ -272,6 +272,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:155
+#: src/components/swap/SwapModal.vue:289
 msgid "Choose an Address"
 msgstr ""
 

@@ -2,7 +2,11 @@
     <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
             <div class="nimiq" @click="onActiveAddressClick()">
-                <Identicon :address="activeAddressInfo.address" ref="$nimiqIcon"/>
+                <div class="identicon-stack" ref="$nimiqIcon">
+                    <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
+                    <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
+                    <Identicon class="primary" :address="activeAddressInfo.address"/>
+                </div>
                 <label>{{ activeAddressInfo.label }}</label>
             </div>
             <div class="bitcoin">
@@ -392,6 +396,14 @@ export default defineComponent({
             context.emit('onActiveAddressClick');
         }
 
+        const backgroundAddresses = computed(() =>
+            // TODO: show next/first & previous/last address
+            addressInfos.value
+                .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value!.address)
+                .slice(0, 2)
+                .map((addressInfo) => addressInfo.address),
+        );
+
         return {
             selectAddress,
 
@@ -427,6 +439,7 @@ export default defineComponent({
             animatingBars,
 
             onActiveAddressClick,
+            backgroundAddresses,
         };
     },
     components: {
@@ -445,8 +458,8 @@ export default defineComponent({
 }
 
 .balance-bar-header {
-    --height: 5.25rem;
-    height: var(--height);
+    --header-height: 5.25rem;
+    height: var(--header-height);
 
     & > div {
         display: flex;
@@ -459,58 +472,103 @@ export default defineComponent({
             line-height: 2.625rem;
         }
     }
+}
 
-    .nimiq {
-        max-width: 65%;
+.balance-bar-header .nimiq {
+    max-width: 65%;
+    position: relative;
+    cursor: pointer;
+
+    &:before {
+        content: "";
+        border-radius: 0.75rem;
+        position: absolute;
+        top: -.5rem;
+        bottom: -.5rem;
+        left: -.5rem;
+        right: -.5rem;
+        background: transparent;
+
+        transition: background 400ms;
+    }
+
+    &:hover:before {
+        background: var(--nimiq-highlight-bg);
+    }
+
+    label {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: inherit;
+    }
+}
+
+.balance-bar-header .bitcoin {
+    justify-content: flex-end;
+
+    svg {
+        margin-left: 2rem;
+        color: var(--bitcoin-orange);
+    }
+}
+
+.identicon-stack {
+    align-items: stretch;
+    position: relative;
+    margin-right: 1.5rem;
+    margin-left: 1rem;
+    overflow: visible;
+
+    .identicon {
+        height: auto;
+    }
+
+    .primary {
         position: relative;
-        cursor: pointer;
+        width: var(--header-height);
+    }
 
-        &:before {
-            content: "";
-            border-radius: 0.75rem;
-            position: absolute;
-            top: -.5rem;
-            bottom: -.5rem;
-            left: -.5rem;
-            right: -.5rem;
-            background: transparent;
+    .secondary {
+        width: 4.75rem;
+        position: absolute;
+        top: 50%;
 
-            transition: background 400ms;
+        opacity: 0.4;
+        transform: translateY(-50%) translateX(0);
+
+        transition:
+            transform 300ms var(--nimiq-ease),
+            opacity 300ms var(--nimiq-ease);
+
+        &:first-child {
+            left: 1.5rem;
         }
 
-        &:hover:before {
-            background: var(--nimiq-highlight-bg);
-        }
-
-        .identicon {
-            width: var(--height);
-            height: 100%;
-            margin-right: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        label {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            cursor: inherit;
+        &:nth-child(2) {
+            right: 1.5rem;
         }
     }
 
-    .bitcoin {
-        justify-content: flex-end;
+    .nimiq:hover &,
+    .nimiq:focus & {
+        .secondary:first-child {
+            transform: translateY(-50%) translateX(-0.375rem) scale(1.05);
+            opacity: 0.5;
+        }
 
-        svg {
-            margin-left: 2rem;
-            color: var(--bitcoin-orange);
+        .secondary:nth-child(2) {
+            transform: translateY(-50%) translateX(0.375rem) scale(1.05);
+            opacity: 0.5;
         }
     }
 }
 
+
 .connecting-lines {
     margin-top: .5rem;
     margin-bottom: -3rem;
-    padding: 0 2.5rem;
+    padding-left: 3.5rem;
 
     svg:last-child {
         position: absolute;

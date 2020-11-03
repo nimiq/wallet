@@ -185,11 +185,6 @@
                     <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
                         <div v-if="swap.state === SwapState.SIGN_SWAP">
                             {{ $t('Signing swap...') }}
-                            <button class="nq-button-pill light-blue"
-                                :disabled="swap.expires <= (Math.floor(Date.now() / 1000) - 120)"
-                                @click="sign"
-                            >{{ $t('Sign') }}</button>
-                            <button class="nq-button-s" @click="cancel">{{ $t('Cancel') }}</button>
                         </div>
                         <div v-else>{{ $t('Swap signed!') }}</div>
                     </div>
@@ -223,11 +218,16 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.CREATE_OUTGOING" class="info">
-                        <div v-if="swap.state === SwapState.CREATE_OUTGOING">
+                        <div v-if="swap.fundingError" class="nq-orange flex-row">
+                            <AlertTriangleIcon/> {{ swap.fundingError }}
+                        </div>
+                        <div v-else-if="swap.state === SwapState.CREATE_OUTGOING">
                             {{ $t('Sending outgoing HTLC...') }}
                         </div>
                         <div v-else>{{ $t('Outgoing HTLC created!') }}</div>
-                        <code v-if="swap.fundingTx" class="flex-row">
+
+                        <small v-if="swap.fundingError" class="nq-gray">{{ $t('Retrying...') }}</small>
+                        <code v-else-if="swap.fundingTx" class="flex-row">
                             <a class="nq-link" target="_blank"
                                 :href="explorerTxLink(swap.from.asset, swap.fundingTx.transactionHash)"
                             ><ShortAddress :address="swap.fundingTx.transactionHash"/></a>
@@ -262,11 +262,16 @@
                         <CheckmarkIcon v-else/>
                     </div>
                     <div v-if="swap.state >= SwapState.SETTLE_INCOMING" class="info">
-                        <div v-if="swap.state === SwapState.SETTLE_INCOMING">
+                        <div v-if="swap.settlementError" class="nq-orange flex-row">
+                            <AlertTriangleIcon/> {{ swap.settlementError }}
+                        </div>
+                        <div v-else-if="swap.state === SwapState.SETTLE_INCOMING">
                             {{ $t('Redeeming incoming HTLC...') }}
                         </div>
                         <div v-else>{{ $t('Swap complete!') }}</div>
-                        <code v-if="swap.settlementTx" class="flex-row">
+
+                        <small v-if="swap.settlementError" class="nq-gray">{{ $t('Retrying...') }}</small>
+                        <code v-else-if="swap.settlementTx" class="flex-row">
                             <a class="nq-link" target="_blank"
                                 :href="explorerTxLink(swap.to.asset, swap.settlementTx.transactionHash)"
                             ><ShortAddress :address="swap.settlementTx.transactionHash"/></a>
@@ -1223,6 +1228,10 @@ export default defineComponent({
     overflow: visible;
 }
 
+.nq-gray {
+    opacity: 0.5;
+}
+
 .early-access {
     position: absolute;
     top: 1.5rem;
@@ -1392,10 +1401,6 @@ export default defineComponent({
         margin-right: 0.5rem;
     }
 
-    &.nq-gray {
-        opacity: 0.5;
-    }
-
     .nq-link {
         color: inherit;
         text-decoration: underline;
@@ -1443,6 +1448,15 @@ export default defineComponent({
 
             > div {
                 font-weight: 600;
+
+                &.flex-row {
+                    align-items: center;
+                }
+
+                svg {
+                    margin-right: 0.5rem;
+                    flex-shrink: 0;
+                }
             }
         }
     }
@@ -1459,10 +1473,6 @@ export default defineComponent({
         svg {
             margin: 0.125rem 2rem 0;
             opacity: 0.3;
-        }
-
-        &.nq-gray {
-            opacity: 0.5;
         }
     }
 

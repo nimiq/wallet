@@ -1,22 +1,29 @@
 <template>
     <transition :name="swapIsOngoing ? 'minimize' : 'slide'">
         <button v-if="activeSwap && $route.name !== 'swap'"
-            class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing}"
+            class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing, 'errored': swapIsErrored}"
             @click="$router.push('/swap')"
         >
             <div class="icon">
-                <LoadingSpinner v-if="swapIsOngoing"/>
+                <AlertTriangleIcon v-if="swapIsErrored"/>
+                <LoadingSpinner v-else-if="swapIsOngoing"/>
                 <CheckmarkIcon v-else/>
             </div>
             <div class="content flex-column">
-                <div v-if="swapIsOngoing" class="status">
+                <div v-if="swapIsErrored" class="status">
+                    {{ $t('There\'s a problem') }}
+                </div>
+                <div v-else-if="swapIsOngoing" class="status">
                     {{ $t('Performing swap {progress}/5', { progress: activeSwap.state + 1 }) }}
                 </div>
                 <div v-else class="status">
                     {{ $t('Swap successful!') }}
                 </div>
 
-                <span v-if="swapIsOngoing" class="closing-notice">
+                <span v-if="swapIsErrored" class="closing-notice">
+                    {{ $t('Click for more information') }}
+                </span>
+                <span v-else-if="swapIsOngoing" class="closing-notice">
                     {{ $t('Don\'t close your Wallet') }}
                 </span>
                 <span v-else class="closing-notice">
@@ -30,7 +37,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, Ref, watch } from '@vue/composition-api';
-import { LoadingSpinner, CheckmarkIcon } from '@nimiq/vue-components';
+import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+import { NetworkClient } from '@nimiq/network-client';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
 import { awaitIncoming, awaitSecret, createOutgoing, settleIncoming } from '../../lib/SwapProcess';
@@ -38,18 +46,27 @@ import { SwapAsset, Contract } from '../../lib/FastspotApi';
 import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
         const { activeSwap, setActiveSwap } = useSwapsStore();
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
+        const swapIsErrored = computed(() => !!activeSwap.value
+            && (
+                (activeSwap.value as ActiveSwap<SwapState.CREATE_OUTGOING>).fundingError
+                || (activeSwap.value as ActiveSwap<SwapState.SETTLE_INCOMING>).settlementError
+            ),
+        );
 
         onMounted(() => {
             if (swapIsOngoing.value) processSwap();
         });
 
         watch(activeSwap, (newSwap, oldSwap) => {
+            if (!newSwap) return; // Do nothing when swap is deleted
+
             if (newSwap && !oldSwap) {
                 // A new swap started, start processing it
                 processSwap();
@@ -59,6 +76,13 @@ export default defineComponent({
         async function processSwap() {
             console.info('Processing swap'); // eslint-disable-line no-console
 
+            // Await Nimiq and Bitcoin consensus
+            const nimiqClient = await getNetworkClient();
+            if (useNetworkStore().state.consensus !== 'established') {
+                await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                    if (state === 'established') res();
+                }));
+            }
             const electrum = await getElectrumClient();
             await electrum.waitForConsensusEstablished();
 
@@ -105,11 +129,21 @@ export default defineComponent({
                 case SwapState.AWAIT_INCOMING:
                     await awaitIncoming(activeSwap as Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>);
                 case SwapState.CREATE_OUTGOING:
-                    await createOutgoing(activeSwap as Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>);
+                    try {
+                        await createOutgoing(activeSwap as Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>);
+                    } catch (error) {
+                        setTimeout(processSwap, 2000); // 2 seconds
+                        return;
+                    }
                 case SwapState.AWAIT_SECRET:
                     await awaitSecret(activeSwap as Ref<ActiveSwap<SwapState.AWAIT_SECRET>>);
                 case SwapState.SETTLE_INCOMING:
-                    await settleIncoming(activeSwap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
+                    try {
+                        await settleIncoming(activeSwap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
+                    } catch (error) {
+                        setTimeout(processSwap, 2000); // 2 seconds
+                        return;
+                    }
                 case SwapState.COMPLETE:
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in the SwapModal.
@@ -125,11 +159,13 @@ export default defineComponent({
         return {
             activeSwap,
             swapIsOngoing,
+            swapIsErrored,
         };
     },
     components: {
         LoadingSpinner,
         CheckmarkIcon,
+        AlertTriangleIcon,
         MaximizeIcon,
     },
 });
@@ -153,6 +189,11 @@ export default defineComponent({
         background-color: var(--nimiq-green);
         background-image: var(--nimiq-green-bg);
     }
+
+    &.errored {
+        background-color: var(--nimiq-orange);
+        background-image: var(--nimiq-orange-bg);
+    }
 }
 
 .icon {
@@ -162,6 +203,11 @@ export default defineComponent({
     svg {
         display: block;
         margin: auto;
+
+        &.nq-icon {
+            width: 3rem;
+            height: 3rem;
+        }
     }
 }
 

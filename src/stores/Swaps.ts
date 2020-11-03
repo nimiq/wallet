@@ -72,6 +72,7 @@ export type ActiveSwap<T extends SwapState> = SwapObject & {
            | SwapState.COMPLETE
     ? {
         remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+        fundingError?: string,
     } : {})
 & (T extends SwapState.AWAIT_SECRET
            | SwapState.SETTLE_INCOMING
@@ -84,6 +85,7 @@ export type ActiveSwap<T extends SwapState> = SwapObject & {
     ? {
         // remoteSettlementTxHash: string,
         secret: string,
+        settlementError?: string,
     } : {})
 & (T extends SwapState.COMPLETE
     ? {

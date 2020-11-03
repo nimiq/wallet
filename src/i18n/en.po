@@ -157,7 +157,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:205
+#: src/components/swap/SwapModal.vue:200
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
@@ -237,10 +237,6 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:192
-msgid "Cancel"
-msgstr ""
-
 #: src/components/layouts/Settings.vue:210
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
@@ -272,7 +268,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:289
+#: src/components/swap/SwapModal.vue:294
 msgid "Choose an Address"
 msgstr ""
 
@@ -282,6 +278,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:125
 msgid "Clear Cache"
+msgstr ""
+
+#: src/components/swap/SwapNotification.vue:24
+msgid "Click for more information"
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:76
@@ -401,7 +401,7 @@ msgid "Disclaimer"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:172
-#: src/components/swap/SwapNotification.vue:20
+#: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your Wallet"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:281
+#: src/components/swap/SwapModal.vue:286
 msgid "Done"
 msgstr ""
 
@@ -624,7 +624,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:207
+#: src/components/swap/SwapModal.vue:202
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -654,7 +654,7 @@ msgstr ""
 msgid "It's safe to close your wallet now"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:23
+#: src/components/swap/SwapNotification.vue:30
 msgid "It's safe to close your Wallet now"
 msgstr ""
 
@@ -797,7 +797,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:229
+#: src/components/swap/SwapModal.vue:227
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -819,7 +819,7 @@ msgstr ""
 msgid "Performing Swap"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:13
+#: src/components/swap/SwapNotification.vue:17
 msgid "Performing swap {progress}/5"
 msgstr ""
 
@@ -870,7 +870,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:266
+#: src/components/swap/SwapModal.vue:269
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -901,6 +901,11 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:467
 #: src/components/modals/SendModal.vue:494
 msgid "Retry"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:229
+#: src/components/swap/SwapModal.vue:273
+msgid "Retrying..."
 msgstr ""
 
 #: src/components/AccountMenu.vue:34
@@ -964,7 +969,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:227
+#: src/components/swap/SwapModal.vue:225
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1040,10 +1045,6 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:191
-msgid "Sign"
-msgstr ""
-
 #: src/components/swap/SwapModal.vue:187
 msgid "Signing swap..."
 msgstr ""
@@ -1090,7 +1091,7 @@ msgstr ""
 msgid "Swap Complete"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:268
+#: src/components/swap/SwapModal.vue:271
 msgid "Swap complete!"
 msgstr ""
 
@@ -1111,11 +1112,11 @@ msgstr ""
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:194
+#: src/components/swap/SwapModal.vue:189
 msgid "Swap signed!"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:16
+#: src/components/swap/SwapNotification.vue:20
 msgid "Swap successful!"
 msgstr ""
 
@@ -1172,6 +1173,10 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
+msgstr ""
+
+#: src/components/swap/SwapNotification.vue:14
+msgid "There's a problem"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:61

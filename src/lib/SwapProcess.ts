@@ -119,13 +119,28 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
     let fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
     if (swap.value.from.asset === SwapAsset.NIM) {
-        // TODO: Catch error
-        fundingTx = await sendNimTx(swap.value.fundingSerializedTx);
+        try {
+            fundingTx = await sendNimTx(swap.value.fundingSerializedTx);
+            if (fundingTx.state === NimTransactionState.NEW) throw new Error('Could not send transaction');
+        } catch (error) {
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                fundingError: error.message as string,
+            });
+            throw error;
+        }
     }
 
     if (swap.value.from.asset === SwapAsset.BTC) {
-        // TODO: Catch error
-        fundingTx = await sendBtcTx(swap.value.fundingSerializedTx);
+        try {
+            fundingTx = await sendBtcTx(swap.value.fundingSerializedTx);
+        } catch (error) {
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                fundingError: error.message as string,
+            });
+            throw error;
+        }
 
         useSwapsStore().addFundingData(swap.value.hash, {
             asset: SwapAsset.BTC,
@@ -138,6 +153,7 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
         ...swap.value,
         state: SwapState.AWAIT_SECRET,
         fundingTx: fundingTx!,
+        fundingError: undefined,
     });
 }
 
@@ -217,7 +233,7 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
     if (swap.value.to.asset === SwapAsset.BTC) {
         // Place secret into BTC HTLC redeem transaction
 
-        // const rawTx = BitcoinJS.Transaction.fromHex(signedTransactions.btc.serializedTx);
+        // const rawTx = BitcoinJS.Transaction.fromHex(swap.value.settlementSerializedTx);
         // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret.value, 'hex');
         // const serializedTx = rawTx.toHex();
         const serializedTx = swap.value.settlementSerializedTx.replace(
@@ -226,8 +242,15 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
             `${swap.value.secret}01`,
         );
 
-        // TODO: Catch error
-        settlementTx = await sendBtcTx(serializedTx);
+        try {
+            settlementTx = await sendBtcTx(serializedTx);
+        } catch (error) {
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                settlementError: error.message as string,
+            });
+            throw error;
+        }
     }
 
     if (swap.value.to.asset === SwapAsset.NIM) {
@@ -240,13 +263,22 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
             `${swap.value.hash!}${swap.value.secret}`,
         );
 
-        // TODO: Catch error
-        settlementTx = await sendNimTx(serializedTx);
+        try {
+            settlementTx = await sendNimTx(serializedTx);
+            if (settlementTx.state === NimTransactionState.NEW) throw new Error('Failed to send transaction');
+        } catch (error) {
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                settlementError: error.message as string,
+            });
+            throw error;
+        }
     }
 
     useSwapsStore().setActiveSwap({
         ...swap.value,
         state: SwapState.COMPLETE,
         settlementTx: settlementTx!,
+        settlementError: undefined,
     });
 }

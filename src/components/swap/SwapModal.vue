@@ -80,12 +80,9 @@
                         : direction === SwapDirection.NIM_TO_BTC ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="Math.abs(wantNim || capDecimals(getNim, SwapAsset.NIM))"
+                            :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
                             @input="onInput(SwapAsset.NIM, $event)"
-                            :maxFontSize="2.5" :decimals="5">
-                            <span v-if="!wantNim && !getNim" slot="prefix">±</span>
-                            <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">-</span>
-                            <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">+</span>
+                            :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
                         </AmountInput>
                         <div class="flex-row">
                             <FiatConvertedAmount
@@ -107,12 +104,9 @@
                         : direction === SwapDirection.BTC_TO_NIM ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
-                            :value="Math.abs(wantBtc || capDecimals(getBtc, SwapAsset.BTC))"
+                            :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
                             @input="onInput(SwapAsset.BTC, $event)"
-                            :maxFontSize="2.5" :decimals="btcUnit.decimals">
-                            <span v-if="!wantBtc && !getBtc" slot="prefix">±</span>
-                            <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">-</span>
-                            <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">+</span>
+                            :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
                             <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                         </AmountInput>
                         <div class="flex-row">

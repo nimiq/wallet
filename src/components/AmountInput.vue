@@ -39,6 +39,10 @@ export default defineComponent({
             type: Number,
             default: 5,
         },
+        preserveSign: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props, context) {
         const liveValue = ref('');
@@ -76,11 +80,17 @@ export default defineComponent({
         watch(liveValue, updateWidth);
 
         function formatValue(val: string) {
-            const regExp = new RegExp(`(\\d*)(\\.(\\d{0,${props.decimals}}))?`, 'g'); // Backslashes are escaped
+            const regExp = new RegExp(`([-+])?(\\d*)(\\.\\d{0,${props.decimals}})?`, 'g'); // Backslashes are escaped
             const regExpResult = regExp.exec(val)!;
-            if (regExpResult[1] || regExpResult[2]) {
-                // Note: regExpResult[2] contains the decimal point, if there was any
-                return `${regExpResult[1] ? regExpResult[1] : '0'}${regExpResult[2] ? regExpResult[2] : ''}`;
+            if (regExpResult[1] || regExpResult[2] || regExpResult[3]) {
+                // regExpResult[1] contains the sign
+                // regExpResult[2] contains the whole integers
+                // regExpResult[3] contains the decimal point and decimals
+                return [
+                    props.preserveSign ? (regExpResult[1] || '+') : '',
+                    regExpResult[2] || (regExpResult[3] ? '0' : ''),
+                    regExpResult[3] || '',
+                ].join('');
             }
             return '';
         }

@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened" :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :showOverlay="!!swap || addressListOverlayOpened || swapAnimationOverlayOpened" :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <div class="page flex-column">
             <PageHeader>
@@ -74,6 +74,9 @@
                                 {{ $t('They will be increased gradually.') }}
                             </p>
                         </Tooltip>
+                        <button class="pill flex-row nq-button-s" @click="swapAnimationOverlayOpened = true">
+                            svg test
+                        </button>
                     </div>
                 </div>
             </PageHeader>
@@ -279,7 +282,13 @@
             </button>
         </div>
 
-        <div v-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
+        <div v-else-if="swapAnimationOverlayOpened === true" slot="overlay" class="page flex-column nq-blue-bg">
+            <PageBody style="padding: 1rem;">
+                <SwapAnimation/>
+            </PageBody>
+        </div>
+
+        <div v-else-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
             <PageBody>
                 <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
@@ -356,6 +365,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
+import SwapAnimation from './SwapAnimation.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1228,6 +1238,9 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        // TEMP
+        const swapAnimationOverlayOpened = ref(false);
+
         return {
             onClose,
             satsPerNim,
@@ -1270,6 +1283,7 @@ export default defineComponent({
             addressListOverlayOpened,
             onAddressSelected,
             isMainnet,
+            swapAnimationOverlayOpened,
         };
     },
     components: {
@@ -1295,6 +1309,7 @@ export default defineComponent({
         MinimizeIcon,
         SwapFeesTooltip,
         AddressList,
+        SwapAnimation,
     },
 });
 </script>

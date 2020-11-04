@@ -189,7 +189,6 @@
         </div>
     </Modal>
 </template>
-}
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, Ref } from '@vue/composition-api';

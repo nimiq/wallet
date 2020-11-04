@@ -25,7 +25,7 @@
                 :ref="addressInfo.active ? '$activeBar' : null"
                 :class="[{ active: addressInfo.active }, `nq-${addressInfo.barColor}`]"
                 :style="{ width: `${getNimiqBarWidth(addressInfo)}%` }"
-                @click="selectAddress(addressInfo.address)"
+                @click="addressInfo.active ? onActiveBarClick('NIM', $event) : selectAddress(addressInfo.address)"
             >
                 <div class="change"
                     ref="$nimChangeBar"
@@ -47,6 +47,7 @@
             <div class="bar bitcoin active"
                 ref="$bitcoinBar"
                 :style="{ width: `${bitcoinBarWidth}%` }"
+                @click="onActiveBarClick('BTC', $event)"
             >
                 <div class="change"
                     ref="$btcChangeBar"
@@ -238,29 +239,20 @@ export default defineComponent({
             });
         }
 
-        function render(): void {
-            animationFrameHandle = requestAnimationFrame(render);
-
-            /*
-                There is a lot of issues when updating those in a watcher, or turning them into computed.
-                So we're updating them in the render loop until a more optimized way to do it is found.
-            */
-            updateConnectingLinesWidth();
-            updateEquiPoint();
-
-            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value
+        function updateSwapBalanceBar(cursorPosition?: number) {
+            if ((!isGrabbing && !cursorPosition) || !$activeBar.value || !$bitcoinBar.value || !activeBar.value
                 || !$el.value || !$separator.value) {
                 return undefined;
             }
 
-            const cursorPositionDiff = currentCursorPosition - initialCursorPosition;
-            initialCursorPosition = currentCursorPosition;
+            const cursorPositionDiff = (cursorPosition || currentCursorPosition) - initialCursorPosition;
+            initialCursorPosition = (cursorPosition || currentCursorPosition);
 
             if (cursorPositionDiff === 0) return undefined;
 
             const movingDirection = cursorPositionDiff > 0 ? MovingDirection.RIGHT : MovingDirection.LEFT;
             const separatorPositionX = $separator.value.getBoundingClientRect().left;
-            const cursorSeparatorPositionDiff = currentCursorPosition - separatorPositionX;
+            const cursorSeparatorPositionDiff = (cursorPosition || currentCursorPosition) - separatorPositionX;
 
             if (cursorSeparatorPositionDiff < 0 && movingDirection === MovingDirection.RIGHT) return undefined;
             if (cursorSeparatorPositionDiff > 0 && movingDirection === MovingDirection.LEFT) return undefined;
@@ -297,6 +289,19 @@ export default defineComponent({
                 return emit(SwapAsset.NIM, lunaAmount);
             }
             return emit(SwapAsset.BTC, satoshiAmount);
+        }
+
+        function render(): void {
+            animationFrameHandle = requestAnimationFrame(render);
+
+            updateSwapBalanceBar();
+
+            /*
+                There is a lot of issues when updating those in a watcher, or turning them into computed.
+                So we're updating them in the render loop until a more optimized way to do it is found.
+            */
+            updateConnectingLinesWidth();
+            updateEquiPoint();
         }
 
         onMounted(() => {
@@ -411,9 +416,35 @@ export default defineComponent({
                 .map((addressInfo) => addressInfo.address),
         );
 
+        /* Move the separator to the cursor position or limit on click on a btc or nim active bar */
+        let activeBarClickTimeoutId = 0;
+        function onActiveBarClick(asset: SwapAsset, event: MouseEvent) {
+            if (!$separator.value || !event.target || !Object.values(SwapAsset).includes(asset)) {
+                return;
+            }
+
+            clearTimeout(activeBarClickTimeoutId);
+            animatingBars.value = true;
+
+            if (asset === SwapAsset.NIM) {
+                const posX = $separator.value.getBoundingClientRect().left
+                    - ((event.target as HTMLElement).offsetWidth - event.offsetX);
+
+                updateSwapBalanceBar(posX);
+            } else if (asset === SwapAsset.BTC) {
+                updateSwapBalanceBar(event.pageX);
+            }
+
+            activeBarClickTimeoutId = window.setTimeout(() => {
+                animatingBars.value = false;
+            }, 200);
+        }
+
         return {
+            /* store methods */
             selectAddress,
 
+            /* HTML elements */
             $el,
             $activeBar,
             $bitcoinBar,
@@ -422,10 +453,12 @@ export default defineComponent({
             $separator,
             $equiPoint,
 
-            nimDistributionData,
+            /* btc & nim distribution data */
             activeAddressInfo,
+            nimDistributionData,
             btcDistributionData,
 
+            /* Base slider (bars / separator) behavior */
             onMouseDown,
             onMouseUp,
             onMouseMove,
@@ -434,19 +467,26 @@ export default defineComponent({
             bitcoinBarWidth,
             bitcoinChangeBarWidth,
 
+            /* Connecting lines */
             nimiqConnectingLineWidth,
             bitcoinConnectingLineWidth,
 
+            /* Scale / distribution percents */
             nimiqTotalNewFiatBalance,
             distributionPercents,
 
+            /* Equilibrium point */
             equiPointPositionX,
             equiPointVisible,
             animatedReset,
             animatingBars,
 
+            /* Address selector / identicon stack */
             onActiveAddressClick,
             backgroundAddresses,
+
+            /* Move separator/handle on btc or nim active bar click */
+            onActiveBarClick,
         };
     },
     components: {

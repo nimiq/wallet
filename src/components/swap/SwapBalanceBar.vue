@@ -248,7 +248,8 @@ export default defineComponent({
             updateConnectingLinesWidth();
             updateEquiPoint();
 
-            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value || !$el.value) {
+            if (!isGrabbing || !$activeBar.value || !$bitcoinBar.value || !activeBar.value
+                || !$el.value || !$separator.value) {
                 return undefined;
             }
 
@@ -258,8 +259,14 @@ export default defineComponent({
             if (cursorPositionDiff === 0) return undefined;
 
             const movingDirection = cursorPositionDiff > 0 ? MovingDirection.RIGHT : MovingDirection.LEFT;
-            const fiatAmount = (Math.abs(cursorPositionDiff) / $el.value.clientWidth) * totalNewFiatBalance.value;
+            const separatorPositionX = $separator.value.getBoundingClientRect().left;
+            const cursorSeparatorPositionDiff = currentCursorPosition - separatorPositionX;
 
+            if (cursorSeparatorPositionDiff < 0 && movingDirection === MovingDirection.RIGHT) return undefined;
+            if (cursorSeparatorPositionDiff > 0 && movingDirection === MovingDirection.LEFT) return undefined;
+
+            const fiatAmount = (Math.abs(cursorSeparatorPositionDiff) / $el.value.clientWidth)
+                * totalNewFiatBalance.value;
             const lunaAmount = activeBar.value.balanceChange
                 + (((fiatAmount / nimExchangeRate.value) * 1e5) * movingDirection);
             const satoshiAmount = btcDistributionData.value.balanceChange

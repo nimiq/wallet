@@ -1128,7 +1128,7 @@ msgstr ""
 msgid "Swap from {address}"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:7
+#: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr ""
 
@@ -1179,7 +1179,7 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:19
+#: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr ""
 
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:17
+#: src/components/swap/SwapModal.vue:18
 msgid "This rate includes the swap fee."
 msgstr ""
 
@@ -1302,7 +1302,7 @@ msgstr ""
 msgid "Use labels instead of contacts to easily identify transactions in your history."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:10
+#: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 

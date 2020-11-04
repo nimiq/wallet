@@ -1,6 +1,7 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened || swapAnimationOverlayOpened" :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :showOverlay="!!swap || addressListOverlayOpened || swapAnimationOverlayOpened"
+        :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <div class="page flex-column">
             <PageHeader>
@@ -282,8 +283,8 @@
             </button>
         </div>
 
-        <div v-else-if="swapAnimationOverlayOpened === true" slot="overlay" class="page flex-column nq-blue-bg">
-            <PageBody style="padding: 1rem;">
+        <div v-else-if="swapAnimationOverlayOpened === true" slot="overlay" class="page flex-column">
+            <PageBody style="padding: 1rem;" class="flex-column">
                 <SwapAnimation/>
             </PageBody>
         </div>

@@ -1,9 +1,11 @@
 <template>
     <!-- eslint-disable max-len -->
-    <div class="swap-animation">
-        <div class="nim-left">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96">
-                <g data-name="NIMIQ LINES" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+    <div class="swap-animation flex-column nq-blue-bg">
+        <div class="header"></div>
+
+        <div class="animation flex-row right-to-left" :class="animationClassName">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim-left nq-green">
+                <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                     <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
                     <path opacity=".25" d="M95.71 67.27l8.88-15.52a7.69 7.69 0 000-7.63l-7.41-13a1.69 1.69 0 011.47-2.52H100a3.3 3.3 0 012.86 1.65l7.69 13.29a8.66 8.66 0 010 8.59l-7 12.39a1.87 1.87 0 001.63 2.8h13.1a4.31 4.31 0 003.75-2.18c1.76-3.06 5-8.76 6.47-11.49a2.49 2.49 0 012.16-1.31c.53 0 1.19 0 2-.13a1.65 1.65 0 011.62 2.42c-.52 1-.94 1.69-.94 1.69L124 72.76l-1.57 2.76a6.36 6.36 0 01-5.54 3.23H98.44A5.16 5.16 0 0094 81.37l-4.79 8.51c-2.53 4.85-5.56 5.37-10 5.37H4A3.25 3.25 0 01.75 92V62.63" />
                     <path opacity=".25" d="M143.52 77.58c-.15-.29-.28-.59-.41-.89a17.28 17.28 0 01-.17-13 1.5 1.5 0 00-1.42-2h-3.28a2.77 2.77 0 00-2.41 1.4l-7.22 12.64a2 2 0 001.78 3.07h5.37a2.13 2.13 0 011.85 3.19l-3.33 5.83a4 4 0 01-3.44 2l-29.16.11" />
@@ -12,25 +14,21 @@
                     <path opacity=".25" d="M25.57 23l-12 20.9a8.3 8.3 0 000 8.28l4.22 7.33a4.33 4.33 0 003.73 2.17h1.37a4.32 4.32 0 013.73 2.18l9.73 17a6.71 6.71 0 005.84 3.4h33.67a6.72 6.72 0 005.82-3.4L98.53 51.4a6.85 6.85 0 000-6.8L81.7 15.15a6.74 6.74 0 00-5.84-3.4H25.59" />
                     <path opacity=".25" d="M22.06 56l-2.58-4.6a6.87 6.87 0 010-6.8l14-24.53a1.83 1.83 0 00-1.59-2.74h-7.83a2.59 2.59 0 00-2.25 1.31L7.3 43.94a8 8 0 000 7.93L14.66 65a4.51 4.51 0 003.93 2.3h1a4.49 4.49 0 013.9 2.26l9.59 16.74A2.38 2.38 0 0131 89.84l-6.32-.07" />
                     <path opacity=".25" d="M92.49 45.12l-14.27-25a5.71 5.71 0 00-5-2.88H44.73a5.72 5.72 0 00-4.94 2.88l-14.28 25a5.85 5.85 0 000 5.76l14.27 25a5.71 5.71 0 004.95 2.88h28.54a5.72 5.72 0 004.94-2.88l14.27-25a5.78 5.78 0 00.01-5.76z" />
-                    <circle opacity=".25" stroke="red" cx="15.02" cy="81" r="6" />
                     <circle opacity=".25" cx="159" cy="70" r="10.75" />
+                    <!-- <circle class="info-icon" opacity=".25" stroke="red" cx="15.02" cy="81" r="6" /> -->
                 </g>
-                <path data-name="NIMIQ HEXAGON" fill="#21bca5" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
-                <path data-name="NIMIQ BACKGROUND" fill="#21bca5" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58.09-4.58-1.89v-3.54c0-3.42-4.31-5.55-7.6-4.63a20 20 0 111.23-38.13c2.75 1 6.37-.82 6.37-3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3-3 4.58-1.89A18 18 0 10159 52zm-67.17-1.49l-14.27 25A5 5 0 0173.27 78H44.73a5 5 0 01-4.3-2.5l-14.27-25a5.1 5.1 0 010-5l14.28-25a5 5 0 014.29-2.5h28.54a5 5 0 014.3 2.5l14.27 25a5.08 5.08 0 01-.01 5.01zM159 80a10 10 0 1110-10 10 10 0 01-10 10z" />
+                <path class="identicon" fill="#21bca5" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                <path class="fill" fill="#21bca5" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58.09-4.58-1.89v-3.54c0-3.42-4.31-5.55-7.6-4.63a20 20 0 111.23-38.13c2.75 1 6.37-.82 6.37-3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3-3 4.58-1.89A18 18 0 10159 52zm-67.17-1.49l-14.27 25A5 5 0 0173.27 78H44.73a5 5 0 01-4.3-2.5l-14.27-25a5.1 5.1 0 010-5l14.28-25a5 5 0 014.29-2.5h28.54a5 5 0 014.3 2.5l14.27 25a5.08 5.08 0 01-.01 5.01zM159 80a10 10 0 1110-10 10 10 0 01-10 10z" />
             </svg>
-        </div>
-        <div class="atomic-swap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" class="spinner">
                 <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5">
                     <circle cx="26" cy="-.1" r="7.75" stroke-dasharray="3.5 3.5"/>
                     <circle cx="26" cy="52.1" r="7.75" stroke-dasharray="3.5 3.5"/>
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-        </div>
-        <div class="btc-right">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96">
-                <g data-name="BITCOIN LINES" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="btc-right">
+                <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                     <path opacity=".25" d="M88.17 40.56a30.74 30.74 0 1122.39 37.27 30.74 30.74 0 01-22.39-37.27zM46.37 11.71H78a4.12 4.12 0 002.9-1.21 51.15 51.15 0 014.35-3.85 2.72 2.72 0 011.69-.58H87A2.73 2.73 0 0188.66 11a48.25 48.25 0 00-5 4.53 5.6 5.6 0 01-4.09 1.75h-27.5a3.33 3.33 0 00-3.08 2 75.89 75.89 0 00-3.51 10.65h0a75.31 75.31 0 00-1.89 11 2.77 2.77 0 002.8 3h0a2.73 2.73 0 002.67-2.46 70.51 70.51 0 011.76-10.22h0v0a3.26 3.26 0 013.18-2.5h11.16a2.64 2.64 0 012.53 3.41q-.48 1.51-.87 3.09h0a52.85 52.85 0 00-1.45 16.41" />
                     <path opacity=".25" d="M33.48 18.42c.15.29.28.59.41.89a17.28 17.28 0 01.17 13 1.5 1.5 0 001.42 2H37a2.32 2.32 0 002.27-1.89q.39-1.93.87-3.87h0a65.6 65.6 0 012.7-8.55A2 2 0 0041 17.25h0a2 2 0 01-1.85-2.82q1.29-3.18 2.85-6.21a4 4 0 013.54-2.11h31.85" />
                     <path opacity=".25" d="M53.39 23.19h21.42a1.72 1.72 0 011.51 2.54 47.28 47.28 0 00-4.16 10.84h0a47 47 0 002 29.13 2.78 2.78 0 002.57 1.75h0a2.75 2.75 0 002.54-3.79 41.52 41.52 0 01-1.78-25.76h0a42.58 42.58 0 018.91-17.18 41.81 41.81 0 0129-14.38 2.8 2.8 0 002.6-2.79h0a2.8 2.8 0 00-2.8-2.8H37A3.25 3.25 0 0033.75 4v5.43c0 1.94-3 4.5-6.23 2.19A16.65 16.65 0 0018 8.75a17.25 17.25 0 1010 31.32 3.48 3.48 0 012-.61c1.8 0 3.74 1.19 3.74 3.11v3.54c0 2.45 2.71 4.09 5.23 4.09a5.07 5.07 0 001.43-.2 20.7 20.7 0 0111.7.16 1.81 1.81 0 002.15-1.8 63.21 63.21 0 011-11.73A2.77 2.77 0 0158 34.35h.5c1.72 0 2.5 1.56 2.19 3.26a58.89 58.89 0 00-.78 14.76 6.29 6.29 0 001.4 3.63 15.52 15.52 0 012.6 3.5 20.75 20.75 0 01-24.79 30.08 4.69 4.69 0 00-3 .06A3.44 3.44 0 0034 91.4a2.67 2.67 0 002.39 3.85h56.35A3.27 3.27 0 0096 91.81v-.23a3.31 3.31 0 00-1.69-2.69A47.07 47.07 0 0183.23 80a4 4 0 00-2.94-1.33h-2.07A1.55 1.55 0 0077 81.18a52.56 52.56 0 005.77 6.08 1.42 1.42 0 01-.93 2.49H67.27A1.66 1.66 0 0166 87a26.08 26.08 0 005.67-11.5 3.13 3.13 0 013.08-2.46h9.86" />
@@ -38,71 +36,336 @@
                     <path opacity=".25" d="M135.7 16.37c-9.41-5-17-4.62-17-4.62-20.17 0-37 16.15-37 36.32a36.14 36.14 0 008 22.63 5.32 5.32 0 011 4.79h0a5.26 5.26 0 001.88 5.65 42 42 0 0013.79 7A41.71 41.71 0 00118 89.75h34.3" />
                     <path opacity=".25" d="M138.68 84.25A41.47 41.47 0 00154 69.1a3.75 3.75 0 013.23-1.83h1.33a3.81 3.81 0 003.57-2.45 47.35 47.35 0 00-5.76-44.38 7.38 7.38 0 00-6-3.11H145a2.65 2.65 0 00-1.83 4.56 36.17 36.17 0 0111 29.17 35.61 35.61 0 01-.77 5" />
                     <path opacity=".25" d="M169 68.82a2.8 2.8 0 01-1.24-3.37 52.7 52.7 0 00-9.49-51.56 6.2 6.2 0 00-4.73-2.18h-12a10.93 10.93 0 01-4.88-1.2A39.73 39.73 0 00126.15 7a3.07 3.07 0 01-2.49-3v-.06a3.17 3.17 0 013.17-3.18H173A3.25 3.25 0 01176.25 4v44A59 59 0 01173 67.33a2.82 2.82 0 01-4 1.49zM102.69 95.25h70.64a2.9 2.9 0 002.9-2.9V73" />
-                    <circle opacity=".25" cx="161.99" cy="81" r="6" stroke="red" />
                     <circle opacity=".25" cx="18" cy="26" r="10.75" />
+                    <!-- <circle class="info-icon" opacity=".25" cx="161.99" cy="81" r="6" stroke="red" /> -->
                 </g>
-                <g data-name="BITCOIN CIRCLE" fill="none" opacity="1">
+                <g class="bitcoin-icon" fill="none" opacity="1">
                     <path fill="#f7931a" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                     <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
                 </g>
-                <path data-name="BITCOIN BACKGROUND" fill="#f7931a" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
+                <path class="fill" fill="#f7931a" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
             </svg>
+        </div>
+
+        <div class="buttons">
+            <button class="nq-button-s inverse" @click="state = SwapState.SIGN_SWAP">Step 1</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.AWAIT_INCOMING">Step 2</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.CREATE_OUTGOING">Step 3</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.AWAIT_SECRET">Step 4</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.SETTLE_INCOMING">Step 5</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.COMPLETE">Done</button>
+            <button class="nq-button-s inverse" @click="state = SwapState.EXPIRED">Expired</button>
         </div>
     </div>
     <!-- eslint-enable max-len -->
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
+import { SwapState } from '../../stores/Swaps';
 
 export default defineComponent({
+    setup() {
+        const state = ref(SwapState.SIGN_SWAP);
 
+        const animationClassName = computed(() => {
+            switch (state.value) {
+                case SwapState.SIGN_SWAP: return 'sign-swap';
+                case SwapState.AWAIT_INCOMING: return 'await-incoming';
+                case SwapState.CREATE_OUTGOING: return 'create-outgoing';
+                case SwapState.AWAIT_SECRET: return 'await-secret';
+                case SwapState.SETTLE_INCOMING: return 'settle-incoming';
+                case SwapState.COMPLETE: return 'complete';
+                default: return '';
+            }
+        });
+
+        return {
+            SwapState,
+            state,
+            animationClassName,
+        };
+    },
 });
 </script>
 
 <style lang="scss" scoped>
-
 .swap-animation {
+    height: 100%;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.animation {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
-    & > div {
-        flex-grow: 1;
-    }
+    transition: transform 1s var(--nimiq-ease);
 
-    .atomic-swap {
-        height: 6.75rem;
-        width: 6.75rem;
+    .spinner {
+        height: 6.5rem;
+        width: 6.5rem;
 
-        display: flex;
-        justify-content: center;
-        align-content: center;
-
-        svg {
-            overflow: visible;
-        }
+        overflow: visible;
     }
 
     .nim-left,
     .btc-right {
         height: 12rem;
-    }
-
-    .nim-left {
-
+        transition: transform 1s var(--nimiq-ease);
+        z-index: 1;
     }
 
     .btc-right {
-        display: flex;
-        justify-content: flex-end;
+        color: #f7931a;
     }
 
     svg {
         height: 100%;
         width: auto;
     }
+
+    .fill {
+        opacity: 0;
+    }
+
+    &.sign-swap {
+        transform: scale(1.94);
+
+        .spinner {
+            animation: spinner-rotate 3s linear infinite;
+        }
+
+        .nim-left {
+            transform: translate3d(-15rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(+15rem, 0, 0);
+        }
+    }
+
+    &.await-incoming {
+        .spinner {
+            animation: spinner-rotate 3s linear infinite;
+        }
+
+        .nim-left {
+            transform: translate3d(-2.5rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(+2.5rem, 0, 0);
+        }
+
+        /* When swapping right-to-left, the left currency is funded first */
+        &.right-to-left .nim-left .lines {
+            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
+            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
+            > *:nth-child(3) { animation: pulsate 2s infinite 0.4s; }
+            > *:nth-child(4) { animation: pulsate 2s infinite 0.6s; }
+            > *:nth-child(5) { animation: pulsate 2s infinite 0.8s; }
+            > *:nth-child(6) { animation: pulsate 2s infinite 1s; }
+            > *:nth-child(7) { animation: pulsate 2s infinite 1.2s; }
+            > *:nth-child(8) { animation: pulsate 2s infinite 1.4s; }
+            > *:nth-child(9) { animation: pulsate 2s infinite 1.6s; }
+        }
+
+        /* When swapping left-to-right, the right currency is funded first */
+        &.left-to-right .btc-right .lines {
+            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
+            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
+            > *:nth-child(8) { animation: pulsate 2s infinite 0.4s; }
+            > *:nth-child(3) { animation: pulsate 2s infinite 0.6s; }
+            > *:nth-child(4) { animation: pulsate 2s infinite 0.8s; }
+            > *:nth-child(5) { animation: pulsate 2s infinite 1s; }
+            > *:nth-child(6) { animation: pulsate 2s infinite 1.2s; }
+            > *:nth-child(7) { animation: pulsate 2s infinite 1.4s; }
+        }
+    }
+
+    &.create-outgoing {
+        .spinner {
+            animation: spinner-rotate 3s linear infinite;
+        }
+
+        .nim-left {
+            transform: translate3d(-2.5rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(+2.5rem, 0, 0);
+        }
+
+        /* When swapping right-to-left, the left currency is funded first */
+        &.right-to-left .nim-left .lines {
+            > *:nth-child(1) { animation: strokeColorChange 1s 1 0s; }
+            > *:nth-child(2) { animation: strokeColorChange 1s 1 0.2s; }
+            > *:nth-child(3) { animation: strokeColorChange 1s 1 0.4s; }
+            > *:nth-child(4) { animation: strokeColorChange 1s 1 0.6s; }
+            > *:nth-child(5) { animation: strokeColorChange 1s 1 0.8s; }
+            > *:nth-child(6) { animation: strokeColorChange 1s 1 1s; }
+            > *:nth-child(7) { animation: strokeColorChange 1s 1 1.2s; }
+            > *:nth-child(8) { animation: strokeColorChange 1s 1 1.4s; }
+            > *:nth-child(9) { animation: strokeColorChange 1s 1 1.6s; }
+            > * { animation-fill-mode: forwards !important; }
+        }
+
+        &.right-to-left .nim-left .fill {
+            transition: opacity 1s var(--nimiq-ease) 1.8s;
+            opacity: 1;
+        }
+
+        /* When swapping left-to-right, the right currency is funded first */
+        &.left-to-right .btc-right .lines {
+            > *:nth-child(1) { animation: strokeColorChange 1s 0s; }
+            > *:nth-child(2) { animation: strokeColorChange 1s 0.2s; }
+            > *:nth-child(8) { animation: strokeColorChange 1s 0.4s; }
+            > *:nth-child(3) { animation: strokeColorChange 1s 0.6s; }
+            > *:nth-child(4) { animation: strokeColorChange 1s 0.8s; }
+            > *:nth-child(5) { animation: strokeColorChange 1s 1s; }
+            > *:nth-child(6) { animation: strokeColorChange 1s 1.2s; }
+            > *:nth-child(7) { animation: strokeColorChange 1s 1.4s; }
+            > * { animation-fill-mode: forwards !important; }
+        }
+
+        &.left-to-right .btc-right .fill {
+            transition: opacity 1s var(--nimiq-ease) 1.8s;
+            opacity: 1;
+        }
+
+        &.right-to-left .btc-right .lines {
+            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
+            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
+            > *:nth-child(3) { animation: pulsate 2s infinite 0.4s; }
+            > *:nth-child(4) { animation: pulsate 2s infinite 0.6s; }
+            > *:nth-child(5) { animation: pulsate 2s infinite 0.8s; }
+            > *:nth-child(6) { animation: pulsate 2s infinite 1s; }
+            > *:nth-child(7) { animation: pulsate 2s infinite 1.2s; }
+            > *:nth-child(8) { animation: pulsate 2s infinite 1.4s; }
+        }
+
+        &.left-to-right .nim-left .lines {
+            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
+            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
+            > *:nth-child(8) { animation: pulsate 2s infinite 0.4s; }
+            > *:nth-child(3) { animation: pulsate 2s infinite 0.6s; }
+            > *:nth-child(4) { animation: pulsate 2s infinite 0.8s; }
+            > *:nth-child(5) { animation: pulsate 2s infinite 1s; }
+            > *:nth-child(6) { animation: pulsate 2s infinite 1.2s; }
+            > *:nth-child(7) { animation: pulsate 2s infinite 1.4s; }
+            > *:nth-child(9) { animation: pulsate 2s infinite 1.6s; }
+        }
+    }
+
+    &.await-secret {
+        .spinner {
+            animation: spinner-rotate 3s linear infinite;
+        }
+
+        .nim-left {
+            transform: translate3d(-2.5rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(+2.5rem, 0, 0);
+        }
+
+        &.right-to-left .btc-right .lines {
+            > *:nth-child(1) { animation: strokeColorChange 1s 0s; }
+            > *:nth-child(2) { animation: strokeColorChange 1s 0.2s; }
+            > *:nth-child(8) { animation: strokeColorChange 1s 0.4s; }
+            > *:nth-child(3) { animation: strokeColorChange 1s 0.6s; }
+            > *:nth-child(4) { animation: strokeColorChange 1s 0.8s; }
+            > *:nth-child(5) { animation: strokeColorChange 1s 1s; }
+            > *:nth-child(6) { animation: strokeColorChange 1s 1.2s; }
+            > *:nth-child(7) { animation: strokeColorChange 1s 1.4s; }
+            > * { animation-fill-mode: forwards !important; }
+        }
+
+        &.left-to-right .nim-left .lines {
+            > *:nth-child(1) { animation: strokeColorChange 1s 1 0s; }
+            > *:nth-child(2) { animation: strokeColorChange 1s 1 0.2s; }
+            > *:nth-child(3) { animation: strokeColorChange 1s 1 0.4s; }
+            > *:nth-child(4) { animation: strokeColorChange 1s 1 0.6s; }
+            > *:nth-child(5) { animation: strokeColorChange 1s 1 0.8s; }
+            > *:nth-child(6) { animation: strokeColorChange 1s 1 1s; }
+            > *:nth-child(7) { animation: strokeColorChange 1s 1 1.2s; }
+            > *:nth-child(8) { animation: strokeColorChange 1s 1 1.4s; }
+            > *:nth-child(9) { animation: strokeColorChange 1s 1 1.6s; }
+            > * { animation-fill-mode: forwards !important; }
+        }
+
+        .fill {
+            transition: opacity 1s var(--nimiq-ease) 1.8s;
+            opacity: 1;
+        }
+    }
+
+    &.settle-incoming {
+        transition: transform 1.2s var(--nimiq-ease) 1s;
+    }
+
+    &.settle-incoming,
+    &.complete {
+        transform: rotate(180deg);
+
+        .spinner {
+            transform: rotate(-32deg);
+        }
+
+        .nim-left {
+            transform: translate3d(+7.25rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(-7.25rem, 0, 0);
+        }
+
+        .fill {
+            opacity: 1;
+        }
+
+        // .identicon,
+        // .bitcoin-icon {
+        //     transform: rotate(-180deg);
+        //     transition: transform 1.5s var(--nimiq-ease) 1s;
+        // }
+    }
+
+    &.complete {
+        transform: rotate(180deg) scale(1.94);
+
+        .spinner {
+            opacity: 0;
+            transition: opacity 1s var(--nimiq-ease);
+        }
+
+        .nim-left {
+            transform: translate3d(-15rem, 0, 0);
+        }
+
+        .btc-right {
+            transform: translate3d(+15rem, 0, 0);
+        }
+    }
 }
 
+@keyframes spinner-rotate {
+    0%   { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulsate {
+    0% { opacity: .25; }
+    50% { opacity: .5; }
+    100% { opacity: .25; }
+}
+
+@keyframes strokeColorChange {
+    0% { stroke: #fff; }
+    100% { stroke: currentColor; opacity: 1; }
+}
 </style>

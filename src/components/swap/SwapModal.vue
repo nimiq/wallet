@@ -82,7 +82,7 @@
                         <AmountInput
                             :value="Math.abs(wantNim || capDecimals(getNim, SwapAsset.NIM))"
                             @input="onInput(SwapAsset.NIM, $event)"
-                            :maxFontSize="2.5" :vanishing="true" :decimals="5">
+                            :maxFontSize="2.5" :decimals="5">
                             <span v-if="!wantNim && !getNim" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">+</span>
@@ -109,7 +109,7 @@
                         <AmountInput
                             :value="Math.abs(wantBtc || capDecimals(getBtc, SwapAsset.BTC))"
                             @input="onInput(SwapAsset.BTC, $event)"
-                            :maxFontSize="2.5" :vanishing="true" :decimals="btcUnit.decimals">
+                            :maxFontSize="2.5" :decimals="btcUnit.decimals">
                             <span v-if="!wantBtc && !getBtc" slot="prefix">±</span>
                             <span v-else-if="direction === SwapDirection.BTC_TO_NIM" slot="prefix">-</span>
                             <span v-else-if="direction === SwapDirection.NIM_TO_BTC" slot="prefix">+</span>

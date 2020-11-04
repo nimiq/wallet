@@ -710,7 +710,7 @@ export default defineComponent({
         line-height: 1rem;
         width: 20%;
         font-weight: bold;
-        font-size: var(--small-size);
+        font-size: 1.625rem;
         letter-spacing: 0.0625rem;
         color: var(--text-50);
 

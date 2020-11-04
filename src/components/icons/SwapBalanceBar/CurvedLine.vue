@@ -36,7 +36,7 @@ export default defineComponent({
         },
     },
     setup: (props/* ,  context */) => {
-        const minWidth = 2.5;
+        const minWidth = 2;
         const localWidth = computed(() => {
             if (props.width <= minWidth) {
                 return minWidth;

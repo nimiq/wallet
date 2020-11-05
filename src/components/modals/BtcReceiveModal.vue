@@ -154,7 +154,7 @@ import {
     QrCodeIcon,
     QrCode,
 } from '@nimiq/vue-components';
-import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
+import { createRequestLink, GeneralRequestLinkOptions, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -260,9 +260,8 @@ export default defineComponent({
         const message = ref<string>('');
 
         const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
-            type: NimiqRequestLinkType.URI,
-            amount: amount.value,
             currency: Currency.BTC,
+            amount: amount.value,
             message: message.value,
         }));
 

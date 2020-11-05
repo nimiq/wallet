@@ -321,17 +321,21 @@ export default defineComponent({
         });
 
         /* Bars' width */
-        const getNimiqBarWidth = (addressInfo: ExtendedAddressInfo) => {
-            const width = (addressInfo.newFiatBalance / totalNewFiatBalance.value) * 100;
-            if (width < .5) return .5;
-            return width;
-        };
+        const widthToSubstractPercent = computed(() => Math.round(
+            $el.value ? (((0.625 * remSize.value) // separator right margin & width
+            + ((nimDistributionData.value.length - 1) * (0.875 * remSize.value))) // bar right margin & border width
+            / $el.value.offsetWidth) * 100 : 0,
+        ) / 100);
+
+        const getNimiqBarWidth = (addressInfo: ExtendedAddressInfo) =>
+            (addressInfo.newFiatBalance / (totalNewFiatBalance.value * (1 + widthToSubstractPercent.value))) * 100;
         const getNimiqChangeBarWidth = (addressInfo: ExtendedAddressInfo) =>
             addressInfo.balanceChange > 0
                 ? (addressInfo.fiatBalanceChange / addressInfo.newFiatBalance) * 100
                 : 0;
         const bitcoinBarWidth = computed(() =>
-            (btcDistributionData.value.newFiatBalance / totalNewFiatBalance.value) * 100,
+            (btcDistributionData.value.newFiatBalance
+            / (totalNewFiatBalance.value * (1 + widthToSubstractPercent.value))) * 100,
         );
         const bitcoinChangeBarWidth = computed(() =>
             btcDistributionData.value.balanceChange > 0
@@ -610,7 +614,6 @@ export default defineComponent({
         }
     }
 }
-
 
 .connecting-lines {
     margin-top: .5rem;

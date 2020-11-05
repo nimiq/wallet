@@ -669,6 +669,7 @@ export default defineComponent({
 
     &.active {
         opacity: 1;
+        cursor: default;
     }
 
     &.bitcoin {

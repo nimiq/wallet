@@ -109,6 +109,13 @@ export default defineComponent({
         width: 6.5rem;
 
         overflow: visible;
+
+        circle {
+            animation: spinner-rotate reverse 1s linear infinite;
+
+            &:first-of-type { transform-origin: 50% 0%; }
+            &:last-of-type  { transform-origin: 50% 100%; }
+        }
     }
 
     .nim-left,
@@ -134,178 +141,74 @@ export default defineComponent({
     &.sign-swap {
         transform: scale(1.94);
 
+        .nim-left { transform: translate3d(-15rem, 0, 0); }
+        .btc-right { transform: translate3d(+15rem, 0, 0); }
+    }
+
+    &.sign-swap,
+    &.await-incoming,
+    &.create-outgoing,
+    &.await-secret,
+    &.complete {
         .spinner {
-            animation: spinner-rotate 3s linear infinite;
-        }
-
-        .nim-left {
-            transform: translate3d(-15rem, 0, 0);
-        }
-
-        .btc-right {
-            transform: translate3d(+15rem, 0, 0);
+            animation: spinner-rotate 2.5s linear infinite;
         }
     }
 
-    &.await-incoming {
-        .spinner {
-            animation: spinner-rotate 3s linear infinite;
-        }
-
-        .nim-left {
-            transform: translate3d(-2.5rem, 0, 0);
-        }
-
-        .btc-right {
-            transform: translate3d(+2.5rem, 0, 0);
-        }
-
-        /* When swapping right-to-left, the left currency is funded first */
-        &.right-to-left .nim-left .lines {
-            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
-            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
-            > *:nth-child(3) { animation: pulsate 2s infinite 0.4s; }
-            > *:nth-child(4) { animation: pulsate 2s infinite 0.6s; }
-            > *:nth-child(5) { animation: pulsate 2s infinite 0.8s; }
-            > *:nth-child(6) { animation: pulsate 2s infinite 1s; }
-            > *:nth-child(7) { animation: pulsate 2s infinite 1.2s; }
-            > *:nth-child(8) { animation: pulsate 2s infinite 1.4s; }
-            > *:nth-child(9) { animation: pulsate 2s infinite 1.6s; }
-        }
-
-        /* When swapping left-to-right, the right currency is funded first */
-        &.left-to-right .btc-right .lines {
-            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
-            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
-            > *:nth-child(8) { animation: pulsate 2s infinite 0.4s; }
-            > *:nth-child(3) { animation: pulsate 2s infinite 0.6s; }
-            > *:nth-child(4) { animation: pulsate 2s infinite 0.8s; }
-            > *:nth-child(5) { animation: pulsate 2s infinite 1s; }
-            > *:nth-child(6) { animation: pulsate 2s infinite 1.2s; }
-            > *:nth-child(7) { animation: pulsate 2s infinite 1.4s; }
-        }
-    }
-
-    &.create-outgoing {
-        .spinner {
-            animation: spinner-rotate 3s linear infinite;
-        }
-
-        .nim-left {
-            transform: translate3d(-2.5rem, 0, 0);
-        }
-
-        .btc-right {
-            transform: translate3d(+2.5rem, 0, 0);
-        }
-
-        /* When swapping right-to-left, the left currency is funded first */
-        &.right-to-left .nim-left .lines {
-            > *:nth-child(1) { animation: strokeColorChange 1s 1 0s; }
-            > *:nth-child(2) { animation: strokeColorChange 1s 1 0.2s; }
-            > *:nth-child(3) { animation: strokeColorChange 1s 1 0.4s; }
-            > *:nth-child(4) { animation: strokeColorChange 1s 1 0.6s; }
-            > *:nth-child(5) { animation: strokeColorChange 1s 1 0.8s; }
-            > *:nth-child(6) { animation: strokeColorChange 1s 1 1s; }
-            > *:nth-child(7) { animation: strokeColorChange 1s 1 1.2s; }
-            > *:nth-child(8) { animation: strokeColorChange 1s 1 1.4s; }
-            > *:nth-child(9) { animation: strokeColorChange 1s 1 1.6s; }
-            > * { animation-fill-mode: forwards !important; }
-        }
-
-        &.right-to-left .nim-left .fill {
-            transition: opacity 1s var(--nimiq-ease) 1.8s;
-            opacity: 1;
-        }
-
-        /* When swapping left-to-right, the right currency is funded first */
-        &.left-to-right .btc-right .lines {
-            > *:nth-child(1) { animation: strokeColorChange 1s 0s; }
-            > *:nth-child(2) { animation: strokeColorChange 1s 0.2s; }
-            > *:nth-child(8) { animation: strokeColorChange 1s 0.4s; }
-            > *:nth-child(3) { animation: strokeColorChange 1s 0.6s; }
-            > *:nth-child(4) { animation: strokeColorChange 1s 0.8s; }
-            > *:nth-child(5) { animation: strokeColorChange 1s 1s; }
-            > *:nth-child(6) { animation: strokeColorChange 1s 1.2s; }
-            > *:nth-child(7) { animation: strokeColorChange 1s 1.4s; }
-            > * { animation-fill-mode: forwards !important; }
-        }
-
-        &.left-to-right .btc-right .fill {
-            transition: opacity 1s var(--nimiq-ease) 1.8s;
-            opacity: 1;
-        }
-
-        &.right-to-left .btc-right .lines {
-            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
-            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
-            > *:nth-child(3) { animation: pulsate 2s infinite 0.4s; }
-            > *:nth-child(4) { animation: pulsate 2s infinite 0.6s; }
-            > *:nth-child(5) { animation: pulsate 2s infinite 0.8s; }
-            > *:nth-child(6) { animation: pulsate 2s infinite 1s; }
-            > *:nth-child(7) { animation: pulsate 2s infinite 1.2s; }
-            > *:nth-child(8) { animation: pulsate 2s infinite 1.4s; }
-        }
-
-        &.left-to-right .nim-left .lines {
-            > *:nth-child(1) { animation: pulsate 2s infinite 0s; }
-            > *:nth-child(2) { animation: pulsate 2s infinite 0.2s; }
-            > *:nth-child(8) { animation: pulsate 2s infinite 0.4s; }
-            > *:nth-child(3) { animation: pulsate 2s infinite 0.6s; }
-            > *:nth-child(4) { animation: pulsate 2s infinite 0.8s; }
-            > *:nth-child(5) { animation: pulsate 2s infinite 1s; }
-            > *:nth-child(6) { animation: pulsate 2s infinite 1.2s; }
-            > *:nth-child(7) { animation: pulsate 2s infinite 1.4s; }
-            > *:nth-child(9) { animation: pulsate 2s infinite 1.6s; }
-        }
-    }
-
+    &.await-incoming,
+    &.create-outgoing,
     &.await-secret {
-        .spinner {
-            animation: spinner-rotate 3s linear infinite;
-        }
+        .nim-left { transform: translate3d(-2.5rem, 0, 0); }
+        .btc-right { transform: translate3d(+2.5rem, 0, 0); }
+    }
 
-        .nim-left {
-            transform: translate3d(-2.5rem, 0, 0);
-        }
+    &.await-incoming.right-to-left .nim-left .lines,
+    &.swap-animation.left-to-right .btc-right .lines,
+    &.create-outgoing.right-to-left .btc-right .lines,
+    &.create-outgoing.left-to-right .nim-left .lines {
+        > * { animation: pulsate 2s infinite; }
+        > *:nth-child(1) { animation-delay: 0s; }
+        > *:nth-child(2) { animation-delay: 0.2s; }
+        > *:nth-child(3) { animation-delay: 0.4s; }
+        > *:nth-child(4) { animation-delay: 0.6s; }
+        > *:nth-child(5) { animation-delay: 0.8s; }
+        > *:nth-child(6) { animation-delay: 1s; }
+        > *:nth-child(7) { animation-delay: 1.2s; }
+        > *:nth-child(8) { animation-delay: 1.4s; }
+        > *:nth-child(9) { animation-delay: 1.6s; }
+    }
 
-        .btc-right {
-            transform: translate3d(+2.5rem, 0, 0);
+    &.create-outgoing.right-to-left .nim-left .lines,
+    &.create-outgoing.left-to-right .btc-right .lines,
+    &.await-secret.right-to-left .btc-right .lines,
+    &.await-secret.left-to-right .nim-left .lines {
+        > * {
+            opacity: 0.5;
+            animation: strokeColorChange 1s 1;
+            animation-fill-mode: forwards !important;
         }
+        > *:nth-child(1) { animation-delay: 0s; }
+        > *:nth-child(2) { animation-delay: 0.2s; }
+        > *:nth-child(3) { animation-delay: 0.4s; }
+        > *:nth-child(4) { animation-delay: 0.6s; }
+        > *:nth-child(5) { animation-delay: 0.8s; }
+        > *:nth-child(6) { animation-delay: 1s; }
+        > *:nth-child(7) { animation-delay: 1.2s; }
+        > *:nth-child(8) { animation-delay: 1.4s; }
+        > *:nth-child(9) { animation-delay: 1.6s; }
+    }
 
-        &.right-to-left .btc-right .lines {
-            > *:nth-child(1) { animation: strokeColorChange 1s 0s; }
-            > *:nth-child(2) { animation: strokeColorChange 1s 0.2s; }
-            > *:nth-child(8) { animation: strokeColorChange 1s 0.4s; }
-            > *:nth-child(3) { animation: strokeColorChange 1s 0.6s; }
-            > *:nth-child(4) { animation: strokeColorChange 1s 0.8s; }
-            > *:nth-child(5) { animation: strokeColorChange 1s 1s; }
-            > *:nth-child(6) { animation: strokeColorChange 1s 1.2s; }
-            > *:nth-child(7) { animation: strokeColorChange 1s 1.4s; }
-            > * { animation-fill-mode: forwards !important; }
-        }
-
-        &.left-to-right .nim-left .lines {
-            > *:nth-child(1) { animation: strokeColorChange 1s 1 0s; }
-            > *:nth-child(2) { animation: strokeColorChange 1s 1 0.2s; }
-            > *:nth-child(3) { animation: strokeColorChange 1s 1 0.4s; }
-            > *:nth-child(4) { animation: strokeColorChange 1s 1 0.6s; }
-            > *:nth-child(5) { animation: strokeColorChange 1s 1 0.8s; }
-            > *:nth-child(6) { animation: strokeColorChange 1s 1 1s; }
-            > *:nth-child(7) { animation: strokeColorChange 1s 1 1.2s; }
-            > *:nth-child(8) { animation: strokeColorChange 1s 1 1.4s; }
-            > *:nth-child(9) { animation: strokeColorChange 1s 1 1.6s; }
-            > * { animation-fill-mode: forwards !important; }
-        }
-
-        .fill {
-            transition: opacity 1s var(--nimiq-ease) 1.8s;
-            opacity: 1;
-        }
+    &.create-outgoing.right-to-left .nim-left .fill,
+    &.create-outgoing.left-to-right .btc-right .fill,
+    &.await-secret .fill,
+    &.complete .fill {
+        transition: opacity 1s var(--nimiq-ease) 1.6s;
+        opacity: 1;
     }
 
     &.settle-incoming {
-        transition: transform 1.2s var(--nimiq-ease) 1s;
+        transition-duration: 1.2s;
+        transition-delay: 1s;
     }
 
     &.settle-incoming,
@@ -313,20 +216,11 @@ export default defineComponent({
         transform: rotate(180deg);
 
         .spinner {
-            transform: rotate(-32deg);
+            transform: rotate(-32deg); // Position of the puzzle piece holes
         }
 
-        .nim-left {
-            transform: translate3d(+7.25rem, 0, 0);
-        }
-
-        .btc-right {
-            transform: translate3d(-7.25rem, 0, 0);
-        }
-
-        .fill {
-            opacity: 1;
-        }
+        .nim-left { transform: translate3d(+7.25rem, 0, 0); }
+        .btc-right { transform: translate3d(-7.25rem, 0, 0); }
 
         // .identicon,
         // .bitcoin-icon {
@@ -336,20 +230,16 @@ export default defineComponent({
     }
 
     &.complete {
+        transition-delay: 0.6s;
         transform: rotate(180deg) scale(1.94);
 
         .spinner {
-            opacity: 0;
             transition: opacity 1s var(--nimiq-ease);
+            opacity: 0;
         }
 
-        .nim-left {
-            transform: translate3d(-15rem, 0, 0);
-        }
-
-        .btc-right {
-            transform: translate3d(+15rem, 0, 0);
-        }
+        .nim-left { transform: translate3d(-2.5rem, 0, 0); }
+        .btc-right { transform: translate3d(+2.5rem, 0, 0); }
     }
 }
 

@@ -23,21 +23,27 @@
 
             <div class="address-sub-label">
                 <transition name="fade">
-                    <div class="flex-row blue" v-if="!recentlyCopiedAddresses[currentlyShownAddress]">
+                    <div v-if="!recentlyCopiedAddresses[currentlyShownAddress]" class="flex-row blue">
                         <span>{{ $t('This is a single-use address') }}</span>
-                        <Tooltip preferredPosition="bottom left" :autoWidth="true" :styles="{width: '205px'}">
+                        <Tooltip preferredPosition="bottom left" :autoWidth="true"
+                            :styles="{width: '205px', padding: '1.25rem 1.5rem'}"
+                        >
                             <template slot="trigger"><InfoCircleSmallIcon /></template>
                             <span class="header">
                                 {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
                             </span>
-                            <p>{{ $t('Although reusing addresses won’t result in a loss of funds,'
-                                    + ' it is highly recommended not to do so.') }}</p>
+                            <p class="explainer">{{ $t('Although reusing addresses won’t result in a loss of funds,'
+                                + ' it is highly recommended not to do so.') }}</p>
                         </Tooltip>
                     </div>
 
-                    <a class="flex-row create-new" @click="showNextExternalAddress" v-else>
+                    <a v-else-if="recentlyCopiedAddressesListSorted.length < BTC_MAX_COPYABLE_ADDRESSES"
+                        class="flex-row create-new" @click="showNextExternalAddress"
+                    >
                         <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
                     </a>
+
+                    <span v-else class="flex-row">{{ $t('Limit of copied addresses reached.') }}</span>
                 </transition>
             </div>
 
@@ -163,11 +169,11 @@ import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
+import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
         const {
-            addressSet,
             availableExternalAddresses,
             copiedExternalAddresses,
             setCopiedAddress,
@@ -250,10 +256,21 @@ export default defineComponent({
         );
 
         // Currently displayed address
-        const currentlyShownAddress = ref(
-            availableExternalAddresses.value[0]
-            || addressSet.value.external[addressSet.value.external.length - 1].address,
-        );
+        const currentlyShownAddress = ref('');
+
+        // Show the next external address in the .address copyable
+        function showNextExternalAddress() {
+            const numberOfCopiedAddresses = recentlyCopiedAddressesListSorted.value.length;
+
+            let nextCopyableAddress: string | undefined;
+
+            if (numberOfCopiedAddresses < BTC_MAX_COPYABLE_ADDRESSES) {
+                nextCopyableAddress = availableExternalAddresses.value[BTC_UNCOPYABLE_ADDRESS_GAP];
+            }
+
+            currentlyShownAddress.value = nextCopyableAddress || recentlyCopiedAddressesListSorted.value[0].address;
+        }
+        showNextExternalAddress();
 
         // requestLink
         const amount = ref<number>(0);
@@ -283,16 +300,6 @@ export default defineComponent({
                         $copiedAddresses.value[$copiedAddresses.value.length - 1].focus();
                     }
                 }, 100);
-            }
-        }
-
-        // Show the next external address in the .address copyable
-        function showNextExternalAddress() {
-            const nextActiveExternalAddress = availableExternalAddresses.value
-                .find((address: string) => !copiedExternalAddresses.value[address]);
-
-            if (nextActiveExternalAddress) {
-                currentlyShownAddress.value = nextActiveExternalAddress;
             }
         }
 
@@ -383,6 +390,7 @@ export default defineComponent({
             $availableAddressCopyable,
             $addressWidthFinder,
             addressFontSizeScaleFactor,
+            BTC_MAX_COPYABLE_ADDRESSES,
         };
     },
     components: {
@@ -562,13 +570,6 @@ export default defineComponent({
 
         .header {
             font-size: var(--small-size);
-        }
-
-        p {
-            margin-top: 0.75rem;
-            margin-bottom: 0;
-            opacity: 0.6;
-            font-size: 1.625rem;
         }
     }
 }

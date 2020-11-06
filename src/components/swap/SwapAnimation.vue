@@ -1,6 +1,11 @@
 <template>
     <!-- eslint-disable max-len -->
     <div class="swap-animation flex-column nq-blue-bg">
+        <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
+            <CheckmarkIcon/>
+            <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
+        </div>
+
         <div class="header"></div>
 
         <div class="animation flex-row right-to-left" :class="animationClassName">
@@ -17,8 +22,11 @@
                     <circle opacity=".25" cx="159" cy="70" r="10.75" />
                     <!-- <circle class="info-icon" opacity=".25" stroke="red" cx="15.02" cy="81" r="6" /> -->
                 </g>
-                <path class="identicon" fill="#21bca5" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
-                <path class="fill" fill="#21bca5" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58.09-4.58-1.89v-3.54c0-3.42-4.31-5.55-7.6-4.63a20 20 0 111.23-38.13c2.75 1 6.37-.82 6.37-3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3-3 4.58-1.89A18 18 0 10159 52zm-67.17-1.49l-14.27 25A5 5 0 0173.27 78H44.73a5 5 0 01-4.3-2.5l-14.27-25a5.1 5.1 0 010-5l14.28-25a5 5 0 014.29-2.5h28.54a5 5 0 014.3 2.5l14.27 25a5.08 5.08 0 01-.01 5.01zM159 80a10 10 0 1110-10 10 10 0 01-10 10z" />
+                <path class="fill" fill="#21bca5" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
+                <g class="identicon">
+                    <path fill="#211A42" transform="scale(1.15)" transform-origin="34% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                    <path fill="currentColor" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                </g>
             </svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" class="spinner">
                 <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5">
@@ -39,11 +47,11 @@
                     <circle opacity=".25" cx="18" cy="26" r="10.75" />
                     <!-- <circle class="info-icon" opacity=".25" cx="161.99" cy="81" r="6" stroke="red" /> -->
                 </g>
+                <path class="fill" fill="#f7931a" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
                 <g class="bitcoin-icon" fill="none" opacity="1">
                     <path fill="#f7931a" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                     <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
                 </g>
-                <path class="fill" fill="#f7931a" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
             </svg>
         </div>
 
@@ -62,6 +70,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
+import { CheckmarkIcon } from '@nimiq/vue-components';
 import { SwapState } from '../../stores/Swaps';
 
 export default defineComponent({
@@ -86,6 +95,9 @@ export default defineComponent({
             animationClassName,
         };
     },
+    components: {
+        CheckmarkIcon,
+    },
 });
 </script>
 
@@ -94,6 +106,33 @@ export default defineComponent({
     height: 100%;
     justify-content: space-between;
     overflow: hidden;
+    position: relative;
+    border-radius: 0.5rem;
+}
+
+.success-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s var(--nimiq-ease);
+    justify-content: center;
+    align-items: center;
+
+    .nq-icon {
+        font-size: 9rem;
+    }
+
+    .title {
+        line-height: 1;
+        margin-top: 4rem;
+    }
+
+    &.visible {
+        opacity: 1;
+    }
 }
 
 .animation {
@@ -201,6 +240,7 @@ export default defineComponent({
     &.create-outgoing.right-to-left .nim-left .fill,
     &.create-outgoing.left-to-right .btc-right .fill,
     &.await-secret .fill,
+    &.settle-incoming .fill,
     &.complete .fill {
         transition: opacity 1s var(--nimiq-ease) 1.6s;
         opacity: 1;
@@ -209,28 +249,33 @@ export default defineComponent({
     &.settle-incoming {
         transition-duration: 1.2s;
         transition-delay: 1s;
+        transition-timing-function: ease;
+
+        .spinner {
+            transform: rotate(-32deg); // Position of the puzzle piece holes
+        }
     }
 
     &.settle-incoming,
     &.complete {
         transform: rotate(180deg);
 
-        .spinner {
-            transform: rotate(-32deg); // Position of the puzzle piece holes
+        .nim-left { animation: piece-left-in-out 3.2s 1 var(--nimiq-ease) forwards; }
+        .btc-right { animation: piece-right-in-out 3.2s 1 var(--nimiq-ease) forwards; }
+
+        .identicon,
+        .bitcoin-icon {
+            transform: rotate(-180deg);
+            transition: transform 1.2s ease 1s;
+            transform-origin: 66.66% 50%;
         }
 
-        .nim-left { transform: translate3d(+7.25rem, 0, 0); }
-        .btc-right { transform: translate3d(-7.25rem, 0, 0); }
-
-        // .identicon,
-        // .bitcoin-icon {
-        //     transform: rotate(-180deg);
-        //     transition: transform 1.5s var(--nimiq-ease) 1s;
-        // }
+        .identicon {
+            transform-origin: 33.33% 50%;
+        }
     }
 
     &.complete {
-        transition-delay: 0.6s;
         transform: rotate(180deg) scale(1.94);
 
         .spinner {
@@ -238,14 +283,14 @@ export default defineComponent({
             opacity: 0;
         }
 
-        .nim-left { transform: translate3d(-2.5rem, 0, 0); }
-        .btc-right { transform: translate3d(+2.5rem, 0, 0); }
+        .nim-left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
+        .btc-right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
     }
 }
 
 @keyframes spinner-rotate {
-    0%   { transform: rotate(0); }
-    100% { transform: rotate(360deg); }
+    0%   { transform: rotate(-32deg); }
+    100% { transform: rotate(calc(360deg - 32deg)); }
 }
 
 @keyframes pulsate {
@@ -257,5 +302,29 @@ export default defineComponent({
 @keyframes strokeColorChange {
     0% { stroke: #fff; }
     100% { stroke: currentColor; opacity: 1; }
+}
+
+@keyframes piece-left-in-out {
+    0%     { transform: translate3d(-2.5rem, 0, 0); }
+    31.25% { transform: translate3d(+7.25rem, 0, 0); }
+    68.75% { transform: translate3d(+7.25rem, 0, 0); }
+    100%   { transform: translate3d(-2.5rem, 0, 0); }
+}
+
+@keyframes piece-right-in-out {
+    0%     { transform: translate3d(+2.5rem, 0, 0); }
+    31.25% { transform: translate3d(-7.25rem, 0, 0); }
+    68.75% { transform: translate3d(-7.25rem, 0, 0); }
+    100%   { transform: translate3d(+2.5rem, 0, 0); }
+}
+
+@keyframes piece-left-scale-out {
+    0%     { transform: translate3d(-2.5rem, 0, 0); }
+    100%   { transform: translate3d(-15rem, 0, 0); }
+}
+
+@keyframes piece-right-scale-out {
+    0%     { transform: translate3d(+2.5rem, 0, 0); }
+    100%   { transform: translate3d(+15rem, 0, 0); }
 }
 </style>

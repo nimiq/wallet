@@ -10,7 +10,7 @@
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
         </div>
 
-        <div class="animation flex-row left-to-right" :class="animationClassName">
+        <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim left" :class="[nimBackgroundClass]">
                 <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -134,6 +134,11 @@ export default defineComponent({
         }
         const nimBackgroundClass = computed(() => props.nimAddress ? getColorClass(props.nimAddress) : '');
 
+        // Swap Direction
+        const swapDirection = computed(() => props.fromAsset === SwapAsset.NIM
+            ? 'left-to-right'
+            : 'right-to-left');
+
         // Swap State
         const state = ref(SwapState.SIGN_SWAP);
         const stateChanges: SwapState[] = [];
@@ -192,6 +197,7 @@ export default defineComponent({
             $identicon,
             identiconUrl,
             setState,
+            swapDirection,
         };
     },
     components: {

@@ -76,7 +76,7 @@
                 />
                 <div class="columns swap-amounts flex-row">
                     <div class="left-column" :class="!wantNim && !getNim
-                        ? 'nq-gray'
+                        ? 'no-value'
                         : direction === SwapDirection.NIM_TO_BTC ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="right-column" :class="!wantBtc && !getBtc
-                        ? 'nq-gray'
+                        ? 'no-value'
                         : direction === SwapDirection.BTC_TO_NIM ? 'nq-red' : 'nq-green'"
                     >
                         <AmountInput
@@ -284,7 +284,7 @@
             </button>
         </div>
 
-        <div v-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list">
+        <div v-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
             <PageBody>
                 <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
@@ -1189,6 +1189,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .modal /deep/ .small-page {
     width: 63.5rem;
+    height: 74.5rem;
 }
 
 .page {
@@ -1296,6 +1297,10 @@ export default defineComponent({
     }
 }
 
+.swap-balance-bar {
+    margin-bottom: 3.5rem;
+}
+
 .columns {
     justify-content: space-between;
 }
@@ -1316,7 +1321,7 @@ export default defineComponent({
 
 .swap-amounts,
 .new-balances {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 .amount-input,
@@ -1355,7 +1360,7 @@ export default defineComponent({
         opacity: 0.7;
     }
 
-    .swap-amounts .nq-gray & {
+    .swap-amounts .no-value & {
         opacity: 0.3;
     }
 
@@ -1503,7 +1508,7 @@ export default defineComponent({
     }
 }
 
-.address-list .page-body {
+.address-list-overlay .page-body {
     overflow-y: auto;
     padding: 1rem 0 2rem;
 

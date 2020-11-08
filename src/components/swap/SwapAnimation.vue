@@ -5,9 +5,12 @@
             <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
         </div>
 
-        <div class="header"></div>
+        <div class="nq-card-header">
+            <h1 class="nq-h1">{{ $t('Performing Swap') }}</h1>
+            <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
+        </div>
 
-        <div class="animation flex-row right-to-left" :class="animationClassName">
+        <div class="animation flex-row left-to-right" :class="animationClassName">
             <!-- eslint-disable max-len -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim left" :class="[nimBackgroundClass]">
                 <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -54,6 +57,19 @@
                 </g>
             </svg>
             <!-- eslint-enable max-len -->
+        </div>
+
+        <div class="nq-card-footer">
+            <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">1/5 {{ $t('Setting up swap') }}</div>
+            <div v-if="state === SwapState.AWAIT_INCOMING" class="nq-h2">
+                2/5 {{ $t('Locking up {asset}', {asset: toAsset}) }}
+            </div>
+            <div v-if="state === SwapState.CREATE_OUTGOING" class="nq-h2">
+                3/5 {{ $t('Locking up {asset}', {asset: fromAsset}) }}
+            </div>
+            <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">4/5 {{ $t('Awaiting swap secret') }}</div>
+            <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
+            <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
         </div>
 
         <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
@@ -191,7 +207,7 @@ export default defineComponent({
     justify-content: space-between;
     overflow: hidden;
     position: relative;
-    border-radius: 0.5rem;
+    border-radius: 0.625rem;
 
     > .identicon {
         display: none;
@@ -220,7 +236,29 @@ export default defineComponent({
 
     &.visible {
         opacity: 1;
+        z-index: 1;
     }
+}
+
+.nq-card-header {
+    .nq-h1 {
+        line-height: 1;
+    }
+
+    .nq-notice {
+        margin-top: 1.5rem;
+        max-width: 36rem;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.6;
+    }
+}
+
+.buttons {
+    position: absolute;
+    bottom: 0rem;
+    left: 0;
+    z-index: 2;
 }
 
 .animation {
@@ -294,7 +332,7 @@ export default defineComponent({
     }
 
     &.await-incoming.right-to-left .left .lines,
-    &.swap-animation.left-to-right .right .lines,
+    &.await-incoming.left-to-right .right .lines,
     &.create-outgoing.right-to-left .right .lines,
     &.create-outgoing.left-to-right .left .lines {
         > * { animation: pulsate 2s infinite; }
@@ -420,5 +458,14 @@ export default defineComponent({
 @keyframes piece-right-scale-out {
     0%     { transform: translate3d(+2.5rem, 0, 0); }
     100%   { transform: translate3d(+15rem, 0, 0); }
+}
+
+.nq-card-footer {
+    height: 10rem;
+
+    .nq-h2 {
+        font-weight: normal;
+        text-align: center;
+    }
 }
 </style>

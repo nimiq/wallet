@@ -170,6 +170,10 @@ msgstr ""
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:70
+msgid "Awaiting swap secret"
+msgstr ""
+
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr ""
@@ -539,6 +543,11 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:216
 msgid "File contains no contacts."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:71
+#: src/components/swap/SwapAnimation.vue:72
+msgid "Finalizing swap"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:49
@@ -1034,6 +1043,10 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:63
+msgid "Setting up swap"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
 msgstr ""
@@ -1140,6 +1153,7 @@ msgstr ""
 msgid "Swap signed!"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:5
 #: src/components/swap/SwapNotification.vue:20
 msgid "Swap successful!"
 msgstr ""
@@ -1236,6 +1250,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:10
+msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:36

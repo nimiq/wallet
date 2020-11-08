@@ -24,8 +24,8 @@
                 </g>
                 <path class="fill" fill="currentColor" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
                 <g class="identicon">
-                    <path fill="#1F2348" transform="scale(1.15)" transform-origin="33.33% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
-                    <path fill="currentColor" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                    <path class="identicon-border" fill="#1F2348" transform="scale(1.15)" transform-origin="33.33% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                    <image :href="identiconUrl" x="30" y="19" width="58" height="58" />
                 </g>
             </svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" class="spinner">
@@ -55,6 +55,8 @@
             </svg>
         </div>
 
+        <Identicon :address="nimAddress" ref="$identicon"/>
+
         <div class="buttons">
             <button class="nq-button-s inverse" @click="state = SwapState.SIGN_SWAP">Step 1</button>
             <button class="nq-button-s inverse" @click="state = SwapState.AWAIT_INCOMING">Step 2</button>
@@ -69,8 +71,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
-import { CheckmarkIcon } from '@nimiq/vue-components';
+import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { CheckmarkIcon, Identicon } from '@nimiq/vue-components';
 import { SwapState } from '../../stores/Swaps';
 import { SwapAsset } from '../../lib/FastspotApi';
 import { getColorClass } from '../../lib/AddressColor';
@@ -104,6 +106,15 @@ export default defineComponent({
     },
     setup(props) {
         const state = ref(SwapState.SIGN_SWAP);
+        const $identicon = ref<Identicon>(null);
+
+        const identiconUrl = ref('');
+        onMounted(() => {
+            const img = $identicon.value!.$el.querySelector('img')!;
+            img.addEventListener('load', () => {
+                identiconUrl.value = img.src;
+            });
+        });
 
         const nimBackgroundClass = computed(() => props.nimAddress ? getColorClass(props.nimAddress) : '');
 
@@ -124,10 +135,13 @@ export default defineComponent({
             state,
             animationClassName,
             nimBackgroundClass,
+            $identicon,
+            identiconUrl,
         };
     },
     components: {
         CheckmarkIcon,
+        Identicon,
     },
 });
 </script>
@@ -139,6 +153,10 @@ export default defineComponent({
     overflow: hidden;
     position: relative;
     border-radius: 0.5rem;
+
+    > .identicon {
+        display: none;
+    }
 }
 
 .success-background {
@@ -193,6 +211,10 @@ export default defineComponent({
         height: 12rem;
         transition: transform 1s var(--nimiq-ease);
         z-index: 1;
+    }
+
+    .nim.right .identicon-border {
+        fill: #22143F; // Color of background gradient on right side
     }
 
     .btc {

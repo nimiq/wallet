@@ -1,5 +1,4 @@
 <template>
-    <!-- eslint-disable max-len -->
     <div class="swap-animation flex-column nq-blue-bg">
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
             <CheckmarkIcon/>
@@ -9,6 +8,7 @@
         <div class="header"></div>
 
         <div class="animation flex-row right-to-left" :class="animationClassName">
+            <!-- eslint-disable max-len -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim left" :class="[nimBackgroundClass]">
                 <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                     <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
@@ -53,25 +53,25 @@
                     <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
                 </g>
             </svg>
+            <!-- eslint-enable max-len -->
         </div>
 
-        <Identicon :address="nimAddress" ref="$identicon"/>
+        <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
 
         <div class="buttons">
-            <button class="nq-button-s inverse" @click="state = SwapState.SIGN_SWAP">Step 1</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.AWAIT_INCOMING">Step 2</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.CREATE_OUTGOING">Step 3</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.AWAIT_SECRET">Step 4</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.SETTLE_INCOMING">Step 5</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.COMPLETE">Done</button>
-            <button class="nq-button-s inverse" @click="state = SwapState.EXPIRED">Expired</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.SIGN_SWAP)">Step 1</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.AWAIT_INCOMING)">Step 2</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.CREATE_OUTGOING)">Step 3</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.AWAIT_SECRET)">Step 4</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.SETTLE_INCOMING)">Step 5</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.COMPLETE)">Done</button>
+            <button class="nq-button-s inverse" @click="setState(SwapState.EXPIRED)">Expired</button>
         </div>
     </div>
-    <!-- eslint-enable max-len -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
 import { CheckmarkIcon, Identicon } from '@nimiq/vue-components';
 import { SwapState } from '../../stores/Swaps';
 import { SwapAsset } from '../../lib/FastspotApi';
@@ -105,19 +105,57 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const state = ref(SwapState.SIGN_SWAP);
+        // NIM Identicon
         const $identicon = ref<Identicon>(null);
-
         const identiconUrl = ref('');
-        onMounted(() => {
-            const img = $identicon.value!.$el.querySelector('img')!;
-            img.addEventListener('load', () => {
-                identiconUrl.value = img.src;
+        if (props.fromAsset === SwapAsset.NIM || props.toAsset === SwapAsset.NIM) {
+            onMounted(() => {
+                const img = $identicon.value!.$el.querySelector('img')!;
+                img.addEventListener('load', () => {
+                    identiconUrl.value = img.src;
+                });
             });
-        });
-
+        }
         const nimBackgroundClass = computed(() => props.nimAddress ? getColorClass(props.nimAddress) : '');
 
+        // Swap State
+        const state = ref(SwapState.SIGN_SWAP);
+        const stateChanges: SwapState[] = [];
+        let processingStateChange = false;
+        async function processStateChange() {
+            if (processingStateChange || !stateChanges.length) return;
+            processingStateChange = true;
+            state.value = stateChanges.shift()!;
+
+            // Wait for the animation of this step to finish
+            let delay: number; // Seconds
+            switch (state.value) {
+                case SwapState.SIGN_SWAP:
+                    delay = 0; break;
+                case SwapState.AWAIT_INCOMING:
+                    delay = 1; break; // Scale down (zoom out)
+                case SwapState.CREATE_OUTGOING:
+                    delay = 2.6; break; // Stroke-color-change + background fill
+                case SwapState.AWAIT_SECRET:
+                    delay = 2.6; break; // Stroke-color-change + background fill
+                case SwapState.SETTLE_INCOMING:
+                    delay = 3.2; break; // Puzzle pieces move in + 180° turn + pieces move out
+                case SwapState.COMPLETE:
+                    delay = 1; break; // Scale up (zoom in)
+                default:
+                    delay = 0;
+            }
+
+            setTimeout(() => {
+                processingStateChange = false;
+                processStateChange();
+            }, delay * 1000);
+        }
+        function setState(nextState: SwapState) {
+            stateChanges.push(nextState); // Queue state change
+            processStateChange(); // Start queue if not already processing
+        }
+        watch(() => props.swapState, setState);
         const animationClassName = computed(() => {
             switch (state.value) {
                 case SwapState.SIGN_SWAP: return 'sign-swap';
@@ -137,6 +175,7 @@ export default defineComponent({
             nimBackgroundClass,
             $identicon,
             identiconUrl,
+            setState,
         };
     },
     components: {

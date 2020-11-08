@@ -89,7 +89,7 @@ import BackupIcon from './icons/AccountMenu/BackupIcon.vue';
 import RenameIcon from './icons/AccountMenu/RenameIcon.vue';
 import ChangePasswordIcon from './icons/AccountMenu/ChangePasswordIcon.vue';
 import LogoutArrowIcon from './icons/AccountMenu/LogoutArrowIcon.vue';
-import getBackgroundClass from '../lib/AddressColor';
+import { getBackgroundClass } from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';

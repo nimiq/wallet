@@ -284,8 +284,15 @@
         </div>
 
         <div v-else-if="swapAnimationOverlayOpened === true" slot="overlay" class="page flex-column">
-            <PageBody style="padding: 1rem;" class="flex-column">
-                <SwapAnimation/>
+            <PageBody style="padding: 0.75rem;" class="flex-column">
+                <SwapAnimation
+                    :swapState="SwapState.SIGN_SWAP"
+                    :fromAsset="SwapAsset.NIM"
+                    :fromAmount="1e5"
+                    :toAsset="SwapAsset.BTC"
+                    :toAmount="1e4"
+                    :nimAddress="activeAddressInfo.address"
+                />
             </PageBody>
         </div>
 
@@ -1285,6 +1292,7 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             swapAnimationOverlayOpened,
+            activeAddressInfo,
         };
     },
     components: {

@@ -9,7 +9,7 @@
         <div class="header"></div>
 
         <div class="animation flex-row right-to-left" :class="animationClassName">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim-left nq-green">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="nim left" :class="[nimBackgroundClass]">
                 <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                     <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
                     <path opacity=".25" d="M95.71 67.27l8.88-15.52a7.69 7.69 0 000-7.63l-7.41-13a1.69 1.69 0 011.47-2.52H100a3.3 3.3 0 012.86 1.65l7.69 13.29a8.66 8.66 0 010 8.59l-7 12.39a1.87 1.87 0 001.63 2.8h13.1a4.31 4.31 0 003.75-2.18c1.76-3.06 5-8.76 6.47-11.49a2.49 2.49 0 012.16-1.31c.53 0 1.19 0 2-.13a1.65 1.65 0 011.62 2.42c-.52 1-.94 1.69-.94 1.69L124 72.76l-1.57 2.76a6.36 6.36 0 01-5.54 3.23H98.44A5.16 5.16 0 0094 81.37l-4.79 8.51c-2.53 4.85-5.56 5.37-10 5.37H4A3.25 3.25 0 01.75 92V62.63" />
@@ -22,9 +22,9 @@
                     <circle opacity=".25" cx="159" cy="70" r="10.75" />
                     <!-- <circle class="info-icon" opacity=".25" stroke="red" cx="15.02" cy="81" r="6" /> -->
                 </g>
-                <path class="fill" fill="#21bca5" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
+                <path class="fill" fill="currentColor" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
                 <g class="identicon">
-                    <path fill="#211A42" transform="scale(1.15)" transform-origin="34% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                    <path fill="#1F2348" transform="scale(1.15)" transform-origin="33.33% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
                     <path fill="currentColor" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
                 </g>
             </svg>
@@ -35,7 +35,7 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="btc-right">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 177 96" class="btc right">
                 <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                     <path opacity=".25" d="M88.17 40.56a30.74 30.74 0 1122.39 37.27 30.74 30.74 0 01-22.39-37.27zM46.37 11.71H78a4.12 4.12 0 002.9-1.21 51.15 51.15 0 014.35-3.85 2.72 2.72 0 011.69-.58H87A2.73 2.73 0 0188.66 11a48.25 48.25 0 00-5 4.53 5.6 5.6 0 01-4.09 1.75h-27.5a3.33 3.33 0 00-3.08 2 75.89 75.89 0 00-3.51 10.65h0a75.31 75.31 0 00-1.89 11 2.77 2.77 0 002.8 3h0a2.73 2.73 0 002.67-2.46 70.51 70.51 0 011.76-10.22h0v0a3.26 3.26 0 013.18-2.5h11.16a2.64 2.64 0 012.53 3.41q-.48 1.51-.87 3.09h0a52.85 52.85 0 00-1.45 16.41" />
                     <path opacity=".25" d="M33.48 18.42c.15.29.28.59.41.89a17.28 17.28 0 01.17 13 1.5 1.5 0 001.42 2H37a2.32 2.32 0 002.27-1.89q.39-1.93.87-3.87h0a65.6 65.6 0 012.7-8.55A2 2 0 0041 17.25h0a2 2 0 01-1.85-2.82q1.29-3.18 2.85-6.21a4 4 0 013.54-2.11h31.85" />
@@ -47,9 +47,9 @@
                     <circle opacity=".25" cx="18" cy="26" r="10.75" />
                     <!-- <circle class="info-icon" opacity=".25" cx="161.99" cy="81" r="6" stroke="red" /> -->
                 </g>
-                <path class="fill" fill="#f7931a" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
+                <path class="fill" fill="currentColor" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
                 <g class="bitcoin-icon" fill="none" opacity="1">
-                    <path fill="#f7931a" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
+                    <path fill="currentColor" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                     <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
                 </g>
             </svg>
@@ -72,10 +72,40 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { CheckmarkIcon } from '@nimiq/vue-components';
 import { SwapState } from '../../stores/Swaps';
+import { SwapAsset } from '../../lib/FastspotApi';
+import { getColorClass } from '../../lib/AddressColor';
 
 export default defineComponent({
-    setup() {
+    props: {
+        swapState: {
+            type: Number as () => SwapState,
+            required: true,
+        },
+        fromAsset: {
+            type: String as () => SwapAsset,
+            required: true,
+        },
+        fromAmount: {
+            type: Number,
+            required: true,
+        },
+        toAsset: {
+            type: String as () => SwapAsset,
+            required: true,
+        },
+        toAmount: {
+            type: Number,
+            required: true,
+        },
+        nimAddress: {
+            type: String,
+            required: false,
+        },
+    },
+    setup(props) {
         const state = ref(SwapState.SIGN_SWAP);
+
+        const nimBackgroundClass = computed(() => props.nimAddress ? getColorClass(props.nimAddress) : '');
 
         const animationClassName = computed(() => {
             switch (state.value) {
@@ -93,6 +123,7 @@ export default defineComponent({
             SwapState,
             state,
             animationClassName,
+            nimBackgroundClass,
         };
     },
     components: {
@@ -157,14 +188,14 @@ export default defineComponent({
         }
     }
 
-    .nim-left,
-    .btc-right {
+    .left,
+    .right {
         height: 12rem;
         transition: transform 1s var(--nimiq-ease);
         z-index: 1;
     }
 
-    .btc-right {
+    .btc {
         color: #f7931a;
     }
 
@@ -180,8 +211,8 @@ export default defineComponent({
     &.sign-swap {
         transform: scale(1.94);
 
-        .nim-left { transform: translate3d(-15rem, 0, 0); }
-        .btc-right { transform: translate3d(+15rem, 0, 0); }
+        .left { transform: translate3d(-15rem, 0, 0); }
+        .right { transform: translate3d(+15rem, 0, 0); }
     }
 
     &.sign-swap,
@@ -197,14 +228,14 @@ export default defineComponent({
     &.await-incoming,
     &.create-outgoing,
     &.await-secret {
-        .nim-left { transform: translate3d(-2.5rem, 0, 0); }
-        .btc-right { transform: translate3d(+2.5rem, 0, 0); }
+        .left { transform: translate3d(-2.5rem, 0, 0); }
+        .right { transform: translate3d(+2.5rem, 0, 0); }
     }
 
-    &.await-incoming.right-to-left .nim-left .lines,
-    &.swap-animation.left-to-right .btc-right .lines,
-    &.create-outgoing.right-to-left .btc-right .lines,
-    &.create-outgoing.left-to-right .nim-left .lines {
+    &.await-incoming.right-to-left .left .lines,
+    &.swap-animation.left-to-right .right .lines,
+    &.create-outgoing.right-to-left .right .lines,
+    &.create-outgoing.left-to-right .left .lines {
         > * { animation: pulsate 2s infinite; }
         > *:nth-child(1) { animation-delay: 0s; }
         > *:nth-child(2) { animation-delay: 0.2s; }
@@ -217,10 +248,10 @@ export default defineComponent({
         > *:nth-child(9) { animation-delay: 1.6s; }
     }
 
-    &.create-outgoing.right-to-left .nim-left .lines,
-    &.create-outgoing.left-to-right .btc-right .lines,
-    &.await-secret.right-to-left .btc-right .lines,
-    &.await-secret.left-to-right .nim-left .lines {
+    &.create-outgoing.right-to-left .left .lines,
+    &.create-outgoing.left-to-right .right .lines,
+    &.await-secret.right-to-left .right .lines,
+    &.await-secret.left-to-right .left .lines {
         > * {
             opacity: 0.5;
             animation: strokeColorChange 1s 1;
@@ -237,8 +268,8 @@ export default defineComponent({
         > *:nth-child(9) { animation-delay: 1.6s; }
     }
 
-    &.create-outgoing.right-to-left .nim-left .fill,
-    &.create-outgoing.left-to-right .btc-right .fill,
+    &.create-outgoing.right-to-left .left .fill,
+    &.create-outgoing.left-to-right .right .fill,
     &.await-secret .fill,
     &.settle-incoming .fill,
     &.complete .fill {
@@ -260,8 +291,8 @@ export default defineComponent({
     &.complete {
         transform: rotate(180deg);
 
-        .nim-left { animation: piece-left-in-out 3.2s 1 var(--nimiq-ease) forwards; }
-        .btc-right { animation: piece-right-in-out 3.2s 1 var(--nimiq-ease) forwards; }
+        .left { animation: piece-left-in-out 3.2s 1 var(--nimiq-ease) forwards; }
+        .right { animation: piece-right-in-out 3.2s 1 var(--nimiq-ease) forwards; }
 
         .identicon,
         .bitcoin-icon {
@@ -278,13 +309,15 @@ export default defineComponent({
     &.complete {
         transform: rotate(180deg) scale(1.94);
 
-        .spinner {
+        .spinner,
+        .left,
+        .right {
             transition: opacity 1s var(--nimiq-ease);
             opacity: 0;
         }
 
-        .nim-left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
-        .btc-right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
+        .left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
+        .right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
     }
 }
 

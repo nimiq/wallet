@@ -92,7 +92,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
-import getBackgroundClass from '../lib/AddressColor';
+import { getBackgroundClass } from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import SwapIcon from './icons/SwapIcon.vue';

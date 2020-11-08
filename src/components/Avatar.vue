@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import getBackgroundClass from '../lib/AddressColor';
+import { getBackgroundClass } from '../lib/AddressColor';
 
 export default defineComponent({
     props: {

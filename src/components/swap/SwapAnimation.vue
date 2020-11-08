@@ -23,7 +23,8 @@
                     <path opacity=".25" d="M22.06 56l-2.58-4.6a6.87 6.87 0 010-6.8l14-24.53a1.83 1.83 0 00-1.59-2.74h-7.83a2.59 2.59 0 00-2.25 1.31L7.3 43.94a8 8 0 000 7.93L14.66 65a4.51 4.51 0 003.93 2.3h1a4.49 4.49 0 013.9 2.26l9.59 16.74A2.38 2.38 0 0131 89.84l-6.32-.07" />
                     <path opacity=".25" d="M92.49 45.12l-14.27-25a5.71 5.71 0 00-5-2.88H44.73a5.72 5.72 0 00-4.94 2.88l-14.28 25a5.85 5.85 0 000 5.76l14.27 25a5.71 5.71 0 004.95 2.88h28.54a5.72 5.72 0 004.94-2.88l14.27-25a5.78 5.78 0 00.01-5.76z" />
                     <circle opacity=".25" cx="159" cy="70" r="10.75" />
-                    <!-- <circle class="info-icon" opacity=".25" stroke="red" cx="15.02" cy="81" r="6" /> -->
+
+                    <circle class="info-icon" opacity=".25" cx="15.02" cy="81" r="6" />
                 </g>
                 <path class="fill" fill="currentColor" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
                 <g class="identicon">
@@ -48,7 +49,8 @@
                     <path opacity=".25" d="M138.68 84.25A41.47 41.47 0 00154 69.1a3.75 3.75 0 013.23-1.83h1.33a3.81 3.81 0 003.57-2.45 47.35 47.35 0 00-5.76-44.38 7.38 7.38 0 00-6-3.11H145a2.65 2.65 0 00-1.83 4.56 36.17 36.17 0 0111 29.17 35.61 35.61 0 01-.77 5" />
                     <path opacity=".25" d="M169 68.82a2.8 2.8 0 01-1.24-3.37 52.7 52.7 0 00-9.49-51.56 6.2 6.2 0 00-4.73-2.18h-12a10.93 10.93 0 01-4.88-1.2A39.73 39.73 0 00126.15 7a3.07 3.07 0 01-2.49-3v-.06a3.17 3.17 0 013.17-3.18H173A3.25 3.25 0 01176.25 4v44A59 59 0 01173 67.33a2.82 2.82 0 01-4 1.49zM102.69 95.25h70.64a2.9 2.9 0 002.9-2.9V73" />
                     <circle opacity=".25" cx="18" cy="26" r="10.75" />
-                    <!-- <circle class="info-icon" opacity=".25" cx="161.99" cy="81" r="6" stroke="red" /> -->
+
+                    <circle class="info-icon" opacity=".25" cx="161.99" cy="81" r="6" />
                 </g>
                 <path class="fill" fill="currentColor" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
                 <g class="bitcoin-icon" fill="none" opacity="1">
@@ -351,6 +353,7 @@ export default defineComponent({
         > *:nth-child(7) { animation-delay: 1.2s; }
         > *:nth-child(8) { animation-delay: 1.4s; }
         > *:nth-child(9) { animation-delay: 1.6s; }
+        > *:nth-child(10) { animation-delay: 1.8s; }
     }
 
     &.create-outgoing.right-to-left .left .lines,
@@ -371,6 +374,7 @@ export default defineComponent({
         > *:nth-child(7) { animation-delay: 1.2s; }
         > *:nth-child(8) { animation-delay: 1.4s; }
         > *:nth-child(9) { animation-delay: 1.6s; }
+        > *:nth-child(10) { animation-delay: 1.8s; }
     }
 
     &.create-outgoing.right-to-left .left .fill,

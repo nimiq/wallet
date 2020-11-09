@@ -19,7 +19,7 @@
   "dependencies": {
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
-    "@nimiq/hub-api": "^1.2.5",
+    "@nimiq/hub-api": "^1.2.6",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.5.0",
     "@nimiq/style": "^0.8.2",

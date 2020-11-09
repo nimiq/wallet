@@ -170,7 +170,7 @@ msgstr ""
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:70
+#: src/components/swap/SwapAnimation.vue:90
 msgid "Awaiting swap secret"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:436
+#: src/components/modals/TransactionModal.vue:435
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr ""
@@ -208,7 +208,9 @@ msgid "Block #{height}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:250
+#: src/components/modals/TransactionModal.vue:248
+#: src/components/swap/SwapAnimation.vue:40
+#: src/components/swap/SwapAnimation.vue:75
 msgid "Block explorer"
 msgstr ""
 
@@ -258,7 +260,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:441
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -545,8 +547,8 @@ msgstr ""
 msgid "File contains no contacts."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:71
-#: src/components/swap/SwapAnimation.vue:72
+#: src/components/swap/SwapAnimation.vue:91
+#: src/components/swap/SwapAnimation.vue:92
 msgid "Finalizing swap"
 msgstr ""
 
@@ -606,17 +608,17 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:396
+#: src/components/modals/TransactionModal.vue:395
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:399
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:402
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr ""
@@ -1043,7 +1045,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:63
+#: src/components/swap/SwapAnimation.vue:83
 msgid "Setting up swap"
 msgstr ""
 
@@ -1291,7 +1293,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:443
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr ""

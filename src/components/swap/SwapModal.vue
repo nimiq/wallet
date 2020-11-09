@@ -289,8 +289,10 @@
                     :swapState="SwapState.SIGN_SWAP"
                     :fromAsset="SwapAsset.NIM"
                     :fromAmount="1e5"
+                    fromAddress="NQ89 V2FL 1NVC PRGS GFX3 3J7X 626B A86F AA5B"
                     :toAsset="SwapAsset.BTC"
                     :toAmount="1e4"
+                    toAddress="tb1q9p4zd0t9c6vvtkh929dxyfek3dns8fyyv90tygvcsfdawrhxephs28y0mp"
                     :nimAddress="activeAddressInfo.address"
                 />
             </PageBody>

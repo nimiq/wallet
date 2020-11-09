@@ -168,7 +168,7 @@ export default defineComponent({
             required: false,
         },
     },
-    setup(props) {
+    setup(props, context) {
         // NIM Identicon
         const $identicon = ref<Identicon>(null);
         const identiconUrl = ref('');
@@ -192,8 +192,13 @@ export default defineComponent({
         const stateChanges: SwapState[] = [];
         let processingStateChange = false;
         async function processStateChange() {
+            if (state.value === SwapState.COMPLETE) {
+                setTimeout(() => context.emit('finished'), 1 * 1000); // 1 second after the 1 second success animation
+            }
+
             if (processingStateChange || !stateChanges.length) return;
             processingStateChange = true;
+
             state.value = stateChanges.shift()!;
 
             // Wait for the animation of this step to finish
@@ -220,11 +225,15 @@ export default defineComponent({
                 processStateChange();
             }, delay * 1000);
         }
+        processStateChange();
+
         function setState(nextState: SwapState) {
             stateChanges.push(nextState); // Queue state change
             processStateChange(); // Start queue if not already processing
         }
+
         watch(() => props.swapState, setState);
+
         const animationClassName = computed(() => {
             switch (state.value) {
                 case SwapState.SIGN_SWAP: return 'sign-swap';

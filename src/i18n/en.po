@@ -209,8 +209,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:40
-#: src/components/swap/SwapAnimation.vue:75
+#: src/components/swap/SwapAnimation.vue:47
+#: src/components/swap/SwapAnimation.vue:89
 msgid "Block explorer"
 msgstr ""
 
@@ -547,8 +547,8 @@ msgstr ""
 msgid "File contains no contacts."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:91
-#: src/components/swap/SwapAnimation.vue:92
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:106
 msgid "Finalizing swap"
 msgstr ""
 
@@ -1045,7 +1045,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:83
+#: src/components/swap/SwapAnimation.vue:97
 msgid "Setting up swap"
 msgstr ""
 

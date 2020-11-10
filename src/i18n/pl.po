@@ -511,7 +511,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Edytuj liczbę miejsc po przecinku w wartościach waluty NIM."
 
 #: src/components/modals/BtcSendModal.vue:468
-#: src/components/modals/SendModal.vue:495
+#: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
 msgstr "Edytuj transakcję"
 
@@ -537,7 +537,7 @@ msgstr "wygasła"
 msgid "Expired"
 msgstr "Wygasła"
 
-#: src/components/modals/SendModal.vue:357
+#: src/components/modals/SendModal.vue:356
 msgid "express"
 msgstr "ekspresowo"
 
@@ -598,7 +598,7 @@ msgstr "Dla początkujących"
 msgid "forum thread"
 msgstr "wątek na forum"
 
-#: src/components/modals/SendModal.vue:347
+#: src/components/modals/SendModal.vue:346
 msgid "free"
 msgstr "gratis"
 
@@ -997,7 +997,7 @@ msgstr ""
 "Zresetuj ustawienia portfela i ponownie wczytaj dane z sieci blockchain."
 
 #: src/components/modals/BtcSendModal.vue:467
-#: src/components/modals/SendModal.vue:494
+#: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "Ponów"
 
@@ -1068,7 +1068,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Wysyłaj, otrzymuj i przechowuj walutę BTC w swoim portfelu."
 
 #: src/components/modals/BtcSendModal.vue:464
-#: src/components/modals/SendModal.vue:491
+#: src/components/modals/SendModal.vue:490
 msgid "Sending Transaction"
 msgstr "Wysyłanie transakcji"
 
@@ -1080,11 +1080,11 @@ msgstr "Wysłano {btc} BTC"
 msgid "Sent {btc} BTC to {name}"
 msgstr "Wysłano {btc} BTC do odbiorcy {name}"
 
-#: src/components/modals/SendModal.vue:526
+#: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
 msgstr "Wysłano {nim} NIM"
 
-#: src/components/modals/SendModal.vue:522
+#: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
 msgstr "Wysłano {nim} NIM do odbiorcy {name}"
 
@@ -1155,7 +1155,7 @@ msgid "Skip for now"
 msgstr "Pomiń"
 
 #: src/components/modals/BtcSendModal.vue:533
-#: src/components/modals/SendModal.vue:537
+#: src/components/modals/SendModal.vue:536
 msgid "Something went wrong"
 msgstr "Coś poszło nie tak"
 
@@ -1173,7 +1173,7 @@ msgstr ""
 msgid "Staking"
 msgstr "Tworzenie depozytu"
 
-#: src/components/modals/SendModal.vue:352
+#: src/components/modals/SendModal.vue:351
 msgid "standard"
 msgstr "standardowa"
 

@@ -515,7 +515,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
 #: src/components/modals/BtcSendModal.vue:468
-#: src/components/modals/SendModal.vue:495
+#: src/components/modals/SendModal.vue:494
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
@@ -541,7 +541,7 @@ msgstr "истекла"
 msgid "Expired"
 msgstr "Истекла"
 
-#: src/components/modals/SendModal.vue:357
+#: src/components/modals/SendModal.vue:356
 msgid "express"
 msgstr "экспресс"
 
@@ -602,7 +602,7 @@ msgstr "Для начинающих"
 msgid "forum thread"
 msgstr "ветка форума"
 
-#: src/components/modals/SendModal.vue:347
+#: src/components/modals/SendModal.vue:346
 msgid "free"
 msgstr "свободно"
 
@@ -993,7 +993,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
 #: src/components/modals/BtcSendModal.vue:467
-#: src/components/modals/SendModal.vue:494
+#: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "Повторить"
 
@@ -1064,7 +1064,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
 #: src/components/modals/BtcSendModal.vue:464
-#: src/components/modals/SendModal.vue:491
+#: src/components/modals/SendModal.vue:490
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
@@ -1076,11 +1076,11 @@ msgstr "Отправить {btc} BTC"
 msgid "Sent {btc} BTC to {name}"
 msgstr "Отправить {btc} BTC на адрес {name}"
 
-#: src/components/modals/SendModal.vue:526
+#: src/components/modals/SendModal.vue:525
 msgid "Sent {nim} NIM"
 msgstr "Отправить {nim} NIM"
 
-#: src/components/modals/SendModal.vue:522
+#: src/components/modals/SendModal.vue:521
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
@@ -1151,7 +1151,7 @@ msgid "Skip for now"
 msgstr "В данный момент пропустить"
 
 #: src/components/modals/BtcSendModal.vue:533
-#: src/components/modals/SendModal.vue:537
+#: src/components/modals/SendModal.vue:536
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -1168,7 +1168,7 @@ msgstr ""
 msgid "Staking"
 msgstr " Стекинг"
 
-#: src/components/modals/SendModal.vue:352
+#: src/components/modals/SendModal.vue:351
 msgid "standard"
 msgstr "стандартный"
 

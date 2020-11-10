@@ -245,18 +245,24 @@ export default defineComponent({
                 return undefined;
             }
 
+            const separatorPositionX = $separator.value.getBoundingClientRect().left;
+
+            /* initialize the initialCursorPosition to the handle/separator position if not set yet */
+            if (initialCursorPosition === 0) initialCursorPosition = separatorPositionX;
+
             const cursorPositionDiff = (cursorPosition || currentCursorPosition) - initialCursorPosition;
             initialCursorPosition = (cursorPosition || currentCursorPosition);
 
             if (cursorPositionDiff === 0) return undefined;
 
             const movingDirection = cursorPositionDiff > 0 ? MovingDirection.RIGHT : MovingDirection.LEFT;
-            const separatorPositionX = $separator.value.getBoundingClientRect().left;
             const cursorSeparatorPositionDiff = (cursorPosition || currentCursorPosition) - separatorPositionX;
 
+            /* Prevent moving the handle if the mouse is not above it anymore */
             if (cursorSeparatorPositionDiff < 0 && movingDirection === MovingDirection.RIGHT) return undefined;
             if (cursorSeparatorPositionDiff > 0 && movingDirection === MovingDirection.LEFT) return undefined;
 
+            /* Amounts calculation */
             const fiatAmount = (Math.abs(cursorSeparatorPositionDiff) / $el.value.clientWidth)
                 * totalNewFiatBalance.value;
             const lunaAmount = activeBar.value.balanceChange
@@ -284,7 +290,7 @@ export default defineComponent({
                 return emit(SwapAsset.BTC, -accountBalance.value);
             }
 
-            /* Otherwise */
+            /* Otherwise, normal behavior */
             if (lunaAmount <= 0) {
                 return emit(SwapAsset.NIM, lunaAmount);
             }

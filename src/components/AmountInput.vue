@@ -112,6 +112,7 @@ export default defineComponent({
         }
 
         watch(() => props.value, (newValue: number | undefined) => {
+            if (newValue === valueInLuna.value) return;
             updateValue(newValue ? (newValue / 10 ** props.decimals).toString() : '');
         });
 

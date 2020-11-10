@@ -63,6 +63,10 @@ msgstr "2-4h"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat- & Telefonservice"
 
+#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:46
+msgid "30-day Limit"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr "6h+"
@@ -311,7 +315,7 @@ msgid "Choose a Recipient"
 msgstr "Empfänger auswählen"
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
@@ -336,7 +340,7 @@ msgstr "Bald"
 msgid "Coming soon"
 msgstr "Bald"
 
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:141
 msgid "Confirm"
 msgstr "Bestätigen"
 
@@ -435,10 +439,6 @@ msgstr "Vor einiger Zeit erstellt"
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:51
-msgid "Daily Limit"
-msgstr "Tageslimit"
-
 #: src/components/layouts/Settings.vue:121
 msgid "Developer"
 msgstr "Entwickler"
@@ -473,7 +473,7 @@ msgstr "Login-Datei speichern"
 msgid "Duration and fees are estimates."
 msgstr "Dauer und Gebühren sind Schätzungen."
 
-#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:51
 msgid "During early access, these limits apply."
 msgstr "Während des Testzugangs gelten diese Einschränkungen."
 
@@ -774,13 +774,9 @@ msgstr "Ausloggen"
 msgid "lost"
 msgstr "unterbrochen"
 
-#: src/components/swap/SwapModal.vue:44
+#: src/components/swap/SwapModal.vue:39
 msgid "Max."
 msgstr "Max."
-
-#: src/components/swap/SwapModal.vue:38 src/components/swap/SwapModal.vue:56
-msgid "Monthly Limit"
-msgstr "Monatslimit"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -931,7 +927,7 @@ msgstr ""
 "Daten zu erstellen, zu speichern und auf diese zuzugreifen und mit der "
 "Blockchain zu interagieren."
 
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:147
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 
@@ -1212,7 +1208,7 @@ msgstr "abgleichen"
 msgid "Tell us here"
 msgstr "Sag uns hier Bescheid"
 
-#: src/components/swap/SwapModal.vue:158
+#: src/components/swap/SwapModal.vue:148
 msgid "terms of service"
 msgstr "Nutzungsbedingungen"
 
@@ -1274,7 +1270,7 @@ msgstr "Es gibt kein \"Passwort vergessen\""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:52
 msgid "They will be increased gradually."
 msgstr "Sie werden schrittweise erhöht."
 

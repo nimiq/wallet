@@ -62,6 +62,10 @@ msgstr "2-4h"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Soporte Chat & Teléfono"
 
+#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:46
+msgid "30-day Limit"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr "6h+"
@@ -315,7 +319,7 @@ msgid "Choose a Recipient"
 msgstr "Elija un Destinatario"
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
@@ -340,7 +344,7 @@ msgstr "Próximamente"
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:141
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -439,10 +443,6 @@ msgstr "Creada hace algún tiempo"
 msgid "Credit Card accepted"
 msgstr "Tarjeta de Crédito aceptada"
 
-#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:51
-msgid "Daily Limit"
-msgstr "Límite Diario"
-
 #: src/components/layouts/Settings.vue:121
 msgid "Developer"
 msgstr "Programador"
@@ -477,7 +477,7 @@ msgstr "Descargue su Archivo de Sesión"
 msgid "Duration and fees are estimates."
 msgstr "La duración y las cuotas son estimados."
 
-#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:51
 msgid "During early access, these limits apply."
 msgstr "Durante el acceso preliminar, estos limites aplican."
 
@@ -778,13 +778,9 @@ msgstr "Cerrar Sesión"
 msgid "lost"
 msgstr "perdida"
 
-#: src/components/swap/SwapModal.vue:44
+#: src/components/swap/SwapModal.vue:39
 msgid "Max."
 msgstr "Max."
-
-#: src/components/swap/SwapModal.vue:38 src/components/swap/SwapModal.vue:56
-msgid "Monthly Limit"
-msgstr "Limite Mensual"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -933,7 +929,7 @@ msgstr ""
 "dispositivo. Nimiq solo le facilita, a través de un navegador, crear, "
 "almacenar y acceder a su información e interactuar con la cadena de bloques."
 
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:147
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr "Basado en Fastspot. Proceda para aceptar con sus {ToS-link}."
 
@@ -1218,7 +1214,7 @@ msgstr "sincronizando"
 msgid "Tell us here"
 msgstr "Cuéntanos acá."
 
-#: src/components/swap/SwapModal.vue:158
+#: src/components/swap/SwapModal.vue:148
 msgid "terms of service"
 msgstr "términos de servicio"
 
@@ -1280,7 +1276,7 @@ msgstr "No hay opción de \"Olvidé mi contraseña\""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:52
 msgid "They will be increased gradually."
 msgstr "Serán incrementados gradualmente."
 

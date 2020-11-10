@@ -62,6 +62,10 @@ msgstr "2-4 uur"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat & Telefonisch Support"
 
+#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:46
+msgid "30-day Limit"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr "+ 6 uur"
@@ -313,7 +317,7 @@ msgid "Choose a Recipient"
 msgstr "Kies een ontvanger"
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -338,7 +342,7 @@ msgstr "Binnenkort beschikbaar"
 msgid "Coming soon"
 msgstr "Binnenkort beschikbaar"
 
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:141
 msgid "Confirm"
 msgstr "Bevestigen"
 
@@ -439,10 +443,6 @@ msgstr "Enige tijd geleden aangemaakt"
 msgid "Credit Card accepted"
 msgstr "Creditcard geaccepteerd"
 
-#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:51
-msgid "Daily Limit"
-msgstr "Dagelijkse limiet"
-
 #: src/components/layouts/Settings.vue:121
 msgid "Developer"
 msgstr "Ontwikkelaar"
@@ -477,7 +477,7 @@ msgstr "Download je Login File"
 msgid "Duration and fees are estimates."
 msgstr "Looptijd en kosten zijn geschat."
 
-#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:51
 msgid "During early access, these limits apply."
 msgstr "Tijdens de early access zijn deze limieten van toepassing."
 
@@ -777,13 +777,9 @@ msgstr "Log uit"
 msgid "lost"
 msgstr "verloren"
 
-#: src/components/swap/SwapModal.vue:44
+#: src/components/swap/SwapModal.vue:39
 msgid "Max."
 msgstr "Max."
-
-#: src/components/swap/SwapModal.vue:38 src/components/swap/SwapModal.vue:56
-msgid "Monthly Limit"
-msgstr "Maandelijks limiet"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -932,7 +928,7 @@ msgstr ""
 "gemakkelijk, via een browser, om uw informatie te verwerken, op te slaan,  "
 "toegang te krijgen en om te communiceren met de blockchain."
 
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:147
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 "Mogelijk gemaakt door Fastspot. Ga verder om akkoord te gaan met de {ToS-"
@@ -1218,7 +1214,7 @@ msgstr "Synchroniseren"
 msgid "Tell us here"
 msgstr "Vertel het ons!"
 
-#: src/components/swap/SwapModal.vue:158
+#: src/components/swap/SwapModal.vue:148
 msgid "terms of service"
 msgstr "Servicevoorwaarden"
 
@@ -1279,7 +1275,7 @@ msgstr "Er is geen \"wachtwoord vergeten\""
 msgid "There's a problem"
 msgstr "Er is een probleem"
 
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:52
 msgid "They will be increased gradually."
 msgstr "Ze zullen geleidelijk worden verhoogd."
 

@@ -60,6 +60,10 @@ msgstr "2-4ч"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Чат и телефонная служба поддержки"
 
+#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:46
+msgid "30-day Limit"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr "6ч+"
@@ -311,7 +315,7 @@ msgid "Choose a Recipient"
 msgstr "Указать Получателя"
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
@@ -336,7 +340,7 @@ msgstr "В скором времени"
 msgid "Coming soon"
 msgstr "В скором времени"
 
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:141
 msgid "Confirm"
 msgstr "Подтвердить"
 
@@ -435,10 +439,6 @@ msgstr "Создан недавно"
 msgid "Credit Card accepted"
 msgstr "Принимаются кредитные карты"
 
-#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:51
-msgid "Daily Limit"
-msgstr "Дневной лимит"
-
 #: src/components/layouts/Settings.vue:121
 msgid "Developer"
 msgstr "Разработчик"
@@ -476,7 +476,7 @@ msgstr "Скачайте свой Файл Авторизации"
 msgid "Duration and fees are estimates."
 msgstr "Скорость и комиссия могут меняться"
 
-#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:51
 msgid "During early access, these limits apply."
 msgstr ""
 "Данные лимиты в силе на \n"
@@ -776,13 +776,9 @@ msgstr "Выйти"
 msgid "lost"
 msgstr "потерян"
 
-#: src/components/swap/SwapModal.vue:44
+#: src/components/swap/SwapModal.vue:39
 msgid "Max."
 msgstr "Макс."
-
-#: src/components/swap/SwapModal.vue:38 src/components/swap/SwapModal.vue:56
-msgid "Monthly Limit"
-msgstr "Месячный лимит"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -930,7 +926,7 @@ msgstr ""
 "ключами для доступа к адресам своего аккаунта. Для более быстрого и удобного"
 " доступа к блокчейну, Nimiq использует ваш браузер."
 
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:147
 msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 "Обеспечивается Fastspot. Подтвердить согласие \n"
@@ -1215,7 +1211,7 @@ msgstr "синхронизируется"
 msgid "Tell us here"
 msgstr "Сообщите нам здесь"
 
-#: src/components/swap/SwapModal.vue:158
+#: src/components/swap/SwapModal.vue:148
 msgid "terms of service"
 msgstr "Правила пользования услугой"
 
@@ -1278,7 +1274,7 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:52
 msgid "They will be increased gradually."
 msgstr "Они будут постепенно повышены."
 

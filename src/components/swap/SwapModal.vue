@@ -29,12 +29,7 @@
                                 ' They will be increased gradually.') }}</p>
                             <template v-if="limits">
                                 <div class="price-breakdown">
-                                    <label>{{ $t('Daily Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
-                                </div>
-                                <p></p>
-                                <div class="price-breakdown">
-                                    <label>{{ $t('Monthly Limit') }}</label>
+                                    <label>{{ $t('30-day Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
                                 </div>
                             </template>
@@ -47,12 +42,7 @@
                             <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left">
                                 <InfoCircleSmallIcon slot="trigger"/>
                                 <div class="price-breakdown">
-                                    <label>{{ $t('Daily Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.daily" currency="nim" roundDown/>
-                                </div>
-                                <p></p>
-                                <div class="price-breakdown">
-                                    <label>{{ $t('Monthly Limit') }}</label>
+                                    <label>{{ $t('30-day Limit') }}</label>
                                     <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
                                 </div>
                                 <p></p>

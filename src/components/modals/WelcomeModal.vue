@@ -73,7 +73,7 @@
         </PageBody>
 
         <PageBody v-else-if="page === 3" class="left-aligned">
-            <div class="text">
+            <div class="text page3-text">
                 <p class="nq-text">
                     {{ $t('Your Login File, in combination with your password, grants access.') }}
                 </p>
@@ -195,8 +195,9 @@ export default defineComponent({
         display: none;
     }
 
-    .nq-notice {
+    .page-header {
         white-space: pre-line;
+        padding-bottom: 2.5rem;
     }
 
     .page-body {
@@ -227,6 +228,10 @@ export default defineComponent({
         margin-left: 2rem;
         margin-right: 2rem;
         width: 27rem;
+    }
+
+    .page3-text .nq-text {
+        width: 31rem;
     }
 
     .visual img {
@@ -340,5 +345,11 @@ export default defineComponent({
     .skip:hover .nq-icon,
     .skip:focus .nq-icon {
         transform: translateX(0.25rem);
+    }
+
+    @media (max-width: 1160px) { /* Half mobile breakpoint */
+        .page3-text .nq-text {
+            width: 27rem;
+        }
     }
 </style>

@@ -32,9 +32,16 @@
                     </Tooltip>
                 </div>
             </div>
-            <Amount :decimals="0" :amount="accountBalance" :currency="'nim'" :currencyDecimals="5" value-mask/>
+            <Amount
+                :decimals="0"
+                :amount="accountBalance"
+                :currency="'nim'"
+                :currencyDecimals="5"
+                ref="$nimAmount"
+                :class="{ 'exchange-is-close': $nimAmount ? doElsTouch($nimAmount.$el, $exchange) : false }"
+                value-mask/>
         </div>
-        <div v-if="hasBitcoinAddresses" class="exchange">
+        <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
             <button
                 :disabled="!totalFiatAccountBalance"
                 class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent
@@ -71,13 +78,15 @@
                 :amount="btcAccountBalance"
                 :currency="btcUnit.ticker.toLowerCase()"
                 :currencyDecimals="btcUnit.decimals"
+                ref="$btcAmount"
+                :class="{ 'exchange-is-close': $btcAmount ? doElsTouch($btcAmount.$el, $exchange) : false }"
                 value-mask/>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
 import getBackgroundClass from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
@@ -141,6 +150,21 @@ export default defineComponent({
         const nimPercentageSum = computed(() =>
             nimBalanceDistribution.value.reduce((sum, account) => sum + (account.addressInfo.balance || 0), 0));
 
+        /* Used to detect when the .exchange is above any of the 2 Amount element */
+        const $exchange = ref<null | HTMLDivElement>(null);
+        const $nimAmount = ref<null | Amount>(null);
+        const $btcAmount = ref<null | Amount>(null);
+
+        function doElsTouch(el1: Element, el2: Element) {
+            const rect1 = el1.getBoundingClientRect();
+            const rect2 = el2.getBoundingClientRect();
+
+            return !((rect1.bottom < rect2.top)
+                    || (rect1.top > rect2.bottom)
+                    || (rect1.right < rect2.left)
+                    || (rect1.left > rect2.right));
+        }
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -151,6 +175,10 @@ export default defineComponent({
             nimBalanceDistribution,
             nimPercentageSum,
             btcUnit,
+            $exchange,
+            $nimAmount,
+            $btcAmount,
+            doElsTouch,
         };
     },
     components: {
@@ -168,14 +196,14 @@ export default defineComponent({
 .balance-distribution {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 
     .exchange {
         flex-direction: row;
         align-content: center;
         justify-content: space-around;
         padding: 0 1rem;
-        margin-top: -0.5rem;
+        margin-top: 0.5rem;
 
         button {
             display: flex;
@@ -201,6 +229,7 @@ export default defineComponent({
         align-content: center;
         align-self: flex-start;
         margin-top: 0.5rem;
+        position: relative;
 
         .distribution {
             display: flex;
@@ -279,14 +308,19 @@ export default defineComponent({
             margin-left: 0.125rem;
             margin-right: 0.125rem;
             text-align: left;
+
+            position: absolute;
+            z-index: 5;
+            top: 3rem;
+
+            &.exchange-is-close {
+                top: 4rem;
+            }
         }
 
-        &.btc {
+        &.btc > .amount {
+            text-align: right;
             align-self: flex-end;
-            > .amount {
-                text-align: right;
-                align-self: flex-end;
-            }
         }
     }
 }

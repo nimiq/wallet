@@ -69,7 +69,7 @@
                 <div class="columns swap-amounts flex-row">
                     <div class="left-column" :class="!wantNim && !getNim
                         ? 'no-value'
-                        : direction === SwapDirection.NIM_TO_BTC ? 'nq-red' : 'nq-green'"
+                        : direction === SwapDirection.NIM_TO_BTC ? 'nq-blue' : 'nq-green'"
                     >
                         <AmountInput
                             :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
@@ -93,7 +93,7 @@
                     </div>
                     <div class="right-column" :class="!wantBtc && !getBtc
                         ? 'no-value'
-                        : direction === SwapDirection.BTC_TO_NIM ? 'nq-red' : 'nq-green'"
+                        : direction === SwapDirection.BTC_TO_NIM ? 'nq-blue' : 'nq-green'"
                     >
                         <AmountInput
                             :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
@@ -1428,15 +1428,15 @@ export default defineComponent({
     /deep/ .ticker {
         font-size: inherit;
         line-height: 1;
-        margin-left: 0;
+        margin-left: 0.5rem;
     }
 
     .nq-green & {
         color: var(--nimiq-green);
     }
 
-    .nq-red & {
-        color: var(--nimiq-red);
+    .nq-blue & {
+        color: var(--nimiq-blue);
     }
 }
 

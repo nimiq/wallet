@@ -10,7 +10,7 @@
                         {{ $t('Use the slider or edit values to set up a swap.') }}
                     </div>
                     <div class="pills flex-row">
-                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right">
+                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                             <div slot="trigger" class="pill exchange-rate">
                                 1 NIM = <Amount :amount="Math.round(satsPerNim)" currency="btc"/>
                             </div>
@@ -28,6 +28,7 @@
                             :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
                             :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
                             :currency="currency"
+                            :container="this"
                         >
                             <div slot="trigger" class="pill exchange-rate">
                                 <FiatAmount :amount="myBtcFeeFiat
@@ -51,7 +52,7 @@
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                         </Tooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left">
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
                             <div slot="trigger" class="pill limits flex-row">
                                 <span v-if="limits">
                                     {{ $t('Max.') }}
@@ -1335,6 +1336,7 @@ export default defineComponent({
 
 .pills {
     justify-content: center;
+    flex-wrap: wrap;
 
     .tooltip {
         text-align: left;

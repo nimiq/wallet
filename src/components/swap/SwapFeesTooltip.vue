@@ -1,6 +1,8 @@
 <template>
     <Tooltip :styles="{width: '31.5rem'}" v-bind="$attrs" class="swap-fees-tooltip">
-        <InfoCircleSmallIcon slot="trigger"/>
+        <slot name="trigger" slot="trigger">
+            <InfoCircleSmallIcon />
+        </slot>
         <span>{{ $t('This amount includes:') }}</span>
         <div class="price-breakdown">
             <label>{{ $t('BTC network fees') }}</label>

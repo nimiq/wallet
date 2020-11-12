@@ -19,6 +19,25 @@
                                 {{ $t('The rate might change depending on the swap volume.') }}
                             </p>
                         </Tooltip>
+                        <SwapFeesTooltip
+                            preferredPosition="bottom left"
+                            :myBtcFeeFiat="myBtcFeeFiat"
+                            :myNimFeeFiat="myNimFeeFiat"
+                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                            :serviceNimFeeFiat="serviceNimFeeFiat"
+                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :currency="currency"
+                        >
+                            <div slot="trigger" class="pill exchange-rate">
+                                <FiatAmount :amount="myBtcFeeFiat
+                                    + myNimFeeFiat
+                                    + serviceBtcFeeFiat
+                                    + serviceNimFeeFiat
+                                    + serviceExchangeFeeFiat"
+                                    :currency="currency"/> fees
+                            </div>
+                        </SwapFeesTooltip>
                         <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
                             <span class="trigger flex-row" slot="trigger">
                                 <FlameIcon/>
@@ -76,20 +95,7 @@
                             @input="onInput(SwapAsset.NIM, $event)"
                             :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
                         </AmountInput>
-                        <div class="flex-row">
-                            <FiatConvertedAmount
-                                :amount="Math.abs(wantNim || getNim)" currency="nim"/>
-                            <SwapFeesTooltip
-                                v-if="direction === SwapDirection.NIM_TO_BTC && (wantNim || getNim)"
-                                preferredPosition="top right"
-                                :myBtcFeeFiat="myBtcFeeFiat"
-                                :myNimFeeFiat="myNimFeeFiat"
-                                :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                                :serviceNimFeeFiat="serviceNimFeeFiat"
-                                :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                                :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
-                                :currency="currency"/>
-                        </div>
+                        <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
                     </div>
                     <div class="right-column" :class="!wantBtc && !getBtc
                         ? 'no-value'
@@ -101,20 +107,7 @@
                             :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
                             <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                         </AmountInput>
-                        <div class="flex-row">
-                            <FiatConvertedAmount
-                                :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
-                            <SwapFeesTooltip
-                                v-if="direction === SwapDirection.BTC_TO_NIM && (wantBtc || getBtc)"
-                                preferredPosition="top left"
-                                :myBtcFeeFiat="myBtcFeeFiat"
-                                :myNimFeeFiat="myNimFeeFiat"
-                                :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                                :serviceNimFeeFiat="serviceNimFeeFiat"
-                                :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                                :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
-                                :currency="currency"/>
-                        </div>
+                        <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
                     </div>
                 </div>
 
@@ -607,12 +600,11 @@ export default defineComponent({
             if (direction.value === SwapDirection.BTC_TO_NIM) {
                 // BTC
                 const btcAmount = Math.abs(Math.max(wantBtc.value, -btcMaxSendableAmount.value) || getBtc.value);
-                // 48 extra weight units for BTC HTLC funding tx
                 const selected = selectOutputs(
                     accountUtxos.value,
                     btcAmount,
                     (feesPerUnit.btc || btcFeePerUnit.value),
-                    48,
+                    48, // 48 extra weight units for BTC HTLC funding tx
                 );
                 fundingFee = selected.utxos
                     .reduce((sum, utxo) => sum + utxo.witness.value, 0)
@@ -834,34 +826,46 @@ export default defineComponent({
         }, { lazy: true });
 
         const myNimFeeFiat = computed(() => {
-            if (!estimate.value) return 0;
-
-            const data = swap.value || estimate.value;
-            const fee = data.from.asset === SwapAsset.NIM ? data.from.fee : data.to.fee;
+            let fee: number;
+            if (!estimate.value) {
+                fee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+            } else {
+                const data = swap.value || estimate.value;
+                fee = data.from.asset === SwapAsset.NIM ? data.from.fee : data.to.fee;
+            }
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const myBtcFeeFiat = computed(() => {
-            if (!estimate.value) return 0;
-
-            const data = swap.value || estimate.value;
-            const fee = data.from.asset === SwapAsset.BTC ? data.from.fee : data.to.fee;
+            let fee: number;
+            if (!estimate.value) {
+                fee = estimateFees(1, 2, btcFeePerUnit.value, 48); // 48 extra weight units for BTC HTLC funding tx
+            } else {
+                const data = swap.value || estimate.value;
+                fee = data.from.asset === SwapAsset.BTC ? data.from.fee : data.to.fee;
+            }
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
         const serviceNimFeeFiat = computed(() => {
-            if (!estimate.value) return 0;
-
-            const data = swap.value || estimate.value;
-            const fee = data.from.asset === SwapAsset.NIM ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+            let fee: number;
+            if (!estimate.value) {
+                fee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+            } else {
+                const data = swap.value || estimate.value;
+                fee = data.from.asset === SwapAsset.NIM ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+            }
             return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
         });
 
         const serviceBtcFeeFiat = computed(() => {
-            if (!estimate.value) return 0;
-
-            const data = swap.value || estimate.value;
-            const fee = data.from.asset === SwapAsset.BTC ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+            let fee: number;
+            if (!estimate.value) {
+                fee = btcFeePerUnit.value * 154; // The vsize Fastspot charges for a funding tx
+            } else {
+                const data = swap.value || estimate.value;
+                fee = data.from.asset === SwapAsset.BTC ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+            }
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 

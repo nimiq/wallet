@@ -29,7 +29,7 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     await loadBitcoinJS();
 
     const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
-    NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'mainnet' : 'testnet']();
+    NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
     const client = new NimiqElectrumClient.ElectrumClient();
     resolver!(client);
 

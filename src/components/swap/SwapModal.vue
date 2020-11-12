@@ -139,9 +139,18 @@
                     <AlertTriangleIcon/>
                     {{ estimateError || swapError }}
                 </div>
+                <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
+                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
+                        <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
+                            Fastspot</a>
+                        <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
+                            Fastspot GO</a>
+                    </i18n>
+                </div>
                 <div v-else class="footer-notice nq-gray flex-row">
-                    <i18n path="Powered by Fastspot. Proceed to agree with its {ToS-link}." tag="span">
-                        <a slot="ToS-link" href="#" class="nq-link">{{ $t('terms of service') }}</a>
+                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot}." tag="span">
+                        <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
+                            Fastspot</a>
                     </i18n>
                 </div>
             </PageFooter>
@@ -1105,6 +1114,9 @@ export default defineComponent({
             addressListOverlayOpened.value = false;
         }
 
+        // Does not need to be reactive, as the config doesn't change during runtime.
+        const isMainnet = Config.environment === ENV_MAIN;
+
         return {
             onClose,
             satsPerNim,
@@ -1146,6 +1158,7 @@ export default defineComponent({
             btcUnit,
             addressListOverlayOpened,
             onAddressSelected,
+            isMainnet,
         };
     },
     components: {
@@ -1382,6 +1395,7 @@ export default defineComponent({
 .footer-notice {
     justify-content: center;
     align-items: center;
+    text-align: center;
     font-weight: 600;
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;

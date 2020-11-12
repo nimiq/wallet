@@ -162,11 +162,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:184
+#: src/components/swap/SwapModal.vue:196
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:233
+#: src/components/swap/SwapModal.vue:245
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -178,7 +178,7 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:59
+#: src/components/BalanceDistribution.vue:66
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/layouts/Settings.vue:88
@@ -242,6 +242,14 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:143
+msgid "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:153
+msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:210
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
@@ -273,7 +281,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:278
+#: src/components/swap/SwapModal.vue:290
 msgid "Choose an Address"
 msgstr ""
 
@@ -400,7 +408,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:156
+#: src/components/swap/SwapModal.vue:168
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your Wallet"
 msgstr ""
@@ -410,7 +418,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:270
+#: src/components/swap/SwapModal.vue:282
 msgid "Done"
 msgstr ""
 
@@ -488,6 +496,15 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:51
 #: src/components/modals/TransactionModal.vue:74
 msgid "Failed"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:145
+#: src/components/swap/SwapModal.vue:155
+msgid "Fastspot"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:148
+msgid "Fastspot GO"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:137
@@ -624,7 +641,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:198
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -650,7 +667,7 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:159
+#: src/components/swap/SwapModal.vue:171
 msgid "It's safe to close your wallet now"
 msgstr ""
 
@@ -796,7 +813,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:211
+#: src/components/swap/SwapModal.vue:223
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -814,7 +831,7 @@ msgstr ""
 msgid "Pending..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:164
 msgid "Performing Swap"
 msgstr ""
 
@@ -828,10 +845,6 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:13
 msgid "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not \"hosted wallets\". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain."
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:143
-msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:103
@@ -869,7 +882,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:253
+#: src/components/swap/SwapModal.vue:265
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -902,8 +915,8 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:213
-#: src/components/swap/SwapModal.vue:257
+#: src/components/swap/SwapModal.vue:225
+#: src/components/swap/SwapModal.vue:269
 msgid "Retrying..."
 msgstr ""
 
@@ -968,7 +981,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:209
+#: src/components/swap/SwapModal.vue:221
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1044,7 +1057,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:171
+#: src/components/swap/SwapModal.vue:183
 msgid "Signing swap..."
 msgstr ""
 
@@ -1086,11 +1099,11 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:165
 msgid "Swap Complete"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:255
+#: src/components/swap/SwapModal.vue:267
 msgid "Swap complete!"
 msgstr ""
 
@@ -1107,11 +1120,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:235
+#: src/components/swap/SwapModal.vue:247
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:173
+#: src/components/swap/SwapModal.vue:185
 msgid "Swap signed!"
 msgstr ""
 
@@ -1130,10 +1143,6 @@ msgstr ""
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:144
-msgid "terms of service"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5

@@ -106,6 +106,12 @@
             <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
         </div>
 
+        <div v-if="error" class="error nq-orange-bg">
+            <strong>{{ $t('Error:') }}</strong>
+            {{ error }}
+            <p>{{ $t('Retrying...') }}</p>
+        </div>
+
         <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
 
         <div class="buttons">
@@ -164,6 +170,10 @@ export default defineComponent({
             default: '',
         },
         nimAddress: {
+            type: String,
+            required: false,
+        },
+        error: {
             type: String,
             required: false,
         },
@@ -668,6 +678,23 @@ export default defineComponent({
     .nq-h2 {
         font-weight: normal;
         text-align: center;
+    }
+}
+
+.error {
+    position: absolute;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    border-radius: 0.5rem;
+    padding: 2rem;
+
+    p:last-child {
+        margin-bottom: 0;
+        font-size: var(--small-size);
+        font-weight: 600;
+        opacity: 0.7;
+        text-align: right;
     }
 }
 </style>

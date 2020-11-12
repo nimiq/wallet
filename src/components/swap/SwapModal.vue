@@ -167,6 +167,7 @@
                     :toAmount="swap.to.amount - swap.to.fee"
                     :toAddress="incomingHtlcAddress"
                     :nimAddress="activeAddressInfo.address"
+                    :error="swap.fundingError || swap.settlementError"
                     @finished="onAnimationComplete()"
                 />
             </PageBody>
@@ -186,6 +187,7 @@
                     :toAmount="34e3"
                     toAddress="tb1q9p4zd0t9c6vvtkh929dxyfek3dns8fyyv90tygvcsfdawrhxephs28y0mp"
                     :nimAddress="activeAddressInfo.address"
+                    :error="''"
                     @finished="onAnimationComplete()"
                 />
             </PageBody>

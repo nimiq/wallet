@@ -485,6 +485,10 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:110
+msgid "Error:"
+msgstr ""
+
 #: src/components/NetworkStats.vue:47
 msgid "established"
 msgstr ""
@@ -717,6 +721,11 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:52
 #: src/components/swap/SwapModal.vue:69
 msgid "loading..."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:102
+#: src/components/swap/SwapAnimation.vue:99
+msgid "Locking up {asset}"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14

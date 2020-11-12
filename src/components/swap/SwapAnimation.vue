@@ -113,16 +113,6 @@
         </div>
 
         <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
-
-        <div class="buttons">
-            <button class="nq-button-s inverse" @click="setState(SwapState.SIGN_SWAP)">Step 1</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.AWAIT_INCOMING)">Step 2</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.CREATE_OUTGOING)">Step 3</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.AWAIT_SECRET)">Step 4</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.SETTLE_INCOMING)">Step 5</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.COMPLETE)">Done</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.EXPIRED)">Expired</button>
-        </div>
     </div>
 </template>
 
@@ -270,7 +260,6 @@ export default defineComponent({
             nimBackgroundClass,
             $identicon,
             identiconUrl,
-            setState,
             swapDirection,
             explorerAddrLink,
             SwapAsset,
@@ -388,18 +377,6 @@ export default defineComponent({
         /deep/ .nq-icon {
             margin-left: 0.25rem;
         }
-    }
-}
-
-.buttons {
-    position: absolute;
-    bottom: 0rem;
-    left: 0;
-    z-index: 2;
-    opacity: 0;
-
-    &:hover {
-        opacity: 1;
     }
 }
 

@@ -180,7 +180,14 @@ export default defineComponent({
                 });
             });
         }
-        const nimBackgroundClass = computed(() => props.nimAddress ? getColorClass(props.nimAddress) : '');
+        const nimBackgroundClass = computed(() => {
+            if (!props.nimAddress) return '';
+
+            const className = getColorClass(props.nimAddress);
+            if (className === 'nq-blue') return 'white';
+
+            return className;
+        });
 
         // Swap Direction
         const swapDirection = computed(() => props.fromAsset === SwapAsset.NIM
@@ -439,6 +446,10 @@ export default defineComponent({
 
     .btc .piece {
         color: #f7931a;
+    }
+
+    .piece.white {
+        color: white;
     }
 
     svg {

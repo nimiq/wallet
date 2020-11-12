@@ -374,6 +374,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
+import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1190,28 +1191,6 @@ export default defineComponent({
             if (!swap.value) return null;
             return getOutgoingHtlcAddress(swap.value);
         });
-
-        function explorerTxLink(asset: SwapAsset, hash: string) {
-            switch (asset) {
-                case SwapAsset.NIM:
-                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
-                case SwapAsset.BTC:
-                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
-                default: throw new Error('Invalid asset');
-            }
-        }
-
-        function explorerAddrLink(asset: SwapAsset, address: string) {
-            switch (asset) {
-                case SwapAsset.NIM:
-                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/`
-                        + `#${address}`;
-                case SwapAsset.BTC:
-                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
-                        + `/address/${address}`;
-                default: throw new Error('Invalid asset');
-            }
-        }
 
         function finishSwap() {
             setActiveSwap(null);

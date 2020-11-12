@@ -12,6 +12,21 @@ type FastspotAsset = {
     symbol: SwapAsset,
     name: string,
     feePerUnit: string,
+    limits?: {
+        minimum: string | null,
+        maximum: string | null,
+    },
+    software?: {
+        name: string,
+        version: string | null,
+        network: 'test' | 'main',
+        syncBlockHeight: number,
+    },
+    provider?: {
+        url: string,
+        company: string | null,
+        engine: 'mock',
+    },
 };
 
 type FastspotFee = {
@@ -100,6 +115,10 @@ export type Asset = {
     asset: SwapAsset,
     name: string,
     feePerUnit: number,
+    limits: {
+        minimum: number,
+        maximum: number,
+    },
 };
 
 export type AssetList = {[asset in SwapAsset]: Asset};
@@ -425,6 +444,14 @@ export async function getAssets(): Promise<AssetList> {
                 asset: record.symbol,
                 name: record.name,
                 feePerUnit: coinsToUnits(record.symbol, record.feePerUnit),
+                limits: {
+                    minimum: record.limits && record.limits.minimum
+                        ? coinsToUnits(record.symbol, record.limits.minimum)
+                        : 0,
+                    maximum: record.limits && record.limits.maximum
+                        ? coinsToUnits(record.symbol, record.limits.maximum)
+                        : Infinity,
+                },
             };
         } catch (error) {
             console.warn(error.message, record); // eslint-disable-line no-console

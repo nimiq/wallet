@@ -10,16 +10,15 @@
                         {{ $t('Use the slider or edit values to set up a swap.') }}
                     </div>
                     <div class="pills flex-row">
-                        <div class="pill exchange-rate flex-row">
-                            <span>1 NIM = <Amount slot="btc" :amount="Math.round(satsPerNim)" currency="btc"/></span>
-                            <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom left">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                <span>{{ $t('This rate includes the swap fee.') }}</span>
-                                <p class="explainer">
-                                    {{ $t('The rate might change depending on the swap volume.') }}
-                                </p>
-                            </Tooltip>
-                        </div>
+                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right">
+                            <div slot="trigger" class="pill exchange-rate">
+                                1 NIM = <Amount :amount="Math.round(satsPerNim)" currency="btc"/>
+                            </div>
+                            <span>{{ $t('This rate includes the swap fee.') }}</span>
+                            <p class="explainer">
+                                {{ $t('The rate might change depending on the swap volume.') }}
+                            </p>
+                        </Tooltip>
                         <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
                             <span class="trigger flex-row" slot="trigger">
                                 <FlameIcon/>
@@ -27,31 +26,34 @@
                             </span>
                             <p>{{ $t('Early Access means that there are limits in place for swaps.' +
                                 ' They will be increased gradually.') }}</p>
-                            <template v-if="limits">
-                                <div class="price-breakdown">
-                                    <label>{{ $t('30-day Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
-                                </div>
-                            </template>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
                         </Tooltip>
-                        <div v-if="limits" class="pill limits flex-row">
-                            {{ $t('Max.') }}
-                            <FiatAmount slot="amount"
-                                :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-
-                            <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                <div class="price-breakdown">
-                                    <label>{{ $t('30-day Limit') }}</label>
-                                    <FiatConvertedAmount :amount="limits.monthly" currency="nim" roundDown/>
-                                </div>
-                                <p></p>
-                                <p class="explainer">
-                                    {{ $t('During early access, these limits apply.') }}
-                                    {{ $t('They will be increased gradually.') }}
-                                </p>
-                            </Tooltip>
-                        </div>
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left">
+                            <div slot="trigger" class="pill limits flex-row">
+                                <span v-if="limits">
+                                    {{ $t('Max.') }}
+                                    <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+                                </span>
+                                <template v-else>
+                                    {{ $t('Max.') }}
+                                    <CircleSpinner/>
+                                </template>
+                            </div>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
+                            <p></p>
+                            <p class="explainer">
+                                {{ $t('During early access, these limits apply.') }}
+                                {{ $t('They will be increased gradually.') }}
+                            </p>
+                        </Tooltip>
                     </div>
                 </div>
             </PageHeader>
@@ -300,7 +302,6 @@ import {
     PageFooter,
     Tooltip,
     FiatAmount,
-    InfoCircleSmallIcon,
     AlertTriangleIcon,
     CircleSpinner,
     CheckmarkIcon,
@@ -537,6 +538,8 @@ export default defineComponent({
                     delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
                 }
             }
+            if (wantBtc.value < 0) delta = Math.max(delta, 0);
+
             return delta;
         });
         const getBtc = computed(() => {
@@ -559,6 +562,9 @@ export default defineComponent({
                     delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
                 }
             }
+
+            if (wantNim.value < 0) delta = Math.max(delta, 0);
+
             return delta;
         });
 
@@ -582,40 +588,56 @@ export default defineComponent({
         const btcFeeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
         const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
-        function calculateRequestData(): {
-            from: SwapAsset | RequestAsset<SwapAsset>,
-            to: RequestAsset<SwapAsset> | SwapAsset,
+        function calculateFees(feesPerUnit = { nim: 0, btc: 0 }): {
             fundingFee: number,
             settlementFee: number,
-        } { // eslint-disable-line indent
+        } {
             let fundingFee: number | null = null;
             let settlementFee: number | null = null;
 
             if (direction.value === SwapDirection.NIM_TO_BTC) {
                 // NIM
-                fundingFee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+                fundingFee = (feesPerUnit.nim || nimFeePerUnit.value) * 244; // 244 = NIM HTLC funding tx size
 
                 // BTC
                 // 135 extra weight units for BTC HTLC settlement tx
-                settlementFee = estimateFees(1, 1, btcFeePerUnit.value, 135);
+                settlementFee = estimateFees(1, 1, (feesPerUnit.btc || btcFeePerUnit.value), 135);
             }
 
             if (direction.value === SwapDirection.BTC_TO_NIM) {
                 // BTC
                 const btcAmount = Math.abs(Math.max(wantBtc.value, -btcMaxSendableAmount.value) || getBtc.value);
                 // 48 extra weight units for BTC HTLC funding tx
-                const selected = selectOutputs(accountUtxos.value, btcAmount, btcFeePerUnit.value, 48);
+                const selected = selectOutputs(
+                    accountUtxos.value,
+                    btcAmount,
+                    (feesPerUnit.btc || btcFeePerUnit.value),
+                    48,
+                );
                 fundingFee = selected.utxos
                     .reduce((sum, utxo) => sum + utxo.witness.value, 0)
                     - btcAmount
                     - selected.changeAmount;
 
                 // NIM
-                settlementFee = nimFeePerUnit.value * 233; // 233 = NIM HTLC settlement tx size
+                settlementFee = (feesPerUnit.nim || nimFeePerUnit.value) * 233; // 233 = NIM HTLC settlement tx size
             }
 
             if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
 
+            return {
+                fundingFee,
+                settlementFee,
+            };
+        }
+
+        function calculateRequestData({ fundingFee, settlementFee }: {
+            fundingFee: number,
+            settlementFee: number,
+        }): {
+            from: SwapAsset | RequestAsset<SwapAsset>,
+            to: RequestAsset<SwapAsset> | SwapAsset,
+        } { // eslint-disable-line indent
             let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
             let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
 
@@ -646,8 +668,6 @@ export default defineComponent({
             return {
                 from,
                 to,
-                fundingFee,
-                settlementFee,
             };
         }
 
@@ -671,18 +691,82 @@ export default defineComponent({
             fetchingEstimate.value = true;
 
             try {
-                const { to, from, fundingFee, settlementFee } = calculateRequestData();
+                const fees = calculateFees();
+                const { to, from } = calculateRequestData(fees);
 
                 const newEstimate = await getEstimate(
                     from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
                     to as SwapAsset,
                 );
 
+                const nimPrice = newEstimate.from.asset === SwapAsset.NIM
+                    ? newEstimate.from
+                    : newEstimate.to.asset === SwapAsset.NIM
+                        ? newEstimate.to
+                        : null;
+                const btcPrice = newEstimate.from.asset === SwapAsset.BTC
+                    ? newEstimate.from
+                    : newEstimate.to.asset === SwapAsset.BTC
+                        ? newEstimate.to
+                        : null;
+
+                if (!nimPrice || !btcPrice) {
+                    throw new Error('UNEXPECTED: NIM or BTC price not included in estimate');
+                }
+
+                // Update local fees with latest feePerUnit values
+                const { fundingFee, settlementFee } = calculateFees({
+                    nim: nimPrice.feePerUnit,
+                    btc: btcPrice.feePerUnit,
+                });
+
                 newEstimate.from.fee = fundingFee;
                 newEstimate.to.fee = settlementFee;
-                estimate.value = newEstimate;
 
-                estimateError.value = null;
+                // Check against minimums
+                if (assets.value
+                    && assets.value[newEstimate.from.asset]
+                    && assets.value[newEstimate.from.asset].limits.minimum > newEstimate.from.amount
+                ) {
+                    const toCoinsFactor = newEstimate.from.asset === SwapAsset.NIM ? 1e5 : 1e8;
+                    const minimumFiat = (
+                        (assets.value[newEstimate.from.asset].limits.minimum + newEstimate.from.fee) / toCoinsFactor
+                    ) * exchangeRates.value[newEstimate.from.asset.toLowerCase()][currency.value]!;
+                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
+                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
+                    }) as string;
+                } // eslint-disable-line brace-style
+
+                else if (assets.value
+                    && assets.value[newEstimate.to.asset]
+                    && assets.value[newEstimate.to.asset].limits.minimum > newEstimate.to.amount
+                ) {
+                    const toCoinsFactor = newEstimate.to.asset === SwapAsset.NIM ? 1e5 : 1e8;
+                    const minimumFiat = (
+                        assets.value[newEstimate.to.asset].limits.minimum / toCoinsFactor
+                    ) * exchangeRates.value[newEstimate.to.asset.toLowerCase()][currency.value]!;
+                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
+                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
+                    }) as string;
+                } // eslint-disable-line brace-style
+
+                else if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+                    // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
+                    // Note: This currently only checks BTC fees!
+                    const toCoinsFactor = 1e8;
+                    const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
+                        * exchangeRates.value[CryptoCurrency.BTC][currency.value]!;
+                    estimateError.value = context.root.$t(
+                        'The fees (currently {amount}) determine the minimum amount.',
+                        { amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
+                    ) as string;
+                } // eslint-disable-line brace-style
+
+                else {
+                    estimateError.value = null;
+                }
+
+                estimate.value = newEstimate;
             } catch (err) {
                 console.error(err); // eslint-disable-line no-console
                 estimateError.value = err.message;
@@ -809,6 +893,7 @@ export default defineComponent({
         const canSign = computed(() =>
             !estimateError.value && !swapError.value
             && estimate.value
+            && limits.value
             && !fetchingEstimate.value
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );
@@ -829,12 +914,27 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { to, from, fundingFee, settlementFee } = calculateRequestData();
+                    const fees = calculateFees();
+                    const { to, from } = calculateRequestData(fees);
 
                     swapSuggestion = await createSwap(
                         from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
                         to as SwapAsset,
                     );
+
+                    // Update local fees with latest feePerUnit values
+                    const { fundingFee, settlementFee } = calculateFees({
+                        nim: swapSuggestion.from.asset === SwapAsset.NIM
+                            ? swapSuggestion.from.feePerUnit
+                            : swapSuggestion.to.asset === SwapAsset.NIM
+                                ? swapSuggestion.to.feePerUnit
+                                : 0,
+                        btc: swapSuggestion.from.asset === SwapAsset.BTC
+                            ? swapSuggestion.from.feePerUnit
+                            : swapSuggestion.to.asset === SwapAsset.BTC
+                                ? swapSuggestion.to.feePerUnit
+                                : 0,
+                    });
 
                     swapSuggestion.from.fee = fundingFee;
                     swapSuggestion.to.fee = settlementFee;
@@ -1174,7 +1274,6 @@ export default defineComponent({
         FiatConvertedAmount,
         Tooltip,
         FiatAmount,
-        InfoCircleSmallIcon,
         AlertTriangleIcon,
         CircleSpinner,
         CheckmarkIcon,
@@ -1230,10 +1329,46 @@ export default defineComponent({
     opacity: 0.5;
 }
 
+.pills {
+    justify-content: center;
+
+    .tooltip {
+        text-align: left;
+        margin-top: 1.5rem;
+    }
+
+    .tooltip + .tooltip {
+        margin-left: 0.75rem;
+    }
+}
+
+.pill {
+    align-items: center;
+    align-self: center;
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: rgba(31, 35, 72, 0.6);
+    padding: 0.75rem 1.5rem;
+    border-radius: 5rem;
+    box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
+}
+
+.pill.limits {
+    color: var(--nimiq-orange);
+    box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.7);
+
+    /deep/ svg {
+        margin-left: 0.75rem;
+        height: 1.75rem;
+        width: 1.75rem;
+    }
+}
+
 .early-access {
     position: absolute;
     top: 1.5rem;
     left: 1.5rem;
+    margin: 0 !important;
 
     .trigger.flex-row {
         display: flex;
@@ -1254,49 +1389,6 @@ export default defineComponent({
     /deep/ .tooltip-box {
         text-align: left;
         transform: translate(-5rem, 2rem);
-    }
-
-}
-
-.pills {
-    justify-content: center;
-}
-
-.pill {
-    align-items: center;
-    align-self: center;
-    font-size: var(--small-size);
-    font-weight: 600;
-    color: rgba(31, 35, 72, 0.6);
-    padding: 0.5rem 1rem 0.5rem 1.5rem;
-    border-radius: 5rem;
-    box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
-    margin-top: 1.5rem;
-
-    .tooltip {
-        margin-left: 0.75rem;
-        text-align: left;
-
-        .nq-icon {
-            display: block;
-            color: var(--text-30);
-        }
-    }
-}
-
-.pill.limits {
-    color: var(--nimiq-orange);
-    box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.7);
-    margin-left: 0.75rem;
-
-    > .fiat-amount {
-        margin-left: 0.5rem;
-    }
-
-    .tooltip {
-        .nq-icon {
-            color: rgba(252, 135, 2, 0.9);
-        }
     }
 }
 

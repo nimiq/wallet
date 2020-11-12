@@ -51,8 +51,8 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:32
-#: src/components/swap/SwapModal.vue:45
+#: src/components/swap/SwapModal.vue:30
+#: src/components/swap/SwapModal.vue:47
 msgid "30-day Limit"
 msgstr ""
 
@@ -162,11 +162,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:196
+#: src/components/swap/SwapModal.vue:195
 msgid "Awaiting incoming HTLC..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:245
+#: src/components/swap/SwapModal.vue:244
 msgid "Awaiting publishing of secret..."
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:145
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
@@ -281,7 +281,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:290
+#: src/components/swap/SwapModal.vue:289
 msgid "Choose an Address"
 msgstr ""
 
@@ -306,7 +306,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:137
+#: src/components/swap/SwapModal.vue:139
 msgid "Confirm"
 msgstr ""
 
@@ -408,7 +408,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:168
+#: src/components/swap/SwapModal.vue:167
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your Wallet"
 msgstr ""
@@ -418,7 +418,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
 #: src/components/ContactBook.vue:49
-#: src/components/swap/SwapModal.vue:282
+#: src/components/swap/SwapModal.vue:281
 msgid "Done"
 msgstr ""
 
@@ -434,15 +434,15 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:50
+#: src/components/swap/SwapModal.vue:53
 msgid "During early access, these limits apply."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:26
+#: src/components/swap/SwapModal.vue:25
 msgid "Early Access"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:28
+#: src/components/swap/SwapModal.vue:27
 msgid "Early Access means that there are limits in place for swaps. They will be increased gradually."
 msgstr ""
 
@@ -496,15 +496,6 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:51
 #: src/components/modals/TransactionModal.vue:74
 msgid "Failed"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:155
-msgid "Fastspot"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:148
-msgid "Fastspot GO"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:137
@@ -641,7 +632,7 @@ msgstr ""
 msgid "In cooperation with"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:198
+#: src/components/swap/SwapModal.vue:197
 msgid "Incoming HTLC verified!"
 msgstr ""
 
@@ -667,7 +658,7 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:171
+#: src/components/swap/SwapModal.vue:170
 msgid "It's safe to close your wallet now"
 msgstr ""
 
@@ -704,6 +695,11 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:32
+#: src/components/swap/SwapModal.vue:49
+msgid "loading..."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
@@ -719,7 +715,13 @@ msgid "lost"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:38
+#: src/components/swap/SwapModal.vue:42
 msgid "Max."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:747
+#: src/components/swap/SwapModal.vue:759
+msgid "Minimum swap amount is {amount}"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
@@ -813,7 +815,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:223
+#: src/components/swap/SwapModal.vue:222
 msgid "Outgoing HTLC created!"
 msgstr ""
 
@@ -831,7 +833,7 @@ msgstr ""
 msgid "Pending..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:164
+#: src/components/swap/SwapModal.vue:163
 msgid "Performing Swap"
 msgstr ""
 
@@ -882,7 +884,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:265
+#: src/components/swap/SwapModal.vue:264
 msgid "Redeeming incoming HTLC..."
 msgstr ""
 
@@ -915,8 +917,8 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:225
-#: src/components/swap/SwapModal.vue:269
+#: src/components/swap/SwapModal.vue:224
+#: src/components/swap/SwapModal.vue:268
 msgid "Retrying..."
 msgstr ""
 
@@ -981,7 +983,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:221
+#: src/components/swap/SwapModal.vue:220
 msgid "Sending outgoing HTLC..."
 msgstr ""
 
@@ -1057,7 +1059,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:183
+#: src/components/swap/SwapModal.vue:182
 msgid "Signing swap..."
 msgstr ""
 
@@ -1099,11 +1101,11 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:165
+#: src/components/swap/SwapModal.vue:164
 msgid "Swap Complete"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:267
+#: src/components/swap/SwapModal.vue:266
 msgid "Swap complete!"
 msgstr ""
 
@@ -1120,11 +1122,11 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:247
+#: src/components/swap/SwapModal.vue:246
 msgid "Swap secret published!"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:185
+#: src/components/swap/SwapModal.vue:184
 msgid "Swap signed!"
 msgstr ""
 
@@ -1147,6 +1149,10 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:768
+msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
@@ -1187,7 +1193,7 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:51
+#: src/components/swap/SwapModal.vue:54
 msgid "They will be increased gradually."
 msgstr ""
 

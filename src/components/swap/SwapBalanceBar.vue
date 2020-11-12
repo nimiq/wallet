@@ -1,15 +1,15 @@
 <template>
     <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
-            <div class="nimiq" @click="onActiveAddressClick()">
+            <button class="reset nimiq flex-row" @click="onActiveAddressClick()">
                 <div class="identicon-stack" ref="$nimiqIcon">
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                     <Identicon class="primary" :address="activeAddressInfo.address"/>
                 </div>
                 <label>{{ activeAddressInfo.label }}</label>
-            </div>
-            <div class="bitcoin">
+            </button>
+            <div class="bitcoin flex-row">
                 <label>Bitcoin</label>
                 <BitcoinIcon ref="$bitcoinIcon"/>
             </div>
@@ -19,7 +19,7 @@
             <CurvedLine :width="bitcoinConnectingLineWidth" :height="35" direction="left" />
         </div>
         <div class="balance-bar flex-row">
-            <div class="bar"
+            <div class="bar flex-row"
                 v-for="addressInfo in nimDistributionData"
                 :key="addressInfo.address"
                 :ref="addressInfo.active ? '$activeBar' : null"
@@ -518,9 +518,7 @@ export default defineComponent({
     --header-height: 5.25rem;
     height: var(--header-height);
 
-    & > div {
-        display: flex;
-        flex-direction: row;
+    & > * {
         flex-grow: 1;
         align-items: center;
 
@@ -534,7 +532,6 @@ export default defineComponent({
 .balance-bar-header .nimiq {
     max-width: 65%;
     position: relative;
-    cursor: pointer;
 
     &:before {
         content: "";
@@ -642,8 +639,6 @@ export default defineComponent({
     background-color: currentColor;
     border: .25rem solid currentColor;
     opacity: 0.25;
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: flex-end;
     overflow: hidden;

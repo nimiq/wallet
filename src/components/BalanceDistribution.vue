@@ -38,7 +38,9 @@
                 :currency="'nim'"
                 :currencyDecimals="5"
                 ref="$nimAmount"
-                :class="{ 'exchange-is-close': $nimAmount ? doElsTouch($nimAmount.$el, $exchange) : false }"
+                :class="{ 'exchange-is-close': ($nimAmount && $exchange)
+                    ? doElsTouch($nimAmount.$el, $exchange)
+                    : false }"
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
@@ -79,7 +81,9 @@
                 :currency="btcUnit.ticker.toLowerCase()"
                 :currencyDecimals="btcUnit.decimals"
                 ref="$btcAmount"
-                :class="{ 'exchange-is-close': $btcAmount ? doElsTouch($btcAmount.$el, $exchange) : false }"
+                :class="{ 'exchange-is-close': ($btcAmount && $exchange)
+                    ? doElsTouch($btcAmount.$el, $exchange)
+                    : false }"
                 value-mask/>
         </div>
     </div>

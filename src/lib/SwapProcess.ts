@@ -122,6 +122,44 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
         try {
             fundingTx = await sendNimTx(swap.value.fundingSerializedTx);
             if (fundingTx.state === NimTransactionState.NEW) throw new Error('Could not send transaction');
+
+            if (fundingTx.state === NimTransactionState.PENDING) {
+                const nimHtlcAddress = fundingTx.recipient;
+
+                useSwapsStore().setActiveSwap({
+                    ...swap.value,
+                    fundingTx: fundingTx!,
+                    fundingError: undefined,
+                });
+
+                // eslint-disable-next-line no-async-promise-executor
+                await new Promise<string>(async (resolve) => {
+                    function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
+                        if (tx.transactionHash !== fundingTx.transactionHash) return false;
+
+                        if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
+                            resolve();
+                            client.removeListener(handle);
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    const client = await getNetworkClient();
+                    // First subscribe to new transactions
+                    const handle = await client.addTransactionListener(listener, [nimHtlcAddress]);
+
+                    // Then check history
+                    try {
+                        const history = await client.getTransactionsByAddress(nimHtlcAddress, 0);
+                        for (const tx of history) {
+                            if (listener(tx)) break;
+                        }
+                    } catch (error) {
+                        console.error(error); // eslint-disable-line no-console
+                    }
+                });
+            }
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,

@@ -13,8 +13,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import Config from 'config';
-import { ENV_MAIN } from '../lib/Constants';
 import SpeedGauge from './SpeedGauge.vue';
 
 export default defineComponent({

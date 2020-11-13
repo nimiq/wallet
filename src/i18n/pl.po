@@ -39,7 +39,7 @@ msgstr ""
 msgid "{fee} fee"
 msgstr "Opłata {fee}"
 
-#: src/components/swap/SwapFeesTooltip.vue:21
+#: src/components/swap/SwapFeesTooltip.vue:23
 msgid "{perc}% of swap value."
 msgstr "{perc}% wartości wymiany."
 
@@ -62,9 +62,9 @@ msgstr "2–4 godz."
 msgid "24/7 Chat & Phone Support"
 msgstr "Wsparcie na czacie i przez telefon 24 h/7"
 
-#: src/components/swap/SwapModal.vue:33 src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
 msgid "30-day Limit"
-msgstr ""
+msgstr "Limit 30-dniowy"
 
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
@@ -192,13 +192,13 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr "Aplikacja na system Android oraz iOS"
 
-#: src/components/swap/SwapFeesTooltip.vue:10
+#: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Wymiany niepodzielne wymagają dwóch transakcji BTC."
 
 #: src/components/swap/SwapAnimation.vue:104
 msgid "Awaiting swap secret"
-msgstr ""
+msgstr "Oczekiwanie na sekret wymiany"
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
@@ -208,7 +208,7 @@ msgstr "Wróć do adresów"
 msgid "Backup"
 msgstr "Kopia zapasowa"
 
-#: src/components/BalanceDistribution.vue:59
+#: src/components/BalanceDistribution.vue:66
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:55
 #: src/components/layouts/Settings.vue:88
@@ -252,7 +252,7 @@ msgstr "Wysokość bloku"
 msgid "Browser"
 msgstr "Przeglądarka"
 
-#: src/components/swap/SwapFeesTooltip.vue:6
+#: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fees"
 msgstr "Opłaty w sieci BTC"
 
@@ -282,6 +282,18 @@ msgid ""
 "will be processed."
 msgstr ""
 "Dodając opłatę za transakcję, masz wpływ na szybkość jej przetwarzania."
+
+#: src/components/swap/SwapModal.vue:140
+msgid ""
+"By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
+msgstr ""
+"Klikając „potwierdź”, akceptujesz warunki świadczenia usług {Fastspot} i "
+"{FastspotGO}."
+
+#: src/components/swap/SwapModal.vue:148
+msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
+msgstr ""
+"Klikając „potwierdź”, akceptujesz warunki świadczenia usługi {Fastspot}."
 
 #: src/components/layouts/Settings.vue:210
 msgid "Cannot import contacts, wrong file format."
@@ -314,7 +326,7 @@ msgid "Choose a Recipient"
 msgstr "Wybierz odbiorcę"
 
 #: src/components/modals/SendModal.vue:155
-#: src/components/swap/SwapModal.vue:193
+#: src/components/swap/SwapModal.vue:177
 msgid "Choose an Address"
 msgstr "Wybierz adres"
 
@@ -339,7 +351,7 @@ msgstr "Już wkrótce"
 msgid "Coming soon"
 msgstr "Już wkrótce"
 
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:134
 msgid "Confirm"
 msgstr "Potwierdź"
 
@@ -474,15 +486,15 @@ msgstr "Pobierz plik logowania"
 msgid "Duration and fees are estimates."
 msgstr "Czas trwania i opłaty mają wartości szacunkowe."
 
-#: src/components/swap/SwapModal.vue:51
+#: src/components/swap/SwapModal.vue:74
 msgid "During early access, these limits apply."
 msgstr "W trakcie wczesnego dostępu obowiązują określone limity."
 
-#: src/components/swap/SwapModal.vue:27
+#: src/components/swap/SwapModal.vue:46
 msgid "Early Access"
 msgstr "Wczesny dostęp"
 
-#: src/components/swap/SwapModal.vue:29
+#: src/components/swap/SwapModal.vue:48
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -522,6 +534,10 @@ msgstr "Wpisz adres"
 #: src/components/modals/BtcSendModal.vue:16
 msgid "Enter recipient address..."
 msgstr "Wpisz adres odbiorcy…"
+
+#: src/components/swap/SwapAnimation.vue:110
+msgid "Error:"
+msgstr "Błąd:"
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
@@ -588,7 +604,7 @@ msgstr "Plik nie zawiera kontaktów."
 #: src/components/swap/SwapAnimation.vue:105
 #: src/components/swap/SwapAnimation.vue:106
 msgid "Finalizing swap"
-msgstr ""
+msgstr "Finalizowanie wymiany"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
@@ -750,16 +766,20 @@ msgstr "Lekki węzeł"
 
 #: src/components/modals/BtcReceiveModal.vue:46
 msgid "Limit of copied addresses reached."
-msgstr ""
+msgstr "Osiągnięto limit skopiowanych adresów."
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Wczytaj plik"
 
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+msgid "loading..."
+msgstr "wczytywanie…"
+
 #: src/components/swap/SwapAnimation.vue:102
 #: src/components/swap/SwapAnimation.vue:99
 msgid "Locking up {asset}"
-msgstr ""
+msgstr "Zamrażanie {asset}"
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -777,9 +797,13 @@ msgstr "Wyloguj się"
 msgid "lost"
 msgstr "utracony"
 
-#: src/components/swap/SwapModal.vue:39
+#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
 msgid "Max."
 msgstr "Maks."
+
+#: src/components/swap/SwapModal.vue:624 src/components/swap/SwapModal.vue:637
+msgid "Minimum swap amount is {amount}"
+msgstr "Minimalna kwota wymiany to {amount}"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -813,7 +837,7 @@ msgstr "Sieć"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Opłata sieciowa: {sats} sat/vByte"
 
-#: src/components/swap/SwapFeesTooltip.vue:13
+#: src/components/swap/SwapFeesTooltip.vue:15
 msgid "NIM network fees"
 msgstr "Opłaty w sieci NIM"
 
@@ -931,10 +955,6 @@ msgstr ""
 "przeglądarki, by ułatwiać tworzenie i zapisywanie informacji, a także "
 "uzyskiwanie do nich dostępu, oraz interakcję z siecią blockchain."
 
-#: src/components/swap/SwapModal.vue:147
-msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
-msgstr "Wymiana realizowana przez usługę Fastspot. Zaakceptuj {ToS-link}."
-
 #: src/components/layouts/AddressOverview.vue:103
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
@@ -1000,6 +1020,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:493
 msgid "Retry"
 msgstr "Ponów"
+
+#: src/components/swap/SwapAnimation.vue:112
+msgid "Retrying..."
+msgstr "Ponawianie…"
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
@@ -1104,7 +1128,7 @@ msgstr "Ustaw opłatę"
 
 #: src/components/swap/SwapAnimation.vue:97
 msgid "Setting up swap"
-msgstr ""
+msgstr "Przygotowywanie wymiany"
 
 #: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
@@ -1185,7 +1209,7 @@ msgstr "Wkrótce będzie ona dostępna dla rachunków bankowych obywateli UE."
 msgid "Store, send and receive NIM."
 msgstr "Przechowuj, wysyłaj i otrzymuj walutę NIM."
 
-#: src/components/swap/SwapFeesTooltip.vue:17
+#: src/components/swap/SwapFeesTooltip.vue:19
 msgid "Swap fee"
 msgstr "Opłata za wymianę"
 
@@ -1216,13 +1240,13 @@ msgstr "synchornizacja"
 msgid "Tell us here"
 msgstr "Zrób to tutaj"
 
-#: src/components/swap/SwapModal.vue:148
-msgid "terms of service"
-msgstr "warunki świadczenia usług"
-
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
 msgstr "Sieć testowa"
+
+#: src/components/swap/SwapModal.vue:648
+msgid "The fees (currently {amount}) determine the minimum amount."
+msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1277,7 +1301,7 @@ msgstr "Nie ma funkcji przypominania hasła"
 msgid "There's a problem"
 msgstr "Istnieje pewien problem"
 
-#: src/components/swap/SwapModal.vue:52
+#: src/components/swap/SwapModal.vue:75
 msgid "They will be increased gradually."
 msgstr "Z czasem ich wartość będzie stopniowo zwiększana."
 
@@ -1285,7 +1309,7 @@ msgstr "Z czasem ich wartość będzie stopniowo zwiększana."
 msgid "This address has already been used"
 msgstr "Ten adres został już użyty"
 
-#: src/components/swap/SwapFeesTooltip.vue:4
+#: src/components/swap/SwapFeesTooltip.vue:6
 msgid "This amount includes:"
 msgstr "Podana wartość zawiera:"
 
@@ -1318,7 +1342,7 @@ msgstr "Usługa ta jest obecnie niedostępna w twoim regionie."
 
 #: src/components/swap/SwapAnimation.vue:10
 msgid "This swap is as decentralized as the blockchain itself."
-msgstr ""
+msgstr "Wymiana ta jest tak zdecentralizowana jak sieć blockchain."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -1329,7 +1353,7 @@ msgstr "Odwiedź giełdę {exchange}"
 msgid "Total Balance"
 msgstr "Całkowite saldo"
 
-#: src/components/swap/SwapFeesTooltip.vue:25
+#: src/components/swap/SwapFeesTooltip.vue:27
 msgid "Total fees"
 msgstr "Suma opłat"
 

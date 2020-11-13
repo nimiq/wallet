@@ -31,8 +31,8 @@ export default defineComponent({
             const availableDelay = Math.min((fees as number[]).length - 1, delay.value);
             let fee = (fees as number[])[availableDelay];
 
-            // Fake increasing fees in the testnet
-            if (Config.environment !== ENV_MAIN && fee < 3) {
+            // Set minimum fees for each step
+            if (fee < 3) {
                 if (delay.value === 1) fee = 3;
                 if (delay.value === 12) fee = 2;
             }

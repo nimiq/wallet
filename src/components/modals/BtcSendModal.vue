@@ -57,7 +57,6 @@
                                 :activeCurrency="btcUnit.ticker.toLowerCase()"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
-                                @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -70,7 +69,6 @@
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
-                                @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -270,66 +268,34 @@ export default defineComponent({
 
         const amountMenuOpened = ref(false);
 
-        const mempoolFees = ref([] as Array<[number, number]>);
+        const feeOptions = ref([] as number[]);
 
-        let isFetchingHistogram = false;
-        async function fetchMempoolFees() {
-            if (isFetchingHistogram) return;
-            isFetchingHistogram = true;
+        let isFetchingFeeEstimates = false;
+        async function fetchFeeEstimates() {
+            if (isFetchingFeeEstimates) return;
+            isFetchingFeeEstimates = true;
 
             const client = await getElectrumClient();
             await client.waitForConsensusEstablished();
 
-            const histogram = await client.getMempoolFees();
-            mempoolFees.value = histogram;
+            // 25 blocks is the maximum that some ElectrumX servers estimate for
+            const fees = await client.estimateFees([25, 12, 1]);
+            console.debug('Fee Estimates:', fees); // eslint-disable-line no-console
 
-            isFetchingHistogram = false;
+            const feesByTarget: number[] = [];
+            feesByTarget[1] = fees[1] || 3;
+            feesByTarget[12] = fees[12] || 2;
+            feesByTarget[25] = fees[25] || 1;
+
+            feeOptions.value = feesByTarget;
+            isFetchingFeeEstimates = false;
         }
-        fetchMempoolFees();
+        fetchFeeEstimates();
 
-        const histogramInterval = setInterval(async () => {
-            fetchMempoolFees();
-        }, 30 * 1000); // Update every 30 seconds
+        const feeEstimatesInterval = setInterval(fetchFeeEstimates, 60 * 1000); // Update every 60 seconds
 
         onUnmounted(() => {
-            clearInterval(histogramInterval);
-        });
-
-        const feeOptions = computed(() => {
-            // Estimate the fees for the next 12 hours = 72 blocks max
-
-            // Actual size is 1mil, but we calculate with 3/5 to simulate continously incoming txs.
-            const BLOCK_SIZE = 600000; // vsize = vbytes
-
-            let bracketIndex = 0;
-            let delay = 1;
-            let blockSize = BLOCK_SIZE;
-            const blocks: number[] = [];
-
-            let runningSize = 0;
-            while (bracketIndex <= mempoolFees.value.length && delay <= 72) { // 72 = 12h
-                const bracket = mempoolFees.value[bracketIndex];
-                if (!bracket) {
-                    // Set fee for block as the start fee of the last bracket
-                    blocks[delay] = Math.floor(mempoolFees.value[bracketIndex - 1]?.[0] || 1);
-                    break;
-                }
-
-                runningSize += bracket[1]; // Summarize bracket vsize
-
-                if (runningSize > blockSize) {
-                    // Set fee for block as the start fee of the oversized bracket
-                    blocks[delay] = Math.floor(bracket[0]);
-                    runningSize = bracket[1]; // eslint-disable-line prefer-destructuring
-                    delay += 1; // Go to next block
-                    // Reduce blockSize the higher the delay to simulate incoming txs until inclusion
-                    blockSize = BLOCK_SIZE / (delay * 0.5);
-                }
-
-                bracketIndex += 1;
-            }
-
-            return blocks;
+            clearInterval(feeEstimatesInterval);
         });
 
         const activeCurrency = ref('btc');

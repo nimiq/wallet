@@ -46,6 +46,8 @@
                     </transition>
                 </section>
 
+                <div class="flex-grow"></div>
+
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
                         <AmountInput v-if="activeCurrency === 'btc'"
@@ -94,6 +96,8 @@
                     </span>
                 </section>
 
+                <div class="flex-grow"></div>
+
                 <section class="fee-section flex-row">
                     <FeeSelector :fees="feeOptions" @fee="(fee) => feePerByte = fee"/>
                     <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
@@ -112,6 +116,13 @@
                     </Tooltip>
                 </section>
 
+                <button
+                    class="nq-button light-blue send-button"
+                    :disabled="!canSend"
+                    @click="sign"
+                    @mousedown.prevent
+                >{{ $t('Send Transaction') }}</button>
+
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
                     <InfoCircleSmallIcon slot="trigger"/>
                     <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
@@ -120,19 +131,6 @@
                     <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
                 </Tooltip>
             </PageBody>
-
-            <PageFooter class="flex-row">
-                <button
-                    class="nq-button light-blue"
-                    :disabled="!canSend"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Send Transaction') }}</button>
-
-                <!-- <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
-                    <ScanQrCodeIcon/>
-                </button> -->
-            </PageFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -155,7 +153,6 @@ import { defineComponent, ref, watch, computed, Ref, onMounted, onUnmounted } fr
 import {
     PageHeader,
     PageBody,
-    PageFooter,
     AlertTriangleIcon,
     ScanQrCodeIcon,
     LabelInput,
@@ -562,7 +559,6 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
         BtcAddressInput,
         BtcLabelInput,
         AlertTriangleIcon,
@@ -586,7 +582,8 @@ export default defineComponent({
         height: 100%;
 
         .nq-button {
-            margin: 0 4rem 3rem;
+            margin: 0 1rem;
+            flex-shrink: 0;
         }
     }
 
@@ -595,8 +592,6 @@ export default defineComponent({
 
         justify-content: space-between;
         flex-grow: 1;
-        padding-bottom: 2rem;
-        overflow: visible;
     }
 
     .address-section {
@@ -792,6 +787,7 @@ export default defineComponent({
     .amount-section {
         text-align: center;
         align-self: stretch;
+        margin: 4rem 0;
 
         .amount-row {
             align-self: stretch;
@@ -861,6 +857,7 @@ export default defineComponent({
     .fee-section {
         padding: 0 1.5rem;
         align-items: center;
+        margin-bottom: 2rem;
 
         .fee-selector {
             flex-grow: 1;

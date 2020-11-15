@@ -129,7 +129,7 @@
         transform: translateY(-50%) translateX(calc(0px - var(--fadeInTranslate)));
     }
     @else if $position == top {
-        left: 50%;
+        left: 60%;
         bottom: calc(100% + var(--arrowDistance));
         transform: translateY(calc(0px - var(--fadeInTranslate))) translateX(-50%);
     }
@@ -139,7 +139,7 @@
         transform: translateY(-50%) translateX(var(--fadeInTranslate));
     }
     @else if $position == bottom {
-        left: 50%;
+        left: 60%;
         top: calc(100% + var(--arrowDistance));
         transform: translateY(var(--fadeInTranslate)) translateX(-50%);
     }

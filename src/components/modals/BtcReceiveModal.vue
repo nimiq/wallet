@@ -630,9 +630,6 @@ footer {
     justify-content: center;
     margin-top: 2rem;
 
-    .nq-button-s {
-    }
-
     .qr-button {
         position: absolute;
         right: 3rem;
@@ -839,6 +836,10 @@ footer {
     .address-list .list {
         width: calc(100% + 6rem);
         padding: 0 3rem;
+
+        .scroll-mask.top {
+            transform: translateY(0);
+        }
     }
 }
 </style>

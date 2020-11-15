@@ -103,6 +103,10 @@ export default defineComponent({
         flex-grow: 1;
         height: 100%;
     }
+
+    &:focus-within .label-input-wrapper {
+        z-index: 3; // above the scroll-mask sticky top-gradient
+    }
 }
 
 .label-input-wrapper {
@@ -136,11 +140,6 @@ export default defineComponent({
         .nq-input {
             border-radius: 0.375rem;
             max-width: 17.5rem;
-
-            &:hover,
-            &:focus {
-                --border-color: var(--light-blue-40);
-            }
         }
     }
 }
@@ -177,6 +176,7 @@ export default defineComponent({
 .address-created {
     color: var(--text-60);
     font-size: var(--small-size);
+    font-weight: 600;
 }
 
 .copyable-short-address {

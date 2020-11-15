@@ -6,7 +6,8 @@
                 <LabelInput
                     v-model="addressInfo.label"
                     ref="$labelInput"
-                    :placeholder="$t('Unlabelled')"
+                    :placeholder="$t('Label the sender')"
+                    vanishing
                     @keydown.native.enter="$refs.$labelInput.blur()"
                 />
                 <div class="blue-tooltip" v-if="showTooltip">
@@ -115,36 +116,21 @@ export default defineComponent({
     width: 2.25rem;
     font-size: 1.375rem;
     letter-spacing: -0.05em;
-    filter: grayscale(100%);
-
-    transition: var(--short-transition-duration) filter var(--nimiq-ease);
-
-    .address-item:hover &,
-    .address-item:focus &,
-    .address-item:focus-within & {
-        filter: grayscale(0%);
-    }
 }
 
 .label-input {
     margin-left: 0.375rem;
 
-    &:not(:hover):not(:focus):not(:focus-within) {
-        /deep/ .nq-input {
-            --border-color: transparent;
-
-            &::placeholder {
-                color: var(--nimiq-blue);
-            }
-        }
-    }
-
     /deep/ {
         .nq-input,
         .width-finder {
-            padding: 0.25rem .5rem;
+            padding: 0.25rem .75rem;
             font-size: var(--body-size);
             font-weight: 600;
+        }
+
+        .width-finder {
+            padding-right: 1.25rem;
         }
 
         .nq-input {

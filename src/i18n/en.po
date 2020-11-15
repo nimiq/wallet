@@ -666,6 +666,10 @@ msgstr ""
 msgid "It's safe to close your Wallet now"
 msgstr ""
 
+#: src/components/BtcCopiedAddress.vue:9
+msgid "Label the sender"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
 msgstr ""
@@ -1277,10 +1281,6 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:76
 #: src/components/modals/BtcTransactionModal.vue:81
 msgid "Unknown"
-msgstr ""
-
-#: src/components/BtcCopiedAddress.vue:9
-msgid "Unlabelled"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35

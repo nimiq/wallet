@@ -1508,16 +1508,6 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay {
-    .page-header {
-        padding-bottom: 1rem;
-    }
-
-    .close-button {
-        display: none;
-    }
-}
-
 .swap-progress {
     .step {
         align-items: center;
@@ -1608,17 +1598,27 @@ export default defineComponent({
             right: 2rem;
         }
     }
+
+    .close-button {
+        display: none;
+    }
 }
 
-.address-list-overlay .page-body {
-    overflow-y: auto;
-    padding: 1rem 0 2rem;
+.address-list-overlay {
+    .page-header {
+        padding-bottom: 1rem;
+    }
 
-    .address-list {
-        height: 100%;
+    .page-body {
         overflow-y: auto;
-        overflow-x: hidden;
-        padding: 0 2rem;
+        padding: 1rem 0 2rem;
+
+        .address-list {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0 2rem;
+        }
     }
 }
 

@@ -72,7 +72,6 @@
             </div>
         </div>
         <div class="equilibrium-point nq-light-blue-bg"
-            ref="$equiPoint"
             :class="{
                 hidden: !equiPointVisible || equiPointPositionX <= 5 || equiPointPositionX >= 95,
             }"
@@ -307,7 +306,7 @@ export default defineComponent({
                 So we're updating them in the render loop until a more optimized way to do it is found.
             */
             updateConnectingLinesWidth();
-            updateEquiPoint();
+            updateEquiPointVisibility();
         }
 
         onMounted(() => {
@@ -369,41 +368,31 @@ export default defineComponent({
         const $separator = ref<HTMLDivElement | null>(null);
         const $btcChangeBar = ref<HTMLDivElement | null>(null);
         const $nimChangeBar = ref<HTMLDivElement[] | null>(null);
-        const $equiPoint = ref<HTMLDivElement | null>(null);
         const equiPointThreshold = 8;
         const equiPointPositionX = ref(0);
         const equiPointVisible = ref(false);
         const animatingBars = ref(false);
 
-        function updateEquiPoint() {
-            if (!$el.value || !activeBar.value || (!$btcChangeBar.value && !$nimChangeBar.value) || !$separator.value) {
+        function updateEquiPointVisibility() {
+            if (!$el.value || !$separator.value) {
                 return;
             }
 
             const { offsetLeft } = $separator.value;
 
-            /* update x position */
-            if (activeBar.value.balanceChange > 0 && $nimChangeBar.value && $nimChangeBar.value.length > 0) {
-                const nimBarIndex = nimDistributionData.value.findIndex((addressInfo) => addressInfo.active);
-
-                equiPointPositionX.value = ((offsetLeft - $nimChangeBar.value[nimBarIndex].clientWidth)
-                    / $el.value.offsetWidth) * 100;
-            } else if (btcDistributionData.value.balanceChange > 0 && $btcChangeBar.value) {
-                equiPointPositionX.value = ((offsetLeft + $btcChangeBar.value.clientWidth)
-                    / $el.value.offsetWidth) * 100;
-            } else if (equiPointPositionX.value !== offsetLeft) {
-                equiPointPositionX.value = (offsetLeft / $el.value.offsetWidth) * 100;
-            }
-
             /* hide the point if close to the handle/separator */
             if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / $el.value.offsetWidth) * 100
                 && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / $el.value.offsetWidth) * 100) {
-                if (equiPointVisible.value === true) equiPointVisible.value = false;
-                return;
+                equiPointVisible.value = false;
+            } else {
+                equiPointVisible.value = true;
             }
-
-            equiPointVisible.value = true;
         }
+
+        onMounted(() => {
+            const { offsetLeft } = $separator.value!;
+            equiPointPositionX.value = (offsetLeft / $el.value!.offsetWidth) * 100;
+        });
 
         function animatedReset() {
             animatingBars.value = true;
@@ -461,7 +450,6 @@ export default defineComponent({
             $btcChangeBar,
             $nimChangeBar,
             $separator,
-            $equiPoint,
 
             /* btc & nim distribution data */
             activeAddressInfo,
@@ -739,12 +727,9 @@ export default defineComponent({
     cursor: pointer;
     position: absolute;
     bottom: .25rem;
-    left: 0;
-    transform: translateX(-50%);
     opacity: 1;
 
-    transition-duration: 300ms;
-    transition-property: opacity, visibility, left;
+    transition: opacity 0.3s var(--nimiq-ease);
 
     &.hidden {
         opacity: 0;

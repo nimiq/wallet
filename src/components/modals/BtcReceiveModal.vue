@@ -117,34 +117,12 @@
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
         </PageBody>
 
-        <!-- copied from ReceiveModal.vue -->
-        <template v-if="receiveLinkOverlayOpened" slot="overlay">
-            <PageHeader class="link-overlay">
-                {{ $t('Share your Payment Link') }}
-                <div slot="more">
-                    {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
-                </div>
-            </PageHeader>
-            <PageBody class="flex-column link-overlay">
-                <div class="inputs">
-                    <div class="separator"></div>
-                    <!-- TODO: add label to AmountInput -->
-                    <AmountInput v-model="amount" :maxFontSize="5" :decimals="btcUnit.decimals">
-                        <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
-                    </AmountInput>
-                    <div class="separator"></div>
-                </div>
-                <QrCode
-                    :data="requestLink"
-                    :size="400"
-                    :fill="'#1F2348' /* nimiq-blue */"
-                    class="qr-code"
+        <PaymentLinkOverlay slot="overlay"
+            ref="$paymentLinkOverlay"
+            v-if="receiveLinkOverlayOpened"
+            :address="currentlyShownAddress"
+            currency="btc"
                 />
-                <Copyable :text="`${origin}/${requestLink}`">
-                    {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
-                </Copyable>
-            </PageBody>
-        </template>
     </Modal>
 </template>
 
@@ -160,16 +138,15 @@ import {
     QrCodeIcon,
     QrCode,
 } from '@nimiq/vue-components';
-import { createRequestLink, GeneralRequestLinkOptions, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useSettingsStore } from '../../stores/Settings';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
 import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
+import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -272,20 +249,6 @@ export default defineComponent({
         }
         showNextExternalAddress();
 
-        // requestLink
-        const amount = ref<number>(0);
-        const message = ref<string>('');
-
-        const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
-            currency: Currency.BTC,
-            amount: amount.value,
-            message: message.value,
-        }));
-
-        const requestLink = computed(
-            () => createRequestLink(currentlyShownAddress.value, requestLinkOptions.value),
-        );
-
         // Copy the address in the .address copyable
         function copyActiveAddressCallback() {
             if (!addressCopied.value) {
@@ -303,15 +266,18 @@ export default defineComponent({
             }
         }
 
-        // Modals booleans
+        // Modals booleans & refs
         const addressQrCodeOverlayOpened = ref<boolean>(false);
         const receiveLinkOverlayOpened = ref<boolean>(false);
+        const $paymentLinkOverlay = ref<{ clear(): void } | null>(null);
 
         // Close Overlay & reset the payment link value
         async function closeOverlay() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
-            amount.value = 0;
+            if ($paymentLinkOverlay.value) {
+                $paymentLinkOverlay.value.clear();
+            }
         }
 
         // Watching for sub-modals openings to set the actively shown address as copied
@@ -369,17 +335,11 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
-        const { btcUnit } = useSettingsStore();
-
         return {
-            origin: window.location.origin,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
+            $paymentLinkOverlay,
             closeOverlay,
-            amount,
-            btcUnit,
-            message,
-            requestLink,
             copyActiveAddressCallback,
             $copiedAddresses,
             addressCopied,
@@ -407,6 +367,7 @@ export default defineComponent({
         RefreshIcon,
         BracketsIcon,
         BtcCopiedAddress,
+        PaymentLinkOverlay,
     },
 });
 </script>
@@ -730,72 +691,6 @@ footer {
         font-weight: 600;
         white-space: pre;
         text-align: center;
-    }
-}
-
-/* copied from ReceiveModal.vue */
-.page-body.link-overlay {
-    justify-content: space-between;
-    align-items: center;
-    overflow: visible;
-
-    .inputs {
-        width: calc(100% + 4rem);
-        margin: 0 -2rem 2rem;
-        position: relative;
-
-        .separator:first-child {
-            height: 2px;
-            margin-bottom: 1.5rem;
-            box-shadow: inset 0 1.5px 0 var(--text-10);
-        }
-
-        .separator:last-child {
-            height: 2px;
-            margin-top: 1.5rem;
-            box-shadow: inset 0 -1.5px 0 var(--text-10);
-        }
-
-        .amount-input {
-            font-size: 5rem;
-
-            /deep/ .nim {
-                font-size: 0.5em;
-                margin-left: 0.5rem;
-                margin-right: calc(-1.9em - 0.5rem);
-            }
-
-            /deep/ .nq-input {
-                padding: 0;
-            }
-
-            /deep/ .width-finder {
-                padding: 0 1rem;
-            }
-        }
-    }
-
-    .qr-code {
-        flex-shrink: 1;
-        // min-height: 0;
-
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 200px = 400px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides (100px = 200px / 2).
-        transform: scale(0.5);
-        margin: -100px;
-    }
-
-    .copyable {
-        flex-shrink: 0;
-        max-width: 100%;
-        word-wrap: break-word;
-        color: rgba(31, 35, 72, 0.5);
-        text-align: center;
-        font-size: var(--h2-size);
-        margin-top: 2rem;
     }
 }
 

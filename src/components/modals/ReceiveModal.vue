@@ -1,7 +1,7 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
-        @close-overlay="addressQrCodeOverlayOpened = false; receiveLinkOverlayOpened = false; amount = 0;"
+        @close-overlay="closeOverlays"
     >
         <PageHeader>
             {{ $t('Receive NIM') }}
@@ -39,84 +39,53 @@
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
         </PageBody>
 
-        <template v-if="receiveLinkOverlayOpened" slot="overlay">
-            <PageHeader class="link-overlay">
-                {{ $t('Share your Payment Link') }}
-                <div slot="more">
-                    {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
-                </div>
-            </PageHeader>
-            <PageBody class="flex-column link-overlay">
-                <div class="dynamic-spacer"></div>
-                <div class="inputs">
-                    <div class="separator"></div>
-                    <AmountInput v-model="amount" :maxFontSize="5"/>
-                    <div class="separator"></div>
-                </div>
-                <!-- <AmountInput v-model="amount" />
-                <labelInput v-model="message" placeholder="add a message" /> -->
-                <div class="dynamic-spacer"></div>
-                <QrCode
-                    :data="requestLink"
-                    :size="400"
-                    :fill="'#1F2348' /* nimiq-blue */"
-                    class="qr-code"
-                />
-                <Copyable :text="`${origin}/${requestLink}`">
-                    {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
-                </Copyable>
-            </PageBody>
-        </template>
+        <PaymentLinkOverlay slot="overlay"
+            ref="$paymentLinkOverlay"
+            v-if="receiveLinkOverlayOpened"
+            currency="nim"
+            :address="activeAddressInfo.address"
+        />
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, ref } from '@vue/composition-api';
+import { defineComponent, ref, Ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
     Identicon,
     AddressDisplay,
-    AmountInput,
-    LabelInput,
     QrCodeIcon,
     QrCode,
     Copyable,
 } from '@nimiq/vue-components';
-import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
+import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
     setup() {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
-
-        const amount: Ref<string> = ref(0);
-        const message: Ref<string> = ref('');
         const { activeAddressInfo } = useAddressStore();
+        const $paymentLinkOverlay: Ref<{ clear(): void } | null> = ref(null);
 
-        const requestLinkOptions: Readonly<Ref<GeneralRequestLinkOptions>> = computed(() => ({
-            type: NimiqRequestLinkType.URI,
-            amount: Number.parseInt(amount.value, 10),
-            currency: Currency.NIM,
-            message: message.value,
-        }));
-
-        const requestLink = computed(
-            () => createRequestLink(activeAddressInfo.value!.address, requestLinkOptions.value),
-        );
+        function closeOverlays() {
+            addressQrCodeOverlayOpened.value = false;
+            receiveLinkOverlayOpened.value = false;
+            if ($paymentLinkOverlay.value) {
+                $paymentLinkOverlay.value.clear();
+            }
+        }
 
         return {
+            $paymentLinkOverlay,
             activeAddressInfo,
-            amount,
-            message,
-            requestLink,
-            origin: window.location.origin,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
             AddressType,
+            closeOverlays,
         };
     },
     components: {
@@ -125,11 +94,10 @@ export default defineComponent({
         PageBody,
         Identicon,
         AddressDisplay,
-        AmountInput,
-        LabelInput,
         QrCodeIcon,
         QrCode,
         Copyable,
+        PaymentLinkOverlay,
     } as any,
 });
 </script>
@@ -226,83 +194,6 @@ export default defineComponent({
         font-weight: 600;
         opacity: 0.6;
         margin-top: 1rem;
-    }
-}
-
-.link-overlay {
-    &.page-header {
-        padding: 4rem 3rem 2rem;
-    }
-
-    &.page-body {
-        padding: 1rem 3rem 3rem;
-        justify-content: space-between;
-        align-items: center;
-        overflow: visible;
-
-        .dynamic-spacer {
-            flex-grow: 1;
-            max-height: 1rem;
-        }
-
-        .inputs {
-            width: calc(100% + 4rem);
-            margin: -1rem -2rem 4rem;
-            position: relative;
-
-            .separator:first-child {
-                height: 2px;
-                margin-bottom: 1.5rem;
-                box-shadow: inset 0 1.5px 0 var(--text-10);
-            }
-
-            .separator:last-child {
-                height: 2px;
-                margin-top: 1.5rem;
-                box-shadow: inset 0 -1.5px 0 var(--text-10);
-            }
-
-            .amount-input {
-                font-size: 5rem;
-
-                /deep/ .nim {
-                    font-size: 0.5em;
-                    margin-left: 0.5rem;
-                    margin-right: calc(-1.9em - 0.5rem);
-                }
-
-                /deep/ .nq-input {
-                    padding: 0;
-                }
-
-                /deep/ .width-finder {
-                    padding: 0 1rem;
-                }
-            }
-        }
-
-        .qr-code {
-            flex-shrink: 1;
-            // min-height: 0;
-
-            // The QrCode is rendered at 2x size and then scaled to half its size,
-            // to be sharp on retina displays:
-            // 2 x 200px = 400px
-            // But now we need to make it behave as half its size as well, that's
-            // why we use negative margins on all sides (100px = 200px / 2).
-            transform: scale(0.5);
-            margin: -100px;
-        }
-
-        .copyable {
-            flex-shrink: 0;
-            max-width: 100%;
-            word-wrap: break-word;
-            color: rgba(31, 35, 72, 0.5);
-            text-align: center;
-            font-size: var(--h2-size);
-            margin-top: 2rem;
-        }
     }
 }
 </style>

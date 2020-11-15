@@ -13,6 +13,7 @@ export const useBtcNetworkStore = createStore({
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
         height: (state): Readonly<number> => state.height,
         timestamp: (state): Readonly<number> => state.timestamp,
+        consensus: (state): Readonly<string> => state.consensus,
     },
     actions: {},
 });

@@ -62,11 +62,14 @@
                     {{ $t('Bitcoin') }}
                     <div class="flex-grow"></div>
                     <div class="balances" v-if="hasBitcoinAddresses">
-                        <Amount
-                            :amount="btcAccountBalance"
-                            :currency="CryptoCurrency.BTC"
-                            value-mask
-                        />
+                        <div class="flex-row">
+                            <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
+                            <Amount
+                                :amount="btcAccountBalance"
+                                :currency="CryptoCurrency.BTC"
+                                value-mask
+                            />
+                        </div>
                         <FiatConvertedAmount class="fiat-balance"
                             :amount="btcAccountBalance"
                             :currency="CryptoCurrency.BTC"
@@ -122,6 +125,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 
 const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
 
@@ -193,6 +197,8 @@ export default defineComponent({
 
         watch(activeAccountInfo, determineModalToShow);
 
+        const { consensus: btcConsensus } = useBtcNetworkStore();
+
         return {
             activeAccountInfo,
             AccountType,
@@ -208,6 +214,7 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
+            btcConsensus,
         };
     },
     components: {
@@ -413,7 +420,7 @@ export default defineComponent({
         &.disabled {
             color: var(--text-40);
 
-            svg {
+            svg.bitcoin {
                 color: var(--text-20);
             }
 
@@ -429,7 +436,7 @@ export default defineComponent({
         }
     }
 
-    svg {
+    svg.bitcoin {
         color: var(--bitcoin-orange);
         margin-right: 2rem;
     }
@@ -437,6 +444,11 @@ export default defineComponent({
     .balances {
         text-align: right;
         flex-shrink: 0;
+
+        .nq-icon {
+            opacity: 0.3;
+            margin-right: 1rem;
+        }
     }
 
     .amount {

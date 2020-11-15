@@ -29,11 +29,20 @@
                     </div>
                 </div>
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div v-if="!item.inputs" class="month-label flex-row">
-                        <label>{{ item.transactionHash }}</label>
+                    <div v-if="!item.inputs /* true for non-transaction item (month header) */"
+                        class="month-label flex-row"
+                    >
+                        <label>{{ item.transactionHash /* the transactionHash is the Month name */ }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
                             <span>{{ $t('Fetching') }}</span>
+                        </div>
+                        <div
+                            v-else-if="item.isLatestMonth && consensus === 'connecting'"
+                            class="consensus-lost nq-orange flex-row"
+                        >
+                            <AlertTriangleIcon/>
+                            <span>{{ $t('Connection lost') }}</span>
                         </div>
                     </div>
                     <BtcTransactionListItem v-else :transaction="item"/>
@@ -74,7 +83,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
-import { CircleSpinner } from '@nimiq/vue-components';
+import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 // import Config from 'config';
 import { useBtcAddressStore } from '../stores/BtcAddress';
@@ -134,7 +143,7 @@ export default defineComponent({
     setup(props, context) {
         const { state: btcAddresses$, activeAddresses } = useBtcAddressStore();
         const { state: btcTransactions$ } = useBtcTransactionsStore();
-        const { isFetchingTxHistory } = useBtcNetworkStore();
+        const { isFetchingTxHistory, consensus } = useBtcNetworkStore();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -364,11 +373,13 @@ export default defineComponent({
             isFetchingTxHistory,
             // isMainnet,
             scroller,
+            consensus,
         };
     },
     components: {
         BtcTransactionListItem,
         CircleSpinner,
+        AlertTriangleIcon,
     },
 });
 </script>
@@ -588,13 +599,18 @@ export default defineComponent({
     }
 }
 
-.fetching {
+.fetching,
+.consensus-lost {
     span {
         font-size: var(--small-size);
         opacity: 0.5;
         margin-left: 1rem;
         font-weight: 600;
     }
+}
+
+.consensus-lost span {
+    opacity: 1;
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

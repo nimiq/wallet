@@ -109,7 +109,6 @@
         <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress"/>
 
         <PaymentLinkOverlay slot="overlay"
-            ref="$paymentLinkOverlay"
             v-if="receiveLinkOverlayOpened"
             :address="currentlyShownAddress"
             currency="btc"
@@ -261,15 +260,11 @@ export default defineComponent({
         // Modals booleans & refs
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
-        const $paymentLinkOverlay = ref<{ clear(): void } | null>(null);
 
         // Close Overlay & reset the payment link value
         async function closeOverlay() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
-            if ($paymentLinkOverlay.value) {
-                $paymentLinkOverlay.value.clear();
-            }
         }
 
         // Watching for sub-modals openings to set the actively shown address as copied
@@ -330,7 +325,6 @@ export default defineComponent({
         return {
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
-            $paymentLinkOverlay,
             closeOverlay,
             copyActiveAddressCallback,
             $copiedAddresses,

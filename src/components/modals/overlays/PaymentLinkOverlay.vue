@@ -74,11 +74,6 @@ export default defineComponent({
             requestLink,
         };
     },
-    methods: {
-        clear() {
-            (this as Vue & { amount: number }).amount = 0;
-        },
-    },
     components: {
         PageHeader,
         PageBody,

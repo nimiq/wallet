@@ -32,7 +32,6 @@
         <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="activeAddressInfo.address"/>
 
         <PaymentLinkOverlay slot="overlay"
-            ref="$paymentLinkOverlay"
             v-if="receiveLinkOverlayOpened"
             currency="nim"
             :address="activeAddressInfo.address"
@@ -41,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -62,18 +61,13 @@ export default defineComponent({
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
         const { activeAddressInfo } = useAddressStore();
-        const $paymentLinkOverlay: Ref<{ clear(): void } | null> = ref(null);
 
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
-            if ($paymentLinkOverlay.value) {
-                $paymentLinkOverlay.value.clear();
-            }
         }
 
         return {
-            $paymentLinkOverlay,
             activeAddressInfo,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,

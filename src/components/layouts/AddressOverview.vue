@@ -18,16 +18,22 @@
                     ) }}
                 </button>
                 <button
-                    v-if="activeCurrency === 'nim'"
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
                     <MenuDotsIcon/>
                     <div class="popup-menu nq-blue-bg">
-                        <button class="reset flex-row"
+                        <button v-if="activeCurrency === 'nim'"
+                            class="reset flex-row"
                             @mousedown="rename(activeAccountId, activeAddressInfo.address)"
                         >
                             <RenameIcon/>{{ $t('Rename') }}
+                        </button>
+                        <button v-if="activeCurrency === 'btc'"
+                            class="reset flex-row"
+                            @mousedown="rescan"
+                        >
+                            <RefreshIcon/>{{ $t('Rescan') }}
                         </button>
                     </div>
                 </button>
@@ -36,15 +42,22 @@
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
                     <BitcoinIcon v-else/>
-                    <button v-if="activeCurrency === 'nim'" class="reset identicon-menu flex-row"
+                    <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">
-                            <button class="reset flex-row"
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
                                 @mousedown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                            <button v-if="activeCurrency === 'btc'"
+                                class="reset flex-row"
+                                @mousedown="rescan"
+                            >
+                                <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                         </div>
                     </button>
@@ -149,13 +162,15 @@ import TransactionList from '../TransactionList.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
+import RefreshIcon from '../icons/RefreshIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { CryptoCurrency } from '../../lib/Constants';
+import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
+import { checkHistory } from '../../electrum';
 
 export default defineComponent({
     name: 'address-overview',
@@ -195,6 +210,18 @@ export default defineComponent({
                 ? 372
                 : 322);
 
+        function rescan() {
+            const { addressSet } = useBtcAddressStore();
+            checkHistory(
+                addressSet.value.external,
+                [],
+                0,
+                BTC_ADDRESS_GAP,
+                console.error, // eslint-disable-line no-console
+                true,
+            );
+        }
+
         return {
             activeCurrency,
             searchString,
@@ -202,6 +229,7 @@ export default defineComponent({
             activeAddressInfo,
             onboard,
             rename,
+            rescan,
             unclaimedCashlinkCount,
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
@@ -217,6 +245,7 @@ export default defineComponent({
         BitcoinIcon,
         GearIcon,
         RenameIcon,
+        RefreshIcon,
         Copyable,
         Amount,
         FiatConvertedAmount,

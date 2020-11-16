@@ -71,12 +71,13 @@ export async function sendTransaction(tx: SignedBtcTransaction | string) {
     return plainTx;
 }
 
-async function checkHistory(
+export async function checkHistory(
     addressInfos: BtcAddressInfo[],
     pendingTransactions: Transaction[],
     gap: number,
     allowedGap: number,
-    onError: () => void,
+    onError: (error: Error) => any,
+    forceCheck = false,
 ): Promise<number> {
     const client = await getElectrumClient();
     const { state: btcNetwork$ } = useBtcNetworkStore();
@@ -85,7 +86,7 @@ async function checkHistory(
     for (const addressInfo of addressInfos) {
         const { address } = addressInfo;
 
-        if (addressInfo.used && !addressInfo.utxos.length) {
+        if (!forceCheck && addressInfo.used && !addressInfo.utxos.length) {
             const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
             if (!hasPendingTransactions) {
                 gap = 0;

@@ -71,6 +71,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
@@ -89,7 +90,6 @@ import { isCashlinkData } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from '../stores/Cashlink';
 import { useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
-import { SwapAsset } from '../lib/FastspotApi';
 
 export default defineComponent({
     props: {

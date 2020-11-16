@@ -39,10 +39,10 @@
 import { computed, defineComponent, onMounted, Ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
+import { SwapAsset, Contract } from '@nimiq/fastspot-api';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
 import { awaitIncoming, awaitSecret, createOutgoing, settleIncoming } from '../../lib/SwapProcess';
-import { SwapAsset, Contract } from '../../lib/FastspotApi';
 import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';

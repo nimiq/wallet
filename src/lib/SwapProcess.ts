@@ -3,9 +3,9 @@ import {
     TransactionDetails as BtcTransactionDetails,
     TransactionState as BtcTransactionState,
 } from '@nimiq/electrum-client';
+import { NimHtlcDetails, SwapAsset } from '@nimiq/fastspot-api';
 import { ActiveSwap, SwapState, useSwapsStore } from '../stores/Swaps';
 import { TransactionState as NimTransactionState } from '../stores/Transactions';
-import { NimHtlcDetails, SwapAsset } from './FastspotApi';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
 import { getNetworkClient, sendTransaction as sendNimTx } from '../network';
 import { HTLC_ADDRESS_LENGTH } from './BtcHtlcDetection';

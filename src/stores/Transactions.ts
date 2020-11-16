@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -9,7 +10,6 @@ import {
 } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from './Cashlink';
 import { useSwapsStore } from './Swaps';
-import { SwapAsset } from '../lib/FastspotApi';
 import { getNetworkClient } from '../network';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {

@@ -2,12 +2,12 @@ import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
-import { SwapAsset } from '../lib/FastspotApi';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],

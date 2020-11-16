@@ -86,12 +86,12 @@ import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/com
 import { Identicon } from '@nimiq/vue-components';
 // @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
 import { getBackgroundColorName } from '@nimiq/iqons';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore, AddressInfo } from '../../stores/Address';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import { SwapAsset } from '../../lib/FastspotApi';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 

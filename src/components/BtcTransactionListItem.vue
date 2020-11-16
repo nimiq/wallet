@@ -69,6 +69,7 @@ import {
     Identicon,
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction } from '../stores/BtcTransactions';
@@ -84,7 +85,6 @@ import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
-import { SwapAsset } from '../lib/FastspotApi';
 
 export default defineComponent({
     props: {

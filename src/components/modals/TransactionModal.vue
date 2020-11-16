@@ -272,6 +272,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
+import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -300,7 +301,6 @@ import { useCashlinkStore } from '../../stores/Cashlink';
 import { manageCashlink, refundSwap } from '../../hub';
 import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
-import { SwapAsset, getAssets } from '../../lib/FastspotApi';
 import { sendTransaction } from '../../network';
 import { useAccountStore } from '../../stores/Account';
 

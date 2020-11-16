@@ -1,8 +1,8 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
 import { getElectrumClient } from '../electrum';
 import { loadBitcoinJS } from './BitcoinJSLoader';
-import { getContract, SwapAsset } from './FastspotApi';
 import { ENV_MAIN } from './Constants';
 
 export type BtcHtlcDetails = {

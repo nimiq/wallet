@@ -308,6 +308,21 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
+import {
+    init as initFastspotApi,
+    cancelSwap,
+    createSwap,
+    SwapAsset,
+    Estimate,
+    getEstimate,
+    PreSwap,
+    Limits,
+    getLimits,
+    AssetList,
+    getAssets,
+    RequestAsset,
+    getSwap,
+} from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/browser';
 import allSettled from 'promise.allsettled';
 import Config from 'config';
@@ -329,20 +344,6 @@ import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
-import {
-    cancelSwap,
-    createSwap,
-    SwapAsset,
-    Estimate,
-    getEstimate,
-    PreSwap,
-    Limits,
-    getLimits,
-    AssetList,
-    getAssets,
-    RequestAsset,
-    getSwap,
-} from '../../lib/FastspotApi';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
@@ -378,6 +379,8 @@ export default defineComponent({
         const { exchangeRates, currency } = useFiatStore();
 
         onMounted(() => {
+            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+
             if (!swap.value) {
                 fetchLimits();
                 fetchAssets();

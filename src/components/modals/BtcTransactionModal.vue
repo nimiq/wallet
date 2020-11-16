@@ -247,6 +247,7 @@ import {
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest } from '@nimiq/hub-api';
+import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -273,7 +274,6 @@ import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
-import { SwapAsset, getAssets } from '../../lib/FastspotApi';
 import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';

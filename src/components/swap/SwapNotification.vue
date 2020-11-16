@@ -77,17 +77,28 @@ export default defineComponent({
             console.info('Processing swap'); // eslint-disable-line no-console
 
             // Await Nimiq and Bitcoin consensus
-            const nimiqClient = await getNetworkClient();
             if (useNetworkStore().state.consensus !== 'established') {
-                await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                    if (state === 'established') res();
+                const nimiqClient = await getNetworkClient();
+                await new Promise((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                    if (state === 'established') resolve();
                 }));
             }
-            const electrum = await getElectrumClient();
-            await electrum.waitForConsensusEstablished();
+            if (useBtcNetworkStore().state.consensus !== 'established') {
+                const electrum = await getElectrumClient();
+                await electrum.waitForConsensusEstablished();
+
+                // If consensus was only just established, we need to wait for the first block event
+                await new Promise((resolve) => {
+                    const unsubscribe = useBtcNetworkStore().subscribe((mutation) => {
+                        if (!mutation.payload.timestamp) return;
+                        unsubscribe();
+                        resolve();
+                    });
+                });
+            }
 
             // Get current timestamp from a trusted source, not the user's device
-            const timestamp = useBtcNetworkStore().timestamp.value;
+            const { timestamp } = useBtcNetworkStore().state;
 
             // Check for swap expiry
             let isExpired = false;

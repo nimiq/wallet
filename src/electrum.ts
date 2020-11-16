@@ -145,8 +145,10 @@ export async function launchElectrum() {
 
     client.addHeadChangedListener((header) => {
         console.debug('BTC Head is now at', header.blockHeight);
-        btcNetwork$.height = header.blockHeight;
-        btcNetwork$.timestamp = header.timestamp;
+        useBtcNetworkStore().patch({
+            height: header.blockHeight,
+            timestamp: header.timestamp,
+        });
     });
 
     client.addConsensusChangedListener((state) => {

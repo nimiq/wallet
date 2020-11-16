@@ -505,7 +505,6 @@ export default defineComponent({
 
         & > svg {
             margin-right: 0.75rem;
-            fill: currentColor;
         }
     }
 
@@ -631,7 +630,6 @@ footer {
             }
 
             svg {
-                fill: currentColor;
                 opacity: 0.6;
             }
         }

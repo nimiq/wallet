@@ -3,7 +3,6 @@
         <slot name="trigger" slot="trigger">
             <InfoCircleSmallIcon />
         </slot>
-        <span>{{ $t('This amount includes:') }}</span>
         <div class="price-breakdown">
             <label>{{ $t('BTC network fees') }}</label>
             <FiatAmount :amount="myBtcFeeFiat + serviceBtcFeeFiat" :currency="currency"/>

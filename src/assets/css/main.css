@@ -55,6 +55,7 @@ button.reset:disabled {
     white-space: nowrap;
     margin: 1rem 0;
     font-size: var(--body-size);
+    line-height: 1.5;
 }
 
 .tooltip .explainer {

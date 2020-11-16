@@ -68,7 +68,7 @@
                                 <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
-                            <p></p>
+                            <div></div>
                             <p class="explainer">
                                 {{ $t('During early access, these limits apply.') }}
                                 {{ $t('They will be increased gradually.') }}
@@ -1465,7 +1465,8 @@ export default defineComponent({
         opacity: 0.3;
     }
 
-    .new-balances & {
+    .new-balances &,
+    .swap-amounts .nq-blue & {
         opacity: 0.4;
     }
 }

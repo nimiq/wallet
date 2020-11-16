@@ -51,8 +51,8 @@ export default defineComponent({
         },
     },
     setup(props/* , context */) {
-        const amount = ref<number>(0);
-        const message = ref<string>('');
+        const amount = ref(0);
+        const message = ref('');
         const { btcUnit } = useSettingsStore();
 
         const requestLinkOptions = computed(() => ({

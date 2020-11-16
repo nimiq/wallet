@@ -29,15 +29,7 @@
             </button>
         </PageBody>
 
-        <PageBody v-if="addressQrCodeOverlayOpened" class="address-qr-overlay flex-column" slot="overlay">
-            <QrCode
-                :data="activeAddressInfo.address"
-                :size="520"
-                :fill="'#1F2348' /* nimiq-blue */"
-                class="qr-code"
-            />
-            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
-        </PageBody>
+        <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="activeAddressInfo.address"/>
 
         <PaymentLinkOverlay slot="overlay"
             ref="$paymentLinkOverlay"
@@ -62,6 +54,7 @@ import {
 import Modal from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
+import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
@@ -98,6 +91,7 @@ export default defineComponent({
         QrCode,
         Copyable,
         PaymentLinkOverlay,
+        QrCodeOverlay,
     } as any,
 });
 </script>
@@ -156,32 +150,6 @@ export default defineComponent({
         &.copied {
             background: rgba(5, 130, 202, 0.07); // Based on Nimiq Light Blue
         }
-    }
-}
-
-.address-qr-overlay {
-    justify-content: space-evenly;
-    align-items: center;
-
-    .flex-spacer {
-        height: 2rem;
-    }
-
-    .qr-code {
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 260px = 560px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides (130px = 260px / 2).
-        transform: scale(0.5);
-        margin: -130px;
-    }
-
-    .qr-info-text {
-        font-size: var(--h2-size);
-        font-weight: 600;
-        white-space: pre;
-        text-align: center;
     }
 }
 

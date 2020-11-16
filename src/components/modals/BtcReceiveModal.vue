@@ -106,23 +106,14 @@
             </Tooltip>
         </PageBody>
 
-        <!-- copied from ReceiveModal.vue -->
-        <PageBody v-if="addressQrCodeOverlayOpened" class="address-qr-overlay flex-column" slot="overlay">
-            <QrCode
-                :data="currentlyShownAddress"
-                :size="520"
-                :fill="'#1F2348' /* nimiq-blue */"
-                class="qr-code"
-            />
-            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
-        </PageBody>
+        <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress"/>
 
         <PaymentLinkOverlay slot="overlay"
             ref="$paymentLinkOverlay"
             v-if="receiveLinkOverlayOpened"
             :address="currentlyShownAddress"
             currency="btc"
-                />
+        />
     </Modal>
 </template>
 
@@ -147,6 +138,7 @@ import AmountInput from '../AmountInput.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
 import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
+import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -212,7 +204,7 @@ export default defineComponent({
 
         // Copied addresses
         const $copiedAddresses = ref<{ focus(): void }[] | null>();
-        const addressCopied = ref<boolean>(false);
+        const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
                 .map((address) => ({
@@ -267,8 +259,8 @@ export default defineComponent({
         }
 
         // Modals booleans & refs
-        const addressQrCodeOverlayOpened = ref<boolean>(false);
-        const receiveLinkOverlayOpened = ref<boolean>(false);
+        const addressQrCodeOverlayOpened = ref(false);
+        const receiveLinkOverlayOpened = ref(false);
         const $paymentLinkOverlay = ref<{ clear(): void } | null>(null);
 
         // Close Overlay & reset the payment link value
@@ -299,7 +291,7 @@ export default defineComponent({
         // Auto-adapt font-size for the address to always fit the grey box
         const $availableAddressCopyable: Ref<Copyable | null> = ref(null);
         const $addressWidthFinder: Ref<HTMLDivElement | null> = ref(null);
-        const addressFontSizeScaleFactor: Ref<number> = ref(1);
+        const addressFontSizeScaleFactor = ref(1);
         let addressPadding: number | null = null;
 
         async function updateAddressFontSizeScaleFactor() {
@@ -368,6 +360,7 @@ export default defineComponent({
         BracketsIcon,
         BtcCopiedAddress,
         PaymentLinkOverlay,
+        QrCodeOverlay,
     },
 });
 </script>
@@ -664,33 +657,6 @@ footer {
                 margin: 0.25rem 0.25rem 0;
             }
         }
-    }
-}
-
-/* copied from ReceiveModal.vue */
-.address-qr-overlay {
-    justify-content: space-evenly;
-    align-items: center;
-
-    .flex-spacer {
-        height: 2rem;
-    }
-
-    .qr-code {
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 260px = 560px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides (130px = 260px / 2).
-        transform: scale(0.5);
-        margin: -130px;
-    }
-
-    .qr-info-text {
-        font-size: var(--h2-size);
-        font-weight: 600;
-        white-space: pre;
-        text-align: center;
     }
 }
 

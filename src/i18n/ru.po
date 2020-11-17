@@ -1,12 +1,12 @@
 # 
 # Translators:
+# Пётр Павлович <faentoad@gmail.com>, 2020
 # Daniel, 2020
 # Vad <vjuruss@gmail.com>, 2020
-# Пётр Павлович <faentoad@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Пётр Павлович <faentoad@gmail.com>, 2020\n"
+"Last-Translator: Vad <vjuruss@gmail.com>, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/107022/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -198,7 +198,7 @@ msgstr ""
 "Обмен проводится двумя \n"
 "транзакциями BTC."
 
-#: src/components/swap/SwapAnimation.vue:104
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "Ждем обмен"
 
@@ -242,8 +242,8 @@ msgstr "Блок #{height} "
 
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:47
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/swap/SwapAnimation.vue:51
+#: src/components/swap/SwapAnimation.vue:97
 msgid "Block explorer"
 msgstr "Обозреватель блоков"
 
@@ -348,7 +348,7 @@ msgstr "В скором времени"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "В скором времени"
+msgstr "Вскоре"
 
 #: src/components/swap/SwapModal.vue:134
 msgid "Confirm"
@@ -377,7 +377,7 @@ msgstr "подключаемся"
 
 #: src/components/BtcTransactionList.vue:45
 msgid "Connection lost"
-msgstr ""
+msgstr "Потеря связи"
 
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
@@ -541,7 +541,7 @@ msgstr "Укажите адрес"
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -607,8 +607,8 @@ msgstr "Значение в фиатной валюте не доступно"
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:106
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
 
@@ -748,7 +748,7 @@ msgstr "Теперь можно закрыть кошелек"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
-msgstr "Назовите отправителя"
+msgstr "Имя отправителя"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
@@ -783,8 +783,8 @@ msgstr "Загрузить файл"
 msgid "loading..."
 msgstr "загрузка..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "Блокируем {asset}"
 
@@ -1015,7 +1015,7 @@ msgstr "Запрос не удался"
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
 msgid "Rescan"
-msgstr ""
+msgstr "Рескан"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Reset your wallet settings and reload data from the blockchain."
@@ -1026,7 +1026,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 
@@ -1130,7 +1130,7 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Настройка обмена"
 
@@ -1156,7 +1156,7 @@ msgstr "Поделиться своим адресом с отправителе
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
 msgid "Share your Payment Link"
-msgstr "Поделиться ссылкой на свой платеж"
+msgstr "Поделиться ссылкой на свой платеж"
 
 #: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
@@ -1385,7 +1385,7 @@ msgstr "Твитни свою точку на карте!"
 #: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
-msgstr "Невостребованные Cashlink"
+msgstr "Активный Cashlink"
 
 #: src/components/modals/BtcTransactionModal.vue:133
 #: src/components/modals/BtcTransactionModal.vue:138

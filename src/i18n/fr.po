@@ -197,7 +197,7 @@ msgstr "Application Android et IOS"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Les swaps atomique nécessitent 2 transactions BTC."
 
-#: src/components/swap/SwapAnimation.vue:104
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "En attente du secret du swap"
 
@@ -241,8 +241,8 @@ msgstr "Bloc #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:47
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/swap/SwapAnimation.vue:51
+#: src/components/swap/SwapAnimation.vue:97
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
@@ -544,7 +544,7 @@ msgstr "Entrez l'adresse"
 msgid "Enter recipient address..."
 msgstr "Entrez l'adresse du destinataire..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Error:"
 msgstr "Erreur :"
 
@@ -610,8 +610,8 @@ msgstr "Fiat value unavailable"
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:106
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Finalisation du swap"
 
@@ -787,8 +787,8 @@ msgstr "Charger le fichier"
 msgid "loading..."
 msgstr "chargement..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "Verrouillage de {asset}"
 
@@ -1036,7 +1036,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Réessayer"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Retrying..."
 msgstr "Nouvelle tentative..."
 
@@ -1139,7 +1139,7 @@ msgstr "Définir le montant"
 msgid "Set fee"
 msgstr "Définir les frais"
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Mise en place du swap"
 

@@ -195,7 +195,7 @@ msgstr "Android und iOS App"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Ein sicherer Tausch benötigt zwei BTC Transaktionen."
 
-#: src/components/swap/SwapAnimation.vue:104
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "Warte auf Tausch-Schlüssel"
 
@@ -239,8 +239,8 @@ msgstr "Block #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:47
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/swap/SwapAnimation.vue:51
+#: src/components/swap/SwapAnimation.vue:97
 msgid "Block explorer"
 msgstr "Block Explorer"
 
@@ -539,7 +539,7 @@ msgstr "Adresse eingeben"
 msgid "Enter recipient address..."
 msgstr "Empfängeradresse eingeben..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Error:"
 msgstr "Error:"
 
@@ -605,8 +605,8 @@ msgstr "Fiatwert nicht verfügbar"
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:106
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Tausch finalisieren"
 
@@ -782,8 +782,8 @@ msgstr "Datei laden"
 msgid "loading..."
 msgstr "lade..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "Einschließen von {asset}"
 
@@ -1031,7 +1031,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Erneut versuchen"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Retrying..."
 msgstr "Versuche erneut..."
 
@@ -1135,7 +1135,7 @@ msgstr "Betrag festlegen"
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Tausch wird aufgesetzt"
 

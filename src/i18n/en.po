@@ -727,8 +727,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:728
-#: src/components/swap/SwapModal.vue:741
+#: src/components/swap/SwapModal.vue:731
+#: src/components/swap/SwapModal.vue:744
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -1161,7 +1161,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:752
+#: src/components/swap/SwapModal.vue:755
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 

@@ -184,7 +184,7 @@ msgstr "Android和iOS应用"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "原子交换需要进行两次比特币交易。"
 
-#: src/components/swap/SwapAnimation.vue:104
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "等待交换密语"
 
@@ -225,8 +225,8 @@ msgstr "区块＃{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:47
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/swap/SwapAnimation.vue:51
+#: src/components/swap/SwapAnimation.vue:97
 msgid "Block explorer"
 msgstr "区块链浏览器"
 
@@ -512,7 +512,7 @@ msgstr "输入地址"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Error:"
 msgstr "错误:"
 
@@ -578,8 +578,8 @@ msgstr "法币无法使用"
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:106
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
@@ -747,8 +747,8 @@ msgstr "加载文件"
 msgid "loading..."
 msgstr "载入中..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "正在锁定{asset}"
 
@@ -806,7 +806,7 @@ msgstr "网络"
 
 #: src/components/modals/BtcSendModal.vue:107
 msgid "Network fee: {sats} sat/vByte"
-msgstr "网络费用：{rate} 聪 (sat) / 交易大小 (vByte)"
+msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
 #: src/components/swap/SwapFeesTooltip.vue:14
 msgid "NIM network fees"
@@ -985,7 +985,7 @@ msgstr "重置您的钱包设置并从区块链重新加载数据。"
 msgid "Retry"
 msgstr "重试"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Retrying..."
 msgstr "重试..."
 
@@ -1086,7 +1086,7 @@ msgstr "设置金额"
 msgid "Set fee"
 msgstr "设置费用"
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "设置交换"
 

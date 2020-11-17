@@ -1,7 +1,10 @@
 <template>
     <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
-            <button class="reset nimiq flex-row" @click="onActiveAddressClick()">
+            <button class="reset nimiq flex-row"
+                :class="{ single: backgroundAddresses.length === 0 }"
+                @click="onActiveAddressClick"
+            >
                 <div class="identicon-stack" ref="$nimiqIcon">
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
@@ -402,11 +405,7 @@ export default defineComponent({
             }, 200);
         }
 
-        /* Emit click on active address for address selector overlay */
-        function onActiveAddressClick() {
-            context.emit('onActiveAddressClick');
-        }
-
+        /* For the .identicon-stack */
         const backgroundAddresses = computed(() =>
             // TODO: show next/first & previous/last address
             addressInfos.value
@@ -414,6 +413,13 @@ export default defineComponent({
                 .slice(0, 2)
                 .map((addressInfo) => addressInfo.address),
         );
+
+        /* Emit click on active address for address selector overlay */
+        function onActiveAddressClick() {
+            if (!backgroundAddresses.value || backgroundAddresses.value.length === 0) return;
+
+            context.emit('onActiveAddressClick');
+        }
 
         /* Move the separator to the cursor position or limit on click on a btc or nim active bar */
         let activeBarClickTimeoutId = 0;
@@ -521,21 +527,27 @@ export default defineComponent({
     max-width: 65%;
     position: relative;
 
-    &:before {
-        content: "";
-        border-radius: 0.75rem;
-        position: absolute;
-        top: -.5rem;
-        bottom: -.5rem;
-        left: -.5rem;
-        right: -.5rem;
-        background: transparent;
+    &:not(.single) {
+        &:before {
+            content: "";
+            border-radius: 0.75rem;
+            position: absolute;
+            top: -.5rem;
+            bottom: -.5rem;
+            left: -.5rem;
+            right: -.5rem;
+            background: transparent;
 
-        transition: background 400ms;
+            transition: background 400ms;
+        }
+
+        &:hover:before {
+            background: var(--nimiq-highlight-bg);
+        }
     }
 
-    &:hover:before {
-        background: var(--nimiq-highlight-bg);
+    &.single {
+        cursor: default;
     }
 
     label {

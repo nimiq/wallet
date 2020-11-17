@@ -807,7 +807,7 @@ msgstr "unterbrochen"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:624 src/components/swap/SwapModal.vue:637
+#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
 msgid "Minimum swap amount is {amount}"
 msgstr "Mindest-Tauschbetrag ist {amount}"
 
@@ -1249,7 +1249,7 @@ msgstr "Sag uns hier Bescheid"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:648
+#: src/components/swap/SwapModal.vue:651
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindest-Betrag."
 

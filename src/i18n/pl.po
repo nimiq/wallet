@@ -809,7 +809,7 @@ msgstr "utracony"
 msgid "Max."
 msgstr "Maks."
 
-#: src/components/swap/SwapModal.vue:624 src/components/swap/SwapModal.vue:637
+#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimalna kwota wymiany to {amount}"
 
@@ -1254,7 +1254,7 @@ msgstr "Zrób to tutaj"
 msgid "Testnet"
 msgstr "Sieć testowa"
 
-#: src/components/swap/SwapModal.vue:648
+#: src/components/swap/SwapModal.vue:651
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
 

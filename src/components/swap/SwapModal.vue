@@ -1080,7 +1080,8 @@ export default defineComponent({
             try {
                 signedTransactions = await setupSwap(hubRequest);
             } catch (error) {
-                captureException(error);
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
@@ -1113,7 +1114,9 @@ export default defineComponent({
             // Fetch contract from Fastspot and confirm that it's confirmed
             const confirmedSwap = await getSwap(swapId);
             if (!('contracts' in confirmedSwap)) {
-                captureException(new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap'));
+                const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;

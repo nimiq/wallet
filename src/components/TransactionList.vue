@@ -52,7 +52,7 @@
                 </div>
             </template>
 
-            <template v-if="transactions.length === 2 /* 1 label + 1 tx */" v-slot:after>
+            <template v-if="txCount === 1" v-slot:after>
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
@@ -172,6 +172,8 @@ export default defineComponent({
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
             .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
+
+        const txCount = computed(() => txsForActiveAddress.value.length);
 
         const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
             .filter((tx) =>
@@ -388,6 +390,7 @@ export default defineComponent({
             activeAddress,
             scrollerBuffer,
             itemSize,
+            txCount,
             transactions,
             $el,
             isFetchingTxHistory,

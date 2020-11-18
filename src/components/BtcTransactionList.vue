@@ -49,7 +49,7 @@
                 </div>
             </template>
 
-            <template v-if="transactions.length === 2 /* 1 label + 1 tx */" v-slot:after>
+            <template v-if="txCount === 1" v-slot:after>
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
@@ -158,6 +158,8 @@ export default defineComponent({
         // Get all transactions for the active addresses
         const txsForActiveAddress = computed(() => Object.values(btcTransactions$.transactions)
             .filter((tx) => tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress))));
+
+        const txCount = computed(() => txsForActiveAddress.value.length);
 
         // Apply search filter
         const filteredTxs = computed(() => {
@@ -368,6 +370,7 @@ export default defineComponent({
         return {
             scrollerBuffer,
             itemSize,
+            txCount,
             transactions,
             $el,
             isFetchingTxHistory,

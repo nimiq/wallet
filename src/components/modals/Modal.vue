@@ -1,6 +1,6 @@
 <template>
-    <div class="modal backdrop flex-column" @click="close">
-        <div class="wrapper flex-column" @click="onWrapperClick">
+    <div class="modal backdrop flex-column" @click.self="close">
+        <div class="wrapper flex-column" @click.self="close">
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
@@ -58,10 +58,6 @@ export default defineComponent({
             }
         };
 
-        function onWrapperClick(event: Event) {
-            if (!(event.target as Element).matches('.wrapper')) event.stopPropagation();
-        }
-
         document.addEventListener('keydown', onEscape);
 
         onUnmounted(() => {
@@ -70,7 +66,6 @@ export default defineComponent({
 
         return {
             close,
-            onWrapperClick,
         };
     },
     components: {

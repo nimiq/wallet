@@ -10,6 +10,8 @@ import { TransactionState as NimTransactionState } from '../stores/Transactions'
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
 import { getNetworkClient, sendTransaction as sendNimTx } from '../network';
 import { HTLC_ADDRESS_LENGTH } from './BtcHtlcDetection';
+import { BitcoinAssetHandler } from './swap/BitcoinAssetHandler';
+import { NimiqAssetHandler } from './swap/NimiqAssetHandler';
 
 export function getIncomingHtlcAddress(swap: ActiveSwap<any>) {
     switch (swap.to.asset) {
@@ -35,9 +37,11 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
     if (swap.value.to.asset === SwapAsset.BTC) {
         const htlcAddress = getIncomingHtlcAddress(swap.value);
 
-        // eslint-disable-next-line no-async-promise-executor
-        remoteFundingTx = await new Promise(async (resolve) => {
-            function listener(tx: BtcTransactionDetails) {
+        const client = await getElectrumClient();
+
+        remoteFundingTx = await new BitcoinAssetHandler(client).findTransaction(
+            htlcAddress,
+            (tx) => {
                 const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
                 if (!htlcOutput || htlcOutput.value !== swap.value.to.amount) return false;
 
@@ -47,33 +51,20 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
                     && ![BtcTransactionState.MINED, BtcTransactionState.CONFIRMED].includes(tx.state)
                 ) return false;
 
-                resolve(tx);
-                electrumClient.removeListener(handle);
                 return true;
-            }
-
-            const electrumClient = await getElectrumClient();
-            // First subscribe to new transactions
-            const handle = electrumClient.addTransactionListener(listener, [htlcAddress]);
-
-            // Then check history
-            const history = await electrumClient.getTransactionsByAddress(htlcAddress);
-            for (const tx of history) {
-                if (listener(tx)) break;
-            }
-        });
+            },
+        );
     }
 
     if (swap.value.to.asset === SwapAsset.NIM) {
         const nimHtlcData = swap.value.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
+        const htlcAddress = nimHtlcData.address;
 
-        remoteFundingTx = await new Promise<
-            ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
-        // eslint-disable-next-line no-async-promise-executor
-        >(async (resolve) => {
-            const htlcAddress = nimHtlcData.address;
+        const client = await getNetworkClient();
 
-            function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
+        remoteFundingTx = await new NimiqAssetHandler(client).findTransaction(
+            htlcAddress,
+            (tx) => {
                 if (tx.recipient !== htlcAddress) return false;
                 if (tx.value !== swap.value.to.amount) return false;
 
@@ -86,27 +77,11 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
                 });
 
                 if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
-                    resolve(tx);
-                    client.removeListener(handle);
                     return true;
                 }
                 return false;
-            }
-
-            const client = await getNetworkClient();
-            // First subscribe to new transactions
-            const handle = await client.addTransactionListener(listener, [htlcAddress]);
-
-            // Then check history
-            try {
-                const history = await client.getTransactionsByAddress(htlcAddress, 0);
-                for (const tx of history) {
-                    if (listener(tx)) break;
-                }
-            } catch (error) {
-                console.log(error); // eslint-disable-line no-console
-            }
-        });
+            },
+        );
     }
 
     useSwapsStore().setActiveSwap({
@@ -201,68 +176,31 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
 
     initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
 
-    // eslint-disable-next-line no-async-promise-executor
-    await new Promise(async (resolve$2) => {
-        const interval = setInterval(async () => {
-            try {
-                const foo = await getSwap(swap.value.id) as Swap;
-                if (foo.secret) {
-                    clearInterval(interval);
-                    secret = foo.secret;
-                    resolve$2();
-                }
-            } catch (error) {
-                // Ignore
-            }
-        }, 5 * 1000);
+        const client = await getNetworkClient();
 
-        if (swap.value.from.asset === SwapAsset.NIM) {
-            const nimHtlcAddress = getOutgoingHtlcAddress(swap.value);
+        // Wait until Fastspot claims the NIM HTLC created by us
+        const transaction = await new NimiqAssetHandler(client).findTransaction(
+            nimHtlcAddress,
+            (tx) => tx.sender === nimHtlcAddress && 'preImage' in tx.proof,
+        );
 
-            // Wait until Fastspot claims the NIM HTLC created by us
-            // eslint-disable-next-line no-async-promise-executor
-            secret = await new Promise<string>(async (resolve) => {
-                function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
-                    if (tx.sender === nimHtlcAddress && 'preImage' in tx.proof) {
-                        // @ts-ignore
-                        resolve(tx.proof.preImage);
-                        client.removeListener(handle);
-                        return true;
-                    }
-                    return false;
-                }
+        secret = (transaction.proof as any as {preImage: string}).preImage;
+    }
 
                 const client = await getNetworkClient();
                 // First subscribe to new transactions
                 const handle = await client.addTransactionListener(listener, [nimHtlcAddress]);
 
-                // Then check history
-                try {
-                    const history = await client.getTransactionsByAddress(nimHtlcAddress, 0);
-                    for (const tx of history) {
-                        if (listener(tx)) break;
-                    }
-                } catch (error) {
-                    console.error(error); // eslint-disable-line no-console
-                }
-            });
-        }
+        const client = await getElectrumClient();
 
-        if (swap.value.from.asset === SwapAsset.BTC) {
-            const btcHtlcAddress = getOutgoingHtlcAddress(swap.value);
+        const transaction = await new BitcoinAssetHandler(client).findTransaction(
+            btcHtlcAddress,
+            (tx) => tx.inputs.some((input) => input.address === btcHtlcAddress),
+        );
 
-            // Wait until Fastspot claims the BTC HTLC created by us
-            // eslint-disable-next-line no-async-promise-executor
-            secret = await new Promise<string>(async (resolve) => {
-                function listener(tx: BtcTransactionDetails) {
-                    const htlcInput = tx.inputs.find((input) => input.address === btcHtlcAddress);
-                    if (htlcInput) {
-                        resolve(htlcInput.witness[2] as string);
-                        electrumClient.removeListener(handle);
-                        return true;
-                    }
-                    return false;
-                }
+        // TODO: Differentiate redeem vs. refund tx
+        secret = transaction.inputs[0].witness[2] as string;
+    }
 
                 const electrumClient = await getElectrumClient();
                 // First subscribe to new transactions

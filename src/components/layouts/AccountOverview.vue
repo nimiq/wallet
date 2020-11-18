@@ -54,7 +54,6 @@
                     :class="{
                         'active': activeCurrency === CryptoCurrency.BTC,
                         'requires-activation': !hasBitcoinAddresses,
-                        'disabled': activeAccountInfo.type === AccountType.LEDGER,
                     }"
                     @click="selectBitcoin"
                 >
@@ -76,7 +75,6 @@
                             value-mask
                         />
                     </div>
-                    <label v-else-if="activeAccountInfo.type === AccountType.LEDGER">{{ $t('Coming soon') }}</label>
                     <button v-else
                         class="nq-button-pill light-blue"
                         @click.stop="$router.push('/btc-activation')" @mousedown.prevent

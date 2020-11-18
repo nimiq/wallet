@@ -295,7 +295,6 @@ msgstr ""
 msgid "Click for more information"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr ""
@@ -682,6 +681,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:377
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:135

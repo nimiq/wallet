@@ -246,7 +246,7 @@ import {
     getIncomingHtlcAddress,
     getOutgoingHtlcAddress,
 } from '../../lib/SwapProcess';
-import { useAccountStore } from '../../stores/Account';
+import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
@@ -264,6 +264,15 @@ export default defineComponent({
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
+
+        onMounted(() => {
+            // For blocking Ledger from swaps (not yet supported by Hub)
+            const { activeAccountInfo } = useAccountStore();
+            if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
+                swapError.value = context.root.$t(
+                    'Ledger accounts do not support Swaps yet, check back soon!') as string;
+            }
+        });
 
         const currentlySigning = ref(false);
 

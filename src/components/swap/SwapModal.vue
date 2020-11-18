@@ -1366,8 +1366,8 @@ export default defineComponent({
 }
 
 .pill.limits {
-    color: var(--nimiq-orange);
-    box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.7);
+    color: rgb(234, 166, 23);
+    box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
     /deep/ svg {
         margin-left: 0.75rem;

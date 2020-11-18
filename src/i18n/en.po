@@ -466,6 +466,10 @@ msgstr ""
 msgid "Light Node"
 msgstr ""
 
+#: src/components/modals/TransactionModal.vue:167
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr ""

@@ -131,6 +131,9 @@
                         class="nq-button-s manage-cashlink"
                         @click="manageCashlink(hubCashlink.address)"
                         @mousedown.prevent>{{ $t('Show Link') }}</button>
+                    <small v-else class="cashlink-not-available flex-column">
+                        {{ $t('Link not available in this browser') }}
+                    </small>
                 </div>
             </div>
 
@@ -579,6 +582,15 @@ export default defineComponent({
 
 .manage-cashlink {
     margin-top: 3rem;
+}
+
+.cashlink-not-available {
+    justify-content: center;
+    font-size: var(--small-size);
+    font-weight: 600;
+    opacity: 0.5;
+    text-align: center;
+    height: 9rem;
 }
 
 .amount-and-message {

@@ -1,6 +1,6 @@
 <template>
     <Modal :showOverlay="statusScreenOpened">
-        <div class="page flex-column">
+        <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="flex-column">
                 <section class="address-section" :class="{'extended': recipientWithLabel}">

@@ -1,6 +1,6 @@
+import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
 import { ENV_MAIN } from './Constants';
-import { SwapAsset } from './FastspotApi';
 
 
 export function explorerTxLink(asset: SwapAsset, hash: string) {

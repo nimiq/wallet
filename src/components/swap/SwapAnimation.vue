@@ -127,13 +127,13 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
 import { CheckmarkIcon, Identicon, Tooltip } from '@nimiq/vue-components';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
 import { SwapState } from '../../stores/Swaps';
-import { SwapAsset } from '../../lib/FastspotApi';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
 

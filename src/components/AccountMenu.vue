@@ -54,9 +54,9 @@
                     </button>
                 </div>
 
-                <div class="separator"></div>
+                <div class="separator" v-if="otherAccountIds.length"></div>
 
-                <div class="account-list">
+                <div class="account-list" v-if="otherAccountIds.length">
                     <AccountMenuItem
                         v-for="id of otherAccountIds" :key="id"
                         :id="id"

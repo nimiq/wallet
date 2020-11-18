@@ -8,7 +8,7 @@ export default {
     enableBitcoin: true,
 
     fastspot: {
-        apiEndpoint: 'https://api.fastspot.io/fast/v1',
-        apiKey: '',
+        apiEndpoint: 'https://api.go.fastspot.io/fast/v1',
+        apiKey: 'c20d43d0-8f60-4fca-a298-85e80f64d042',
     },
 };

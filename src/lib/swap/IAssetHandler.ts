@@ -14,5 +14,7 @@ export interface IAssetHandler<TTransaction> {
 
     awaitHtlcSettlement(address: string, data: string): Promise<TTransaction>;
 
-    settleHtlc(serializedTx: string): Promise<TTransaction>;
+    awaitSwapSecret(address: string, data: string): Promise<string>;
+
+    settleHtlc(serializedTx: string, secret: string, hash: string): Promise<TTransaction>;
 }

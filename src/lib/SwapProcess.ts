@@ -127,8 +127,7 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
         const client = await getNetworkClient();
 
         // Wait until Fastspot claims the NIM HTLC created by us
-        const transaction = await new NimiqAssetHandler(client).awaitHtlcSettlement(htlcAddress);
-        secret = (transaction.proof as any as {preImage: string}).preImage;
+        secret = await new NimiqAssetHandler(client).awaitSwapSecret(htlcAddress);
     }
 
     if (swap.value.from.asset === SwapAsset.BTC) {
@@ -137,11 +136,10 @@ export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>)
         const client = await getElectrumClient();
 
         // Wait until Fastspot claims the BTC HTLC created by us
-        const transaction = await new BitcoinAssetHandler(client).awaitHtlcSettlement(
+        secret = await new BitcoinAssetHandler(client).awaitSwapSecret(
             htlcData.address,
             htlcData.script
         );
-        secret = transaction.inputs[0].witness[2] as string;
     }
 
                 const electrumClient = await getElectrumClient();
@@ -171,20 +169,14 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
     let settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails;
 
     if (swap.value.to.asset === SwapAsset.BTC) {
-        // Place secret into BTC HTLC redeem transaction
-
-        // const rawTx = BitcoinJS.Transaction.fromHex(swap.value.settlementSerializedTx);
-        // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret.value, 'hex');
-        // const serializedTx = rawTx.toHex();
-        const serializedTx = swap.value.settlementSerializedTx.replace(
-            '000000000000000000000000000000000000000000000000000000000000000001',
-            // @ts-ignore Property 'secret' does not exist on type
-            `${swap.value.secret}01`,
-        );
-
         try {
             const client = await getElectrumClient();
-            settlementTx = await new BitcoinAssetHandler(client).createHtlc(serializedTx);
+            settlementTx = await new BitcoinAssetHandler(client).settleHtlc(
+                swap.value.settlementSerializedTx,
+                swap.value.secret,
+            );
+
+            // Make sure we are subscribed to our address, so we get updates about this tx
             subscribeToAddresses([settlementTx.outputs[0].address!]);
         } catch (error) {
             useSwapsStore().setActiveSwap({
@@ -196,18 +188,13 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
     }
 
     if (swap.value.to.asset === SwapAsset.NIM) {
-        // Place secret into NIM HTLC redeem transaction
-
-        const serializedTx = swap.value.settlementSerializedTx.replace(
-            '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925'
-            + '0000000000000000000000000000000000000000000000000000000000000000',
-            // @ts-ignore Property 'secret' does not exist on type
-            `${swap.value.hash!}${swap.value.secret}`,
-        );
-
         try {
             const client = await getNetworkClient();
-            await new NimiqAssetHandler(client).settleHtlc(serializedTx);
+            settlementTx = await new NimiqAssetHandler(client).settleHtlc(
+                swap.value.settlementSerializedTx,
+                swap.value.secret,
+                swap.value.hash,
+            );
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,

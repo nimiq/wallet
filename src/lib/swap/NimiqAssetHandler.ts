@@ -69,11 +69,23 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         return this.findTransaction(
             address,
             (tx) => tx.sender === address
-                && typeof (tx.proof as any as { preImage: unknown }).preImage === 'string',
+                // @ts-expect-error
+                && typeof tx.proof.preImage === 'string',
         );
     }
 
-    public async settleHtlc(serializedTx: string): Promise<Transaction> {
+    public async awaitSwapSecret(address: string): Promise<string> {
+        const tx = await this.awaitHtlcSettlement(address);
+        // @ts-expect-error
+        return tx.proof.preImage;
+    }
+
+    public async settleHtlc(serializedTx: string, secret: string, hash: string): Promise<Transaction> {
+        serializedTx = serializedTx.replace(
+            '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925' // SHA256 hash of dummy secret
+            + '0000000000000000000000000000000000000000000000000000000000000000', // Dummy secret
+            `${hash}${secret}`,
+        );
         return this.sendTransaction(serializedTx);
     }
 

@@ -72,7 +72,19 @@ export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
         );
     }
 
-    public async settleHtlc(serializedTx: string): Promise<TransactionDetails> {
+    public async awaitSwapSecret(address: string, data: string): Promise<string> {
+        const tx = await this.awaitHtlcSettlement(address, data);
+        return tx.inputs[0].witness[2] as string;
+    }
+
+    public async settleHtlc(serializedTx: string, secret: string): Promise<TransactionDetails> {
+        // const rawTx = BitcoinJS.Transaction.fromHex(serializedTx);
+        // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret, 'hex');
+        // serializedTx = rawTx.toHex();
+        serializedTx = serializedTx.replace(
+            '0000000000000000000000000000000000000000000000000000000000000000' + '01', // Dummy secret + marker
+            `${secret}01`,
+        );
         return this.sendTransaction(serializedTx);
     }
 

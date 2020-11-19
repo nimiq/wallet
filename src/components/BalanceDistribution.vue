@@ -154,7 +154,7 @@ export default defineComponent({
         const nimPercentageSum = computed(() =>
             nimBalanceDistribution.value.reduce((sum, account) => sum + (account.addressInfo.balance || 0), 0));
 
-        /* Used to detect when the .exchange is above any of the 2 Amount element */
+        /* Used to detect when the .exchange button is above any of the 2 Amount element */
         const $exchange = ref<null | HTMLDivElement>(null);
         const $nimAmount = ref<null | Amount>(null);
         const $btcAmount = ref<null | Amount>(null);
@@ -208,6 +208,8 @@ export default defineComponent({
         justify-content: space-around;
         padding: 0 1rem;
         margin-top: 0.5rem;
+        position: relative;
+        z-index: 1;
 
         button {
             display: flex;
@@ -217,6 +219,8 @@ export default defineComponent({
             width: 4rem;
             height: 4rem;
             border-radius: 2rem;
+            background-color: #e4e4e4; // var(--text-6) but without transparency
+            box-shadow: 0 1rem 1rem 0.5rem var(--bg-base);
 
             svg {
                 opacity: 0.5;
@@ -309,16 +313,29 @@ export default defineComponent({
             font-weight: bold;
             --size: var(--small-size);
             font-size: var(--small-size);
-            margin-left: 0.125rem;
-            margin-right: 0.125rem;
             text-align: left;
+            border-radius: 0.375rem;
+            cursor: default;
+            background-color: var(--bg-base);
+            padding: 0.5rem;
+            margin-top: -0.5rem;
+            margin-left: -0.375rem;
+            margin-right: -0.375rem;
 
             position: absolute;
-            z-index: 5;
+            z-index: 0;
             top: 3rem;
 
+            transition: all 200ms var(--nimiq-ease);
+
             &.exchange-is-close {
-                top: 4rem;
+                &:hover,
+                &:focus {
+                    z-index: 10;
+                    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.07),
+                                0 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
+                                0 0.0425rem 0.25rem rgba(0, 0, 0, 0.025);
+                }
             }
         }
 

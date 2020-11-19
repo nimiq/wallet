@@ -223,7 +223,7 @@
                 <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
 
                 <BlueLink
-                    :href="blockExplorerLink"
+                    :href="explorerTxLink('BTC', transaction.transactionHash)"
                     target="_blank"
                 >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
@@ -248,7 +248,6 @@ import {
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
-import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -270,13 +269,14 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE, ENV_MAIN } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
+import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -433,10 +433,6 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
-        const blockExplorerLink = computed(() =>
-            `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
-            + `/tx/${transaction.value.transactionHash}`);
-
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapBtcData;
             const htlcDetails = swapIn.htlc!;
@@ -500,7 +496,7 @@ export default defineComponent({
             // peerIsContact,
             // setContact,
             amountsHidden,
-            blockExplorerLink,
+            explorerTxLink,
             senderLabelAddress,
             recipientLabelAddress,
             setSenderLabel,

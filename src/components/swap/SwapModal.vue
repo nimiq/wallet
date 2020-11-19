@@ -1,6 +1,7 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened" :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :showOverlay="!!swap || addressListOverlayOpened"
+        :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <div class="page flex-column">
             <PageHeader>
@@ -152,134 +153,27 @@
             </PageFooter>
         </div>
 
-        <div v-if="swap" slot="overlay" class="page swap-progress flex-column">
-            <PageHeader>
-                <template v-if="swap.state !== SwapState.COMPLETE">{{ $t('Performing Swap') }}</template>
-                <template v-else>{{ $t('Swap Complete') }}</template>
-
-                <p v-if="swap.state !== SwapState.COMPLETE" slot="more" class="nq-notice warning">
-                    {{ $t('Don\'t close your Wallet') }}
-                </p>
-                <p v-else slot="more" class="nq-notice info">
-                    {{ $t('It\'s safe to close your wallet now') }}
-                </p>
-            </PageHeader>
-            <PageBody>
-                <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swap.state > SwapState.SIGN_SWAP}">
-                        <span v-if="swap.state < SwapState.SIGN_SWAP">1</span>
-                        <CircleSpinner v-else-if="swap.state === SwapState.SIGN_SWAP"/>
-                        <CheckmarkIcon v-else/>
-                    </div>
-                    <div v-if="swap.state >= SwapState.SIGN_SWAP" class="info">
-                        <div v-if="swap.state === SwapState.SIGN_SWAP">
-                            {{ $t('Signing swap...') }}
-                        </div>
-                        <div v-else>{{ $t('Swap signed!') }}</div>
-                    </div>
-                </div>
-                <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swap.state > SwapState.AWAIT_INCOMING}">
-                        <span v-if="swap.state < SwapState.AWAIT_INCOMING">2</span>
-                        <CircleSpinner v-else-if="swap.state === SwapState.AWAIT_INCOMING"/>
-                        <CheckmarkIcon v-else/>
-                    </div>
-                    <div v-if="swap.state >= SwapState.AWAIT_INCOMING" class="info">
-                        <div v-if="swap.state === SwapState.AWAIT_INCOMING">
-                            {{ $t('Awaiting incoming HTLC...') }}
-                        </div>
-                        <div v-else>{{ $t('Incoming HTLC verified!') }}</div>
-                        <code v-if="swap.remoteFundingTx" class="flex-row">
-                            <a class="nq-link" target="_blank"
-                                :href="explorerTxLink(swap.to.asset, swap.remoteFundingTx.transactionHash)"
-                            ><ShortAddress :address="swap.remoteFundingTx.transactionHash"/></a>
-                            <ArrowRightSmallIcon/>
-                            <a class="nq-link" target="_blank"
-                                :href="explorerAddrLink(swap.to.asset, incomingHtlcAddress)"
-                            ><ShortAddress :address="incomingHtlcAddress"/></a>
-                        </code>
-                    </div>
-                </div>
-                <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swap.state > SwapState.CREATE_OUTGOING}">
-                        <span v-if="swap.state < SwapState.CREATE_OUTGOING">3</span>
-                        <CircleSpinner v-else-if="swap.state === SwapState.CREATE_OUTGOING"/>
-                        <CheckmarkIcon v-else/>
-                    </div>
-                    <div v-if="swap.state >= SwapState.CREATE_OUTGOING" class="info">
-                        <div v-if="swap.fundingError" class="nq-orange flex-row">
-                            <AlertTriangleIcon/> {{ swap.fundingError }}
-                        </div>
-                        <div v-else-if="swap.state === SwapState.CREATE_OUTGOING">
-                            {{ $t('Sending outgoing HTLC...') }}
-                        </div>
-                        <div v-else>{{ $t('Outgoing HTLC created!') }}</div>
-
-                        <small v-if="swap.fundingError" class="nq-gray">{{ $t('Retrying...') }}</small>
-                        <code v-else-if="swap.fundingTx" class="flex-row">
-                            <a class="nq-link" target="_blank"
-                                :href="explorerTxLink(swap.from.asset, swap.fundingTx.transactionHash)"
-                            ><ShortAddress :address="swap.fundingTx.transactionHash"/></a>
-                            <ArrowRightSmallIcon/>
-                            <a class="nq-link" target="_blank"
-                                :href="explorerAddrLink(swap.from.asset, outgoingHtlcAddress)"
-                            ><ShortAddress :address="outgoingHtlcAddress"/></a>
-                        </code>
-                    </div>
-                </div>
-                <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swap.state > SwapState.AWAIT_SECRET}">
-                        <span v-if="swap.state < SwapState.AWAIT_SECRET">4</span>
-                        <CircleSpinner v-else-if="swap.state === SwapState.AWAIT_SECRET"/>
-                        <CheckmarkIcon v-else/>
-                    </div>
-                    <div v-if="swap.state >= SwapState.AWAIT_SECRET" class="info">
-                        <div v-if="swap.state === SwapState.AWAIT_SECRET">
-                            {{ $t('Awaiting publishing of secret...') }}
-                        </div>
-                        <div v-else>{{ $t('Swap secret published!') }}</div>
-                        <code v-if="swap.secret" class="flex-row nq-gray">
-                            {{ swap.secret.substring(0, 32) }}
-                            {{ swap.secret.substring(32) }}
-                        </code>
-                    </div>
-                </div>
-                <div class="step flex-row">
-                    <div class="status" :class="{'nq-green': swap.state > SwapState.SETTLE_INCOMING}">
-                        <span v-if="swap.state < SwapState.SETTLE_INCOMING">5</span>
-                        <CircleSpinner v-else-if="swap.state === SwapState.SETTLE_INCOMING"/>
-                        <CheckmarkIcon v-else/>
-                    </div>
-                    <div v-if="swap.state >= SwapState.SETTLE_INCOMING" class="info">
-                        <div v-if="swap.settlementError" class="nq-orange flex-row">
-                            <AlertTriangleIcon/> {{ swap.settlementError }}
-                        </div>
-                        <div v-else-if="swap.state === SwapState.SETTLE_INCOMING">
-                            {{ $t('Redeeming incoming HTLC...') }}
-                        </div>
-                        <div v-else>{{ $t('Swap complete!') }}</div>
-
-                        <small v-if="swap.settlementError" class="nq-gray">{{ $t('Retrying...') }}</small>
-                        <code v-else-if="swap.settlementTx" class="flex-row">
-                            <a class="nq-link" target="_blank"
-                                :href="explorerTxLink(swap.to.asset, swap.settlementTx.transactionHash)"
-                            ><ShortAddress :address="swap.settlementTx.transactionHash"/></a>
-                        </code>
-                    </div>
-                </div>
+        <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
+            <PageBody style="padding: 0.75rem;" class="flex-column">
+                <SwapAnimation
+                    :swapState="swap.state"
+                    :fromAsset="swap.from.asset"
+                    :fromAmount="swap.from.amount + swap.from.fee"
+                    :fromAddress="outgoingHtlcAddress"
+                    :toAsset="swap.to.asset"
+                    :toAmount="swap.to.amount - swap.to.fee"
+                    :toAddress="incomingHtlcAddress"
+                    :nimAddress="activeAddressInfo.address"
+                    :error="swap.fundingError || swap.settlementError"
+                    @finished="onAnimationComplete()"
+                />
             </PageBody>
-            <PageFooter>
-                <button class="nq-button light-blue"
-                    :disabled="swap.state !== SwapState.COMPLETE"
-                    @click="finishSwap"
-                >{{ $t('Done') }}</button>
-            </PageFooter>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
                 <MinimizeIcon/>
             </button>
         </div>
 
-        <div v-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
+        <div v-else-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
             <PageBody>
                 <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
@@ -356,6 +250,8 @@ import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
+import SwapAnimation from './SwapAnimation.vue';
+import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1173,28 +1069,6 @@ export default defineComponent({
             return getOutgoingHtlcAddress(swap.value);
         });
 
-        function explorerTxLink(asset: SwapAsset, hash: string) {
-            switch (asset) {
-                case SwapAsset.NIM:
-                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
-                case SwapAsset.BTC:
-                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
-                default: throw new Error('Invalid asset');
-            }
-        }
-
-        function explorerAddrLink(asset: SwapAsset, address: string) {
-            switch (asset) {
-                case SwapAsset.NIM:
-                    return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/`
-                        + `#${address}`;
-                case SwapAsset.BTC:
-                    return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
-                        + `/address/${address}`;
-                default: throw new Error('Invalid asset');
-            }
-        }
-
         function finishSwap() {
             setActiveSwap(null);
             onClose();
@@ -1227,6 +1101,11 @@ export default defineComponent({
 
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
+
+        function onAnimationComplete() {
+            setActiveSwap(null);
+            onClose();
+        }
 
         return {
             onClose,
@@ -1270,6 +1149,8 @@ export default defineComponent({
             addressListOverlayOpened,
             onAddressSelected,
             isMainnet,
+            activeAddressInfo,
+            onAnimationComplete,
         };
     },
     components: {
@@ -1295,6 +1176,7 @@ export default defineComponent({
         MinimizeIcon,
         SwapFeesTooltip,
         AddressList,
+        SwapAnimation,
     },
 });
 </script>
@@ -1515,78 +1397,25 @@ export default defineComponent({
     }
 }
 
-.swap-progress {
-    .step {
-        align-items: center;
-        border-bottom: 1px solid var(--text-10);
-
-        &:last-of-type {
-            border-bottom: 0;
-        }
-
-        .status {
-            margin: 3rem 2.5rem;
-            font-size: 2.25rem;
-            line-height: 1;
-            width: 2.25rem;
-            text-align: center;
-            font-weight: bold;
-
-            span {
-                opacity: 0.4;
-            }
-
-            /deep/ .circle-spinner {
-                display: block;
-            }
-        }
-
-        .info {
-            padding: 1.5rem 0;
-
-            > div {
-                font-weight: 600;
-
-                &.flex-row {
-                    align-items: center;
-                }
-
-                svg {
-                    margin-right: 0.5rem;
-                    flex-shrink: 0;
-                }
-            }
-        }
+.modal /deep/ .overlay {
+    .page-header {
+        padding-bottom: 1rem;
     }
 
-    button {
-        margin-left: 2rem;
+    .close-button {
+        display: none;
     }
+}
 
-    code {
-        font-family: 'Fira Mono', monospace;
-        font-size: var(--small-size);
-        margin-top: 0.5rem;
-
-        svg {
-            margin: 0.125rem 2rem 0;
-            opacity: 0.3;
-        }
-    }
-
-    .nq-button {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
+.animation-overlay {
     .minimize-button {
-        background: var(--text-6);
-        color: var(--text-50);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
         padding: 0;
         height: 4rem;
         width: 4rem;
         border-radius: 50%;
-        transition: background .2s var(--nimiq-ease), color .2s var(--nimiq-ease);
+        transition: background .2s var(--nimiq-ease);
 
         &::before {
             border-radius: 50%;
@@ -1595,8 +1424,7 @@ export default defineComponent({
         &:hover,
         &:active,
         &:focus {
-            background: var(--text-10);
-            color: var(--text-60);
+            background: rgba(255, 255, 255, 0.20);
         }
 
         &.top-right {

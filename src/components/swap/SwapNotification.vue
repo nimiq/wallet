@@ -61,7 +61,7 @@ export default defineComponent({
         );
 
         onMounted(() => {
-            if (swapIsOngoing.value) processSwap();
+            if (activeSwap.value) processSwap();
         });
 
         watch(activeSwap, (newSwap, oldSwap) => {
@@ -160,7 +160,7 @@ export default defineComponent({
                         // Hide notification after a timeout, if not in the SwapModal.
                         if (context.root.$route.name === 'swap') return;
                         setActiveSwap(null);
-                    }, 5 * 1000); // 5 seconds
+                    }, 4 * 1000); // 4 seconds
                 /* eslint-enable no-fallthrough */
                 default:
                     break;

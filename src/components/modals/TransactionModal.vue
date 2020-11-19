@@ -247,10 +247,9 @@
                     </template>
                 </i18n>
 
-                <BlueLink
-                    :href="`https://${env === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${transaction.transactionHash}`"
-                    target="_blank"
-                >{{ $t('Block explorer') }}</BlueLink>
+                <BlueLink :href="explorerTxLink('NIM', transaction.transactionHash)" target="_blank">
+                    {{ $t('Block explorer') }}
+                </BlueLink>
             </Tooltip>
         </PageBody>
     </Modal>
@@ -276,7 +275,6 @@ import {
 } from '@nimiq/vue-components';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
-import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -298,7 +296,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, ENV_MAIN } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
 import { manageCashlink, refundSwap } from '../../hub';
@@ -306,6 +304,7 @@ import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { sendTransaction } from '../../network';
 import { useAccountStore } from '../../stores/Account';
+import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -513,7 +512,6 @@ export default defineComponent({
         }
 
         return {
-            ENV_MAIN,
             transaction,
             constants,
             state,
@@ -533,13 +531,13 @@ export default defineComponent({
             setContact,
             hubCashlink,
             manageCashlink,
-            env: Config.environment,
             amountsHidden,
             swapInfo,
             swapTransaction,
             blockHeight,
             SwapAsset,
             refundHtlc,
+            explorerTxLink,
         };
     },
     components: {

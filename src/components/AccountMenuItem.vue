@@ -28,7 +28,7 @@ import { AlertTriangleIcon, Identicon, FiatAmount } from '@nimiq/vue-components'
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
-import getBackgroundClass from '../lib/AddressColor';
+import { getBackgroundClass } from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore, BtcAddressSet } from '../stores/BtcAddress';

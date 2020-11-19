@@ -772,7 +772,7 @@ msgstr "遗失"
 msgid "Max."
 msgstr "最高"
 
-#: src/components/swap/SwapModal.vue:624 src/components/swap/SwapModal.vue:637
+#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
 msgid "Minimum swap amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
@@ -1200,7 +1200,7 @@ msgstr "请在这里告诉我们"
 msgid "Testnet"
 msgstr "测试网"
 
-#: src/components/swap/SwapModal.vue:648
+#: src/components/swap/SwapModal.vue:651
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 

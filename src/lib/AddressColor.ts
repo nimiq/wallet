@@ -1,7 +1,7 @@
 // @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
 import { getBackgroundColorName } from '@nimiq/iqons';
 
-export default function (address: string) {
+export function getColorClass(address: string) {
     let color = getBackgroundColorName(address).toLowerCase() as string;
 
     // Convert from public to CSS names
@@ -11,5 +11,9 @@ export default function (address: string) {
     else if (color === 'teal') color = 'green';
     else if (color === 'green') color = 'light-green';
 
-    return `nq-${color}-bg`;
+    return `nq-${color}`;
+}
+
+export function getBackgroundClass(address: string) {
+    return `${getColorClass(address)}-bg`;
 }

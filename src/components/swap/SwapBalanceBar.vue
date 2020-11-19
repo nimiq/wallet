@@ -26,7 +26,7 @@
                 v-for="addressInfo in nimDistributionData"
                 :key="addressInfo.address"
                 :ref="addressInfo.active ? '$activeBar' : null"
-                :class="[{ active: addressInfo.active }, `nq-${addressInfo.barColor}`]"
+                :class="[{ active: addressInfo.active }, addressInfo.barColorClass]"
                 :style="{ width: `${getNimiqBarWidth(addressInfo)}%` }"
                 @click="addressInfo.active ? onActiveBarClick('NIM', $event) : selectAddress(addressInfo.address)"
             >
@@ -87,8 +87,6 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
-// @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
-import { getBackgroundColorName } from '@nimiq/iqons';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
@@ -97,11 +95,12 @@ import { useAddressStore, AddressInfo } from '../../stores/Address';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
+import { getColorClass } from '../../lib/AddressColor';
 
 type ExtendedAddressInfo = AddressInfo & {
     readonly active: boolean,
     readonly newFiatBalance: number,
-    readonly barColor: string,
+    readonly barColorClass: string,
     readonly balanceChange: number,
     readonly fiatBalanceChange: number,
 }
@@ -168,16 +167,8 @@ export default defineComponent({
                     get fiatBalanceChange() {
                         return (this.balanceChange / 1e5) * nimExchangeRate.value;
                     },
-                    get barColor() {
-                        let color = getBackgroundColorName(this.address).toLowerCase() as string;
-
-                        if (color === 'yellow') color = 'gold';
-                        else if (color === 'indigo') color = 'blue';
-                        else if (color === 'blue') color = 'light-blue';
-                        else if (color === 'teal') color = 'green';
-                        else if (color === 'green') color = 'light-green';
-
-                        return color;
+                    get barColorClass() {
+                        return getColorClass(this.address);
                     },
                 } as ExtendedAddressInfo)),
         );

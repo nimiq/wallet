@@ -806,7 +806,7 @@ msgstr "потерян"
 msgid "Max."
 msgstr "Макс."
 
-#: src/components/swap/SwapModal.vue:624 src/components/swap/SwapModal.vue:637
+#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
 msgid "Minimum swap amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
@@ -1245,7 +1245,7 @@ msgstr "Сообщите нам здесь"
 msgid "Testnet"
 msgstr "Тестнет"
 
-#: src/components/swap/SwapModal.vue:648
+#: src/components/swap/SwapModal.vue:651
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 

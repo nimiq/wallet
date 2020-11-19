@@ -1,13 +1,13 @@
 # 
 # Translators:
 # Fons <Fonsdesigns@hotmail.com>, 2020
-# Stefan, 2020
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
+# Stefan, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: BlockchainShay <Shaylish@live.nl>, 2020\n"
+"Last-Translator: Stefan, 2020\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/107022/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -22,7 +22,7 @@ msgid "{addresses} send and receive transactions."
 msgstr "{adressen} verzenden en ontvangen transacties."
 
 #: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/TransactionModal.vue:242
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bevestiging | {count} Bevestigingen"
 
@@ -35,7 +35,7 @@ msgstr "{count} Peer | {count} Peers"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink in afwachting | {count} Cashlinks in afwachting"
 
-#: src/components/modals/TransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:244
 msgid "{fee} fee"
 msgstr "{fee} heffing"
 
@@ -196,7 +196,7 @@ msgstr "Android en iOS App"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Atomic swaps vereisen twee BTC-transacties."
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Awaiting swap secret"
 msgstr "In afwachting van swap secret."
 
@@ -215,7 +215,7 @@ msgstr "Backup"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:438
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -234,14 +234,14 @@ msgid "Bitcoin Unit"
 msgstr "Bitcoin eenheid"
 
 #: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:236
+#: src/components/modals/TransactionModal.vue:239
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:51
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/modals/TransactionModal.vue:251
+#: src/components/swap/SwapAnimation.vue:50
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Block verkenner"
 
@@ -289,16 +289,19 @@ msgstr ""
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
+"Door op 'bevestigen' te klikken, ga je akkoord met de servicevoorwaarden van"
+" {Fastspot} en {FastspotGO}."
 
 #: src/components/swap/SwapModal.vue:148
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
+"Door op 'bevestigen' te klikken, ga je akkoord met de ToS van {Fastspot}."
 
 #: src/components/layouts/Settings.vue:210
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:444
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -377,7 +380,7 @@ msgstr "Verbinden"
 
 #: src/components/BtcTransactionList.vue:45
 msgid "Connection lost"
-msgstr ""
+msgstr "Verbinding verbroken"
 
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
@@ -538,9 +541,9 @@ msgstr "Vul adres in"
 msgid "Enter recipient address..."
 msgstr "Voer het adres van de ontvanger in..."
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:116
 msgid "Error:"
-msgstr ""
+msgstr "Fout:"
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
@@ -595,7 +598,7 @@ msgid "Fetching"
 msgstr "Ophalen"
 
 #: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:188
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "Fiat waarde niet beschikbaar"
@@ -604,8 +607,8 @@ msgstr "Fiat waarde niet beschikbaar"
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
-#: src/components/swap/SwapAnimation.vue:113
-#: src/components/swap/SwapAnimation.vue:114
+#: src/components/swap/SwapAnimation.vue:111
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Finalizing swap"
 msgstr "Swap afronden"
 
@@ -665,21 +668,21 @@ msgstr ""
 "wachtwoord en gedeelde aanmeldingsgegevens."
 
 #: src/components/modals/BtcTransactionModal.vue:180
-#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:199
 msgid "Historic value"
 msgstr "Historische waarde"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC terugbetaling"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:404
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC schikking"
@@ -745,7 +748,7 @@ msgstr "Het is veilig om je portemonnee nu te sluiten"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
-msgstr ""
+msgstr "Label de afzender"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
@@ -772,16 +775,20 @@ msgstr "Light Node"
 msgid "Limit of copied addresses reached."
 msgstr "Limiet van gekopieerde adressen bereikt."
 
+#: src/components/modals/TransactionModal.vue:167
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Bestand laden"
 
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "loading..."
-msgstr ""
+msgstr "laden..."
 
-#: src/components/swap/SwapAnimation.vue:107
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:108
 msgid "Locking up {asset}"
 msgstr "{asset} vergrendelen"
 
@@ -807,7 +814,7 @@ msgstr "Max."
 
 #: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
 msgid "Minimum swap amount is {amount}"
-msgstr ""
+msgstr "Minimale swap-bedrag is {amount}"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -998,7 +1005,7 @@ msgid "Reference currency"
 msgstr "Referentie Valuta"
 
 #: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:233
 msgid "Refund"
 msgstr "Terugbetaling"
 
@@ -1015,7 +1022,7 @@ msgstr "Verzoek mislukt"
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
 msgid "Rescan"
-msgstr ""
+msgstr "Opnieuw scannen"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Reset your wallet settings and reload data from the blockchain."
@@ -1026,7 +1033,7 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
@@ -1129,9 +1136,9 @@ msgstr "Bedrag ingeven"
 msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
-#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:103
 msgid "Setting up swap"
-msgstr "Swap genereren"
+msgstr "Swap opzetten"
 
 #: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
@@ -1246,7 +1253,7 @@ msgstr "Testnet"
 
 #: src/components/swap/SwapModal.vue:651
 msgid "The fees (currently {amount}) determine the minimum amount."
-msgstr ""
+msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1321,10 +1328,10 @@ msgstr "Dit adres is maar 1 keer te gebruiken"
 msgid "This is not a valid address"
 msgstr "Dit adres is niet geldig."
 
-#: src/components/BtcTransactionList.vue:239
-#: src/components/BtcTransactionList.vue:261
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr "Deze maand"
 
@@ -1376,7 +1383,7 @@ msgstr "overboekingskosten"
 msgid "Tweet your map!"
 msgstr "Tweet je map!"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:445
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Niet geclaimde Cashlink"

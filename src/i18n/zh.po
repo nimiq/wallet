@@ -20,7 +20,7 @@ msgid "{addresses} send and receive transactions."
 msgstr "{addresss} 发送和接收交易。"
 
 #: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/TransactionModal.vue:242
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}个确认 | {count}个确认"
 
@@ -33,7 +33,7 @@ msgstr "{count}个端点 | {count}个端点"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
 
-#: src/components/modals/TransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:244
 msgid "{fee} fee"
 msgstr "{fee} 费用"
 
@@ -184,7 +184,7 @@ msgstr "Android和iOS应用"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "原子交换需要进行两次比特币交易。"
 
-#: src/components/swap/SwapAnimation.vue:104
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Awaiting swap secret"
 msgstr "等待交换密语"
 
@@ -203,7 +203,7 @@ msgstr "备份"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:438
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "比特币"
@@ -219,14 +219,14 @@ msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
 #: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:236
+#: src/components/modals/TransactionModal.vue:239
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:47
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/modals/TransactionModal.vue:251
+#: src/components/swap/SwapAnimation.vue:50
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "区块链浏览器"
 
@@ -281,7 +281,7 @@ msgstr "点击“确认”，即表示您同意{Fastspot}的服务条款。"
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:444
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -512,7 +512,7 @@ msgstr "输入地址"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:116
 msgid "Error:"
 msgstr "错误:"
 
@@ -569,7 +569,7 @@ msgid "Fetching"
 msgstr "正在取得"
 
 #: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:188
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
@@ -578,8 +578,8 @@ msgstr "法币无法使用"
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:106
+#: src/components/swap/SwapAnimation.vue:111
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
@@ -637,21 +637,21 @@ msgid ""
 msgstr "现在使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址。"
 
 #: src/components/modals/BtcTransactionModal.vue:180
-#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:199
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:404
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC结算"
@@ -739,6 +739,10 @@ msgstr "轻节点"
 msgid "Limit of copied addresses reached."
 msgstr "已达到复制地址的限制"
 
+#: src/components/modals/TransactionModal.vue:167
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "加载文件"
@@ -747,8 +751,8 @@ msgstr "加载文件"
 msgid "loading..."
 msgstr "载入中..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:108
 msgid "Locking up {asset}"
 msgstr "正在锁定{asset}"
 
@@ -806,7 +810,7 @@ msgstr "网络"
 
 #: src/components/modals/BtcSendModal.vue:107
 msgid "Network fee: {sats} sat/vByte"
-msgstr "网络费用：{rate} 聪 (sat) / 交易大小 (vByte)"
+msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
 #: src/components/swap/SwapFeesTooltip.vue:14
 msgid "NIM network fees"
@@ -957,7 +961,7 @@ msgid "Reference currency"
 msgstr "参考货币"
 
 #: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:233
 msgid "Refund"
 msgstr "退款"
 
@@ -985,7 +989,7 @@ msgstr "重置您的钱包设置并从区块链重新加载数据。"
 msgid "Retry"
 msgstr "重试"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Retrying..."
 msgstr "重试..."
 
@@ -1086,7 +1090,7 @@ msgstr "设置金额"
 msgid "Set fee"
 msgstr "设置费用"
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:103
 msgid "Setting up swap"
 msgstr "设置交换"
 
@@ -1270,10 +1274,10 @@ msgstr "这是一次性地址"
 msgid "This is not a valid address"
 msgstr "这不是一个有效地址"
 
-#: src/components/BtcTransactionList.vue:239
-#: src/components/BtcTransactionList.vue:261
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr "本月份"
 
@@ -1324,7 +1328,7 @@ msgstr "转移资金"
 msgid "Tweet your map!"
 msgstr "推特您的地图！"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:445
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"

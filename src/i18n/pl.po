@@ -21,7 +21,7 @@ msgstr ""
 "{addresses} pozwalają realizować transakcje przychodzące i wychodzące."
 
 #: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/TransactionModal.vue:242
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} potwierdzenie | Potwierdzenia: {count}"
 
@@ -35,7 +35,7 @@ msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 "{count} oczekujący link pieniężny | Oczekujące linki pieniężne: {count}"
 
-#: src/components/modals/TransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:244
 msgid "{fee} fee"
 msgstr "Opłata {fee}"
 
@@ -196,7 +196,7 @@ msgstr "Aplikacja na system Android oraz iOS"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Wymiany niepodzielne wymagają dwóch transakcji BTC."
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Awaiting swap secret"
 msgstr "Oczekiwanie na sekret wymiany"
 
@@ -215,7 +215,7 @@ msgstr "Kopia zapasowa"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:438
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -233,14 +233,14 @@ msgid "Bitcoin Unit"
 msgstr "Jednostka bitcoina"
 
 #: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:236
+#: src/components/modals/TransactionModal.vue:239
 msgid "Block #{height}"
 msgstr "Blok nr {height}"
 
 #: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:51
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/modals/TransactionModal.vue:251
+#: src/components/swap/SwapAnimation.vue:50
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Eksplorator bloków"
 
@@ -299,7 +299,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Nie możesz zaimportować kontaktów. Nieprawidłowy format pliku."
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:444
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -539,7 +539,7 @@ msgstr "Wpisz adres"
 msgid "Enter recipient address..."
 msgstr "Wpisz adres odbiorcy…"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:116
 msgid "Error:"
 msgstr "Błąd:"
 
@@ -596,7 +596,7 @@ msgid "Fetching"
 msgstr "Pobieranie"
 
 #: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:188
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "Wartość w walucie fiducjarnej niedostępna"
@@ -605,8 +605,8 @@ msgstr "Wartość w walucie fiducjarnej niedostępna"
 msgid "File contains no contacts."
 msgstr "Plik nie zawiera kontaktów."
 
-#: src/components/swap/SwapAnimation.vue:113
-#: src/components/swap/SwapAnimation.vue:114
+#: src/components/swap/SwapAnimation.vue:111
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Finalizing swap"
 msgstr "Finalizowanie wymiany"
 
@@ -666,21 +666,21 @@ msgstr ""
 "jedno hasło i współdzielone dane logowania."
 
 #: src/components/modals/BtcTransactionModal.vue:180
-#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:199
 msgid "Historic value"
 msgstr "Wartość historyczna"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "Tworzenie kontraktu HTLC"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "Refundacja kontraktu HTLC"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:404
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Rozliczenie kontraktu HTLC"
@@ -776,6 +776,10 @@ msgstr "Lekki węzeł"
 msgid "Limit of copied addresses reached."
 msgstr "Osiągnięto limit skopiowanych adresów."
 
+#: src/components/modals/TransactionModal.vue:167
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Wczytaj plik"
@@ -784,8 +788,8 @@ msgstr "Wczytaj plik"
 msgid "loading..."
 msgstr "wczytywanie…"
 
-#: src/components/swap/SwapAnimation.vue:107
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:108
 msgid "Locking up {asset}"
 msgstr "Zamrażanie {asset}"
 
@@ -1005,7 +1009,7 @@ msgid "Reference currency"
 msgstr "Waluta odniesienia"
 
 #: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:233
 msgid "Refund"
 msgstr "Dokonaj refundacji"
 
@@ -1034,7 +1038,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Ponów"
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Retrying..."
 msgstr "Ponawianie…"
 
@@ -1138,7 +1142,7 @@ msgstr "Wpisz kwotę"
 msgid "Set fee"
 msgstr "Ustaw opłatę"
 
-#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:103
 msgid "Setting up swap"
 msgstr "Przygotowywanie wymiany"
 
@@ -1331,10 +1335,10 @@ msgstr "To jest adres jednorazowy"
 msgid "This is not a valid address"
 msgstr "To nie jest prawidłowy adres"
 
-#: src/components/BtcTransactionList.vue:239
-#: src/components/BtcTransactionList.vue:261
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr "W tym miesiącu"
 
@@ -1386,7 +1390,7 @@ msgstr "Przelej środki"
 msgid "Tweet your map!"
 msgstr "Udostępnij swoją mapę na Twitterze!"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:445
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Nieodebrany link pieniężny"

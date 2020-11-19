@@ -21,7 +21,7 @@ msgid "{addresses} send and receive transactions."
 msgstr "{addresses} отправлять и получать транзакции."
 
 #: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/TransactionModal.vue:242
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Подтверждение | {count} Подтверждения"
 
@@ -34,7 +34,7 @@ msgstr "{count} Пир | {count} Пиров"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}  Cashlink | {count} Cashlinks"
 
-#: src/components/modals/TransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:244
 msgid "{fee} fee"
 msgstr "{fee} комиссия "
 
@@ -198,7 +198,7 @@ msgstr ""
 "Обмен проводится двумя \n"
 "транзакциями BTC."
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Awaiting swap secret"
 msgstr "Ждем обмен"
 
@@ -217,7 +217,7 @@ msgstr "Резервная копия"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:438
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -236,14 +236,14 @@ msgid "Bitcoin Unit"
 msgstr "в Биткойне"
 
 #: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:236
+#: src/components/modals/TransactionModal.vue:239
 msgid "Block #{height}"
 msgstr "Блок #{height} "
 
 #: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:51
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/modals/TransactionModal.vue:251
+#: src/components/swap/SwapAnimation.vue:50
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Обозреватель блоков"
 
@@ -298,7 +298,7 @@ msgstr "Нажав 'подтвердить', Вы соглашаетесь с П
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не удалось импортировать список контактов, некорректный формат файла!"
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:444
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -541,7 +541,7 @@ msgstr "Укажите адрес"
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:116
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -598,7 +598,7 @@ msgid "Fetching"
 msgstr "Загрузка"
 
 #: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:185
+#: src/components/modals/TransactionModal.vue:188
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
 msgstr "Значение в фиатной валюте не доступно"
@@ -607,8 +607,8 @@ msgstr "Значение в фиатной валюте не доступно"
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
-#: src/components/swap/SwapAnimation.vue:113
-#: src/components/swap/SwapAnimation.vue:114
+#: src/components/swap/SwapAnimation.vue:111
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
 
@@ -668,21 +668,21 @@ msgstr ""
 "информация для доступа. "
 
 #: src/components/modals/BtcTransactionModal.vue:180
-#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:199
 msgid "Historic value"
 msgstr "Историческая стоимость"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "Создание HTLC"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "Возврат HTLC"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:404
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Взаиморасчет HTLC"
@@ -775,6 +775,10 @@ msgstr "Light Node"
 msgid "Limit of copied addresses reached."
 msgstr "Лимит скопированных адресов достигнут."
 
+#: src/components/modals/TransactionModal.vue:167
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "Загрузить файл"
@@ -783,8 +787,8 @@ msgstr "Загрузить файл"
 msgid "loading..."
 msgstr "загрузка..."
 
-#: src/components/swap/SwapAnimation.vue:102
-#: src/components/swap/SwapAnimation.vue:99
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:108
 msgid "Locking up {asset}"
 msgstr "Блокируем {asset}"
 
@@ -998,7 +1002,7 @@ msgid "Reference currency"
 msgstr "Базовая валюта"
 
 #: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:233
 msgid "Refund"
 msgstr "Возврат"
 
@@ -1026,7 +1030,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:118
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 
@@ -1130,7 +1134,7 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
-#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:103
 msgid "Setting up swap"
 msgstr "Настройка обмена"
 
@@ -1324,10 +1328,10 @@ msgstr "Этот одноразовый адрес"
 msgid "This is not a valid address"
 msgstr "Это неправильный адрес"
 
-#: src/components/BtcTransactionList.vue:239
-#: src/components/BtcTransactionList.vue:261
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr "В этом месяце"
 
@@ -1382,7 +1386,7 @@ msgstr "Перевести средства"
 msgid "Tweet your map!"
 msgstr "Твитни свою точку на карте!"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:445
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Активный Cashlink"

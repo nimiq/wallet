@@ -54,13 +54,32 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         );
     }
 
-    public async awaitHtlcSettlement(
-        address: string,
-    ): Promise<Transaction> {
+    public async createHtlc(serializedTx: string, onPending?: (tx: Transaction) => any): Promise<Transaction> {
+        const tx = await this.sendTransaction(serializedTx);
+
+        if (tx.state === TransactionState.PENDING) {
+            if (typeof onPending === 'function') onPending(tx);
+            return this.awaitHtlcCreation(tx.recipient, tx.value, tx.data.raw);
+        }
+
+        return tx;
+    }
+
+    public async awaitHtlcSettlement(address: string): Promise<Transaction> {
         return this.findTransaction(
             address,
             (tx) => tx.sender === address
                 && typeof (tx.proof as any as { preImage: unknown }).preImage === 'string',
         );
+    }
+
+    public async settleHtlc(serializedTx: string): Promise<Transaction> {
+        return this.sendTransaction(serializedTx);
+    }
+
+    private async sendTransaction(serializedTx: string): Promise<Transaction> {
+        const tx = await this.client.sendTransaction(serializedTx);
+        if (tx.state === TransactionState.NEW) throw new Error('Failed to send transaction');
+        return tx;
     }
 }

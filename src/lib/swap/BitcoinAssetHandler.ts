@@ -60,14 +60,23 @@ export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
         );
     }
 
-    public async awaitHtlcSettlement(
-        address: string,
-        data: string,
-    ): Promise<TransactionDetails> {
+    public async createHtlc(serializedTx: string): Promise<TransactionDetails> {
+        return this.sendTransaction(serializedTx);
+    }
+
+    public async awaitHtlcSettlement(address: string, data: string): Promise<TransactionDetails> {
         return this.findTransaction(
             address,
             (tx) => tx.inputs.some((input) => input.address === address
                 && typeof input.witness[4] === 'string' && input.witness[4] === data),
         );
+    }
+
+    public async settleHtlc(serializedTx: string): Promise<TransactionDetails> {
+        return this.sendTransaction(serializedTx);
+    }
+
+    private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {
+        return this.client.sendTransaction(serializedTx);
     }
 }

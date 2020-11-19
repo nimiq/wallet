@@ -2,10 +2,8 @@ import { Ref } from '@vue/composition-api';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { BtcHtlcDetails, NimHtlcDetails, SwapAsset } from '@nimiq/fastspot-api';
 import { ActiveSwap, SwapState, useSwapsStore } from '../stores/Swaps';
-import { TransactionState as NimTransactionState } from '../stores/Transactions';
-import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
-import { getNetworkClient, sendTransaction as sendNimTx } from '../network';
-import { HTLC_ADDRESS_LENGTH } from './BtcHtlcDetection';
+import { getElectrumClient, subscribeToAddresses } from '../electrum';
+import { getNetworkClient } from '../network';
 import { BitcoinAssetHandler } from './swap/BitcoinAssetHandler';
 import { NimiqAssetHandler } from './swap/NimiqAssetHandler';
 
@@ -78,46 +76,17 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
 
     if (swap.value.from.asset === SwapAsset.NIM) {
         try {
-            fundingTx = await sendNimTx(swap.value.fundingSerializedTx);
-            if (fundingTx.state === NimTransactionState.NEW) throw new Error('Could not send transaction');
-
-            if (fundingTx.state === NimTransactionState.PENDING) {
-                const nimHtlcAddress = fundingTx.recipient;
-
-                useSwapsStore().setActiveSwap({
-                    ...swap.value,
-                    fundingTx: fundingTx!,
-                    fundingError: undefined,
-                });
-
-                // eslint-disable-next-line no-async-promise-executor
-                await new Promise<string>(async (resolve) => {
-                    function listener(tx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>) {
-                        if (tx.transactionHash !== fundingTx.transactionHash) return false;
-
-                        if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
-                            resolve();
-                            client.removeListener(handle);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    const client = await getNetworkClient();
-                    // First subscribe to new transactions
-                    const handle = await client.addTransactionListener(listener, [nimHtlcAddress]);
-
-                    // Then check history
-                    try {
-                        const history = await client.getTransactionsByAddress(nimHtlcAddress, 0);
-                        for (const tx of history) {
-                            if (listener(tx)) break;
-                        }
-                    } catch (error) {
-                        console.error(error); // eslint-disable-line no-console
-                    }
-                });
-            }
+            const client = await getNetworkClient();
+            fundingTx = await new NimiqAssetHandler(client).createHtlc(
+                swap.value.fundingSerializedTx,
+                (tx) => {
+                    useSwapsStore().setActiveSwap({
+                        ...swap.value,
+                        fundingTx: tx,
+                        fundingError: undefined,
+                    });
+                },
+            );
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,
@@ -129,7 +98,9 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
 
     if (swap.value.from.asset === SwapAsset.BTC) {
         try {
-            fundingTx = await sendBtcTx(swap.value.fundingSerializedTx);
+            const client = await getElectrumClient();
+            fundingTx = await new BitcoinAssetHandler(client).createHtlc(swap.value.fundingSerializedTx);
+            subscribeToAddresses([fundingTx.inputs[0].address!]);
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,
@@ -137,12 +108,6 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
             });
             throw error;
         }
-
-        useSwapsStore().addFundingData(swap.value.hash, {
-            asset: SwapAsset.BTC,
-            transactionHash: fundingTx.transactionHash,
-            outputIndex: fundingTx.outputs.findIndex((output) => output.address?.length === HTLC_ADDRESS_LENGTH),
-        });
     }
 
     useSwapsStore().setActiveSwap({
@@ -218,7 +183,9 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
         );
 
         try {
-            settlementTx = await sendBtcTx(serializedTx);
+            const client = await getElectrumClient();
+            settlementTx = await new BitcoinAssetHandler(client).createHtlc(serializedTx);
+            subscribeToAddresses([settlementTx.outputs[0].address!]);
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,
@@ -239,8 +206,8 @@ export async function settleIncoming(swap: Ref<ActiveSwap<SwapState.SETTLE_INCOM
         );
 
         try {
-            settlementTx = await sendNimTx(serializedTx);
-            if (settlementTx.state === NimTransactionState.NEW) throw new Error('Failed to send transaction');
+            const client = await getNetworkClient();
+            await new NimiqAssetHandler(client).settleHtlc(serializedTx);
         } catch (error) {
             useSwapsStore().setActiveSwap({
                 ...swap.value,

@@ -209,7 +209,7 @@ export default defineComponent({
         padding: 0 1rem;
         margin-top: 0.5rem;
         position: relative;
-        z-index: 1;
+        z-index: 4;
 
         button {
             display: flex;
@@ -323,7 +323,7 @@ export default defineComponent({
             margin-right: -0.375rem;
 
             position: absolute;
-            z-index: 0;
+            z-index: 3;
             top: 3rem;
 
             transition: all 200ms var(--nimiq-ease);

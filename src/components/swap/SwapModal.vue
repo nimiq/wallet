@@ -1329,7 +1329,7 @@ export default defineComponent({
     font-weight: bold;
 
     /deep/ .ticker {
-        font-size: inherit;
+        font-size: inherit !important;
         line-height: 1;
         margin-left: 0.5rem;
     }

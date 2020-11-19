@@ -53,4 +53,14 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
             },
         );
     }
+
+    public async awaitHtlcSettlement(
+        address: string,
+    ): Promise<Transaction> {
+        return this.findTransaction(
+            address,
+            (tx) => tx.sender === address
+                && typeof (tx.proof as any as { preImage: unknown }).preImage === 'string',
+        );
+    }
 }

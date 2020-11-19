@@ -12,4 +12,9 @@ export interface IAssetHandler<TTransaction> {
         data: string,
         onPending: (tx: TTransaction) => any,
     ): Promise<TTransaction>;
+
+    awaitHtlcSettlement(
+        address: string,
+        data: string,
+    ): Promise<TTransaction>;
 }

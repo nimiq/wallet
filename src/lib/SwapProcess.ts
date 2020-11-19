@@ -1,6 +1,6 @@
 import { Ref } from '@vue/composition-api';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { NimHtlcDetails, SwapAsset } from '@nimiq/fastspot-api';
+import { BtcHtlcDetails, NimHtlcDetails, SwapAsset } from '@nimiq/fastspot-api';
 import { ActiveSwap, SwapState, useSwapsStore } from '../stores/Swaps';
 import { TransactionState as NimTransactionState } from '../stores/Transactions';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
@@ -156,31 +156,26 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
 export async function awaitSecret(swap: Ref<ActiveSwap<SwapState.AWAIT_SECRET>>) {
     let secret: string;
 
-    initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+    if (swap.value.from.asset === SwapAsset.NIM) {
+        const htlcAddress = swap.value.contracts[SwapAsset.NIM]!.htlc.address;
 
         const client = await getNetworkClient();
 
         // Wait until Fastspot claims the NIM HTLC created by us
-        const transaction = await new NimiqAssetHandler(client).findTransaction(
-            nimHtlcAddress,
-            (tx) => tx.sender === nimHtlcAddress && 'preImage' in tx.proof,
-        );
-
+        const transaction = await new NimiqAssetHandler(client).awaitHtlcSettlement(htlcAddress);
         secret = (transaction.proof as any as {preImage: string}).preImage;
     }
 
-                const client = await getNetworkClient();
-                // First subscribe to new transactions
-                const handle = await client.addTransactionListener(listener, [nimHtlcAddress]);
+    if (swap.value.from.asset === SwapAsset.BTC) {
+        const htlcData = swap.value.contracts[SwapAsset.BTC]!.htlc as BtcHtlcDetails;
 
         const client = await getElectrumClient();
 
-        const transaction = await new BitcoinAssetHandler(client).findTransaction(
-            btcHtlcAddress,
-            (tx) => tx.inputs.some((input) => input.address === btcHtlcAddress),
+        // Wait until Fastspot claims the BTC HTLC created by us
+        const transaction = await new BitcoinAssetHandler(client).awaitHtlcSettlement(
+            htlcData.address,
+            htlcData.script
         );
-
-        // TODO: Differentiate redeem vs. refund tx
         secret = transaction.inputs[0].witness[2] as string;
     }
 

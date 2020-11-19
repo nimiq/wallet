@@ -1,4 +1,4 @@
-import { ElectrumClient, TransactionDetails } from '@nimiq/electrum-client';
+import { ElectrumClient, TransactionDetails, TransactionState } from '@nimiq/electrum-client';
 import { IAssetHandler } from './IAssetHandler';
 
 export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
@@ -31,5 +31,32 @@ export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
                 if (listener(tx)) break;
             }
         });
+    }
+
+    public async awaitHtlcCreation(
+        address: string,
+        value: number,
+        data?: string,
+        onPending?: (tx: TransactionDetails) => any,
+    ): Promise<TransactionDetails> {
+        return this.findTransaction(
+            address,
+            (tx) => {
+                const htlcOutput = tx.outputs.find((out) => out.address === address);
+                if (!htlcOutput) return false;
+                if (htlcOutput.value !== value) return false;
+
+                if (tx.replaceByFee) {
+                    // Must wait until mined
+                    if (tx.state === TransactionState.MINED || tx.state === TransactionState.CONFIRMED) return true;
+
+                    if (typeof onPending === 'function') onPending(tx);
+
+                    return false;
+                }
+
+                return true;
+            },
+        );
     }
 }

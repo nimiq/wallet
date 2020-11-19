@@ -1,10 +1,6 @@
 import { Ref } from '@vue/composition-api';
-import {
-    TransactionDetails as BtcTransactionDetails,
-    TransactionState as BtcTransactionState,
-} from '@nimiq/electrum-client';
-import { NimHtlcDetails, SwapAsset, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
-import Config from 'config';
+import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
+import { NimHtlcDetails, SwapAsset } from '@nimiq/fastspot-api';
 import { ActiveSwap, SwapState, useSwapsStore } from '../stores/Swaps';
 import { TransactionState as NimTransactionState } from '../stores/Transactions';
 import { getElectrumClient, sendTransaction as sendBtcTx } from '../electrum';
@@ -35,51 +31,37 @@ export async function awaitIncoming(swap: Ref<ActiveSwap<SwapState.AWAIT_INCOMIN
         | null = null;
 
     if (swap.value.to.asset === SwapAsset.BTC) {
-        const htlcAddress = getIncomingHtlcAddress(swap.value);
+        const htlcAddress = swap.value.contracts[SwapAsset.BTC]!.htlc.address;
 
         const client = await getElectrumClient();
 
-        remoteFundingTx = await new BitcoinAssetHandler(client).findTransaction(
+        remoteFundingTx = await new BitcoinAssetHandler(client).awaitHtlcCreation(
             htlcAddress,
-            (tx) => {
-                const htlcOutput = tx.outputs.find((out) => out.address === htlcAddress);
-                if (!htlcOutput || htlcOutput.value !== swap.value.to.amount) return false;
-
-                if (
-                    tx.replaceByFee
-                    // Must wait until mined
-                    && ![BtcTransactionState.MINED, BtcTransactionState.CONFIRMED].includes(tx.state)
-                ) return false;
-
-                return true;
+            swap.value.to.amount,
+            undefined,
+            (tx) => { // onPending callback
+                useSwapsStore().setActiveSwap({
+                    ...swap.value,
+                    remoteFundingTx: tx,
+                });
             },
         );
     }
 
     if (swap.value.to.asset === SwapAsset.NIM) {
-        const nimHtlcData = swap.value.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
-        const htlcAddress = nimHtlcData.address;
+        const htlcData = swap.value.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
 
         const client = await getNetworkClient();
 
-        remoteFundingTx = await new NimiqAssetHandler(client).findTransaction(
-            htlcAddress,
-            (tx) => {
-                if (tx.recipient !== htlcAddress) return false;
-                if (tx.value !== swap.value.to.amount) return false;
-
-                // TODO: Reject when unequal (=> handle error)
-                if (tx.data.raw !== nimHtlcData.data) return false;
-
+        remoteFundingTx = await new NimiqAssetHandler(client).awaitHtlcCreation(
+            htlcData.address,
+            swap.value.to.amount,
+            htlcData.data,
+            (tx) => { // onPending callback
                 useSwapsStore().setActiveSwap({
                     ...swap.value,
                     remoteFundingTx: tx,
                 });
-
-                if (tx.state === NimTransactionState.MINED || tx.state === NimTransactionState.CONFIRMED) {
-                    return true;
-                }
-                return false;
             },
         );
     }

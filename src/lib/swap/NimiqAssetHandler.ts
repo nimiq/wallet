@@ -1,5 +1,6 @@
 import { NetworkClient } from '@nimiq/network-client';
 import { IAssetHandler } from './IAssetHandler';
+import { TransactionState } from '../../stores/Transactions';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
 
@@ -30,5 +31,26 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
                 if (listener(tx)) break;
             }
         });
+    }
+
+    public async awaitHtlcCreation(
+        address: string,
+        value: number,
+        data: string,
+        onPending?: (tx: Transaction) => any,
+    ): Promise<Transaction> {
+        return this.findTransaction(
+            address,
+            (tx) => {
+                if (tx.recipient !== address) return false;
+                if (tx.value !== value) return false;
+                if (typeof tx.data.raw !== 'string' || tx.data.raw !== data) return false;
+
+                if (typeof onPending === 'function') onPending(tx);
+
+                // Must wait until mined
+                return tx.state === TransactionState.MINED || tx.state === TransactionState.CONFIRMED;
+            },
+        );
     }
 }

@@ -5,4 +5,11 @@ export interface IAssetHandler<TTransaction> {
         address: string,
         test: (tx: TTransaction) => boolean,
     ): Promise<TTransaction>;
+
+    awaitHtlcCreation(
+        address: string,
+        value: number,
+        data: string,
+        onPending: (tx: TTransaction) => any,
+    ): Promise<TTransaction>;
 }

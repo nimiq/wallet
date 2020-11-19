@@ -1329,9 +1329,10 @@ export default defineComponent({
     font-weight: bold;
 
     /deep/ .ticker {
+        // Sometimes this class gets lower priority than the ticker's native class, so we need to force these styles
         font-size: inherit !important;
-        line-height: 1;
-        margin-left: 0.5rem;
+        line-height: 1 !important;
+        margin-left: 0.5rem !important;
     }
 
     .nq-green & {

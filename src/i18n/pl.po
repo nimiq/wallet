@@ -766,6 +766,8 @@ msgstr "Dowiedz się więcej tutaj"
 #: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
+"Konta powiązane z portfelem Ledger nie obsługują jeszcze funkcji wymiany. "
+"Zajrzyj tu niebawem!"
 
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
@@ -781,7 +783,7 @@ msgstr "Osiągnięto limit skopiowanych adresów."
 
 #: src/components/modals/TransactionModal.vue:167
 msgid "Link not available in this browser"
-msgstr ""
+msgstr "Link niedostępny w tej przeglądarce"
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"

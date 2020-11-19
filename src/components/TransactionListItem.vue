@@ -23,10 +23,10 @@
         </div>
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
+            <BitcoinIcon v-else-if="swapTransaction"/>
             <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink">
-                <CashlinkXSmallIcon/>
-            </div>
+            <div v-if="isCashlink" class="cashlink"><CashlinkXSmallIcon/></div>
+            <div v-if="swapTransaction" class="cashlink"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -71,6 +71,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
@@ -81,10 +82,14 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+import BitcoinIcon from './icons/BitcoinIcon.vue';
+import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from '../stores/Cashlink';
+import { useSwapsStore } from '../stores/Swaps';
+import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 
 export default defineComponent({
     props: {
@@ -103,6 +108,21 @@ export default defineComponent({
 
         const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
 
+        const { getSwapByTransactionHash } = useSwapsStore();
+        const swapTransaction = computed(() => {
+            const swap = getSwapByTransactionHash.value(props.transaction.transactionHash);
+            if (!swap) return null;
+
+            const swapData = isIncoming.value ? swap.in : swap.out;
+            if (!swapData) return null;
+
+            if (swapData.asset === SwapAsset.BTC) {
+                return useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
+            }
+
+            return null;
+        });
+
         // Data
         const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
         const data = computed(() => {
@@ -112,6 +132,18 @@ export default defineComponent({
                 const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
                 return hubCashlink ? hubCashlink.message : '';
             }
+            if (swapTransaction.value) return ''; // TODO: 'Swapped NIM to BTC'
+
+            if ('hashRoot' in props.transaction.data) {
+                return context.root.$t('HTLC Creation');
+            }
+            if ('creator' in props.transaction.proof) {
+                return context.root.$t('HTLC Refund');
+            }
+            if ('hashRoot' in props.transaction.proof) {
+                return context.root.$t('HTLC Settlement');
+            }
+
             return parseData(props.transaction.data.raw);
         });
 
@@ -123,16 +155,26 @@ export default defineComponent({
         });
 
         // Peer
-        const peerAddress = computed(() => isCashlink.value
-            ? relatedTx.value
-                ? isIncoming.value
-                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                    : relatedTx.value.recipient // This is a funding tx, so the related tx is the claiming one
-                : constants.CASHLINK_ADDRESS // No related tx yet, show placeholder
-            : isIncoming.value
-                ? props.transaction.sender
-                : props.transaction.recipient);
+        const peerAddress = computed(() => {
+            if (swapTransaction.value) return 'bitcoin';
+
+            if (isCashlink.value) {
+                if (relatedTx.value) {
+                    return isIncoming.value
+                        ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                        : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
+                }
+
+                return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+            }
+
+            return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
+        });
         const peerLabel = computed(() => {
+            if (swapTransaction.value) {
+                return context.root.$t('Bitcoin');
+            }
+
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
@@ -185,6 +227,7 @@ export default defineComponent({
             isIncoming,
             peerAddress,
             peerLabel,
+            swapTransaction,
         };
     },
     components: {
@@ -198,6 +241,8 @@ export default defineComponent({
         FiatAmount,
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
+        BitcoinIcon,
+        SwapSmallIcon,
     },
 });
 </script>
@@ -280,19 +325,29 @@ svg {
             width: 100%;
         }
 
+        > svg {
+            width: 5.25rem;
+            height: 5.25rem;
+            margin: 0.375rem;
+
+            &.bitcoin {
+                color: var(--bitcoin-orange);
+            }
+        }
+
         .cashlink {
             display: flex;
             align-items: center;
             justify-content: center;
             position: absolute;
-            bottom: -0.375rem;
+            bottom: -0.5rem;
             right: -0.125rem;
             color: white;
             background: var(--nimiq-blue-bg);
-            border: 0.25rem solid var(--bg-primary);
+            border: 0.375rem solid var(--bg-primary);
             border-radius: 2rem;
-            height: 2.5rem;
-            width: 2.5rem;
+            height: 2.75rem;
+            width: 2.75rem;
         }
     }
 
@@ -431,6 +486,18 @@ svg {
         .identicon {
             width: 5.5rem;
             height: 5.5rem;
+
+            > svg {
+                width: 5rem;
+                height: 5rem;
+                margin: 0.25rem;
+            }
+
+            .cashlink {
+                border-width: 0.25rem;
+                height: 2.5rem;
+                width: 2.5rem;
+            }
         }
     }
 }

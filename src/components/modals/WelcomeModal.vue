@@ -37,9 +37,8 @@
                         <strong>NIM</strong>
                     </template>
                 </i18n>
-                <label class="coming-soon">{{ $t('Coming soon') }}</label>
                 <i18n path="And {BTC}, the gold standard of crypto and a sound store of value."
-                    tag="p" class="nq-text bitcoin"
+                    tag="p" class="nq-text"
                 >
                     <template v-slot:BTC>
                         <strong>BTC</strong>
@@ -267,11 +266,7 @@ export default defineComponent({
         top: 12.25rem;
         width: 14.75rem;
         height: 14.75rem;
-        opacity: 0.2;
-    }
-
-    .nq-text.bitcoin {
-        opacity: 0.6;
+        color: var(--bitcoin-orange);
     }
 
     .coming-soon {

@@ -1,6 +1,6 @@
 <template>
     <span class="short-address flex-row">
-        <span class="address">{{ address.substring(0, 5) }}</span>
+        <span class="address">{{ address.substring(0, 4) }}</span>
         <!-- eslint-disable max-len -->
         <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/></svg>
         <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/></svg>

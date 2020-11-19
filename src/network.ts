@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
 import { NetworkClient } from '@nimiq/network-client';
-
 import { SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
+
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
@@ -102,6 +102,7 @@ export async function launchNetwork() {
     const subscribedCashlinks = new Set<string>();
     watch(cashlinkStore.networkTrigger, () => {
         const newAddresses: string[] = [];
+        const addressesToSubscribe: string[] = [];
         for (const address of cashlinkStore.allCashlinks.value) {
             if (fetchedCashlinks.has(address)) {
                 // In case a funding cashlink is added, but the cashlink is already known from
@@ -112,13 +113,14 @@ export async function launchNetwork() {
                     && cashlinkStore.state.claimed.includes(address)
                 ) {
                     subscribedCashlinks.add(address);
-                    client.subscribe(address);
+                    addressesToSubscribe.push(address);
                 }
                 continue;
             }
             fetchedCashlinks.add(address);
             newAddresses.push(address);
         }
+        if (addressesToSubscribe.length) client.subscribe(addressesToSubscribe);
         if (!newAddresses.length) return;
 
         console.debug(`Fetching history for ${newAddresses.length} cashlink(s)`);
@@ -150,10 +152,7 @@ export async function launchNetwork() {
     });
 }
 
-export async function sendTransaction(tx: SignedTransaction) {
-    launchNetwork();
-
-    const client = NetworkClient.Instance;
-
-    return client.sendTransaction(tx.serializedTx);
+export async function sendTransaction(tx: SignedTransaction | string) {
+    const client = await getNetworkClient();
+    return client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 }

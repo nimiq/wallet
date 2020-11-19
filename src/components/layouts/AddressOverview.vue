@@ -1,11 +1,12 @@
 <template>
-    <div class="address-overview" :class="{'no-accounts flex-column': !activeAddressInfo}">
-        <template v-if="activeAddressInfo">
+    <div class="address-overview"
+        :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
+        <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar v-model="searchString"/>
                 <button
-                    v-if="unclaimedCashlinkCount"
+                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
@@ -22,44 +23,67 @@
                 >
                     <MenuDotsIcon/>
                     <div class="popup-menu nq-blue-bg">
-                        <button class="reset flex-row"
+                        <button v-if="activeCurrency === 'nim'"
+                            class="reset flex-row"
                             @mousedown="rename(activeAccountId, activeAddressInfo.address)"
                         >
                             <RenameIcon/>{{ $t('Rename') }}
+                        </button>
+                        <button v-if="activeCurrency === 'btc'"
+                            class="reset flex-row"
+                            @mousedown="rescan"
+                        >
+                            <RefreshIcon/>{{ $t('Rescan') }}
                         </button>
                     </div>
                 </button>
             </div>
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
-                    <Identicon :address="activeAddressInfo.address" />
+                    <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
+                    <BitcoinIcon v-else/>
                     <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">
-                            <button class="reset flex-row"
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
                                 @mousedown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                            <button v-if="activeCurrency === 'btc'"
+                                class="reset flex-row"
+                                @mousedown="rescan"
+                            >
+                                <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                         </div>
                     </button>
                 </div>
                 <div class="meta">
                     <div class="flex-row">
-                        <div class="label">{{activeAddressInfo.label}}</div>
-                        <Amount :amount="activeAddressInfo.balance" value-mask/>
+                        <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
+                        <div v-else class="label bitcoin">{{ $t('Bitcoin') }}</div>
+                        <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
+                        <Amount v-else :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
-                        <Copyable :text="activeAddressInfo.address" :key="activeAddressInfo.address">
+                        <Copyable v-if="activeCurrency === 'nim'"
+                            :text="activeAddressInfo.address" :key="activeAddressInfo.address"
+                        >
                             <div class="address" v-responsive="{'masked': el => el.width < addressMaskedWidth}">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
-                        <FiatConvertedAmount :amount="activeAddressInfo.balance" value-mask/>
+                        <FiatConvertedAmount v-if="activeCurrency === 'nim' && activeAddressInfo.balance !== null"
+                            :amount="activeAddressInfo.balance" value-mask/>
+                        <span v-else-if="activeCurrency === 'nim'" class="fiat-amount"></span>
+                        <FiatConvertedAmount v-else
+                            :amount="btcAccountBalance" currency="btc" value-mask/>
                     </div>
                 </div>
             </div>
@@ -67,7 +91,7 @@
                 <SearchBar v-model="searchString"/>
 
                 <button
-                    v-if="unclaimedCashlinkCount"
+                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
                     class="nq-button-s orange unclaimed-cashlinks"
                     :class="{'active': showUnclaimedCashlinkList}"
                     @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
@@ -80,21 +104,29 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push('/send')" @mousedown.prevent
-                    :disabled="!activeAddressInfo || !activeAddressInfo.balance"
+                    @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
+                    :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
+                        || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
-                <button class="receive nq-button-s flex-row" @click="$router.push('/receive')" @mousedown.prevent>
+                <button class="receive nq-button-s flex-row"
+                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
+                >
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
             <div class="scroll-mask top"></div>
             <TransactionList
+                v-if="activeCurrency === CryptoCurrency.NIM"
                 :searchString="searchString"
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
+            />
+            <BtcTransactionList
+                v-else
+                :searchString="searchString"
             />
         </template>
         <template v-else>
@@ -122,23 +154,30 @@ import { Portal } from '@linusborg/vue-simple-portal';
 // @ts-ignore missing types for this package
 import { ResponsiveDirective } from 'vue-responsive-components';
 
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
+import BtcTransactionList from '../BtcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
+import RefreshIcon from '../icons/RefreshIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
+import { checkHistory } from '../../electrum';
 
 export default defineComponent({
     name: 'address-overview',
     setup() {
-        const { activeAccountId } = useAccountStore();
+        const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const searchString = ref('');
 
@@ -171,29 +210,48 @@ export default defineComponent({
                 ? 372
                 : 322);
 
+        function rescan() {
+            const { addressSet } = useBtcAddressStore();
+            checkHistory(
+                addressSet.value.external,
+                [],
+                0,
+                BTC_ADDRESS_GAP,
+                console.error, // eslint-disable-line no-console
+                true,
+            );
+        }
+
         return {
+            activeCurrency,
             searchString,
             activeAccountId,
             activeAddressInfo,
             onboard,
             rename,
+            rescan,
             unclaimedCashlinkCount,
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
             addressMaskedWidth,
+            btcAccountBalance,
+            CryptoCurrency,
         };
     },
     components: {
         ArrowRightSmallIcon,
         Identicon,
+        BitcoinIcon,
         GearIcon,
         RenameIcon,
+        RefreshIcon,
         Copyable,
         Amount,
         FiatConvertedAmount,
         SearchBar,
         TransactionList,
+        BtcTransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
@@ -300,6 +358,14 @@ export default defineComponent({
                 transition: opacity 0.3s var(--nimiq-ease);
             }
         }
+
+        > svg {
+            width: 10.5rem;
+            height: 10.5rem;
+            color: var(--bitcoin-orange);
+            margin: -0.25rem 0.375rem;
+            display: block;
+        }
     }
 
     .identicon {
@@ -344,6 +410,11 @@ export default defineComponent({
         margin-bottom: 0.75rem;
         margin-right: 3rem;
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+        &.bitcoin {
+            position: relative;
+            top: 1.25rem;
+        }
     }
 
     .address {
@@ -583,6 +654,14 @@ export default defineComponent({
 
         .identicon-wrapper {
             margin-right: 1.5rem;
+
+            > svg {
+                width: 5.25rem;
+                height: 5.25rem;
+                color: var(--bitcoin-orange);
+                margin: 0 0.25rem;
+                display: block;
+            }
         }
 
         .identicon-menu {
@@ -604,6 +683,10 @@ export default defineComponent({
         .amount {
             font-size: var(--h2-size);
             margin-bottom: 0;
+        }
+
+        .label.bitcoin {
+            top: 0.625rem;
         }
 
         .address,

@@ -8,6 +8,7 @@ import './registerServiceWorker';
 import { initStorage } from './storage';
 import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
+import { launchElectrum } from './electrum';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
@@ -68,6 +69,7 @@ router.afterEach((to, from) => {
 });
 
 launchNetwork();
+launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {

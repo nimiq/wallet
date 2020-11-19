@@ -85,6 +85,39 @@
             </section>
 
             <section>
+                <h2 class="nq-label">{{ $t('Bitcoin') }}</h2>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="btc-decimals">{{ $t('Show Decimals') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Edit the amount of decimals visible for BTC values.') }}
+                        </p>
+                    </div>
+
+                    <select id="btc-decimals" @input="setBtcDecimals(parseInt($event.target.value))">
+                        <option value="0" :selected="btcDecimals === 0">{{ $t('None') }}</option>
+                        <option value="3" :selected="btcDecimals === 3">3</option>
+                        <option value="8" :selected="btcDecimals === 8">{{ $t('all') }}</option>
+                    </select>
+                </div>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="btc-unit">{{ $t('Bitcoin Unit') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Select which unit to show Bitcoin amounts in.') }}
+                        </p>
+                    </div>
+
+                    <select id="btc-unit" @input="setBtcUnit($event.target.value)">
+                        <option value="btc" :selected="btcUnit.ticker === 'BTC'">BTC</option>
+                        <option value="mbtc" :selected="btcUnit.ticker === 'mBTC'">mBTC</option>
+                    </select>
+                </div>
+            </section>
+
+            <section>
                 <h2 class="nq-label">{{ $t('Developer') }}</h2>
 
                 <div class="setting">
@@ -248,6 +281,10 @@ export default defineComponent({
 
 .column {
     justify-content: flex-start;
+    max-height: 100%;
+    overflow-y: auto;
+
+    @extend %custom-scrollbar;
     @include ios-flex;
 
     section:first-child {
@@ -261,6 +298,7 @@ export default defineComponent({
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
+        max-height: calc(100% - 4rem); // for Copyright / Disclamer link
 
         section {
             padding-left: 3rem;
@@ -269,10 +307,6 @@ export default defineComponent({
 
     &.right-column {
         flex-shrink: 2;
-        max-height: 100%;
-        overflow-y: auto;
-
-        @extend %custom-scrollbar;
     }
 }
 

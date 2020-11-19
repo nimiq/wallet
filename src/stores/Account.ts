@@ -1,10 +1,12 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
+import { CryptoCurrency } from '../lib/Constants';
 
 export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
     activeAccountId: string | null,
+    activeCurrency: CryptoCurrency,
 }
 
 // Mirror of Hub WalletType, which is not exported
@@ -25,6 +27,7 @@ export const useAccountStore = createStore({
     state: () => ({
         accountInfos: {},
         activeAccountId: null,
+        activeCurrency: CryptoCurrency.NIM,
     } as AccountState),
     getters: {
         accountInfos: (state) => state.accountInfos,
@@ -32,14 +35,21 @@ export const useAccountStore = createStore({
         activeAccountInfo: (state) => state.activeAccountId
             ? state.accountInfos[state.activeAccountId]
             : null,
+        activeCurrency: (state) => state.activeCurrency,
     },
     actions: {
         selectAccount(accountId: string) {
             this.state.activeAccountId = accountId;
-            const { selectAddress } = useAddressStore();
 
+            // If the selected account does not support Bitcoin (or has it not enabled), switch active currency to NIM
+            const activeAccountInfo = this.activeAccountInfo.value!;
+            if (!activeAccountInfo.btcAddresses || !activeAccountInfo.btcAddresses.external.length) {
+                this.setActiveCurrency(CryptoCurrency.NIM);
+            }
+
+            const { selectAddress } = useAddressStore();
             // FIXME: Instead of always selecting the first address, store which address was selected per account.
-            selectAddress(this.activeAccountInfo.value!.addresses[0]);
+            selectAddress(activeAccountInfo.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to assign whole object for change detection of new accounts.
@@ -89,6 +99,9 @@ export const useAccountStore = createStore({
                     this.state.activeAccountId = null;
                 }
             }
+        },
+        setActiveCurrency(currency: CryptoCurrency) {
+            this.state.activeCurrency = currency;
         },
     },
 });

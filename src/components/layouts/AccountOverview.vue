@@ -48,11 +48,41 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-teaser flex-row">
-                <BitcoinIcon/>
-                Bitcoin
-                <div class="flex-grow"></div>
-                <label>{{ $t('Coming soon') }}</label>
+            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-column">
+                <button
+                    class="bitcoin-account-item reset flex-row"
+                    :class="{
+                        'active': activeCurrency === CryptoCurrency.BTC,
+                        'requires-activation': !hasBitcoinAddresses,
+                        'disabled': activeAccountInfo.type === AccountType.LEDGER,
+                    }"
+                    @click="selectBitcoin"
+                >
+                    <BitcoinIcon/>
+                    {{ $t('Bitcoin') }}
+                    <div class="flex-grow"></div>
+                    <div class="balances" v-if="hasBitcoinAddresses">
+                        <div class="flex-row">
+                            <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
+                            <Amount
+                                :amount="btcAccountBalance"
+                                :currency="CryptoCurrency.BTC"
+                                value-mask
+                            />
+                        </div>
+                        <FiatConvertedAmount class="fiat-balance"
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
+                    </div>
+                    <label v-else-if="activeAccountInfo.type === AccountType.LEDGER">{{ $t('Coming soon') }}</label>
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click.stop="$router.push('/btc-activation')" @mousedown.prevent
+                    >{{ $t('Activate') }}</button>
+                    <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
+                </button>
             </div>
             <div v-else>
                 <LegacyAccountUpgradeButton/>
@@ -83,6 +113,8 @@ import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
+import Amount from '../Amount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
@@ -90,21 +122,42 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+
+const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
 
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
-        const { activeAccountInfo, activeAccountId } = useAccountStore();
+        const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
 
-        const canHaveMultipleAddresses = computed(() => !isLegacyAccount.value);
+        const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
+            && activeAccountInfo.value.type !== AccountType.LEGACY);
+
+        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
+            && (activeAccountInfo.value.btcAddresses || false)
+            && activeAccountInfo.value.btcAddresses.external.length > 0);
 
         const { width } = useWindowSize();
 
         function onAddressSelected() {
+            setActiveCurrency(CryptoCurrency.NIM);
+
+            if (width.value <= 700) { // Full mobile breakpoint
+                context.root.$router.push('/transactions');
+            }
+        }
+
+        function selectBitcoin() {
+            setActiveCurrency(CryptoCurrency.BTC);
+
             if (width.value <= 700) { // Full mobile breakpoint
                 context.root.$router.push('/transactions');
             }
@@ -121,7 +174,30 @@ export default defineComponent({
             showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
         }
 
-        watch(activeAccountInfo, determineIfShowModalLegacyAccountNotice);
+        function determineIfShowBtcActivationModal() {
+            if (!activeAccountInfo.value) return;
+
+            // Showing the modal after login is handled in hub.ts
+            if (hasBitcoinAddresses.value) return;
+
+            const isEligibleAccountType = activeAccountInfo.value.type === AccountType.BIP39;
+            if (!isEligibleAccountType) return;
+
+            const alreadyShown = localStorage.getItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY) || '0';
+            if (alreadyShown === '1') return;
+
+            context.root.$router.push('/btc-activation');
+            localStorage.setItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY, '1');
+        }
+
+        function determineModalToShow() {
+            determineIfShowModalLegacyAccountNotice();
+            determineIfShowBtcActivationModal();
+        }
+
+        watch(activeAccountInfo, determineModalToShow);
+
+        const { consensus: btcConsensus } = useBtcNetworkStore();
 
         return {
             activeAccountInfo,
@@ -131,8 +207,14 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            btcAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
+            selectBitcoin,
+            activeCurrency,
+            CryptoCurrency,
+            hasBitcoinAddresses,
+            btcConsensus,
         };
     },
     components: {
@@ -148,6 +230,8 @@ export default defineComponent({
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
         Portal,
+        Amount,
+        FiatConvertedAmount,
     },
 });
 </script>
@@ -260,35 +344,129 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.bitcoin-teaser {
+.bitcoin-account {
     height: 15rem;
-    box-shadow: 0 -1.5px 0 var(--text-10);
-    align-items: center;
-    color: var(--text-40);
+    padding: 3rem 2rem;
+    margin: 0 -2rem;
+    color: var(--text-70);
     font-size: var(--body-size);
     font-weight: 600;
-    padding: 0 4rem;
-    margin: 0 -2rem;
-    flex-shrink: 0;
+    box-shadow: 0 -1.5px 0 var(--text-10);
 
     @media (max-width: 1319px) {
-        padding: 3rem;
+        padding: 3rem 1rem;
         margin: 0 -1rem;
     }
 
-    svg {
-        color: var(--text-20); // Bitcoin color is #F7931A
+    .bitcoin-account-item {
+        position: relative;
+        width: 100%;
+        padding: 0 2rem;
+        flex-shrink: 0;
+        flex-grow: 1;
+        align-items: center;
+        border-radius: 0.75rem;
+        transition: {
+            property: color, background;
+            duration: 400ms;
+            timing-function: var(--nimiq-ease);
+        };
+
+        &.active {
+            color: var(--text-100);
+        }
+
+        &:not(.active):not(.requires-activation):hover {
+            color: var(--text-100);
+            background: var(--nimiq-highlight-bg);
+        }
+
+        &.requires-activation {
+            pointer-events: none;
+
+            button {
+                pointer-events: all;
+            }
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: -1;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            box-shadow: none;
+            opacity: 0;
+
+            transition: {
+                property: opacity, box-shadow;
+                duration: 350ms;
+                timing-function: cubic-bezier(0.4, 0, 0, 1);
+            };
+        }
+
+        &.active::before {
+            opacity: 1;
+            box-shadow:
+                0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+                0px 1.5px 3px rgba(0, 0, 0, 0.05),
+                0px 4px 16px rgba(0, 0, 0, 0.07);
+        }
+
+        &.disabled {
+            color: var(--text-40);
+
+            svg.bitcoin {
+                color: var(--text-20);
+            }
+
+            label {
+                text-transform: uppercase;
+                font-size: var(--small-label-size);
+                font-weight: bold;
+                letter-spacing: 0.06em;
+                padding: 0.75rem 1.75rem;
+                box-shadow: 0 0 0 1.5px var(--text-10);
+                border-radius: 500px;
+            }
+        }
+    }
+
+    svg.bitcoin {
+        color: var(--bitcoin-orange);
         margin-right: 2rem;
     }
 
-    label {
-        text-transform: uppercase;
-        font-size: var(--small-label-size);
+    .balances {
+        text-align: right;
+        flex-shrink: 0;
+
+        .nq-icon {
+            opacity: 0.3;
+            margin-right: 1rem;
+        }
+    }
+
+    .amount {
+        --size: var(--body-size);
+        display: block;
+        line-height: 1.2;
         font-weight: bold;
-        letter-spacing: 0.06em;
-        padding: 0.75rem 1.75rem;
-        box-shadow: 0 0 0 1.5px var(--text-10);
-        border-radius: 500px;
+    }
+
+    .fiat-balance {
+        --size: var(--small-size);
+        font-size: var(--size);
+        font-weight: 600;
+        opacity: 0.5;
+    }
+
+    .mobile-arrow {
+        display: none;
     }
 }
 
@@ -359,7 +537,7 @@ export default defineComponent({
         margin-top: -2rem;
     }
 
-    .bitcoin-teaser label {
+    .bitcoin-account .balances {
         display: none;
     }
 }
@@ -369,10 +547,25 @@ export default defineComponent({
         margin-top: 0;
     }
 
-    .bitcoin-teaser {
+    .bitcoin-account {
         height: 11rem;
-        padding: 0 1.75rem;
-        margin: 0 0.5rem;
+        padding: 0;
+        margin: 0;
+
+
+        .bitcoin-account-item::before {
+            display: none;
+        }
+
+        .mobile-arrow {
+            display: block;
+            border: 1rem solid transparent;
+            border-width: 0.5rem 0.75rem;
+            border-left-color: inherit;
+            margin-left: 1.5rem;
+            margin-right: -0.75rem;
+            opacity: 0.3;
+        }
     }
 
     .mobile-action-bar {

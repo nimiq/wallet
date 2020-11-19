@@ -1,6 +1,9 @@
 <template>
     <transition name="fade" mode="out-in">
-        <FiatAmount v-if="fiatAmount !== undefined" :amount="fiatAmount" :currency="fiatCurrency"/>
+        <FiatAmount v-if="fiatAmount !== undefined"
+            :amount="roundDown ? Math.floor(fiatAmount) : fiatAmount"
+            :hideDecimals="roundDown"
+            :currency="fiatCurrency"/>
         <div v-else class="fiat-amount placeholder"></div>
     </transition>
 </template>
@@ -16,16 +19,31 @@ export default defineComponent({
     props: {
         // Amount in luna
         amount: {
+            type: Number,
             required: true,
+        },
+        currency: {
+            type: String as () => CryptoCurrency,
+            default: CryptoCurrency.NIM,
+        },
+        roundDown: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props) {
         const fiatStore = useFiatStore();
 
-        const fiatCurrency = computed(() => fiatStore.currency.value);
-        const exchangeRate = computed(() => fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
+        const fiatCurrency = fiatStore.currency;
+        const exchangeRate = computed(() => fiatStore.exchangeRates.value[props.currency]?.[fiatCurrency.value]);
+        const currencyDecimals = computed(() => {
+            switch (props.currency) {
+                case CryptoCurrency.BTC: return 8;
+                default: return 5;
+            }
+        });
         const fiatAmount = computed(() => exchangeRate.value !== undefined && typeof props.amount === 'number'
-            ? (props.amount / 1e5) * exchangeRate.value
+            ? (props.amount / 10 ** currencyDecimals.value) * exchangeRate.value
             : undefined,
         );
 

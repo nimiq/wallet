@@ -8,31 +8,55 @@
             </button>
         </h2>
         <div class="fiat-amount" ref="$fiatAmountContainer">
-            <FiatConvertedAmount
-                :amount="accountBalance"
+            <FiatAmount
+                v-if="fiatAmount !== undefined"
+                :amount="fiatAmount"
+                :currency="fiatCurrency"
                 ref="$fiatAmount"
                 :style="{ fontSize: `${fiatAmountFontSize}rem` }"
                 value-mask
             />
+            <span v-else class="fiat-amount">&nbsp;</span>
         </div>
+        <BalanceDistribution/>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
-// re add <BalanceDistribution /> once Bitcoin is avalable
-// import BalanceDistribution from './BalanceDistribution.vue';
+import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { FiatAmount } from '@nimiq/vue-components';
+import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useFiatStore } from '../stores/Fiat';
+import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
+        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+
+        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+
+        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
+        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+        const fiatAmount = computed(() => {
+            const nimFiatAmount = nimExchangeRate.value !== undefined
+                ? (accountBalance.value / 1e5) * nimExchangeRate.value
+                : undefined;
+            const btcFiatAmount = btcExchangeRate.value !== undefined
+                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                : undefined;
+
+            if (nimFiatAmount === undefined || btcFiatAmount === undefined) return undefined;
+
+            return nimFiatAmount + btcFiatAmount;
+        });
 
         const $fiatAmountContainer = ref<HTMLDivElement>(null);
         const $fiatAmount = ref<Vue>(null);
@@ -43,6 +67,7 @@ export default defineComponent({
 
         async function updateFontSize() {
             await context.root.$nextTick();
+            if (!$fiatAmount.value) return;
 
             if (!$fiatAmountContainer.value || !$fiatAmount.value) return;
 
@@ -57,14 +82,18 @@ export default defineComponent({
 
         onMounted(() => {
             window.addEventListener('resize', updateFontSize);
-            updateFontSize();
         });
         onUnmounted(() => window.removeEventListener('resize', updateFontSize));
+
+        watch($fiatAmount, () => {
+            if (!$fiatAmount.value) updateFontSize();
+        }, { lazy: true });
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
 
         return {
-            accountBalance,
+            fiatAmount,
+            fiatCurrency,
             $fiatAmount,
             $fiatAmountContainer,
             fiatAmountFontSize,
@@ -73,8 +102,8 @@ export default defineComponent({
         };
     },
     components: {
-        // BalanceDistribution,
-        FiatConvertedAmount,
+        BalanceDistribution,
+        FiatAmount,
         PrivacyOffIcon,
         PrivacyOnIcon,
     },
@@ -147,6 +176,10 @@ export default defineComponent({
     // Fixed line-height, so that the block height doesn't change when
     // the font-size is dynamically adjusted for number length.
     line-height: 7rem;
+}
+
+.balance-distribution {
+    margin-top: calc(var(--item-margin) / 4);
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint

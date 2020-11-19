@@ -1,11 +1,20 @@
-import HubApi, { Account, SignTransactionRequest } from '@nimiq/hub-api';
+import HubApi, {
+    Account,
+    SignTransactionRequest,
+    SignBtcTransactionRequest,
+    SetupSwapRequest,
+    RefundSwapRequest,
+} from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
 import { useAccountStore, AccountInfo } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
+import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
+import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useCashlinkStore, Cashlink } from './stores/Cashlink';
 import { sendTransaction as sendTx } from './network';
+import { sendTransaction as sendBtcTx } from './electrum';
 import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
 import router from './router';
 
@@ -18,6 +27,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
         welcomeRoute = '/welcome';
+    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+        welcomeRoute = '/btc-activation/activated';
     }
 });
 
@@ -46,9 +57,11 @@ function onError(error: 'Connection was closed' | Error) {
 function processAndStoreAccounts(accounts: Account[], replaceState = false): void {
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
+    const btcAddressInfos: BtcAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
+    const btcAddressStore = useBtcAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];
@@ -56,13 +69,13 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const address of account.addresses) {
             addresses.push(address.address);
 
+            const balance = addressStore.state.addressInfos[address.address]?.balance;
+
             addressInfos.push({
                 address: address.address,
                 type: AddressType.BASIC,
                 label: address.label,
-                balance: addressStore.state.addressInfos[address.address]
-                    ? addressStore.state.addressInfos[address.address].balance
-                    : null,
+                balance: balance || (balance === 0 ? 0 : null),
             });
         }
 
@@ -86,10 +99,33 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
             addressInfos.push({
                 ...contract,
-                balance: addressStore.state.addressInfos[contract.address]
-                    ? addressStore.state.addressInfos[contract.address].balance
-                    : null,
+                balance: addressStore.state.addressInfos[contract.address]?.balance || null,
             });
+        }
+
+        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+            for (const btcAddress of account.btcAddresses[chain]) {
+                const existingAddressInfo: BtcAddressInfo | {} = btcAddressStore.state.addressInfos[btcAddress] || {};
+                btcAddressInfos.push({
+                    address: btcAddress,
+                    used: false,
+                    utxos: [],
+                    ...existingAddressInfo,
+                });
+            }
+        }
+
+        // Check if we know more BTC addresses in the Wallet than the Hub
+        const existingAccount = accountStore.state.accountInfos[account.accountId];
+        if (existingAccount && existingAccount.btcAddresses) {
+            account.btcAddresses = {
+                internal: existingAccount.btcAddresses.internal.length > account.btcAddresses.internal.length
+                    ? existingAccount.btcAddresses.internal
+                    : account.btcAddresses.internal,
+                external: existingAccount.btcAddresses.external.length > account.btcAddresses.external.length
+                    ? existingAccount.btcAddresses.external
+                    : account.btcAddresses.external,
+            };
         }
 
         accountInfos.push({
@@ -100,18 +136,25 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
             addresses,
+            btcAddresses: { ...account.btcAddresses },
         });
     }
 
+    // On iOS & Safari we cannot update the list of derived Bitcoin addresses in the Hub, when
+    // deriving new addresses via the iframe. We therefore cannot simply overwrite all stored
+    // Bitcoin address infos in the Wallet, as that would likely delete previously additional
+    // derived ones.
+    btcAddressStore.addAddressInfos(btcAddressInfos);
+
     if (replaceState) {
-        accountStore.setAccountInfos(accountInfos);
         addressStore.setAddressInfos(addressInfos);
+        accountStore.setAccountInfos(accountInfos);
     } else {
-        for (const accountInfo of accountInfos) {
-            accountStore.addAccountInfo(accountInfo);
-        }
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
+        }
+        for (const accountInfo of accountInfos) {
+            accountStore.addAccountInfo(accountInfo);
         }
     }
 }
@@ -141,7 +184,7 @@ export async function syncFromHub() {
     }
 
     if (!listedAccounts.length) {
-        onboard(true); // eslint-disable-line @typescript-eslint/no-use-before-define
+        onboard(true);
         return;
     }
 
@@ -173,6 +216,8 @@ export async function onboard(asRedirect = false) {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
         router.push('/welcome');
+    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+        router.push('/btc-activation/activated');
     }
 
     return true;
@@ -304,6 +349,8 @@ export async function logout(accountId: string) {
     const addressStore = useAddressStore();
     const transactionStore = useTransactionsStore();
     const cashlinkStore = useCashlinkStore();
+    const btcAddressStore = useBtcAddressStore();
+    const btcTransactionStore = useBtcTransactionsStore();
 
     const addressesToDelete = accountStore.state.accountInfos[accountId].addresses;
 
@@ -336,12 +383,32 @@ export async function logout(accountId: string) {
         })
         .filter((address) => Boolean(address));
 
+    /**
+     * Bitcoin
+     */
+    const btcAddressesToDelete = accountStore.state.accountInfos[accountId].btcAddresses.internal
+        .concat(accountStore.state.accountInfos[accountId].btcAddresses.external);
+
+    const remainingBtcAddresses = Object.values(btcAddressStore.state.addressInfos)
+        .map((addressInfo) => addressInfo.address)
+        .filter((address) => !btcAddressesToDelete.includes(address));
+
+    const btcTransactionsToDelete = Object.values(btcTransactionStore.state.transactions)
+        .filter((tx) => {
+            for (const address of tx.addresses) {
+                if (remainingBtcAddresses.includes(address)) return false;
+            }
+            return true;
+        });
+
     // Delete account, it's addresses, their transactions and cashlinks
     for (const cashlinkAddress of pendingCashlinksToDelete) {
         cashlinkStore.removeCashlink(cashlinkAddress);
     }
     transactionStore.removeTransactions(transactionsToDelete);
     addressStore.removeAddresses(addressesToDelete);
+    btcTransactionStore.removeTransactions(btcTransactionsToDelete);
+    btcAddressStore.removeAddresses(btcAddressesToDelete);
     accountStore.removeAccount(accountId);
 
     if (!Object.values(accountStore.state.accountInfos).length) {
@@ -350,4 +417,89 @@ export async function logout(accountId: string) {
     }
 
     return true;
+}
+
+export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'appName'>) {
+    const signedTransaction = await hubApi.signBtcTransaction({
+        appName: APP_NAME,
+        ...tx,
+    }).catch(onError);
+    if (!signedTransaction) return null;
+
+    return sendBtcTx(signedTransaction);
+}
+
+export async function activateBitcoin(accountId: string) {
+    const account = await hubApi.activateBitcoin({
+        appName: APP_NAME,
+        accountId,
+    }).catch(onError);
+    if (!account) return false;
+
+    processAndStoreAccounts([account]);
+
+    return true;
+}
+
+export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {
+    const accountStore = useAccountStore();
+    const accountInfo = accountStore.state.accountInfos[accountId];
+
+    const existingAddresses = accountInfo.btcAddresses[chain];
+
+    const result = await hubApi.addBtcAddresses({
+        appName: APP_NAME,
+        accountId,
+        chain,
+        firstIndex: existingAddresses.length - 1, // Fetch one earlier to compare to the last known one
+    });
+
+    if (existingAddresses[existingAddresses.length - 1] !== result.addresses[0]) {
+        throw new Error(
+            `UNEXPECTED: BTC address at end of list does not match derived address at its index (${chain} chain)`,
+        );
+    }
+
+    const newAddresses = result.addresses.slice(1, count ? count + 1 : undefined);
+
+    const btcAddressInfos: BtcAddressInfo[] = newAddresses.map((address) => ({
+        address,
+        used: false,
+        utxos: [],
+    }));
+
+    // Add address infos first
+    const btcAddressStore = useBtcAddressStore();
+    btcAddressStore.addAddressInfos(btcAddressInfos);
+
+    // Add raw addresses to account's address list to recalculate the BTC address set
+    accountStore.patchAccount(accountId, {
+        btcAddresses: {
+            ...accountInfo.btcAddresses,
+            [chain]: [
+                ...accountInfo.btcAddresses[chain],
+                ...newAddresses,
+            ],
+        },
+    });
+
+    return btcAddressInfos;
+}
+
+export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>) {
+    return hubApi.setupSwap(new Promise((resolve, reject) => {
+        requestPromise.then((request) => resolve({
+            ...request,
+            appName: APP_NAME,
+        })).catch(reject);
+    })).catch(onError);
+}
+
+export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
+    return hubApi.refundSwap(new Promise((resolve, reject) => {
+        requestPromise.then((request) => resolve({
+            ...request,
+            appName: APP_NAME,
+        })).catch(reject);
+    })).catch(onError);
 }

@@ -5,7 +5,7 @@
             <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>
             <div v-if="maxFontSize" class="full-width" :class="{'width-finder': maxWidth > 0}">Width</div>
             <span class="width-finder width-value" ref="$widthValue">{{ liveValue || '' }}</span>
-            <input type="text" inputmode="decimal" class="nq-input" :class="vanishing"
+            <input type="text" inputmode="decimal" class="nq-input" :class="{ vanishing }"
                 :placeholder="placeholder"
                 :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
                 :value="liveValue" @input="onInput"
@@ -13,7 +13,7 @@
                 ref="$input">
         </form>
         <slot v-if="$slots.suffix" name="suffix"/>
-        <span v-else class="nim">NIM</span>
+        <span v-else class="ticker">NIM</span>
     </div>
 </template>
 
@@ -38,6 +38,10 @@ export default defineComponent({
         decimals: {
             type: Number,
             default: 5,
+        },
+        preserveSign: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {
@@ -76,11 +80,17 @@ export default defineComponent({
         watch(liveValue, updateWidth);
 
         function formatValue(val: string) {
-            const regExp = new RegExp(`(\\d*)(\\.(\\d{0,${props.decimals}}))?`, 'g'); // Backslashes are escaped
+            const regExp = new RegExp(`([-+])?(\\d*)(\\.\\d{0,${props.decimals}})?`, 'g'); // Backslashes are escaped
             const regExpResult = regExp.exec(val)!;
-            if (regExpResult[1] || regExpResult[2]) {
-                // Note: regExpResult[2] contains the decimal point, if there was any
-                return `${regExpResult[1] ? regExpResult[1] : '0'}${regExpResult[2] ? regExpResult[2] : ''}`;
+            if (regExpResult[1] || regExpResult[2] || regExpResult[3]) {
+                // regExpResult[1] contains the sign
+                // regExpResult[2] contains the whole integers
+                // regExpResult[3] contains the decimal point and decimals
+                return [
+                    props.preserveSign ? (regExpResult[1] || '+') : '',
+                    regExpResult[2] || (regExpResult[3] ? '0' : ''),
+                    regExpResult[3] || '',
+                ].join('');
             }
             return '';
         }
@@ -102,6 +112,7 @@ export default defineComponent({
         }
 
         watch(() => props.value, (newValue: number | undefined) => {
+            if (newValue === valueInLuna.value) return;
             updateValue(newValue ? (newValue / 10 ** props.decimals).toString() : '');
         });
 
@@ -181,7 +192,7 @@ input {
     display: flex;
 }
 
-.amount-input .nim {
+.amount-input .ticker {
     margin-left: 1rem;
     font-size: 4rem;
     font-weight: 700;

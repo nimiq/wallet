@@ -5,6 +5,10 @@ import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore, ContactsState } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
 import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
+import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
+import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
+import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
+import { useSwapsStore, SwapsState } from './stores/Swaps';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -13,10 +17,14 @@ const StorageKeys = {
     SETTINGS: 'wallet_settings_v01',
     FIAT: 'wallet_exchange-rates_v01',
     CASHLINKS: 'wallet_cashlinks_v01',
+    BTCTRANSACTIONS: 'wallet_btctransactions_v01',
+    BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
+    SWAPS: 'wallet_swaps_v01',
 };
 
 const PersistentStorageKeys = {
     CONTACTS: 'wallet_contacts_v01',
+    BTCLABELS: 'wallet_btclabels_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];
@@ -151,6 +159,80 @@ export function initStorage() {
     unsubscriptions.push(
         cashlinkStore.subscribe(() => {
             localStorage.setItem(StorageKeys.CASHLINKS, JSON.stringify(cashlinkStore.state));
+        }),
+    );
+
+    /**
+     * BTC TRANSACTIONS
+     */
+    const btcTransactionsStore = useBtcTransactionsStore();
+
+    // Load transactions from storage
+    const storedBtcTxs = localStorage.getItem(StorageKeys.BTCTRANSACTIONS);
+    if (storedBtcTxs) {
+        const txs: BtcTransaction[] = JSON.parse(storedBtcTxs);
+        btcTransactionsStore.patch({
+            // @ts-ignore Some weird error about a type missmatch
+            transactions: txs,
+        });
+        btcTransactionsStore.calculateFiatAmounts();
+    }
+
+    unsubscriptions.push(
+        // Write transactions to storage when updated
+        btcTransactionsStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.BTCTRANSACTIONS, JSON.stringify(btcTransactionsStore.state.transactions));
+        }),
+    );
+
+    /**
+     * BTC ADDRESSES
+     */
+    const btcAddressStore = useBtcAddressStore();
+
+    // Load addresses from storage
+    const storedBtcAddressState = localStorage.getItem(StorageKeys.BTCADDRESSINFOS);
+    if (storedBtcAddressState) {
+        const btcAddressState: BtcAddressState = JSON.parse(storedBtcAddressState);
+        btcAddressStore.patch(btcAddressState);
+    }
+
+    unsubscriptions.push(
+        // Write addresses to storage when updated
+        btcAddressStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.BTCADDRESSINFOS, JSON.stringify(btcAddressStore.state));
+        }),
+    );
+
+    /**
+     * BTC Labels
+     */
+    const btcLabelsStore = useBtcLabelsStore();
+    const storedBtcLabelsState = localStorage.getItem(PersistentStorageKeys.BTCLABELS);
+    if (storedBtcLabelsState) {
+        const btcLablesState: BtcLabelsState = JSON.parse(storedBtcLabelsState);
+        btcLabelsStore.patch(btcLablesState);
+    }
+
+    unsubscriptions.push(
+        btcLabelsStore.subscribe(() => {
+            localStorage.setItem(PersistentStorageKeys.BTCLABELS, JSON.stringify(btcLabelsStore.state));
+        }),
+    );
+
+    /**
+     * Swaps
+     */
+    const swapsStore = useSwapsStore();
+    const storedSwapsState = localStorage.getItem(StorageKeys.SWAPS);
+    if (storedSwapsState) {
+        const swapsState: SwapsState = JSON.parse(storedSwapsState);
+        swapsStore.patch(swapsState);
+    }
+
+    unsubscriptions.push(
+        swapsStore.subscribe(() => {
+            localStorage.setItem(StorageKeys.SWAPS, JSON.stringify(swapsStore.state));
         }),
     );
 }

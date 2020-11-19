@@ -1,11 +1,17 @@
 <template>
-    <Amount v-if="typeof amount === 'number'" :decimals="displayedDecimals" :amount="amount" :currency="currency" />
+    <Amount v-if="typeof amount === 'number'"
+        :decimals="displayedDecimals"
+        :amount="amount"
+        :currency="ticker"
+        :currencyDecimals="currencyDecimals"/>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
+import { CryptoCurrency } from '../lib/Constants';
+import { calculateDisplayedDecimals } from '../lib/NumberFormatting';
 
 export default defineComponent({
     name: 'amount',
@@ -15,25 +21,31 @@ export default defineComponent({
             required: true,
         },
         currency: {
-            type: String,
-            required: false,
+            type: String as () => CryptoCurrency,
+            default: CryptoCurrency.NIM,
         },
     },
     setup(props) {
-        const { decimals } = useSettingsStore();
+        const { btcUnit } = useSettingsStore();
 
-        const displayedDecimals = computed(() => {
-            // for BTC add condition here
+        const currencyDecimals = computed(() => {
+            switch (props.currency) {
+                case CryptoCurrency.BTC: return btcUnit.value.decimals;
+                default: return 5;
+            }
+        });
 
-            if (props.amount === null) return 0;
+        const displayedDecimals = computed(() => calculateDisplayedDecimals(props.amount, props.currency));
 
-            if (props.amount > 0 && props.amount < 0.01 * 1e5) return 5;
-            if (props.amount > 0 && props.amount < 1 * 1e5) return Math.max(decimals.value, 2);
-            return decimals.value;
+        const ticker = computed(() => {
+            if (props.currency === CryptoCurrency.BTC) return btcUnit.value.ticker.toLowerCase();
+            return props.currency;
         });
 
         return {
             displayedDecimals,
+            currencyDecimals,
+            ticker,
         };
     },
     components: {

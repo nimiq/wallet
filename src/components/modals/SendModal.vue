@@ -46,16 +46,18 @@
         <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
+                <div class="flex-grow"></div>
                 <Identicon :address="recipientWithLabel.address"/>
                 <LabelInput
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
                     :placeholder="$t('Name this contact...')"
-                     ref="labelInputRef"/>
+                    ref="labelInputRef"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <Copyable :text="recipientWithLabel.address">
                     <AddressDisplay :address="recipientWithLabel.address"/>
                 </Copyable>
+                <div class="flex-grow"></div>
                 <button
                     class="nq-button light-blue"
                     @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
@@ -90,8 +92,7 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
                         <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef">
-                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="nim"
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -102,8 +103,8 @@
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
                         <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
-                            <span v-if="activeCurrency !== 'nim'" slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="nim"
+                            <span slot="prefix" class="tilde">~</span>
+                            <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -426,9 +427,11 @@ export default defineComponent({
                         recipientWithLabel.value!.label = parsedRequestLink.label;
                     }
                 }
+
                 if (parsedRequestLink.amount) {
                     amount.value = parsedRequestLink.amount;
                 }
+
                 if (parsedRequestLink.message) {
                     message.value = parsedRequestLink.message;
                 }
@@ -640,13 +643,6 @@ export default defineComponent({
         StatusScreen,
     },
 });
-
-/*
-    TODO:
-    * Styling of SendTx
-    * properly implementy the change Sender functionality (design pending)
-    * close button and Scan QR Code collide.
- */
 </script>
 
 <style lang="scss" scoped>
@@ -691,6 +687,10 @@ export default defineComponent({
 
     .page__amount-input {
         padding-bottom: 4rem;
+
+        button {
+            flex-shrink: 0;
+        }
     }
 
     .page__fee-selection {
@@ -703,6 +703,7 @@ export default defineComponent({
 
     .address-section {
         text-align: center;
+        margin: 4rem 0;
 
         .address-input {
             margin-top: 2.25rem;
@@ -735,6 +736,8 @@ export default defineComponent({
     }
 
     .recipient-overlay {
+        justify-content: flex-start;
+
         .spacing-top {
             height: 1.5rem;
         }
@@ -748,6 +751,7 @@ export default defineComponent({
         label {
             font-size: var(--h1-size);
             font-weight: 600;
+            margin: 3rem 0;
         }
 
         label {
@@ -756,6 +760,7 @@ export default defineComponent({
 
         .copyable {
             padding: 0.5rem;
+            margin-bottom: 4rem;
 
             /deep/ .background {
                 border-radius: 0.625rem;
@@ -864,6 +869,7 @@ export default defineComponent({
     .amount-section {
         text-align: center;
         align-self: stretch;
+        margin: 3rem 0 2rem;
 
         .amount-row {
             align-self: stretch;
@@ -932,6 +938,7 @@ export default defineComponent({
     .message-section {
         align-self: stretch;
         text-align: center;
+        margin-bottom: 4rem;
 
         .label-input {
             font-size: var(--h2-size);

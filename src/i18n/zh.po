@@ -88,7 +88,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "激活"
 
@@ -148,7 +148,7 @@ msgstr "全部"
 msgid "All in one easy place."
 msgstr "全部都在一个簡單的地方"
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -197,7 +197,7 @@ msgid "Backup"
 msgstr "备份"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -324,7 +324,6 @@ msgstr "清除缓存"
 msgid "Click for more information"
 msgstr "点击了解更多信息"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "即将推出"
@@ -727,6 +726,10 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建您的Nimiq帐户："
@@ -776,7 +779,7 @@ msgstr "遗失"
 msgid "Max."
 msgstr "最高"
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
@@ -1204,7 +1207,7 @@ msgstr "请在这里告诉我们"
 msgid "Testnet"
 msgstr "测试网"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 

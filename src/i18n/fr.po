@@ -89,7 +89,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "Activer"
 
@@ -153,7 +153,7 @@ msgstr "Toutes"
 msgid "All in one easy place."
 msgstr "Tout en un seul endroit."
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -210,7 +210,7 @@ msgid "Backup"
 msgstr "Sauvegarder"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -346,7 +346,6 @@ msgstr "Vider le cache"
 msgid "Click for more information"
 msgstr "Cliquez pour plus d'informations"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "Bientôt disponible"
@@ -767,6 +766,10 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
@@ -816,7 +819,7 @@ msgstr "perdu"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Le montant minimum à swap est {amount}"
 
@@ -1257,7 +1260,7 @@ msgstr "Parlez-nous en ici."
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
 

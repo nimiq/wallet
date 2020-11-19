@@ -89,7 +89,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Аккаунты"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "Активировать"
 
@@ -152,7 +152,7 @@ msgstr "все"
 msgid "All in one easy place."
 msgstr "Всё в одном месте."
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -211,7 +211,7 @@ msgid "Backup"
 msgstr "Резервная копия"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -341,7 +341,6 @@ msgstr "Очистить Кэш"
 msgid "Click for more information"
 msgstr "Кликните для подробной информации"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "В скором времени"
@@ -763,6 +762,10 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
@@ -810,7 +813,7 @@ msgstr "потерян"
 msgid "Max."
 msgstr "Макс."
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
@@ -1249,7 +1252,7 @@ msgstr "Сообщите нам здесь"
 msgid "Testnet"
 msgstr "Тестнет"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 

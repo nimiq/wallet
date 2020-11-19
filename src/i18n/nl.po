@@ -90,7 +90,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Accounts"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "Activeren"
 
@@ -153,7 +153,7 @@ msgstr "alles"
 msgid "All in one easy place."
 msgstr "Allemaal op één gemakkelijke plek."
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -209,7 +209,7 @@ msgid "Backup"
 msgstr "Backup"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -344,7 +344,6 @@ msgstr "Cache wissen"
 msgid "Click for more information"
 msgstr "Klik voor meer informatie"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "Binnenkort beschikbaar"
@@ -763,6 +762,10 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
@@ -812,7 +815,7 @@ msgstr "verloren"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimale swap-bedrag is {amount}"
 
@@ -1251,7 +1254,7 @@ msgstr "Vertel het ons!"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 

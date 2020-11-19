@@ -90,7 +90,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "Activar"
 
@@ -154,7 +154,7 @@ msgstr "todo"
 msgid "All in one easy place."
 msgstr "Todo en un mismo lugar"
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -212,7 +212,7 @@ msgid "Backup"
 msgstr "Respaldar"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -348,7 +348,6 @@ msgstr "Borrar Cache"
 msgid "Click for more information"
 msgstr "Haga click para obtener más información"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "Próximamente"
@@ -766,6 +765,10 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "¡Comencemos! Cree su cuenta Nimiq:"
@@ -815,7 +818,7 @@ msgstr "perdida"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "El monto mínimo de intercambio es {amount}"
 
@@ -1257,7 +1260,7 @@ msgstr "Cuéntanos acá."
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 

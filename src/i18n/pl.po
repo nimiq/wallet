@@ -90,7 +90,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Konta"
 
-#: src/components/layouts/AccountOverview.vue:83
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr "Aktywuj"
 
@@ -151,7 +151,7 @@ msgstr "wszystko"
 msgid "All in one easy place."
 msgstr "Wszystko w jednym prostym miejscu."
 
-#: src/components/layouts/AccountOverview.vue:90
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -209,7 +209,7 @@ msgid "Backup"
 msgstr "Kopia zapasowa"
 
 #: src/components/BalanceDistribution.vue:68
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
@@ -342,7 +342,6 @@ msgstr "Wyczyść pamięć cache"
 msgid "Click for more information"
 msgstr "Kliknij, by uzyskać więcej informacji"
 
-#: src/components/layouts/AccountOverview.vue:79
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "Już wkrótce"
@@ -764,6 +763,10 @@ msgstr "Dowiedz się więcej"
 msgid "Learn more here"
 msgstr "Dowiedz się więcej tutaj"
 
+#: src/components/swap/SwapModal.vue:272
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Zaczynamy! Stwórz swoje konto w sieci nimiqa:"
@@ -813,7 +816,7 @@ msgstr "utracony"
 msgid "Max."
 msgstr "Maks."
 
-#: src/components/swap/SwapModal.vue:627 src/components/swap/SwapModal.vue:640
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimalna kwota wymiany to {amount}"
 
@@ -1258,7 +1261,7 @@ msgstr "Zrób to tutaj"
 msgid "Testnet"
 msgstr "Sieć testowa"
 
-#: src/components/swap/SwapModal.vue:651
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
 

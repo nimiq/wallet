@@ -1445,7 +1445,7 @@ msgstr "Sonst noch was?"
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Bei Bitcoin wird für jede Transaktion eine neue Adresse verwendet, um die "
 "Privatsphäre zu verbessern. Die Wiederverwendung von Adressen führt nicht zu"

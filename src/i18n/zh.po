@@ -2,10 +2,11 @@
 # Translators:
 # Daniel, 2020
 # Sven <sven@nimiq.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/107022/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -1381,7 +1382,7 @@ msgstr "还有什么？"
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr "使用比特币时，每笔交易都会使用一个新地址来提高隐私性。重复使用地址不会导致资金损失。"
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20

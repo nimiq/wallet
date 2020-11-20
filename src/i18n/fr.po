@@ -3,10 +3,11 @@
 # Talleyrand <baptistekugener@wanadoo.fr>, 2020
 # Daniel, 2020
 # Matheo <matheo@nimiq.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/107022/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -1449,7 +1450,7 @@ msgstr "Quoi d'autre ?"
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Avec Bitcoin, une nouvelle adresse est utilisée pour chaque transaction afin"
 " d'améliorer la confidentialité. La réutilisation des adresses n'entraîne "

@@ -1,13 +1,13 @@
 # 
 # Translators:
-# Sören <hello@soerenschwert.de>, 2020
 # Rhody Lugo <rhodylugo@gmail.com>, 2020
 # Daniel, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/107022/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -1447,7 +1447,7 @@ msgstr "¿Qué más?"
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Con Bitcoin, una nueva dirección es usada en cada nueva transacción para "
 "mejorar la privacidad. Reutilizar direcciones no provoca la perdida de "

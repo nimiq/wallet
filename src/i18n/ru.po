@@ -3,10 +3,11 @@
 # Пётр Павлович <faentoad@gmail.com>, 2020
 # Daniel, 2020
 # Vad <vjuruss@gmail.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Vad <vjuruss@gmail.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/107022/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -1443,7 +1444,7 @@ msgstr "Что-то еще?"
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Для каждой Биткоин-транзакций Nimiq создаёт новый адрес. Это не означает, "
 "что повторное использование одного и того же адреса приведёт к потере ваших "

@@ -89,7 +89,7 @@
                 <InfoCircleSmallIcon slot="trigger"/>
                 <div class="flex-column">
                     <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                        + 'Reuse of addresses does not result in a loss of funds.') }}</p>
+                        + ' Reuse of addresses does not result in a loss of funds.') }}</p>
                     <div class="flex-column">
                         <div class="flex-row">
                             <RefreshIcon />

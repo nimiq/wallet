@@ -1302,7 +1302,7 @@ msgid "What else?"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:91
-msgid "With Bitcoin, a new address is used for every transaction to improve privacy.Reuse of addresses does not result in a loss of funds."
+msgid "With Bitcoin, a new address is used for every transaction to improve privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 
 #: src/components/BtcCopiedAddress.vue:16

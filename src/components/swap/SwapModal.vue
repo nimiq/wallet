@@ -3,7 +3,7 @@
         :showOverlay="!!swap || addressListOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
-        <div class="page flex-column">
+        <div class="page flex-column main-page">
             <PageHeader>
                 {{ $t('Swap NIM and BTC') }}
                 <div slot="more" class="flex-column">
@@ -1204,6 +1204,10 @@ export default defineComponent({
     .nq-button {
         margin: 0 4rem 3rem;
     }
+
+    &.main-page {
+        overflow-y: auto;
+    }
 }
 
 .page-header {
@@ -1234,10 +1238,11 @@ export default defineComponent({
 .pills {
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 0.75rem;
 
     .tooltip {
         text-align: left;
-        margin-top: 1.5rem;
+        margin-top: 0.75rem;
     }
 
     .tooltip + .tooltip {
@@ -1468,6 +1473,10 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
+    .main-page .page-body {
+        padding-top: 0;
+    }
+
     .early-access {
         top: 1.25rem;
         left: 1.25rem;
@@ -1475,6 +1484,12 @@ export default defineComponent({
         /deep/ .tooltip-box {
             transform: translate(-3rem, 2rem);
         }
+    }
+}
+
+@media (max-width: 450px) { // Vue-components breakpoint
+    .page-header {
+        padding-top: 4rem; // Increase space between Early Access notice and modal title
     }
 }
 </style>

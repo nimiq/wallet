@@ -1,6 +1,6 @@
 <template>
-    <div class="modal backdrop flex-column" @click.self="close">
-        <div class="wrapper flex-column" @click.self="close">
+    <div class="modal backdrop flex-column" @mousedown.self="close" @touchstart.self="close">
+        <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close">
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>

@@ -33,7 +33,7 @@
                             <path d="M15.02 81l0 2" stroke-width="1.5"/>
                         </g>
                         <g class="identicon">
-                            <path class="identicon-border" fill="#1F2348" transform="scale(1.15)" transform-origin="33.33% 50%" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
+                            <path class="identicon-border" fill="#1F2348" d="M87.35 45.56L75.27 24.44A4.82 4.82 0 0071.08 22H46.92a4.81 4.81 0 00-4.18 2.44L30.65 45.56a4.89 4.89 0 000 4.88l12.08 21.12A4.82 4.82 0 0046.92 74h24.16a4.81 4.81 0 004.18-2.44l12.09-21.12a4.89 4.89 0 000-4.88z" />
                             <image :href="identiconUrl" x="30" y="19" width="58" height="58" />
                         </g>
                     </svg>
@@ -286,6 +286,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .swap-animation {
+    flex-grow: 1;
     height: 100%;
     justify-content: space-between;
     overflow: hidden;
@@ -431,6 +432,11 @@ export default defineComponent({
 
     .right .piece-container .swap-amount {
         justify-content: flex-end;
+    }
+
+    .identicon-border {
+        transform-origin: 33.33% 50%;
+        transform: scale(1.15);
     }
 
     .nim.right .identicon-border {
@@ -635,6 +641,8 @@ export default defineComponent({
         .left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
         .right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
     }
+
+
 }
 
 @keyframes spinner-rotate {
@@ -717,4 +725,35 @@ export default defineComponent({
         text-align: right;
     }
 }
+
+/* mobile - animation downscale - starting at 500px width */
+.animation {
+    &.await-incoming,
+    &.await-incoming,
+    &.create-outgoing,
+    &.await-secret {
+        @media (max-width: 500px) {
+            transform: scale(0.8);
+        }
+        @media (max-width: 400px) {
+            transform: scale(0.7);
+        }
+        @media (max-width: 350px) {
+            transform: scale(0.65);
+        }
+    }
+
+    &.settle-incoming {
+        @media (max-width: 500px) {
+            transform: scale(0.8) rotate(180deg);
+        }
+        @media (max-width: 400px) {
+            transform: scale(0.7) rotate(180deg);
+        }
+        @media (max-width: 350px) {
+            transform: scale(0.65) rotate(180deg);
+        }
+    }
+}
+
 </style>

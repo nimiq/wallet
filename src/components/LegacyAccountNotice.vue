@@ -22,8 +22,8 @@
                     <p class="nq-text">{{ $t('Send, receive and hold BTC in your wallet.') }}</p>
                 </div>
             </div>
-            <div class="flex-row">
-                <div data-placeholder></div>
+            <div class="flex-row staking">
+                <img src="../assets/staking-preview-icon.svg" alt="Staking Icon">
                 <div class="text">
                     <h2 class="nq-h2">{{ $t('Staking') }} <label>{{ $t('Coming soon') }}</label></h2>
                     <p class="nq-text">{{ $t('Stake NIM to generate rewards for securing the network.') }}</p>
@@ -74,7 +74,7 @@ h1 {
     color: var(--text-60);
 }
 
-img, svg, div[data-placeholder] {
+img, svg {
     width: 93px;
     height: 93px;
     margin-right: 4rem;
@@ -82,16 +82,15 @@ img, svg, div[data-placeholder] {
     color: #F7931A;
 }
 
-svg, div[data-placeholder] {
+svg {
     width: 87px;
     height: 87px;
     margin: 3px;
     margin-right: calc(3px + 4rem);
 }
 
-div[data-placeholder] {
-    background: var(--text-10);
-    border-radius: 50%;
+.staking img {
+    padding: 1.5rem;
 }
 
 h2 {
@@ -142,17 +141,25 @@ label {
         margin: 0 1rem;
     }
 
-    img, svg, div[data-placeholder] {
+    .flex-row {
+        align-items: flex-start;
+    }
+
+    img, svg {
         width: 68px;
         height: 68px;
         margin-right: 3rem;
     }
 
-    svg, div[data-placeholder] {
+    svg {
         width: 64px;
         height: 64px;
         margin: 2px;
         margin-right: calc(2px + 3rem);
+    }
+
+    .staking img {
+        padding: 1rem;
     }
 
     label {
@@ -161,7 +168,7 @@ label {
 }
 
 @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
-    img, svg, div[data-placeholder] {
+    img, svg {
         display: none;
     }
 }

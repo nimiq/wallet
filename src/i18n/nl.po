@@ -63,7 +63,7 @@ msgstr "2-4 uur"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Chat & Telefonisch Support"
 
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr "30 dagen limiet"
 
@@ -286,14 +286,14 @@ msgstr ""
 "Door transactiekosten toe te voegen, kunt u bepalen hoe snel uw transactie "
 "wordt verwerkt."
 
-#: src/components/swap/SwapModal.vue:140
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "Door op 'bevestigen' te klikken, ga je akkoord met de servicevoorwaarden van"
 " {Fastspot} en {FastspotGO}."
 
-#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Door op 'bevestigen' te klikken, ga je akkoord met de ToS van {Fastspot}."
@@ -329,7 +329,7 @@ msgid "Choose a Recipient"
 msgstr "Kies een ontvanger"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:177
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -353,7 +353,7 @@ msgstr "Binnenkort beschikbaar"
 msgid "Coming soon"
 msgstr "Binnenkort beschikbaar"
 
-#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
 msgstr "Bevestigen"
 
@@ -492,15 +492,15 @@ msgstr "Download je Login File"
 msgid "Duration and fees are estimates."
 msgstr "Looptijd en kosten zijn geschat."
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
 msgstr "Tijdens de early access zijn deze limieten van toepassing."
 
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
 msgstr "Early Access"
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:50
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -591,6 +591,10 @@ msgstr "Faucet niet beschikbaar (fout netwerk)"
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
 msgstr "kosten"
+
+#: src/components/swap/SwapModal.vue:42
+msgid "fees"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -752,7 +756,7 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -776,7 +780,7 @@ msgstr ""
 msgid "Load file"
 msgstr "Bestand laden"
 
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:72
 msgid "loading..."
 msgstr "laden..."
 
@@ -801,11 +805,11 @@ msgstr "Log uit"
 msgid "lost"
 msgstr "verloren"
 
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:61 src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimale swap-bedrag is {amount}"
 
@@ -1244,7 +1248,7 @@ msgstr "Vertel het ons!"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:663
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
@@ -1293,7 +1297,7 @@ msgstr "Er is geen \"wachtwoord vergeten\""
 msgid "There's a problem"
 msgstr "Er is een probleem"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
 msgstr "Ze zullen geleidelijk worden verhoogd."
 

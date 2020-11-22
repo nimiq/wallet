@@ -61,7 +61,7 @@ msgstr "2-4小时"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话支持"
 
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr "30天限制"
 
@@ -269,12 +269,12 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以提升交易的处理速度"
 
-#: src/components/swap/SwapModal.vue:140
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "点击“确认”，即表示您同意{Fastspot}和{FastspotGO}的服务条款。"
 
-#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr "点击“确认”，即表示您同意{Fastspot}的服务条款。"
 
@@ -309,7 +309,7 @@ msgid "Choose a Recipient"
 msgstr "选择接收者"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:177
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr "选择地址"
 
@@ -333,7 +333,7 @@ msgstr "即将推出"
 msgid "Coming soon"
 msgstr "即将推出"
 
-#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
 msgstr "确认"
 
@@ -467,15 +467,15 @@ msgstr "下载您的登录文件"
 msgid "Duration and fees are estimates."
 msgstr "持续时间和费用均为估算。"
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
 msgstr "这些限制适用于抢先体验期间。"
 
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
 msgstr "抢先体验"
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:50
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -562,6 +562,10 @@ msgstr "水龙头无法使用（网络错误）"
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
 msgstr "费用"
+
+#: src/components/swap/SwapModal.vue:42
+msgid "fees"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -717,7 +721,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -741,7 +745,7 @@ msgstr ""
 msgid "Load file"
 msgstr "加载文件"
 
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:72
 msgid "loading..."
 msgstr "载入中..."
 
@@ -766,11 +770,11 @@ msgstr "登出"
 msgid "lost"
 msgstr "遗失"
 
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:61 src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr "最高"
 
-#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
 msgid "Minimum swap amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
@@ -1198,7 +1202,7 @@ msgstr "请在这里告诉我们"
 msgid "Testnet"
 msgstr "测试网"
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:663
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 
@@ -1242,7 +1246,7 @@ msgstr "没有 “忘记密码” 的选项"
 msgid "There's a problem"
 msgstr "有问题"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
 msgstr "它们将逐渐增加。"
 

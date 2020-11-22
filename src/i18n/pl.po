@@ -63,7 +63,7 @@ msgstr "2–4 godz."
 msgid "24/7 Chat & Phone Support"
 msgstr "Wsparcie na czacie i przez telefon 24 h/7"
 
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr "Limit 30-dniowy"
 
@@ -284,14 +284,14 @@ msgid ""
 msgstr ""
 "Dodając opłatę za transakcję, masz wpływ na szybkość jej przetwarzania."
 
-#: src/components/swap/SwapModal.vue:140
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "Klikając „potwierdź”, akceptujesz warunki świadczenia usług {Fastspot} i "
 "{FastspotGO}."
 
-#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Klikając „potwierdź”, akceptujesz warunki świadczenia usługi {Fastspot}."
@@ -327,7 +327,7 @@ msgid "Choose a Recipient"
 msgstr "Wybierz odbiorcę"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:177
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr "Wybierz adres"
 
@@ -351,7 +351,7 @@ msgstr "Już wkrótce"
 msgid "Coming soon"
 msgstr "Już wkrótce"
 
-#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
 msgstr "Potwierdź"
 
@@ -490,15 +490,15 @@ msgstr "Pobierz plik logowania"
 msgid "Duration and fees are estimates."
 msgstr "Czas trwania i opłaty mają wartości szacunkowe."
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
 msgstr "W trakcie wczesnego dostępu obowiązują określone limity."
 
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
 msgstr "Wczesny dostęp"
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:50
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -589,6 +589,10 @@ msgstr "Pula niedostępna (nieprawidłowa sieć)"
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
 msgstr "opłata"
+
+#: src/components/swap/SwapModal.vue:42
+msgid "fees"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -752,7 +756,7 @@ msgstr "Dowiedz się więcej"
 msgid "Learn more here"
 msgstr "Dowiedz się więcej tutaj"
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 "Konta powiązane z portfelem Ledger nie obsługują jeszcze funkcji wymiany. "
@@ -778,7 +782,7 @@ msgstr "Link niedostępny w tej przeglądarce"
 msgid "Load file"
 msgstr "Wczytaj plik"
 
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:72
 msgid "loading..."
 msgstr "wczytywanie…"
 
@@ -803,11 +807,11 @@ msgstr "Wyloguj się"
 msgid "lost"
 msgstr "utracony"
 
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:61 src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr "Maks."
 
-#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimalna kwota wymiany to {amount}"
 
@@ -1252,7 +1256,7 @@ msgstr "Zrób to tutaj"
 msgid "Testnet"
 msgstr "Sieć testowa"
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:663
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
 
@@ -1301,7 +1305,7 @@ msgstr "Nie ma funkcji przypominania hasła"
 msgid "There's a problem"
 msgstr "Istnieje pewien problem"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
 msgstr "Z czasem ich wartość będzie stopniowo zwiększana."
 

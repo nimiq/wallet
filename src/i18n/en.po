@@ -51,8 +51,8 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:51
-#: src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:53
+#: src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr ""
 
@@ -240,11 +240,11 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:140
+#: src/components/swap/SwapModal.vue:142
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -279,7 +279,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:177
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr ""
 
@@ -303,7 +303,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
 msgstr ""
 
@@ -433,15 +433,15 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:50
 msgid "Early Access means that there are limits in place for swaps. They will be increased gradually."
 msgstr ""
 
@@ -523,6 +523,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:42
+msgid "fees"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
@@ -674,7 +678,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -698,8 +702,8 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:53
-#: src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:55
+#: src/components/swap/SwapModal.vue:72
 msgid "loading..."
 msgstr ""
 
@@ -722,13 +726,13 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:59
-#: src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:636
-#: src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:639
+#: src/components/swap/SwapModal.vue:652
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -1133,7 +1137,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:663
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1171,7 +1175,7 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
 msgstr ""
 

@@ -62,7 +62,7 @@ msgstr "2-4h"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Soporte Chat & Teléfono"
 
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr "Límite de 30 días"
 
@@ -288,14 +288,14 @@ msgstr ""
 "Al agregar una cuota a la transacción, puede influenciar que tan rápidamente"
 " será procesada."
 
-#: src/components/swap/SwapModal.vue:140
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "Al hacer click en 'confirmar', usted esta accediendo a los ToS de {Fastspot}"
 " and {FastspotGO}."
 
-#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Al hacer click en 'confirmar', usted esta accediendo a los  ToS de "
@@ -332,7 +332,7 @@ msgid "Choose a Recipient"
 msgstr "Elija un Destinatario"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:177
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
@@ -356,7 +356,7 @@ msgstr "Próximamente"
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -493,15 +493,15 @@ msgstr "Descargue su Archivo de Sesión"
 msgid "Duration and fees are estimates."
 msgstr "La duración y las cuotas son estimados."
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
 msgstr "Durante el acceso preliminar, estos limites aplican."
 
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
 msgstr "Acceso Preliminar"
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:50
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -592,6 +592,10 @@ msgstr "Aplicación grifo no disponible (red errónea)"
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
 msgstr "cuota"
+
+#: src/components/swap/SwapModal.vue:42
+msgid "fees"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -753,7 +757,7 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -777,7 +781,7 @@ msgstr ""
 msgid "Load file"
 msgstr "Cargar archivo"
 
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:72
 msgid "loading..."
 msgstr "cargando..."
 
@@ -802,11 +806,11 @@ msgstr "Cerrar Sesión"
 msgid "lost"
 msgstr "perdida"
 
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:61 src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
 msgid "Minimum swap amount is {amount}"
 msgstr "El monto mínimo de intercambio es {amount}"
 
@@ -1248,7 +1252,7 @@ msgstr "Cuéntanos acá."
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:663
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 
@@ -1298,7 +1302,7 @@ msgstr "No hay opción de \"Olvidé mi contraseña\""
 msgid "There's a problem"
 msgstr "Hay un problema"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
 msgstr "Serán incrementados gradualmente."
 

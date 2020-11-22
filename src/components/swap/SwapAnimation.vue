@@ -27,7 +27,7 @@
                             <circle opacity=".25" cx="159" cy="70" r="10.75" />
                         </g>
                         <path class="fill" fill="currentColor" fill-rule="evenodd" d="M159 52a17.93 17.93 0 00-10.42 3.32c-1.61 1.15-4.58 0.09 -4.58 -1.89v-3.54c0-3.42 -4.31 -5.55 -7.6 -4.63a20 20 0 111.23-38.13c2.75 1 6.37-0.82 6.37 -3.73a3.4 3.4 0 00-3.4-3.4H4a4 4 0 00-4 4v88a4 4 0 004 4h136a4 4 0 004-4v-5.43c0-2 3 -3 4.58 -1.89A18 18 0 10159 52zzM159 80a10 10 0 1110-10a10 10 0 01-10 10z" />
-                        <g class="info-icon" stroke="#fff" opacity=".25" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="info-icon" stroke="#fff" opacity=".5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="15.02" cy="81" r="6" fill="none" stroke-width="1.5"/>
                             <circle cx="15.02" cy="78.5" r=".5" fill="white" stroke-width="0.6"/>
                             <path d="M15.02 81l0 2" stroke-width="1.5"/>
@@ -72,7 +72,7 @@
                             <circle opacity=".25" cx="18" cy="26" r="10.75" />
                         </g>
                         <path class="fill" fill="currentColor" fill-rule="evenodd" d="M18 44a17.93 17.93 0 0010.42-3.32C30 39.53 33 40.59 33 42.57v3.54c0 3.42 4.31 5.55 7.6 4.63a20 20 0 11-1.23 38.13c-2.75-1-6.37.82-6.37 3.73a3.4 3.4 0 003.4 3.4H173a4 4 0 004-4V4a4 4 0 00-4-4H37a4 4 0 00-4 4v5.43c0 2-3 3-4.58 1.89A18 18 0 1018 44zm70.9-3.26a30 30 0 1121.85 36.36A30 30 0 0188.9 40.74zM18 16A10 10 0 118 26a10 10 0 0110-10z" />
-                        <g class="info-icon" stroke="#fff" opacity=".25" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="info-icon" stroke="#fff" opacity=".5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="161.99" cy="81" r="6" fill="none" stroke-width="1.5"/>
                             <circle cx="161.99" cy="78.5" r=".5" fill="white" stroke-width="0.6"/>
                             <path d="M161.99 81l0 2" stroke-width="1.5"/>
@@ -462,7 +462,6 @@ export default defineComponent({
 
     .info-icon {
         transition:
-            opacity 0.3s var(--nimiq-ease),
             transform 1.2s ease 1s, // To rotate when pieces rotate in .settle-incoming
             stroke 1s var(--nimiq-ease) 1.6s; // To change color when a white puzzle piece fills
     }
@@ -492,17 +491,6 @@ export default defineComponent({
     &.await-secret {
         .left { transform: translate3d(-2.5rem, 0, 0); }
         .right { transform: translate3d(+2.5rem, 0, 0); }
-    }
-
-    &.await-incoming.right-to-left .left,
-    &.await-incoming.left-to-right .right,
-    &.create-outgoing,
-    &.await-secret,
-    &.settle-incoming,
-    &.complete {
-        .info-icon {
-            opacity: 0.5;
-        }
     }
 
     &.settle-incoming,

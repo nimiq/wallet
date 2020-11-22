@@ -619,10 +619,6 @@ msgstr "Finalisation du swap"
 msgid "For beginners"
 msgstr "Pour les débutants"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "fil de discussion du forum"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "gratuit"
@@ -644,11 +640,10 @@ msgstr "Y aller"
 msgid "Get NIM and BTC"
 msgstr "Obtenir des NIM et BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "Vous avez des commentaires ? Ou trouvé un bug ?"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -689,13 +684,6 @@ msgstr "Remboursement du HTLC"
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Règlement du HTLC"
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr ""
-"Si vous trouvez un bug ou avez un retour à nous faire, merci de nous en "
-"parler dans ce {forum-thread}."
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1253,7 +1241,7 @@ msgstr "Swap vers {address}"
 msgid "syncing"
 msgstr "synchronisation"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "Parlez-nous en ici."
 
@@ -1288,14 +1276,6 @@ msgstr "Le wallet Nimiq est plus qu'un web-wallet, c'est un nœud réseau."
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr ""
-"Le wallet est encore en Beta. Vos fonds sont en sécurité, mais il se peut "
-"qu'il y ait des problèmes visuels."
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1434,14 +1414,6 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Utilisez le slider ou modifiez les valeurs pour mettre en place un swap."
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
-msgstr ""
-"Bienvenue dans le\n"
-"nouveau Wallet Nimiq"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

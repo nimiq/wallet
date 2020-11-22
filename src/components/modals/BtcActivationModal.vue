@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="beta-notice-modal">
+    <Modal v-bind="$attrs" v-on="$listeners" class="btc-activation-modal">
         <PageBody class="flex-column">
             <BitcoinIcon/>
 

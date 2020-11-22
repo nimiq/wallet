@@ -613,10 +613,6 @@ msgstr "Tausch finalisieren"
 msgid "For beginners"
 msgstr "Für Anfänger"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "Forumsbeitrag"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "gratis"
@@ -638,11 +634,10 @@ msgstr "Hol dir NIM"
 msgid "Get NIM and BTC"
 msgstr "Hol dir NIM und BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "Feedback? Bugs?"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -683,13 +678,6 @@ msgstr "HTLC-Rückerstattung"
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC-Abrechnung"
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr ""
-"Falls du Fehler entdeckst oder Ideen hast, teil sie mit uns in diesem "
-"{forum-thread}."
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1248,7 +1236,7 @@ msgstr "Sicherer Tausch mit {address}"
 msgid "syncing"
 msgstr "abgleichen"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "Sag uns hier Bescheid"
 
@@ -1285,14 +1273,6 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "Der Kurs kann sich je nach Tauschvolumen ändern."
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr ""
-"Die Wallet ist noch Beta. Deine Guthaben sind sicher, aber es könnten noch "
-"kleine, optische Fehler auftreten."
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1429,14 +1409,6 @@ msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Benutze den Schieberegler oder ändere die Werte, um einen sicheren Tausch "
 "aufzusetzen."
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
-msgstr ""
-"Willkommen in der\n"
-"neuen Nimiq Wallet!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

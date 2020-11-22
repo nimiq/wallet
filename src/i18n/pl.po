@@ -614,10 +614,6 @@ msgstr "Finalizowanie wymiany"
 msgid "For beginners"
 msgstr "Dla początkujących"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "wątek na forum"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "gratis"
@@ -639,11 +635,10 @@ msgstr "Zdobądź walutę NIM"
 msgid "Get NIM and BTC"
 msgstr "Zdobądź walutę NIM i BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "Chcesz się podzielić opinią lub zgłosić błąd?"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -684,13 +679,6 @@ msgstr "Refundacja kontraktu HTLC"
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Rozliczenie kontraktu HTLC"
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr ""
-"Jeśli znajdziesz błąd lub zechcesz się z nami podzielić opinią, udostępnij "
-"to w wątku {forum-thread}."
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1256,7 +1244,7 @@ msgstr "Wymień na adres {address}"
 msgid "syncing"
 msgstr "synchornizacja"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "Zrób to tutaj"
 
@@ -1292,14 +1280,6 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "Stawka może się zmienić zależnie od wolumenu wymiany."
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr ""
-"Portfel jest wciąż w wersji beta, ale obecnym w nim środkom nic nie grozi. "
-"Mogą się jedynie pojawiać problemy natury estetycznej."
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1435,14 +1415,6 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Aby przygotować wymianę, użyj suwaka lub zmień wartości."
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
-msgstr ""
-"Witaj w nowym\n"
-"portfelu Nimiq"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

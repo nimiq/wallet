@@ -28,7 +28,6 @@ export default defineComponent({
         // cta = context.root.$t('Check it out');
         // action = () => context.root.$router.push('/settings');
 
-        // Beta Testing
         text = () => context.root.$t('Got feedback? Found a bug?');
         cta = () => context.root.$t('Tell us here');
         action = 'https://forum.nimiq.community/t/new-wallet-feedback-thread/845';

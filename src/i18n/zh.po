@@ -587,10 +587,6 @@ msgstr "最后确认互换"
 msgid "For beginners"
 msgstr "初学者友好"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "论坛帖子"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "免费"
@@ -612,11 +608,10 @@ msgstr "获取 NIM"
 msgid "Get NIM and BTC"
 msgstr "获取 NIM 和 BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "您有反馈吗？发现错误了？"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -655,11 +650,6 @@ msgstr "HTLC退款"
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC结算"
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr "如果你发现任何错误或者有反馈，请在这个{forum-thread}中分享。"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1200,7 +1190,7 @@ msgstr "交换到 {address}"
 msgid "syncing"
 msgstr "正在同步"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "请在这里告诉我们"
 
@@ -1233,12 +1223,6 @@ msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点。"
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "汇率可能会根据交换量而变化。"
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr "钱包仍处于测试阶段。您的资金是安全的，只是视觉上可能有一些的问题。"
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1366,14 +1350,6 @@ msgstr "使用标签取代联系人，让您可以轻松识别历史记录中的
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr "使用滑块或编辑值来设置交换。"
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
-msgstr ""
-"欢迎来到\n"
-"新的Nimiq钱包"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

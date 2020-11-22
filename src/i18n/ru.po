@@ -616,10 +616,6 @@ msgstr "Завершаем обмен"
 msgid "For beginners"
 msgstr "Для начинающих"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "ветка форума"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "свободно"
@@ -641,11 +637,10 @@ msgstr "Получить NIM"
 msgid "Get NIM and BTC"
 msgstr "Получить NIM и BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "Есть отзывы? Нашли ошибку?"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -686,12 +681,6 @@ msgstr "Возврат HTLC"
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Взаиморасчет HTLC"
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr ""
-"Если вы обнаружили ошибку, пожалуйста, напишите о ней в {forum-thread}."
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1245,7 +1234,7 @@ msgstr "Обменять на  {address}"
 msgid "syncing"
 msgstr "синхронизируется"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "Сообщите нам здесь"
 
@@ -1282,14 +1271,6 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 "Ставка комиссии может меняться \n"
 "в зависимости от суммы сделки."
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr ""
-"Кошелек находиться в режиме Beta тестирования. Ваши средства в безопасности,"
-" но могут наблюдаться визуальные дефекты интерфейса."
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1428,14 +1409,6 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Используйте ползунок или укажите сумму обмена."
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
-msgstr ""
-"Добро пожаловать в\n"
-"новый Nimiq Wallet"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

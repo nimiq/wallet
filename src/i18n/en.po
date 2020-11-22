@@ -549,10 +549,6 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr ""
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr ""
@@ -574,11 +570,10 @@ msgstr ""
 msgid "Get NIM and BTC"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -614,10 +609,6 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:404
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
-msgstr ""
-
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid "If you find a bug or have feedback, please share it in this {forum-thread}."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:47
@@ -1134,7 +1125,7 @@ msgstr ""
 msgid "syncing"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr ""
 
@@ -1162,10 +1153,6 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
-msgstr ""
-
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid "The Wallet is still in Beta. Your funds are safe, there just might be some visual issues."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:133
@@ -1289,12 +1276,6 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
-msgstr ""
-
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88

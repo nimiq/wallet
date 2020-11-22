@@ -16,10 +16,6 @@
 
         <SwapNotification/>
 
-        <transition name="modal">
-            <BetaNoticeModal v-if="!isBetaNoticeDismissed" emitClose @close="isBetaNoticeDismissed = true"/>
-        </transition>
-
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>
         </div>
@@ -32,23 +28,14 @@ import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
-import BetaNoticeModal from './components/modals/BetaNoticeModal.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
-
-const NOTICE_DISMISSED = 'new_wallet_notice_dismissed';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
-
-        const isBetaNoticeDismissed = ref(Boolean(window.localStorage.getItem(NOTICE_DISMISSED) || false));
-        watch(isBetaNoticeDismissed, (dismissed) => {
-            if (!dismissed) window.localStorage.removeItem(NOTICE_DISMISSED);
-            else window.localStorage.setItem(NOTICE_DISMISSED, 'yes');
-        });
 
         const routeClass = ref('');
 
@@ -87,7 +74,6 @@ export default defineComponent({
         const { amountsHidden } = useSettingsStore();
 
         return {
-            isBetaNoticeDismissed,
             routeClass,
             hasAccounts,
             amountsHidden,
@@ -96,7 +82,6 @@ export default defineComponent({
     components: {
         Sidebar,
         SwapNotification,
-        BetaNoticeModal,
         LoadingSpinner,
     },
 });

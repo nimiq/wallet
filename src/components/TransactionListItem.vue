@@ -296,6 +296,7 @@ svg {
     .invalid {
         width: 3.75rem;
         text-align: center;
+        flex-shrink: 0;
     }
 
     .pending,

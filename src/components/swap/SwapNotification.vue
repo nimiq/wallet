@@ -40,7 +40,8 @@ import { computed, defineComponent, onMounted, watch } from '@vue/composition-ap
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { SwapAsset, Contract } from '@nimiq/fastspot-api';
+import { SwapAsset, Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
+import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -206,7 +207,24 @@ export default defineComponent({
                     }
                 }
                 case SwapState.AWAIT_SECRET: {
-                    const secret = await swapHandler.awaitSecret();
+                    let interval: number;
+                    const secret = await Promise.race<Promise<string>>([
+                        swapHandler.awaitSecret(),
+                        new Promise((resolve) => {
+                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                            interval = window.setInterval(async () => {
+                                try {
+                                    const foo = await getSwap(activeSwap.value!.id) as Swap;
+                                    if (foo.secret) {
+                                        resolve(foo.secret);
+                                    }
+                                } catch (error) {
+                                    // Ignore
+                                }
+                            }, 5 * 1000); // Every 5 seconds
+                        }),
+                    ]);
+                    window.clearInterval(interval!);
                     updateSwap({
                         state: SwapState.SETTLE_INCOMING,
                         secret,

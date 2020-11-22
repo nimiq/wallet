@@ -1227,10 +1227,6 @@ export default defineComponent({
     .nq-button {
         margin: 0 4rem 3rem;
     }
-
-    &.main-page {
-        overflow-y: auto;
-    }
 }
 
 .page-header {
@@ -1508,6 +1504,10 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
+    .page.main-page {
+        overflow-y: auto;
+    }
+
     .main-page .page-body {
         padding-top: 0;
     }

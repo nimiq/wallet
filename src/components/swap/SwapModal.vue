@@ -31,13 +31,15 @@
                             :currency="currency"
                             :container="this"
                         >
-                            <div slot="trigger" class="pill exchange-rate">
+                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
+                                <LightningIcon v-if="isHighRelativeFees"/>
                                 <FiatAmount :amount="myBtcFeeFiat
                                     + myNimFeeFiat
                                     + serviceBtcFeeFiat
                                     + serviceNimFeeFiat
                                     + serviceExchangeFeeFiat"
-                                    :currency="currency"/> fees
+                                    :currency="currency"/>
+                                {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
                         <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
@@ -231,6 +233,7 @@ import ShortAddress from '../ShortAddress.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
@@ -795,6 +798,24 @@ export default defineComponent({
                 : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
+        const isHighRelativeFees = computed(() => {
+            if (!estimate.value) return false;
+
+            const data = swap.value || estimate.value;
+            const fromAmount = data.from.amount - data.from.serviceNetworkFee;
+            const fromFiat = data.from.asset === SwapAsset.NIM
+                ? (fromAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
+                : (fromAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+
+            const totalFees = myNimFeeFiat.value
+                + myBtcFeeFiat.value
+                + serviceNimFeeFiat.value
+                + serviceBtcFeeFiat.value
+                + serviceExchangeFeeFiat.value;
+
+            return (totalFees / fromFiat) >= 0.3;
+        });
+
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
@@ -1132,6 +1153,7 @@ export default defineComponent({
             serviceBtcFeeFiat,
             serviceExchangeFeeFiat,
             serviceExchangeFeePercentage,
+            isHighRelativeFees,
             onInput,
             onSwapBalanceBarChange,
             newNimBalance,
@@ -1183,6 +1205,7 @@ export default defineComponent({
         SwapBalanceBar,
         FlameIcon,
         MinimizeIcon,
+        LightningIcon,
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
@@ -1259,16 +1282,28 @@ export default defineComponent({
     padding: 0.75rem 1.5rem;
     border-radius: 5rem;
     box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
-}
 
-.pill.limits {
-    color: rgb(234, 166, 23);
-    box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
+    &.fees {
+        svg,
+        .fiat-amount {
+            margin-right: 0.5rem;
+        }
 
-    /deep/ svg {
-        margin-left: 0.75rem;
-        height: 1.75rem;
-        width: 1.75rem;
+        &.high-fees {
+            color: var(--nimiq-red);
+            box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
+        }
+    }
+
+    &.limits {
+        color: rgb(234, 166, 23);
+        box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
+
+        /deep/ svg {
+            margin-left: 0.75rem;
+            height: 1.75rem;
+            width: 1.75rem;
+        }
     }
 }
 

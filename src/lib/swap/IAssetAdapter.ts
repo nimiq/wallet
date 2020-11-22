@@ -1,13 +1,17 @@
-import { SwapAsset } from '@nimiq/fastspot-api';
-
 import {
     TransactionDetails as NimiqTransactionDetails,
     NimiqClient,
-} from './NimiqAssetHandler';
+} from './NimiqAssetAdapter';
 import {
     TransactionDetails as BitcoinTransactionDetails,
     BitcoinClient,
-} from './BitcoinAssetHandler';
+} from './BitcoinAssetAdapter';
+
+export enum SwapAsset {
+    NIM = 'NIM',
+    BTC = 'BTC',
+    // EUR = 'EUR',
+}
 
 export type Transaction<TAsset extends SwapAsset> =
     TAsset extends SwapAsset.NIM ? NimiqTransactionDetails
@@ -19,8 +23,8 @@ export type Client<TAsset extends SwapAsset> =
     : TAsset extends SwapAsset.BTC ? BitcoinClient
     : never;
 
-export interface IAssetHandler<TAsset extends SwapAsset> {
-    // new (client: Client<TAsset>): IAssetHandler<TAsset>;
+export interface AssetAdapter<TAsset extends SwapAsset> {
+    // new (client: Client<TAsset>): IAssetAdapter<TAsset>;
 
     findTransaction(address: string, test: (tx: Transaction<TAsset>) => boolean): Promise<Transaction<TAsset>>;
 

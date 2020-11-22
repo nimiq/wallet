@@ -40,7 +40,7 @@ import { computed, defineComponent, onMounted, watch } from '@vue/composition-ap
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { SwapAsset, Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
+import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
@@ -48,7 +48,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
-import { SwapHandler } from '../../lib/swap/SwapHandler';
+import { SwapHandler, Swap as GenericSwap, SwapAsset } from '../../lib/swap/SwapHandler';
 
 export default defineComponent({
     setup(props, context) {
@@ -148,9 +148,9 @@ export default defineComponent({
             }
 
             const swapHandler = new SwapHandler(
-                activeSwap.value!,
-                await getClient(activeSwap.value!.from.asset),
-                await getClient(activeSwap.value!.to.asset),
+                activeSwap.value! as GenericSwap<SwapAsset, SwapAsset>,
+                await getClient(activeSwap.value!.from.asset as SwapAsset),
+                await getClient(activeSwap.value!.to.asset as SwapAsset),
             );
 
             window.addEventListener('beforeunload', onUnload);

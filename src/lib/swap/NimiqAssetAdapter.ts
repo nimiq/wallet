@@ -1,5 +1,4 @@
-import { SwapAsset } from '@nimiq/fastspot-api';
-import { IAssetHandler } from './IAssetHandler';
+import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 import { TransactionState } from '../../stores/Transactions';
 
 export type TransactionDetails = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
@@ -11,7 +10,7 @@ export interface NimiqClient {
     sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
 }
 
-export class NimiqAssetHandler implements IAssetHandler<SwapAsset.NIM> {
+export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
     constructor(private client: NimiqClient) {}
 
     public async findTransaction(

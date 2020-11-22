@@ -1,6 +1,5 @@
-import { SwapAsset } from '@nimiq/fastspot-api';
 import { TransactionDetails, TransactionState } from '@nimiq/electrum-client';
-import { IAssetHandler } from './IAssetHandler';
+import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
 export { TransactionDetails };
 
@@ -11,7 +10,7 @@ export interface BitcoinClient {
     sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
 }
 
-export class BitcoinAssetHandler implements IAssetHandler<SwapAsset.BTC> {
+export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
     constructor(private client: BitcoinClient) {}
 
     public async findTransaction(

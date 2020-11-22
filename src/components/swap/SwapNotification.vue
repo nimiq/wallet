@@ -55,10 +55,7 @@ export default defineComponent({
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
         const swapIsErrored = computed(() => !!activeSwap.value
-            && (
-                (activeSwap.value as ActiveSwap<SwapState.CREATE_OUTGOING>).fundingError
-                || (activeSwap.value as ActiveSwap<SwapState.SETTLE_INCOMING>).settlementError
-            ),
+            && (activeSwap.value.fundingError || activeSwap.value.settlementError),
         );
 
         function onUnload(event: BeforeUnloadEvent) {
@@ -81,7 +78,7 @@ export default defineComponent({
             }
         }, { lazy: true });
 
-        function updateSwap(update: Partial<ActiveSwap<SwapState>>) {
+        function updateSwap(update: Partial<ActiveSwap>) {
             setActiveSwap({
                 ...activeSwap.value!,
                 ...update,
@@ -182,7 +179,7 @@ export default defineComponent({
                 case SwapState.CREATE_OUTGOING: {
                     try {
                         const fundingTx = await swapHandler.createOutgoing(
-                            (activeSwap.value as ActiveSwap<SwapState.CREATE_OUTGOING>).fundingSerializedTx,
+                            activeSwap.value!.fundingSerializedTx!,
                             (tx) => {
                                 updateSwap({
                                     fundingTx: tx,
@@ -218,8 +215,8 @@ export default defineComponent({
                 case SwapState.SETTLE_INCOMING: {
                     try {
                         const settlementTx = await swapHandler.settleIncoming(
-                            (activeSwap.value as ActiveSwap<SwapState.SETTLE_INCOMING>).settlementSerializedTx,
-                            (activeSwap.value as ActiveSwap<SwapState.SETTLE_INCOMING>).secret,
+                            activeSwap.value!.settlementSerializedTx!,
+                            activeSwap.value!.secret!,
                         );
 
                         if (activeSwap.value!.to.asset === SwapAsset.BTC) {

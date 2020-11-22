@@ -1,13 +1,18 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { ElectrumClient, TransactionDetails, TransactionState } from '@nimiq/electrum-client';
+import { TransactionDetails, TransactionState } from '@nimiq/electrum-client';
 import { IAssetHandler } from './IAssetHandler';
 
-export class BitcoinAssetHandler implements IAssetHandler<SwapAsset.BTC> {
-    private client: ElectrumClient;
+export { TransactionDetails };
 
-    constructor(client: ElectrumClient) {
-        this.client = client;
-    }
+export interface BitcoinClient {
+    addTransactionListener(listener: (tx: TransactionDetails) => any, addresses: string[]): number | Promise<number>;
+    getTransactionsByAddress(address: string): Promise<TransactionDetails[]>;
+    removeListener(handle: number): void | Promise<void>;
+    sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
+}
+
+export class BitcoinAssetHandler implements IAssetHandler<SwapAsset.BTC> {
+    constructor(private client: BitcoinClient) {}
 
     public async findTransaction(
         address: string,
@@ -24,7 +29,7 @@ export class BitcoinAssetHandler implements IAssetHandler<SwapAsset.BTC> {
             };
 
             // First subscribe to new transactions
-            const handle = this.client.addTransactionListener(listener, [address]);
+            const handle = await this.client.addTransactionListener(listener, [address]);
 
             // Then check history
             const history = await this.client.getTransactionsByAddress(address);

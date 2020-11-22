@@ -47,14 +47,15 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
 
+        'no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'error',
+
         /*
         // TODO these rules have been used on previous versions of typescript-eslint and the linter presets and might
         // not be necessary anymore
         // Typescript plugin replacements
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': 'error',
-        'no-useless-constructor': 'off',
-        '@typescript-eslint/no-useless-constructor': 'error',
         'no-empty-function': 'off',
         '@typescript-eslint/no-empty-function': 'error',
 

@@ -1,5 +1,5 @@
 import { Swap, SwapAsset, Contract, NimHtlcDetails, BtcHtlcDetails } from '@nimiq/fastspot-api';
-import { IAssetHandler, Transaction } from './IAssetHandler';
+import { IAssetHandler, Transaction, Client } from './IAssetHandler';
 import { NimiqAssetHandler } from './NimiqAssetHandler';
 import { BitcoinAssetHandler } from './BitcoinAssetHandler';
 
@@ -8,19 +8,25 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
     private fromAssetHandler: IAssetHandler<FromAsset>;
     private toAssetHandler: IAssetHandler<ToAsset>;
 
-    private static makeAssetHandler<TAsset extends SwapAsset>(asset: TAsset, client: any): IAssetHandler<TAsset> {
+    private static makeAssetHandler<TAsset extends SwapAsset>(
+        asset: TAsset,
+        client: Client<TAsset>,
+    ): IAssetHandler<TAsset> {
         switch (asset) {
-            case SwapAsset.NIM: return new NimiqAssetHandler(client);
-            case SwapAsset.BTC: return new BitcoinAssetHandler(client);
-            default: throw new Error(`Unsupported asset: ${asset}`);
+            case SwapAsset.NIM:
+                return new NimiqAssetHandler(client as Client<SwapAsset.NIM>) as IAssetHandler<SwapAsset>;
+            case SwapAsset.BTC:
+                return new BitcoinAssetHandler(client as Client<SwapAsset.BTC>) as IAssetHandler<SwapAsset>;
+            default:
+                throw new Error(`Unsupported asset: ${asset}`);
         }
     }
 
-    constructor(swap: Swap, fromClient: any, toClient: any) {
+    constructor(swap: Swap, fromClient: Client<FromAsset>, toClient: Client<ToAsset>) {
         this.swap = swap;
 
-        this.fromAssetHandler = SwapHandler.makeAssetHandler(this.swap.from.asset, fromClient);
-        this.toAssetHandler = SwapHandler.makeAssetHandler(this.swap.to.asset, toClient);
+        this.fromAssetHandler = SwapHandler.makeAssetHandler<FromAsset>(this.swap.from.asset as FromAsset, fromClient);
+        this.toAssetHandler = SwapHandler.makeAssetHandler<ToAsset>(this.swap.to.asset as ToAsset, toClient);
     }
 
     public async awaitIncoming(onPending: (tx: Transaction<ToAsset>) => any): Promise<Transaction<ToAsset>> {

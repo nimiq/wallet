@@ -55,47 +55,22 @@ export type Swap = {
     },
 };
 
-export type ActiveSwap<T extends SwapState> = SwapObject & {
-    state: T,
-} & (T extends SwapState.AWAIT_INCOMING
-             | SwapState.CREATE_OUTGOING
-             | SwapState.AWAIT_SECRET
-             | SwapState.SETTLE_INCOMING
-             | SwapState.COMPLETE
-    ? {
-        fundingSerializedTx: string,
-        settlementSerializedTx: string,
-    } : {})
-& (T extends SwapState.CREATE_OUTGOING
-           | SwapState.AWAIT_SECRET
-           | SwapState.SETTLE_INCOMING
-           | SwapState.COMPLETE
-    ? {
-        remoteFundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-        fundingError?: string,
-    } : {})
-& (T extends SwapState.AWAIT_SECRET
-           | SwapState.SETTLE_INCOMING
-           | SwapState.COMPLETE
-    ? {
-        fundingTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-    } : {})
-& (T extends SwapState.SETTLE_INCOMING
-           | SwapState.COMPLETE
-    ? {
-        // remoteSettlementTxHash: string,
-        secret: string,
-        settlementError?: string,
-    } : {})
-& (T extends SwapState.COMPLETE
-    ? {
-        settlementTx: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-    } : {});
+export type ActiveSwap = SwapObject & {
+    state: SwapState,
+    fundingSerializedTx?: string,
+    settlementSerializedTx?: string,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    fundingError?: string,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    secret?: string,
+    settlementError?: string,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+}
 
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
     swapByTransaction: { [transactionHash: string]: string },
-    activeSwap: ActiveSwap<any> | null,
+    activeSwap: ActiveSwap | null,
 };
 
 export const useSwapsStore = createStore({
@@ -114,7 +89,7 @@ export const useSwapsStore = createStore({
                 if (!swapHash) return null;
                 return state.swaps[swapHash] || null;
             },
-        activeSwap: (state): Readonly<ActiveSwap<any> | null> => state.activeSwap,
+        activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
@@ -144,7 +119,7 @@ export const useSwapsStore = createStore({
                 ...newSwapData,
             });
         },
-        setActiveSwap(swap: ActiveSwap<any> | null) {
+        setActiveSwap(swap: ActiveSwap | null) {
             this.state.activeSwap = swap;
         },
     },

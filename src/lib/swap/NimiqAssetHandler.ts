@@ -1,16 +1,18 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { NetworkClient } from '@nimiq/network-client';
 import { IAssetHandler } from './IAssetHandler';
 import { TransactionState } from '../../stores/Transactions';
 
 export type TransactionDetails = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
 
-export class NimiqAssetHandler implements IAssetHandler<SwapAsset.NIM> {
-    private client: NetworkClient;
+export interface NimiqClient {
+    addTransactionListener(listener: (tx: TransactionDetails) => any, addresses: string[]): number | Promise<number>;
+    getTransactionsByAddress(address: string): Promise<TransactionDetails[]>;
+    removeListener(handle: number): void | Promise<void>;
+    sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
+}
 
-    constructor(client: NetworkClient) {
-        this.client = client;
-    }
+export class NimiqAssetHandler implements IAssetHandler<SwapAsset.NIM> {
+    constructor(private client: NimiqClient) {}
 
     public async findTransaction(
         address: string,

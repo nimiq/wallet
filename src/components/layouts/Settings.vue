@@ -120,6 +120,18 @@
             <section>
                 <h2 class="nq-label">{{ $t('Developer') }}</h2>
 
+                <div v-if="showVestingSetting" class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Vesting Contract') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Add an existing vesting contract to your wallet.') }}
+                        </p>
+                    </div>
+                    <button class="nq-button-pill light-blue" @click="addVestingContract" @mousedown.prevent>
+                        {{ $t('Add') }}
+                    </button>
+                </div>
+
                 <div class="setting">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Clear Cache') }}</label>
@@ -175,6 +187,7 @@ import CrossCloseButton from '../CrossCloseButton.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
+import { addVestingContract } from '../../hub';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
@@ -250,7 +263,16 @@ export default defineComponent({
             reader.readAsText(file);
         }
 
+        const showVestingSetting = ref(false);
+
+        function enableVestingSetting() {
+            showVestingSetting.value = true;
+        }
+        // @ts-ignore
+        window.enableVestingSetting = enableVestingSetting;
+
         return {
+            addVestingContract,
             clearCache,
             Languages,
             ColorMode,
@@ -260,6 +282,7 @@ export default defineComponent({
             ...settings,
             $fileInput,
             loadFile,
+            showVestingSetting,
         };
     },
     components: {

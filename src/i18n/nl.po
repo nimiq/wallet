@@ -4,11 +4,10 @@
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Stefan, 2020
-# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Stefan, 2020\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/107022/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -71,7 +70,7 @@ msgstr "30 dagen limiet"
 msgid "6h+"
 msgstr "+ 6 uur"
 
-#: src/components/layouts/Settings.vue:230
+#: src/components/layouts/Settings.vue:243
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -99,6 +98,10 @@ msgstr "Activeren"
 msgid "Activate Bitcoin"
 msgstr "Activeer Bitcoin"
 
+#: src/components/layouts/Settings.vue:131
+msgid "Add"
+msgstr ""
+
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
@@ -123,6 +126,10 @@ msgstr "Account toevoegen"
 #: src/components/AddressList.vue:18
 msgid "Add address"
 msgstr "Adres toevoegen"
+
+#: src/components/layouts/Settings.vue:127
+msgid "Add an existing vesting contract to your wallet."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -298,7 +305,7 @@ msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Door op 'bevestigen' te klikken, ga je akkoord met de ToS van {Fastspot}."
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:223
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
@@ -333,11 +340,11 @@ msgstr "Kies een ontvanger"
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:143
 msgid "Clear"
 msgstr "Duidelijk"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
 msgstr "Cache wissen"
 
@@ -462,7 +469,7 @@ msgstr "Creditcard geaccepteerd"
 msgid "Developer"
 msgstr "Ontwikkelaar"
 
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:169
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Disclaimer"
@@ -594,7 +601,7 @@ msgstr "kosten"
 
 #: src/components/swap/SwapModal.vue:42
 msgid "fees"
-msgstr ""
+msgstr "wisselkosten"
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -607,7 +614,7 @@ msgstr "Ophalen"
 msgid "Fiat value unavailable"
 msgstr "Fiat waarde niet beschikbaar"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
@@ -758,7 +765,7 @@ msgstr "Leer hier meer"
 
 #: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
-msgstr ""
+msgstr "Ledger accounts ondersteunen nog geen swaps, kom snel terug!"
 
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
@@ -774,7 +781,7 @@ msgstr "Limiet van gekopieerde adressen bereikt."
 
 #: src/components/modals/TransactionModal.vue:167
 msgid "Link not available in this browser"
-msgstr ""
+msgstr "Link niet beschikbaar in deze browser"
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
@@ -894,7 +901,7 @@ msgstr "Geen"
 msgid "not sent"
 msgstr "niet verzonden"
 
-#: src/components/layouts/Settings.vue:239
+#: src/components/layouts/Settings.vue:252
 msgid "OK! Contacts imported successfully."
 msgstr "HOPPA! Contacten succesvol geïmporteerd."
 
@@ -997,7 +1004,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr "Zojuist gekopieerd "
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:150
 msgid "Reference currency"
 msgstr "Referentie Valuta"
 
@@ -1021,7 +1028,7 @@ msgstr "Verzoek mislukt"
 msgid "Rescan"
 msgstr "Opnieuw scannen"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 
@@ -1414,6 +1421,10 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Gebruik de slider of vul de waardes in om een swap in te stellen."
 
+#: src/components/layouts/Settings.vue:125
+msgid "Vesting Contract"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr "Wat anders? "
@@ -1424,7 +1435,7 @@ msgid ""
 "privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Met Bitcoin wordt een adres maar 1 keer gebruikt om de privacy te "
-"bevorderen. Hergebruik van adressen leidt niet tot geldverlies"
+"verbeteren. Hergebruik van adressen leidt niet tot geldverlies."
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""

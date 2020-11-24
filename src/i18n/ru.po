@@ -70,7 +70,7 @@ msgstr "30-ти дневный лимит"
 msgid "6h+"
 msgstr "6ч+"
 
-#: src/components/layouts/Settings.vue:230
+#: src/components/layouts/Settings.vue:243
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -98,6 +98,10 @@ msgstr "Активировать"
 msgid "Activate Bitcoin"
 msgstr "Активировать Биткоин"
 
+#: src/components/layouts/Settings.vue:131
+msgid "Add"
+msgstr ""
+
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
@@ -122,6 +126,10 @@ msgstr "Добавить аккаунт"
 #: src/components/AddressList.vue:18
 msgid "Add address"
 msgstr "Добавить адрес"
+
+#: src/components/layouts/Settings.vue:127
+msgid "Add an existing vesting contract to your wallet."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -295,7 +303,7 @@ msgstr "Нажав 'подтвердить', Вы соглашаетесь с П
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr "Нажав 'подтвердить', Вы соглашаетесь с ППУ {Fastspot}."
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:223
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не удалось импортировать список контактов, некорректный формат файла!"
 
@@ -330,11 +338,11 @@ msgstr "Указать Получателя"
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:143
 msgid "Clear"
 msgstr "Сброс"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
 msgstr "Очистить Кэш"
 
@@ -457,7 +465,7 @@ msgstr "Принимаются кредитные карты"
 msgid "Developer"
 msgstr "Разработчик"
 
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:169
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Предупреждние"
@@ -607,7 +615,7 @@ msgstr "Загрузка"
 msgid "Fiat value unavailable"
 msgstr "Значение в фиатной валюте не доступно"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
@@ -892,7 +900,7 @@ msgstr "Нет"
 msgid "not sent"
 msgstr "не отправлено"
 
-#: src/components/layouts/Settings.vue:239
+#: src/components/layouts/Settings.vue:252
 msgid "OK! Contacts imported successfully."
 msgstr "Импорт контактов выполнен успешно."
 
@@ -994,7 +1002,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr "Недавно скопировано"
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:150
 msgid "Reference currency"
 msgstr "Базовая валюта"
 
@@ -1018,7 +1026,7 @@ msgstr "Запрос не удался"
 msgid "Rescan"
 msgstr "Рескан"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
@@ -1413,6 +1421,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Используйте ползунок или укажите сумму обмена."
+
+#: src/components/layouts/Settings.vue:125
+msgid "Vesting Contract"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

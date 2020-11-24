@@ -329,6 +329,17 @@ export async function rename(accountId: string, address?: string) {
     return true;
 }
 
+export async function addVestingContract() {
+    const account = await hubApi.addVestingContract({
+        appName: APP_NAME,
+    }).catch(onError);
+    if (!account) return false;
+
+    processAndStoreAccounts([account]);
+
+    return true;
+}
+
 export async function changePassword(accountId: string) {
     await hubApi.changePassword({
         appName: APP_NAME,

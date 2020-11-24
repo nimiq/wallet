@@ -69,7 +69,7 @@ msgstr "30天限制"
 msgid "6h+"
 msgstr "6小时以上"
 
-#: src/components/layouts/Settings.vue:230
+#: src/components/layouts/Settings.vue:243
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -97,6 +97,10 @@ msgstr "激活"
 msgid "Activate Bitcoin"
 msgstr "激活比特币"
 
+#: src/components/layouts/Settings.vue:131
+msgid "Add"
+msgstr ""
+
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
@@ -118,6 +122,10 @@ msgstr "添加账户"
 #: src/components/AddressList.vue:18
 msgid "Add address"
 msgstr "添加地址"
+
+#: src/components/layouts/Settings.vue:127
+msgid "Add an existing vesting contract to your wallet."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -278,7 +286,7 @@ msgstr "点击“确认”，即表示您同意{Fastspot}和{FastspotGO}的服�
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr "点击“确认”，即表示您同意{Fastspot}的服务条款。"
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:223
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
@@ -313,11 +321,11 @@ msgstr "选择接收者"
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:143
 msgid "Clear"
 msgstr "清除"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
 msgstr "清除缓存"
 
@@ -438,7 +446,7 @@ msgstr "接受信用卡"
 msgid "Developer"
 msgstr "开发者"
 
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:169
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -578,7 +586,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -856,7 +864,7 @@ msgstr "无"
 msgid "not sent"
 msgstr "未发送"
 
-#: src/components/layouts/Settings.vue:239
+#: src/components/layouts/Settings.vue:252
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -954,7 +962,7 @@ msgstr "最近的交易地址将被列于此，直到他们收到该笔交易。
 msgid "Recently copied"
 msgstr "最近复制"
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:150
 msgid "Reference currency"
 msgstr "参考货币"
 
@@ -978,7 +986,7 @@ msgstr "请求失败"
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置您的钱包设置并从区块链重新加载数据。"
 
@@ -1354,6 +1362,10 @@ msgstr "使用标签取代联系人，让您可以轻松识别历史记录中的
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr "使用滑块或编辑值来设置交换。"
+
+#: src/components/layouts/Settings.vue:125
+msgid "Vesting Contract"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

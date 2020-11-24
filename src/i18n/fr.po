@@ -70,7 +70,7 @@ msgstr "Limite de 30 jours"
 msgid "6h+"
 msgstr "6h+"
 
-#: src/components/layouts/Settings.vue:230
+#: src/components/layouts/Settings.vue:243
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -98,6 +98,10 @@ msgstr "Activer"
 msgid "Activate Bitcoin"
 msgstr "Activer Bitcoin"
 
+#: src/components/layouts/Settings.vue:131
+msgid "Add"
+msgstr ""
+
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
@@ -123,6 +127,10 @@ msgstr "Ajouter un compte"
 #: src/components/AddressList.vue:18
 msgid "Add address"
 msgstr "Ajouter une adresse"
+
+#: src/components/layouts/Settings.vue:127
+msgid "Add an existing vesting contract to your wallet."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -300,7 +308,7 @@ msgstr ""
 "En cliquant sur 'confirmer', vous acceptez les conditions d'utilisation de  "
 "{Fastspot}."
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:223
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -335,11 +343,11 @@ msgstr "Choisissez un destinataire"
 msgid "Choose an Address"
 msgstr "Choisissez une Adresse"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:143
 msgid "Clear"
 msgstr "Vider"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
 msgstr "Vider le cache"
 
@@ -462,7 +470,7 @@ msgstr "Carte de crédit acceptée"
 msgid "Developer"
 msgstr "Développeur"
 
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:169
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -610,7 +618,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Fiat value unavailable"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -898,7 +906,7 @@ msgstr "Aucun"
 msgid "not sent"
 msgstr "non envoyée"
 
-#: src/components/layouts/Settings.vue:239
+#: src/components/layouts/Settings.vue:252
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -1001,7 +1009,7 @@ msgstr ""
 msgid "Recently copied"
 msgstr "Copiée récemment"
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:150
 msgid "Reference currency"
 msgstr "Devise de référence"
 
@@ -1025,7 +1033,7 @@ msgstr "Requête échouée"
 msgid "Rescan"
 msgstr "Re-scanner"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Réinitialisez les paramètres de votre wallet et rechargez les données depuis"
@@ -1418,6 +1426,10 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Utilisez le slider ou modifiez les valeurs pour mettre en place un swap."
+
+#: src/components/layouts/Settings.vue:125
+msgid "Vesting Contract"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

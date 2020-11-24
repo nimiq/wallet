@@ -13,6 +13,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import Config from 'config';
+import { ENV_MAIN } from '../lib/Constants';
 import SpeedGauge from './SpeedGauge.vue';
 
 export default defineComponent({
@@ -27,12 +29,22 @@ export default defineComponent({
 
         watch([() => props.fees, delay], ([fees]) => {
             const availableDelay = Math.min((fees as number[]).length - 1, delay.value);
-            let fee = (fees as number[])[availableDelay];
+            let fee = (fees as number[])[availableDelay] || 1;
 
             // Set minimum fees for each step
-            if (fee < 3) {
-                if (delay.value === 1) fee = 3;
-                if (delay.value === 12) fee = 2;
+
+            if (Config.environment === ENV_MAIN) {
+                switch (delay.value) {
+                    case 1: fee = Math.max(fee, 20); break;
+                    case 12: fee = Math.max(fee, 10); break;
+                    default: fee = Math.max(fee, 5); break;
+                }
+            } else {
+                switch (delay.value) {
+                    case 1: fee = Math.max(fee, 3); break;
+                    case 12: fee = Math.max(fee, 2); break;
+                    default: fee = Math.max(fee, 1); break;
+                }
             }
 
             context.emit('fee', fee);

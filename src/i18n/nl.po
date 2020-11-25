@@ -1,13 +1,14 @@
 # 
 # Translators:
-# Fons <Fonsdesigns@hotmail.com>, 2020
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Stefan, 2020
+# Fons <Fonsdesigns@hotmail.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Stefan, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/107022/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -100,7 +101,7 @@ msgstr "Activeer Bitcoin"
 
 #: src/components/layouts/Settings.vue:131
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
@@ -129,7 +130,7 @@ msgstr "Adres toevoegen"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Add an existing vesting contract to your wallet."
-msgstr ""
+msgstr "Voeg een bestaand vestingcontract toe aan je wallet."
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -474,9 +475,13 @@ msgstr "Ontwikkelaar"
 msgid "Disclaimer"
 msgstr "Disclaimer"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "Sluit de app niet af"
+msgid "Don't close your wallet!"
+msgstr "Sluit de app niet af!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -548,7 +553,7 @@ msgstr "Vul adres in"
 msgid "Enter recipient address..."
 msgstr "Voer het adres van de ontvanger in..."
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Fout:"
 
@@ -743,7 +748,7 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr "Het is snel, veilig en maakt je echt onafhankelijk."
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
+msgid "It's safe to close your wallet now"
 msgstr "Het is veilig om je portemonnee nu te sluiten"
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -1037,7 +1042,7 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
@@ -1423,7 +1428,7 @@ msgstr "Gebruik de slider of vul de waardes in om een swap in te stellen."
 
 #: src/components/layouts/Settings.vue:125
 msgid "Vesting Contract"
-msgstr ""
+msgstr "Vestingcontract"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

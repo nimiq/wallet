@@ -23,11 +23,11 @@
                 <span v-if="swapIsErrored" class="closing-notice">
                     {{ $t('Click for more information') }}
                 </span>
-                <span v-else-if="swapIsOngoing" class="closing-notice">
-                    {{ $t('Don\'t close your Wallet') }}
+                <span v-else-if="swapIsOngoing" class="closing-notice nq-orange">
+                    {{ $t('Don\'t close your wallet!') }}
                 </span>
                 <span v-else class="closing-notice">
-                    {{ $t('It\'s safe to close your Wallet now') }}
+                    {{ $t('It\'s safe to close your wallet now') }}
                 </span>
             </div>
             <MaximizeIcon v-if="swapIsOngoing"/>

@@ -110,6 +110,10 @@
             <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">4/5 {{ $t('Awaiting swap secret') }}</div>
             <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
             <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
+
+            <div class="dont-close-wallet-notice nq-orange">
+                {{ $t('Don\'t close your wallet until the swap is complete!') }}
+            </div>
         </div>
 
         <div v-if="error" class="error nq-orange-bg">
@@ -688,12 +692,17 @@ export default defineComponent({
 }
 
 .nq-card-footer {
-    height: 10rem;
     margin-top: 3rem;
+    text-align: center;
 
     .nq-h2 {
         font-weight: normal;
-        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .dont-close-wallet-notice {
+        margin: 0 auto 2rem;
+        font-weight: 600;
     }
 }
 

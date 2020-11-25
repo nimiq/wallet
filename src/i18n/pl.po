@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Sören <hello@soerenschwert.de>, 2020
 # Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Polish (https://www.transifex.com/nimiq-foundation/teams/107022/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pl\n"
@@ -101,7 +101,7 @@ msgstr "Aktywuj bitcoina"
 
 #: src/components/layouts/Settings.vue:131
 msgid "Add"
-msgstr ""
+msgstr "Dodaj"
 
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
@@ -128,7 +128,7 @@ msgstr "Dodaj adres"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Add an existing vesting contract to your wallet."
-msgstr ""
+msgstr "Dodaj istniejący kontrakt vestingowy do swojego portfela."
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -471,9 +471,13 @@ msgstr "Deweloper"
 msgid "Disclaimer"
 msgstr "Wyłączenie odpowiedzialności"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "Nie zamykaj portfela"
+msgid "Don't close your wallet!"
+msgstr "Nie zamykaj portfela!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -547,7 +551,7 @@ msgstr "Wpisz adres"
 msgid "Enter recipient address..."
 msgstr "Wpisz adres odbiorcy…"
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Błąd:"
 
@@ -744,7 +748,7 @@ msgstr ""
 "niezależnością."
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
+msgid "It's safe to close your wallet now"
 msgstr "Możesz teraz bezpiecznie zamknąć portfel"
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -1044,7 +1048,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Ponów"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Ponawianie…"
 
@@ -1430,7 +1434,7 @@ msgstr "Aby przygotować wymianę, użyj suwaka lub zmień wartości."
 
 #: src/components/layouts/Settings.vue:125
 msgid "Vesting Contract"
-msgstr ""
+msgstr "Kontrakt vestingowy"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

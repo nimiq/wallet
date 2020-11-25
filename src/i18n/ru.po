@@ -470,9 +470,13 @@ msgstr "Разработчик"
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "Не закрывайте Ваш кошелек"
+msgid "Don't close your wallet!"
+msgstr "Не закрывайте Ваш кошелек!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -549,7 +553,7 @@ msgstr "Укажите адрес"
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -744,7 +748,7 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr "Это быстро, безопасно и делает вас по-настоящему независимым. "
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
+msgid "It's safe to close your wallet now"
 msgstr "Теперь можно закрыть кошелек"
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -1035,7 +1039,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 

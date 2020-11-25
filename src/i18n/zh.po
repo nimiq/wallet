@@ -451,9 +451,13 @@ msgstr "开发者"
 msgid "Disclaimer"
 msgstr "免责声明"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "不要关闭您的钱包"
+msgid "Don't close your wallet!"
+msgstr "不要关闭您的钱包！"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -520,7 +524,7 @@ msgstr "输入地址"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "错误:"
 
@@ -709,7 +713,7 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr "快速、安全，让您真正独立。"
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
+msgid "It's safe to close your wallet now"
 msgstr "您现在可以安全关闭电子钱包"
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -995,7 +999,7 @@ msgstr "重置您的钱包设置并从区块链重新加载数据。"
 msgid "Retry"
 msgstr "重试"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "重试..."
 

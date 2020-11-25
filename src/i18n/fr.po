@@ -475,9 +475,13 @@ msgstr "Développeur"
 msgid "Disclaimer"
 msgstr "Avertissement"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "Ne fermez pas votre Wallet"
+msgid "Don't close your wallet!"
+msgstr "Ne fermez pas votre wallet!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -552,7 +556,7 @@ msgstr "Entrez l'adresse"
 msgid "Enter recipient address..."
 msgstr "Entrez l'adresse du destinataire..."
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Erreur :"
 
@@ -747,8 +751,8 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr "Il est rapide, sûr et vous rend vraiment indépendant."
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
-msgstr "Vous pouvez maintenant fermer votre Wallet en toute sécurité"
+msgid "It's safe to close your wallet now"
+msgstr "Vous pouvez maintenant fermer votre wallet en toute sécurité"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
@@ -1044,7 +1048,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Réessayer"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Nouvelle tentative..."
 

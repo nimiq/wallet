@@ -2,12 +2,12 @@
 # Translators:
 # Rhody Lugo <rhodylugo@gmail.com>, 2020
 # Daniel, 2020
-# Sören <hello@soerenschwert.de>, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2020
+# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2020\n"
+"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/107022/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -476,9 +476,13 @@ msgstr "Programador"
 msgid "Disclaimer"
 msgstr "Aviso legal"
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
-msgstr "No cierre su Billetera"
+msgid "Don't close your wallet!"
+msgstr "¡No cierre su billetera!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -550,7 +554,7 @@ msgstr "Insertar dirección"
 msgid "Enter recipient address..."
 msgstr "Ingrese la dirección del destinatario..."
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Error:"
 
@@ -745,8 +749,8 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr "Es rápido, seguro y le hace realmente independiente."
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
-msgstr "Es seguro cerrar su Billetera ahora"
+msgid "It's safe to close your wallet now"
+msgstr "Es seguro cerrar su billetera ahora"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
@@ -1043,7 +1047,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Intente de nuevo"
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Intentando de nuevo..."
 

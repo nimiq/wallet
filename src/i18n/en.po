@@ -417,8 +417,12 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:115
+msgid "Don't close your wallet until the swap is complete!"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:27
-msgid "Don't close your Wallet"
+msgid "Don't close your wallet!"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:96
@@ -482,7 +486,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:116
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr ""
 
@@ -666,7 +670,7 @@ msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:30
-msgid "It's safe to close your Wallet now"
+msgid "It's safe to close your wallet now"
 msgstr ""
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -934,7 +938,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:118
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr ""
 

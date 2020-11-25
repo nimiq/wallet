@@ -60,6 +60,13 @@ export default defineComponent({
             ),
         );
 
+        function onUnload(event: BeforeUnloadEvent) {
+            // Firefox respects the event cancellation to prompt the user
+            event.preventDefault();
+            // Chrome requires returnValue to be set
+            event.returnValue = '';
+        }
+
         onMounted(() => {
             if (activeSwap.value) processSwap();
         });
@@ -126,6 +133,8 @@ export default defineComponent({
                     ...activeSwap.value!,
                     state: SwapState.EXPIRED,
                 });
+            } else {
+                window.addEventListener('beforeunload', onUnload);
             }
 
             switch (activeSwap.value!.state) {
@@ -165,6 +174,7 @@ export default defineComponent({
                 default:
                     break;
             }
+            window.removeEventListener('beforeunload', onUnload);
         }
 
         return {

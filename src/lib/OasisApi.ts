@@ -148,23 +148,24 @@ export async function createHtlc(
     contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'>,
 ): Promise<Htlc<HtlcStatus.PENDING>> {
     if (contract.beneficiary.kty === 'OKP') {
-        let x = contract.beneficiary.x;
+        const { x } = contract.beneficiary;
         if (x.length === 64) {
-            x = hexToBase64(x);
+            contract.beneficiary.x = hexToBase64(x);
         } else if (fromBase64Url(x).length !== 32) {
             throw new Error('Beneficiary x must be in HEX or Base64Url format');
         }
     }
 
     if (contract.beneficiary.kty === 'EC') {
-        if (contract.beneficiary.x.length === 64) {
-            contract.beneficiary.x = hexToBase64(contract.beneficiary.x);
-        } else if (fromBase64Url(contract.beneficiary.x).length !== 32) {
+        const { x, y } = contract.beneficiary;
+        if (x.length === 64) {
+            contract.beneficiary.x = hexToBase64(x);
+        } else if (fromBase64Url(x).length !== 32) {
             throw new Error('Beneficiary x must be in HEX or Base64Url format');
         }
-        if (contract.beneficiary.y.length === 64) {
-            contract.beneficiary.y = hexToBase64(contract.beneficiary.y);
-        } else if (fromBase64Url(contract.beneficiary.y).length !== 32) {
+        if (y.length === 64) {
+            contract.beneficiary.y = hexToBase64(y);
+        } else if (fromBase64Url(y).length !== 32) {
             throw new Error('Beneficiary x must be in HEX or Base64Url format');
         }
     }
@@ -256,7 +257,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
         },
         expires: Math.floor(Date.parse(htlc.expires) / 1000),
         ...('clearing' in (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>) ? {
-            clearing: (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>).clearing.map(instructions => ({
+            clearing: (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>).clearing.map((instructions) => ({
                 ...instructions,
                 ...('fee' in instructions ? {
                     fee: coinsToUnits(htlc.asset, instructions.fee),
@@ -267,7 +268,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
             })),
         } : {}),
         ...('settlement' in (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>) ? {
-            settlement: (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>).settlement.map(instructions => ({
+            settlement: (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>).settlement.map((instructions) => ({
                 ...instructions,
                 fee: coinsToUnits(htlc.asset, instructions.fee),
             })),
@@ -298,7 +299,7 @@ function hexToBase64(hex: string): string {
 
 function fromBase64Url(base64: string): Uint8Array {
     base64 = base64.replace(/_/g, '/').replace(/-/g, '+').replace(/\./g, '=');
-    return new Uint8Array(atob(base64).split('').map(c => c.charCodeAt(0)));
+    return new Uint8Array(atob(base64).split('').map((c) => c.charCodeAt(0)));
 }
 
 function toBase64Url(buffer: Uint8Array): string {
@@ -311,7 +312,7 @@ function toBase64Url(buffer: Uint8Array): string {
 }
 
 function fromHex(hex: string): Uint8Array {
-    return new Uint8Array((hex.trim().match(/.{2}/g) || []).map(byte => parseInt(byte, 16)));
+    return new Uint8Array((hex.trim().match(/.{2}/g) || []).map((byte) => parseInt(byte, 16)));
 }
 
 function toHex(buffer: Uint8Array): string {
@@ -319,8 +320,8 @@ function toHex(buffer: Uint8Array): string {
     let hex = '';
     for (let i = 0; i < buffer.length; i++) {
         const code = buffer[i];
-        hex += HEX_ALPHABET[code >>> 4];
-        hex += HEX_ALPHABET[code & 0x0F];
+        hex += HEX_ALPHABET[code >>> 4]; // eslint-disable-line no-bitwise
+        hex += HEX_ALPHABET[code & 0x0F]; // eslint-disable-line no-bitwise
     }
     return hex;
 }

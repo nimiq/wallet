@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
+import { Htlc, HtlcStatus } from '../lib/OasisApi';
 import { FiatCurrency } from '../lib/Constants';
 
 export enum SwapState {
@@ -59,12 +60,12 @@ export type ActiveSwap = SwapObject & {
     state: SwapState,
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     fundingError?: string,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     secret?: string,
     settlementError?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
 }
 
 export type SwapsState = {

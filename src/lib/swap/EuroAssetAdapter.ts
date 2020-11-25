@@ -33,11 +33,11 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         // Keep checking on an interval
         return new Promise((resolve) => {
             const interval = window.setInterval(() => {
-                check().then((htlc) => {
+                check().then((htlc) => { // eslint-disable-line no-shadow
                     if (htlc) {
                         window.clearInterval(interval);
                         resolve(htlc);
-                    };
+                    }
                 });
             }, 5 * 1000); // Every 5 seconds
         });

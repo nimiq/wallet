@@ -163,7 +163,7 @@ export default defineComponent({
         margin: 0;
         font-size: var(--small-size);
         font-weight: 600;
-        line-height: 1.3;
+        line-height: 1.4;
 
         & + p {
             margin-top: 1rem;
@@ -176,7 +176,8 @@ export default defineComponent({
         }
 
         /deep/ .tooltip-box {
-            width: 20rem;
+            width: 20.5rem;
+            padding: 1.25rem 1.5rem;
         }
     }
 }

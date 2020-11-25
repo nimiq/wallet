@@ -316,6 +316,7 @@ export default defineComponent({
     transition: opacity 1s var(--nimiq-ease);
     justify-content: center;
     align-items: center;
+    pointer-events: none;
 
     .nq-icon {
         font-size: 9rem;

@@ -246,6 +246,10 @@ export default defineComponent({
     font-size: var(--small-label-size);
     font-weight: bold;
     opacity: 0.7;
+
+    &.nq-orange {
+        opacity: 1;
+    }
 }
 
 .swap-notification > svg {

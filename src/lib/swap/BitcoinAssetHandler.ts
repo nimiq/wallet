@@ -1,7 +1,8 @@
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { ElectrumClient, TransactionDetails, TransactionState } from '@nimiq/electrum-client';
 import { IAssetHandler } from './IAssetHandler';
 
-export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
+export class BitcoinAssetHandler implements IAssetHandler<SwapAsset.BTC> {
     private client: ElectrumClient;
 
     constructor(client: ElectrumClient) {
@@ -82,7 +83,7 @@ export class BitcoinAssetHandler implements IAssetHandler<TransactionDetails> {
         // rawTx.ins[0].witness[2] = BitcoinJS.Buffer.from(secret, 'hex');
         // serializedTx = rawTx.toHex();
         serializedTx = serializedTx.replace(
-            '0000000000000000000000000000000000000000000000000000000000000000' + '01', // Dummy secret + marker
+            '000000000000000000000000000000000000000000000000000000000000000001', // Dummy secret + marker
             `${secret}01`,
         );
         return this.sendTransaction(serializedTx);

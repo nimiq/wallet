@@ -1,20 +1,24 @@
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { NetworkClient } from '@nimiq/network-client';
 import { IAssetHandler } from './IAssetHandler';
 import { TransactionState } from '../../stores/Transactions';
 
-export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
+export type TransactionDetails = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
 
-export class NimiqAssetHandler implements IAssetHandler<Transaction> {
+export class NimiqAssetHandler implements IAssetHandler<SwapAsset.NIM> {
     private client: NetworkClient;
 
     constructor(client: NetworkClient) {
         this.client = client;
     }
 
-    public async findTransaction(address: string, test: (tx: Transaction) => boolean): Promise<Transaction> {
+    public async findTransaction(
+        address: string,
+        test: (tx: TransactionDetails) => boolean,
+    ): Promise<TransactionDetails> {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve) => {
-            const listener = (tx: Transaction) => {
+            const listener = (tx: TransactionDetails) => {
                 if (!test(tx)) return false;
 
                 this.client.removeListener(handle);
@@ -37,8 +41,8 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         address: string,
         value: number,
         data: string,
-        onPending?: (tx: Transaction) => any,
-    ): Promise<Transaction> {
+        onPending?: (tx: TransactionDetails) => any,
+    ): Promise<TransactionDetails> {
         return this.findTransaction(
             address,
             (tx) => {
@@ -54,7 +58,10 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         );
     }
 
-    public async createHtlc(serializedTx: string, onPending?: (tx: Transaction) => any): Promise<Transaction> {
+    public async createHtlc(
+        serializedTx: string,
+        onPending?: (tx: TransactionDetails) => any,
+    ): Promise<TransactionDetails> {
         const tx = await this.sendTransaction(serializedTx);
 
         if (tx.state === TransactionState.PENDING) {
@@ -65,22 +72,20 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         return tx;
     }
 
-    public async awaitHtlcSettlement(address: string): Promise<Transaction> {
+    public async awaitHtlcSettlement(address: string): Promise<TransactionDetails> {
         return this.findTransaction(
             address,
             (tx) => tx.sender === address
-                // @ts-expect-error
-                && typeof tx.proof.preImage === 'string',
+                && typeof (tx.proof as any as { preImage: string }).preImage === 'string',
         );
     }
 
     public async awaitSwapSecret(address: string): Promise<string> {
         const tx = await this.awaitHtlcSettlement(address);
-        // @ts-expect-error
-        return tx.proof.preImage;
+        return (tx.proof as any as { preImage: string }).preImage;
     }
 
-    public async settleHtlc(serializedTx: string, secret: string, hash: string): Promise<Transaction> {
+    public async settleHtlc(serializedTx: string, secret: string, hash: string): Promise<TransactionDetails> {
         serializedTx = serializedTx.replace(
             '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925' // SHA256 hash of dummy secret
             + '0000000000000000000000000000000000000000000000000000000000000000', // Dummy secret
@@ -89,7 +94,7 @@ export class NimiqAssetHandler implements IAssetHandler<Transaction> {
         return this.sendTransaction(serializedTx);
     }
 
-    private async sendTransaction(serializedTx: string): Promise<Transaction> {
+    private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {
         const tx = await this.client.sendTransaction(serializedTx);
         if (tx.state === TransactionState.NEW) throw new Error('Failed to send transaction');
         return tx;

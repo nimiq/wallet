@@ -1,6 +1,7 @@
 import { AssetAdapter, SwapAsset, Transaction, Client } from './IAssetAdapter';
 import { NimiqAssetAdapter } from './NimiqAssetAdapter';
 import { BitcoinAssetAdapter } from './BitcoinAssetAdapter';
+import { EuroAssetAdapter } from './EuroAssetAdapter';
 
 // Re-export to centralize exports
 export { SwapAsset };
@@ -41,6 +42,8 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
                 return new NimiqAssetAdapter(client as Client<SwapAsset.NIM>) as AssetAdapter<SwapAsset>;
             case SwapAsset.BTC:
                 return new BitcoinAssetAdapter(client as Client<SwapAsset.BTC>) as AssetAdapter<SwapAsset>;
+            case SwapAsset.EUR:
+                return new EuroAssetAdapter(client as Client<SwapAsset.EUR>) as AssetAdapter<SwapAsset>;
             default:
                 throw new Error(`Unsupported asset: ${asset}`);
         }

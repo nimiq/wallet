@@ -67,7 +67,7 @@ export type MockSettlementInstruction = {
     contractId: string,
 }
 
-type SettlementInstruction = SepaSettlementInstruction | MockSettlementInstruction;
+export type SettlementInstruction = SepaSettlementInstruction | MockSettlementInstruction;
 
 type OasisHtlc<TStatus extends HtlcStatus> = {
     id: string,
@@ -200,7 +200,7 @@ export async function settleHtlc(
         throw new Error('Secret must be in HEX or Base64Url format');
     }
 
-    if ((settlementJWS.match(/\./g) || []).length !== 2) {
+    if ((settlementJWS.split('.') || []).length !== 3) {
         throw new Error('Invalid settlement instruction JWS');
     }
 

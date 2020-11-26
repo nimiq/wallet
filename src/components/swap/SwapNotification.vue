@@ -214,9 +214,10 @@ export default defineComponent({
                             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             interval = window.setInterval(async () => {
                                 try {
-                                    const foo = await getSwap(activeSwap.value!.id) as Swap;
-                                    if (foo.secret) {
-                                        resolve(foo.secret);
+                                    const swap = await getSwap(activeSwap.value!.id) as Swap;
+                                    if (swap.secret) {
+                                        // TODO: Validate that this secret corresponds to the swap hash
+                                        resolve(swap.secret);
                                     }
                                 } catch (error) {
                                     // Ignore

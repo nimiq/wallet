@@ -1,14 +1,13 @@
 # 
 # Translators:
+# Fons <Fonsdesigns@hotmail.com>, 2020
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Stefan, 2020
-# Fons <Fonsdesigns@hotmail.com>, 2020
-# Sören <hello@soerenschwert.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Stefan, 2020\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/107022/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -477,11 +476,11 @@ msgstr "Disclaimer"
 
 #: src/components/swap/SwapAnimation.vue:115
 msgid "Don't close your wallet until the swap is complete!"
-msgstr ""
+msgstr "Sluit je wallet niet voordat de swap is voltooid!"
 
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your wallet!"
-msgstr "Sluit de app niet af!"
+msgstr "Sluit je wallet niet af!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -749,7 +748,7 @@ msgstr "Het is snel, veilig en maakt je echt onafhankelijk."
 
 #: src/components/swap/SwapNotification.vue:30
 msgid "It's safe to close your wallet now"
-msgstr "Het is veilig om je portemonnee nu te sluiten"
+msgstr "Je kan je wallet nu veilig afsluiten"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"

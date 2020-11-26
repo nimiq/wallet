@@ -100,7 +100,7 @@ msgstr "Activer Bitcoin"
 
 #: src/components/layouts/Settings.vue:131
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
@@ -130,7 +130,7 @@ msgstr "Ajouter une adresse"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Add an existing vesting contract to your wallet."
-msgstr ""
+msgstr "Ajouter un contrat d'acquisition existant à votre wallet."
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -477,7 +477,7 @@ msgstr "Avertissement"
 
 #: src/components/swap/SwapAnimation.vue:115
 msgid "Don't close your wallet until the swap is complete!"
-msgstr ""
+msgstr "Ne fermez pas votre wallet tant que le swap n'est pas terminé!"
 
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your wallet!"
@@ -609,7 +609,7 @@ msgstr "frais"
 
 #: src/components/swap/SwapModal.vue:42
 msgid "fees"
-msgstr ""
+msgstr "frais"
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -774,6 +774,8 @@ msgstr "En apprendre plus"
 #: src/components/swap/SwapModal.vue:275
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
+"Les comptes Ledger ne supportent pas encore les Swaps, revenez vérifier plus"
+" tard !"
 
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
@@ -789,7 +791,7 @@ msgstr "Limite d'adresses copiées atteinte."
 
 #: src/components/modals/TransactionModal.vue:167
 msgid "Link not available in this browser"
-msgstr ""
+msgstr "Lien non disponible dans ce navigateur"
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
@@ -1433,7 +1435,7 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:125
 msgid "Vesting Contract"
-msgstr ""
+msgstr "Contrat d'acquisition"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

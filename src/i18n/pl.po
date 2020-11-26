@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020
 # Sören <hello@soerenschwert.de>, 2020
+# Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020\n"
 "Language-Team: Polish (https://www.transifex.com/nimiq-foundation/teams/107022/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pl\n"
@@ -473,7 +473,7 @@ msgstr "Wyłączenie odpowiedzialności"
 
 #: src/components/swap/SwapAnimation.vue:115
 msgid "Don't close your wallet until the swap is complete!"
-msgstr ""
+msgstr "Nie zamykaj portfela do momentu zakończenia wymiany!"
 
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your wallet!"

@@ -38,7 +38,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
         });
     }
 
-    public async awaitHtlcCreation(
+    public async awaitHtlcFunding(
         address: string,
         value: number,
         data?: string,
@@ -65,7 +65,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
         );
     }
 
-    public async createHtlc(serializedTx: string): Promise<TransactionDetails> {
+    public async fundHtlc(address: string, serializedTx: string): Promise<TransactionDetails> {
         return this.sendTransaction(serializedTx);
     }
 

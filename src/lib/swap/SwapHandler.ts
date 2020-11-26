@@ -56,7 +56,7 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
     public async awaitIncoming(onPending: (tx: Transaction<ToAsset>) => any): Promise<Transaction<ToAsset>> {
         const contract = this.swap.contracts[this.swap.to.asset] as Contract<ToAsset>;
 
-        return this.toAssetAdapter.awaitHtlcCreation(
+        return this.toAssetAdapter.awaitHtlcFunding(
             contract.htlc.address,
             this.swap.to.amount,
             this.swap.to.asset === SwapAsset.NIM ? (contract as Contract<SwapAsset.NIM>).htlc.data : '',
@@ -68,7 +68,8 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         serializedTx: string,
         onPending: (tx: Transaction<FromAsset>) => any,
     ): Promise<Transaction<FromAsset>> {
-        return this.fromAssetAdapter.createHtlc(serializedTx, onPending);
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<ToAsset>;
+        return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending);
     }
 
     public async awaitSecret(): Promise<string> {

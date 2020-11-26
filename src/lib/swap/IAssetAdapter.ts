@@ -28,14 +28,18 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
 
     findTransaction(address: string, test: (tx: Transaction<TAsset>) => boolean): Promise<Transaction<TAsset>>;
 
-    awaitHtlcCreation(
+    awaitHtlcFunding(
         address: string,
         value: number,
         data: string,
         onPending: (tx: Transaction<TAsset>) => any,
     ): Promise<Transaction<TAsset>>;
 
-    createHtlc(serializedTx: string, onPending: (tx: Transaction<TAsset>) => any): Promise<Transaction<TAsset>>;
+    fundHtlc(
+        address: string,
+        serializedTx: string,
+        onPending: (tx: Transaction<TAsset>) => any,
+    ): Promise<Transaction<TAsset>>;
 
     awaitHtlcSettlement(address: string, data: string): Promise<Transaction<TAsset>>;
 

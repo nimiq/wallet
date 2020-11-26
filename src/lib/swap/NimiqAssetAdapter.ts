@@ -38,7 +38,7 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         });
     }
 
-    public async awaitHtlcCreation(
+    public async awaitHtlcFunding(
         address: string,
         value: number,
         data: string,
@@ -59,7 +59,8 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         );
     }
 
-    public async createHtlc(
+    public async fundHtlc(
+        address: string,
         serializedTx: string,
         onPending?: (tx: TransactionDetails) => any,
     ): Promise<TransactionDetails> {
@@ -67,7 +68,7 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
 
         if (tx.state === TransactionState.PENDING) {
             if (typeof onPending === 'function') onPending(tx);
-            return this.awaitHtlcCreation(tx.recipient, tx.value, tx.data.raw);
+            return this.awaitHtlcFunding(tx.recipient, tx.value, tx.data.raw);
         }
 
         return tx;

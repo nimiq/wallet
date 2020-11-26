@@ -12,9 +12,9 @@
 
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="nim left">
+            <Tooltip class="left" :class="(!switchSides ? fromAsset : toAsset).toLowerCase()" preferredPosition="top right">
                 <div slot="trigger" class="piece-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :class="[nimBackgroundClass]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
                             <path opacity=".25" d="M95.71 67.27l8.88-15.52a7.69 7.69 0 000-7.63l-7.41-13a1.69 1.69 0 011.47-2.52H100a3.3 3.3 0 012.86 1.65l7.69 13.29a8.66 8.66 0 010 8.59l-7 12.39a1.87 1.87 0 001.63 2.8h13.1a4.31 4.31 0 003.75-2.18c1.76-3.06 5-8.76 6.47-11.49a2.49 2.49 0 012.16-1.31c.53 0 1.19 0 2-.13a1.65 1.65 0 011.62 2.42c-.52 1-.94 1.69-.94 1.69L124 72.76l-1.57 2.76a6.36 6.36 0 01-5.54 3.23H98.44A5.16 5.16 0 0094 81.37l-4.79 8.51c-2.53 4.85-5.56 5.37-10 5.37H4A3.25 3.25 0 01.75 92V62.63" />
@@ -38,15 +38,15 @@
                         </g>
                     </svg>
                     <div class="flex-row swap-amount">
-                        <GroundedArrowDownIcon v-if="toAsset === SwapAsset.NIM"/>
-                        <GroundedArrowUpIcon v-if="fromAsset === SwapAsset.NIM"/>
-                        <Amount :amount="fromAsset === SwapAsset.NIM ? fromAmount : toAmount" currency="nim"/>
+                        <GroundedArrowUpIcon v-if="!switchSides"/>
+                        <GroundedArrowDownIcon v-if="switchSides"/>
+                        <Amount :amount="!switchSides ? fromAmount : toAmount" :currency="(!switchSides ? fromAsset : toAsset).toLowerCase()"/>
                     </div>
                 </div>
-                Nimiq HTLC
-                <template v-if="fromAsset === SwapAsset.NIM ? fromAddress : toAddress">
-                    <ShortAddress :address="fromAsset === SwapAsset.NIM ? fromAddress : toAddress"/>
-                    <BlueLink :href="explorerAddrLink(SwapAsset.NIM, fromAsset === SwapAsset.NIM ? fromAddress : toAddress)" target="_blank">
+                {{ assetToName(!switchSides ? fromAsset : toAsset) }} HTLC
+                <template v-if="!switchSides ? fromAddress : toAddress">
+                    <ShortAddress :address="!switchSides ? fromAddress : toAddress"/>
+                    <BlueLink :href="explorerAddrLink(!switchSides ? fromAsset : toAsset, !switchSides ? fromAddress : toAddress)" target="_blank">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>
@@ -58,9 +58,9 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="btc right" preferredPosition="top left">
+            <Tooltip class="right" :class="(!switchSides ? toAsset : fromAsset).toLowerCase()" preferredPosition="top left">
                 <div slot="trigger" class="piece-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M88.17 40.56a30.74 30.74 0 1122.39 37.27 30.74 30.74 0 01-22.39-37.27zM46.37 11.71H78a4.12 4.12 0 002.9-1.21 51.15 51.15 0 014.35-3.85 2.72 2.72 0 011.69-.58H87A2.73 2.73 0 0188.66 11a48.25 48.25 0 00-5 4.53 5.6 5.6 0 01-4.09 1.75h-27.5a3.33 3.33 0 00-3.08 2 75.89 75.89 0 00-3.51 10.65h0a75.31 75.31 0 00-1.89 11 2.77 2.77 0 002.8 3h0a2.73 2.73 0 002.67-2.46 70.51 70.51 0 011.76-10.22h0v0a3.26 3.26 0 013.18-2.5h11.16a2.64 2.64 0 012.53 3.41q-.48 1.51-.87 3.09h0a52.85 52.85 0 00-1.45 16.41" />
                             <path opacity=".25" d="M33.48 18.42c.15.29.28.59.41.89a17.28 17.28 0 01.17 13 1.5 1.5 0 001.42 2H37a2.32 2.32 0 002.27-1.89q.39-1.93.87-3.87h0a65.6 65.6 0 012.7-8.55A2 2 0 0041 17.25h0a2 2 0 01-1.85-2.82q1.29-3.18 2.85-6.21a4 4 0 013.54-2.11h31.85" />
@@ -77,21 +77,21 @@
                             <circle cx="161.99" cy="78.5" r=".5" fill="white" stroke-width="0.6"/>
                             <path d="M161.99 81l0 2" stroke-width="1.5"/>
                         </g>
-                        <g class="bitcoin-icon" fill="none" opacity="1">
+                        <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                             <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
                         </g>
                     </svg>
                     <div class="flex-row swap-amount">
-                        <GroundedArrowDownIcon v-if="toAsset === SwapAsset.BTC"/>
-                        <GroundedArrowUpIcon v-if="fromAsset === SwapAsset.BTC"/>
-                        <Amount :amount="fromAsset === SwapAsset.BTC ? fromAmount : toAmount" currency="btc"/>
+                        <GroundedArrowDownIcon v-if="!switchSides"/>
+                        <GroundedArrowUpIcon v-if="switchSides"/>
+                        <Amount :amount="!switchSides ? toAmount : fromAmount" :currency="(!switchSides ? toAsset : fromAsset).toLowerCase()"/>
                     </div>
                 </div>
-                Bitcoin HTLC
-                <template v-if="fromAsset === SwapAsset.BTC ? fromAddress : toAddress">
-                    <ShortAddress :address="fromAsset === SwapAsset.BTC ? fromAddress : toAddress"/>
-                    <BlueLink :href="explorerAddrLink(SwapAsset.BTC, fromAsset === SwapAsset.BTC ? fromAddress : toAddress)" target="_blank">
+                {{ assetToName(!switchSides ? toAsset : fromAsset) }} HTLC
+                <template v-if="!switchSides ? toAddress : fromAddress">
+                    <ShortAddress :address="!switchSides ? toAddress : fromAddress"/>
+                    <BlueLink :href="explorerAddrLink(!switchSides ? toAsset : fromAsset, !switchSides ? toAddress : fromAddress)" target="_blank">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>
@@ -149,6 +149,13 @@ import { SwapState } from '../../stores/Swaps';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
 
+function getPieceType(asset: SwapAsset) {
+    switch (asset) {
+        case SwapAsset.NIM: return 'hexagon';
+        default: return 'circle';
+    }
+}
+
 export default defineComponent({
     props: {
         swapState: {
@@ -183,9 +190,21 @@ export default defineComponent({
             type: String,
             required: false,
         },
+        bankIcon: {
+            type: String,
+            default: '../../assets/bankIcon.svg',
+        },
+        bankColor: {
+            type: String,
+            default: 'white',
+        },
         error: {
             type: String,
             required: false,
+        },
+        switchSides: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {
@@ -200,19 +219,56 @@ export default defineComponent({
                 });
             });
         }
-        const nimBackgroundClass = computed(() => {
-            if (!props.nimAddress) return '';
 
-            const className = getColorClass(props.nimAddress);
-            if (className === 'nq-blue') return 'white';
+        const leftAsset = computed(() => props.switchSides ? props.toAsset : props.fromAsset);
+        const rightAsset = computed(() => props.switchSides ? props.fromAsset : props.toAsset);
 
-            return className;
+        const leftPieceType = computed(() => getPieceType(leftAsset.value));
+        const rightPieceType = computed(() => getPieceType(rightAsset.value));
+
+        const leftColor = computed(() => {
+            switch (leftAsset.value) {
+                case SwapAsset.NIM: {
+                    if (!props.nimAddress) return '';
+
+                    const className = getColorClass(props.nimAddress);
+                    if (className === 'nq-blue') return 'white';
+
+                    return `var(--${className.replace('nq-', 'nimiq-')})`;
+                }
+                case SwapAsset.BTC: return '#f7931a';
+                case SwapAsset.EUR: return props.bankColor;
+                default: return '';
+            }
         });
 
+        const rightColor = computed(() => {
+            switch (rightAsset.value) {
+                case SwapAsset.NIM: {
+                    if (!props.nimAddress) return '';
+
+                    const className = getColorClass(props.nimAddress);
+                    if (className === 'nq-blue') return 'white';
+
+                    return `var(--${className.replace('nq-', 'nimiq-')})`;
+                }
+                case SwapAsset.BTC: return '#f7931a';
+                case SwapAsset.EUR: return props.bankColor;
+                default: return '';
+            }
+        });
+
+        function assetToName(asset: SwapAsset) {
+            switch (asset) {
+                case SwapAsset.NIM: return 'Nimiq';
+                case SwapAsset.BTC: return 'Bitcoin';
+                case SwapAsset.EUR: return 'Euro';
+                default: throw new Error(`Invalid asset ${asset}`);
+            }
+        }
+
         // Swap Direction
-        const swapDirection = computed(() => props.fromAsset === SwapAsset.NIM
-            ? 'left-to-right'
-            : 'right-to-left');
+        const swapDirection = computed(() => props.switchSides ? 'right-to-left' : 'left-to-right');
 
         // Swap State
         const state = ref(SwapState.SIGN_SWAP);
@@ -277,11 +333,15 @@ export default defineComponent({
             SwapState,
             state,
             animationClassName,
-            nimBackgroundClass,
+            leftPieceType,
+            rightPieceType,
+            leftColor,
+            rightColor,
             $identicon,
             identiconUrl,
             setState,
             swapDirection,
+            assetToName,
             explorerAddrLink,
             SwapAsset,
         };
@@ -467,16 +527,8 @@ export default defineComponent({
         transform: scale(1.15);
     }
 
-    .nim.right .identicon-border {
+    .right.nim .identicon-border {
         fill: #22143F; // Color of background gradient on right side
-    }
-
-    .btc .piece {
-        color: #f7931a;
-    }
-
-    .piece.white {
-        color: white;
     }
 
     svg {
@@ -616,13 +668,14 @@ export default defineComponent({
         .right { animation: piece-right-in-out 3.2s 1 var(--nimiq-ease) forwards; }
 
         .identicon,
-        .bitcoin-icon {
+        .logo {
             transform: rotate(-180deg);
             transition: transform 1.2s ease 1s;
             transform-origin: 66.66% 50%;
         }
 
-        .identicon {
+        .left .identicon,
+        .left .logo {
             transform-origin: 33.33% 50%;
         }
 

@@ -170,6 +170,7 @@
                     :toAddress="incomingHtlcAddress"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
+                    :switchSides="swap.from.asset === SwapAsset.BTC"
                     @finished="onAnimationComplete()"
                 />
             </PageBody>

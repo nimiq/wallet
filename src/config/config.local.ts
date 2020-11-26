@@ -11,4 +11,8 @@ export default {
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
     },
+
+    oasis: {
+        apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
+    },
 };

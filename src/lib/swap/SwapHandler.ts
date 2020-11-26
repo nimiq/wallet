@@ -71,12 +71,12 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         serializedTx: string,
         onPending: (tx: Transaction<FromAsset>) => any,
     ): Promise<Transaction<FromAsset>> {
-        const contract = this.swap.contracts[this.swap.from.asset] as Contract<ToAsset>;
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
         return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending);
     }
 
     public async awaitSecret(): Promise<string> {
-        const contract = this.swap.contracts[this.swap.from.asset] as Contract<ToAsset>;
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
 
         return this.fromAssetAdapter.awaitSwapSecret(
             contract.htlc.address,

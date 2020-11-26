@@ -69,47 +69,32 @@ export type MockSettlementInstruction = {
 
 export type SettlementInstruction = SepaSettlementInstruction | MockSettlementInstruction;
 
-type OasisHtlc<TStatus extends HtlcStatus> = {
-    id: string,
-    status: TStatus,
-    asset: Asset,
-    amount: number,
-    beneficiary: {
-        kty: 'OKP',
-        crv: 'Ed25519',
-        x: string,
-    } | {
-        kty: 'EC',
-        crv: 'P-256',
-        x: string,
-        y: string,
-    },
-    hash: {
-        algorithm: 'sha256' | 'blake2b', // 'sha512' excluded for now, as it requires a different preimage size
-        value: string,
-    },
-    preimage: {
-        size: 32,
-    } & (TStatus extends HtlcStatus.SETTLED ? { value: string } : {}),
-    expires: string,
-} & (TStatus extends HtlcStatus.PENDING ? { clearing: ClearingInstruction[] } : {})
-  & (TStatus extends HtlcStatus.CLEARED ? { settlement: SettlementInfo[] } : {})
+export enum KeyType {
+    OCTET_KEY_PAIR = 'OKP',
+    ELLIPTIC_CURVE = 'EC',
+}
+
+export type OctetKeyPair = {
+    kty: KeyType.OCTET_KEY_PAIR,
+    crv: 'Ed25519',
+    x: string,
+}
+
+export type EllipticCurveKey = {
+    kty: KeyType.ELLIPTIC_CURVE,
+    crv: 'P-256',
+    x: string,
+    y: string,
+}
+
+type OasisHtlc<TStatus extends HtlcStatus> = Omit<Htlc<TStatus>, 'expires'> & { expires: string };
 
 export type Htlc<TStatus extends HtlcStatus> = {
     id: string,
     status: TStatus,
     asset: Asset,
     amount: number,
-    beneficiary: {
-        kty: 'OKP',
-        crv: 'Ed25519',
-        x: string,
-    } | {
-        kty: 'EC',
-        crv: 'P-256',
-        x: string,
-        y: string,
-    },
+    beneficiary: OctetKeyPair | EllipticCurveKey,
     hash: {
         algorithm: 'sha256' | 'blake2b', // 'sha512' excluded for now, as it requires a different preimage size
         value: string,
@@ -147,7 +132,7 @@ async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: objec
 export async function createHtlc(
     contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'>,
 ): Promise<Htlc<HtlcStatus.PENDING>> {
-    if (contract.beneficiary.kty === 'OKP') {
+    if (contract.beneficiary.kty === KeyType.OCTET_KEY_PAIR) {
         const { x } = contract.beneficiary;
         if (x.length === 64) {
             contract.beneficiary.x = hexToBase64(x);
@@ -156,7 +141,7 @@ export async function createHtlc(
         }
     }
 
-    if (contract.beneficiary.kty === 'EC') {
+    if (contract.beneficiary.kty === KeyType.ELLIPTIC_CURVE) {
         const { x, y } = contract.beneficiary;
         if (x.length === 64) {
             contract.beneficiary.x = hexToBase64(x);
@@ -237,12 +222,12 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
         amount: coinsToUnits(htlc.asset, htlc.amount),
         beneficiary: {
             ...htlc.beneficiary,
-            ...(htlc.beneficiary.kty === 'OKP' ? {
-                x: base64ToHex(htlc.beneficiary.x),
+            ...(htlc.beneficiary.kty === KeyType.OCTET_KEY_PAIR ? {
+                x: base64ToHex((htlc.beneficiary as OctetKeyPair).x),
             } : {}),
-            ...(htlc.beneficiary.kty === 'EC' ? {
-                x: base64ToHex(htlc.beneficiary.x),
-                y: base64ToHex(htlc.beneficiary.y),
+            ...(htlc.beneficiary.kty === KeyType.ELLIPTIC_CURVE ? {
+                x: base64ToHex((htlc.beneficiary as EllipticCurveKey).x),
+                y: base64ToHex((htlc.beneficiary as EllipticCurveKey).y),
             } : {}),
         },
         hash: {

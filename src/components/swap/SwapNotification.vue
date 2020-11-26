@@ -48,7 +48,8 @@ import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
-import { SwapHandler, Swap as GenericSwap, SwapAsset } from '../../lib/swap/SwapHandler';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client } from '../../lib/swap/SwapHandler';
+import { getHtlc, settleHtlc, sandboxMockClearHtlc } from '../../lib/OasisApi';
 
 export default defineComponent({
     setup(props, context) {
@@ -86,10 +87,11 @@ export default defineComponent({
             });
         }
 
-        async function getClient(asset: SwapAsset) {
+        async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient();
                 case SwapAsset.BTC: return getElectrumClient();
+                case SwapAsset.EUR: return { getHtlc, settleHtlc, sandboxMockClearHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
@@ -130,14 +132,11 @@ export default defineComponent({
                         isExpired = (contract as Contract<SwapAsset.NIM>).htlc.timeoutBlock <= height;
                         break;
                     }
-                    case SwapAsset.BTC: {
-                        isExpired = (contract as Contract<SwapAsset.BTC>).timeout <= timestamp;
+                    case SwapAsset.BTC:
+                    case SwapAsset.EUR: {
+                        isExpired = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>).timeout <= timestamp;
                         break;
                     }
-                    // case SwapAsset.EUR: {
-                    //     isExpired = (contract as Contract<SwapAsset.EUR>).timeout <= timestamp;
-                    //     break;
-                    // }
                     default: throw new Error('Invalid swap asset');
                 }
             }

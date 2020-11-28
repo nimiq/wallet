@@ -21,8 +21,8 @@ msgstr "{accounts} houden, beheren en verzamelen adressen."
 msgid "{addresses} send and receive transactions."
 msgstr "{adressen} verzenden en ontvangen transacties."
 
-#: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:242
+#: src/components/modals/BtcTransactionModal.vue:218
+#: src/components/modals/TransactionModal.vue:239
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bevestiging | {count} Bevestigingen"
 
@@ -35,7 +35,7 @@ msgstr "{count} Peer | {count} Peers"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink in afwachting | {count} Cashlinks in afwachting"
 
-#: src/components/modals/TransactionModal.vue:244
+#: src/components/modals/TransactionModal.vue:241
 msgid "{fee} fee"
 msgstr "{fee} heffing"
 
@@ -223,7 +223,7 @@ msgstr "Backup"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:435
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -241,13 +241,13 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Bitcoin eenheid"
 
-#: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/BtcTransactionModal.vue:215
+#: src/components/modals/TransactionModal.vue:236
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:251
+#: src/components/modals/BtcTransactionModal.vue:225
+#: src/components/modals/TransactionModal.vue:248
 #: src/components/swap/SwapAnimation.vue:50
 #: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
@@ -309,7 +309,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
-#: src/components/modals/TransactionModal.vue:444
+#: src/components/modals/TransactionModal.vue:441
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -682,17 +682,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Historische waarde"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:395
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:398
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC terugbetaling"
 
-#: src/components/modals/TransactionModal.vue:404
+#: src/components/modals/TransactionModal.vue:401
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC schikking"
@@ -1012,8 +1012,8 @@ msgstr "Zojuist gekopieerd "
 msgid "Reference currency"
 msgstr "Referentie Valuta"
 
-#: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:233
+#: src/components/modals/BtcTransactionModal.vue:208
+#: src/components/modals/TransactionModal.vue:229
 msgid "Refund"
 msgstr "Terugbetaling"
 
@@ -1383,7 +1383,7 @@ msgstr "overboekingskosten"
 msgid "Tweet your map!"
 msgstr "Tweet je map!"
 
-#: src/components/modals/TransactionModal.vue:445
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Niet geclaimde Cashlink"

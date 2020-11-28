@@ -1,5 +1,6 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
-import { getContract, SwapAsset } from '@nimiq/fastspot-api';
+import { getContract, init as initFastspotApi, SwapAsset } from '@nimiq/fastspot-api';
+import { captureException } from '@sentry/browser';
 import Config from 'config';
 import { getElectrumClient } from '../electrum';
 import { loadBitcoinJS } from './BitcoinJSLoader';
@@ -54,7 +55,7 @@ async function decodeBtcHtlcScript(script: string) {
 
     // Check timeout
     // @ts-ignore Argument of type 'Buffer' is not assignable to parameter of type 'Buffer'
-    const timeoutTimestamp = BitcoinJS.script.number.decode(BitcoinJS.Buffer.from(asm[++i], 'hex'));
+    const timeoutTimestamp = BitcoinJS.script.number.decode(BitcoinJS.Buffer.from(asm[++i], 'hex')) + (60 * 60);
     if (asm[++i] !== 'OP_CHECKLOCKTIMEVERIFY' || asm[++i] !== 'OP_DROP') throw error;
 
     // Check refund address
@@ -157,6 +158,7 @@ export async function isHtlcFunding(
 
     // Try Fastspot API
     try {
+        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
         const contractWithEstimate = await getContract(SwapAsset.BTC, htlcOutput.address!);
         const { script } = contractWithEstimate.contract.htlc;
         const scriptParts = await decodeBtcHtlcScript(script);
@@ -166,7 +168,12 @@ export async function isHtlcFunding(
             outputIndex: htlcOutput.index,
         };
     } catch (error) {
-        // Ignore
+        if ((error as Error).message.includes(htlcOutput.address!)) {
+            // Ignore 404 Not Found
+        } else {
+            console.error(error); // eslint-disable-line no-console
+            if (Config.reportToSentry) captureException(error);
+        }
     }
 
     // See if we can find the settlement transaction for the HTLC

@@ -432,9 +432,8 @@ export default defineComponent({
         const { amountsHidden } = useSettingsStore();
 
         const showRefundButton = computed(() => {
-            if (!swapTransaction.value) return false;
-            if (!swapInfo.value) return false;
             if (isIncoming.value) return false;
+            if (!swapInfo.value) return false;
             if (!swapInfo.value.in) return false;
             if (swapInfo.value.in.asset !== SwapAsset.BTC) return false;
             if (swapInfo.value.out) return false;

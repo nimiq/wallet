@@ -180,12 +180,6 @@ export async function createOutgoing(swap: Ref<ActiveSwap<SwapState.CREATE_OUTGO
             });
             throw error;
         }
-
-        useSwapsStore().addFundingData(swap.value.hash, {
-            asset: SwapAsset.BTC,
-            transactionHash: fundingTx.transactionHash,
-            outputIndex: fundingTx.outputs.findIndex((output) => output.address?.length === HTLC_ADDRESS_LENGTH),
-        });
     }
 
     useSwapsStore().setActiveSwap({

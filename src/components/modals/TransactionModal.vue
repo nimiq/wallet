@@ -225,12 +225,9 @@
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <button
-                v-if="!swapTransaction && swapInfo && !isIncoming
-                    && swapInfo.in && swapInfo.in.asset === SwapAsset.NIM && !swapInfo.out
-                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutBlockHeight <= blockHeight"
-                class="nq-button-s" @click="refundHtlc" @mousedown.prevent
-            >{{ $t('Refund') }}</button>
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
             <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
@@ -479,6 +476,18 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
+        const showRefundButton = computed(() => {
+            if (!swapTransaction.value) return false;
+            if (!swapInfo.value) return false;
+            if (isIncoming.value) return false;
+            if (!swapInfo.value.in) return false;
+            if (swapInfo.value.in.asset !== SwapAsset.NIM) return false;
+            if (swapInfo.value.out) return false;
+            if (!swapInfo.value.in.htlc) return false;
+            if (swapInfo.value.in.htlc.timeoutBlockHeight > blockHeight.value) return false;
+            return true;
+        });
+
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapNimData;
             const htlcDetails = swapIn.htlc!;
@@ -534,8 +543,8 @@ export default defineComponent({
             amountsHidden,
             swapInfo,
             swapTransaction,
-            blockHeight,
             SwapAsset,
+            showRefundButton,
             refundHtlc,
             explorerTxLink,
         };

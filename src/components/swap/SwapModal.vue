@@ -192,8 +192,15 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="''"
                     :switchSides="false"
+                    :manualFunding="true"
                     @finished="onAnimationComplete()"
-                />
+                >
+                    <button
+                        slot="manual-funding-instructions"
+                        class="nq-button orange"
+                        @mousedown.prevent
+                    >Do absolutely nothing</button>
+                </SwapAnimation>
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
                 <MinimizeIcon/>

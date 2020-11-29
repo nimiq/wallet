@@ -1,5 +1,7 @@
 <template>
-    <div class="swap-animation flex-column">
+    <div class="swap-animation flex-column"
+        :class="{'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING}"
+    >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
             <CheckmarkIcon/>
             <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
@@ -12,7 +14,7 @@
 
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="left" :class="leftAsset.toLowerCase()" preferredPosition="top right">
+            <Tooltip class="left" :class="leftAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
                 <div slot="trigger" class="piece-container">
                     <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -80,7 +82,7 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="right" :class="rightAsset.toLowerCase()" preferredPosition="top left">
+            <Tooltip class="right" :class="rightAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
                 <div slot="trigger" class="piece-container">
                     <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -167,6 +169,12 @@
             <p>{{ $t('Retrying...') }}</p>
         </div>
 
+        <transition name="fade">
+            <div v-if="manualFunding && state === SwapState.CREATE_OUTGOING" class="manual-funding-instructions">
+                <slot name="manual-funding-instructions"></slot>
+            </div>
+        </transition>
+
         <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
 
         <div class="buttons">
@@ -245,6 +253,10 @@ export default defineComponent({
             required: false,
         },
         switchSides: {
+            type: Boolean,
+            default: false,
+        },
+        manualFunding: {
             type: Boolean,
             default: false,
         },
@@ -447,6 +459,8 @@ export default defineComponent({
 }
 
 .nq-card-header {
+    transition: opacity 0.5s var(--nimiq-ease);
+
     .nq-h1 {
         line-height: 1;
     }
@@ -522,6 +536,7 @@ export default defineComponent({
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    margin-bottom: 3rem; // To counteract negative bottom margin on .swap-amount
 
     transition: transform 1s var(--nimiq-ease);
 
@@ -530,6 +545,8 @@ export default defineComponent({
         width: 6.5rem;
 
         overflow: visible;
+
+        transition: opacity 0.5s var(--nimiq-ease);
 
         circle {
             animation: spinner-rotate reverse 1s linear infinite;
@@ -542,7 +559,7 @@ export default defineComponent({
     .left,
     .right {
         height: 12rem;
-        transition: transform 1s var(--nimiq-ease);
+        transition: transform 1s var(--nimiq-ease), opacity 0.5s var(--nimiq-ease);
         z-index: 1;
     }
 
@@ -551,8 +568,9 @@ export default defineComponent({
             align-items: center;
             font-weight: 600;
             opacity: 0.3;
-            margin: 1rem 1rem 0;
-            transition: opacity 0.3s var(--nimiq-ease);
+            // Negative bottom margin is to reduce gap to bottom-positioned tooltip (during manual-funding)
+            margin: 1rem 1rem -3rem;
+            transition: opacity 0.5s var(--nimiq-ease);
 
             svg {
                 margin-right: 1rem;
@@ -756,8 +774,6 @@ export default defineComponent({
         .left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
         .right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
     }
-
-
 }
 
 @keyframes spinner-rotate {
@@ -818,6 +834,8 @@ export default defineComponent({
     margin-top: 3rem;
     text-align: center;
 
+    transition: opacity 0.5s var(--nimiq-ease);
+
     .nq-h2 {
         font-weight: normal;
         margin-bottom: 2rem;
@@ -844,6 +862,35 @@ export default defineComponent({
         opacity: 0.7;
         text-align: right;
     }
+}
+
+.manual-funding {
+    .nq-card-header,
+    .nq-card-footer,
+    .animation .spinner,
+    .animation.left-to-right .right,
+    .animation.right-to-left .left,
+    .animation.left-to-right .left .swap-amount,
+    .animation.right-to-left .right .swap-amount {
+        opacity: 0;
+    }
+
+    .animation {
+        &.left-to-right {
+            transform: translate(28.75rem, -19.5rem) scale(1.58);
+        }
+
+        &.right-to-left {
+            transform: translate(-28.75rem, -19.5rem) scale(1.58);
+        }
+    }
+}
+
+.manual-funding-instructions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 /* mobile - animation downscale - starting at 500px width */

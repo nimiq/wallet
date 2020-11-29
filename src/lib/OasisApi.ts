@@ -132,26 +132,27 @@ async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: objec
 export async function createHtlc(
     contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'>,
 ): Promise<Htlc<HtlcStatus.PENDING>> {
-    if (contract.beneficiary.kty === KeyType.OCTET_KEY_PAIR) {
+    if (contract.beneficiary.kty === KeyType.OCTET_KEY_PAIR || contract.beneficiary.kty === KeyType.ELLIPTIC_CURVE) {
         const { x } = contract.beneficiary;
         if (x.length === 64) {
             contract.beneficiary.x = hexToBase64(x);
         } else if (fromBase64Url(x).length !== 32) {
             throw new Error('Beneficiary x must be in HEX or Base64Url format');
         }
+        while (contract.beneficiary.x.slice(-1) === '.') {
+            contract.beneficiary.x = contract.beneficiary.x.slice(0, -1);
+        }
     }
 
     if (contract.beneficiary.kty === KeyType.ELLIPTIC_CURVE) {
-        const { x, y } = contract.beneficiary;
-        if (x.length === 64) {
-            contract.beneficiary.x = hexToBase64(x);
-        } else if (fromBase64Url(x).length !== 32) {
-            throw new Error('Beneficiary x must be in HEX or Base64Url format');
-        }
+        const { y } = contract.beneficiary;
         if (y.length === 64) {
             contract.beneficiary.y = hexToBase64(y);
         } else if (fromBase64Url(y).length !== 32) {
             throw new Error('Beneficiary x must be in HEX or Base64Url format');
+        }
+        while (contract.beneficiary.y.slice(-1) === '.') {
+            contract.beneficiary.y = contract.beneficiary.y.slice(0, -1);
         }
     }
 
@@ -159,6 +160,9 @@ export async function createHtlc(
         contract.hash.value = hexToBase64(contract.hash.value);
     } else if (fromBase64Url(contract.hash.value).length !== 32) {
         throw new Error('Hash value must be in HEX or Base64Url format');
+    }
+    while (contract.hash.value.slice(-1) === '.') {
+        contract.hash.value = contract.hash.value.slice(0, -1);
     }
 
     if (typeof contract.expires === 'number') {
@@ -184,6 +188,9 @@ export async function settleHtlc(
         secret = hexToBase64(secret);
     } else if (fromBase64Url(secret).length !== 32) {
         throw new Error('Secret must be in HEX or Base64Url format');
+    }
+    while (secret.slice(-1) === '.') {
+        secret = secret.slice(0, -1);
     }
 
     if ((settlementJWS.split('.') || []).length !== 3) {
@@ -293,7 +300,7 @@ function toBase64Url(buffer: Uint8Array): string {
         const code = buffer[i];
         byteString += String.fromCharCode(code);
     }
-    return btoa(byteString).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '.');
+    return btoa(byteString).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
 }
 
 function fromHex(hex: string): Uint8Array {

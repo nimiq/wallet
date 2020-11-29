@@ -252,7 +252,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
             clearing: (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>).clearing.map((instructions) => ({
                 ...instructions,
                 ...('fee' in instructions ? {
-                    fee: coinsToUnits(htlc.asset, instructions.fee),
+                    fee: coinsToUnits(htlc.asset, instructions.fee, true),
                 } : {}),
                 ...('amount' in instructions ? {
                     amount: coinsToUnits(htlc.asset, instructions.amount),
@@ -262,7 +262,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
         ...('settlement' in (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>) ? {
             settlement: (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>).settlement.map((instructions) => ({
                 ...instructions,
-                fee: coinsToUnits(htlc.asset, instructions.fee),
+                fee: coinsToUnits(htlc.asset, instructions.fee, true),
             })),
         } : {}),
     };
@@ -270,15 +270,21 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
     return contract;
 }
 
-function coinsToUnits(asset: Asset, value: string | number): number {
+function coinsToUnits(asset: Asset, value: string | number, roundUp = false): number {
     let decimals: number;
     switch (asset) {
         case Asset.EUR: decimals = 2; break;
         default: throw new Error('Invalid asset');
     }
     const parts = value.toString().split('.');
-    parts[1] = (parts[1] || '').substr(0, decimals).padEnd(decimals, '0');
-    return parseInt(parts.join(''), 10);
+    parts[1] = (parts[1] || '').substr(0, decimals + 1).padEnd(decimals + 1, '0');
+    const units = parseInt(parts.join(''), 10) / 10;
+
+    if (roundUp) {
+        return Math.ceil(units);
+    }
+
+    return Math.floor(units);
 }
 
 function base64ToHex(base64: string): string {

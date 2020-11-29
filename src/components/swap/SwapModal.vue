@@ -191,7 +191,7 @@
                     toAddress="tb1q9p4zd0t9c6vvtkh929dxyfek3dns8fyyv90tygvcsfdawrhxephs28y0mp"
                     :nimAddress="activeAddressInfo.address"
                     :error="''"
-                    :switchSides="true"
+                    :switchSides="false"
                     @finished="onAnimationComplete()"
                 />
             </PageBody>

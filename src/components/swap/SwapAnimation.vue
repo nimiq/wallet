@@ -12,9 +12,9 @@
 
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="left" :class="(!switchSides ? fromAsset : toAsset).toLowerCase()" preferredPosition="top right">
+            <Tooltip class="left" :class="leftAsset.toLowerCase()" preferredPosition="top right">
                 <div slot="trigger" class="piece-container">
-                    <svg v-if="leftPieceType === 'hexagon'" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
+                    <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
                             <path opacity=".25" d="M95.71 67.27l8.88-15.52a7.69 7.69 0 000-7.63l-7.41-13a1.69 1.69 0 011.47-2.52H100a3.3 3.3 0 012.86 1.65l7.69 13.29a8.66 8.66 0 010 8.59l-7 12.39a1.87 1.87 0 001.63 2.8h13.1a4.31 4.31 0 003.75-2.18c1.76-3.06 5-8.76 6.47-11.49a2.49 2.49 0 012.16-1.31c.53 0 1.19 0 2-.13a1.65 1.65 0 011.62 2.42c-.52 1-.94 1.69-.94 1.69L124 72.76l-1.57 2.76a6.36 6.36 0 01-5.54 3.23H98.44A5.16 5.16 0 0094 81.37l-4.79 8.51c-2.53 4.85-5.56 5.37-10 5.37H4A3.25 3.25 0 01.75 92V62.63" />
@@ -55,19 +55,20 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M84.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z"/>
-                            <path fill="#fff" d="M71.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71L63 37.44c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L53 45.37a2.15 2.15 0 01.31.1l-.31-.08-2 7.44a1.08 1.08 0 01-1.36.67l-2.16-.5L46 56.24l3.88.92 2.13.52-1.24 4.71 3 .71L55 58.43c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09C64.2 57.4 58 55.5 55.94 55l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.88-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z"/>
+                            <image :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="33" y="22" width="52" height="52" />
                         </g>
                     </svg>
                     <div class="flex-row swap-amount">
                         <GroundedArrowUpIcon v-if="!switchSides"/>
                         <GroundedArrowDownIcon v-if="switchSides"/>
-                        <Amount :amount="!switchSides ? fromAmount : toAmount" :currency="(!switchSides ? fromAsset : toAsset).toLowerCase()"/>
+                        <Amount v-if="leftAsset !== SwapAsset.EUR" :amount="!switchSides ? fromAmount : toAmount" :currency="leftAsset.toLowerCase()"/>
+                        <FiatAmount v-else :amount="(!switchSides ? fromAmount : toAmount) / 100" :currency="leftAsset.toLowerCase()"/>
                     </div>
                 </div>
-                {{ assetToName(!switchSides ? fromAsset : toAsset) }} HTLC
+                {{ assetToName(leftAsset) }} HTLC
                 <template v-if="!switchSides ? fromAddress : toAddress">
                     <ShortAddress :address="!switchSides ? fromAddress : toAddress"/>
-                    <BlueLink :href="explorerAddrLink(!switchSides ? fromAsset : toAsset, !switchSides ? fromAddress : toAddress)" target="_blank">
+                    <BlueLink :href="explorerAddrLink(leftAsset, !switchSides ? fromAddress : toAddress)" target="_blank">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>
@@ -79,9 +80,9 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="right" :class="(!switchSides ? toAsset : fromAsset).toLowerCase()" preferredPosition="top left">
+            <Tooltip class="right" :class="rightAsset.toLowerCase()" preferredPosition="top left">
                 <div slot="trigger" class="piece-container">
-                    <svg v-if="rightPieceType === 'circle'" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
+                    <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M88.17 40.56a30.74 30.74 0 1122.39 37.27 30.74 30.74 0 01-22.39-37.27zM46.37 11.71H78a4.12 4.12 0 002.9-1.21 51.15 51.15 0 014.35-3.85 2.72 2.72 0 011.69-.58H87A2.73 2.73 0 0188.66 11a48.25 48.25 0 00-5 4.53 5.6 5.6 0 01-4.09 1.75h-27.5a3.33 3.33 0 00-3.08 2 75.89 75.89 0 00-3.51 10.65h0a75.31 75.31 0 00-1.89 11 2.77 2.77 0 002.8 3h0a2.73 2.73 0 002.67-2.46 70.51 70.51 0 011.76-10.22h0v0a3.26 3.26 0 013.18-2.5h11.16a2.64 2.64 0 012.53 3.41q-.48 1.51-.87 3.09h0a52.85 52.85 0 00-1.45 16.41" />
                             <path opacity=".25" d="M33.48 18.42c.15.29.28.59.41.89a17.28 17.28 0 01.17 13 1.5 1.5 0 001.42 2H37a2.32 2.32 0 002.27-1.89q.39-1.93.87-3.87h0a65.6 65.6 0 012.7-8.55A2 2 0 0041 17.25h0a2 2 0 01-1.85-2.82q1.29-3.18 2.85-6.21a4 4 0 013.54-2.11h31.85" />
@@ -100,7 +101,7 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
-                            <path fill="#fff" d="M130.93 44.79c.54-3.44-2.21-5.29-6-6.52l1.23-4.66-3-.71-1.16 4.54c-.79-.19-1.59-.37-2.38-.54l1.19-4.56-3-.71-1.22 4.66-1.9-.43-4.11-1-.79 3s2.21.48 2.16.51c1.21.29 1.43 1.05 1.39 1.65L112 45.37a2.15 2.15 0 01.31.1l-.32-.08-1.99 7.44a1.08 1.08 0 01-1.36.67l-2.17-.51-1.47 3.25 3.88.92 2.13.52-1.24 4.71 3 .71 1.23-4.67c.82.22 1.61.41 2.38.59l-1.22 4.64 3 .71 1.24-4.7c5.08.91 8.9.54 10.51-3.83 1.3-3.52-.06-5.56-2.74-6.88a4.62 4.62 0 003.76-4.17zm-6.81 9.09c-.92 3.52-7.12 1.62-9.18 1.12l1.64-6.24c2.02.5 8.5 1.45 7.54 5.12zm.92-9.14c-.84 3.21-6 1.58-7.71 1.18l1.48-5.67c1.68.4 7.11 1.15 6.23 4.49z" />
+                            <image :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="92" y="22" width="52" height="52" />
                         </g>
                     </svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
@@ -128,13 +129,14 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowDownIcon v-if="!switchSides"/>
                         <GroundedArrowUpIcon v-if="switchSides"/>
-                        <Amount :amount="!switchSides ? toAmount : fromAmount" :currency="(!switchSides ? toAsset : fromAsset).toLowerCase()"/>
+                        <Amount v-if="rightAsset !== SwapAsset.EUR" :amount="!switchSides ? toAmount : fromAmount" :currency="rightAsset.toLowerCase()"/>
+                        <FiatAmount v-else :amount="(!switchSides ? toAmount : fromAmount) / 100" :currency="rightAsset.toLowerCase()"/>
                     </div>
                 </div>
-                {{ assetToName(!switchSides ? toAsset : fromAsset) }} HTLC
+                {{ assetToName(rightAsset) }} HTLC
                 <template v-if="!switchSides ? toAddress : fromAddress">
                     <ShortAddress :address="!switchSides ? toAddress : fromAddress"/>
-                    <BlueLink :href="explorerAddrLink(!switchSides ? toAsset : fromAsset, !switchSides ? toAddress : fromAddress)" target="_blank">
+                    <BlueLink :href="explorerAddrLink(rightAsset, !switchSides ? toAddress : fromAddress)" target="_blank">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>
@@ -181,7 +183,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
-import { CheckmarkIcon, Identicon, Tooltip } from '@nimiq/vue-components';
+import { CheckmarkIcon, Identicon, Tooltip, FiatAmount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
@@ -191,13 +193,10 @@ import BlueLink from '../BlueLink.vue';
 import { SwapState } from '../../stores/Swaps';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
-
-function getPieceType(asset: SwapAsset) {
-    switch (asset) {
-        case SwapAsset.NIM: return 'hexagon';
-        default: return 'circle';
-    }
-}
+// @ts-ignore
+import BitcoinSvg from './animation/bitcoin.svg';
+// @ts-ignore
+import BankSvg from './animation/bank.svg';
 
 export default defineComponent({
     props: {
@@ -233,13 +232,13 @@ export default defineComponent({
             type: String,
             required: false,
         },
-        bankIcon: {
+        bankLogo: {
             type: String,
-            default: '../../assets/bankIcon.svg',
+            required: false,
         },
         bankColor: {
             type: String,
-            default: 'white',
+            default: '#0ca6fe',
         },
         error: {
             type: String,
@@ -265,9 +264,6 @@ export default defineComponent({
 
         const leftAsset = computed(() => props.switchSides ? props.toAsset : props.fromAsset);
         const rightAsset = computed(() => props.switchSides ? props.fromAsset : props.toAsset);
-
-        const leftPieceType = computed(() => getPieceType(leftAsset.value));
-        const rightPieceType = computed(() => getPieceType(rightAsset.value));
 
         const leftColor = computed(() => {
             switch (leftAsset.value) {
@@ -376,8 +372,8 @@ export default defineComponent({
             SwapState,
             state,
             animationClassName,
-            leftPieceType,
-            rightPieceType,
+            leftAsset,
+            rightAsset,
             leftColor,
             rightColor,
             $identicon,
@@ -387,6 +383,8 @@ export default defineComponent({
             assetToName,
             explorerAddrLink,
             SwapAsset,
+            BitcoinSvg,
+            BankSvg,
         };
     },
     components: {
@@ -398,6 +396,7 @@ export default defineComponent({
         Tooltip,
         ShortAddress,
         BlueLink,
+        FiatAmount,
     },
 });
 </script>

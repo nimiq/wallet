@@ -183,9 +183,9 @@
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
                     :swapState="SwapState.SIGN_SWAP"
-                    :fromAsset="SwapAsset.NIM"
-                    :fromAmount="23736e5"
-                    fromAddress="NQ89 V2FL 1NVC PRGS GFX3 3J7X 626B A86F AA5B"
+                    :fromAsset="SwapAsset.EUR"
+                    :fromAmount="241"
+                    fromAddress="H6FZQVVJUMFA4MUMWBUNF6J4H"
                     :toAsset="SwapAsset.BTC"
                     :toAmount="34e3"
                     toAddress="tb1q9p4zd0t9c6vvtkh929dxyfek3dns8fyyv90tygvcsfdawrhxephs28y0mp"

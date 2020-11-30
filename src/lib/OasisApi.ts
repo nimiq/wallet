@@ -114,19 +114,19 @@ export function init(url: string) {
 async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<OasisHtlc<HtlcStatus>> {
     if (!API_URL) throw new Error('API URL not set, call init() first');
 
-    return fetch(`${API_URL}${path}`, {
+    const response = await fetch(`${API_URL}${path}`, {
         method,
         headers: {
             'Content-Type': 'application/json',
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
-    }).then(async (res) => {
-        if (!res.ok) {
-            const error = await res.json() as OasisError;
-            throw new Error(error.title);
-        }
-        return res.json();
     });
+
+    if (!response.ok) {
+        const error = await response.json() as OasisError;
+        throw new Error(error.title);
+    }
+    return response.json();
 }
 
 export async function createHtlc(

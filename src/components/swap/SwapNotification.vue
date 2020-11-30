@@ -49,7 +49,7 @@ import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client } from '../../lib/swap/SwapHandler';
-import { getHtlc, settleHtlc, sandboxMockClearHtlc } from '../../lib/OasisApi';
+import { getHtlc, settleHtlc } from '../../lib/OasisApi';
 
 export default defineComponent({
     setup(props, context) {
@@ -91,7 +91,7 @@ export default defineComponent({
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient();
                 case SwapAsset.BTC: return getElectrumClient();
-                case SwapAsset.EUR: return { getHtlc, settleHtlc, sandboxMockClearHtlc };
+                case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
@@ -102,7 +102,7 @@ export default defineComponent({
             // Await Nimiq and Bitcoin consensus
             if (useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
-                await new Promise((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                await new Promise<void>((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
                     if (state === 'established') resolve();
                 }));
             }
@@ -111,7 +111,7 @@ export default defineComponent({
                 await electrum.waitForConsensusEstablished();
 
                 // If consensus was only just established, we need to wait for the first block event
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     const unsubscribe = useBtcNetworkStore().subscribe((mutation) => {
                         if (!mutation.payload.timestamp) return;
                         unsubscribe();
@@ -164,45 +164,59 @@ export default defineComponent({
                 // Note that each step falls through to the next when finished.
                 /* eslint-disable no-fallthrough */
                 case SwapState.AWAIT_INCOMING: {
-                    const remoteFundingTx = await swapHandler.awaitIncoming(
-                        (tx) => {
-                            updateSwap({
-                                remoteFundingTx: tx,
-                            });
-                        },
-                    );
+                    const remoteFundingTx = await swapHandler.awaitIncoming((tx) => {
+                        updateSwap({
+                            remoteFundingTx: tx,
+                        });
+                    });
                     updateSwap({
                         state: SwapState.CREATE_OUTGOING,
                         remoteFundingTx,
                     });
                 }
                 case SwapState.CREATE_OUTGOING: {
-                    try {
-                        const fundingTx = await swapHandler.createOutgoing(
-                            activeSwap.value!.fundingSerializedTx!,
-                            (tx) => {
-                                updateSwap({
-                                    fundingTx: tx,
-                                    fundingError: undefined,
-                                });
-                            },
-                        );
-
-                        if (activeSwap.value!.from.asset === SwapAsset.BTC) {
-                            subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
-                        }
+                    if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                        // Wait for OASIS HTLC to be funded out-of-band
+                        const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
+                            updateSwap({
+                                fundingTx: htlc,
+                            });
+                        });
 
                         updateSwap({
                             state: SwapState.AWAIT_SECRET,
                             fundingTx,
                             fundingError: undefined,
                         });
-                    } catch (error) {
-                        updateSwap({
-                            fundingError: error.message as string,
-                        });
-                        setTimeout(processSwap, 2000); // 2 seconds
-                        return;
+                    } else {
+                        // Send HTLC funding transaction
+                        try {
+                            const fundingTx = await swapHandler.createOutgoing(
+                                activeSwap.value!.fundingSerializedTx!,
+                                (tx) => {
+                                    updateSwap({
+                                        fundingTx: tx,
+                                        fundingError: undefined,
+                                    });
+                                },
+                            );
+
+                            if (activeSwap.value!.from.asset === SwapAsset.BTC) {
+                                subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
+                            }
+
+                            updateSwap({
+                                state: SwapState.AWAIT_SECRET,
+                                fundingTx,
+                                fundingError: undefined,
+                            });
+                        } catch (error) {
+                            updateSwap({
+                                fundingError: error.message as string,
+                            });
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            return;
+                        }
                     }
                 }
                 case SwapState.AWAIT_SECRET: {

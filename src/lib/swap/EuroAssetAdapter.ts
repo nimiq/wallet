@@ -6,7 +6,6 @@ export type HtlcDetails = Htlc<HtlcStatus>;
 export interface OasisClient {
     getHtlc(id: string): Promise<HtlcDetails>;
     settleHtlc(id: string, secret: string, settlementJWS: string): Promise<HtlcDetails>;
-    sandboxMockClearHtlc(id: string): Promise<boolean>;
 }
 
 export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
@@ -65,12 +64,9 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         );
     }
 
-    /**
-     * Mock-clears an HTLC. Only available in OASIS Sandbox environment.
-     */
-    public async fundHtlc(id: string): Promise<HtlcDetails> {
-        await this.client.sandboxMockClearHtlc(id);
-        return this.client.getHtlc(id);
+    // eslint-disable-next-line class-methods-use-this
+    public async fundHtlc(): Promise<HtlcDetails> {
+        throw new Error('Method "fundHtlc" not available for EUR HTLCs');
     }
 
     public async awaitHtlcSettlement(id: string): Promise<Htlc<HtlcStatus.SETTLED>> {

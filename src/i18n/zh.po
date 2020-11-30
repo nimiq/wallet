@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
-"Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/107022/zh/)\n"
+"Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -212,7 +212,7 @@ msgstr "备份"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "比特币"
@@ -290,7 +290,7 @@ msgstr "点击“确认”，即表示您同意{Fastspot}的服务条款。"
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -652,17 +652,17 @@ msgstr "现在使用一个密码和共享的登录信息，即可轻松便捷地
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC结算"
@@ -1332,7 +1332,7 @@ msgstr "转移资金"
 msgid "Tweet your map!"
 msgstr "推特您的地图！"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"

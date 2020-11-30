@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020\n"
-"Language-Team: Polish (https://www.transifex.com/nimiq-foundation/teams/107022/pl/)\n"
+"Language-Team: Polish (https://www.transifex.com/nimiq-foundation/teams/110181/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
@@ -224,7 +224,7 @@ msgstr "Kopia zapasowa"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Nie możesz zaimportować kontaktów. Nieprawidłowy format pliku."
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -681,17 +681,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Wartość historyczna"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "Tworzenie kontraktu HTLC"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "Refundacja kontraktu HTLC"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Rozliczenie kontraktu HTLC"
@@ -1392,7 +1392,7 @@ msgstr "Przelej środki"
 msgid "Tweet your map!"
 msgstr "Udostępnij swoją mapę na Twitterze!"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Nieodebrany link pieniężny"

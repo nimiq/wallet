@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
-"Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/107022/fr/)\n"
+"Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -225,7 +225,7 @@ msgstr "Sauvegarder"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -312,7 +312,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -686,17 +686,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Valeur historique"
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "Création du HTLC"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "Remboursement du HTLC"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "Règlement du HTLC"
@@ -1390,7 +1390,7 @@ msgstr "Transférer des fonds"
 msgid "Tweet your map!"
 msgstr "Tweetez votre carte !"
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"

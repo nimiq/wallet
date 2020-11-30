@@ -189,7 +189,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:435
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr ""
@@ -260,7 +260,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:441
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -612,17 +612,17 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:395
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr ""
@@ -1261,7 +1261,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr ""

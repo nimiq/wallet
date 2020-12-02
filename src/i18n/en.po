@@ -227,7 +227,7 @@ msgid "BTC network fees"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:31
-msgid "Buy & Sell"
+msgid "Buy"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:15
@@ -240,8 +240,20 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:58
+msgid "Buy Crypto"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:8
+msgid "Buy Crypto with Fiat"
+msgstr ""
+
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
+msgstr ""
+
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
+msgid "Buy with credit card"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:167
@@ -286,6 +298,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:63
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:211
 msgid "Choose an Address"
@@ -482,6 +495,10 @@ msgstr ""
 msgid "Enter address"
 msgstr ""
 
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:8
+msgid "Enter bank name..."
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:16
 msgid "Enter recipient address..."
 msgstr ""
@@ -554,6 +571,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:18
+msgid "Finalize the swap by bank transfer."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:158
@@ -665,6 +686,10 @@ msgstr ""
 msgid "Invite a friend with a"
 msgstr ""
 
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
+msgid "Is your bank eligible?"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:66
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
@@ -696,6 +721,10 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:22
+msgid "Let's go"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -770,7 +799,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:49
 msgid "Network"
 msgstr ""
 
@@ -968,8 +997,16 @@ msgstr ""
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:16
+msgid "Select a currency and an amount."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:109
 msgid "Select which unit to show Bitcoin amounts in."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:36
+msgid "Sell"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:111
@@ -1028,6 +1065,7 @@ msgstr ""
 msgid "sent at {dateAndTime}"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:27
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
 msgid "Set Amount"
@@ -1041,7 +1079,7 @@ msgstr ""
 msgid "Setting up swap"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:57
 msgid "Settings"
 msgstr ""
 
@@ -1298,6 +1336,16 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:17
+msgid "Wait for the swap to be set up."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:11
+msgid ""
+"Welcome to the first fiat-to-crypto swap.\n"
+"It’s simple, fast and decentralized."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr ""
@@ -1327,6 +1375,10 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:5
+msgid "You need a SEPA account that supports instant transactions."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
@@ -1352,6 +1404,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid "Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new account picker."
+msgstr ""
+
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
+msgid "Your bank is not eligible?"
 msgstr ""
 
 #: src/components/NetworkMap.vue:22

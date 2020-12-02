@@ -25,10 +25,15 @@
 
         <div class="trade-actions">
             <button class="nq-button-s inverse"
+                @click="$router.push('/buy-crypto?sidebar=true')"
+                @mousedown.prevent
+                :disabled="$route.name !== 'root'"
+            >{{ $t('Buy') }}</button>
+            <button class="nq-button-s inverse"
                 @click="$router.push('/trade?sidebar=true')"
                 @mousedown.prevent
                 :disabled="$route.name !== 'root'"
-            >{{ $t('Buy & Sell') }}</button>
+            >{{ $t('Sell') }}</button>
         </div>
 
         <AccountMenu

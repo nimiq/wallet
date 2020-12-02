@@ -7,7 +7,6 @@
                     <transition name="slide-n-fade">
                         <BtcLabelInput v-if="recipientWithLabel"
                             v-model="recipientWithLabel.label"
-                            @click.capture.native="selectedInput = 'bottom'"
                             :placeholder="$t('Name this recipient...')"
                             :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
                             ref="labelInputRef"/>
@@ -17,7 +16,6 @@
                         v-model="addressInputValue"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @input="resetAddress"
-                        @click.capture.native="selectedInput = 'top'"
                         @address="onAddressEntered"
                         @scan="$router.push('/scan')"
                         ref="addressInputRef"/>
@@ -592,6 +590,7 @@ export default defineComponent({
 
         justify-content: space-between;
         flex-grow: 1;
+        overflow: inherit;
     }
 
     .address-section {

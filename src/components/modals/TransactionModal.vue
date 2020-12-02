@@ -225,12 +225,9 @@
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <button
-                v-if="!swapTransaction && swapInfo && !isIncoming
-                    && swapInfo.in && swapInfo.in.asset === SwapAsset.NIM && !swapInfo.out
-                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutBlockHeight <= blockHeight"
-                class="nq-button-s" @click="refundHtlc" @mousedown.prevent
-            >{{ $t('Refund') }}</button>
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
             <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
@@ -274,7 +271,8 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
-import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SwapAsset, getAssets, init as initFastspotApi } from '@nimiq/fastspot-api';
+import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -479,12 +477,24 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
+        const showRefundButton = computed(() => {
+            if (isIncoming.value) return false;
+            if (!swapInfo.value) return false;
+            if (!swapInfo.value.in) return false;
+            if (swapInfo.value.in.asset !== SwapAsset.NIM) return false;
+            if (swapInfo.value.out) return false;
+            if (!swapInfo.value.in.htlc) return false;
+            if (swapInfo.value.in.htlc.timeoutBlockHeight > blockHeight.value) return false;
+            return true;
+        });
+
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapNimData;
             const htlcDetails = swapIn.htlc!;
 
             // eslint-disable-next-line no-async-promise-executor
             const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                 const assets = await getAssets();
                 const { feePerUnit } = assets[SwapAsset.NIM];
                 const fee = feePerUnit * 167; // 167 = NIM HTLC refunding tx size
@@ -534,8 +544,8 @@ export default defineComponent({
             amountsHidden,
             swapInfo,
             swapTransaction,
-            blockHeight,
             SwapAsset,
+            showRefundButton,
             refundHtlc,
             explorerTxLink,
         };

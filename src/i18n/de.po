@@ -1,15 +1,15 @@
 # 
 # Translators:
-# Sebastian Langer <basti@b-compu.de>, 2020
 # Sven <sven@nimiq.com>, 2020
 # Redexe <timo.niehoff@yahoo.de>, 2020
 # Daniel, 2020
 # Sören <hello@soerenschwert.de>, 2020
+# Sebastian Langer <basti@b-compu.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
-"Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/107022/de/)\n"
+"Last-Translator: Sebastian Langer <basti@b-compu.de>, 2020\n"
+"Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -22,8 +22,8 @@ msgstr "{accounts} halten und fassen Adressen zusammen."
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} senden und empfangen Transaktionen."
 
-#: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:242
+#: src/components/modals/BtcTransactionModal.vue:218
+#: src/components/modals/TransactionModal.vue:239
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bestätigung | {count} Bestätigungen"
 
@@ -36,7 +36,7 @@ msgstr "{count} Teilnehmer | {count} Teilnehmer"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} offener Cashlink | {count} offene Cashlinks"
 
-#: src/components/modals/TransactionModal.vue:244
+#: src/components/modals/TransactionModal.vue:241
 msgid "{fee} fee"
 msgstr "{fee} Gebühr"
 
@@ -101,7 +101,7 @@ msgstr "Bitcoin aktivieren"
 
 #: src/components/layouts/Settings.vue:131
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
@@ -222,7 +222,7 @@ msgstr "Backup"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -240,13 +240,13 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Bitcoin-Einheit"
 
-#: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/BtcTransactionModal.vue:215
+#: src/components/modals/TransactionModal.vue:236
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:251
+#: src/components/modals/BtcTransactionModal.vue:225
+#: src/components/modals/TransactionModal.vue:248
 #: src/components/swap/SwapAnimation.vue:50
 #: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
@@ -309,7 +309,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:444
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -603,7 +603,7 @@ msgstr "Gebühr"
 
 #: src/components/swap/SwapModal.vue:42
 msgid "fees"
-msgstr ""
+msgstr "Gebühren"
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
@@ -680,17 +680,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Historischer Wert"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC-Erstellung"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC-Rückerstattung"
 
-#: src/components/modals/TransactionModal.vue:404
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC-Abrechnung"
@@ -1012,8 +1012,8 @@ msgstr "Kürzlich kopiert"
 msgid "Reference currency"
 msgstr "Referenzwährung"
 
-#: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:233
+#: src/components/modals/BtcTransactionModal.vue:208
+#: src/components/modals/TransactionModal.vue:229
 msgid "Refund"
 msgstr "Rückerstattung"
 
@@ -1385,7 +1385,7 @@ msgstr "Guthaben überweisen"
 msgid "Tweet your map!"
 msgstr "Teile deine Karte auf Twitter!"
 
-#: src/components/modals/TransactionModal.vue:445
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"

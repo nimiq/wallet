@@ -10,8 +10,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:242
+#: src/components/modals/BtcTransactionModal.vue:218
+#: src/components/modals/TransactionModal.vue:239
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -24,7 +24,7 @@ msgstr ""
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:244
+#: src/components/modals/TransactionModal.vue:241
 msgid "{fee} fee"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr ""
@@ -202,13 +202,13 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/BtcTransactionModal.vue:215
+#: src/components/modals/TransactionModal.vue:236
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:251
+#: src/components/modals/BtcTransactionModal.vue:225
+#: src/components/modals/TransactionModal.vue:248
 #: src/components/swap/SwapAnimation.vue:50
 #: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
@@ -260,7 +260,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:444
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -612,17 +612,17 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:404
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr ""
@@ -908,8 +908,8 @@ msgstr ""
 msgid "Reference currency"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:233
+#: src/components/modals/BtcTransactionModal.vue:208
+#: src/components/modals/TransactionModal.vue:229
 msgid "Refund"
 msgstr ""
 
@@ -1261,7 +1261,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:445
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr ""

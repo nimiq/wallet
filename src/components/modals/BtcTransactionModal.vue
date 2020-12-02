@@ -204,12 +204,9 @@
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
-            <button
-                v-if="!swapTransaction && swapInfo && !isIncoming
-                    && swapInfo.in && swapInfo.in.asset === SwapAsset.BTC && !swapInfo.out
-                    && swapInfo.in.htlc && swapInfo.in.htlc.timeoutTimestamp <= (blockTimestamp - (30 * 60))"
-                class="nq-button-s" @click="refundHtlc" @mousedown.prevent
-            >{{ $t('Refund') }}</button>
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
             <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
@@ -247,7 +244,8 @@ import {
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest } from '@nimiq/hub-api';
-import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SwapAsset, getAssets, init as initFastspotApi } from '@nimiq/fastspot-api';
+import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -433,6 +431,17 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
+        const showRefundButton = computed(() => {
+            if (isIncoming.value) return false;
+            if (!swapInfo.value) return false;
+            if (!swapInfo.value.in) return false;
+            if (swapInfo.value.in.asset !== SwapAsset.BTC) return false;
+            if (swapInfo.value.out) return false;
+            if (!swapInfo.value.in.htlc) return false;
+            if (swapInfo.value.in.htlc.timeoutTimestamp > blockTimestamp.value) return false;
+            return true;
+        });
+
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapBtcData;
             const htlcDetails = swapIn.htlc!;
@@ -440,6 +449,7 @@ export default defineComponent({
 
             // eslint-disable-next-line no-async-promise-executor
             const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                 const assets = await getAssets();
                 const { feePerUnit } = assets[SwapAsset.BTC];
                 // 102 extra weight units for BTC HTLC refund tx
@@ -504,8 +514,8 @@ export default defineComponent({
             swapInfo,
             swapTransaction,
             SwapAsset,
+            showRefundButton,
             refundHtlc,
-            blockTimestamp,
         };
     },
     components: {

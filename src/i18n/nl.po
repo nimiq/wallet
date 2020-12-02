@@ -1,15 +1,15 @@
 # 
 # Translators:
+# Fons <Fonsdesigns@hotmail.com>, 2020
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Stefan, 2020
-# Fons <Fonsdesigns@hotmail.com>, 2020
-# Sören <hello@soerenschwert.de>, 2020
+# Daniel, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören <hello@soerenschwert.de>, 2020\n"
-"Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/107022/nl/)\n"
+"Last-Translator: Daniel, 2020\n"
+"Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -20,10 +20,10 @@ msgstr "{accounts} houden, beheren en verzamelen adressen."
 
 #: src/components/modals/MigrationWelcomeModal.vue:37
 msgid "{addresses} send and receive transactions."
-msgstr "{adressen} verzenden en ontvangen transacties."
+msgstr "{addresses} verzenden en ontvangen transacties."
 
-#: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:242
+#: src/components/modals/BtcTransactionModal.vue:218
+#: src/components/modals/TransactionModal.vue:239
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bevestiging | {count} Bevestigingen"
 
@@ -36,7 +36,7 @@ msgstr "{count} Peer | {count} Peers"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink in afwachting | {count} Cashlinks in afwachting"
 
-#: src/components/modals/TransactionModal.vue:244
+#: src/components/modals/TransactionModal.vue:241
 msgid "{fee} fee"
 msgstr "{fee} heffing"
 
@@ -224,7 +224,7 @@ msgstr "Backup"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:113
 #: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:438
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -242,13 +242,13 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Bitcoin eenheid"
 
-#: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/BtcTransactionModal.vue:215
+#: src/components/modals/TransactionModal.vue:236
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:251
+#: src/components/modals/BtcTransactionModal.vue:225
+#: src/components/modals/TransactionModal.vue:248
 #: src/components/swap/SwapAnimation.vue:50
 #: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
@@ -310,7 +310,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
-#: src/components/modals/TransactionModal.vue:444
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
@@ -477,11 +477,11 @@ msgstr "Disclaimer"
 
 #: src/components/swap/SwapAnimation.vue:115
 msgid "Don't close your wallet until the swap is complete!"
-msgstr ""
+msgstr "Sluit je wallet niet voordat de swap is voltooid!"
 
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your wallet!"
-msgstr "Sluit de app niet af!"
+msgstr "Sluit je wallet niet af!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -683,17 +683,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Historische waarde"
 
-#: src/components/modals/TransactionModal.vue:398
+#: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
-#: src/components/modals/TransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
 msgstr "HTLC terugbetaling"
 
-#: src/components/modals/TransactionModal.vue:404
+#: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
 msgstr "HTLC schikking"
@@ -749,7 +749,7 @@ msgstr "Het is snel, veilig en maakt je echt onafhankelijk."
 
 #: src/components/swap/SwapNotification.vue:30
 msgid "It's safe to close your wallet now"
-msgstr "Het is veilig om je portemonnee nu te sluiten"
+msgstr "Je kan je wallet nu veilig afsluiten"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
@@ -1013,8 +1013,8 @@ msgstr "Zojuist gekopieerd "
 msgid "Reference currency"
 msgstr "Referentie Valuta"
 
-#: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:233
+#: src/components/modals/BtcTransactionModal.vue:208
+#: src/components/modals/TransactionModal.vue:229
 msgid "Refund"
 msgstr "Terugbetaling"
 
@@ -1384,7 +1384,7 @@ msgstr "overboekingskosten"
 msgid "Tweet your map!"
 msgstr "Tweet je map!"
 
-#: src/components/modals/TransactionModal.vue:445
+#: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
 msgstr "Niet geclaimde Cashlink"

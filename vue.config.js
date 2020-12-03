@@ -52,11 +52,19 @@ module.exports = {
             .plugin('copy-webpack-plugin')
             .use(CopyWebpackPlugin, [[
                 { from: 'node_modules/@nimiq/style/nimiq-style.icons.svg', to: 'img' },
-                { from: 'node_modules/@nimiq/vue-components/dist/img/iqons.min*.svg', to: 'img/iqons.min.svg' },
-                { from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.js', to: 'js/qr-scanner-worker.min.js' },
+                {
+                    from: 'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
+                    to: './img/',
+                    flatten: true,
+                },
+                {
+                    from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.*.js',
+                    to: './js/',
+                    flatten: true,
+                },
                 {
                     from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
-                    to: './js',
+                    to: './js/',
                     flatten: true,
                     transformPath(path) {
                         // The bundled NimiqVueComponents.umd.js tries to load the the non-minified files

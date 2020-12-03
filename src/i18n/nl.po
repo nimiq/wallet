@@ -3,12 +3,12 @@
 # Fons <Fonsdesigns@hotmail.com>, 2020
 # Jim <jimvendrig10@gmail.com>, 2020
 # BlockchainShay <Shaylish@live.nl>, 2020
-# Stefan, 2020
 # Daniel, 2020
+# Stefan, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2020\n"
+"Last-Translator: Stefan, 2020\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -76,7 +76,7 @@ msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
-"Een contactpersoon met het adres \"{adres}\" bestaat al, maar onder een andere naam.\n"
+"Een contactpersoon met het adres \"{address}\" bestaat al, maar onder een andere naam.\n"
 "Wil je het vervangen?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
@@ -126,7 +126,7 @@ msgstr "Account toevoegen"
 
 #: src/components/AddressList.vue:18
 msgid "Add address"
-msgstr "Adres toevoegen"
+msgstr "Adres toevoegen"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Add an existing vesting contract to your wallet."
@@ -205,7 +205,7 @@ msgstr "Android en iOS App"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Atomic swaps vereisen twee BTC-transacties."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "In afwachting van swap secret."
 
@@ -280,7 +280,7 @@ msgstr ""
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
-msgstr "Koop en verkoop met uw portemonnee."
+msgstr "Koop en ver­koop met uw por­te­mon­nee."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -337,7 +337,7 @@ msgid "Choose a Recipient"
 msgstr "Kies een ontvanger"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:180
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -359,7 +359,7 @@ msgstr "Binnenkort beschikbaar"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "Binnenkort beschikbaar"
+msgstr "Binnenkort"
 
 #: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
@@ -375,8 +375,8 @@ msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
 msgstr ""
-"Maak rechtstreeks verbinding met de Nimiq blockchain.\n"
-"Wees onafhankelijk van tussenpersonen."
+"Maak rechtstreeks verbinding met de Nimiq blockchain. Wees onafhankelijk van"
+" tussenpersonen."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
@@ -405,7 +405,7 @@ msgstr "Doorgaan"
 
 #: src/components/modals/WelcomeModal.vue:100
 msgid "Continue to Login File"
-msgstr "Ga verder naar Login File"
+msgstr "Ga naar Login File"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -475,7 +475,7 @@ msgstr "Ontwikkelaar"
 msgid "Disclaimer"
 msgstr "Disclaimer"
 
-#: src/components/swap/SwapAnimation.vue:115
+#: src/components/swap/SwapAnimation.vue:117
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Sluit je wallet niet voordat de swap is voltooid!"
 
@@ -494,7 +494,7 @@ msgstr "Klaar"
 
 #: src/components/modals/WelcomeModal.vue:80
 msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr "Download het en bewaar het veilig. Deel het niet - verlies het niet."
+msgstr "Download het en bewaar het veilig. Deel het niet – verlies het niet."
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
@@ -553,7 +553,7 @@ msgstr "Vul adres in"
 msgid "Enter recipient address..."
 msgstr "Voer het adres van de ontvanger in..."
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Error:"
 msgstr "Fout:"
 
@@ -623,8 +623,8 @@ msgstr "Fiat waarde niet beschikbaar"
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
-#: src/components/swap/SwapAnimation.vue:111
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Swap afronden"
 
@@ -768,7 +768,7 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr "Ledger accounts ondersteunen nog geen swaps, kom snel terug!"
 
@@ -796,8 +796,8 @@ msgstr "Bestand laden"
 msgid "loading..."
 msgstr "laden..."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:108
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "{asset} vergrendelen"
 
@@ -807,7 +807,7 @@ msgid ""
 "Nimiq Login Files."
 msgstr ""
 "Log in op je apparaten met de nieuwe\n"
-"Nimiq Login Files"
+"Nimiq Login Files."
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -821,7 +821,7 @@ msgstr "verloren"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimale swap-bedrag is {amount}"
 
@@ -885,7 +885,7 @@ msgid ""
 "from your wallet."
 msgstr ""
 "Nimiq OASIS maakt gedecentraliseerd kopen en verkopen van crypto "
-"rechtstreeks vanuit uw wallet mogelijk."
+"recht­streeks vanuit uw wallet mogelijk."
 
 #: src/components/modals/BtcSendModal.vue:130
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -996,14 +996,14 @@ msgstr "Ontvang gratis NIM om te starten."
 #: src/components/modals/BtcTransactionModal.vue:54
 #: src/components/modals/TransactionModal.vue:77
 msgid "received at {dateAndTime}"
-msgstr "Ontvangen op {datumentijd}"
+msgstr "Ontvangen op {dateAndTime}"
 
 #: src/components/modals/BtcReceiveModal.vue:54
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 "Recente adressen worden hier weergegeven, totdat ze een transactie hebben "
-"ontvangen"
+"ontvangen."
 
 #: src/components/modals/BtcReceiveModal.vue:57
 msgid "Recently copied"
@@ -1042,7 +1042,7 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:124
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
@@ -1058,9 +1058,7 @@ msgstr "Nu opslaan"
 msgid ""
 "Scan the code to send\n"
 "money to this address"
-msgstr ""
-"Scan de code \n"
-"om het te versturen naar dit adres"
+msgstr "Scan de code om het te versturen naar dit adres"
 
 #: src/components/SearchBar.vue:18
 msgid "Search"
@@ -1090,7 +1088,7 @@ msgstr "Verstuur alles"
 
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Send and receive NIM directly on the blockchain."
-msgstr "Verstuur en ontvang NIM direct op de blockchain"
+msgstr "Verstuur en ontvang NIM direct op de blockchain."
 
 #: src/components/modals/NetworkInfoModal.vue:16
 msgid ""
@@ -1108,7 +1106,7 @@ msgstr "Verstuur transactie"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr "Verstuur, ontvang en hodl BTC in je Wallet"
+msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
 #: src/components/modals/BtcSendModal.vue:427
 #: src/components/modals/SendModal.vue:492
@@ -1121,20 +1119,20 @@ msgstr "Stuur {btc} BTC"
 
 #: src/components/modals/BtcSendModal.vue:481
 msgid "Sent {btc} BTC to {name}"
-msgstr "Stuur {btc} BTC naar {naam}"
+msgstr "Stuur {btc} BTC naar {name}"
 
 #: src/components/modals/SendModal.vue:527
 msgid "Sent {nim} NIM"
-msgstr "Stuur {Nim} NIM"
+msgstr "Stuur {nim} NIM"
 
 #: src/components/modals/SendModal.vue:523
 msgid "Sent {nim} NIM to {name}"
-msgstr "Stuur {NIM} NIM naar {naam}"
+msgstr "Stuur {nim} NIM naar {name}"
 
 #: src/components/modals/BtcTransactionModal.vue:59
 #: src/components/modals/TransactionModal.vue:82
 msgid "sent at {dateAndTime}"
-msgstr "Stuur op {datumentijd}"
+msgstr "Stuur op {dateAndTime}"
 
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
@@ -1145,7 +1143,7 @@ msgstr "Bedrag ingeven"
 msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
-#: src/components/swap/SwapAnimation.vue:103
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Swap opzetten"
 
@@ -1162,12 +1160,12 @@ msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
-"Deel de link of QR code met de verzender\n"
+"Deel de link of QR code met de verzender.\n"
 "Optioneel met een bedrag."
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
-msgstr "Deel je adres met je de verzender "
+msgstr "Deel je adres met je de verzender."
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
 msgid "Share your Payment Link"
@@ -1260,7 +1258,7 @@ msgstr "Vertel het ons!"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
@@ -1298,8 +1296,8 @@ msgid ""
 "There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr ""
-"Er zijn vele opties, gebruik een credit card of verhandel   crypto. Vind "
-"meer opties via deze link {Link}"
+"Er zijn vele opties, gebruik een credit card of verhandel crypto. Vind meer "
+"opties via {link}"
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
@@ -1364,12 +1362,12 @@ msgstr "Totale kosten"
 #: src/components/modals/BtcTransactionModal.vue:21
 #: src/components/modals/TransactionModal.vue:43
 msgid "Transaction from {address}"
-msgstr "Transacties van {adres}"
+msgstr "Transacties van {address}"
 
 #: src/components/modals/BtcTransactionModal.vue:29
 #: src/components/modals/TransactionModal.vue:51
 msgid "Transaction to {address}"
-msgstr "Transacties naar {adres}"
+msgstr "Transacties naar {address}"
 
 #: src/components/modals/BtcSendModal.vue:131
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
@@ -1405,8 +1403,8 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:33
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
-"Gebruik een nieuw Bitcoin adres voor iedere transactie om de privacy te "
-"bevorderen."
+"Gebruik een nieuw Bitcoin adres voor iedere trans­ac­tie om de privacy te "
+"be­vor­de­ren."
 
 #: src/components/modals/WelcomeModal.vue:83
 msgid "Use it to access your account from any device."
@@ -1440,7 +1438,7 @@ msgid ""
 "privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 "Met Bitcoin wordt een adres maar 1 keer gebruikt om de privacy te "
-"verbeteren. Hergebruik van adressen leidt niet tot geldverlies."
+"verbe­te­ren. Hergebruik van adressen leidt niet tot geldverlies."
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""
@@ -1463,7 +1461,7 @@ msgstr "Je gebruikt een Legacy Account"
 
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
-msgstr "Je kan meer gratis NIM ontvangen in {Wachttijd} uren."
+msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
@@ -1472,7 +1470,7 @@ msgstr "Je bent nu in het bezit van crypto!"
 
 #: src/components/modals/BtcSendModal.vue:85
 msgid "You will send {amount}"
-msgstr "Je zal {bedrag} versturen"
+msgstr "Je zal {amount} versturen"
 
 #: src/components/modals/SendModal.vue:127
 msgid "You will send {amount} NIM"
@@ -1516,7 +1514,7 @@ msgstr "Je browser is een node"
 
 #: src/components/modals/WelcomeModal.vue:77
 msgid "Your Login File, in combination with your password, grants access."
-msgstr "Je Login File, in combinatie met je wachtwoord, geeft je toegang"
+msgstr "Je Login File, in combinatie met je wachtwoord, geeft je toegang."
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""

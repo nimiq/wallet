@@ -193,7 +193,7 @@ msgstr "Android和iOS应用"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "原子交换需要进行两次比特币交易。"
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "等待交换密语"
 
@@ -317,7 +317,7 @@ msgid "Choose a Recipient"
 msgstr "选择接收者"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:180
 msgid "Choose an Address"
 msgstr "选择地址"
 
@@ -451,7 +451,7 @@ msgstr "开发者"
 msgid "Disclaimer"
 msgstr "免责声明"
 
-#: src/components/swap/SwapAnimation.vue:115
+#: src/components/swap/SwapAnimation.vue:117
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -524,7 +524,7 @@ msgstr "输入地址"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Error:"
 msgstr "错误:"
 
@@ -594,8 +594,8 @@ msgstr "法币无法使用"
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
-#: src/components/swap/SwapAnimation.vue:111
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
@@ -733,7 +733,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -761,8 +761,8 @@ msgstr "加载文件"
 msgid "loading..."
 msgstr "载入中..."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:108
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "正在锁定{asset}"
 
@@ -786,7 +786,7 @@ msgstr "遗失"
 msgid "Max."
 msgstr "最高"
 
-#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
@@ -999,7 +999,7 @@ msgstr "重置您的钱包设置并从区块链重新加载数据。"
 msgid "Retry"
 msgstr "重试"
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:124
 msgid "Retrying..."
 msgstr "重试..."
 
@@ -1100,7 +1100,7 @@ msgstr "设置金额"
 msgid "Set fee"
 msgstr "设置费用"
 
-#: src/components/swap/SwapAnimation.vue:103
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "设置交换"
 
@@ -1214,7 +1214,7 @@ msgstr "请在这里告诉我们"
 msgid "Testnet"
 msgstr "测试网"
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 

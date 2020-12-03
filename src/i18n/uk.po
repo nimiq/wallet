@@ -1,164 +1,162 @@
 # 
 # Translators:
-# Sören <hello@soerenschwert.de>, 2020
-# Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020
+# Petro Tarasenko, 2020
+# Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Mariusz Jagodziński <mariusz.jagodzinski84@gmail.com>, 2020\n"
-"Language-Team: Polish (https://www.transifex.com/nimiq-foundation/teams/110181/pl/)\n"
+"Last-Translator: Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2020\n"
+"Language-Team: Ukrainian (https://www.transifex.com/nimiq-foundation/teams/110181/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
-msgstr ""
-"{accounts} pozwalają gromadzić i przechowywać adresy oraz nimi zarządzać."
+msgstr "{accounts} зберігайте, керуйте і накопичуйте рахунки."
 
 #: src/components/modals/MigrationWelcomeModal.vue:37
 msgid "{addresses} send and receive transactions."
-msgstr ""
-"{addresses} pozwalają realizować transakcje przychodzące i wychodzące."
+msgstr "{addresses} надсилати та отримувати транзакції."
 
 #: src/components/modals/BtcTransactionModal.vue:218
 #: src/components/modals/TransactionModal.vue:239
 msgid "{count} Confirmation | {count} Confirmations"
-msgstr "{count} potwierdzenie | Potwierdzenia: {count}"
+msgstr "{count} Підтвердження | {count} Підтверджень"
 
 #: src/components/NetworkStats.vue:9
 msgid "{count} Peer | {count} Peers"
-msgstr "{count} komputerem | {count} komputerami"
+msgstr "{count} Пір | {count} Піри"
 
 #: src/components/layouts/AddressOverview.vue:100
 #: src/components/layouts/AddressOverview.vue:15
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
-msgstr ""
-"{count} oczekujący link pieniężny | Oczekujące linki pieniężne: {count}"
+msgstr "{count} активне посилання | {count} активні посилання"
 
 #: src/components/modals/TransactionModal.vue:241
 msgid "{fee} fee"
-msgstr "Opłata {fee}"
+msgstr "{fee} комісія"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
 msgid "{perc}% of swap value."
-msgstr "{perc}% wartości wymiany."
+msgstr "{perc}% вартості обміну."
 
 #: src/components/modals/BtcTransactionModal.vue:106
 #: src/components/modals/BtcTransactionModal.vue:121
 #: src/components/modals/BtcTransactionModal.vue:147
 #: src/components/modals/BtcTransactionModal.vue:91
 msgid "+{n} more"
-msgstr "+{n}"
+msgstr "+{n} більше"
 
 #: src/components/FeeSelector.vue:8
 msgid "15m"
-msgstr "15 min"
+msgstr "15 хв"
 
 #: src/components/FeeSelector.vue:7
 msgid "2-4h"
-msgstr "2–4 godz."
+msgstr "2-4 год"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Chat & Phone Support"
-msgstr "Wsparcie na czacie i przez telefon 24 h/7"
+msgstr "24/7 Чат та телефонна підтримка"
 
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
-msgstr "Limit 30-dniowy"
+msgstr "30-денний ліміт"
 
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
-msgstr "+6 godz."
+msgstr "6+ год"
 
 #: src/components/layouts/Settings.vue:243
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
-"Kontakt powiązany z adresem „{address}” już istnieje, ale pod inną nazwą.\n"
-"                            Czy chcesz go zastąpić?"
+"Контакт із адресою \"{address}\" вже існує з іншою назвою\n"
+"Хочете замінити?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
 "it a try and experience all new Nimiq features."
 msgstr ""
-"Zdecydowanie usprawniliśmy proces tworzenia konta. Przekonaj się\n"
-"o tym i wypróbuj wszystkie nowe funkcje nimiqa."
+"Створення рахунку було значно вдосконалено. Спробуйте\n"
+"всі нові можливості Nimiq."
 
 #: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
-msgstr "Konta"
+msgstr "Рахунки"
 
 #: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
-msgstr "Aktywuj"
+msgstr "Активувати"
 
 #: src/components/modals/BtcActivationModal.vue:25
 msgid "Activate Bitcoin"
-msgstr "Aktywuj bitcoina"
+msgstr "Активувати Біткоїн"
 
 #: src/components/layouts/Settings.vue:131
 msgid "Add"
-msgstr "Dodaj"
+msgstr "Додати"
 
 #: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
 "sent."
 msgstr ""
-"Aby szybko znaleźć w historii zrealizowaną transakcję, opatrz ją etykietą."
+"Додайте мітку, щоб швидко знайти транзакцію у вашій історії, як тільки вона "
+"буде відправлена."
 
 #: src/components/BtcLabelInput.vue:19
 msgid "Add a label to quickly find the transaction in your history."
-msgstr "Aby szybko znaleźć w historii daną transakcję, opatrz ją etykietą."
+msgstr "Додайте мітку, щоб швидко знайти транзакцію у вашій історії."
 
 #: src/components/modals/SendModal.vue:141
 msgid "Add a public message..."
-msgstr "Dodaj wiadomość publiczną"
+msgstr "Додати публічне повідомлення..."
 
 #: src/components/AccountMenu.vue:70
 msgid "Add account"
-msgstr "Dodaj konto"
+msgstr "Додати рахунок"
 
 #: src/components/AddressList.vue:18
 msgid "Add address"
-msgstr "Dodaj adres"
+msgstr "Додати адресу"
 
 #: src/components/layouts/Settings.vue:127
 msgid "Add an existing vesting contract to your wallet."
-msgstr "Dodaj istniejący kontrakt vestingowy do swojego portfela."
+msgstr "Додайте існуючий розподільний акаунт до вашого гаманця."
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
 "Add Bitcoin\n"
 "to your account"
 msgstr ""
-"Dodaj bitcoina\n"
-"do swojego konta"
+"Додайте Біткойн\n"
+"до вашого рахунку"
 
 #: src/components/modals/TransactionModal.vue:100
 #: src/components/modals/TransactionModal.vue:149
 msgid "Add contact"
-msgstr "Dodaj kontakt"
+msgstr "Додати контакт"
 
 #: src/components/modals/SendModal.vue:28
 msgid "Address unavailable?"
-msgstr "Nie masz adresu?"
+msgstr "Адреса недоступна?"
 
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
-msgstr "Adresy"
+msgstr "Адреси"
 
 #: src/components/layouts/Settings.vue:101
 #: src/components/layouts/Settings.vue:41
 msgid "all"
-msgstr "wszystko"
+msgstr "всі"
 
 #: src/components/modals/WelcomeModal.vue:48
 msgid "All in one easy place."
-msgstr "Wszystko w jednym prostym miejscu."
+msgstr "Все в одному зручному місці."
 
 #: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
@@ -166,16 +164,16 @@ msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
 "seconds."
 msgstr ""
-"Aby móc korzystać ze wszystkich nowych funkcji, musisz mieć zaktualizowane "
-"konto. Zaktualizuj je teraz w zaledwie kilka sekund."
+"Усі нові можливості ексклюзивні для нових облікових записів. Оновіть зараз, "
+"це займе лише кілька секунди."
 
 #: src/components/modals/DisclaimerModal.vue:21
 msgid ""
 "All translations are for information purposes only. The English text is the "
 "controlling version."
 msgstr ""
-"Wszystkie tłumaczenia mają jedynie charakter informacyjny. Obowiązującą "
-"wersją jest wersja angielska."
+"Усі переклади носять лише інформаційний характер. Текст англійською мовою є "
+"контрольною версією."
 
 #: src/components/modals/BtcReceiveModal.vue:35
 #: src/components/modals/BtcSendModal.vue:36
@@ -183,39 +181,38 @@ msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
 msgstr ""
-"Ponowne używanie adresów nie spowoduje utraty środków, jednak zdecydowanie "
-"odradzamy takie postępowanie."
+"Повторне використання адрес не призведе до втрати коштів, однак "
+"рекомендується цього не робити."
 
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
-"Zawsze rób kopię zapasową hasła, słów odzyskiwania i plików logowania."
+"Завжди створюйте резервні копії ваших секретних слів, паролів та файлів для "
+"входу."
 
 #: src/components/modals/WelcomeModal.vue:40
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
-msgstr ""
-"Oraz {BTC}, standard złota w świecie kryptowalut i bezpieczny środek "
-"przechowywania wartości."
+msgstr "І {BTC}, золотий стандарт криптовалют та засіб збереження капіталу."
 
 #: src/components/modals/TradeModal.vue:30
 msgid "Android and iOS App"
-msgstr "Aplikacja na system Android oraz iOS"
+msgstr "Android і iOS додаток"
 
 #: src/components/swap/SwapFeesTooltip.vue:11
 msgid "Atomic swaps require two BTC transactions."
-msgstr "Wymiany niepodzielne wymagają dwóch transakcji BTC."
+msgstr "Атомарні обміни потребують дві BTC транзакції."
 
 #: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
-msgstr "Oczekiwanie na sekret wymiany"
+msgstr "Очікуємо на ключі обміну"
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
-msgstr "Wróć do adresów"
+msgstr "Повернутися до адрес"
 
 #: src/components/layouts/AccountOverview.vue:25
 msgid "Backup"
-msgstr "Kopia zapasowa"
+msgstr "Резервне копіювання"
 
 #: src/components/BalanceDistribution.vue:68
 #: src/components/layouts/AccountOverview.vue:61
@@ -227,649 +224,647 @@ msgstr "Kopia zapasowa"
 #: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:175
 msgid "Bitcoin"
-msgstr "Bitcoin"
+msgstr "Біткоїн"
 
 #: src/components/modals/BtcSendModal.vue:128
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
 msgstr ""
-"Adresy w sieci bitcoina są używane tylko raz, więc nie możesz tworzyć "
-"kontaktów. Aby łatwo znaleźć w historii transakcje, opatrz je etykietami."
+"Біткоїн адреси використовуються лише один раз, тому їх немає в контактах. "
+"Використовуйте мітки, щоб легко знаходити транзакції у вашій історії."
 
 #: src/components/layouts/Settings.vue:107
 msgid "Bitcoin Unit"
-msgstr "Jednostka bitcoina"
+msgstr "Одиниця Біткойн"
 
 #: src/components/modals/BtcTransactionModal.vue:215
 #: src/components/modals/TransactionModal.vue:236
 msgid "Block #{height}"
-msgstr "Blok nr {height}"
+msgstr "Блок #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:225
 #: src/components/modals/TransactionModal.vue:248
 #: src/components/swap/SwapAnimation.vue:50
 #: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
-msgstr "Eksplorator bloków"
+msgstr "Оглядач блоків"
 
 #: src/components/NetworkStats.vue:12
 msgid "Block height"
-msgstr "Wysokość bloku"
+msgstr "Висота блоку"
 
 #: src/components/NetworkMap.vue:29
 msgid "Browser"
-msgstr "Przeglądarka"
+msgstr "Веб-оглядач"
 
 #: src/components/swap/SwapFeesTooltip.vue:7
 msgid "BTC network fees"
-msgstr "Opłaty w sieci BTC"
+msgstr "Комісія мережі BTC"
 
 #: src/components/layouts/Sidebar.vue:31
 msgid "Buy & Sell"
-msgstr "Kup i sprzedaj"
+msgstr "Купити і продати"
 
 #: src/components/modals/BtcActivationModal.vue:15
 msgid ""
 "Buy and sell BTC by bank transfer.\n"
 "Coming soon!"
 msgstr ""
-"Kupuj i sprzedawaj walutę BTC, wykonując przelew.\n"
-"Już wkrótce!"
+"Купути та продати BTC за допомогою банківського переказу.\n"
+"Вже скоро!"
 
 #: src/components/modals/TradeModal.vue:98
 msgid "Buy and sell with your wallet."
-msgstr "Kupuj i sprzedawaj z poziomu swojego portfela."
+msgstr "Купути і продати за допомогою вашого гаманця."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
-msgstr "Kup walutę NIM"
+msgstr "Купити NIM"
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
 msgstr ""
-"Dodając opłatę za transakcję, masz wpływ na szybkość jej przetwarzania."
+"Додавши комісію за транзакцію, ви можете вплинути на те, як швидко "
+"транзакція буде оброблена."
 
 #: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
-"Klikając „potwierdź”, akceptujesz warunki świadczenia usług {Fastspot} i "
-"{FastspotGO}."
+"Натискаючи 'підтвердити', ви погоджуєтесь із умовами використання {Fastspot}"
+" і {FastspotGO}."
 
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
-"Klikając „potwierdź”, akceptujesz warunki świadczenia usługi {Fastspot}."
+"Натискаючи 'підтвердити', ви погоджуєтесь із умовами використання "
+"{Fastspot}."
 
 #: src/components/layouts/Settings.vue:223
 msgid "Cannot import contacts, wrong file format."
-msgstr "Nie możesz zaimportować kontaktów. Nieprawidłowy format pliku."
+msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
 #: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:181
 msgid "Cashlink"
-msgstr "linkiem pieniężnym"
+msgstr "Посилання-переказ"
 
 #: src/components/modals/TransactionModal.vue:27
 msgid "Cashlink from {address}"
-msgstr "Link pieniężny z adresu {address}"
+msgstr "Посилання-переказ з {address}"
 
 #: src/components/modals/TransactionModal.vue:35
 msgid "Cashlink to {address}"
-msgstr "Link pieniężny na adres {address}"
+msgstr "Посилання-переказ на {address}"
 
 #: src/components/AccountMenu.vue:50
 msgid "Change password"
-msgstr "Zmień hasło"
+msgstr "Змінити пароль"
 
 #: src/components/layouts/Settings.vue:19
 msgid "Change your language setting."
-msgstr "Zmień ustawienia języka."
+msgstr "Змінити ваші налаштування мови."
 
 #: src/components/modals/SendModal.vue:40
 msgid "Choose a Recipient"
-msgstr "Wybierz odbiorcę"
+msgstr "Виберіть одержувача"
 
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:180
 msgid "Choose an Address"
-msgstr "Wybierz adres"
+msgstr "Виберіть адресу"
 
 #: src/components/layouts/Settings.vue:143
 msgid "Clear"
-msgstr "Wyczyść"
+msgstr "Очистити"
 
 #: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
-msgstr "Wyczyść pamięć cache"
+msgstr "Очистити кеш"
 
 #: src/components/swap/SwapNotification.vue:24
 msgid "Click for more information"
-msgstr "Kliknij, by uzyskać więcej informacji"
+msgstr "Натисніть для отримання додаткової інформації"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
-msgstr "Już wkrótce"
+msgstr "Незабаром"
 
 #: src/components/modals/TradeModal.vue:97
 msgid "Coming soon"
-msgstr "Już wkrótce"
+msgstr "Незабаром"
 
 #: src/components/swap/SwapModal.vue:136
 msgid "Confirm"
-msgstr "Potwierdź"
+msgstr "Підтвердити"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
-msgstr "Gratulacje"
+msgstr "Вітаємо"
 
 #: src/components/modals/WelcomeModal.vue:21
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
 msgstr ""
-"Połącz się bezpośrednio z siecią blockchain nimiqa.\n"
-"Pozbądź się pośredników."
+"Підключіться безпосередньо до блокчейну Nimiq.\n"
+"Будьте незалежними від будь-якого посередника."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
-msgstr "Połączono z"
+msgstr "Підключено до"
 
 #: src/components/NetworkStats.vue:46
 msgid "connecting"
-msgstr "łączenie"
+msgstr "Підключення"
 
 #: src/components/BtcTransactionList.vue:45
 msgid "Connection lost"
-msgstr "Połączenie zostało zerwane"
+msgstr "Зв'язок втрачений"
 
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
-msgstr "Konsensus"
+msgstr "Консенсус"
 
 #: src/components/ContactShortcuts.vue:9
 msgid "Contacts"
-msgstr "Kontakty"
+msgstr "Контакти"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/WelcomeModal.vue:93
 msgid "Continue"
-msgstr "Kontynuuj"
+msgstr "Продовжити"
 
 #: src/components/modals/WelcomeModal.vue:100
 msgid "Continue to Login File"
-msgstr "Kontynuuj do pliku logowania"
+msgstr "Перейти до файла-ключа"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
-msgstr "Stwórz link pieniężny"
+msgstr "Створити посилання-переказ"
 
 #: src/components/LegacyAccountUpgradeButton.vue:7
 msgid "Create a new account"
-msgstr "Stwórz nowe konto"
+msgstr "Створити новий рахунок"
 
 #: src/components/LegacyAccountNotice.vue:6
 msgid ""
 "Create a new account and transfer your funds. New features and possibilities"
 " await."
 msgstr ""
-"Stwórz nowe konto i przelej na nie swoje środki. Czekają na ciebie nowe "
-"funkcje i możliwości."
+"Створіть новий рахунок і перекажіть свої кошти. Вас чекають нові можливості "
+"та особливості."
 
 #: src/components/modals/BtcReceiveModal.vue:43
 msgid "Create a new single-use address."
-msgstr "Stwórz nowy adres jednorazowy."
+msgstr "Створити нову одноразову адресу."
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr "Stwórz kopię zapasową"
+msgstr "Створити резервну копію"
 
 #: src/components/modals/BtcReceiveModal.vue:81
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
-msgstr "Stwórz link płatniczy"
+msgstr "Створити платіжне посилання"
 
 #: src/components/modals/BtcReceiveModal.vue:195
 msgid "Created {count} day ago | Created {count} days ago"
-msgstr "Stworzono {count} dzień temu | Stworzono {count} dni temu"
+msgstr "Створено {count} день тому | Створено {count} дня/днів тому"
 
 #: src/components/modals/BtcReceiveModal.vue:189
 msgid "Created {count} hour ago | Created {count} hours ago"
-msgstr "Stworzono {count} godzinę temu | Stworzono {count} godz. temu"
+msgstr "Створено {count} годину тому  |  Створено {count} годин/години тому"
 
 #: src/components/modals/BtcReceiveModal.vue:183
 msgid "Created {count} minute ago | Created {count} minutes ago"
-msgstr "Stworzono {count} minutę temu | Stworzono {count} min temu"
+msgstr ""
+"Створено {count} хвилину тому  |  Створено {count} хвилин/хвилини тому"
 
 #: src/components/modals/BtcReceiveModal.vue:177
 msgid "Created {count} second ago | Created {count} seconds ago"
-msgstr "Stworzono {count} sekundę temu | Stworzono {count} sek. temu"
+msgstr "Створено {count} секуду тому  |  Створено {count} секунд/секунди тому"
 
 #: src/components/modals/BtcReceiveModal.vue:174
 msgid "Created just now"
-msgstr "Właśnie stworzono"
+msgstr "Створено щойно"
 
 #: src/components/modals/BtcReceiveModal.vue:201
 msgid "Created some time ago"
-msgstr "Stworzono jakiś czas temu"
+msgstr "Створено недавно"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "Credit Card accepted"
-msgstr "Obsługa kart kredytowych"
+msgstr "Кредитні картки приймаються"
 
 #: src/components/layouts/Settings.vue:121
 msgid "Developer"
-msgstr "Deweloper"
+msgstr "Розробник"
 
 #: src/components/layouts/Settings.vue:169
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
-msgstr "Wyłączenie odpowiedzialności"
+msgstr "Застереження"
 
 #: src/components/swap/SwapAnimation.vue:117
 msgid "Don't close your wallet until the swap is complete!"
-msgstr "Nie zamykaj portfela do momentu zakończenia wymiany!"
+msgstr "Не закривайте свій гаманець, поки обмін не буде завершено!"
 
 #: src/components/swap/SwapNotification.vue:27
 msgid "Don't close your wallet!"
-msgstr "Nie zamykaj portfela!"
+msgstr "Не закривайте свій гаманець!"
 
 #: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
-msgstr ""
-"Nie używaj ponownie adresów. Stwórz nowy na potrzeby każdej transakcji."
+msgstr "Не перевикористовуйте адреси - створюйте нові для кожного переказу."
 
 #: src/components/ContactBook.vue:49
 msgid "Done"
-msgstr "Gotowe"
+msgstr "Готово"
 
 #: src/components/modals/WelcomeModal.vue:80
 msgid "Download it and store it safely. Don’t share it – don’t lose it."
 msgstr ""
-"Pobierz go i zapisz w bezpiecznym miejscu. Nie udostępniaj nikomu i nie "
-"zgub."
+"Завантажте і зберігайте у надійному місці. Нікому не надсилайте цей файл і "
+"не загубіть його."
 
 #: src/components/modals/WelcomeModal.vue:26
 msgid "Download your Login File"
-msgstr "Pobierz plik logowania"
+msgstr "Завантажте Ваш файл-ключ"
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Duration and fees are estimates."
-msgstr "Czas trwania i opłaty mają wartości szacunkowe."
+msgstr "Тривалість і комісії є приблизними."
 
 #: src/components/swap/SwapModal.vue:76
 msgid "During early access, these limits apply."
-msgstr "W trakcie wczesnego dostępu obowiązują określone limity."
+msgstr "Ці обмеження застосовуються під час раннього доступу."
 
 #: src/components/swap/SwapModal.vue:48
 msgid "Early Access"
-msgstr "Wczesny dostęp"
+msgstr "Ранній доступ"
 
 #: src/components/swap/SwapModal.vue:50
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
 msgstr ""
-"Wczesny dostęp oznacza, że wymiany mają określone limity. Ich wartość będzie"
-" stopniowo zwiększana."
+"Ранній доступ означає те, що існує ліміт на кількість обмінів. Ліміт буде "
+"поступово знято."
 
 #: src/components/modals/BtcActivationModal.vue:11
 msgid ""
 "Easily swap between NIM, the super performant payment coin and BTC, the gold"
 " standard of crypto."
 msgstr ""
-"Z łatwością wymieniaj superszybką walutę płatniczą NIM na BTC – standard "
-"złota w świecie kryptowalut."
+"З легкістю обмінюйте NIM - ефективну платіжну монету та BTC - золотий "
+"стандарт криптовалюти."
 
 #: src/components/ContactBook.vue:43
 msgid "Edit contacts"
-msgstr "Edytuj kontakty"
+msgstr "Редагувати контакти"
 
 #: src/components/layouts/Settings.vue:94
 msgid "Edit the amount of decimals visible for BTC values."
-msgstr "Edytuj liczbę miejsc po przecinku w wartościach waluty BTC."
+msgstr "Задайте кількість знаків після коми для BTC"
 
 #: src/components/layouts/Settings.vue:34
 msgid "Edit the amount of decimals visible for NIM values."
-msgstr "Edytuj liczbę miejsc po przecinku w wartościach waluty NIM."
+msgstr "Задайте кількість знаків після коми для NIM"
 
 #: src/components/modals/BtcSendModal.vue:431
 #: src/components/modals/SendModal.vue:496
 msgid "Edit transaction"
-msgstr "Edytuj transakcję"
+msgstr "Редагувати транзакцію"
 
 #: src/components/modals/SendModal.vue:20
 msgid "Enter address"
-msgstr "Wpisz adres"
+msgstr "Вкажіть адресу"
 
 #: src/components/modals/BtcSendModal.vue:16
 msgid "Enter recipient address..."
-msgstr "Wpisz adres odbiorcy…"
+msgstr "Вкажіть адресу отримувача"
 
 #: src/components/swap/SwapAnimation.vue:122
 msgid "Error:"
-msgstr "Błąd:"
+msgstr "Помилка:"
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
-msgstr "ustanowiony"
+msgstr "встановлений"
 
 #: src/components/BtcTransactionListItem.vue:38
 #: src/components/TransactionListItem.vue:37
 msgid "expired"
-msgstr "wygasła"
+msgstr "прострочений"
 
 #: src/components/modals/BtcTransactionModal.vue:51
 #: src/components/modals/TransactionModal.vue:74
 msgid "Expired"
-msgstr "Wygasła"
+msgstr "Прострочений"
 
 #: src/components/modals/SendModal.vue:358
 msgid "express"
-msgstr "ekspresowo"
+msgstr "експрес"
 
 #: src/components/modals/BtcTransactionModal.vue:51
 #: src/components/modals/TransactionModal.vue:74
 msgid "Failed"
-msgstr "Niepowodzenie"
+msgstr "Неуспішний"
 
 #: src/components/TestnetFaucet.vue:137
 msgid "Faucet error - please try again."
-msgstr "Błąd puli – spróbuj ponownie."
+msgstr "Помилка лійки - спробуйте знову."
 
 #: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
-msgstr "Pula jest pusta"
+msgstr "Банка порожня"
 
 #: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
-msgstr "Pula jest niedostępna w twojej lokalizacji"
+msgstr "Лійка недоступна у вашому регіоні"
 
 #: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
-msgstr "Pula niedostępna"
+msgstr "Лійка недоступна"
 
 #: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
-msgstr "Pula niedostępna (nieprawidłowa sieć)"
+msgstr "Лійка недоступна (невірна мережа)"
 
 #: src/components/modals/SendModal.vue:123
 msgid "fee"
-msgstr "opłata"
+msgstr "комісія"
 
 #: src/components/swap/SwapModal.vue:42
 msgid "fees"
-msgstr "opłaty"
+msgstr "комісії"
 
 #: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
 msgid "Fetching"
-msgstr "Pobieranie"
+msgstr "Завантаження"
 
 #: src/components/BtcTransactionListItem.vue:51
 #: src/components/modals/TransactionModal.vue:188
 #: src/components/TransactionListItem.vue:52
 msgid "Fiat value unavailable"
-msgstr "Wartość w walucie fiducjarnej niedostępna"
+msgstr "Сума у фіаті недоступна"
 
 #: src/components/layouts/Settings.vue:229
 msgid "File contains no contacts."
-msgstr "Plik nie zawiera kontaktów."
+msgstr "Файл не містить контактів."
 
 #: src/components/swap/SwapAnimation.vue:113
 #: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
-msgstr "Finalizowanie wymiany"
+msgstr "Обмін завершується"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
-msgstr "Dla początkujących"
+msgstr "Для початківців"
 
 #: src/components/modals/SendModal.vue:348
 msgid "free"
-msgstr "gratis"
+msgstr "комісія"
 
 #: src/components/NetworkMap.vue:29
 msgid "Full Node"
-msgstr "Pełny węzeł"
+msgstr "Повноцінний вузол"
 
 #: src/components/layouts/Settings.vue:13
 msgid "General"
-msgstr "Ogólne"
+msgstr "Загальні"
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
-msgstr "Zdobądź walutę NIM"
+msgstr "Отримати NIM"
 
 #: src/components/modals/TradeModal.vue:6
 msgid "Get NIM and BTC"
-msgstr "Zdobądź walutę NIM i BTC"
+msgstr "Отримати NIM і BTC"
 
 #: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
-msgstr "Chcesz się podzielić opinią lub zgłosić błąd?"
+msgstr "Маєте відгук? Знайшли помилку?"
 
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
-msgstr "Rozumiem"
+msgstr "Зрозуміло"
 
 #: src/components/modals/MigrationWelcomeModal.vue:89
 msgid "Got it!"
-msgstr "Rozumiem!"
+msgstr "Зрозуміло!"
 
 #: src/components/modals/WelcomeModal.vue:11
 msgid "Great, you’re here!"
-msgstr "O, jesteś!"
+msgstr "Ура, ви на місці!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
 "Handling multiple addresses is now convenient and easy – with one password "
 "and shared login information."
 msgstr ""
-"Korzystanie z wielu adresów jest teraz prostsze i wygodniejsze – wystarczy "
-"jedno hasło i współdzielone dane logowania."
+"Тепер можна з легкістю керувати декількома адресами за допомогою єдиного "
+"паролю."
 
 #: src/components/modals/BtcTransactionModal.vue:180
 #: src/components/modals/TransactionModal.vue:199
 msgid "Historic value"
-msgstr "Wartość historyczna"
+msgstr "Історична сума"
 
 #: src/components/modals/TransactionModal.vue:396
 #: src/components/TransactionListItem.vue:138
 msgid "HTLC Creation"
-msgstr "Tworzenie kontraktu HTLC"
+msgstr "HTLC створення"
 
 #: src/components/modals/TransactionModal.vue:399
 #: src/components/TransactionListItem.vue:141
 msgid "HTLC Refund"
-msgstr "Refundacja kontraktu HTLC"
+msgstr "HTLC повернення"
 
 #: src/components/modals/TransactionModal.vue:402
 #: src/components/TransactionListItem.vue:144
 msgid "HTLC Settlement"
-msgstr "Rozliczenie kontraktu HTLC"
+msgstr "HTLC повідомлення"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
-msgstr "Zaimportuj kontakty"
+msgstr "Додати контакти"
 
 #: src/components/layouts/Settings.vue:49
 msgid "Import contacts that you exported from the Safe."
-msgstr "Zaimportuj kontakty wyeksportowane z sejfu."
+msgstr "Додати контакти що використовувалися у старій версії."
 
 #: src/components/modals/MigrationWelcomeModal.vue:55
 msgid ""
 "Import it to any browser and enter your password to use the same addresses."
 msgstr ""
-"Aby używać tych samych adresów, zaimportuj plik do dowolnej przeglądarki i "
-"wpisz hasło."
+"Заантажте файл у будь який браузер і введіть пароль, щоб використовувати ті "
+"самі адреси."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
-msgstr "Poprawiona przystępność"
+msgstr "Покращений інтерфейс"
 
 #: src/components/modals/TradeModal.vue:110
 msgid "In cooperation with"
-msgstr "We współpracy z"
+msgstr "У партнерстві з"
 
 #: src/components/modals/BtcSendModal.vue:110
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
 msgstr ""
-"Przyspiesz transakcję, płacąc wyższą opłatę sieciową. Opłata trafia "
-"bezpośrednio do górników."
+"Збільшість швидкість переказу, вказавши вищу комісію. Уся комісія збирається"
+" майнерами напряму."
 
 #: src/components/modals/BtcSendModal.vue:92
 #: src/components/modals/SendModal.vue:131
 msgid "Insufficient balance."
-msgstr "Niewystarczające saldo."
+msgstr "Недостатньо коштів."
 
 #: src/components/BtcTransactionListItem.vue:39
 #: src/components/TransactionListItem.vue:38
 msgid "invalid"
-msgstr "nieprawidłowa wartość"
+msgstr "некоректний"
 
 #: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
-msgstr "Zaproś znajomego lub znajomą z"
+msgstr "Запросити друга через"
 
 #: src/components/modals/WelcomeModal.vue:66
 msgid "It is fast, safe and makes you truly independent."
-msgstr ""
-"Jest szybki, bezpieczny i sprawia, że możesz się cieszyć pełną "
-"niezależnością."
+msgstr "Це швидко, безпечно і робить вас дійсно незалежним."
 
 #: src/components/swap/SwapNotification.vue:30
 msgid "It's safe to close your wallet now"
-msgstr "Możesz teraz bezpiecznie zamknąć portfel"
+msgstr "Тепер можна закрити веб-оглядач"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
-msgstr "Oznacz nadawcę etykietą"
+msgstr "Підпишіть відправника"
 
 #: src/components/layouts/Settings.vue:17
 msgid "Language"
-msgstr "Język"
+msgstr "Мова"
 
 #: src/components/modals/NetworkInfoModal.vue:19
 #: src/components/modals/TradeModal.vue:107
 msgid "Learn more"
-msgstr "Dowiedz się więcej"
+msgstr "Дізнайтеся більше"
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
-msgstr "Dowiedz się więcej tutaj"
+msgstr "Дізнайтеся більше тут"
 
 #: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
-msgstr ""
-"Konta powiązane z portfelem Ledger nie obsługują jeszcze funkcji wymiany. "
-"Zajrzyj tu niebawem!"
+msgstr "Ledger рахунки покищо не пітримують можливість обміну."
 
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
-msgstr "Zaczynamy! Stwórz swoje konto w sieci nimiqa:"
+msgstr "Розпочено! Створіть рахунок у мережі Німік."
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
-msgstr "Lekki węzeł"
+msgstr "Денний режим"
 
 #: src/components/modals/BtcReceiveModal.vue:46
 msgid "Limit of copied addresses reached."
-msgstr "Osiągnięto limit skopiowanych adresów."
+msgstr "Вичерпано ліміт скопійованих адрес."
 
 #: src/components/modals/TransactionModal.vue:167
 msgid "Link not available in this browser"
-msgstr "Link niedostępny w tej przeglądarce"
+msgstr "Посилання не доступні в Вашому веб-оглядачі"
 
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
-msgstr "Wczytaj plik"
+msgstr "Завантажити"
 
 #: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:72
 msgid "loading..."
-msgstr "wczytywanie…"
+msgstr "завантаження..."
 
 #: src/components/swap/SwapAnimation.vue:107
 #: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
-msgstr "Zamrażanie {asset}"
+msgstr "Замикаємо {asset}"
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
 "Log in on your devices with the new\n"
 "Nimiq Login Files."
 msgstr ""
-"Zaloguj się na swoich urządzeniach, używając\n"
-"nowych plików logowania do sieci nimiqa."
+"Отримайте доступ до рахунків \n"
+"за допомогою файлу-ключа."
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
-msgstr "Wyloguj się"
+msgstr "Вийти"
 
 #: src/components/NetworkStats.vue:44
 msgid "lost"
-msgstr "utracony"
+msgstr "Втрачено"
 
 #: src/components/swap/SwapModal.vue:61 src/components/swap/SwapModal.vue:65
 msgid "Max."
-msgstr "Maks."
+msgstr "Макс."
 
 #: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
-msgstr "Minimalna kwota wymiany to {amount}"
+msgstr "Мінімальна сума обміну {amount}"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
-msgstr "Wiele adresów"
+msgstr "Декілька адрес"
 
 #: src/components/modals/MigrationWelcomeModal.vue:21
 msgid ""
 "Multiple addresses and Login Files\n"
 "are supported by new accounts only."
 msgstr ""
-"Tylko nowe konta obsługują\n"
-"wiele adresów i plików logowania."
+"Тільки рахунки нового формату підтримують\n"
+"декілька адрес і файли-ключі."
 
 #: src/components/modals/SendModal.vue:54
 msgid "Name this contact..."
-msgstr "Nazwij ten kontakt…"
+msgstr "Вкажіть ім'я контакту..."
 
 #: src/components/modals/BtcSendModal.vue:11
 msgid "Name this recipient..."
-msgstr "Nazwij tego odbiorcę…"
+msgstr "Вкажіть ім'я відправника..."
 
 #: src/components/ContactBook.vue:28
 msgid "Name your contact"
-msgstr "Nazwij swój kontakt"
+msgstr "Назвіть контакт"
 
 #: src/components/layouts/Sidebar.vue:44
 msgid "Network"
-msgstr "Sieć"
+msgstr "Мережа"
 
 #: src/components/modals/BtcSendModal.vue:107
 msgid "Network fee: {sats} sat/vByte"
-msgstr "Opłata sieciowa: {sats} sat/vByte"
+msgstr "Комісія мережі: {sats} сат/вБайт"
 
 #: src/components/swap/SwapFeesTooltip.vue:14
 msgid "NIM network fees"
-msgstr "Opłaty w sieci NIM"
+msgstr "Комісія за переказ NIM"
 
 #: src/components/modals/WelcomeModal.vue:28
 msgid ""
 "Nimiq does not store your personal data.\n"
 "Use your Login File to log in."
 msgstr ""
-"Nimiq nie przechowuje danych osobowych.\n"
-"Aby się zalogować, użyj pliku logowania."
+"Німік не брерігає ваші особиті данні.\n"
+"Викоритсовуйте файл-ключ щоб увійти."
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
@@ -877,88 +872,86 @@ msgid ""
 "hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are"
 " under active development."
 msgstr ""
-"Nimiq nie ponosi odpowiedzialności za jakiekolwiek straty. Projekt Nimiq, "
-"portfele wallet.nimiq.com, hub.nimiq.com oraz keyguard.nimiq.com, a także "
-"niektóre wykorzystywane biblioteki są wciąż rozwijane."
+"Німік не несе відповідальності за втрату коштів. Німік, wallet.nimiq.com, "
+"hub.nimiq.com і keyguard.nimiq.com, а також інші бібліотеки є на стадії "
+"активної розробки."
 
 #: src/components/modals/TradeModal.vue:100
 msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
 msgstr ""
-"Technologia Nimiq OASIS umożliwia zdecentralizowane kupowanie i sprzedawanie"
-" kryptowalut bezpośrednio z portfela."
+"OASIS забезпечує децентралізовану купівлю і продаж криптовалюти прямо з "
+"вашого гаманця."
 
 #: src/components/modals/BtcSendModal.vue:130
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
-msgstr ""
-"Portfel Nimiq nie obsługuje funkcji dodawania wiadomości do transakcji w "
-"sieci bitcoina."
+msgstr "Кошильок Німік не підтримує повідомлень у переказах."
 
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
-msgstr "Nie znaleziono transakcji"
+msgstr "Переказів не знайдено"
 
 #: src/components/layouts/Settings.vue:39
 #: src/components/layouts/Settings.vue:99
 msgid "None"
-msgstr "Brak"
+msgstr "Без"
 
 #: src/components/BtcTransactionListItem.vue:36
 #: src/components/TransactionListItem.vue:35
 msgid "not sent"
-msgstr "nie wysłano"
+msgstr "Не відправлено"
 
 #: src/components/layouts/Settings.vue:252
 msgid "OK! Contacts imported successfully."
-msgstr "OK! Kontakty zostały pomyślnie zaimportowane."
+msgstr "Контакти було додано успішно."
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
-msgstr "Stare i nowe konta"
+msgstr "Нові і старі рахунки"
 
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
-msgstr "Jedno konto może mieć teraz kilka adresów."
+msgstr "Один рахунок може мати декілька адрес"
 
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
-msgstr "Jedno konto, wiele adresów"
+msgstr "Один рахунок - багато адрес"
 
 #: src/components/modals/WelcomeModal.vue:97
 msgid "One more thing"
-msgstr "Jeszcze jedno"
+msgstr "Ще одна річ"
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
-msgstr "lub odwiedź giełdę i zdobądź więcej."
+msgstr "або перейдіть на біржу щоб отримати більше."
 
 #: src/components/BtcTransactionListItem.vue:37
 #: src/components/TransactionListItem.vue:36
 msgid "pending"
-msgstr "oczekuje"
+msgstr "очікується"
 
 #: src/components/TransactionList.vue:14
 msgid "Pending Cashlinks"
-msgstr "Oczekujące linki pieniężne"
+msgstr "Посилання-перекази в очікуванні"
 
 #: src/components/modals/BtcTransactionModal.vue:43
 #: src/components/modals/TransactionModal.vue:66
 msgid "Pending..."
-msgstr "Oczekuje…"
+msgstr "Очікується..."
 
 #: src/components/swap/SwapAnimation.vue:9
 msgid "Performing Swap"
-msgstr "Dokonywanie wymiany"
+msgstr "Проводиться обмін"
 
 #: src/components/swap/SwapNotification.vue:17
 msgid "Performing swap {progress}/5"
-msgstr "Dokonywanie wymiany {progress}/5"
+msgstr "Проводиться обмін {progress}/5"
 
 #: src/components/layouts/Sidebar.vue:10
 msgid "Please do not use your Mainnet accounts!"
-msgstr "Nie używaj kont w sieci Mainnet!"
+msgstr "Біль ласка, не використовуйте Ваші рахунки з основнох мережі."
 
 #: src/components/modals/DisclaimerModal.vue:13
 msgid ""
@@ -969,573 +962,570 @@ msgid ""
 "a browser, to create, save, and access your information and interact with "
 "the blockchain."
 msgstr ""
-"Informujemy, że portfele wallet.nimiq.com, hub.nimiq.com oraz "
-"keyguard.nimiq.com nie są portfelami zarządzanymi przez usługę. To znaczy, "
-"że nie tworzysz takiego portfela ani nie powierzasz Nimiqowi swoich środków."
-" Klucze, które kontrolują środki zgromadzone na adresach powiązanych z "
-"kontem, przechowujesz na własnym urządzeniu. Nimiq jedynie używa "
-"przeglądarki, by ułatwiać tworzenie i zapisywanie informacji, a także "
-"uzyskiwanie do nich dostępu, oraz interakcję z siecią blockchain."
+"Важливо розуміти, що wallet.nimiq.com, hub.nimiq.com і keyguard.nimiq.com не"
+" є \"централізованими гаманцями\". Ви не передаєте контроль над коштами "
+"комадні НІмік чи іншим третім особам. Контроль над Вашими коштами є тільки у"
+" Вас на Вашому пристрої. Німік лишень надає веб-застосунок для того щоб Ви "
+"могли з легкістню взаємодіяти з блокчейном напряму."
 
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
-msgstr "Otrzymaj"
+msgstr "Отримати"
 
 #: src/components/modals/BtcReceiveModal.vue:7
 msgid "Receive BTC"
-msgstr "Otrzymaj walutę BTC"
+msgstr "Отримати BTC"
 
 #: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
 msgid "Receive free NIM"
-msgstr "Otrzymaj walutę NIM gratis"
+msgstr "Отримати безплатний NIM"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr "Otrzymaj walutę NIM"
+msgstr "Отримати NIM"
 
 #: src/components/TransactionList.vue:73
 msgid "Receive some free NIM to get started."
-msgstr "Na dobry początek otrzymasz trochę waluty NIM."
+msgstr "Отримайте трохи безплатного NIM щоб розпочати"
 
 #: src/components/modals/BtcTransactionModal.vue:54
 #: src/components/modals/TransactionModal.vue:77
 msgid "received at {dateAndTime}"
-msgstr "otrzymano {dateAndTime}"
+msgstr "Тримано {dateAndTime}"
 
 #: src/components/modals/BtcReceiveModal.vue:54
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
-"Tutaj będą się wyświetlać najnowsze adresy, aż zostanie z nimi powiązana "
-"jakaś transakcja."
+"Недавні адреси будуть відображені тут, допоки вони отримують перекази."
 
 #: src/components/modals/BtcReceiveModal.vue:57
 msgid "Recently copied"
-msgstr "Ostatnio skopiowane"
+msgstr "Скопійовано"
 
 #: src/components/layouts/Settings.vue:150
 msgid "Reference currency"
-msgstr "Waluta odniesienia"
+msgstr "Основна валюта"
 
 #: src/components/modals/BtcTransactionModal.vue:208
 #: src/components/modals/TransactionModal.vue:229
 msgid "Refund"
-msgstr "Dokonaj refundacji"
+msgstr "Відшкодування"
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
 msgid "Rename"
-msgstr "Zmień nazwę"
+msgstr "Перейменувати"
 
 #: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
 msgid "Request failed"
-msgstr "Żądanie się nie powiodło"
+msgstr "Запит не пройшов"
 
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
 msgid "Rescan"
-msgstr "Skanuj ponownie"
+msgstr "Пересканувати"
 
 #: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
-msgstr ""
-"Zresetuj ustawienia portfela i ponownie wczytaj dane z sieci blockchain."
+msgstr "Скинути налаштування веб-оглядача і перезавантажити дані з блокчейну."
 
 #: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:495
 msgid "Retry"
-msgstr "Ponów"
+msgstr "Спробувати знову"
 
 #: src/components/swap/SwapAnimation.vue:124
 msgid "Retrying..."
-msgstr "Ponawianie…"
+msgstr "Пробуємо ще..."
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr "Zapisz plik logowania"
+msgstr "Зберегти файл-ключ"
 
 #: src/components/layouts/AccountOverview.vue:11
 msgid "Save now"
-msgstr "Zapisz teraz"
+msgstr "Зберегти зараз"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
 "Scan the code to send\n"
 "money to this address"
 msgstr ""
-"Zeskanuj kod, by przesłać\n"
-"pieniądze na ten adres."
+"Відскануйте код щоб вислати\n"
+"кошти на цю адресу"
 
 #: src/components/SearchBar.vue:18
 msgid "Search"
-msgstr "Wyszukaj"
+msgstr "Пошук"
 
 #: src/components/SearchBar.vue:17
 msgid "Search transactions"
-msgstr "Wyszukaj transakcje"
+msgstr "Пошук тразакцій"
 
 #: src/components/SearchBar.vue:15
 msgid "Search transactions by contact, address, etc."
-msgstr "Wyszukaj transakcje wg kontaktów, adresów itp."
+msgstr "Пошук транзакцій за контантами, адресами, тощо."
 
 #: src/components/layouts/Settings.vue:109
 msgid "Select which unit to show Bitcoin amounts in."
-msgstr "Wybierz jednostkę, w której mają być wyświetlane wartości bitcoina."
+msgstr "Вкажіть у явих одиницях відображати Біткойн."
 
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
-msgstr "Wyślij"
+msgstr "Переказати"
 
 #: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:94
 #: src/components/modals/SendModal.vue:133
 msgid "Send all"
-msgstr "Wyślij wszystko"
+msgstr "Переказати все"
 
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Send and receive NIM directly on the blockchain."
-msgstr ""
-"Wysyłaj i otrzymuj walutę NIM, używając bezpośrednio sieci blockchain."
+msgstr "Переказуйте і отримуйте NIM прямо у блокчейні."
 
 #: src/components/modals/NetworkInfoModal.vue:16
 msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
-"Wysyłaj i otrzymuj walutę NIM bez pośrednika oraz ciesz się zaletami "
-"wynikającymi z prawdziwej decentralizacji."
+"Переказуйте і отримуйте NIM без посередника і насолоджуйтеся справжньою "
+"децентралізацією."
 
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:152
 msgid "Send Transaction"
-msgstr "Wyślij transakcję"
+msgstr "Відправити транзакцію"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr "Wysyłaj, otrzymuj i przechowuj walutę BTC w swoim portfelu."
+msgstr "Переказуйте, отримуйте і зберігайте BTC у Вашому кошильку."
 
 #: src/components/modals/BtcSendModal.vue:427
 #: src/components/modals/SendModal.vue:492
 msgid "Sending Transaction"
-msgstr "Wysyłanie transakcji"
+msgstr "Транзакція "
 
 #: src/components/modals/BtcSendModal.vue:485
 msgid "Sent {btc} BTC"
-msgstr "Wysłano {btc} BTC"
+msgstr "Надіслано {btc} BTC"
 
 #: src/components/modals/BtcSendModal.vue:481
 msgid "Sent {btc} BTC to {name}"
-msgstr "Wysłano {btc} BTC do odbiorcy {name}"
+msgstr "Надіслано {btc} BTC до {name}"
 
 #: src/components/modals/SendModal.vue:527
 msgid "Sent {nim} NIM"
-msgstr "Wysłano {nim} NIM"
+msgstr "Надіслано {nim} NIM"
 
 #: src/components/modals/SendModal.vue:523
 msgid "Sent {nim} NIM to {name}"
-msgstr "Wysłano {nim} NIM do odbiorcy {name}"
+msgstr "Надіслано {nim} NIM до {name}"
 
 #: src/components/modals/BtcTransactionModal.vue:59
 #: src/components/modals/TransactionModal.vue:82
 msgid "sent at {dateAndTime}"
-msgstr "wysłano {dateAndTime}"
+msgstr "надіслано {dateAndTime}"
 
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
 msgid "Set Amount"
-msgstr "Wpisz kwotę"
+msgstr "Вкажіть суму"
 
 #: src/components/AmountMenu.vue:8
 msgid "Set fee"
-msgstr "Ustaw opłatę"
+msgstr "Вкажіть комісію"
 
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
-msgstr "Przygotowywanie wymiany"
+msgstr "Обмін налаштовується"
 
 #: src/components/layouts/Sidebar.vue:52
 msgid "Settings"
-msgstr "Ustawienia"
+msgstr "Налаштування"
 
 #: src/components/modals/BtcReceiveModal.vue:8
 msgid "Share a single-use address with the sender."
-msgstr "Udostępnij nadawcy adres jednorazowy."
+msgstr "Поділіться одноразовою адресою з відправником"
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:6
 msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
 msgstr ""
-"Udostępnij link lub kod QR nadawcy.\n"
-"Możesz też opcjonalnie wpisać kwotę. "
+"Поділіться посиланням або QR кодом з відправником.\n"
+"Вкажіть суму, за бажанням."
 
 #: src/components/modals/ReceiveModal.vue:8
 msgid "Share your address with the sender."
-msgstr "Udostępnij swój adres nadawcy."
+msgstr "Надайте Вашу адресу відправнику."
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
 msgid "Share your Payment Link"
-msgstr "Udostępnij swój link płatniczy"
+msgstr "Поширьте посилання-платіж"
 
 #: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
-msgstr "Pokaż wszystkie moje adresy"
+msgstr "Показати усі мої адреси"
 
 #: src/components/layouts/Settings.vue:32
 #: src/components/layouts/Settings.vue:92
 msgid "Show Decimals"
-msgstr "Pokaż wartości dziesiętne"
+msgstr "Показувати деяткові значення"
 
 #: src/components/modals/TransactionModal.vue:165
 msgid "Show Link"
-msgstr "Pokaż link"
+msgstr "Показати посилання"
 
 #: src/components/layouts/AddressOverview.vue:136
 msgid "Signup"
-msgstr "Zarejestruj się"
+msgstr "Приєднатися"
 
 #: src/components/modals/BtcActivationModal.vue:28
 #: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
-msgstr "Pomiń"
+msgstr "Попустити"
 
 #: src/components/modals/BtcSendModal.vue:496
 #: src/components/modals/SendModal.vue:538
 msgid "Something went wrong"
-msgstr "Coś poszło nie tak"
+msgstr "Щось пішло не так"
 
 #: src/components/modals/SendModal.vue:165
 msgid "Speed up your Transaction"
-msgstr "Przyspiesz swoją transakcję"
+msgstr "Пришвидшість Вашу транзакцію"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
-msgstr ""
-"Wykorzystaj swoją walutę NIM i utwórz z niej depozyt zabezpieczający sieć, "
-"za co otrzymasz nagrody."
+msgstr "Секайте NIM щоб отримати винагороду за участь у блокчейні"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
-msgstr "Tworzenie depozytu"
+msgstr "Стекінг"
 
 #: src/components/modals/SendModal.vue:353
 msgid "standard"
-msgstr "standardowa"
+msgstr "стандартний"
 
 #: src/components/modals/TradeModal.vue:104
 msgid "Starting with EU bank accounts soon."
-msgstr "Wkrótce będzie ona dostępna dla rachunków bankowych obywateli UE."
+msgstr ""
+"Починаючи з \n"
+"банківських рахунків\n"
+"ЄС"
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Store, send and receive NIM."
-msgstr "Przechowuj, wysyłaj i otrzymuj walutę NIM."
+msgstr "Збеігайте, надсилайте і отримуйте NIM."
 
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "Swap fee"
-msgstr "Opłata za wymianę"
+msgstr "Комісія за обмін"
 
 #: src/components/modals/BtcTransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:5
 msgid "Swap from {address}"
-msgstr "Wymiana z adresu {address}"
+msgstr "Обміняти з {address}"
 
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
-msgstr "Wymień NIM i BTC"
+msgstr "Обмінюйте NIM і BTC"
 
 #: src/components/swap/SwapAnimation.vue:5
 #: src/components/swap/SwapNotification.vue:20
 msgid "Swap successful!"
-msgstr "Wymiana pomyślna!"
+msgstr "Обмін було проведено успішно!"
 
 #: src/components/modals/BtcTransactionModal.vue:13
 #: src/components/modals/TransactionModal.vue:13
 msgid "Swap to {address}"
-msgstr "Wymień na adres {address}"
+msgstr "Обмінятися з  {address}"
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
-msgstr "synchornizacja"
+msgstr "синхронізую"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
-msgstr "Zrób to tutaj"
+msgstr "Розкажіть нам"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
-msgstr "Sieć testowa"
+msgstr "Тестова мережа"
 
 #: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
-msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
+msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved accounts\n"
 "can have multiple addresses."
 msgstr ""
-"Nowe i ulepszone konta\n"
-"obsługują wiele adresów."
+"Рахунки Німік нового формату\n"
+"можуть містити декілька адрес."
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid ""
 "The new Login Files are an easy and convenient way to gain access to your "
 "account and its addresses."
-msgstr ""
-"Nowe pliki logowania zapewniają łatwy i wygodny dostęp do konta oraz "
-"powiązanych z nim adresów."
+msgstr "Новий файл-ключ це зручний спосіб отримати доступ до вашого рахунку."
 
 #: src/components/modals/WelcomeModal.vue:60
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
-"Portfel Nimiq to coś więcej niż portfel internetowy – to węzeł sieciowy."
+"Додаток гаманця Німік це більше ніж гаманець - це повноцінний вузол мережі."
 
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
-msgstr "Stawka może się zmienić zależnie od wolumenu wymiany."
+msgstr "Курс може знімюватися в залежності від суми обміну."
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
-msgstr "Aktualnie nie ma darmowej waluty NIM."
+msgstr "Безкоштовні NIM наразі недоступні."
 
 #: src/components/modals/TradeModal.vue:8
 msgid ""
 "There are many options, use a credit card or trade crypto. You can find more"
 " exchanges on {link}"
 msgstr ""
-"Możesz to zrobić na kilka sposobów. Użyj karty kredytowej lub kup za "
-"kryptowaluty. Listę giełd znajdziesz na stronie {link}"
+"Є багато варіантів - купуйте за допомогою банківської карти або через біржу.\n"
+"Ви можети знайти більше крипто-бірж за посиланням: {link}"
 
 #: src/components/layouts/AccountOverview.vue:19
 msgid "There is no ‘forgot password’"
-msgstr "Nie ma funkcji przypominania hasła"
+msgstr "Функція \"відновлення паролю\" НЕ існує"
 
 #: src/components/swap/SwapNotification.vue:14
 msgid "There's a problem"
-msgstr "Istnieje pewien problem"
+msgstr "Сталася проблема"
 
 #: src/components/swap/SwapModal.vue:77
 msgid "They will be increased gradually."
-msgstr "Z czasem ich wartość będzie stopniowo zwiększana."
+msgstr "Вони будуть поступово підвищені"
 
 #: src/components/modals/BtcSendModal.vue:29
 msgid "This address has already been used"
-msgstr "Ten adres został już użyty"
+msgstr "Ця адреса уже використовувалася"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
-msgstr "To jest stare konto"
+msgstr ""
+"Це рахунок старого\n"
+"зразка"
 
 #: src/components/modals/BtcReceiveModal.vue:27
 msgid "This is a single-use address"
-msgstr "To jest adres jednorazowy"
+msgstr "Адреса одноразового використання"
 
 #: src/components/BtcAddressInput.vue:12
 msgid "This is not a valid address"
-msgstr "To nie jest prawidłowy adres"
+msgstr "Невірна адреса"
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
 #: src/components/TransactionList.vue:251
 #: src/components/TransactionList.vue:273
 msgid "This month"
-msgstr "W tym miesiącu"
+msgstr "Цього місяця"
 
 #: src/components/swap/SwapModal.vue:18
 msgid "This rate includes the swap fee."
-msgstr "Podana stawka zawiera opłatę za wymianę."
+msgstr "Дана ставка включає комісію за обмін."
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
-msgstr "Usługa ta jest obecnie niedostępna w twoim regionie."
+msgstr "Наразі цей сервіс є недоступним у Вашому регіоні."
 
 #: src/components/swap/SwapAnimation.vue:10
 msgid "This swap is as decentralized as the blockchain itself."
-msgstr "Wymiana ta jest tak zdecentralizowana jak sieć blockchain."
+msgstr "Цей обмін є децентразізованим, так як і блокчейн."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
-msgstr "Odwiedź giełdę {exchange}"
+msgstr "До {exchange}"
 
 #: src/components/AccountBalance.vue:4
 msgid "Total Balance"
-msgstr "Całkowite saldo"
+msgstr "Сумарний баланс"
 
 #: src/components/swap/SwapFeesTooltip.vue:26
 msgid "Total fees"
-msgstr "Suma opłat"
+msgstr "Сумарні комісії"
 
 #: src/components/modals/BtcTransactionModal.vue:21
 #: src/components/modals/TransactionModal.vue:43
 msgid "Transaction from {address}"
-msgstr "Transakcja z adresu {address}"
+msgstr "Транзакція від {address}"
 
 #: src/components/modals/BtcTransactionModal.vue:29
 #: src/components/modals/TransactionModal.vue:51
 msgid "Transaction to {address}"
-msgstr "Transakcja na adres {address}"
+msgstr "Транзакція до {address}"
 
 #: src/components/modals/BtcSendModal.vue:131
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
-"Realizacja transakcji trwa >10 min z powodu czasu bloku w sieci bitcoina."
+"Виконання транзакції займає >10-ти хвилин, через час обробки блоку в мережі "
+"Біткойн."
 
 #: src/components/LegacyAccountUpgradeButton.vue:9
 msgid "Transfer funds"
-msgstr "Przelej środki"
+msgstr "Переказати кошти"
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
-msgstr "Udostępnij swoją mapę na Twitterze!"
+msgstr "Поширте карту у Твітері!"
 
 #: src/components/modals/TransactionModal.vue:443
 #: src/components/TransactionListItem.vue:182
 msgid "Unclaimed Cashlink"
-msgstr "Nieodebrany link pieniężny"
+msgstr "Активне посилання-переказ."
 
 #: src/components/modals/BtcTransactionModal.vue:133
 #: src/components/modals/BtcTransactionModal.vue:138
 #: src/components/modals/BtcTransactionModal.vue:76
 #: src/components/modals/BtcTransactionModal.vue:81
 msgid "Unknown"
-msgstr "Nieznany"
+msgstr "Невідомо"
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
-msgstr ""
-"Skorzystaj z {NIM} – superszybkiej waluty płatniczej działającej w "
-"przeglądarce."
+msgstr "Використовуйте {NIM}, ефективна, веб-орієнтована криптовалюта."
 
 #: src/components/modals/BtcReceiveModal.vue:33
 #: src/components/modals/BtcSendModal.vue:33
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
-"Aby skuteczniej chronić swoją prywatność, na potrzeby każdej transakcji "
-"używaj nowego adresu w sieci bitcoina."
+"Використовуйте нову Біткойн адресу для кожної транзації задля приватності."
 
 #: src/components/modals/WelcomeModal.vue:83
 msgid "Use it to access your account from any device."
-msgstr "Użyj go, by uzyskać dostęp do swojego konta z dowolnego urządzenia."
+msgstr ""
+"Використовуйте файл-ключ що отримати доступ до Вашого рахунку із будь-якого "
+"пристрою."
 
 #: src/components/modals/BtcReceiveModal.vue:101
 msgid ""
 "Use labels instead of contacts to easily identify transactions in your "
 "history."
 msgstr ""
-"Aby łatwo znajdować transakcje w historii, używaj etykiet zamiast kontaktów."
+"Використовуйте маркування замість контактів, щоб з легкістю ідинтифікувати "
+"транзакції."
 
 #: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
-msgstr "Aby przygotować wymianę, użyj suwaka lub zmień wartości."
+msgstr ""
+"Використовуйте повзунок або редагуйте значення, щоб задати параметри обміну."
 
 #: src/components/layouts/Settings.vue:125
 msgid "Vesting Contract"
-msgstr "Kontrakt vestingowy"
+msgstr "Контракт Наділення Прав"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
-msgstr "Co jeszcze?"
+msgstr "Щось ще?"
 
 #: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
 "privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
-"Aby skuteczniej chronić prywatność, na potrzeby każdej transakcji sieć "
-"bitcoin używa nowego adresu. Ponowne używanie adresów nie powoduje utraty "
-"środków."
+"Адреси використовуються тільки раз, щоб покращити приватність для Біткойну. "
+"Повторне використання адрес НЕ сприченяє втрати коштів."
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""
 "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
-"W sieci bitcoina nie można tworzyć kontaktów, ponieważ każdy adres jest "
-"używany tylko raz."
+"Для Біткойну не існує контактів оскільки адреси використовуються тільки один"
+" раз."
 
 #: src/components/modals/NetworkInfoModal.vue:10
 msgid "You are a part of the Nimiq Blockchain."
-msgstr "Jesteś częścią sieci blockchain nimiqa."
+msgstr "Тепер ви є частиною блокчейну Німік."
 
 #: src/components/layouts/Sidebar.vue:9
 msgid "You are connecting to the Nimiq and Bitcoin Testnets."
-msgstr "Łączysz się z siecią testową nimiqa i bitcoina."
+msgstr "Ви підключаєтеся до тестової мережі Німік і Біткойн."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
-msgstr "Używasz starego konta"
+msgstr ""
+"Ви використовуєте рахунок\n"
+"старого зразка"
 
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
-msgstr "Za {waitTime} godz. możesz otrzymać więcej darmowej waluty NIM."
+msgstr "Ви можете отримати безкоштовні NIM через {waitTime} години."
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
-msgstr "Dysponujesz teraz kryptowalutą!"
+msgstr "Тепер у вас є криптовалюта!"
 
 #: src/components/modals/BtcSendModal.vue:85
 msgid "You will send {amount}"
-msgstr "Wyślesz {amount}"
+msgstr "Ви надішлете {amount}"
 
 #: src/components/modals/SendModal.vue:127
 msgid "You will send {amount} NIM"
-msgstr "Wyślesz {amount} NIM"
+msgstr "Ви надішлете {amount} NIM"
 
 #: src/components/layouts/AccountOverview.vue:8
 msgid "Your account is not safe yet!"
-msgstr "Twoje konto nie jest jeszcze zabezpieczone!"
+msgstr "Покищо, ваш рахунок не є безпечним!"
 
 #: src/components/modals/BtcActivationModal.vue:7
 msgid ""
 "Your account now\n"
 "supports Bitcoin!"
 msgstr ""
-"Twoje konto obsługuje\n"
-"teraz bitcoina!"
+"Тепер ваш рахунок\n"
+"підтримує Біткойн!"
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""
 "Your accounts are now legacy accounts. Easily switch, edit and create "
 "accounts with the new account picker."
 msgstr ""
-"Twoje konta są aktualnie kontami starego typu. Użyj nowego wybieracza kont i"
-" łatwo się między nimi przełączaj, a także twórz je i wprowadzaj w nich "
-"zmiany."
+"Ваші рахуноки є рахунками старого зразка. Переключайтеся, редагуйте і "
+"створюйте рахунки за допомогою нового інтерфейсу."
 
 #: src/components/NetworkMap.vue:22
 msgid "Your browser"
-msgstr "Twoja przeglądarka"
+msgstr "Ваш веб-оглядач"
 
 #: src/components/modals/NetworkInfoModal.vue:12
 msgid ""
 "Your browser connects directly to a set of peers from all around the world. "
 "This makes you a first-class citizen of the blockchain."
 msgstr ""
-"Twoja przeglądarka łączy się bezpośrednio z grupą komputerów z całego "
-"świata. To sprawia, że zaliczasz się do znamienitego grona użytkowników "
-"sieci blockchain."
+"Ваш веб-оглядач напярму підєднується до списку пірів з усьго світу. Таким "
+"чином ви є повноцінним учасником блокчейну."
 
 #: src/components/modals/WelcomeModal.vue:19
 msgid "Your browser is a Node"
-msgstr "Twoja przeglądarka jest węzłem"
+msgstr "Ваш браузер є вузлом мережі."
 
 #: src/components/modals/WelcomeModal.vue:77
 msgid "Your Login File, in combination with your password, grants access."
-msgstr "Twój plik logowania w połączeniu z hasłem zapewnia dostęp do konta."
+msgstr "Ваш файл-ключ, у комбінації з Вашим паролем, надає доступ до рахунку."
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""
 "Your NIM are stored in a legacy account. Transfer them to a regular account "
 "to profit from new features."
 msgstr ""
-"Przechowujesz swoją walutę NIM na koncie starego typu. Przelej ją na "
-"ulepszone konto i korzystaj z nowych funkcji."
+"Ваш NIM знаходиться на рахунку старого зразка. Переведіть кошти на новий "
+"рахунок щоб використовувати нові можливості."
 
 #: src/components/BtcTransactionList.vue:64
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
-msgstr "Tutaj będą się pojawiać twoje transakcje"
+msgstr "Тут з'являться ваші транзакції"

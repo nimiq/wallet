@@ -207,7 +207,7 @@ msgstr ""
 "Обмен проводится двумя \n"
 "транзакциями BTC."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "Ждем обмен"
 
@@ -334,7 +334,7 @@ msgid "Choose a Recipient"
 msgstr "Указать Получателя"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:180
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
@@ -470,7 +470,7 @@ msgstr "Разработчик"
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
-#: src/components/swap/SwapAnimation.vue:115
+#: src/components/swap/SwapAnimation.vue:117
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -553,7 +553,7 @@ msgstr "Укажите адрес"
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -623,8 +623,8 @@ msgstr "Значение в фиатной валюте не доступно"
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
-#: src/components/swap/SwapAnimation.vue:111
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
 
@@ -768,7 +768,7 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -796,8 +796,8 @@ msgstr "Загрузить файл"
 msgid "loading..."
 msgstr "загрузка..."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:108
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "Блокируем {asset}"
 
@@ -819,7 +819,7 @@ msgstr "потерян"
 msgid "Max."
 msgstr "Макс."
 
-#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
@@ -1039,7 +1039,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:124
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 
@@ -1143,7 +1143,7 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
-#: src/components/swap/SwapAnimation.vue:103
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Настройка обмена"
 
@@ -1258,7 +1258,7 @@ msgstr "Сообщите нам здесь"
 msgid "Testnet"
 msgstr "Тестнет"
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 

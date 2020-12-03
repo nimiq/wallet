@@ -203,7 +203,7 @@ msgstr "Android und iOS App"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Ein sicherer Tausch benötigt zwei BTC Transaktionen."
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Awaiting swap secret"
 msgstr "Warte auf Tausch-Schlüssel"
 
@@ -336,7 +336,7 @@ msgid "Choose a Recipient"
 msgstr "Empfänger auswählen"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:180
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
@@ -472,7 +472,7 @@ msgstr "Entwickler"
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
 
-#: src/components/swap/SwapAnimation.vue:115
+#: src/components/swap/SwapAnimation.vue:117
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Schließe dein Wallet nicht bis der Tausch abgeschlossen ist!"
 
@@ -550,7 +550,7 @@ msgstr "Adresse eingeben"
 msgid "Enter recipient address..."
 msgstr "Empfängeradresse eingeben..."
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Error:"
 msgstr "Error:"
 
@@ -620,8 +620,8 @@ msgstr "Fiatwert nicht verfügbar"
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
-#: src/components/swap/SwapAnimation.vue:111
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:113
+#: src/components/swap/SwapAnimation.vue:114
 msgid "Finalizing swap"
 msgstr "Tausch finalisieren"
 
@@ -765,7 +765,7 @@ msgstr "Mehr erfahren"
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:272
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -793,8 +793,8 @@ msgstr "Datei laden"
 msgid "loading..."
 msgstr "lade..."
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:108
+#: src/components/swap/SwapAnimation.vue:107
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Locking up {asset}"
 msgstr "Einschließen von {asset}"
 
@@ -818,7 +818,7 @@ msgstr "unterbrochen"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
 msgid "Minimum swap amount is {amount}"
 msgstr "Mindest-Tauschbetrag ist {amount}"
 
@@ -1042,7 +1042,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Erneut versuchen"
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:124
 msgid "Retrying..."
 msgstr "Versuche erneut..."
 
@@ -1146,7 +1146,7 @@ msgstr "Betrag festlegen"
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
-#: src/components/swap/SwapAnimation.vue:103
+#: src/components/swap/SwapAnimation.vue:105
 msgid "Setting up swap"
 msgstr "Tausch wird aufgesetzt"
 
@@ -1260,7 +1260,7 @@ msgstr "Sag uns hier Bescheid"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:660
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindest-Betrag."
 

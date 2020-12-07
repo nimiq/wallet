@@ -180,7 +180,7 @@ msgstr ""
 "controlerende versie."
 
 #: src/components/modals/BtcReceiveModal.vue:35
-#: src/components/modals/BtcSendModal.vue:36
+#: src/components/modals/BtcSendModal.vue:34
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -205,7 +205,7 @@ msgstr "Android en iOS App"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Atomic swaps vereisen twee BTC-transacties."
 
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:110
 msgid "Awaiting swap secret"
 msgstr "In afwachting van swap secret."
 
@@ -229,7 +229,7 @@ msgstr "Backup"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:128
+#: src/components/modals/BtcSendModal.vue:126
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -337,7 +337,7 @@ msgid "Choose a Recipient"
 msgstr "Kies een ontvanger"
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:180
+#: src/components/swap/SwapModal.vue:179
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -475,7 +475,7 @@ msgstr "Ontwikkelaar"
 msgid "Disclaimer"
 msgstr "Disclaimer"
 
-#: src/components/swap/SwapAnimation.vue:117
+#: src/components/swap/SwapAnimation.vue:115
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Sluit je wallet niet voordat de swap is voltooid!"
 
@@ -500,7 +500,7 @@ msgstr "Download het en bewaar het veilig. Deel het niet – verlies het niet."
 msgid "Download your Login File"
 msgstr "Download je Login File"
 
-#: src/components/modals/BtcSendModal.vue:114
+#: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
 msgstr "Looptijd en kosten zijn geschat."
 
@@ -540,7 +540,7 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor BTC waarden."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:429
 #: src/components/modals/SendModal.vue:496
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
@@ -549,11 +549,11 @@ msgstr "Bewerk transactie"
 msgid "Enter address"
 msgstr "Vul adres in"
 
-#: src/components/modals/BtcSendModal.vue:16
+#: src/components/modals/BtcSendModal.vue:15
 msgid "Enter recipient address..."
 msgstr "Voer het adres van de ontvanger in..."
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:120
 msgid "Error:"
 msgstr "Fout:"
 
@@ -623,8 +623,8 @@ msgstr "Fiat waarde niet beschikbaar"
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
-#: src/components/swap/SwapAnimation.vue:113
-#: src/components/swap/SwapAnimation.vue:114
+#: src/components/swap/SwapAnimation.vue:111
+#: src/components/swap/SwapAnimation.vue:112
 msgid "Finalizing swap"
 msgstr "Swap afronden"
 
@@ -721,7 +721,7 @@ msgstr "Verbeterde toegankelijkheid"
 msgid "In cooperation with"
 msgstr "In samenwerking met"
 
-#: src/components/modals/BtcSendModal.vue:110
+#: src/components/modals/BtcSendModal.vue:108
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -729,7 +729,7 @@ msgstr ""
 "Verhoog de snelheid van uw transactie door hogere netwerkkosten te betalen. "
 "De vergoedingen gaan rechtstreeks naar de miners."
 
-#: src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:131
 msgid "Insufficient balance."
 msgstr "Onvoldoende balans."
@@ -768,7 +768,7 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/swap/SwapModal.vue:272
+#: src/components/swap/SwapModal.vue:271
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr "Ledger accounts ondersteunen nog geen swaps, kom snel terug!"
 
@@ -796,8 +796,8 @@ msgstr "Bestand laden"
 msgid "loading..."
 msgstr "laden..."
 
-#: src/components/swap/SwapAnimation.vue:107
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:108
 msgid "Locking up {asset}"
 msgstr "{asset} vergrendelen"
 
@@ -821,7 +821,7 @@ msgstr "verloren"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/swap/SwapModal.vue:636 src/components/swap/SwapModal.vue:649
+#: src/components/swap/SwapModal.vue:635 src/components/swap/SwapModal.vue:648
 msgid "Minimum swap amount is {amount}"
 msgstr "Minimale swap-bedrag is {amount}"
 
@@ -841,7 +841,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr "Geef dit contact een naam..."
 
-#: src/components/modals/BtcSendModal.vue:11
+#: src/components/modals/BtcSendModal.vue:10
 msgid "Name this recipient..."
 msgstr "Geef deze ontvanger een naam..."
 
@@ -853,7 +853,7 @@ msgstr "Geef je contact een naam"
 msgid "Network"
 msgstr "Netwerk"
 
-#: src/components/modals/BtcSendModal.vue:107
+#: src/components/modals/BtcSendModal.vue:105
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netwerk vergoeding: {sats} sat/vByte"
 
@@ -887,7 +887,7 @@ msgstr ""
 "Nimiq OASIS maakt gedecentraliseerd kopen en verkopen van crypto "
 "recht­streeks vanuit uw wallet mogelijk."
 
-#: src/components/modals/BtcSendModal.vue:130
+#: src/components/modals/BtcSendModal.vue:128
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "De Nimiq wallet ondersteunt geen transactieberichten voor Bitcoin."
 
@@ -1037,12 +1037,12 @@ msgstr "Opnieuw scannen"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 
-#: src/components/modals/BtcSendModal.vue:430
+#: src/components/modals/BtcSendModal.vue:428
 #: src/components/modals/SendModal.vue:495
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
-#: src/components/swap/SwapAnimation.vue:124
+#: src/components/swap/SwapAnimation.vue:122
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
@@ -1081,7 +1081,7 @@ msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 msgid "Send"
 msgstr "Verstuur"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:94
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
 #: src/components/modals/SendModal.vue:133
 msgid "Send all"
 msgstr "Verstuur alles"
@@ -1097,7 +1097,7 @@ msgstr ""
 "Verstuur en ontvang NIM zonder een tussenpersoon en geniet van echte "
 "decentralisatie."
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:152
@@ -1108,16 +1108,16 @@ msgstr "Verstuur transactie"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/modals/BtcSendModal.vue:427
+#: src/components/modals/BtcSendModal.vue:425
 #: src/components/modals/SendModal.vue:492
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
-#: src/components/modals/BtcSendModal.vue:485
+#: src/components/modals/BtcSendModal.vue:483
 msgid "Sent {btc} BTC"
 msgstr "Stuur {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:481
+#: src/components/modals/BtcSendModal.vue:479
 msgid "Sent {btc} BTC to {name}"
 msgstr "Stuur {btc} BTC naar {name}"
 
@@ -1143,7 +1143,7 @@ msgstr "Bedrag ingeven"
 msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
-#: src/components/swap/SwapAnimation.vue:105
+#: src/components/swap/SwapAnimation.vue:103
 msgid "Setting up swap"
 msgstr "Swap opzetten"
 
@@ -1193,7 +1193,7 @@ msgstr "Aanmelden"
 msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
-#: src/components/modals/BtcSendModal.vue:496
+#: src/components/modals/BtcSendModal.vue:494
 #: src/components/modals/SendModal.vue:538
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
@@ -1258,7 +1258,7 @@ msgstr "Vertel het ons!"
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapModal.vue:660
+#: src/components/swap/SwapModal.vue:659
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
@@ -1311,7 +1311,7 @@ msgstr "Er is een probleem"
 msgid "They will be increased gradually."
 msgstr "Ze zullen geleidelijk worden verhoogd."
 
-#: src/components/modals/BtcSendModal.vue:29
+#: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
 msgstr "Dit adres is al gebruikt"
 
@@ -1369,7 +1369,7 @@ msgstr "Transacties van {address}"
 msgid "Transaction to {address}"
 msgstr "Transacties naar {address}"
 
-#: src/components/modals/BtcSendModal.vue:131
+#: src/components/modals/BtcSendModal.vue:129
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Transacties nemen >10min in beslag. Afhankelijk van de Bitcoin block tijd."
@@ -1400,7 +1400,7 @@ msgstr ""
 "Gebruik {NIM}, de super performante en browser gebaseerde betaal munt."
 
 #: src/components/modals/BtcReceiveModal.vue:33
-#: src/components/modals/BtcSendModal.vue:33
+#: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Gebruik een nieuw Bitcoin adres voor iedere trans­ac­tie om de privacy te "
@@ -1468,7 +1468,7 @@ msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 msgid "You now own crypto!"
 msgstr "Je bent nu in het bezit van crypto!"
 
-#: src/components/modals/BtcSendModal.vue:85
+#: src/components/modals/BtcSendModal.vue:83
 msgid "You will send {amount}"
 msgstr "Je zal {amount} versturen"
 

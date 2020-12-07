@@ -36,17 +36,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, Ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
-import { SwapAsset, Contract } from '@nimiq/fastspot-api';
+import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
+import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
+import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
-import { awaitIncoming, awaitSecret, createOutgoing, settleIncoming } from '../../lib/SwapProcess';
 import { useNetworkStore } from '../../stores/Network';
-import { getElectrumClient } from '../../electrum';
+import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
+import { SwapHandler, Swap as GenericSwap, SwapAsset } from '../../lib/swap/SwapHandler';
 
 export default defineComponent({
     setup(props, context) {
@@ -54,10 +56,7 @@ export default defineComponent({
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
         const swapIsErrored = computed(() => !!activeSwap.value
-            && (
-                (activeSwap.value as ActiveSwap<SwapState.CREATE_OUTGOING>).fundingError
-                || (activeSwap.value as ActiveSwap<SwapState.SETTLE_INCOMING>).settlementError
-            ),
+            && (activeSwap.value.fundingError || activeSwap.value.settlementError),
         );
 
         function onUnload(event: BeforeUnloadEvent) {
@@ -79,6 +78,21 @@ export default defineComponent({
                 processSwap();
             }
         }, { lazy: true });
+
+        function updateSwap(update: Partial<ActiveSwap>) {
+            setActiveSwap({
+                ...activeSwap.value!,
+                ...update,
+            });
+        }
+
+        async function getClient(asset: SwapAsset) {
+            switch (asset) {
+                case SwapAsset.NIM: return getNetworkClient();
+                case SwapAsset.BTC: return getElectrumClient();
+                default: throw new Error(`Unsupported asset: ${asset}`);
+            }
+        }
 
         async function processSwap() {
             console.info('Processing swap'); // eslint-disable-line no-console
@@ -129,47 +143,123 @@ export default defineComponent({
             }
 
             if (isExpired) {
-                setActiveSwap({
-                    ...activeSwap.value!,
-                    state: SwapState.EXPIRED,
-                });
-            } else {
-                window.addEventListener('beforeunload', onUnload);
+                setActiveSwap(null);
+                return;
             }
 
+            const swapHandler = new SwapHandler(
+                activeSwap.value! as GenericSwap<SwapAsset, SwapAsset>,
+                await getClient(activeSwap.value!.from.asset as SwapAsset),
+                await getClient(activeSwap.value!.to.asset as SwapAsset),
+            );
+
+            window.addEventListener('beforeunload', onUnload);
+
             switch (activeSwap.value!.state) {
-                case SwapState.EXPIRED:
+                case SwapState.EXPIRED: {
                     // Handle expired swap
                     setActiveSwap(null);
                     break;
-
+                }
                 // Handle regular swap process
                 // Note that each step falls through to the next when finished.
                 /* eslint-disable no-fallthrough */
-                case SwapState.AWAIT_INCOMING:
-                    await awaitIncoming(activeSwap as Ref<ActiveSwap<SwapState.AWAIT_INCOMING>>);
-                case SwapState.CREATE_OUTGOING:
+                case SwapState.AWAIT_INCOMING: {
+                    const remoteFundingTx = await swapHandler.awaitIncoming(
+                        (tx) => {
+                            updateSwap({
+                                remoteFundingTx: tx,
+                            });
+                        },
+                    );
+                    updateSwap({
+                        state: SwapState.CREATE_OUTGOING,
+                        remoteFundingTx,
+                    });
+                }
+                case SwapState.CREATE_OUTGOING: {
                     try {
-                        await createOutgoing(activeSwap as Ref<ActiveSwap<SwapState.CREATE_OUTGOING>>);
+                        const fundingTx = await swapHandler.createOutgoing(
+                            activeSwap.value!.fundingSerializedTx!,
+                            (tx) => {
+                                updateSwap({
+                                    fundingTx: tx,
+                                    fundingError: undefined,
+                                });
+                            },
+                        );
+
+                        if (activeSwap.value!.from.asset === SwapAsset.BTC) {
+                            subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
+                        }
+
+                        updateSwap({
+                            state: SwapState.AWAIT_SECRET,
+                            fundingTx,
+                            fundingError: undefined,
+                        });
                     } catch (error) {
+                        updateSwap({
+                            fundingError: error.message as string,
+                        });
                         setTimeout(processSwap, 2000); // 2 seconds
                         return;
                     }
-                case SwapState.AWAIT_SECRET:
-                    await awaitSecret(activeSwap as Ref<ActiveSwap<SwapState.AWAIT_SECRET>>);
-                case SwapState.SETTLE_INCOMING:
+                }
+                case SwapState.AWAIT_SECRET: {
+                    let interval: number;
+                    const secret = await Promise.race<Promise<string>>([
+                        swapHandler.awaitSecret(),
+                        new Promise((resolve) => {
+                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                            interval = window.setInterval(async () => {
+                                try {
+                                    const foo = await getSwap(activeSwap.value!.id) as Swap;
+                                    if (foo.secret) {
+                                        resolve(foo.secret);
+                                    }
+                                } catch (error) {
+                                    // Ignore
+                                }
+                            }, 5 * 1000); // Every 5 seconds
+                        }),
+                    ]);
+                    window.clearInterval(interval!);
+                    updateSwap({
+                        state: SwapState.SETTLE_INCOMING,
+                        secret,
+                    });
+                }
+                case SwapState.SETTLE_INCOMING: {
                     try {
-                        await settleIncoming(activeSwap as Ref<ActiveSwap<SwapState.SETTLE_INCOMING>>);
+                        const settlementTx = await swapHandler.settleIncoming(
+                            activeSwap.value!.settlementSerializedTx!,
+                            activeSwap.value!.secret!,
+                        );
+
+                        if (activeSwap.value!.to.asset === SwapAsset.BTC) {
+                            subscribeToAddresses([(settlementTx as BtcTransactionDetails).outputs[0].address!]);
+                        }
+                        updateSwap({
+                            state: SwapState.COMPLETE,
+                            settlementTx,
+                            settlementError: undefined,
+                        });
                     } catch (error) {
+                        updateSwap({
+                            settlementError: error.message as string,
+                        });
                         setTimeout(processSwap, 2000); // 2 seconds
                         return;
                     }
-                case SwapState.COMPLETE:
+                }
+                case SwapState.COMPLETE: {
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in the SwapModal.
                         if (context.root.$route.name === 'swap') return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
+                }
                 /* eslint-enable no-fallthrough */
                 default:
                     break;

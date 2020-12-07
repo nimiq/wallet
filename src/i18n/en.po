@@ -690,7 +690,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:271
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -743,8 +743,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:639
-#: src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:635
+#: src/components/swap/SwapModal.vue:648
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -1149,7 +1149,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:659
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 

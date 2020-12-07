@@ -245,11 +245,7 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
-import {
-    getIncomingHtlcAddress,
-    getOutgoingHtlcAddress,
-} from '../../lib/SwapProcess';
-import { AccountType, useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
@@ -1091,12 +1087,14 @@ export default defineComponent({
 
         const incomingHtlcAddress = computed(() => {
             if (!swap.value) return null;
-            return getIncomingHtlcAddress(swap.value);
+            const toAsset = swap.value.to.asset;
+            return swap.value.contracts[toAsset]!.htlc.address;
         });
 
         const outgoingHtlcAddress = computed(() => {
             if (!swap.value) return null;
-            return getOutgoingHtlcAddress(swap.value);
+            const fromAsset = swap.value.from.asset;
+            return swap.value.contracts[fromAsset]!.htlc.address;
         });
 
         function finishSwap() {

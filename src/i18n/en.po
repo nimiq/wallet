@@ -170,7 +170,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:110
+#: src/components/swap/SwapAnimation.vue:157
 msgid "Awaiting swap secret"
 msgstr ""
 
@@ -209,8 +209,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:225
 #: src/components/modals/TransactionModal.vue:248
-#: src/components/swap/SwapAnimation.vue:50
-#: src/components/swap/SwapAnimation.vue:95
+#: src/components/swap/SwapAnimation.vue:142
+#: src/components/swap/SwapAnimation.vue:74
 msgid "Block explorer"
 msgstr ""
 
@@ -248,11 +248,11 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:145
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:150
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -287,7 +287,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:211
 msgid "Choose an Address"
 msgstr ""
 
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:136
+#: src/components/swap/SwapModal.vue:139
 msgid "Confirm"
 msgstr ""
 
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:115
+#: src/components/swap/SwapAnimation.vue:162
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -486,7 +486,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:120
+#: src/components/swap/SwapAnimation.vue:167
 msgid "Error:"
 msgstr ""
 
@@ -556,8 +556,8 @@ msgstr ""
 msgid "File contains no contacts."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:111
-#: src/components/swap/SwapAnimation.vue:112
+#: src/components/swap/SwapAnimation.vue:158
+#: src/components/swap/SwapAnimation.vue:159
 msgid "Finalizing swap"
 msgstr ""
 
@@ -690,7 +690,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:271
+#: src/components/swap/SwapModal.vue:303
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -719,8 +719,8 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:105
-#: src/components/swap/SwapAnimation.vue:108
+#: src/components/swap/SwapAnimation.vue:152
+#: src/components/swap/SwapAnimation.vue:155
 msgid "Locking up {asset}"
 msgstr ""
 
@@ -743,8 +743,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:635
-#: src/components/swap/SwapModal.vue:648
+#: src/components/swap/SwapModal.vue:667
+#: src/components/swap/SwapModal.vue:680
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "Pending..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:9
+#: src/components/swap/SwapAnimation.vue:11
 msgid "Performing Swap"
 msgstr ""
 
@@ -938,7 +938,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:122
+#: src/components/swap/SwapAnimation.vue:169
 msgid "Retrying..."
 msgstr ""
 
@@ -1037,7 +1037,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:103
+#: src/components/swap/SwapAnimation.vue:150
 msgid "Setting up swap"
 msgstr ""
 
@@ -1127,7 +1127,7 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:5
+#: src/components/swap/SwapAnimation.vue:7
 #: src/components/swap/SwapNotification.vue:20
 msgid "Swap successful!"
 msgstr ""
@@ -1149,7 +1149,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:659
+#: src/components/swap/SwapModal.vue:691
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1222,7 +1222,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:10
+#: src/components/swap/SwapAnimation.vue:12
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 

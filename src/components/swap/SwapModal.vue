@@ -1065,6 +1065,17 @@ export default defineComponent({
                 return;
             }
 
+            if (!signedTransactions.nim || !signedTransactions.btc) {
+                const error = new Error('Internal error: Hub result did not contain NIM or BTC data');
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+                swapError.value = error.message;
+                cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
+                currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
             // Fetch contract from Fastspot and confirm that it's confirmed

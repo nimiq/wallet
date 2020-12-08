@@ -1,6 +1,6 @@
 <template>
     <Modal class="btc-activation-modal"
-        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || page === Pages.SWAP"
+        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || swap"
         @close-overlay="closeOverlay"
     >
         <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
@@ -39,19 +39,22 @@
 
                 <section class="amount-section">
                     <div class="flex-row amount-row">
-                        <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                        <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" >
                             <span slot="suffix">EUR</span>
                         </AmountInput>
                     </div>
-                    <!-- <span class="secondary-amount">
-                        <span>{{ nimAmount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="nimAmount"/></span>
-                    </span> -->
+                    <span class="secondary-amount">
+                        <Amount :amount="cryptoAmount" currency="nim"/>
+                    </span>
                 </section>
 
+                <button v-if="!estimate" class="nq-button light-blue" @click="updateEstimate">Update Estimate</button>
+
                 <button
+                    v-else
                     class="nq-button light-blue"
                     :disabled="!canSend"
-                    @click="page = Pages.SWAP"
+                    @click="sign"
                     @mousedown.prevent
                 >{{ $t('Buy Crypto') }}</button>
             </PageBody>
@@ -59,19 +62,18 @@
 
         <BuyCryptoBankCheckOverlay slot="overlay" v-if="page === Pages.BANK_CHECK" @bank-selected="onBankSelected"/>
 
-        <div v-if="page === Pages.SWAP" slot="overlay" class="page flex-column animation-overlay">
+        <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
-                    :swapState="SwapState.SIGN_SWAP"
-                    :fromAsset="SwapAsset.EUR"
-                    :fromAmount="fiatAmount"
-                    fromAddress="H6FZQVVJUMFA4MUMWBUNF6J4H"
-                    :toAsset="SwapAsset.NIM"
-                    :toAmount="34e3"
-                    :toAddress="activeAddressInfo.address"
+                    :swapState="swap.state"
+                    :fromAsset="swap.from.asset"
+                    :fromAmount="swap.from.amount + swap.from.fee"
+                    :fromAddress="swap.contracts['EUR'].htlc.address"
+                    :toAsset="swap.to.asset"
+                    :toAmount="swap.to.amount - swap.to.fee"
+                    :toAddress="swap.contracts['NIM'].htlc.address"
                     :nimAddress="activeAddressInfo.address"
-                    :error="''"
-                    :switchSides="false"
+                    :error="swap.fundingError || swap.settlementError"
                     :manualFunding="true"
                     @finished="onAnimationComplete"
                 >
@@ -79,7 +81,8 @@
                         slot="manual-funding-instructions"
                         class="nq-button orange"
                         @mousedown.prevent
-                    >Do absolutely nothing</button>
+                        @click="sandboxMockClearHtlc(swap.id)"
+                    >Mock-Clear OASIS HTLC</button>
                 </SwapAnimation>
             </PageBody>
         </div>
@@ -94,12 +97,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
 import { PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
-import { SwapState } from '@/stores/Swaps';
+import { init as initFastspotApi, Estimate, getEstimate, RequestAsset, SwapAsset, PreSwap, createSwap, cancelSwap, getSwap } from '@nimiq/fastspot-api';
+import Config from 'config';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
 // import { useFiatStore } from '@/stores/Fiat';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
@@ -109,6 +113,15 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
 import Avatar from '../Avatar.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
+import Amount from '../Amount.vue';
+import { HtlcCreationInstructions, HtlcSettlementInstructions, SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
+import { getNetworkClient } from '@/network';
+import { useNetworkStore } from '@/stores/Network';
+import { NetworkClient } from '@nimiq/network-client';
+import { useFiatStore } from '@/stores/Fiat';
+import { CryptoCurrency } from '@/lib/Constants';
+import { setupSwap } from '@/hub';
+import { sandboxMockClearHtlc } from '../../lib/OasisApi';
 // import { CryptoCurrency } from '../../lib/Constants';
 
 enum Pages {
@@ -127,6 +140,8 @@ export default defineComponent({
         const canSend = ref(false);
         const fiatAmount = ref(0);
         const activeCurrency = ref('eur');
+        const estimate = ref<Estimate>(null);
+        const { activeSwap: swap } = useSwapsStore();
         // const { exchangeRates, currency } = useFiatStore();
 
         // const nimExchangeRate = computed(() =>
@@ -135,6 +150,10 @@ export default defineComponent({
         // const nimAmount = computed(() =>
         //     (fiatAmount.value / nimExchangeRate.value) * 1e5,
         // );
+
+        onMounted(() => {
+            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+        });
 
         function closeOverlay() {
             addressListOpened.value = false;
@@ -161,6 +180,249 @@ export default defineComponent({
         const fiatCurrencyInfo = computed(() =>
             new CurrencyInfo(activeCurrency.value),
         );
+
+        watch(fiatAmount, () => {
+            estimate.value = null;
+        });
+
+        async function updateEstimate() {
+            const from: RequestAsset<SwapAsset.EUR> = {
+                [SwapAsset.EUR]: fiatAmount.value / 100,
+            };
+            const to = SwapAsset.NIM;
+            const newEstimate = await getEstimate(from, to);
+
+            const eurPrice = newEstimate.from;
+            const nimPrice = newEstimate.to;
+
+            if (!eurPrice || !nimPrice) {
+                throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+            }
+
+            estimate.value = newEstimate;
+        }
+
+        const cryptoAmount = computed(() => {
+            if (!estimate.value) return 0;
+
+            if (estimate.value.to.asset !== SwapAsset.NIM) return 0;
+            return estimate.value.to.amount - estimate.value.to.fee;
+        });
+
+        async function sign() {
+            // currentlySigning.value = true;
+
+            // eslint-disable-next-line no-async-promise-executor
+            const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
+                let swapSuggestion: PreSwap;
+
+                // const { availableExternalAddresses } = useBtcAddressStore();
+                const nimAddress = activeAddressInfo.value!.address;
+                // const btcAddress = availableExternalAddresses.value[0];
+
+                try {
+                    // const fees = calculateFees();
+                    // const { to, from } = calculateRequestData(fees);
+
+                    const from: RequestAsset<SwapAsset.EUR> = {
+                        [SwapAsset.EUR]: fiatAmount.value / 100,
+                    };
+                    const to = SwapAsset.NIM;
+
+                    swapSuggestion = await createSwap(
+                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                        to as SwapAsset,
+                    );
+
+                    // // Update local fees with latest feePerUnit values
+                    // const { fundingFee, settlementFee } = calculateFees({
+                    //     nim: swapSuggestion.from.asset === SwapAsset.NIM
+                    //         ? swapSuggestion.from.feePerUnit
+                    //         : swapSuggestion.to.asset === SwapAsset.NIM
+                    //             ? swapSuggestion.to.feePerUnit
+                    //             : 0,
+                    //     btc: swapSuggestion.from.asset === SwapAsset.BTC
+                    //         ? swapSuggestion.from.feePerUnit
+                    //         : swapSuggestion.to.asset === SwapAsset.BTC
+                    //             ? swapSuggestion.to.feePerUnit
+                    //             : 0,
+                    // });
+
+                    // swapSuggestion.from.fee = fundingFee;
+                    // swapSuggestion.to.fee = settlementFee;
+
+                    console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
+
+                    console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
+                    // swapError.value = null;
+                } catch (error) {
+                    console.error(error); // eslint-disable-line no-console
+                    // swapError.value = error.message;
+                    reject(error);
+                    return;
+                }
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: HtlcSettlementInstructions | null = null;
+
+                // Await Nimiq and Bitcoin consensus
+                const nimiqClient = await getNetworkClient();
+                if (useNetworkStore().state.consensus !== 'established') {
+                    await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                        if (state === 'established') res();
+                    }));
+                }
+                // const electrumClient = await getElectrumClient();
+                // await electrumClient.waitForConsensusEstablished();
+
+                const validityStartHeight = useNetworkStore().state.height;
+
+                // if (swapSuggestion.to.asset === SwapAsset.BTC) {
+                //     fund = {
+                //         type: 'NIM',
+                //         sender: nimAddress,
+                //         value: swapSuggestion.from.amount,
+                //         fee: swapSuggestion.from.fee,
+                //         validityStartHeight,
+                //     };
+
+                //     redeem = {
+                //         type: 'BTC',
+                //         input: {
+                //             // transactionHash: transaction.transactionHash,
+                //             // outputIndex: output.index,
+                //             // outputScript: output.script,
+                //             value: swapSuggestion.to.amount, // Sats
+                //         },
+                //         output: {
+                //             address: btcAddress, // My address, must be redeem address of HTLC
+                //             value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
+                //         },
+                //     };
+                // }
+
+                if (swapSuggestion.from.asset === SwapAsset.EUR) {
+                    fund = {
+                        type: 'EUR',
+                        value: swapSuggestion.from.amount,
+                        fee: swapSuggestion.from.fee,
+                        bankLabel: selectedBank.value!.name,
+                    };
+
+                    redeem = {
+                        type: 'NIM',
+                        recipient: nimAddress, // My address, must be redeem address of HTLC
+                        value: swapSuggestion.to.amount, // Luna
+                        fee: swapSuggestion.to.fee, // Luna
+                        validityStartHeight,
+                    };
+                }
+
+                if (!fund || !redeem) {
+                    reject(new Error('UNEXPECTED: No funding or redeeming data objects'));
+                    return;
+                }
+
+                const serviceExchangeFee = Math.round(
+                    (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
+                    * swapSuggestion.serviceFeePercentage,
+                );
+
+                const { exchangeRates } = useFiatStore();
+
+                resolve({
+                    swapId: swapSuggestion.id,
+                    fund,
+                    redeem,
+                    fiatCurrency: 'eur',
+                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM]['eur']!,
+                    btcFiatRate: exchangeRates.value[CryptoCurrency.BTC]['eur']!,
+                    serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
+                    serviceExchangeFee,
+                } as Omit<SetupSwapRequest, 'appName'>);
+            });
+
+            let signedTransactions: SetupSwapResult | null = null;
+            try {
+                signedTransactions = await setupSwap(hubRequest);
+            } catch (error) {
+                // if (Config.reportToSentry) captureException(error);
+                /*else*/ console.error(error); // eslint-disable-line no-console
+                // swapError.value = error.message;
+                cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            const { swapId } = (await hubRequest);
+
+            // const swapFees = {
+            //     myBtcFeeFiat: myBtcFeeFiat.value,
+            //     myNimFeeFiat: myNimFeeFiat.value,
+            //     serviceBtcFeeFiat: serviceBtcFeeFiat.value,
+            //     serviceNimFeeFiat: serviceNimFeeFiat.value,
+            //     serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
+            //     serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
+            //     currency: currency.value,
+            // };
+
+            if (!signedTransactions) {
+                // Hub popup cancelled
+                cancelSwap({ id: swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            if (typeof signedTransactions.eur !== 'string' || !signedTransactions.nim) {
+                const error = new Error('Internal error: Hub result did not contain EUR or NIM data');
+                // if (Config.reportToSentry) captureException(error);
+                /*else*/ console.error(error); // eslint-disable-line no-console
+                // swapError.value = error.message;
+                cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            console.log('Signed:', signedTransactions); // eslint-disable-line no-console
+
+            // Fetch contract from Fastspot and confirm that it's confirmed
+            const confirmedSwap = await getSwap(swapId);
+            if (!('contracts' in confirmedSwap)) {
+                const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+                // if (Config.reportToSentry) captureException(error);
+                /*else*/ console.error(error); // eslint-disable-line no-console
+                // swapError.value = 'Invalid swap state, swap aborted!';
+                cancelSwap({ id: swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            const { setActiveSwap, setSwap } = useSwapsStore();
+
+            // Add swap details to swap store
+            setSwap(confirmedSwap.hash, {
+                id: confirmedSwap.id,
+                // fees: swapFees,
+            });
+
+            setActiveSwap({
+                ...confirmedSwap,
+                state: SwapState.AWAIT_INCOMING,
+                fundingSerializedTx: signedTransactions.eur,
+                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
+                    ? signedTransactions.nim.serializedTx : "never",
+                    // : signedTransactions.btc.serializedTx,
+            });
+
+            // setTimeout(() => currentlySigning.value = false, 1000);
+        }
 
         watch([selectedBank, fiatAmount], () => {
             if (selectedBank.value && fiatAmount.value > 0) {
@@ -189,7 +451,13 @@ export default defineComponent({
             SwapAsset,
             SwapState,
             onAnimationComplete,
+            updateEstimate,
+            estimate,
+            cryptoAmount,
             // nimAmount,
+            sandboxMockClearHtlc,
+            swap,
+            sign,
         };
     },
     components: {
@@ -203,6 +471,7 @@ export default defineComponent({
         FiatConvertedAmount,
         Avatar,
         SwapAnimation,
+        Amount,
     },
 });
 </script>

@@ -240,7 +240,7 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:58
+#: src/components/modals/BuyCryptoModal.vue:59
 msgid "Buy Crypto"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:63
+#: src/components/modals/BuyCryptoModal.vue:91
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:211
 msgid "Choose an Address"

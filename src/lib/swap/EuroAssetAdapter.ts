@@ -20,7 +20,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
                 const htlc = await this.client.getHtlc(id);
                 if (test(htlc)) return htlc;
             } catch (error) {
-                // Ignore
+                console.error(error);
             }
             return null;
         };
@@ -56,8 +56,8 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
                     if (typeof onPending === 'function') onPending(htlc);
                     calledOnPending = true;
                 }
-                if (htlc.status !== HtlcStatus.CLEARED) return false;
                 if (htlc.amount !== value) return false;
+                if (htlc.status !== HtlcStatus.CLEARED && htlc.status !== HtlcStatus.SETTLED) return false;
 
                 return true;
             },

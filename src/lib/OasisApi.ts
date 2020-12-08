@@ -6,6 +6,10 @@ type OasisError = {
     status: number,
 }
 
+enum OasisAsset {
+    EUR = 'eur',
+}
+
 export enum Asset {
     EUR = 'EUR',
 }
@@ -87,7 +91,10 @@ export type EllipticCurveKey = {
     y: string,
 }
 
-type OasisHtlc<TStatus extends HtlcStatus> = Omit<Htlc<TStatus>, 'expires'> & { expires: string };
+type OasisHtlc<TStatus extends HtlcStatus> = Omit<Htlc<TStatus>, 'asset' | 'expires'> & {
+    asset: OasisAsset,
+    expires: string,
+};
 
 export type Htlc<TStatus extends HtlcStatus> = {
     id: string,
@@ -225,7 +232,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
     const contract: Htlc<TStatus> = {
         id: htlc.id,
         status: htlc.status,
-        asset: htlc.asset,
+        asset: htlc.asset.toUpperCase(),
         amount: coinsToUnits(htlc.asset, htlc.amount),
         beneficiary: {
             ...htlc.beneficiary,
@@ -270,11 +277,11 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
     return contract;
 }
 
-function coinsToUnits(asset: Asset, value: string | number, roundUp = false): number {
+function coinsToUnits(asset: OasisAsset, value: string | number, roundUp = false): number {
     let decimals: number;
     switch (asset) {
-        case Asset.EUR: decimals = 2; break;
-        default: throw new Error('Invalid asset');
+        case OasisAsset.EUR: decimals = 2; break;
+        default: throw new Error(`Invalid asset ${asset}`);
     }
     const parts = value.toString().split('.');
     parts[1] = (parts[1] || '').substr(0, decimals + 1).padEnd(decimals + 1, '0');

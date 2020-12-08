@@ -77,11 +77,12 @@
                     :manualFunding="true"
                     @finished="onAnimationComplete"
                 >
+                    OASIS HTLC ID: <code>{{ swap.contracts.EUR.htlc.address }}</code>
                     <button
                         slot="manual-funding-instructions"
                         class="nq-button orange"
                         @mousedown.prevent
-                        @click="sandboxMockClearHtlc(swap.id)"
+                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
                     >Mock-Clear OASIS HTLC</button>
                 </SwapAnimation>
             </PageBody>

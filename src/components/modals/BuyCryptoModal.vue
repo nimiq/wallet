@@ -1,6 +1,6 @@
 <template>
     <Modal class="btc-activation-modal"
-        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || swap"
+        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         @close-overlay="closeOverlay"
     >
         <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
@@ -62,7 +62,7 @@
 
         <BuyCryptoBankCheckOverlay slot="overlay" v-if="page === Pages.BANK_CHECK" @bank-selected="onBankSelected"/>
 
-        <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
+        <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
                     :swapState="swap.state"
@@ -77,13 +77,14 @@
                     :manualFunding="true"
                     @finished="onAnimationComplete"
                 >
-                    OASIS HTLC ID: <code>{{ swap.contracts.EUR.htlc.address }}</code>
-                    <button
-                        slot="manual-funding-instructions"
-                        class="nq-button orange"
-                        @mousedown.prevent
-                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
-                    >Mock-Clear OASIS HTLC</button>
+                    <div slot="manual-funding-instructions">
+                        OASIS HTLC ID: <code>{{ swap.contracts.EUR.htlc.address }}</code>
+                        <button
+                            class="nq-button orange"
+                            @mousedown.prevent
+                            @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
+                        >Mock-Clear OASIS HTLC</button>
+                    </div>
                 </SwapAnimation>
             </PageBody>
         </div>

@@ -340,7 +340,7 @@ export default defineComponent({
                     redeem,
                     fiatCurrency: 'eur',
                     nimFiatRate: exchangeRates.value[CryptoCurrency.NIM]['eur']!,
-                    btcFiatRate: exchangeRates.value[CryptoCurrency.BTC]['eur']!,
+                    btcFiatRate: 1, // 1 EUR = 1 EUR
                     serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
                     serviceExchangeFee,

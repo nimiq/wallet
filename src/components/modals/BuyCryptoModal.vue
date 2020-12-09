@@ -3,62 +3,64 @@
         :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         @close-overlay="closeOverlay"
     >
-        <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
-            <div class="welcome-text">
-                <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
+        <transition duration="650">
+            <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
+                <div class="welcome-text">
+                    <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
-                <p class="nq-text">
-                    {{ $t('Welcome to the first fiat-to-crypto swap.\nIt’s simple, fast and decentralized.') }}
-                </p>
-            </div>
+                    <p class="nq-text">
+                        {{ $t('Welcome to the first fiat-to-crypto swap.\nIt’s simple, fast and decentralized.') }}
+                    </p>
+                </div>
 
-            <ul class="nq-list welcome-steps">
-                <li>{{ $t('Select a currency and an amount.') }}</li>
-                <li>{{ $t('Wait for the swap to be set up.') }}</li>
-                <li>{{ $t('Finalize the swap by bank transfer.') }}</li>
-            </ul>
+                <ul class="nq-list welcome-steps">
+                    <li>{{ $t('Select a currency and an amount.') }}</li>
+                    <li>{{ $t('Wait for the swap to be set up.') }}</li>
+                    <li>{{ $t('Finalize the swap by bank transfer.') }}</li>
+                </ul>
 
-            <button class="nq-button light-blue" @click="page = Pages.BANK_CHECK">
-                {{ $t("Let's go") }}
-            </button>
-        </PageBody>
-
-        <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-            <PageHeader :backArrow="true" @back="">{{ $t('Set Amount') }}</PageHeader>
-            <PageBody class="page__amount-input flex-column">
-                <section class="identicon-section flex-row">
-                    <Avatar :label="selectedBank ? selectedBank.name : ''"/>
-                    <div class="separator"></div>
-                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
-                        <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-                        <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
-                        <Identicon class="primary" :address="activeAddressInfo.address"/>
-                        <label>{{ activeAddressInfo.label }}</label>
-                    </button>
-                </section>
-
-                <section class="amount-section">
-                    <div class="flex-row amount-row">
-                        <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" >
-                            <span slot="suffix">EUR</span>
-                        </AmountInput>
-                    </div>
-                    <span class="secondary-amount">
-                        <Amount :amount="cryptoAmount" currency="nim"/>
-                    </span>
-                </section>
-
-                <button v-if="!estimate" class="nq-button light-blue" @click="updateEstimate">Update Estimate</button>
-
-                <button
-                    v-else
-                    class="nq-button light-blue"
-                    :disabled="!canSend"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Buy Crypto') }}</button>
+                <button class="nq-button light-blue" @click="page = Pages.BANK_CHECK">
+                    {{ $t("Let's go") }}
+                </button>
             </PageBody>
-        </div>
+
+            <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
+                <PageHeader :backArrow="true" @back="">{{ $t('Set Amount') }}</PageHeader>
+                <PageBody class="page__amount-input flex-column">
+                    <section class="identicon-section flex-row">
+                        <Avatar :label="selectedBank ? selectedBank.name : ''"/>
+                        <div class="separator"></div>
+                        <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
+                            <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
+                            <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
+                            <Identicon class="primary" :address="activeAddressInfo.address"/>
+                            <label>{{ activeAddressInfo.label }}</label>
+                        </button>
+                    </section>
+
+                    <section class="amount-section">
+                        <div class="flex-row amount-row">
+                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" >
+                                <span slot="suffix">EUR</span>
+                            </AmountInput>
+                        </div>
+                        <span class="secondary-amount">
+                            <Amount :amount="cryptoAmount" currency="nim"/>
+                        </span>
+                    </section>
+
+                    <button v-if="!estimate" class="nq-button light-blue" @click="updateEstimate">Update Estimate</button>
+
+                    <button
+                        v-else
+                        class="nq-button light-blue"
+                        :disabled="!canSend"
+                        @click="sign"
+                        @mousedown.prevent
+                    >{{ $t('Buy Crypto') }}</button>
+                </PageBody>
+            </div>
+        </transition>
 
         <BuyCryptoBankCheckOverlay slot="overlay" v-if="page === Pages.BANK_CHECK" @bank-selected="onBankSelected"/>
 

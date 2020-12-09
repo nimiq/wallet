@@ -46,11 +46,11 @@
                     <section class="amount-section">
                         <div class="flex-row amount-row">
                             <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
-                                <span slot="suffix">EUR</span>
+                                <span slot="suffix">{{ activeCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount">
-                            <Amount :amount="cryptoAmount" currency="nim"/>
+                            <Amount :amount="cryptoAmount" :currency="CryptoCurrency.NIM"/>
                         </span>
                     </section>
 
@@ -486,6 +486,7 @@ export default defineComponent({
             swap,
             sign,
             goBack,
+            activeCurrency,
         };
     },
     components: {

@@ -28,8 +28,13 @@
                 <PageHeader :backArrow="true" @back="goBack">{{ $t('Set Amount') }}</PageHeader>
                 <PageBody class="page__amount-input flex-column">
                     <section class="identicon-section flex-row">
-                        <Avatar :label="selectedBank ? selectedBank.name : ''"/>
-                        <div class="separator"></div>
+                        <div class="bank-infos flex-column">
+                            <Avatar :label="selectedBank ? selectedBank.name : ''"/>
+                            <label>{{ selectedBank ? selectedBank.name : '' }}</label>
+                        </div>
+                        <div class="separator-wrapper">
+                            <div class="separator"></div>
+                        </div>
                         <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
                             <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                             <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
@@ -573,9 +578,9 @@ export default defineComponent({
     font-size: var(--body-size);
     height: 100%;
 
-    .nq-button {
-        margin-top: 0;
-        width: calc(100% - 4rem);
+    .page-body {
+        padding-left: 5rem;
+        padding-right: 5rem;
     }
 
     .page__amount-input {
@@ -584,17 +589,53 @@ export default defineComponent({
     }
 
     .identicon-section {
-        justify-content: center;
+        justify-content: space-around;
+        align-items: center;
         align-self: stretch;
         margin-bottom: 3.5rem;
 
-        .separator {
-            height: 0.25rem;
-            background: var(--text-14);
-            border-radius: 500px;
+        label {
+            margin-top: 1.875rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 100%;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+
+        .bank-infos {
+            align-items: center;
+            width: 18rem;
+        }
+
+        .separator-wrapper {
+            --height: 0.25rem;
+
+            height: var(--height);
+            margin-left: -2rem;
+            margin-right: -2rem;
+            margin-bottom: 5rem;
+
+            position: relative;
             flex-grow: 1;
-            margin: 5rem 2rem 0;
-            max-width: 8rem;
+            overflow: hidden;
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+            .separator {
+                height: 100%;
+                width: 50%;
+                background: var(--text-14);
+                border-radius: calc(var(--height) / 2);
+
+                position: absolute;
+                left: -50%;
+                animation: separatorSliding 3s infinite;
+
+                @keyframes separatorSliding {
+                    0% { transform: translateX(0) }
+                    100% { transform: translateX(300%) }
+                }
+            }
         }
     }
 
@@ -603,13 +644,13 @@ export default defineComponent({
         border-radius: 0.75rem;
         padding: 1rem;
         position: relative;
-        width: 14rem;
+        width: 18rem;
 
         .primary {
             position: relative;
             width: 9rem;
             height: 9rem;
-            margin: -0.5rem auto 1rem;
+            margin: -0.5rem auto 0;
         }
 
         .secondary {
@@ -623,11 +664,11 @@ export default defineComponent({
                 opacity var(--movement-duration) var(--nimiq-ease);
 
             &:first-child {
-                left: 1rem;
+                left: 3rem;
             }
 
             &:nth-child(2) {
-                right: 1rem;
+                right: 3rem;
             }
         }
 
@@ -648,10 +689,15 @@ export default defineComponent({
 
         label {
             cursor: pointer;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+    }
+
+    .avatar {
+        width: 9rem;
+        height: 9rem;
+
+        /deep/ .initial {
+            font-size: 4.2rem;
         }
     }
 
@@ -683,6 +729,11 @@ export default defineComponent({
         //         margin-left: -0.2em;
         //     }
         // }
+    }
+
+    .nq-button {
+        margin-top: 0;
+        width: calc(100% - 4rem);
     }
 }
 

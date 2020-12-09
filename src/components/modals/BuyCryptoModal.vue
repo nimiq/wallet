@@ -25,7 +25,7 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="true" @back="">{{ $t('Set Amount') }}</PageHeader>
+                <PageHeader :backArrow="true" @back="goBack">{{ $t('Set Amount') }}</PageHeader>
                 <PageBody class="page__amount-input flex-column">
                     <section class="identicon-section flex-row">
                         <Avatar :label="selectedBank ? selectedBank.name : ''"/>
@@ -62,7 +62,11 @@
             </div>
         </transition>
 
-        <BuyCryptoBankCheckOverlay slot="overlay" v-if="page === Pages.BANK_CHECK" @bank-selected="onBankSelected"/>
+        <BuyCryptoBankCheckOverlay slot="overlay"
+            v-if="page === Pages.BANK_CHECK"
+            @bank-selected="onBankSelected"
+            @back="goBack"
+        />
 
         <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
@@ -442,6 +446,19 @@ export default defineComponent({
             }
         });
 
+        function goBack() {
+            switch (page.value) {
+                case Pages.SETUP_BUY:
+                    page.value = Pages.BANK_CHECK;
+                    break;
+                case Pages.BANK_CHECK:
+                    page.value = Pages.WELCOME;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         function onAnimationComplete() {
             // do smth, i guess
         }
@@ -467,6 +484,7 @@ export default defineComponent({
             sandboxMockClearHtlc,
             swap,
             sign,
+            goBack,
         };
     },
     components: {

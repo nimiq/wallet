@@ -1,6 +1,6 @@
 <template>
     <div class="buy-crypto-bank-check-overlay flex-column">
-        <PageHeader>
+        <PageHeader :backArrow="true" @back="back">
             {{ $t('Is your bank eligible?') }}
             <div slot="more">{{ $t('You need a SEPA account that supports instant transactions.') }}</div>
         </PageHeader>
@@ -27,9 +27,14 @@ export default defineComponent({
             context.emit('bank-selected', bank);
         }
 
+        function back() {
+            context.emit('back');
+        }
+
         return {
             bankName,
             onBankSelected,
+            back,
         };
     },
     components: {

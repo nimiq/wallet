@@ -150,8 +150,9 @@ enum Pages {
 
 export default defineComponent({
     setup(/* props, context */) {
-        const page = ref(Pages.WELCOME);
+        const page = ref(Pages.WELCOME); // For testing, you can set this to Pages.SETUP_BUY
         const selectedBank = ref<null | BankInfos>(null);
+        // & this by a fake bank. ex: { name: 'Berliner Sparkasse', type: 'sepa-instant-full-support' }
         const addressListOpened = ref(false);
         const { addressInfos, activeAddressInfo } = useAddressStore();
         const canSend = ref(false);

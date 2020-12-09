@@ -25,7 +25,7 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="true" @back="goBack">{{ $t('Set Amount') }}</PageHeader>
+                <PageHeader :backArrow="true" @back="goBack">{{ $t('Buy Crypto') }}</PageHeader>
                 <PageBody class="page__amount-input flex-column">
                     <section class="identicon-section flex-row">
                         <div class="bank-infos flex-column">
@@ -55,13 +55,6 @@
                     </section>
 
                     <button
-                        class="nq-button light-blue"
-                        v-if="!estimate"
-                        @click="updateEstimate"
-                    >Update Estimate</button>
-
-                    <button
-                        v-else
                         class="nq-button light-blue"
                         :disabled="!canSend"
                         @click="sign"
@@ -163,12 +156,12 @@ enum Pages {
 
 export default defineComponent({
     setup(/* props, context */) {
-        const page = ref(Pages.WELCOME); // For testing, you can set this to Pages.SETUP_BUY
-        const selectedBank = ref<null | BankInfos>(null);
+        const page = ref(Pages.SETUP_BUY); // For testing, you can set this to Pages.SETUP_BUY
+        const selectedBank = ref<null | BankInfos>({ name: 'Berliner Sparkasse', type: 'sepa-instant-full-support' });
         // & this by a fake bank. ex: { name: 'Berliner Sparkasse', type: 'sepa-instant-full-support' }
         const addressListOpened = ref(false);
         const { addressInfos, activeAddressInfo } = useAddressStore();
-        const canSend = ref(false);
+        const canSend = computed(() => !!(fiatAmount.value && estimate.value && selectedBank.value));
         const fiatAmount = ref(0);
         const activeCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
@@ -443,14 +436,6 @@ export default defineComponent({
             // setTimeout(() => currentlySigning.value = false, 1000);
         }
 
-        watch([selectedBank, fiatAmount], () => {
-            if (selectedBank.value && fiatAmount.value > 0) {
-                canSend.value = true;
-            } else {
-                canSend.value = false;
-            }
-        });
-
         function goBack() {
             switch (page.value) {
                 case Pages.SETUP_BUY:
@@ -606,6 +591,15 @@ export default defineComponent({
         .bank-infos {
             align-items: center;
             width: 18rem;
+
+            .avatar {
+                width: 9rem;
+                height: 9rem;
+
+                /deep/ .initial {
+                    font-size: 4.2rem;
+                }
+            }
         }
 
         .separator-wrapper {
@@ -689,15 +683,6 @@ export default defineComponent({
 
         label {
             cursor: pointer;
-        }
-    }
-
-    .avatar {
-        width: 9rem;
-        height: 9rem;
-
-        /deep/ .initial {
-            font-size: 4.2rem;
         }
     }
 

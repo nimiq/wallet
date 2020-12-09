@@ -26,14 +26,14 @@ import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon } from '@nimiq/vue-components';
 import Avatar from './Avatar.vue';
 
-export enum SEPA_INSTANT_SUPPORT { // TEMP: need to be moved to a more logic place
+export enum SEPA_INSTANT_SUPPORT { // TEMP: need to be moved to a more logic place (store?)
     FULL = 'sepa-instant-full-support',
     PARTIAL = 'sepa-instant-partial-support',
     NONE = 'sepa-instant-no-support',
     UNKNOW = 'sepa-instant-unknow-support', // Is this a thing?
 }
 
-export type BankInfos = { // TEMP: need to be moved to a more logic place
+export type BankInfos = { // TEMP: need to be moved to a more logic place (store?)
     name: string,
     type: SEPA_INSTANT_SUPPORT,
 }

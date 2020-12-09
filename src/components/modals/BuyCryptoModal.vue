@@ -68,7 +68,7 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="swap.contracts['EUR'].htlc.address"
+                    :fromAddress="swap.contracts[SwapAsset.EUR].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
                     :toAddress="swap.contracts['NIM'].htlc.address"
@@ -103,10 +103,31 @@ import { defineComponent, ref, computed, watch, onMounted } from '@vue/compositi
 import { PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
-import { init as initFastspotApi, Estimate, getEstimate, RequestAsset, SwapAsset, PreSwap, createSwap, cancelSwap, getSwap } from '@nimiq/fastspot-api';
+import {
+    init as initFastspotApi,
+    Estimate,
+    getEstimate,
+    RequestAsset,
+    SwapAsset,
+    PreSwap,
+    createSwap,
+    cancelSwap,
+    getSwap,
+} from '@nimiq/fastspot-api';
 import Config from 'config';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
-// import { useFiatStore } from '@/stores/Fiat';
+import {
+    HtlcCreationInstructions,
+    HtlcSettlementInstructions,
+    SetupSwapRequest,
+    SetupSwapResult,
+} from '@nimiq/hub-api';
+import { getNetworkClient } from '@/network';
+import { useNetworkStore } from '@/stores/Network';
+import { NetworkClient } from '@nimiq/network-client';
+import { useFiatStore } from '@/stores/Fiat';
+import { CryptoCurrency } from '@/lib/Constants';
+import { setupSwap } from '@/hub';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import { BankInfos } from '../BankCheckInput.vue';
@@ -116,15 +137,7 @@ import AmountInput from '../AmountInput.vue';
 import Avatar from '../Avatar.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
-import { HtlcCreationInstructions, HtlcSettlementInstructions, SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
-import { getNetworkClient } from '@/network';
-import { useNetworkStore } from '@/stores/Network';
-import { NetworkClient } from '@nimiq/network-client';
-import { useFiatStore } from '@/stores/Fiat';
-import { CryptoCurrency } from '@/lib/Constants';
-import { setupSwap } from '@/hub';
 import { sandboxMockClearHtlc } from '../../lib/OasisApi';
-// import { CryptoCurrency } from '../../lib/Constants';
 
 enum Pages {
     WELCOME,
@@ -144,14 +157,6 @@ export default defineComponent({
         const activeCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
         const { activeSwap: swap } = useSwapsStore();
-        // const { exchangeRates, currency } = useFiatStore();
-
-        // const nimExchangeRate = computed(() =>
-        //     exchangeRates.value?.[CryptoCurrency.NIM][currency.value] || 0);
-
-        // const nimAmount = computed(() =>
-        //     (fiatAmount.value / nimExchangeRate.value) * 1e5,
-        // );
 
         onMounted(() => {
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
@@ -307,14 +312,14 @@ export default defineComponent({
 
                 if (swapSuggestion.from.asset === SwapAsset.EUR) {
                     fund = {
-                        type: 'EUR',
+                        type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount,
                         fee: swapSuggestion.from.fee,
                         bankLabel: selectedBank.value!.name,
                     };
 
                     redeem = {
-                        type: 'NIM',
+                        type: SwapAsset.NIM,
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount, // Luna
                         fee: swapSuggestion.to.fee, // Luna
@@ -338,8 +343,8 @@ export default defineComponent({
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
-                    fiatCurrency: 'eur',
-                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM]['eur']!,
+                    fiatCurrency: activeCurrency.value,
+                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!,
                     btcFiatRate: 1, // 1 EUR = 1 EUR
                     serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
@@ -352,7 +357,7 @@ export default defineComponent({
                 signedTransactions = await setupSwap(hubRequest);
             } catch (error) {
                 // if (Config.reportToSentry) captureException(error);
-                /*else*/ console.error(error); // eslint-disable-line no-console
+                /* else */ console.error(error); // eslint-disable-line no-console
                 // swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -383,7 +388,7 @@ export default defineComponent({
             if (typeof signedTransactions.eur !== 'string' || !signedTransactions.nim) {
                 const error = new Error('Internal error: Hub result did not contain EUR or NIM data');
                 // if (Config.reportToSentry) captureException(error);
-                /*else*/ console.error(error); // eslint-disable-line no-console
+                /* else */ console.error(error); // eslint-disable-line no-console
                 // swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -398,7 +403,7 @@ export default defineComponent({
             if (!('contracts' in confirmedSwap)) {
                 const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 // if (Config.reportToSentry) captureException(error);
-                /*else*/ console.error(error); // eslint-disable-line no-console
+                /* else */ console.error(error); // eslint-disable-line no-console
                 // swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -419,8 +424,8 @@ export default defineComponent({
                 state: SwapState.AWAIT_INCOMING,
                 fundingSerializedTx: signedTransactions.eur,
                 settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
-                    ? signedTransactions.nim.serializedTx : "never",
-                    // : signedTransactions.btc.serializedTx,
+                    ? signedTransactions.nim.serializedTx : 'never',
+                // : signedTransactions.btc.serializedTx,
             });
 
             // setTimeout(() => currentlySigning.value = false, 1000);
@@ -456,7 +461,6 @@ export default defineComponent({
             updateEstimate,
             estimate,
             cryptoAmount,
-            // nimAmount,
             sandboxMockClearHtlc,
             swap,
             sign,

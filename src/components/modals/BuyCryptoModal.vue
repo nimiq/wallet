@@ -40,7 +40,7 @@
 
                     <section class="amount-section">
                         <div class="flex-row amount-row">
-                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" >
+                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
                                 <span slot="suffix">EUR</span>
                             </AmountInput>
                         </div>
@@ -49,7 +49,11 @@
                         </span>
                     </section>
 
-                    <button v-if="!estimate" class="nq-button light-blue" @click="updateEstimate">Update Estimate</button>
+                    <button
+                        class="nq-button light-blue"
+                        v-if="!estimate"
+                        @click="updateEstimate"
+                    >Update Estimate</button>
 
                     <button
                         v-else
@@ -194,10 +198,6 @@ export default defineComponent({
         const fiatCurrencyInfo = computed(() =>
             new CurrencyInfo(activeCurrency.value),
         );
-
-        watch(fiatAmount, () => {
-            estimate.value = null;
-        });
 
         async function updateEstimate() {
             const from: RequestAsset<SwapAsset.EUR> = {
@@ -462,6 +462,17 @@ export default defineComponent({
         function onAnimationComplete() {
             // do smth, i guess
         }
+
+        let timeoutId: NodeJS.Timeout;
+        watch(fiatAmount, (val: number) => {
+            if (!val) {
+                estimate.value = null;
+                return;
+            }
+
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(updateEstimate, 1000);
+        });
 
         return {
             addressListOpened,

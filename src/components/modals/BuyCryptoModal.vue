@@ -487,6 +487,7 @@ export default defineComponent({
             sign,
             goBack,
             activeCurrency,
+            CryptoCurrency,
         };
     },
     components: {

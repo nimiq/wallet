@@ -23,10 +23,11 @@
         </div>
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <BitcoinIcon v-else-if="swapTransaction"/>
+            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC && swapTransaction"/>
+            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink"><CashlinkXSmallIcon/></div>
-            <div v-if="swapTransaction" class="cashlink"><SwapSmallIcon/></div>
+            <div v-if="swapData" class="cashlink"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -83,9 +84,10 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
 import { isCashlinkData } from '../lib/CashlinkDetection';
 import { useCashlinkStore } from '../stores/Cashlink';
 import { useSwapsStore } from '../stores/Swaps';
@@ -99,25 +101,38 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { getLabel } = useContactsStore();
 
         const state = computed(() => props.transaction.state);
 
-        const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
+        const isIncoming = computed(() => {
+            const haveSender = !!addresses$.addressInfos[props.transaction.sender];
+            const haveRecipient = !!addresses$.addressInfos[props.transaction.recipient];
+
+            if (haveSender && !haveRecipient) return false;
+            if (!haveSender && haveRecipient) return true;
+
+            // Fall back to comparing with active address
+            return props.transaction.recipient === activeAddress.value;
+        });
 
         const { getSwapByTransactionHash } = useSwapsStore();
+        const swapData = computed(() => {
+            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash);
+            if (!swapInfo) return null;
+
+            return isIncoming.value
+                ? swapInfo.in || null
+                : swapInfo.out || null;
+        });
         const swapTransaction = computed(() => {
-            const swap = getSwapByTransactionHash.value(props.transaction.transactionHash);
-            if (!swap) return null;
+            if (!swapData.value) return null;
 
-            const swapData = isIncoming.value ? swap.in : swap.out;
-            if (!swapData) return null;
-
-            if (swapData.asset === SwapAsset.BTC) {
-                return useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
+            if (swapData.value.asset === SwapAsset.BTC) {
+                return useBtcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
             return null;
@@ -132,7 +147,13 @@ export default defineComponent({
                 const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
                 return hubCashlink ? hubCashlink.message : '';
             }
-            if (swapTransaction.value) return ''; // TODO: 'Swapped NIM to BTC'
+
+            if (swapData.value) {
+                return context.root.$t('Swapped {fromAsset} to {toAsset}', {
+                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
+                    toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
+                });
+            }
 
             if ('hashRoot' in props.transaction.data) {
                 return context.root.$t('HTLC Creation');
@@ -156,7 +177,10 @@ export default defineComponent({
 
         // Peer
         const peerAddress = computed(() => {
-            if (swapTransaction.value) return 'bitcoin';
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) return 'bitcoin';
+                if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
+            }
 
             if (isCashlink.value) {
                 if (relatedTx.value) {
@@ -171,8 +195,14 @@ export default defineComponent({
             return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
         });
         const peerLabel = computed(() => {
-            if (swapTransaction.value) {
-                return context.root.$t('Bitcoin');
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) {
+                    return context.root.$t('Bitcoin');
+                }
+
+                if (swapData.value.asset === SwapAsset.EUR) {
+                    return swapData.value.bankLabel || context.root.$t('Bank Account');
+                }
             }
 
             // Label cashlinks
@@ -227,6 +257,8 @@ export default defineComponent({
             isIncoming,
             peerAddress,
             peerLabel,
+            SwapAsset,
+            swapData,
             swapTransaction,
         };
     },
@@ -242,6 +274,7 @@ export default defineComponent({
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
         BitcoinIcon,
+        BankIcon,
         SwapSmallIcon,
     },
 });
@@ -374,13 +407,10 @@ svg {
 
         .time-and-message {
             font-size: var(--small-size);
+            font-weight: 600;
             opacity: .5;
             white-space: nowrap;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-
-            .time {
-                font-weight: 600;
-            }
 
             .dot {
                 margin: 0 0.875rem;

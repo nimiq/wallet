@@ -74,6 +74,7 @@ export const useTransactionsStore = createStore({
                             asset: SwapAsset.NIM,
                             transactionHash: plain.transactionHash,
                             htlc: {
+                                address: plain.recipient,
                                 refundAddress: fundingData.sender,
                                 redeemAddress: fundingData.recipient,
                                 timeoutBlockHeight: fundingData.timeout,

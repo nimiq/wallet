@@ -6,7 +6,7 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
-import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
+import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
@@ -65,6 +65,9 @@ export const useBtcTransactionsStore = createStore({
                             transactionHash: plain.transactionHash,
                             outputIndex: fundingData.outputIndex,
                             htlc: {
+                                address: plain.outputs
+                                    .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+                                    .address || undefined,
                                 script: fundingData.script,
                                 refundAddress: fundingData.refundAddress,
                                 redeemAddress: fundingData.redeemAddress,

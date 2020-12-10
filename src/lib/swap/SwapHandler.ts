@@ -4,7 +4,7 @@ import { BitcoinAssetAdapter } from './BitcoinAssetAdapter';
 import { EuroAssetAdapter } from './EuroAssetAdapter';
 
 // Re-export to centralize exports
-export { SwapAsset, Client };
+export { SwapAsset, Client, Transaction };
 
 export type Contract<TAsset extends SwapAsset> = {
     htlc: {

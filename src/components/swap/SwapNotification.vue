@@ -48,12 +48,12 @@ import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
-import { SwapHandler, Swap as GenericSwap, SwapAsset, Client } from '../../lib/swap/SwapHandler';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import { getHtlc, settleHtlc } from '../../lib/OasisApi';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeSwap, setActiveSwap } = useSwapsStore();
+        const { activeSwap, setActiveSwap, addFundingData } = useSwapsStore();
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
         const swapIsErrored = computed(() => !!activeSwap.value
@@ -181,6 +181,20 @@ export default defineComponent({
                             updateSwap({
                                 fundingTx: htlc,
                             });
+                        }) as Transaction<SwapAsset.EUR>;
+
+                        // As EUR payments are not otherwise detected by the Wallet, we use this
+                        // place to persist the relevant information in our store.
+                        addFundingData(fundingTx.hash.value, {
+                            asset: SwapAsset.EUR,
+                            // TODO: Where to get this info from? The activeSwap?
+                            // bankLabel?: string,
+                            // bankLogo?: string,
+                            amount: fundingTx.amount,
+                            htlc: {
+                                id: fundingTx.id,
+                                timeoutTimestamp: fundingTx.expires,
+                            },
                         });
 
                         updateSwap({

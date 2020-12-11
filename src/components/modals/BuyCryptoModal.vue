@@ -36,8 +36,10 @@
                             <div class="separator"></div>
                         </div>
                         <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
-                            <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-                            <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
+                            <Identicon class="secondary"
+                                v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
+                            <Identicon class="secondary"
+                                v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                             <Identicon class="primary" :address="activeAddressInfo.address"/>
                             <label>{{ activeAddressInfo.label }}</label>
                         </button>

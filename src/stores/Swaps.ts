@@ -81,10 +81,23 @@ export type ActiveSwap = SwapObject & {
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
 }
 
+export enum SEPA_INSTANT_SUPPORT {
+    FULL = 'sepa-instant-full-support',
+    PARTIAL = 'sepa-instant-partial-support',
+    NONE = 'sepa-instant-no-support',
+    UNKNOW = 'sepa-instant-unknow-support', // Is this a thing?
+}
+
+export type BankInfos = {
+    name: string,
+    type: SEPA_INSTANT_SUPPORT,
+}
+
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
     swapByTransaction: { [transactionHash: string]: string },
     activeSwap: ActiveSwap | null,
+    userBank: BankInfos | null,
 };
 
 export const useSwapsStore = createStore({
@@ -93,6 +106,7 @@ export const useSwapsStore = createStore({
         swaps: {},
         swapByTransaction: {},
         activeSwap: null,
+        userBank: null,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
@@ -104,6 +118,7 @@ export const useSwapsStore = createStore({
                 return state.swaps[swapHash] || null;
             },
         activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
+        userBank: (state): Readonly<BankInfos | null> => state.userBank,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
@@ -135,6 +150,9 @@ export const useSwapsStore = createStore({
         },
         setActiveSwap(swap: ActiveSwap | null) {
             this.state.activeSwap = swap;
+        },
+        setUserBank(bank: BankInfos) {
+            this.state.userBank = bank;
         },
     },
 });

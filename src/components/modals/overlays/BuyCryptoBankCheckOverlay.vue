@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
-import { BankInfos } from '@/stores/Settings';
+import { BankInfos } from '@/stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({

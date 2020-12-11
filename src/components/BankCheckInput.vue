@@ -24,7 +24,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon } from '@nimiq/vue-components';
-import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Settings';
+import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 import Avatar from './Avatar.vue';
 
 export default defineComponent({

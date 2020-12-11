@@ -35,12 +35,12 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="true" @back="goBack">{{ $t('Buy Crypto') }}</PageHeader>
+                <PageHeader :backArrow="userBank ? false : true" @back="goBack">{{ $t('Buy Crypto') }}</PageHeader>
                 <PageBody class="page__amount-input flex-column">
                     <section class="identicon-section flex-row">
-                        <div class="bank-infos flex-column">
-                            <Avatar :label="selectedBank ? selectedBank.name : ''"/>
-                            <label>{{ selectedBank ? selectedBank.name : '' }}</label>
+                        <div class="bank-infos flex-column" @click="page = Pages.BANK_CHECK">
+                            <Avatar :label="userBank ? userBank.name : ''"/>
+                            <label>{{ userBank ? userBank.name : '' }}</label>
                         </div>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
@@ -135,7 +135,7 @@ import {
     getSwap,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
-import { SwapState, useSwapsStore } from '@/stores/Swaps';
+import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import {
     HtlcCreationInstructions,
     HtlcSettlementInstructions,
@@ -146,7 +146,6 @@ import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
-import { BankInfos } from '@/stores/Settings';
 import { CryptoCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
@@ -169,16 +168,16 @@ enum Pages {
 
 export default defineComponent({
     setup(/* props, context */) {
-        const page = ref(Pages.WELCOME); // For testing, you can set this to Pages.SETUP_BUY
-        const selectedBank = ref<null | BankInfos>(null);
-        // & this by a fake bank. ex: { name: 'Berliner Sparkasse', type: 'sepa-instant-full-support' }
-        const addressListOpened = ref(false);
         const { addressInfos, activeAddressInfo } = useAddressStore();
-        const canSend = computed(() => !!(fiatAmount.value && estimate.value && selectedBank.value));
+        const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
+
+        const addressListOpened = ref(false);
         const fiatAmount = ref(0);
         const activeCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
-        const { activeSwap: swap } = useSwapsStore();
+        const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
+
+        const canSend = computed(() => !!(fiatAmount.value && estimate.value && userBank.value));
 
         onMounted(() => {
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
@@ -188,12 +187,12 @@ export default defineComponent({
             addressListOpened.value = false;
 
             if (page.value === Pages.BANK_CHECK) {
-                page.value = Pages.WELCOME;
+                goBack();
             }
         }
 
         function onBankSelected(bank: BankInfos) {
-            selectedBank.value = { ...bank };
+            setUserBank(bank);
             page.value = Pages.SETUP_BUY;
             closeOverlay();
         }
@@ -333,7 +332,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount,
                         fee: swapSuggestion.from.fee,
-                        bankLabel: selectedBank.value!.name,
+                        bankLabel: userBank.value!.name,
                     };
 
                     redeem = {
@@ -455,7 +454,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = Pages.WELCOME;
+                    page.value = userBank.value ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;
@@ -488,7 +487,7 @@ export default defineComponent({
             canSend,
             fiatAmount,
             fiatCurrencyInfo,
-            selectedBank,
+            userBank,
             SwapAsset,
             SwapState,
             onAnimationComplete,

@@ -179,7 +179,7 @@ msgstr ""
 "разночтений обращайтесь к оригинальному английскому тексту."
 
 #: src/components/modals/BtcReceiveModal.vue:35
-#: src/components/modals/BtcSendModal.vue:36
+#: src/components/modals/BtcSendModal.vue:34
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -231,7 +231,7 @@ msgstr "Резервная копия"
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:128
+#: src/components/modals/BtcSendModal.vue:126
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -498,7 +498,7 @@ msgstr ""
 msgid "Download your Login File"
 msgstr "Скачайте свой Файл Авторизации"
 
-#: src/components/modals/BtcSendModal.vue:114
+#: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
 msgstr "Скорость и комиссия могут меняться"
 
@@ -540,7 +540,7 @@ msgstr "Изменить количество знаков после запят
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:429
 #: src/components/modals/SendModal.vue:496
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
@@ -549,7 +549,7 @@ msgstr "Редактировать транзакцию"
 msgid "Enter address"
 msgstr "Укажите адрес"
 
-#: src/components/modals/BtcSendModal.vue:16
+#: src/components/modals/BtcSendModal.vue:15
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
@@ -721,7 +721,7 @@ msgstr "Улучшенная Доступность"
 msgid "In cooperation with"
 msgstr "В сотрудничестве с"
 
-#: src/components/modals/BtcSendModal.vue:110
+#: src/components/modals/BtcSendModal.vue:108
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -729,7 +729,7 @@ msgstr ""
 "Чтобы ускорить исполнение транзакции, увеличьте размер комиссии. Комиссия "
 "идёт напрямую майнерам."
 
-#: src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:131
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
@@ -768,7 +768,7 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/swap/SwapModal.vue:275
+#: src/components/swap/SwapModal.vue:271
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -819,7 +819,7 @@ msgstr "потерян"
 msgid "Max."
 msgstr "Макс."
 
-#: src/components/swap/SwapModal.vue:639 src/components/swap/SwapModal.vue:652
+#: src/components/swap/SwapModal.vue:635 src/components/swap/SwapModal.vue:648
 msgid "Minimum swap amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
@@ -839,7 +839,7 @@ msgstr ""
 msgid "Name this contact..."
 msgstr "Назовите этот контакт..."
 
-#: src/components/modals/BtcSendModal.vue:11
+#: src/components/modals/BtcSendModal.vue:10
 msgid "Name this recipient..."
 msgstr "Назовите этого отправителя..."
 
@@ -851,7 +851,7 @@ msgstr "Укажите имя контакта"
 msgid "Network"
 msgstr "Сеть"
 
-#: src/components/modals/BtcSendModal.vue:107
+#: src/components/modals/BtcSendModal.vue:105
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Комиссия сети: {sats} sat/vByte"
 
@@ -885,7 +885,7 @@ msgstr ""
 "Nimiq OASIS позволяет децентрализованно покупать и продавать криптовалюту "
 "прямо в вашем кошельке. "
 
-#: src/components/modals/BtcSendModal.vue:130
+#: src/components/modals/BtcSendModal.vue:128
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Кошелёк Nimiq не поддерживает подпись транзакций для Биткоина."
 
@@ -1034,7 +1034,7 @@ msgstr "Рескан"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
-#: src/components/modals/BtcSendModal.vue:430
+#: src/components/modals/BtcSendModal.vue:428
 #: src/components/modals/SendModal.vue:495
 msgid "Retry"
 msgstr "Повторить"
@@ -1081,7 +1081,7 @@ msgstr "Выберите в каких единицах будет отобра�
 msgid "Send"
 msgstr "Отправить"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:94
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
 #: src/components/modals/SendModal.vue:133
 msgid "Send all"
 msgstr "Отправить все"
@@ -1097,7 +1097,7 @@ msgstr ""
 "Отправляйте и получайте NIM без посредников и наслаждайтесь подлинной "
 "децентрализацией. "
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:152
@@ -1108,16 +1108,16 @@ msgstr "Отправить транзакцию"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
-#: src/components/modals/BtcSendModal.vue:427
+#: src/components/modals/BtcSendModal.vue:425
 #: src/components/modals/SendModal.vue:492
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
-#: src/components/modals/BtcSendModal.vue:485
+#: src/components/modals/BtcSendModal.vue:483
 msgid "Sent {btc} BTC"
 msgstr "Отправить {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:481
+#: src/components/modals/BtcSendModal.vue:479
 msgid "Sent {btc} BTC to {name}"
 msgstr "Отправить {btc} BTC на адрес {name}"
 
@@ -1193,7 +1193,7 @@ msgstr "Зарегистрироваться"
 msgid "Skip for now"
 msgstr "В данный момент пропустить"
 
-#: src/components/modals/BtcSendModal.vue:496
+#: src/components/modals/BtcSendModal.vue:494
 #: src/components/modals/SendModal.vue:538
 msgid "Something went wrong"
 msgstr "Операция не удалась"
@@ -1258,7 +1258,7 @@ msgstr "Сообщите нам здесь"
 msgid "Testnet"
 msgstr "Тестнет"
 
-#: src/components/swap/SwapModal.vue:663
+#: src/components/swap/SwapModal.vue:659
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 
@@ -1313,7 +1313,7 @@ msgstr "Есть проблема"
 msgid "They will be increased gradually."
 msgstr "Они будут постепенно повышены."
 
-#: src/components/modals/BtcSendModal.vue:29
+#: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
 msgstr "Этот адрес уже использован"
 
@@ -1373,7 +1373,7 @@ msgstr "Транзакции с {address}"
 msgid "Transaction to {address}"
 msgstr "Транзакции на {address}"
 
-#: src/components/modals/BtcSendModal.vue:131
+#: src/components/modals/BtcSendModal.vue:129
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Из-за времени обработки блока Биткоина, исполнение транзакций может занимать"
@@ -1405,7 +1405,7 @@ msgstr ""
 "Используйте {NIM}, супер-производительную и браузерную монету для платежей."
 
 #: src/components/modals/BtcReceiveModal.vue:33
-#: src/components/modals/BtcSendModal.vue:33
+#: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Для большей приватности используйте новый адрес для каждой транзакции."
@@ -1471,7 +1471,7 @@ msgstr "Вы можете получить еще немного бесплат�
 msgid "You now own crypto!"
 msgstr "Теперь ты владеешь криптовалютой!"
 
-#: src/components/modals/BtcSendModal.vue:85
+#: src/components/modals/BtcSendModal.vue:83
 msgid "You will send {amount}"
 msgstr "Вы перечисляете {amount}"
 

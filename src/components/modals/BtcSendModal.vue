@@ -82,7 +82,7 @@
                         <span v-else key="btc-amount">
                             {{ $t(
                                 'You will send {amount}',
-                                { amount: `${amount / (btcUnit.unitsToCoins)} ${btcUnit.ticker}` },
+                                { amount: `${amount / btcUnit.unitToCoins} ${btcUnit.ticker}` },
                             ) }}
                         </span>
                     </span>
@@ -97,7 +97,7 @@
                 <div class="flex-grow"></div>
 
                 <section class="fee-section flex-row">
-                    <FeeSelector :fees="feeOptions" @fee="(fee) => feePerByte = fee"/>
+                    <FeeSelector :fees="feeOptions" @fee="updateFee"/>
                     <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
                     <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
                         <InfoCircleSmallIcon slot="trigger"/>
@@ -341,6 +341,12 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
+        function updateFee(newFeePerByte: number) {
+            const isSendingMax = amount.value === maxSendableAmount.value;
+            feePerByte.value = newFeePerByte;
+            if (isSendingMax) sendMax();
+        }
+
         const hasHeight = computed(() => !!network$.height);
 
         const canSend = computed(() =>
@@ -529,6 +535,7 @@ export default defineComponent({
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
+            updateFee,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             canSend,

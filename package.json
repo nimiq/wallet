@@ -28,7 +28,7 @@
     "@nimiq/network-client": "^0.6.1",
     "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.6.0",
-    "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",
+    "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/translations",
     "@sentry/browser": "^5.18.0",
     "@sentry/integrations": "^5.18.0",
     "@vue/composition-api": "^0.4.0",

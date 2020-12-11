@@ -36,7 +36,7 @@
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
                 <PageHeader :backArrow="userBank ? false : true" @back="goBack">{{ $t('Buy Crypto') }}</PageHeader>
-                <PageBody class="page__amount-input flex-column">
+                <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <div class="bank-infos flex-column" @click="page = Pages.BANK_CHECK">
                             <Avatar :label="userBank ? userBank.name : ''"/>
@@ -56,13 +56,13 @@
                     </section>
 
                     <section class="amount-section">
-                        <div class="flex-row amount-row">
-                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                        <div class="flex-row primary-amount">
+                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" placeholder="0.00">
                                 <span slot="suffix">{{ activeCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount">
-                            <Amount :amount="cryptoAmount" :currency="CryptoCurrency.NIM"/>
+                            <AmountInput v-model="cryptoAmount"/>
                         </span>
                     </section>
 
@@ -172,10 +172,39 @@ export default defineComponent({
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
 
         const addressListOpened = ref(false);
-        const fiatAmount = ref(0);
         const activeCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
+
+        const _fiatAmount = ref(0);
+        const fiatAmount = computed({
+            get: () => {
+                if (_fiatAmount.value !== 0) return _fiatAmount.value;
+                if (!estimate.value) return 0;
+
+                if (estimate.value.from.asset !== SwapAsset.EUR) return 0;
+                return estimate.value.from.amount - estimate.value.from.fee;
+            },
+            set: (value: number) => {
+                _fiatAmount.value = value;
+                _cryptoAmount.value = 0;
+            },
+        });
+
+        const _cryptoAmount = ref(0);
+        const cryptoAmount = computed({
+            get: () => {
+                if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
+                if (!estimate.value) return 0;
+
+                if (estimate.value.to.asset !== SwapAsset.NIM) return 0;
+                return estimate.value.to.amount - estimate.value.to.fee;
+            },
+            set: (value: number) => {
+                _cryptoAmount.value = value;
+                _fiatAmount.value = 0;
+            },
+        });
 
         const canSend = computed(() => !!(fiatAmount.value && estimate.value && userBank.value));
 
@@ -210,28 +239,38 @@ export default defineComponent({
         );
 
         async function updateEstimate() {
-            const from: RequestAsset<SwapAsset.EUR> = {
-                [SwapAsset.EUR]: fiatAmount.value / 100,
-            };
-            const to = SwapAsset.NIM;
-            const newEstimate = await getEstimate(from, to);
+            if (_fiatAmount.value) {
+                const from: RequestAsset<SwapAsset.EUR> = {
+                    [SwapAsset.EUR]: fiatAmount.value / 100,
+                };
+                const to = SwapAsset.NIM;
+                const newEstimate = await getEstimate(from, to);
 
-            const eurPrice = newEstimate.from;
-            const nimPrice = newEstimate.to;
+                const eurPrice = newEstimate.from;
+                const nimPrice = newEstimate.to;
 
-            if (!eurPrice || !nimPrice) {
-                throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                if (!eurPrice || !nimPrice) {
+                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                }
+
+                estimate.value = newEstimate;
+            } else {
+                const from = SwapAsset.EUR;
+                const to: RequestAsset<SwapAsset.NIM> = {
+                    [SwapAsset.NIM]: cryptoAmount.value / 1e5,
+                };
+                const newEstimate = await getEstimate(from, to);
+
+                const eurPrice = newEstimate.from;
+                const nimPrice = newEstimate.to;
+
+                if (!eurPrice || !nimPrice) {
+                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                }
+
+                estimate.value = newEstimate;
             }
-
-            estimate.value = newEstimate;
         }
-
-        const cryptoAmount = computed(() => {
-            if (!estimate.value) return 0;
-
-            if (estimate.value.to.asset !== SwapAsset.NIM) return 0;
-            return estimate.value.to.amount - estimate.value.to.fee;
-        });
 
         async function sign() {
             // currentlySigning.value = true;
@@ -466,7 +505,7 @@ export default defineComponent({
         }
 
         let timeoutId: NodeJS.Timeout;
-        watch(fiatAmount, (val: number) => {
+        function onInput(val: number) {
             if (!val) {
                 estimate.value = null;
                 return;
@@ -474,7 +513,10 @@ export default defineComponent({
 
             clearTimeout(timeoutId);
             timeoutId = setTimeout(updateEstimate, 1000);
-        });
+        }
+
+        watch(_fiatAmount, onInput);
+        watch(_cryptoAmount, onInput);
 
         return {
             addressListOpened,
@@ -624,11 +666,6 @@ export default defineComponent({
         padding-right: 5rem;
     }
 
-    .page__amount-input {
-        // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
-        padding: 0.375rem 3rem 3rem;
-    }
-
     .identicon-section {
         justify-content: space-around;
         align-items: center;
@@ -747,29 +784,53 @@ export default defineComponent({
         align-self: stretch;
         margin: 3rem 0 2rem;
 
-        .amount-row {
+        .primary-amount {
             align-self: stretch;
             justify-content: center;
             align-items: flex-end;
             color: var(--nimiq-light-blue);
             margin-bottom: 1rem;
+
+            .amount-input {
+                width: auto;
+                max-width: 100%;
+                font-weight: bold;
+
+                & /deep/ > span {
+                    font-size: 2.5rem;
+                    letter-spacing: 0.1rem;
+                }
+
+                /deep/ .label-input {
+                    margin-right: 1rem;
+                }
+
+                /deep/ .label-input * {
+                    font-weight: 600;
+                    font-size: 4rem !important;
+                    padding: .5rem 1rem;
+                }
+            }
         }
 
-        .amount-input {
-            width: auto;
-            max-width: 100%;
-            min-height: 5rem;
+        .secondary-amount {
+            font-weight: 600;
+            opacity: 0.6;
+
+            .amount-input {
+                & /deep/ > span {
+                    font-weight: bold;
+                    font-size: 16px;
+                    letter-spacing: 0.8px;
+                }
+
+                /deep/ .label-input * {
+                    font-weight: 600;
+                    font-size: 2.5rem !important;
+                    padding: 0.375rem 0.75rem;
+                }
+            }
         }
-
-        // .secondary-amount {
-        //     font-weight: 600;
-        //     opacity: 0.5;
-
-        //     .fiat-amount,
-        //     .amount {
-        //         margin-left: -0.2em;
-        //     }
-        // }
     }
 
     .nq-button {

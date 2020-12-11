@@ -26,6 +26,18 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
     },
 };
 
+export enum SEPA_INSTANT_SUPPORT {
+    FULL = 'sepa-instant-full-support',
+    PARTIAL = 'sepa-instant-partial-support',
+    NONE = 'sepa-instant-no-support',
+    UNKNOW = 'sepa-instant-unknow-support', // Is this a thing?
+}
+
+export type BankInfos = {
+    name: string,
+    type: SEPA_INSTANT_SUPPORT,
+}
+
 export type SettingsState = {
     decimals: 0 | 2 | 5,
     language: string, // locale

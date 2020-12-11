@@ -5,7 +5,17 @@
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
+                <!-- eslint-disable max-len -->
+                <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83">
+                    <path stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
+                    <path stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
+                </svg>
+                <!-- eslint-enable max-len -->
                 <div class="welcome-text">
+                    <span class="early-access">
+                        <FlameIcon />
+                        {{ $t('Early Access') }}
+                    </span>
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
@@ -14,9 +24,9 @@
                 </div>
 
                 <ul class="nq-list welcome-steps">
-                    <li>{{ $t('Select a currency and an amount.') }}</li>
-                    <li>{{ $t('Wait for the swap to be set up.') }}</li>
-                    <li>{{ $t('Finalize the swap by bank transfer.') }}</li>
+                    <li><span>{{ $t('1') }}</span>{{ $t('Select a currency and an amount.') }}</li>
+                    <li><span>{{ $t('2') }}</span>{{ $t('Wait for the swap to be set up.') }}</li>
+                    <li><span>{{ $t('3') }}</span>{{ $t('Finalize the swap by bank transfer.') }}</li>
                 </ul>
 
                 <button class="nq-button light-blue" @click="page = Pages.BANK_CHECK">
@@ -132,22 +142,23 @@ import {
     SetupSwapRequest,
     SetupSwapResult,
 } from '@nimiq/hub-api';
+import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
-import { NetworkClient } from '@nimiq/network-client';
 import { useFiatStore } from '@/stores/Fiat';
+import { BankInfos } from '@/stores/Settings';
 import { CryptoCurrency } from '@/lib/Constants';
+import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
-import { BankInfos } from '../BankCheckInput.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
 import Avatar from '../Avatar.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
-import { sandboxMockClearHtlc } from '../../lib/OasisApi';
+import FlameIcon from '../icons/FlameIcon.vue';
 
 enum Pages {
     WELCOME,
@@ -504,6 +515,7 @@ export default defineComponent({
         Avatar,
         SwapAnimation,
         Amount,
+        FlameIcon,
     },
 });
 </script>
@@ -524,24 +536,65 @@ export default defineComponent({
 }
 
 .welcome.page-body {
-    padding-top: 12.25rem;
+    padding-top: 6.25rem;
     width: 52.5rem;
     max-width: 100%;
-    background-image: url('../../assets/buy-crypto-modal-background.png');
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: 420px auto;
 
-    .nq-h1 {
-        margin-top: 7rem;
-        margin-bottom: 2.25rem;
-        white-space: pre-line;
+    svg.welcome-euro-logo {
+        width: 10rem;
+        height: 10rem;
+        margin-bottom: 5rem;
     }
 
-    .nq-text {
-        color: var(--nimiq-blue);
-        margin: 0 0 2rem;
-        white-space: pre-line;
+    .welcome-text {
+        .early-access {
+            font-size: 12px;
+            font-weight: bold;
+            color: #EAA617;
+
+            svg {
+                margin-right: 0.75rem;
+            }
+        }
+
+        .nq-h1 {
+            margin-top: 1rem;
+            margin-bottom: 2.25rem;
+            white-space: pre-line;
+        }
+
+        .nq-text {
+            color: var(--nimiq-blue);
+            margin: 0 0 2rem;
+            white-space: pre-line;
+        }
+    }
+
+    ul.welcome-steps {
+        text-align: left;
+        list-style-type: none;
+        padding-left: 0;
+
+        span {
+            display: inline-block;
+            width: 4rem;
+            height: 4rem;
+            line-height: calc(4rem - (2 * 0.1875rem));
+            margin-right: 1rem;
+            text-align: center;
+            border-radius: 50%;
+            border: 0.1875rem solid var(--text-20);
+        }
+
+        li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        li:not(:last-child) {
+            margin-bottom: 2rem;
+        }
     }
 
     .nq-gray {
@@ -558,7 +611,7 @@ export default defineComponent({
     .nq-button {
         margin-left: 2rem;
         margin-right: 2rem;
-        align-self: stretch;
+        width: 70%;
     }
 }
 

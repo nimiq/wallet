@@ -20,7 +20,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
                 const htlc = await this.client.getHtlc(id);
                 if (test(htlc)) return htlc;
             } catch (error) {
-                console.error(error);
+                console.error(error); // eslint-disable-line no-console
             }
             return null;
         };

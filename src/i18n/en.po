@@ -829,11 +829,6 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:432
-#: src/components/swap/SwapModal.vue:274
-msgid "Ledger accounts do not support Swaps yet, check back soon!"
-msgstr ""
-
 #: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
@@ -1376,12 +1371,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:812
-#: src/components/swap/SwapModal.vue:636
+#: src/components/modals/BuyCryptoModal.vue:804
+#: src/components/swap/SwapModal.vue:627
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:817
+#: src/components/modals/BuyCryptoModal.vue:809
 msgid "The fees determine the minimum amount."
 msgstr ""
 

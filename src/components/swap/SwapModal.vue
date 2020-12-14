@@ -267,15 +267,6 @@ export default defineComponent({
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
 
-        onMounted(() => {
-            // For blocking Ledger from swaps (not yet supported by Hub)
-            const { activeAccountInfo } = useAccountStore();
-            if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
-                swapError.value = context.root.$t(
-                    'Ledger accounts do not support Swaps yet, check back soon!') as string;
-            }
-        });
-
         const currentlySigning = ref(false);
 
         const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
@@ -1064,6 +1055,9 @@ export default defineComponent({
                 settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
                     : signedTransactions.btc.serializedTx,
+                nimiqProxySerializedTx: signedTransactions.nimProxy
+                    ? signedTransactions.nimProxy.serializedTx
+                    : undefined,
             });
 
             if (Config.fastspot.watchtowerEndpoint) {

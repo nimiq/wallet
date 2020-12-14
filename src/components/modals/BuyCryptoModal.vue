@@ -426,14 +426,6 @@ export default defineComponent({
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
 
-        onMounted(() => {
-            // For blocking Ledger from swaps (not yet supported by Hub)
-            if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
-                swapError.value = context.root.$t(
-                    'Ledger accounts do not support Swaps yet, check back soon!') as string;
-            }
-        });
-
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
             get: () => {

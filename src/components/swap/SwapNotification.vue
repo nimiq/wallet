@@ -330,6 +330,9 @@ export default defineComponent({
                                     });
                                     currentError.value = null;
                                 },
+                                activeSwap.value!.from.asset === SwapAsset.NIM
+                                    ? activeSwap.value!.nimiqProxySerializedTx
+                                    : undefined,
                             );
 
                             if (activeSwap.value!.from.asset === SwapAsset.BTC) {
@@ -392,6 +395,9 @@ export default defineComponent({
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
+                            activeSwap.value!.to.asset === SwapAsset.NIM
+                                ? activeSwap.value!.nimiqProxySerializedTx
+                                : undefined,
                         );
 
                         if (activeSwap.value!.to.asset === SwapAsset.BTC) {

@@ -69,9 +69,10 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
     public async createOutgoing(
         serializedTx: string,
         onPending: (tx: Transaction<FromAsset>) => any,
+        serializedProxyTx?: string,
     ): Promise<Transaction<FromAsset>> {
         const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
-        return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending);
+        return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending, serializedProxyTx);
     }
 
     public async awaitOutgoing(onPending: (tx: Transaction<FromAsset>) => any): Promise<Transaction<FromAsset>> {
@@ -97,11 +98,13 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
     public async settleIncoming(
         serializedTx: string,
         secret: string,
+        serializedProxyTx?: string,
     ): Promise<Transaction<ToAsset>> {
         return this.toAssetAdapter.settleHtlc(
             serializedTx,
             secret,
             this.swap.hash,
+            serializedProxyTx,
         );
     }
 

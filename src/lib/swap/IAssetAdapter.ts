@@ -45,13 +45,19 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
         address: string,
         serializedTx: string,
         onPending: (tx: Transaction<TAsset>) => any,
+        serializedProxyTx?: string,
     ): Promise<Transaction<TAsset>>;
 
     awaitHtlcSettlement(address: string, data: string): Promise<Transaction<TAsset>>;
 
     awaitSwapSecret(address: string, data: string): Promise<string>;
 
-    settleHtlc(serializedTx: string, secret: string, hash: string): Promise<Transaction<TAsset>>;
+    settleHtlc(
+        serializedTx: string,
+        secret: string,
+        hash: string,
+        serializedProxyTx?: string,
+    ): Promise<Transaction<TAsset>>;
 
     stop(reason: Error): void;
 }

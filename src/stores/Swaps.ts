@@ -66,6 +66,7 @@ export type ActiveSwap = SwapObject & {
     fundingInstructions?: SepaClearingInstruction,
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
+    nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     secret?: string,

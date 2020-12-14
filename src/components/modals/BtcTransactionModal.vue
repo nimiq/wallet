@@ -503,7 +503,6 @@ export default defineComponent({
                     refund: {
                         type: SwapAsset.BTC,
                         input: {
-                            address: htlcOutput.address!, // HTLC address
                             transactionHash: transaction.value.transactionHash,
                             outputIndex: htlcOutput.index,
                             outputScript: htlcOutput.script,

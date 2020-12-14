@@ -99,20 +99,34 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         address: string,
         serializedTx: string,
         onPending?: (tx: TransactionDetails) => any,
+        serializedProxyTx?: string,
     ): Promise<TransactionDetails> {
-        const tx = await this.sendTransaction(serializedTx);
+        if (serializedProxyTx) {
+            // Wait for proxy to be funded before forwarding funds into htlc.
+            // The proxy funding tx had already been broadcast by the hub but send it again just to be sure.
+            const proxyTx = await this.sendTransaction(serializedProxyTx);
+            const resendInterval = window.setInterval(
+                () => this.sendTransaction(serializedProxyTx),
+                60 * 1000, // Every 1 minute
+            );
+            await this.findTransaction(proxyTx.recipient, (tx) => tx.transactionHash === proxyTx.transactionHash
+                && (tx.state === 'mined' || tx.state === 'confirmed'),
+            ).finally(() => window.clearInterval(resendInterval));
+        }
 
-        if (tx.state === 'pending') {
-            if (typeof onPending === 'function') onPending(tx);
+        const htlcTx = await this.sendTransaction(serializedTx);
+
+        if (htlcTx.state === 'pending') {
+            if (typeof onPending === 'function') onPending(htlcTx);
             const resendInterval = window.setInterval(
                 () => this.sendTransaction(serializedTx),
                 60 * 1000, // Every 1 minute
             );
-            return this.awaitHtlcFunding(tx.recipient, tx.value, tx.data.raw)
+            return this.awaitHtlcFunding(htlcTx.recipient, htlcTx.value, htlcTx.data.raw)
                 .finally(() => window.clearInterval(resendInterval));
         }
 
-        return tx;
+        return htlcTx;
     }
 
     public async awaitHtlcSettlement(address: string): Promise<TransactionDetails> {
@@ -128,13 +142,27 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         return (tx.proof as any as { preImage: string }).preImage;
     }
 
-    public async settleHtlc(serializedTx: string, secret: string, hash: string): Promise<TransactionDetails> {
+    public async settleHtlc(
+        serializedTx: string,
+        secret: string,
+        hash: string,
+        serializedProxyTx?: string,
+    ): Promise<TransactionDetails> {
         serializedTx = serializedTx.replace(
             '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925' // SHA256 hash of dummy secret
             + '0000000000000000000000000000000000000000000000000000000000000000', // Dummy secret
             `${hash}${secret}`,
         );
-        return this.sendTransaction(serializedTx);
+        const htlcTx = await this.sendTransaction(serializedTx);
+
+        if (serializedProxyTx) {
+            // Wait for htlc transaction to the proxy to be mined and then forward the funds.
+            await this.findTransaction(htlcTx.recipient, (tx) => tx.transactionHash === htlcTx.transactionHash
+                && (tx.state === 'mined' || tx.state === 'confirmed'));
+            await this.sendTransaction(serializedProxyTx);
+        }
+
+        return htlcTx;
     }
 
     public stop(reason: Error): void {

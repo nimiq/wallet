@@ -22,10 +22,8 @@
                         </Tooltip>
                         <SwapFeesTooltip
                             preferredPosition="bottom left"
-                            :myBtcFeeFiat="myBtcFeeFiat"
-                            :myNimFeeFiat="myNimFeeFiat"
-                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                            :serviceNimFeeFiat="serviceNimFeeFiat"
+                            :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
+                            :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
                             :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
                             :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
                             :currency="currency"

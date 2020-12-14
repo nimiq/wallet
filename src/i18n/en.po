@@ -28,7 +28,7 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:22
+#: src/components/swap/SwapFeesTooltip.vue:36
 msgid "{perc}% of swap value."
 msgstr ""
 
@@ -63,8 +63,9 @@ msgstr ""
 msgid "3"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:53
-#: src/components/swap/SwapModal.vue:70
+#: src/components/modals/BuyCryptoModal.vue:81
+#: src/components/swap/SwapModal.vue:51
+#: src/components/swap/SwapModal.vue:68
 msgid "30-day Limit"
 msgstr ""
 
@@ -178,7 +179,7 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:11
+#: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
@@ -239,8 +240,8 @@ msgstr ""
 msgid "Browser"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:7
-msgid "BTC network fees"
+#: src/components/swap/SwapFeesTooltip.vue:8
+msgid "BTC network fee"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:31
@@ -257,8 +258,8 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:38
-#: src/components/modals/BuyCryptoModal.vue:74
+#: src/components/modals/BuyCryptoModal.vue:128
+#: src/components/modals/BuyCryptoModal.vue:39
 msgid "Buy Crypto"
 msgstr ""
 
@@ -278,11 +279,11 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:145
+#: src/components/swap/SwapModal.vue:143
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:151
 msgid "By clicking 'confirm', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -316,9 +317,9 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:113
+#: src/components/modals/BuyCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:211
+#: src/components/swap/SwapModal.vue:209
 msgid "Choose an Address"
 msgstr ""
 
@@ -342,7 +343,7 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:139
+#: src/components/swap/SwapModal.vue:137
 msgid "Confirm"
 msgstr ""
 
@@ -476,16 +477,17 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:76
+#: src/components/modals/BuyCryptoModal.vue:87
+#: src/components/swap/SwapModal.vue:74
 msgid "During early access, these limits apply."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:17
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:46
 msgid "Early Access"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:50
+#: src/components/swap/SwapModal.vue:48
 msgid "Early Access means that there are limits in place for swaps. They will be increased gradually."
 msgstr ""
 
@@ -578,7 +580,8 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:42
+#: src/components/modals/BuyCryptoModal.vue:66
+#: src/components/swap/SwapModal.vue:40
 msgid "fees"
 msgstr ""
 
@@ -739,7 +742,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:303
+#: src/components/swap/SwapModal.vue:301
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -767,8 +770,8 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:55
-#: src/components/swap/SwapModal.vue:72
+#: src/components/swap/SwapModal.vue:53
+#: src/components/swap/SwapModal.vue:70
 msgid "loading..."
 msgstr ""
 
@@ -791,13 +794,14 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:61
-#: src/components/swap/SwapModal.vue:65
+#: src/components/modals/BuyCryptoModal.vue:72
+#: src/components/swap/SwapModal.vue:59
+#: src/components/swap/SwapModal.vue:63
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:667
-#: src/components/swap/SwapModal.vue:680
+#: src/components/swap/SwapModal.vue:665
+#: src/components/swap/SwapModal.vue:678
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -831,8 +835,8 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:14
-msgid "NIM network fees"
+#: src/components/swap/SwapFeesTooltip.vue:26
+msgid "NIM network fee"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:28
@@ -866,6 +870,10 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:36
 #: src/components/TransactionListItem.vue:36
 msgid "not sent"
+msgstr ""
+
+#: src/components/swap/SwapFeesTooltip.vue:18
+msgid "OASIS service fee"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:252
@@ -1175,7 +1183,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:18
+#: src/components/swap/SwapFeesTooltip.vue:32
 msgid "Swap fee"
 msgstr ""
 
@@ -1214,7 +1222,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:691
+#: src/components/swap/SwapModal.vue:689
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1232,6 +1240,7 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:50
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr ""
@@ -1252,7 +1261,8 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:77
+#: src/components/modals/BuyCryptoModal.vue:88
+#: src/components/swap/SwapModal.vue:75
 msgid "They will be increased gradually."
 msgstr ""
 
@@ -1279,6 +1289,7 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:48
 #: src/components/swap/SwapModal.vue:18
 msgid "This rate includes the swap fee."
 msgstr ""
@@ -1300,7 +1311,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:26
+#: src/components/swap/SwapFeesTooltip.vue:42
 msgid "Total fees"
 msgstr ""
 

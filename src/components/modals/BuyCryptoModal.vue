@@ -50,28 +50,22 @@
                                 {{ $t('The rate might change depending on the swap volume.') }}
                             </p>
                         </Tooltip>
-                        <!-- <SwapFeesTooltip
+                        <SwapFeesTooltip
                             preferredPosition="bottom left"
-                            :myBtcFeeFiat="myBtcFeeFiat"
-                            :myNimFeeFiat="myNimFeeFiat"
-                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                            :serviceNimFeeFiat="serviceNimFeeFiat"
-                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
-                            :currency="currency"
+                            :btcFeeFiat="fees.btcFeeFiat"
+                            :oasisFeeFiat="fees.oasisFeeFiat"
+                            :nimFeeFiat="fees.nimFeeFiat"
+                            :serviceExchangeFeeFiat="fees.serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="fees.serviceExchangeFeePercentage"
+                            :currency="activeCurrency"
                             :container="this"
                         >
-                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
-                                <LightningIcon v-if="isHighRelativeFees"/>
-                                <FiatAmount :amount="myBtcFeeFiat
-                                    + myNimFeeFiat
-                                    + serviceBtcFeeFiat
-                                    + serviceNimFeeFiat
-                                    + serviceExchangeFeeFiat"
-                                    :currency="currency"/>
+                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fees.isHigh}">
+                                <LightningIcon v-if="fees.isHigh"/>
+                                <FiatAmount :amount="fees.total" :currency="activeCurrency"/>
                                 {{ $t('fees') }}
                             </div>
-                        </SwapFeesTooltip> -->
+                        </SwapFeesTooltip>
                         <!-- <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
                             <div slot="trigger" class="pill limits flex-row">
                                 <span v-if="limits">
@@ -206,7 +200,7 @@ import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
-import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
+import { CryptoCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import Modal from './Modal.vue';
@@ -218,6 +212,7 @@ import BankIcon from '../icons/BankIcon.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
+import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 
 enum Pages {
     WELCOME,
@@ -300,8 +295,10 @@ export default defineComponent({
             new CurrencyInfo(activeCurrency.value),
         );
 
+        const { exchangeRates } = useFiatStore();
+
         const eurPerNim = computed(() => {
-            const data = swap.value || estimate.value;
+            const data = estimate.value;
             if (data && data.to.asset === SwapAsset.NIM) {
                 const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
                 const nim = data.to.amount + data.to.serviceNetworkFee;
@@ -309,12 +306,11 @@ export default defineComponent({
                 return (eur / 100) / (nim / 1e5);
             }
 
-            const { exchangeRates } = useFiatStore();
-            return exchangeRates.value[CryptoCurrency.NIM][FiatCurrency.EUR];
+            return exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value];
         });
 
         const eurPerBtc = computed(() => {
-            const data = swap.value || estimate.value;
+            const data = estimate.value;
             if (data && data.to.asset === SwapAsset.BTC) {
                 const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
                 const btc = data.to.amount + data.to.serviceNetworkFee;
@@ -322,8 +318,56 @@ export default defineComponent({
                 return (eur / 100) / (btc / 1e8);
             }
 
-            const { exchangeRates } = useFiatStore();
-            return exchangeRates.value[CryptoCurrency.BTC][FiatCurrency.EUR];
+            return exchangeRates.value[CryptoCurrency.BTC][activeCurrency.value];
+        });
+
+        const fees = computed(() => {
+            const data = estimate.value;
+            if (!data) {
+                // TODO: Predict fees
+
+                return {
+                    btcFeeFiat: undefined,
+                    oasisFeeFiat: 0,
+                    nimFeeFiat: 0,
+                    serviceExchangeFeePercentage: 0,
+                    serviceExchangeFeeFiat: 0,
+                    total: 0,
+                    isHigh: false,
+                };
+            }
+
+            const myEurFee = data.from.fee;
+            const theirEurFee = data.from.serviceEscrowFee + data.from.serviceNetworkFee;
+
+            const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
+
+            const myCryptoFee = data.to.fee;
+            const theirCryptoFee = data.to.serviceNetworkFee;
+
+            const btcFeeFiat = data.to.asset === SwapAsset.BTC
+                ? ((myCryptoFee + theirCryptoFee) / 1e8)
+                    * exchangeRates.value[CryptoCurrency.BTC][activeCurrency.value]!
+                : undefined;
+            const nimFeeFiat = data.to.asset === SwapAsset.NIM
+                ? ((myCryptoFee + theirCryptoFee) / 1e5)
+                    * exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!
+                : undefined;
+
+            const serviceExchangeFeePercentage = Math.round(data.serviceFeePercentage * 1000) / 10;
+            const serviceExchangeFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
+
+            const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceExchangeFeeFiat;
+
+            return {
+                btcFeeFiat,
+                oasisFeeFiat,
+                nimFeeFiat,
+                serviceExchangeFeePercentage,
+                serviceExchangeFeeFiat,
+                total,
+                isHigh: false,
+            };
         });
 
         async function updateEstimate() {
@@ -481,8 +525,6 @@ export default defineComponent({
                     * swapSuggestion.serviceFeePercentage,
                 );
 
-                const { exchangeRates } = useFiatStore();
-
                 resolve({
                     swapId: swapSuggestion.id,
                     fund,
@@ -632,6 +674,7 @@ export default defineComponent({
             CryptoCurrency,
             eurPerNim,
             eurPerBtc,
+            fees,
         };
     },
     components: {
@@ -649,6 +692,7 @@ export default defineComponent({
         Amount,
         FlameIcon,
         FiatAmount,
+        SwapFeesTooltip,
     },
 });
 </script>

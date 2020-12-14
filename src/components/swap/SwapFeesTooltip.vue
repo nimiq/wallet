@@ -3,17 +3,31 @@
         <slot name="trigger" slot="trigger">
             <InfoCircleSmallIcon />
         </slot>
-        <div class="price-breakdown">
-            <label>{{ $t('BTC network fees') }}</label>
-            <FiatAmount :amount="myBtcFeeFiat + serviceBtcFeeFiat" :currency="currency"/>
-        </div>
-        <p class="explainer">
-            {{ $t('Atomic swaps require two BTC transactions.') }}
-        </p>
-        <div class="price-breakdown">
-            <label>{{ $t('NIM network fees') }}</label>
-            <FiatAmount :amount="myNimFeeFiat + serviceNimFeeFiat" :currency="currency"/>
-        </div>
+        <template v-if="btcFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('BTC network fee') }}</label>
+                <FiatAmount :amount="btcFeeFiat" :currency="currency"/>
+            </div>
+            <p class="explainer">
+                {{ $t('Atomic swaps require two BTC transactions.') }}
+            </p>
+        </template>
+
+        <template v-if="oasisFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('OASIS service fee') }}</label>
+                <FiatAmount :amount="oasisFeeFiat" :currency="currency"/>
+            </div>
+        </template>
+
+
+        <template v-if="nimFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('NIM network fee') }}</label>
+                <FiatAmount :amount="nimFeeFiat" :currency="currency"/>
+            </div>
+        </template>
+
         <div class="price-breakdown">
             <label>{{ $t('Swap fee') }}</label>
             <FiatAmount :amount="serviceExchangeFeeFiat" :currency="currency"/>
@@ -21,15 +35,17 @@
         <p class="explainer">
             {{ $t('{perc}% of swap value.', { perc: serviceExchangeFeePercentage }) }}
         </p>
+
         <hr>
+
         <div class="price-breakdown">
             <label>{{ $t('Total fees') }}</label>
             <FiatAmount
                 class="total-fees"
-                :amount="myBtcFeeFiat
-                    + myNimFeeFiat
-                    + serviceBtcFeeFiat
-                    + serviceNimFeeFiat
+                :amount="
+                    (btcFeeFiat || 0)
+                    + (oasisFeeFiat || 0)
+                    + (nimFeeFiat || 0)
                     + serviceExchangeFeeFiat"
                 :currency="currency"/>
         </div>
@@ -43,10 +59,18 @@ import { FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     props: {
-        myBtcFeeFiat: Number,
-        myNimFeeFiat: Number,
-        serviceBtcFeeFiat: Number,
-        serviceNimFeeFiat: Number,
+        btcFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        oasisFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        nimFeeFiat: {
+            type: Number,
+            required: false,
+        },
         serviceExchangeFeeFiat: Number,
         serviceExchangeFeePercentage: Number,
         currency: String as () => FiatCurrency,

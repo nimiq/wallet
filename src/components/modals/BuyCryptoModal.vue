@@ -35,7 +35,67 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="userBank ? false : true" @back="goBack">{{ $t('Buy Crypto') }}</PageHeader>
+                <PageHeader :backArrow="userBank ? false : true" @back="goBack">
+                    {{ $t('Buy Crypto') }}
+                    <div slot="more" class="pills flex-row">
+                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                            <div slot="trigger" class="pill exchange-rate">
+                                1 NIM = <FiatAmount :amount="eurPerNim" :maxRelativeDeviation="0.001" currency="eur"/>
+                            </div>
+                            <!-- <div slot="trigger" class="pill exchange-rate">
+                                1 BTC = <FiatAmount :amount="eurPerBtc" currency="eur"/>
+                            </div> -->
+                            <span>{{ $t('This rate includes the swap fee.') }}</span>
+                            <p class="explainer">
+                                {{ $t('The rate might change depending on the swap volume.') }}
+                            </p>
+                        </Tooltip>
+                        <!-- <SwapFeesTooltip
+                            preferredPosition="bottom left"
+                            :myBtcFeeFiat="myBtcFeeFiat"
+                            :myNimFeeFiat="myNimFeeFiat"
+                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
+                            :serviceNimFeeFiat="serviceNimFeeFiat"
+                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :currency="currency"
+                            :container="this"
+                        >
+                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
+                                <LightningIcon v-if="isHighRelativeFees"/>
+                                <FiatAmount :amount="myBtcFeeFiat
+                                    + myNimFeeFiat
+                                    + serviceBtcFeeFiat
+                                    + serviceNimFeeFiat
+                                    + serviceExchangeFeeFiat"
+                                    :currency="currency"/>
+                                {{ $t('fees') }}
+                            </div>
+                        </SwapFeesTooltip> -->
+                        <!-- <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
+                            <div slot="trigger" class="pill limits flex-row">
+                                <span v-if="limits">
+                                    {{ $t('Max.') }}
+                                    <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+                                </span>
+                                <template v-else>
+                                    {{ $t('Max.') }}
+                                    <CircleSpinner/>
+                                </template>
+                            </div>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
+                            <div></div>
+                            <p class="explainer">
+                                {{ $t('During early access, these limits apply.') }}
+                                {{ $t('They will be increased gradually.') }}
+                            </p>
+                        </Tooltip> -->
+                    </div>
+                </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <div class="bank-infos flex-column" @click="page = Pages.BANK_CHECK">
@@ -120,7 +180,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
 import {
@@ -146,7 +206,7 @@ import { NetworkClient } from '@nimiq/network-client';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
-import { CryptoCurrency } from '@/lib/Constants';
+import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import Modal from './Modal.vue';
@@ -239,6 +299,32 @@ export default defineComponent({
         const fiatCurrencyInfo = computed(() =>
             new CurrencyInfo(activeCurrency.value),
         );
+
+        const eurPerNim = computed(() => {
+            const data = swap.value || estimate.value;
+            if (data && data.to.asset === SwapAsset.NIM) {
+                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
+                const nim = data.to.amount + data.to.serviceNetworkFee;
+
+                return (eur / 100) / (nim / 1e5);
+            }
+
+            const { exchangeRates } = useFiatStore();
+            return exchangeRates.value[CryptoCurrency.NIM][FiatCurrency.EUR];
+        });
+
+        const eurPerBtc = computed(() => {
+            const data = swap.value || estimate.value;
+            if (data && data.to.asset === SwapAsset.BTC) {
+                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
+                const btc = data.to.amount + data.to.serviceNetworkFee;
+
+                return (eur / 100) / (btc / 1e8);
+            }
+
+            const { exchangeRates } = useFiatStore();
+            return exchangeRates.value[CryptoCurrency.BTC][FiatCurrency.EUR];
+        });
 
         async function updateEstimate() {
             if (_fiatAmount.value) {
@@ -544,12 +630,15 @@ export default defineComponent({
             goBack,
             activeCurrency,
             CryptoCurrency,
+            eurPerNim,
+            eurPerBtc,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
+        Tooltip,
         BuyCryptoBankCheckOverlay,
         AmountInput,
         Identicon,
@@ -559,6 +648,7 @@ export default defineComponent({
         SwapAnimation,
         Amount,
         FlameIcon,
+        FiatAmount,
     },
 });
 </script>
@@ -661,6 +751,55 @@ export default defineComponent({
     flex-grow: 1;
     font-size: var(--body-size);
     height: 100%;
+
+    .pills {
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+
+        .tooltip {
+            text-align: left;
+            margin-top: 0.75rem;
+        }
+
+        .tooltip + .tooltip {
+            margin-left: 0.75rem;
+        }
+    }
+
+    .pill {
+        align-items: center;
+        align-self: center;
+        font-size: var(--small-size);
+        font-weight: 600;
+        color: rgba(31, 35, 72, 0.6);
+        padding: 0.75rem 1.5rem;
+        border-radius: 5rem;
+        box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
+
+        &.fees {
+            svg,
+            .fiat-amount {
+                margin-right: 0.5rem;
+            }
+
+            &.high-fees {
+                color: var(--nimiq-red);
+                box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
+            }
+        }
+
+        &.limits {
+            color: rgb(234, 166, 23);
+            box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
+
+            /deep/ svg {
+                margin-left: 0.75rem;
+                height: 1.75rem;
+                width: 1.75rem;
+            }
+        }
+    }
 
     .page-body {
         padding-left: 5rem;

@@ -66,28 +66,28 @@
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
-                        <!-- <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
                             <div slot="trigger" class="pill limits flex-row">
-                                <span v-if="limits">
+                                <span>
                                     {{ $t('Max.') }}
-                                    <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+                                    <FiatAmount :amount="limits.current / 100" currency="eur" hideDecimals/>
                                 </span>
-                                <template v-else>
+                                <!-- <template v-else>
                                     {{ $t('Max.') }}
                                     <CircleSpinner/>
-                                </template>
+                                </template> -->
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
-                                <span v-else>{{ $t('loading...') }}</span>
+                                <FiatAmount :amount="limits.monthly / 100" currency="eur" hideDecimals/>
+                                <!-- <span v-else>{{ $t('loading...') }}</span> -->
                             </div>
                             <div></div>
                             <p class="explainer">
                                 {{ $t('During early access, these limits apply.') }}
                                 {{ $t('They will be increased gradually.') }}
                             </p>
-                        </Tooltip> -->
+                        </Tooltip>
                     </div>
                 </PageHeader>
                 <PageBody class="flex-column">
@@ -232,6 +232,12 @@ export default defineComponent({
         const activeCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
+
+        // TODO: Determine current limit from account transaction history
+        const limits = ref({
+            current: 100e2, // 100 €
+            monthly: 100e2, // 100 €
+        });
 
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
@@ -675,6 +681,7 @@ export default defineComponent({
             eurPerNim,
             eurPerBtc,
             fees,
+            limits,
         };
     },
     components: {
@@ -795,6 +802,12 @@ export default defineComponent({
     flex-grow: 1;
     font-size: var(--body-size);
     height: 100%;
+
+    .page-header {
+        // Reduce side padding to fit all three tooltip pills in one row
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 
     .pills {
         justify-content: center;

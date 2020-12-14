@@ -39,7 +39,7 @@
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <div class="bank-infos flex-column" @click="page = Pages.BANK_CHECK">
-                            <Avatar :label="userBank ? userBank.name : ''"/>
+                            <BankIcon/>
                             <label>{{ userBank ? userBank.name : '' }}</label>
                         </div>
                         <div class="separator-wrapper">
@@ -154,7 +154,7 @@ import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue'
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
-import Avatar from '../Avatar.vue';
+import BankIcon from '../icons/BankIcon.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
@@ -165,6 +165,8 @@ enum Pages {
     SETUP_BUY,
     SWAP,
 }
+
+const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup(/* props, context */) {
@@ -512,7 +514,7 @@ export default defineComponent({
             }
 
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(updateEstimate, 1000);
+            timeoutId = setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
         }
 
         watch(_fiatAmount, onInput);
@@ -553,7 +555,7 @@ export default defineComponent({
         Identicon,
         AddressList,
         FiatConvertedAmount,
-        Avatar,
+        BankIcon,
         SwapAnimation,
         Amount,
         FlameIcon,
@@ -584,7 +586,7 @@ export default defineComponent({
     svg.welcome-euro-logo {
         width: 10rem;
         height: 10rem;
-        margin-bottom: 5rem;
+        margin-bottom: 4rem;
     }
 
     .welcome-text {
@@ -615,6 +617,7 @@ export default defineComponent({
         text-align: left;
         list-style-type: none;
         padding-left: 0;
+        margin-bottom: 0;
 
         span {
             display: inline-block;
@@ -631,10 +634,8 @@ export default defineComponent({
             display: flex;
             flex-direction: row;
             align-items: center;
-        }
-
-        li:not(:last-child) {
-            margin-bottom: 2rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
         }
     }
 
@@ -675,6 +676,7 @@ export default defineComponent({
         label {
             margin-top: 1.875rem;
             text-align: center;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             max-width: 100%;
@@ -685,13 +687,10 @@ export default defineComponent({
             align-items: center;
             width: 18rem;
 
-            .avatar {
+            svg {
                 width: 9rem;
                 height: 9rem;
-
-                /deep/ .initial {
-                    font-size: 4.2rem;
-                }
+                padding: 0.5rem;
             }
         }
 

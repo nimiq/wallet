@@ -7,6 +7,13 @@
             :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"/>
+        <hr class="separator" v-if="showBitcoin"/>
+        <AddressListItem
+            v-if="showBitcoin"
+            :addressInfo="btcInfos"
+            :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
+            @click="selectBtcAddress()"
+            :ref="`address-button-${btcInfos.address}`"/>
         <button
             v-if="showAddAddressButton"
             class="address-button add-address-button reset flex-row"
@@ -34,6 +41,7 @@ import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 
@@ -47,10 +55,15 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        showBitcoin: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
-        const { activeCurrency } = useAccountStore();
+        const { availableExternalAddresses, accountBalance } = useBtcAddressStore();
+        const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
@@ -122,7 +135,23 @@ export default defineComponent({
             adjustBackgroundOffsetAndScale(address);
             setTimeout(() => {
                 selectAddress(address);
+                setActiveCurrency(CryptoCurrency.NIM);
                 context.emit('address-selected', address);
+            }, 0);
+        }
+
+        const btcInfos = computed(() => ({
+            address: availableExternalAddresses.value[0],
+            label: 'Bitcoin',
+            balance: accountBalance.value,
+            type: CryptoCurrency.BTC,
+        }));
+
+        function selectBtcAddress() {
+            adjustBackgroundOffsetAndScale(btcInfos.value.address);
+            setTimeout(() => {
+                setActiveCurrency(CryptoCurrency.BTC);
+                context.emit('address-selected', btcInfos.value.address);
             }, 0);
         }
 
@@ -136,6 +165,8 @@ export default defineComponent({
             backgroundYScale,
             activeCurrency,
             CryptoCurrency,
+            btcInfos,
+            selectBtcAddress,
         };
     },
     components: {
@@ -192,6 +223,12 @@ export default defineComponent({
         padding-left: var(--padding-sides);
 
         @extend %custom-scrollbar;
+
+        hr.separator {
+            margin: 15px 0 15px 0;
+            border-top: 1.5px solid var(--nimiq-blue);
+            opacity: 0.14;
+        }
     }
 
     .address-button {

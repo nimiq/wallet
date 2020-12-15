@@ -169,7 +169,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
                     :switchSides="swap.from.asset === SwapAsset.BTC"
-                    @finished="onAnimationComplete()"
+                    @finished="finishSwap()"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -191,7 +191,7 @@
                     :error="''"
                     :switchSides="false"
                     :manualFunding="true"
-                    @finished="onAnimationComplete()"
+                    @finished="finishSwap()"
                 >
                     <button
                         slot="manual-funding-instructions"
@@ -1215,11 +1215,6 @@ export default defineComponent({
         // TEMP
         const swapAnimationOverlayOpened = ref(false);
 
-        function onAnimationComplete() {
-            setActiveSwap(null);
-            onClose();
-        }
-
         return {
             onClose,
             satsPerNim,
@@ -1265,7 +1260,6 @@ export default defineComponent({
             isMainnet,
             swapAnimationOverlayOpened,
             activeAddressInfo,
-            onAnimationComplete,
         };
     },
     components: {

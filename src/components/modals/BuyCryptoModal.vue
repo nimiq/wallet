@@ -93,10 +93,10 @@
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
-                        <div class="bank-infos flex-column" @click="page = Pages.BANK_CHECK">
+                        <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
                             <BankIcon/>
                             <label>{{ userBank ? userBank.name : '' }}</label>
-                        </div>
+                        </button>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
@@ -795,6 +795,8 @@ export default defineComponent({
     }
 
     .welcome-text {
+        text-align: center;
+
         .early-access {
             font-size: 12px;
             font-weight: bold;
@@ -819,7 +821,6 @@ export default defineComponent({
     }
 
     ul.welcome-steps {
-        text-align: left;
         list-style-type: none;
         padding-left: 0;
         margin-bottom: 0;
@@ -948,18 +949,8 @@ export default defineComponent({
             white-space: nowrap;
             overflow: hidden;
             max-width: 100%;
+            cursor: inherit;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-        }
-
-        .bank-infos {
-            align-items: center;
-            width: 18rem;
-
-            svg {
-                width: 9rem;
-                height: 9rem;
-                padding: 0.5rem;
-            }
         }
 
         .separator-wrapper {
@@ -990,6 +981,23 @@ export default defineComponent({
                     100% { transform: translateX(300%) }
                 }
             }
+        }
+    }
+
+    .bank-infos {
+        align-items: center;
+        width: 18rem;
+        border-radius: 0.75rem;
+        padding: 1rem;
+
+        &:hover,
+        &:focus {
+            background: var(--nimiq-highlight-bg);
+        }
+
+        svg {
+            width: 9rem;
+            height: 9rem;
         }
     }
 

@@ -50,6 +50,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .buy-crypto-bank-check-overlay {
     height: 100%;
+    text-align: center;
 }
 
 .page-header {

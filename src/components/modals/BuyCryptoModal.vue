@@ -525,7 +525,7 @@ export default defineComponent({
                     return;
                 }
 
-                const serviceExchangeFee = Math.round(
+                const serviceSwapFee = Math.round(
                     (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
                     * swapSuggestion.serviceFeePercentage,
                 );
@@ -535,11 +535,11 @@ export default defineComponent({
                     fund,
                     redeem,
                     fiatCurrency: activeCurrency.value,
-                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!,
-                    btcFiatRate: 1, // 1 EUR = 1 EUR
-                    serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
-                    serviceExchangeFee,
+                    fundingFiatRate: 1, // 1 EUR = 1 EUR
+                    redeemingFiatRate: exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!,
+                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    serviceSwapFee,
                 } as Omit<SetupSwapRequest, 'appName'>);
             });
 

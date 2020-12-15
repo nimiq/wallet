@@ -1004,7 +1004,7 @@ export default defineComponent({
                     return;
                 }
 
-                const serviceExchangeFee = Math.round(
+                const serviceSwapFee = Math.round(
                     (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
                     * swapSuggestion.serviceFeePercentage,
                 );
@@ -1016,11 +1016,11 @@ export default defineComponent({
                     fund,
                     redeem,
                     fiatCurrency: currency.value,
-                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
-                    btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
-                    serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
-                    serviceExchangeFee,
+                    fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value],
+                    redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value],
+                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    serviceSwapFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,
                         balance: addressInfo.balance || 0,

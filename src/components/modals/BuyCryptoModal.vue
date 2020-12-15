@@ -614,11 +614,49 @@ export default defineComponent({
             setActiveSwap({
                 ...confirmedSwap,
                 state: SwapState.AWAIT_INCOMING,
+                watchtowerNotified: false,
                 fundingSerializedTx: signedTransactions.eur,
                 settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx : 'never',
                 // : signedTransactions.btc.serializedTx,
             });
+
+            if (Config.fastspot.watchtowerEndpoint) {
+                let settlementSerializedTx = swap.value!.settlementSerializedTx!;
+
+                // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
+                if (swap.value!.to.asset === 'NIM') {
+                    settlementSerializedTx = settlementSerializedTx.replace(
+                        '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
+                        `${swap.value!.hash}`,
+                    );
+                }
+
+                // Send redeem transaction to watchtower
+                fetch(`${Config.fastspot.watchtowerEndpoint}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: confirmedSwap.id,
+                        endpoint: new URL(Config.fastspot.apiEndpoint).host,
+                        apikey: Config.fastspot.apiKey,
+                        redeem: settlementSerializedTx,
+                    }),
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        throw new Error((await response.json()).message);
+                    }
+
+                    setActiveSwap({
+                        ...swap.value!,
+                        watchtowerNotified: true,
+                    });
+                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
+                }).catch((error) => {
+                    if (Config.reportToSentry) captureException(error);
+                    else console.error(error); // eslint-disable-line no-console
+                });
+            }
 
             // setTimeout(() => currentlySigning.value = false, 1000);
         }

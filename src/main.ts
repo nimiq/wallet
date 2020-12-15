@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
 // @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
+import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 
 import App from './App.vue';
 import './registerServiceWorker';
@@ -21,16 +22,9 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import '@/assets/css/main.css';
 import '@/scss/themes.scss';
 
-declare global {
-    interface Window {
-        NIMIQ_IQONS_SVG_PATH: string;
-    }
-}
-
-// Specify where the svg asset for the Nimiq identicons is located.
-// The file gets copied to this location via the copy-webpack-plugin
-// as specified in vue.config.js
-window.NIMIQ_IQONS_SVG_PATH = '/img/iqons.min.svg';
+// Set asset path relative to the public path defined in vue.config.json,
+// see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
+setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}img/`);
 
 Vue.config.productionTip = false;
 

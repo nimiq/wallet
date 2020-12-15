@@ -170,7 +170,7 @@
                 <SelectBar
                     :options="feeOptions"
                     :selectedValue="feePerByte"
-                    @changed="(value) => feePerByte = value"
+                    @changed="updateFee"
                 />
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
             </PageBody>
@@ -408,6 +408,12 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
+        function updateFee(newFeePerByte: number) {
+            const isSendingMax = amount.value === maxSendableAmount.value;
+            feePerByte.value = newFeePerByte;
+            if (isSendingMax) sendMax();
+        }
+
         const hasHeight = computed(() => !!network$.height);
 
         const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
@@ -595,6 +601,7 @@ export default defineComponent({
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
+            updateFee,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             message,

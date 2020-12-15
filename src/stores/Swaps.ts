@@ -71,6 +71,7 @@ export type Swap = {
 
 export type ActiveSwap = SwapObject & {
     state: SwapState,
+    watchtowerNotified: boolean,
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,

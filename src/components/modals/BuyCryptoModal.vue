@@ -390,38 +390,45 @@ export default defineComponent({
             };
         });
 
-        async function updateEstimate() {
+        function getSwapParameters() {
             if (_fiatAmount.value) {
-                const from: RequestAsset<SwapAsset.EUR> = {
-                    [SwapAsset.EUR]: fiatAmount.value / 100,
+                return {
+                    from: { [SwapAsset.EUR]: fiatAmount.value / 100 },
+                    to: SwapAsset.NIM,
+                } as {
+                    from: RequestAsset<SwapAsset.EUR>,
+                    to: SwapAsset.NIM,
                 };
-                const to = SwapAsset.NIM;
-                const newEstimate = await getEstimate(from, to);
-
-                const eurPrice = newEstimate.from;
-                const nimPrice = newEstimate.to;
-
-                if (!eurPrice || !nimPrice) {
-                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
-                }
-
-                estimate.value = newEstimate;
-            } else {
-                const from = SwapAsset.EUR;
-                const to: RequestAsset<SwapAsset.NIM> = {
-                    [SwapAsset.NIM]: cryptoAmount.value / 1e5,
-                };
-                const newEstimate = await getEstimate(from, to);
-
-                const eurPrice = newEstimate.from;
-                const nimPrice = newEstimate.to;
-
-                if (!eurPrice || !nimPrice) {
-                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
-                }
-
-                estimate.value = newEstimate;
             }
+
+            return {
+                from: SwapAsset.EUR,
+                to: { [SwapAsset.NIM]: cryptoAmount.value / 1e5 },
+            } as {
+                from: SwapAsset.EUR,
+                to: RequestAsset<SwapAsset.NIM>,
+            };
+        }
+
+        async function updateEstimate() {
+            const { from, to } = getSwapParameters();
+            let newEstimate: Estimate;
+
+            // Is there a better way to do it?
+            if (typeof from === 'string' && typeof to === 'object') { // force one of the function signatures
+                newEstimate = await getEstimate(from, to);
+            } else if (typeof from === 'object' && typeof to === 'string') { // force the other function signatures
+                newEstimate = await getEstimate(from, to);
+            }
+
+            const eurPrice = newEstimate!.from;
+            const nimPrice = newEstimate!.to;
+
+            if (!eurPrice || !nimPrice) {
+                throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+            }
+
+            estimate.value = newEstimate!;
         }
 
         async function sign() {
@@ -429,7 +436,7 @@ export default defineComponent({
 
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
-                let swapSuggestion: PreSwap;
+                let swapSuggestion!: PreSwap;
 
                 // const { availableExternalAddresses } = useBtcAddressStore();
                 const nimAddress = activeAddressInfo.value!.address;
@@ -439,15 +446,19 @@ export default defineComponent({
                     // const fees = calculateFees();
                     // const { to, from } = calculateRequestData(fees);
 
-                    const from: RequestAsset<SwapAsset.EUR> = {
-                        [SwapAsset.EUR]: fiatAmount.value / 100,
-                    };
-                    const to = SwapAsset.NIM;
+                    const { from, to } = getSwapParameters();
 
-                    swapSuggestion = await createSwap(
-                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                        to as SwapAsset,
-                    );
+                    if (typeof from === 'string' && typeof to === 'object') {
+                        swapSuggestion = await createSwap(
+                            from as SwapAsset,
+                            to as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                        );
+                    } else if (typeof from === 'object' && typeof to === 'string') {
+                        swapSuggestion = await createSwap(
+                            from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
+                            to as SwapAsset,
+                        );
+                    }
 
                     // // Update local fees with latest feePerUnit values
                     // const { fundingFee, settlementFee } = calculateFees({

@@ -225,6 +225,7 @@ import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
+import MinimizeIcon from '../icons/MinimizeIcon.vue';
 
 enum Pages {
     WELCOME,
@@ -766,6 +767,7 @@ export default defineComponent({
         FiatAmount,
         SwapFeesTooltip,
         Timer,
+        MinimizeIcon,
     },
 });
 </script>

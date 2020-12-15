@@ -131,7 +131,14 @@
                             </AmountInput>
                         </div>
                         <span class="secondary-amount">
-                            <AmountInput v-model="cryptoAmount"/>
+                            <AmountInput v-model="cryptoAmount"
+                                :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
+                                <span class="ticker" slot="suffix">
+                                    {{ activeCurrency === CryptoCurrency.BTC
+                                        ? btcUnit.ticker
+                                        : activeCurrency.toUpperCase() }}
+                                </span>
+                            </AmountInput>
                         </span>
                     </section>
 
@@ -214,7 +221,6 @@ import {
     getSwap,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
-import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import {
     HtlcCreationInstructions,
     HtlcSettlementInstructions,
@@ -224,12 +230,16 @@ import {
 import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/browser';
 import { getNetworkClient } from '@/network';
+import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
+import { useSettingsStore } from '@/stores/Settings';
+import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
+import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
@@ -257,6 +267,7 @@ export default defineComponent({
         const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { addressInfos, activeAddressInfo } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
+        const { btcUnit } = useSettingsStore();
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref('eur');
@@ -290,8 +301,8 @@ export default defineComponent({
                 if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
                 if (!estimate.value) return 0;
 
-                if (estimate.value.to.asset !== SwapAsset.NIM) return 0;
-                return estimate.value.to.amount - estimate.value.to.fee;
+                if (estimate.value.to.asset !== activeCurrency.value.toUpperCase()) return 0;
+                return capDecimals(estimate.value.to.amount - estimate.value.to.fee, estimate.value.to.asset);
             },
             set: (value: number) => {
                 _cryptoAmount.value = value;
@@ -409,19 +420,33 @@ export default defineComponent({
         });
 
         function getSwapParameters() {
+            const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
+                ? SwapAsset.BTC
+                : SwapAsset.NIM;
+
             if (_fiatAmount.value) {
                 return {
                     from: { [SwapAsset.EUR]: fiatAmount.value / 100 },
-                    to: SwapAsset.NIM,
+                    to: toSwapAsset,
                 } as {
                     from: RequestAsset<SwapAsset.EUR>,
-                    to: SwapAsset.NIM,
+                    to: SwapAsset.NIM | SwapAsset.BTC,
+                };
+            }
+
+            if (toSwapAsset === SwapAsset.BTC) {
+                return {
+                    from: SwapAsset.EUR,
+                    to: { [toSwapAsset]: cryptoAmount.value / 1e8 },
+                } as {
+                    from: SwapAsset.EUR,
+                    to: RequestAsset<SwapAsset.BTC>,
                 };
             }
 
             return {
                 from: SwapAsset.EUR,
-                to: { [SwapAsset.NIM]: cryptoAmount.value / 1e5 },
+                to: { [toSwapAsset]: cryptoAmount.value / 1e5 },
             } as {
                 from: SwapAsset.EUR,
                 to: RequestAsset<SwapAsset.NIM>,
@@ -456,9 +481,9 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion!: PreSwap;
 
-                // const { availableExternalAddresses } = useBtcAddressStore();
+                const { availableExternalAddresses } = useBtcAddressStore();
                 const nimAddress = activeAddressInfo.value!.address;
-                // const btcAddress = availableExternalAddresses.value[0];
+                const btcAddress = availableExternalAddresses.value[0];
 
                 try {
                     // const fees = calculateFees();
@@ -554,13 +579,29 @@ export default defineComponent({
                         fee: swapSuggestion.from.fee,
                         bankLabel: userBank.value!.name,
                     };
+                }
 
+                if (swapSuggestion.to.asset === SwapAsset.NIM) {
                     redeem = {
                         type: SwapAsset.NIM,
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount, // Luna
                         fee: swapSuggestion.to.fee, // Luna
                         validityStartHeight,
+                    };
+                } else if (swapSuggestion.to.asset === SwapAsset.BTC) {
+                    redeem = {
+                        type: SwapAsset.BTC,
+                        input: {
+                            // transactionHash: transaction.transactionHash,
+                            // outputIndex: output.index,
+                            // outputScript: output.script,
+                            value: swapSuggestion.to.amount, // Sats
+                        },
+                        output: {
+                            address: btcAddress, // My address, must be redeem address of HTLC
+                            value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
+                        },
                     };
                 }
 
@@ -580,7 +621,8 @@ export default defineComponent({
                     redeem,
                     fiatCurrency: selectedFiatCurrency.value,
                     fundingFiatRate: 1, // 1 EUR = 1 EUR
-                    redeemingFiatRate: exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!,
+                    redeemingFiatRate:
+                        exchangeRates.value[swapSuggestion.to.asset.toLowerCase()][selectedFiatCurrency.value]!,
                     serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
                     serviceSwapFee,
@@ -741,6 +783,20 @@ export default defineComponent({
             && (activeAccountInfo.value.btcAddresses || false)
             && activeAccountInfo.value.btcAddresses.external.length > 0);
 
+        function capDecimals(amount: number, asset: SwapAsset) {
+            if (!amount) return 0;
+
+            const numberSign = amount / Math.abs(amount); // 1 or -1
+
+            amount = Math.abs(amount);
+
+            const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
+            const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
+            const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
+
+            return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
+        }
+
         return {
             addressListOpened,
             onClose,
@@ -771,6 +827,7 @@ export default defineComponent({
             limits,
             hasBitcoinAddresses,
             activeCurrency,
+            btcUnit,
         };
     },
     components: {

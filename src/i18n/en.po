@@ -317,9 +317,9 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:178
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:210
+#: src/components/swap/SwapModal.vue:213
 msgid "Choose an Address"
 msgstr ""
 
@@ -742,7 +742,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:302
+#: src/components/swap/SwapModal.vue:306
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -800,8 +800,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:666
-#: src/components/swap/SwapModal.vue:679
+#: src/components/swap/SwapModal.vue:670
+#: src/components/swap/SwapModal.vue:683
 msgid "Minimum swap amount is {amount}"
 msgstr ""
 
@@ -1222,7 +1222,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:690
+#: src/components/swap/SwapModal.vue:694
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 

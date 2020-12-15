@@ -2,7 +2,7 @@
     <Modal class="btc-activation-modal"
         :class="{'wider-overlay': !!swap}"
         :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
-        @close-overlay="closeOverlay"
+        :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
@@ -150,7 +150,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
                     :manualFunding="true"
-                    @finished="onAnimationComplete"
+                    @finished="finishSwap"
                 >
                     <button
                         slot="manual-funding-instructions"
@@ -161,6 +161,17 @@
                     >Simulate EUR transfer</button>
                 </SwapAnimation>
             </PageBody>
+            <button v-if="swap.state !== SwapState.CREATE_OUTGOING"
+                class="nq-button-s minimize-button top-right"
+                @click="onClose" @mousedown.prevent
+            >
+                <MinimizeIcon/>
+            </button>
+            <Timer v-else :startTime="Date.now()" :endTime="swap.expires * 1000"
+                theme="inverse" :tooltipProps="{
+                    preferredPosition: 'bottom left',
+                }"
+            />
         </div>
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
@@ -174,7 +185,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount } from '@nimiq/vue-components';
+import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount, Timer } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
 import {
@@ -197,6 +208,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
+import { captureException } from '@sentry/browser';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
@@ -224,7 +236,7 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
-    setup(/* props, context */) {
+    setup(props, context) {
         const { addressInfos, activeAddressInfo } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
 
@@ -275,18 +287,20 @@ export default defineComponent({
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
         });
 
-        function closeOverlay() {
-            addressListOpened.value = false;
-
-            if (page.value === Pages.BANK_CHECK) {
+        function onClose() {
+            if (addressListOpened.value === true) {
+                addressListOpened.value = false;
+            } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
+            } else {
+                context.root.$router.back();
             }
         }
 
         function onBankSelected(bank: BankInfos) {
             setUserBank(bank);
             page.value = Pages.SETUP_BUY;
-            closeOverlay();
+            addressListOpened.value = false;
         }
 
         const backgroundAddresses = computed(() =>
@@ -674,8 +688,10 @@ export default defineComponent({
             }
         }
 
-        function onAnimationComplete() {
-            // do smth, i guess
+        function finishSwap() {
+            const { setActiveSwap } = useSwapsStore();
+            setActiveSwap(null);
+            onClose();
         }
 
         let timeoutId: NodeJS.Timeout;
@@ -694,7 +710,7 @@ export default defineComponent({
 
         return {
             addressListOpened,
-            closeOverlay,
+            onClose,
             onBankSelected,
             Pages,
             page,
@@ -706,7 +722,7 @@ export default defineComponent({
             userBank,
             SwapAsset,
             SwapState,
-            onAnimationComplete,
+            finishSwap,
             updateEstimate,
             estimate,
             cryptoAmount,
@@ -738,6 +754,7 @@ export default defineComponent({
         FlameIcon,
         FiatAmount,
         SwapFeesTooltip,
+        Timer,
     },
 });
 </script>
@@ -1091,6 +1108,38 @@ export default defineComponent({
 
 .animation-overlay {
     flex-grow: 1;
+
+    .minimize-button {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        padding: 0;
+        height: 4rem;
+        width: 4rem;
+        border-radius: 50%;
+        transition: background .2s var(--nimiq-ease);
+
+        &::before {
+            border-radius: 50%;
+        }
+
+        &:hover,
+        &:active,
+        &:focus {
+            background: rgba(255, 255, 255, 0.20);
+        }
+
+        &.top-right {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+    }
+
+    .timer {
+        position: absolute;
+        top: 2.5rem;
+        right: 2.5rem;
+    }
 }
 
 @media (max-width: 730px) {

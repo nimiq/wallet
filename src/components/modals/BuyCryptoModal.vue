@@ -58,12 +58,12 @@
                             :nimFeeFiat="fees.nimFeeFiat"
                             :serviceExchangeFeeFiat="fees.serviceExchangeFeeFiat"
                             :serviceExchangeFeePercentage="fees.serviceExchangeFeePercentage"
-                            :currency="activeCurrency"
+                            :currency="selectedFiatCurrency"
                             :container="this"
                         >
                             <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fees.isHigh}">
                                 <LightningIcon v-if="fees.isHigh"/>
-                                <FiatAmount :amount="fees.total" :currency="activeCurrency"/>
+                                <FiatAmount :amount="fees.total" :currency="selectedFiatCurrency"/>
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
@@ -101,19 +101,33 @@
                             <div class="separator"></div>
                         </div>
                         <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
+                        <!-- TODO move it in a IdenticonStack component, since it's & will be used in multiple places-->
                             <Identicon class="secondary"
                                 v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
+
+                            <BitcoinIcon class="secondary"
+                                v-if="hasBitcoinAddresses && activeCurrency !== CryptoCurrency.BTC" />
+
                             <Identicon class="secondary"
-                                v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
-                            <Identicon class="primary" :address="activeAddressInfo.address"/>
-                            <label>{{ activeAddressInfo.label }}</label>
+                                v-else-if="backgroundAddresses[1]"
+                                :address="backgroundAddresses[1]"/>
+
+                            <Identicon class="primary"
+                                v-if="activeCurrency === CryptoCurrency.NIM"
+                                :address="activeAddressInfo.address"/>
+
+                            <BitcoinIcon class="primary"
+                                v-else-if="activeCurrency === CryptoCurrency.BTC" />
+                            <label>
+                                {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
+                            </label>
                         </button>
                     </section>
 
                     <section class="amount-section">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" placeholder="0.00">
-                                <span slot="suffix">{{ activeCurrency.toUpperCase() }}</span>
+                                <span slot="suffix">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount">
@@ -212,6 +226,7 @@ import { captureException } from '@sentry/browser';
 import { getNetworkClient } from '@/network';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
+import { useAccountStore } from '@/stores/Account';
 import { CryptoCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
@@ -226,6 +241,7 @@ import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
 enum Pages {
     WELCOME,
@@ -238,11 +254,12 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup(props, context) {
+        const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { addressInfos, activeAddressInfo } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
 
         const addressListOpened = ref(false);
-        const activeCurrency = ref('eur');
+        const selectedFiatCurrency = ref('eur');
         const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
@@ -313,7 +330,7 @@ export default defineComponent({
         );
 
         const fiatCurrencyInfo = computed(() =>
-            new CurrencyInfo(activeCurrency.value),
+            new CurrencyInfo(selectedFiatCurrency.value),
         );
 
         const { exchangeRates } = useFiatStore();
@@ -327,7 +344,7 @@ export default defineComponent({
                 return (eur / 100) / (nim / 1e5);
             }
 
-            return exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value];
+            return exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
         });
 
         const eurPerBtc = computed(() => {
@@ -339,7 +356,7 @@ export default defineComponent({
                 return (eur / 100) / (btc / 1e8);
             }
 
-            return exchangeRates.value[CryptoCurrency.BTC][activeCurrency.value];
+            return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
         });
 
         const fees = computed(() => {
@@ -368,11 +385,11 @@ export default defineComponent({
 
             const btcFeeFiat = data.to.asset === SwapAsset.BTC
                 ? ((myCryptoFee + theirCryptoFee) / 1e8)
-                    * exchangeRates.value[CryptoCurrency.BTC][activeCurrency.value]!
+                    * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!
                 : undefined;
             const nimFeeFiat = data.to.asset === SwapAsset.NIM
                 ? ((myCryptoFee + theirCryptoFee) / 1e5)
-                    * exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!
+                    * exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!
                 : undefined;
 
             const serviceExchangeFeePercentage = Math.round(data.serviceFeePercentage * 1000) / 10;
@@ -561,9 +578,9 @@ export default defineComponent({
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
-                    fiatCurrency: activeCurrency.value,
+                    fiatCurrency: selectedFiatCurrency.value,
                     fundingFiatRate: 1, // 1 EUR = 1 EUR
-                    redeemingFiatRate: exchangeRates.value[CryptoCurrency.NIM][activeCurrency.value]!,
+                    redeemingFiatRate: exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!,
                     serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
                     serviceSwapFee,
@@ -720,6 +737,10 @@ export default defineComponent({
         watch(_fiatAmount, onInput);
         watch(_cryptoAmount, onInput);
 
+        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
+            && (activeAccountInfo.value.btcAddresses || false)
+            && activeAccountInfo.value.btcAddresses.external.length > 0);
+
         return {
             addressListOpened,
             onClose,
@@ -742,12 +763,14 @@ export default defineComponent({
             swap,
             sign,
             goBack,
-            activeCurrency,
+            selectedFiatCurrency,
             CryptoCurrency,
             eurPerNim,
             eurPerBtc,
             fees,
             limits,
+            hasBitcoinAddresses,
+            activeCurrency,
         };
     },
     components: {
@@ -768,6 +791,7 @@ export default defineComponent({
         SwapFeesTooltip,
         Timer,
         MinimizeIcon,
+        BitcoinIcon,
     },
 });
 </script>
@@ -1021,6 +1045,12 @@ export default defineComponent({
         position: relative;
         width: 18rem;
 
+        svg.bitcoin {
+            color: var(--bitcoin-orange);
+            background: radial-gradient(circle at center, white 40%, transparent, transparent);
+            border-radius: 50%;
+        }
+
         .primary {
             position: relative;
             width: 9rem;
@@ -1044,6 +1074,16 @@ export default defineComponent({
 
             &:nth-child(2) {
                 right: 3rem;
+
+                &.bitcoin {
+                    right: 3.25rem;
+                }
+            }
+
+            &.bitcoin {
+                height: 7rem;
+                width: 7rem;
+                margin-top: 0.25rem;
             }
         }
 

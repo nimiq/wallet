@@ -1,5 +1,6 @@
 <template>
     <Modal class="btc-activation-modal"
+        :class="{'wider-overlay': !!swap}"
         :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         @close-overlay="closeOverlay"
     >
@@ -705,9 +706,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    /deep/ .small-page {
-        text-align: center;
-        width: 52.5rem; // 420px
+    &.wider-overlay /deep/ .overlay {
+        width: 63.5rem;
+        margin-left: calc((63.5rem - 52.5rem) / -2);
+
+        @media (max-width: 508px) {
+            width: 100vw;
+            margin-left: calc((100vw - 52.5rem) / -2);
+        }
+
+        @media (max-width: 420px) {
+            margin-left: 0;
+        }
     }
 }
 

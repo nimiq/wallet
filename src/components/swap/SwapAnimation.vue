@@ -417,6 +417,7 @@ export default defineComponent({
 .swap-animation {
     flex-grow: 1;
     height: 100%;
+    width: 100%;
     justify-content: space-between;
     overflow: hidden;
     position: relative;

@@ -196,6 +196,7 @@
                     <button
                         slot="manual-funding-instructions"
                         class="nq-button orange"
+                        style="margin: 0 auto 8rem;"
                         @mousedown.prevent
                     >Do absolutely nothing</button>
                 </SwapAnimation>

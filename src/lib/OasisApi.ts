@@ -216,9 +216,6 @@ export async function sandboxMockClearHtlc(id: string): Promise<boolean> {
 
     return fetch(`${API_URL}/mock/clear/${id}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
     }).then(async (res) => {
         if (!res.ok) {
             throw new Error('Mock-clearing failed');

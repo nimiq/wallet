@@ -151,14 +151,13 @@
                     :manualFunding="true"
                     @finished="onAnimationComplete"
                 >
-                    <div slot="manual-funding-instructions">
-                        OASIS HTLC ID: <code>{{ swap.contracts.EUR.htlc.address }}</code>
-                        <button
-                            class="nq-button orange"
-                            @mousedown.prevent
-                            @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
-                        >Mock-Clear OASIS HTLC</button>
-                    </div>
+                    <button
+                        slot="manual-funding-instructions"
+                        class="nq-button orange"
+                        style="margin: 0 auto 8rem;"
+                        @mousedown.prevent
+                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
+                    >Simulate EUR transfer</button>
                 </SwapAnimation>
             </PageBody>
         </div>

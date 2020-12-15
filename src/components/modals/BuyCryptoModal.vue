@@ -797,6 +797,14 @@ export default defineComponent({
     }
 }
 
+.header__address-list {
+    padding-bottom: 2rem;
+}
+
+.page__address-list {
+    padding: 0 2rem 4rem;
+}
+
 .setup-buy {
     flex-grow: 1;
     font-size: var(--body-size);
@@ -811,7 +819,7 @@ export default defineComponent({
     .pills {
         justify-content: center;
         flex-wrap: wrap;
-        margin-top: 0.75rem;
+        margin-top: 2.25rem;
 
         .tooltip {
             text-align: left;

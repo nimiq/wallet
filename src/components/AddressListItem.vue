@@ -84,6 +84,7 @@ export default defineComponent({
     font-weight: 600;
     margin: 0 2rem;
     flex-grow: 1;
+    text-align: left;
 }
 
 .balances {

@@ -850,6 +850,10 @@ export default defineComponent({
     }
 }
 
+.modal /deep/ .overlay .animation-overlay + .close-button {
+    display: none;
+}
+
 .page-body {
     justify-content: space-between;
     align-items: center;

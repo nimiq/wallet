@@ -1511,15 +1511,9 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay {
-    .page-header {
-        padding-bottom: 1rem;
-    }
-
-    .close-button {
-        display: none;
-    }
-}
+.modal /deep/ .overlay .animation-overlay + .close-button {
+    display: none;
+}s
 
 .animation-overlay {
     .minimize-button {

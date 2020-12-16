@@ -164,10 +164,10 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="swap.contracts[SwapAsset.EUR].htlc.address"
+                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="swap.contracts['NIM'].htlc.address"
+                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
                     :manualFunding="true"
@@ -239,6 +239,7 @@ import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency } from '@/lib/Constants';
 import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
+import { getElectrumClient } from '@/electrum';
 import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
@@ -543,34 +544,10 @@ export default defineComponent({
                         if (state === 'established') res();
                     }));
                 }
-                // const electrumClient = await getElectrumClient();
-                // await electrumClient.waitForConsensusEstablished();
+                const electrumClient = await getElectrumClient();
+                await electrumClient.waitForConsensusEstablished();
 
                 const validityStartHeight = useNetworkStore().state.height;
-
-                // if (swapSuggestion.to.asset === SwapAsset.BTC) {
-                //     fund = {
-                //         type: 'NIM',
-                //         sender: nimAddress,
-                //         value: swapSuggestion.from.amount,
-                //         fee: swapSuggestion.from.fee,
-                //         validityStartHeight,
-                //     };
-
-                //     redeem = {
-                //         type: 'BTC',
-                //         input: {
-                //             // transactionHash: transaction.transactionHash,
-                //             // outputIndex: output.index,
-                //             // outputScript: output.script,
-                //             value: swapSuggestion.to.amount, // Sats
-                //         },
-                //         output: {
-                //             address: btcAddress, // My address, must be redeem address of HTLC
-                //             value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
-                //         },
-                //     };
-                // }
 
                 if (swapSuggestion.from.asset === SwapAsset.EUR) {
                     fund = {
@@ -615,7 +592,8 @@ export default defineComponent({
                     * swapSuggestion.serviceFeePercentage,
                 );
 
-                resolve({
+                const request: Omit<SetupSwapRequest, 'appName'> = {
+                    accountId: activeAccountInfo.value!.id,
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
@@ -626,15 +604,17 @@ export default defineComponent({
                     serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
                     serviceSwapFee,
-                } as Omit<SetupSwapRequest, 'appName'>);
+                };
+
+                resolve(request);
             });
 
             let signedTransactions: SetupSwapResult | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
             } catch (error) {
-                // if (Config.reportToSentry) captureException(error);
-                /* else */ console.error(error); // eslint-disable-line no-console
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
                 // swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -662,10 +642,10 @@ export default defineComponent({
                 return;
             }
 
-            if (typeof signedTransactions.eur !== 'string' || !signedTransactions.nim) {
-                const error = new Error('Internal error: Hub result did not contain EUR or NIM data');
-                // if (Config.reportToSentry) captureException(error);
-                /* else */ console.error(error); // eslint-disable-line no-console
+            if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
+                const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
                 // swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -679,8 +659,8 @@ export default defineComponent({
             const confirmedSwap = await getSwap(swapId);
             if (!('contracts' in confirmedSwap)) {
                 const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
-                // if (Config.reportToSentry) captureException(error);
-                /* else */ console.error(error); // eslint-disable-line no-console
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
                 // swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -702,8 +682,8 @@ export default defineComponent({
                 watchtowerNotified: false,
                 fundingSerializedTx: signedTransactions.eur,
                 settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
-                    ? signedTransactions.nim.serializedTx : 'never',
-                // : signedTransactions.btc.serializedTx,
+                    ? signedTransactions.nim!.serializedTx
+                    : signedTransactions.btc!.serializedTx,
             });
 
             if (Config.fastspot.watchtowerEndpoint) {

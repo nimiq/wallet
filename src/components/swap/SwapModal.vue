@@ -162,10 +162,10 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="outgoingHtlcAddress"
+                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="incomingHtlcAddress"
+                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
                     :switchSides="swap.from.asset === SwapAsset.BTC"
@@ -1010,14 +1010,16 @@ export default defineComponent({
                 );
 
                 const { addressInfos } = useAddressStore();
+                const { activeAccountInfo } = useAccountStore();
 
-                resolve({
+                const request: Omit<SetupSwapRequest, 'appName'> = {
+                    accountId: activeAccountInfo.value!.id,
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
                     fiatCurrency: currency.value,
-                    fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value],
-                    redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value],
+                    fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
+                    redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,
                     serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
                     serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
                     serviceSwapFee,
@@ -1028,7 +1030,9 @@ export default defineComponent({
                     bitcoinAccount: {
                         balance: accountBtcBalance.value,
                     },
-                } as Omit<SetupSwapRequest, 'appName'>);
+                };
+
+                resolve(request);
             });
 
             let signedTransactions: SetupSwapResult | null = null;
@@ -1167,18 +1171,6 @@ export default defineComponent({
             setActiveSwap(null);
         }
 
-        const incomingHtlcAddress = computed(() => {
-            if (!swap.value) return null;
-            const toAsset = swap.value.to.asset;
-            return swap.value.contracts[toAsset]!.htlc.address;
-        });
-
-        const outgoingHtlcAddress = computed(() => {
-            if (!swap.value) return null;
-            const fromAsset = swap.value.from.asset;
-            return swap.value.contracts[fromAsset]!.htlc.address;
-        });
-
         function finishSwap() {
             setActiveSwap(null);
             onClose();
@@ -1245,8 +1237,6 @@ export default defineComponent({
             SwapState,
             explorerTxLink,
             explorerAddrLink,
-            incomingHtlcAddress,
-            outgoingHtlcAddress,
             finishSwap,
             limits,
             currentLimitFiat,

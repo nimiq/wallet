@@ -178,7 +178,7 @@
                         class="nq-button orange"
                         style="margin: 0 auto 8rem;"
                         @mousedown.prevent
-                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address).catch(console.warn)"
+                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address).catch(() => {})"
                     >Simulate EUR transfer</button>
                 </SwapAnimation>
             </PageBody>

@@ -1,8 +1,8 @@
 <template>
     <transition :name="swapIsOngoing ? 'minimize' : 'slide'">
-        <button v-if="activeSwap && $route.name !== 'swap'"
+        <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
             class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing, 'errored': swapIsErrored}"
-            @click="$router.push('/swap')"
+            @click="openSwap"
         >
             <div class="icon">
                 <AlertTriangleIcon v-if="swapIsErrored"/>
@@ -295,10 +295,24 @@ export default defineComponent({
             window.removeEventListener('beforeunload', onUnload);
         }
 
+        function openSwap() {
+            if (!activeSwap.value) return;
+            const swapPair = [activeSwap.value.from.asset, activeSwap.value.to.asset].sort();
+
+            if (swapPair[0] === SwapAsset.BTC && swapPair[1] === SwapAsset.NIM) {
+                context.root.$router.push('/swap');
+            } else if (activeSwap.value.from.asset === SwapAsset.EUR) {
+                context.root.$router.push('/buy-crypto');
+            } else {
+                throw new Error('Unhandled swap type, cannot open correct swap modal');
+            }
+        }
+
         return {
             activeSwap,
             swapIsOngoing,
             swapIsErrored,
+            openSwap,
         };
     },
     components: {

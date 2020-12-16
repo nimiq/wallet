@@ -197,19 +197,19 @@ export default defineComponent({
         const peerLabel = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) {
-                    return context.root.$t('Bitcoin');
+                    return context.root.$t('Bitcoin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account');
+                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
             }
 
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
-                    ? context.root.$t('Cashlink')
-                    : context.root.$t('Unclaimed Cashlink');
+                    ? context.root.$t('Cashlink') as string
+                    : context.root.$t('Unclaimed Cashlink') as string;
             }
 
             // Search other stored addresses
@@ -217,7 +217,7 @@ export default defineComponent({
             if (ownedAddressInfo) return ownedAddressInfo.label;
 
             // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
+            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
 
             // Search global address book
             const globalLabel = AddressBook.getLabel(peerAddress.value);
@@ -360,9 +360,9 @@ svg {
         }
 
         > svg {
-            width: 5.25rem;
-            height: 5.25rem;
-            margin: 0.375rem;
+            width: 6rem;
+            height: 6rem;
+            padding: 0.375rem;
 
             &.bitcoin {
                 color: var(--bitcoin-orange);

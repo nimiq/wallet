@@ -88,8 +88,8 @@ import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
-import { isCashlinkData } from '../lib/CashlinkDetection';
-import { useCashlinkStore } from '../stores/Cashlink';
+import { isProxyData, ProxyType } from '../lib/ProxyDetection';
+import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 
@@ -139,12 +139,12 @@ export default defineComponent({
         });
 
         // Data
-        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
+        const isCashlink = computed(() => isProxyData(props.transaction.data.raw, ProxyType.CASHLINK));
         const data = computed(() => {
             if (isCashlink.value) {
-                const { state: cashlinks$ } = useCashlinkStore();
+                const { state: proxies$ } = useProxyStore();
                 const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
-                const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
+                const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
                 return hubCashlink ? hubCashlink.message : '';
             }
 

@@ -1,5 +1,5 @@
 import { Utf8Tools } from '@nimiq/utils';
-import { isFundingCashlink, isClaimingCashlink } from './CashlinkDetection';
+import { isProxyData, ProxyType, ProxyTransactionDirection } from './ProxyDetection';
 
 function hex2Bytes(hexString: string): Uint8Array {
     return hexString
@@ -10,8 +10,8 @@ function hex2Bytes(hexString: string): Uint8Array {
 export function parseData(data: string | Readonly<string>): string {
     if (!data) return '';
 
-    if (isFundingCashlink(data)) return 'Funding Cashlink';
-    if (isClaimingCashlink(data)) return 'Claiming Cashlink';
+    if (isProxyData(data, ProxyType.CASHLINK, ProxyTransactionDirection.FUND)) return 'Funding Cashlink';
+    if (isProxyData(data, ProxyType.CASHLINK, ProxyTransactionDirection.REDEEM)) return 'Claiming Cashlink';
 
     const dataBytes = hex2Bytes(data);
     if (Utf8Tools.isValidUtf8(dataBytes, true)) return Utf8Tools.utf8ByteArrayToString(dataBytes);

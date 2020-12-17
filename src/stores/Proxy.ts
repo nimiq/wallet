@@ -1,6 +1,11 @@
 import { createStore } from 'pinia';
 
-export type CashlinkState = {
+// A proxy is an address for forwarding funds. Most prominently Cashlinks are an example of a proxy.
+
+export type ProxyState = {
+    // Note that claimed and funded only contain proxies which need to be specifically observed on the network.
+    // Proxies between two of our addresses (which are already subscribed on the network anyways) or proxies that have
+    // already been settled and confirmed do not get added.
     claimed: string[],
     funded: string[],
     networkTrigger: number,
@@ -13,32 +18,32 @@ export type Cashlink = {
     value: number,
 };
 
-export const useCashlinkStore = createStore({
-    id: 'cashlinks',
-    state: (): CashlinkState => ({
+export const useProxyStore = createStore({
+    id: 'proxies',
+    state: (): ProxyState => ({
         claimed: [], // TODO: Use Sets in Vue 3
         funded: [],
         networkTrigger: 0,
         hubCashlinks: {},
     }),
     getters: {
-        allCashlinks: (state): Readonly<string[]> => state.claimed.concat(state.funded),
+        allProxies: (state): Readonly<string[]> => state.claimed.concat(state.funded),
         networkTrigger: (state): Readonly<number> => state.networkTrigger,
     },
     actions: {
-        addClaimedCashlink(address: string) {
-            if (this.state.funded.includes(address) || this.state.claimed.includes(address)) return;
-            this.state.claimed.push(address);
+        addClaimedProxy(proxyAddress: string) {
+            if (this.state.funded.includes(proxyAddress) || this.state.claimed.includes(proxyAddress)) return;
+            this.state.claimed.push(proxyAddress);
         },
-        addFundedCashlink(address: string) {
-            if (this.state.funded.includes(address) || this.state.claimed.includes(address)) return;
-            this.state.funded.push(address);
+        addFundedProxy(proxyAddress: string) {
+            if (this.state.funded.includes(proxyAddress) || this.state.claimed.includes(proxyAddress)) return;
+            this.state.funded.push(proxyAddress);
         },
-        removeCashlink(address: string) {
-            const indexClaimed = this.state.claimed.indexOf(address);
+        removeProxy(proxyAddress: string) {
+            const indexClaimed = this.state.claimed.indexOf(proxyAddress);
             if (indexClaimed > -1) this.state.claimed.splice(indexClaimed, 1);
 
-            const indexFunded = this.state.funded.indexOf(address);
+            const indexFunded = this.state.funded.indexOf(proxyAddress);
             if (indexFunded > -1) this.state.funded.splice(indexFunded, 1);
         },
         triggerNetwork() {

@@ -323,8 +323,8 @@ import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../../lib/Constants';
-import { isCashlinkData } from '../../lib/CashlinkDetection';
-import { useCashlinkStore } from '../../stores/Cashlink';
+import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
+import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
 import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
@@ -366,13 +366,13 @@ export default defineComponent({
         ].label);
 
         // Data & Cashlink Data
-        const isCashlink = computed(() => isCashlinkData(transaction.value.data.raw));
+        const isCashlink = computed(() => isProxyData(transaction.value.data.raw, ProxyType.CASHLINK));
         const hubCashlink = computed(() => {
             if (!isCashlink.value) return null;
 
-            const { state: cashlinks$ } = useCashlinkStore();
+            const { state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming.value ? transaction.value.sender : transaction.value.recipient;
-            const cashlink = cashlinks$.hubCashlinks[cashlinkAddress];
+            const cashlink = proxies$.hubCashlinks[cashlinkAddress];
 
             if (cashlink) return cashlink;
 

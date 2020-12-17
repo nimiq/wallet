@@ -99,7 +99,7 @@ import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
 import { ENV_MAIN } from '../lib/Constants';
-import { isFundingCashlink } from '../lib/CashlinkDetection';
+import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useWindowSize } from '../composables/useWindowSize';
 
@@ -177,7 +177,8 @@ export default defineComponent({
 
         const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
             .filter((tx) =>
-                tx.sender === activeAddress.value && !tx.relatedTransactionHash && isFundingCashlink(tx.data.raw))
+                tx.sender === activeAddress.value && !tx.relatedTransactionHash
+                && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND))
             .slice(0).sort((a, b) =>
                 (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER)));
 

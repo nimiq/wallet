@@ -9,7 +9,7 @@ import { useAccountStore, AccountState } from './stores/Account';
 import { useSettingsStore, SettingsState } from './stores/Settings';
 import { useContactsStore } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
-import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
+import { useProxyStore, ProxyState } from './stores/Proxy';
 import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
@@ -21,7 +21,8 @@ const StorageKeys = {
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
     FIAT: 'wallet_exchange-rates_v01',
-    CASHLINKS: 'wallet_cashlinks_v01',
+    DEPRECATED_CASHLINKS: 'wallet_cashlinks_v01', // TODO deprecated; remove in the future
+    PROXIES: 'wallet_proxies_v01',
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
@@ -181,19 +182,21 @@ export async function initStorage() {
     );
 
     /**
-     * CASHLINKS
+     * PROXIES
      */
-    const cashlinkStore = useCashlinkStore();
-    const storedCashlinkState = await Storage.get<CashlinkState>(StorageKeys.CASHLINKS);
-    if (storedCashlinkState) {
-        cashlinkStore.patch({
-            ...storedCashlinkState,
+    const proxyStore = useProxyStore();
+    const storedProxyState = await Storage.get<ProxyState>(StorageKeys.PROXIES)
+        || await Storage.get<ProxyState>(StorageKeys.DEPRECATED_CASHLINKS);
+    await Storage.del(StorageKeys.DEPRECATED_CASHLINKS);
+    if (storedProxyState) {
+        proxyStore.patch({
+            ...storedProxyState,
             networkTrigger: 0,
         });
     }
 
     unsubscriptions.push(
-        cashlinkStore.subscribe(() => Storage.set(StorageKeys.CASHLINKS, cashlinkStore.state)),
+        proxyStore.subscribe(() => Storage.set(StorageKeys.PROXIES, proxyStore.state)),
     );
 
     /**

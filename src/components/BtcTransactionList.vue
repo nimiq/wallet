@@ -358,7 +358,6 @@ export default defineComponent({
 
         // Scroll to top when
         // - Active address changes
-        // - Unclaimed Cashlinks list is opened
         const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
         // watch(activeAccountId, () => {
         //     if (scroller.value) {
@@ -419,31 +418,6 @@ export default defineComponent({
     padding-bottom: var(--padding, 4rem);
 
     @extend %custom-scrollbar;
-}
-
-.unclaimed-cashlink-list {
-    border-radius: 0.75rem;
-    padding: 2rem;
-    position: relative;
-    margin: 4rem -2rem 0;
-    box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.4);
-
-    .cross-close-button {
-        top: 1.5rem;
-        right: 1.5rem;
-
-        /deep/ svg {
-            opacity: 0.5;
-        }
-    }
-
-    .month-label {
-        padding-top: 1rem;
-
-        label {
-            opacity: 1;
-        }
-    }
 }
 
 .list-element {
@@ -627,18 +601,6 @@ export default defineComponent({
 
     .after-first-tx {
         margin-top: 6rem;
-    }
-
-    .unclaimed-cashlink-list {
-        padding: 0.5rem;
-        padding-bottom: 1.5rem;
-        margin: 0;
-        margin-top: 2rem;
-
-        .top-right {
-            top: 1rem;
-            right: 1rem;
-        }
     }
 
     .empty-state {

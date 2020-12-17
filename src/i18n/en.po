@@ -1441,8 +1441,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:240
 #: src/components/BtcTransactionList.vue:262
-#: src/components/TransactionList.vue:251
-#: src/components/TransactionList.vue:273
+#: src/components/TransactionList.vue:252
+#: src/components/TransactionList.vue:274
 msgid "This month"
 msgstr ""
 

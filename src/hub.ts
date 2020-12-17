@@ -12,10 +12,10 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { useCashlinkStore, Cashlink } from './stores/Cashlink';
+import { useProxyStore, Cashlink } from './stores/Proxy';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
-import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
+import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 
 const hubApi = new HubApi(Config.hubEndpoint);
@@ -200,8 +200,8 @@ export async function syncFromHub() {
     processAndStoreAccounts(listedAccounts, true);
 
     if (listedCashlinks.length) {
-        const cashlinkStore = useCashlinkStore();
-        cashlinkStore.setHubCashlinks(listedCashlinks);
+        const proxyStore = useProxyStore();
+        proxyStore.setHubCashlinks(listedCashlinks);
     }
 
     if (welcomeRoute) {
@@ -288,8 +288,8 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
     if (!cashlink) return false;
 
     // Handle cashlink
-    const cashlinkStore = useCashlinkStore();
-    cashlinkStore.addHubCashlink(cashlink);
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
 
     return true;
 }
@@ -312,8 +312,8 @@ export async function manageCashlink(cashlinkAddress: string) {
     if (!cashlink) return false;
 
     // Handle cashlink
-    const cashlinkStore = useCashlinkStore();
-    cashlinkStore.addHubCashlink(cashlink);
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
 
     return true;
 }
@@ -367,7 +367,7 @@ export async function logout(accountId: string) {
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const transactionStore = useTransactionsStore();
-    const cashlinkStore = useCashlinkStore();
+    const proxyStore = useProxyStore();
     const btcAddressStore = useBtcAddressStore();
     const btcTransactionStore = useBtcTransactionsStore();
 
@@ -394,13 +394,13 @@ export async function logout(accountId: string) {
     transactionsToDelete = transactionsToDelete
         .filter((tx) => !remainingTransactionRelatedTransactionHashes.includes(tx.transactionHash));
 
-    const pendingCashlinksToDelete = transactionsToDelete
+    const pendingProxiesToDelete = transactionsToDelete
         .map((tx) => {
-            if (isFundingCashlink(tx.data.raw)) return tx.recipient;
-            if (isClaimingCashlink(tx.data.raw)) return tx.sender;
+            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)) return tx.recipient;
+            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.REDEEM)) return tx.sender;
             return '';
         })
-        .filter((address) => Boolean(address));
+        .filter((address) => !!address);
 
     /**
      * Bitcoin
@@ -421,8 +421,8 @@ export async function logout(accountId: string) {
         });
 
     // Delete account, it's addresses, their transactions and cashlinks
-    for (const cashlinkAddress of pendingCashlinksToDelete) {
-        cashlinkStore.removeCashlink(cashlinkAddress);
+    for (const cashlinkAddress of pendingProxiesToDelete) {
+        proxyStore.removeProxy(cashlinkAddress);
     }
     transactionStore.removeTransactions(transactionsToDelete);
     addressStore.removeAddresses(addressesToDelete);

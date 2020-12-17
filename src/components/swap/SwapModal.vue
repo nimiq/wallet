@@ -169,7 +169,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
                     :switchSides="swap.from.asset === SwapAsset.BTC"
-                    @finished="finishSwap()"
+                    @finished="finishSwap"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -191,14 +191,17 @@
                     :error="''"
                     :switchSides="false"
                     :manualFunding="true"
-                    @finished="finishSwap()"
+                    @finished="finishSwap"
                 >
-                    <button
+                    <SwapSepaFundingInstructions
                         slot="manual-funding-instructions"
-                        class="nq-button orange"
-                        style="margin: 0 auto 8rem;"
-                        @mousedown.prevent
-                    >Do absolutely nothing</button>
+                        :amount="345"
+                        :name="'TEN31 Bank'"
+                        :iban="'DE75512108001245126199'"
+                        :bic="'WEGBDE77'"
+                        :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
+                        @cancel="() => {}"
+                    />
                 </SwapAnimation>
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -282,6 +285,7 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
+import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1277,6 +1281,7 @@ export default defineComponent({
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
+        SwapSepaFundingInstructions,
     },
 });
 </script>
@@ -1513,37 +1518,31 @@ export default defineComponent({
 
 .modal /deep/ .overlay .animation-overlay + .close-button {
     display: none;
-}s
+}
 
-.animation-overlay {
-    .minimize-button {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        padding: 0;
-        height: 4rem;
-        width: 4rem;
+.minimize-button {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0;
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    transition: background .2s var(--nimiq-ease);
+
+    &::before {
         border-radius: 50%;
-        transition: background .2s var(--nimiq-ease);
-
-        &::before {
-            border-radius: 50%;
-        }
-
-        &:hover,
-        &:active,
-        &:focus {
-            background: rgba(255, 255, 255, 0.20);
-        }
-
-        &.top-right {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-        }
     }
 
-    .close-button {
-        display: none;
+    &:hover,
+    &:active,
+    &:focus {
+        background: rgba(255, 255, 255, 0.20);
+    }
+
+    &.top-right {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
     }
 }
 

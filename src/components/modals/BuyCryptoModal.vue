@@ -173,13 +173,16 @@
                     :manualFunding="true"
                     @finished="finishSwap"
                 >
-                    <button
+                    <SwapSepaFundingInstructions
                         slot="manual-funding-instructions"
-                        class="nq-button orange"
-                        style="margin: 0 auto 8rem;"
-                        @mousedown.prevent
-                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address).catch(() => {})"
-                    >Simulate EUR transfer</button>
+                        :amount="345"
+                        :name="'TEN31 Bank'"
+                        :iban="'DE75512108001245126199'"
+                        :bic="'WEGBDE77'"
+                        :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
+                        @cancel="() => {}"
+                        @paid="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address).catch(() => {})"
+                    />
                 </SwapAnimation>
             </PageBody>
             <button v-if="swap.state !== SwapState.CREATE_OUTGOING"
@@ -256,6 +259,7 @@ import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 
 enum Pages {
     WELCOME,
@@ -915,6 +919,7 @@ export default defineComponent({
         Timer,
         MinimizeIcon,
         BitcoinIcon,
+        SwapSepaFundingInstructions,
     },
 });
 </script>

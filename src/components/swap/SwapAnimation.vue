@@ -12,6 +12,12 @@
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
         </div>
 
+        <transition name="fade">
+            <div v-if="manualFunding && state === SwapState.CREATE_OUTGOING" class="manual-funding-instructions">
+                <slot name="manual-funding-instructions"></slot>
+            </div>
+        </transition>
+
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
             <Tooltip class="left" :class="leftAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
@@ -158,7 +164,11 @@
             <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
             <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
 
-            <div class="dont-close-wallet-notice nq-orange">
+            <div v-if="manualFunding && state <= SwapState.CREATE_OUTGOING"
+                class="dont-close-wallet-notice nq-light-blue"
+            >{{ $t('You will finalize your purchase by bank transfer.') }}</div>
+
+            <div v-else class="dont-close-wallet-notice nq-orange">
                 {{ $t('Don\'t close your wallet until the swap is complete!') }}
             </div>
         </div>
@@ -169,12 +179,6 @@
             <p>{{ $t('Retrying...') }}</p>
         </div>
 
-        <transition name="fade">
-            <div v-if="manualFunding && state === SwapState.CREATE_OUTGOING" class="manual-funding-instructions">
-                <slot name="manual-funding-instructions"></slot>
-            </div>
-        </transition>
-
         <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
 
         <div class="buttons">
@@ -184,7 +188,7 @@
             <button class="nq-button-s inverse" @click="setState(SwapState.AWAIT_SECRET)">Step 4</button>
             <button class="nq-button-s inverse" @click="setState(SwapState.SETTLE_INCOMING)">Step 5</button>
             <button class="nq-button-s inverse" @click="setState(SwapState.COMPLETE)">Done</button>
-            <button class="nq-button-s inverse" @click="setState(SwapState.EXPIRED)">Expired</button>
+            <!-- <button class="nq-button-s inverse" @click="setState(SwapState.EXPIRED)">Expired</button> -->
         </div>
     </div>
 </template>
@@ -522,7 +526,7 @@ export default defineComponent({
 
 .buttons {
     position: absolute;
-    bottom: 0rem;
+    top: 0;
     left: 0;
     z-index: 2;
     opacity: 0;
@@ -845,6 +849,7 @@ export default defineComponent({
     .dont-close-wallet-notice {
         margin: 0 auto 2rem;
         font-weight: 600;
+        --nimiq-light-blue: var(--nimiq-light-blue-on-dark);
     }
 }
 
@@ -874,6 +879,7 @@ export default defineComponent({
     .animation.left-to-right .left .swap-amount,
     .animation.right-to-left .right .swap-amount {
         opacity: 0;
+        pointer-events: none;
     }
 
     .animation {

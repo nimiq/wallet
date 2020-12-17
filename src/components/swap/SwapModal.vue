@@ -574,23 +574,23 @@ export default defineComponent({
 
             if (fixedAsset.value === SwapAsset.NIM) {
                 if (direction.value === SwapDirection.NIM_TO_BTC) {
-                    from = { NIM: (Math.abs(wantNim.value) - fundingFee!) / 1e5 };
+                    from = { NIM: (Math.abs(wantNim.value) - fundingFee) / 1e5 };
                     to = SwapAsset.BTC;
                 }
                 if (direction.value === SwapDirection.BTC_TO_NIM) {
                     from = SwapAsset.BTC;
-                    to = { NIM: (wantNim.value + settlementFee!) / 1e5 };
+                    to = { NIM: (wantNim.value + settlementFee) / 1e5 };
                 }
             }
 
             if (fixedAsset.value === SwapAsset.BTC) {
                 if (direction.value === SwapDirection.BTC_TO_NIM) {
-                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee!) / 1e8 };
+                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee) / 1e8 };
                     to = SwapAsset.NIM;
                 }
                 if (direction.value === SwapDirection.NIM_TO_BTC) {
                     from = SwapAsset.NIM;
-                    to = { BTC: (wantBtc.value + settlementFee!) / 1e8 };
+                    to = { BTC: (wantBtc.value + settlementFee) / 1e8 };
                 }
             }
 

@@ -53,17 +53,17 @@
                         </Tooltip>
                         <SwapFeesTooltip
                             preferredPosition="bottom left"
-                            :btcFeeFiat="fees.btcFeeFiat"
-                            :oasisFeeFiat="fees.oasisFeeFiat"
-                            :nimFeeFiat="fees.nimFeeFiat"
-                            :serviceExchangeFeeFiat="fees.serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="fees.serviceExchangeFeePercentage"
+                            :btcFeeFiat="fiatFees.btcFeeFiat"
+                            :oasisFeeFiat="fiatFees.oasisFeeFiat"
+                            :nimFeeFiat="fiatFees.nimFeeFiat"
+                            :serviceExchangeFeeFiat="fiatFees.serviceExchangeFeeFiat"
+                            :serviceExchangeFeePercentage="fiatFees.serviceExchangeFeePercentage"
                             :currency="selectedFiatCurrency"
                             :container="this"
                         >
-                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fees.isHigh}">
-                                <LightningIcon v-if="fees.isHigh"/>
-                                <FiatAmount :amount="fees.total" :currency="selectedFiatCurrency"/>
+                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fiatFees.isHigh}">
+                                <LightningIcon v-if="fiatFees.isHigh"/>
+                                <FiatAmount :amount="fiatFees.total" :currency="selectedFiatCurrency"/>
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
@@ -219,6 +219,8 @@ import {
     createSwap,
     cancelSwap,
     getSwap,
+    AssetList,
+    getAssets,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
@@ -241,6 +243,7 @@ import { sandboxMockClearHtlc } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
 import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
+import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
@@ -278,8 +281,10 @@ export default defineComponent({
         // TODO: Determine current limit from account transaction history
         const limits = ref({
             current: 100e2, // 100 €
-            monthly: 100e2, // 100 €
+            monthly: 1000e2, // 1000 €
         });
+
+        const assets = ref<AssetList>(null);
 
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
@@ -315,7 +320,16 @@ export default defineComponent({
 
         onMounted(() => {
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+
+            if (!swap.value) {
+                // fetchLimits();
+                fetchAssets();
+            }
         });
+
+        async function fetchAssets() {
+            assets.value = await getAssets();
+        }
 
         function onClose() {
             if (addressListOpened.value === true) {
@@ -371,7 +385,7 @@ export default defineComponent({
             return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
         });
 
-        const fees = computed(() => {
+        const fiatFees = computed(() => {
             const data = estimate.value;
             if (!data) {
                 // TODO: Predict fees
@@ -420,14 +434,55 @@ export default defineComponent({
             };
         });
 
+        function calculateFees(feesPerUnit = { eur: 0, nim: 0, btc: 0 }): {
+            fundingFee: number,
+            settlementFee: number,
+        } {
+            let fundingFee: number | null = null;
+            let settlementFee: number | null = null;
+
+            // EUR
+            fundingFee = feesPerUnit.eur
+                || (estimate.value && estimate.value.from.asset === SwapAsset.EUR && estimate.value.from.fee)
+                // || (assets.value && assets.value[SwapAsset.EUR].feePerUnit)
+                || 0;
+
+            if (activeCurrency.value === CryptoCurrency.NIM) {
+                const perFee = feesPerUnit.nim
+                    || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
+                    || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
+                    || 0;
+                // 233 = NIM HTLC settlement tx size
+                settlementFee = perFee * 233;
+            }
+
+            if (activeCurrency.value === CryptoCurrency.BTC) {
+                const perFee = feesPerUnit.btc
+                    || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
+                    || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
+                    || 1;
+                // 135 extra weight units for BTC HTLC settlement tx
+                settlementFee = estimateFees(1, 1, perFee, 135);
+            }
+
+            if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
+
+            return {
+                fundingFee,
+                settlementFee,
+            };
+        }
+
         function getSwapParameters() {
             const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
                 ? SwapAsset.BTC
                 : SwapAsset.NIM;
 
+            const fees = calculateFees();
+
             if (_fiatAmount.value) {
                 return {
-                    from: { [SwapAsset.EUR]: fiatAmount.value / 100 },
+                    from: { [SwapAsset.EUR]: (fiatAmount.value - fees.fundingFee) / 100 },
                     to: toSwapAsset,
                 } as {
                     from: RequestAsset<SwapAsset.EUR>,
@@ -438,7 +493,7 @@ export default defineComponent({
             if (toSwapAsset === SwapAsset.BTC) {
                 return {
                     from: SwapAsset.EUR,
-                    to: { [toSwapAsset]: cryptoAmount.value / 1e8 },
+                    to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e8 },
                 } as {
                     from: SwapAsset.EUR,
                     to: RequestAsset<SwapAsset.BTC>,
@@ -447,7 +502,7 @@ export default defineComponent({
 
             return {
                 from: SwapAsset.EUR,
-                to: { [toSwapAsset]: cryptoAmount.value / 1e5 },
+                to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e5 },
             } as {
                 from: SwapAsset.EUR,
                 to: RequestAsset<SwapAsset.NIM>,
@@ -455,24 +510,33 @@ export default defineComponent({
         }
 
         async function updateEstimate() {
+            clearTimeout(timeoutId);
+
             const { from, to } = getSwapParameters();
-            let newEstimate: Estimate;
 
-            // Is there a better way to do it?
-            if (typeof from === 'string' && typeof to === 'object') { // force one of the function signatures
-                newEstimate = await getEstimate(from, to);
-            } else if (typeof from === 'object' && typeof to === 'string') { // force the other function signatures
-                newEstimate = await getEstimate(from, to);
-            }
+            const newEstimate = await getEstimate(
+                // Need to force one of the function signatures
+                from as RequestAsset<SwapAsset>,
+                to as SwapAsset,
+            );
 
-            const eurPrice = newEstimate!.from;
-            const nimPrice = newEstimate!.to;
-
-            if (!eurPrice || !nimPrice) {
+            if (!newEstimate.from || !newEstimate.to) {
                 throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
             }
 
-            estimate.value = newEstimate!;
+            // Update local fees with latest feePerUnit values
+            const { fundingFee, settlementFee } = calculateFees({
+                eur: newEstimate.from.fee,
+                nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit : 0,
+                btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit : 0,
+            });
+
+            newEstimate.from.fee = fundingFee;
+            newEstimate.to.fee = settlementFee;
+
+            // TODO: Check against minimums
+
+            estimate.value = newEstimate;
         }
 
         async function sign() {
@@ -487,39 +551,23 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    // const fees = calculateFees();
-                    // const { to, from } = calculateRequestData(fees);
-
                     const { from, to } = getSwapParameters();
 
-                    if (typeof from === 'string' && typeof to === 'object') {
-                        swapSuggestion = await createSwap(
-                            from as SwapAsset,
-                            to as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                        );
-                    } else if (typeof from === 'object' && typeof to === 'string') {
-                        swapSuggestion = await createSwap(
-                            from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                            to as SwapAsset,
-                        );
-                    }
+                    swapSuggestion = await createSwap(
+                        // Need to force one of the function signatures
+                        from as RequestAsset<SwapAsset>,
+                        to as SwapAsset,
+                    );
 
-                    // // Update local fees with latest feePerUnit values
-                    // const { fundingFee, settlementFee } = calculateFees({
-                    //     nim: swapSuggestion.from.asset === SwapAsset.NIM
-                    //         ? swapSuggestion.from.feePerUnit
-                    //         : swapSuggestion.to.asset === SwapAsset.NIM
-                    //             ? swapSuggestion.to.feePerUnit
-                    //             : 0,
-                    //     btc: swapSuggestion.from.asset === SwapAsset.BTC
-                    //         ? swapSuggestion.from.feePerUnit
-                    //         : swapSuggestion.to.asset === SwapAsset.BTC
-                    //             ? swapSuggestion.to.feePerUnit
-                    //             : 0,
-                    // });
+                    // Update local fees with latest feePerUnit values
+                    const { fundingFee, settlementFee } = calculateFees({
+                        eur: swapSuggestion.from.fee,
+                        nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit : 0,
+                        btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit : 0,
+                    });
 
-                    // swapSuggestion.from.fee = fundingFee;
-                    // swapSuggestion.to.fee = settlementFee;
+                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.to.fee = settlementFee;
 
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
@@ -538,16 +586,18 @@ export default defineComponent({
                 let redeem: HtlcSettlementInstructions | null = null;
 
                 // Await Nimiq and Bitcoin consensus
-                const nimiqClient = await getNetworkClient();
-                if (useNetworkStore().state.consensus !== 'established') {
-                    await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                        if (state === 'established') res();
-                    }));
+                if (activeCurrency.value === CryptoCurrency.NIM) {
+                    const nimiqClient = await getNetworkClient();
+                    if (useNetworkStore().state.consensus !== 'established') {
+                        await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                            if (state === 'established') res();
+                        }));
+                    }
                 }
-                const electrumClient = await getElectrumClient();
-                await electrumClient.waitForConsensusEstablished();
-
-                const validityStartHeight = useNetworkStore().state.height;
+                if (activeCurrency.value === CryptoCurrency.BTC) {
+                    const electrumClient = await getElectrumClient();
+                    await electrumClient.waitForConsensusEstablished();
+                }
 
                 if (swapSuggestion.from.asset === SwapAsset.EUR) {
                     fund = {
@@ -564,7 +614,7 @@ export default defineComponent({
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount, // Luna
                         fee: swapSuggestion.to.fee, // Luna
-                        validityStartHeight,
+                        validityStartHeight: useNetworkStore().state.height,
                     };
                 } else if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     redeem = {
@@ -803,7 +853,7 @@ export default defineComponent({
             CryptoCurrency,
             eurPerNim,
             eurPerBtc,
-            fees,
+            fiatFees,
             limits,
             hasBitcoinAddresses,
             activeCurrency,

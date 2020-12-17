@@ -1,6 +1,10 @@
 <template>
     <div class="bank-check-input"
-        :class="{ disabled, autocomplete: matchingBanks && matchingBanks.length > 0 }"
+        :class="{
+            disabled,
+            autocomplete: matchingBanks && matchingBanks.length > 0 && localValue.length >= 2,
+            writing: localValue.length > 0,
+        }"
         @keydown="onKeyDown"
     >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$labelInput"/>
@@ -121,20 +125,21 @@ export default defineComponent({
 
             switch (event.keyCode) {
                 case 40: // down arrow key
+                    event.preventDefault();
                     selectedBankIndex.value = Math.max(0, Math.min(
-                        matchingBanks.value.length - 1, selectedBankIndex.value + 1),
+                        visibleBanks.value.length - 1, selectedBankIndex.value + 1),
                     );
-
                     break;
 
                 case 38: // up arrow key
+                    event.preventDefault();
                     selectedBankIndex.value = Math.max(0, Math.min(
-                        matchingBanks.value.length - 1, selectedBankIndex.value - 1),
+                        visibleBanks.value.length - 1, selectedBankIndex.value - 1),
                     );
                     break;
 
                 case 13: // enter key
-                    selectBank(matchingBanks.value[selectedBankIndex.value]);
+                    selectBank(visibleBanks.value[selectedBankIndex.value]);
                     break;
 
                 default:
@@ -248,7 +253,7 @@ export default defineComponent({
 .bank-autocomplete {
     @extend %custom-scrollbar-inverse;
 
-    display: flex;
+    display: none;
     flex-direction: column;
     overflow: auto;
 
@@ -272,6 +277,10 @@ export default defineComponent({
     text-align: left;
     user-select: none;
 
+    .autocomplete & {
+        display: flex;
+    }
+
     .label-input:not(:focus-within) ~ & {
         display: none;
     }
@@ -280,7 +289,7 @@ export default defineComponent({
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 1rem;
+        padding: 1.5rem;
         border-radius: 0.25rem;
         font-weight: 400;
         cursor: pointer;

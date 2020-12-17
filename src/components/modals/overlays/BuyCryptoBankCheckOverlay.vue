@@ -6,6 +6,7 @@
         </PageHeader>
         <PageBody class="flex-column">
             <BankCheckInput v-model="bankName" :placeholder="$t('Enter bank name...')" @bank-selected="onBankSelected"/>
+            <span>{{ $t('BIC work too.') }}</span>
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>
@@ -61,7 +62,30 @@ export default defineComponent({
 
 .page-body {
     overflow: visible;
-    padding-top: 2.75rem;
+    padding-top: 10.375rem;
+
+    .bank-check-input {
+        transition: transform 300ms var(--nimiq-ease);
+
+        &.writing {
+            transform: translateY(-100%);
+            & + span {
+                opacity: 0;
+                visibility: hidden;
+                user-select: none;
+            }
+        }
+    }
+
+    & > span {
+        font-size: var(--small-size);
+        color: var(--text-40);
+        margin-top: 1rem;
+
+        transition-property: opacity, visibility;
+        transition-duration: 300ms;
+        transition-timing-function: var(--nimiq-ease);
+    }
 }
 
 .page-footer {

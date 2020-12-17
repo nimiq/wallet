@@ -388,15 +388,51 @@ export default defineComponent({
         const fiatFees = computed(() => {
             const data = estimate.value;
             if (!data) {
-                // TODO: Predict fees
+                // Predict fees
+
+                // TODO: Can we predict EUR fees?
+                const oasisFeeFiat = 0;
+
+                let nimFeeFiat: number | undefined;
+                if (activeCurrency.value === CryptoCurrency.NIM) {
+                    // Settlement
+                    const perFee = 0
+                        || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
+                        || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
+                        || 0;
+                    // 135 extra weight units for BTC HTLC settlement tx
+                    const myFee = perFee * 233; // 233 = NIM HTLC settlement tx size);
+                    const serviceFee = perFee * 244; // 244 = NIM HTLC funding tx size
+
+                    nimFeeFiat = ((myFee + serviceFee) / 1e5)
+                        * (exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value] || 0);
+                }
+
+                let btcFeeFiat: number | undefined;
+                if (activeCurrency.value === CryptoCurrency.BTC) {
+                    // Settlement
+                    const perFee = 0
+                        || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
+                        || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
+                        || 1;
+                    // 135 extra weight units for BTC HTLC settlement tx
+                    const myFee = estimateFees(1, 1, perFee, 135);
+                    const serviceFee = perFee * 154; // The vsize Fastspot charges for a funding tx
+
+                    btcFeeFiat = ((myFee + serviceFee) / 1e8)
+                        * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
+                }
+
+                const serviceExchangeFeePercentage = 0.2;
+                const serviceExchangeFeeFiat = 0;
 
                 return {
-                    btcFeeFiat: undefined,
-                    oasisFeeFiat: 0,
-                    nimFeeFiat: 0,
-                    serviceExchangeFeePercentage: 0,
-                    serviceExchangeFeeFiat: 0,
-                    total: 0,
+                    btcFeeFiat,
+                    oasisFeeFiat,
+                    nimFeeFiat,
+                    serviceExchangeFeePercentage,
+                    serviceExchangeFeeFiat,
+                    total: (btcFeeFiat || 0) + oasisFeeFiat + (nimFeeFiat || 0) + serviceExchangeFeeFiat,
                     isHigh: false,
                 };
             }

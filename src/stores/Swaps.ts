@@ -86,7 +86,7 @@ export enum SEPA_INSTANT_SUPPORT {
     FULL = 'sepa-instant-full-support',
     PARTIAL = 'sepa-instant-partial-support',
     NONE = 'sepa-instant-no-support',
-    UNKNOW = 'sepa-instant-unknow-support', // Is this a thing?
+    UNKNOWN = 'sepa-instant-unknown-support',
 }
 
 export type BankInfos = {

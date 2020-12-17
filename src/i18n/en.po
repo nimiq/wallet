@@ -32,6 +32,10 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:27
+msgid "+ {count} more | + {count} more"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:104
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:134
@@ -1450,6 +1454,10 @@ msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
 msgid "Your bank is not eligible?"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:30
+msgid "Your bank needs to support SEPA Instant out transactions.Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 
 #: src/components/NetworkMap.vue:22

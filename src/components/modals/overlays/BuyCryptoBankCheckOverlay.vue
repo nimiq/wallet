@@ -61,6 +61,7 @@ export default defineComponent({
 
 .page-body {
     overflow: visible;
+    padding-top: 2.75rem;
 }
 
 .page-footer {

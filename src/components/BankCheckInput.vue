@@ -5,17 +5,32 @@
     >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$labelInput"/>
         <ul class="bank-autocomplete" v-if="matchingBanks && matchingBanks.length > 0" ref="$bankAutocomplete">
-            <li v-for="(bank, index) in matchingBanks" :key="index"
+            <li class="bank" v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: selectedBankIndex === index }"
                 :disabled="bank.type === SEPA_INSTANT_SUPPORT.NONE"
                 @mouseenter="selectedBankIndex = index"
                 @mousedown.prevent="selectBank(bank)"
             >
-                <Avatar :label="bank.name" v-if="bank.type !== SEPA_INSTANT_SUPPORT.NONE"/>
-                <i class="avatar" v-else>X</i>
-                <span>{{ bank.name }}</span>
-                <CaretRightSmallIcon class="caret-right-small-icon" v-if="bank.type === SEPA_INSTANT_SUPPORT.FULL"/>
-                <i class="circled-question-mark-icon" v-if="bank.type === SEPA_INSTANT_SUPPORT.PARTIAL">?</i>
+                <BankIcon v-if="bank.type !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <ForbiddenIcon v-else />
+                <span>{{
+                    getMatchPrefix(bank.name)
+                    }}<strong>{{
+                        getMatch(bank.name)
+                    }}</strong>{{
+                    getMatchSuffix(bank.name)
+                }}</span>
+                <CaretRightSmallIcon class="caret-right-small-icon"
+                    v-if="bank.type === SEPA_INSTANT_SUPPORT.FULL"/>
+                <CircledQuestionMarkIcon
+                    v-if="bank.type === SEPA_INSTANT_SUPPORT.PARTIAL || bank.type === SEPA_INSTANT_SUPPORT.UNKNOWN"/>
+            </li>
+            <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
+                {{ $tc('+ {count} more | + {count} more', matchingBanks.length - visibleBanks.length) }}
+            </li>
+            <li class="warning" v-if="showWarning" key="warning">
+                {{ $t('Your bank needs to support SEPA Instant out transactions.'
+                    + 'Some banks don’t support it yet, but are likely to do so in the future.') }}
             </li>
         </ul>
     </div>
@@ -25,7 +40,11 @@
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
-import Avatar from './Avatar.vue';
+import BankIcon from './icons/BankIcon.vue';
+import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
+import ForbiddenIcon from './icons/ForbiddenIcon.vue';
+
+const MAX_VISIBLE_ITEMS = 3;
 
 export default defineComponent({
     props: {
@@ -63,7 +82,7 @@ export default defineComponent({
             },
             {
                 name: 'Sparda Bank',
-                type: SEPA_INSTANT_SUPPORT.UNKNOW,
+                type: SEPA_INSTANT_SUPPORT.UNKNOWN,
             },
             {
                 name: 'Sparkasse Wuppertal',
@@ -81,15 +100,16 @@ export default defineComponent({
         const $bankAutocomplete = ref<HTMLUListElement | null>(null);
         const selectedBankIndex = ref(0);
 
-        /* Filtering Labels */
+        /* Filtering & Sorting Labels */
         const matchingBanks = computed(() =>
             localValue.value
                 ? Object.values(banks.value).filter((bank) =>
                     bank.name
                     && bank.name.toLowerCase().includes(localValue.value.toLowerCase())
                     && bank.name.toLowerCase() !== localValue.value.toLowerCase(),
-                ) : [],
+                ).sort((a, b) => a.name.localeCompare(b.name)) : [],
         );
+        const visibleBanks = computed(() => matchingBanks.value.slice(0, MAX_VISIBLE_ITEMS));
 
         /* Reset the currently selected label to 0 on text input */
         watch(localValue, () => selectedBankIndex.value = 0);
@@ -130,9 +150,40 @@ export default defineComponent({
             }
         }
 
+        /* Executed when a bank is selected */
         function selectBank(bank: BankInfos) {
+            if (bank.type === SEPA_INSTANT_SUPPORT.NONE) {
+                (context.refs.$labelInput as LabelInput).focus();
+                return;
+            }
             localValue.value = bank.name;
             context.emit('bank-selected', bank);
+        }
+
+        /* Show warning if any visible bank is not fully supporting SEPA instant */
+        const showWarning = computed(() =>
+            // matchingBanks.value.some((bank: BankInfos) => bank.type !== SEPA_INSTANT_SUPPORT.FULL),
+            true, // TEMP: always showing warning
+        );
+
+        /* Those 3 functions are used to highlight the matched string in autocomplete list */
+        function getMatchPrefix(s: string) {
+            const rgx = new RegExp(`^(.*?)${localValue.value}`, 'i');
+            const match = s.match(rgx);
+
+            return (match ? match[1] : '');
+        }
+        function getMatch(s: string) {
+            const rgx = new RegExp(`${localValue.value}`, 'i');
+            const match = s.match(rgx);
+
+            return (match ? match[0] : '');
+        }
+        function getMatchSuffix(s: string) {
+            const rgx = new RegExp(`${localValue.value}(.*?)$`, 'i');
+            const match = s.match(rgx);
+
+            return (match ? match[1] : '');
         }
 
         return {
@@ -142,10 +193,16 @@ export default defineComponent({
 
             localValue,
             matchingBanks,
+            visibleBanks,
             selectedBankIndex,
 
             onKeyDown,
             selectBank,
+
+            showWarning,
+            getMatchPrefix,
+            getMatch,
+            getMatchSuffix,
         };
     },
     methods: {
@@ -156,7 +213,9 @@ export default defineComponent({
     components: {
         LabelInput,
         CaretRightSmallIcon,
-        Avatar,
+        BankIcon,
+        CircledQuestionMarkIcon,
+        ForbiddenIcon,
     },
 });
 </script>
@@ -165,30 +224,13 @@ export default defineComponent({
 @import '../scss/mixins.scss';
 
 .bank-check-input {
+    --input-width: 78%;
+
     position: relative;
     font-weight: 600;
 
-    & >.avatar {
-        position: absolute;
-        left: 1.5rem;
-        top: 1.5rem;
-        width: 3rem;
-        height: 3rem;
-        font-size: 1.625rem;
-        letter-spacing: -0.05em;
-    }
-
-    & >.avatar /deep/ svg path {
-        transition: fill 200ms var(--nimiq-ease);
-    }
-
-    &:hover > .avatar /deep/ svg path,
-    &:focus-within > .avatar /deep/ svg path {
-        fill: var(--nimiq-light-blue);
-    }
-
     /deep/ input {
-        width: 78% !important;
+        width: var(--input-width) !important;
         padding: 1.75rem 2rem;
 
         &::placeholder {
@@ -197,11 +239,6 @@ export default defineComponent({
     }
 
     &.disabled {
-        & > .avatar {
-            filter: saturate(0);
-            opacity: 0.5;
-        }
-
         /deep/ input {
             color: var(--text-50);
         }
@@ -213,64 +250,102 @@ export default defineComponent({
 
     display: flex;
     flex-direction: column;
+    overflow: auto;
+
     width: 90%;
+    // max-height: 40rem;
+    margin: 0;
+    margin-top: -.25rem;
+    padding: .5rem;
+
     position: absolute;
+    z-index: 4;
     top: 51px; // TEMP: input height
     left: 50%;
     transform: translateX(-50%);
-    z-index: 4;
+
     background: var(--nimiq-blue-bg);
     color: white;
     border-radius: 0.5rem;
     box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
-    margin: 0;
-    margin-top: -.25rem;
-    padding: .5rem;
-    max-height: 40rem;
     list-style-type: none;
-    overflow: auto;
-    cursor: pointer;
+    text-align: left;
+    user-select: none;
 
     .label-input:not(:focus-within) ~ & {
         display: none;
     }
 
-    li {
+    li.bank {
         display: flex;
         flex-direction: row;
         align-items: center;
         padding: 1rem;
         border-radius: 0.25rem;
+        font-weight: 400;
+        cursor: pointer;
+
         background-color: rgba(#FFFFFF, 0);
-
         transition: background-color 200ms var(--nimiq-ease);
-
-        span {
-            flex-grow: 1;
-            text-align: left;
-        }
-
-        i.circled-question-mark-icon {
-            font-style: normal;
-            color: var(--nimiq-red);
-        }
 
         &:not(:last-child) {
             margin-bottom: .5rem;
         }
 
-        &:hover,
-        &.selected {
-            background-color: rgba(#FFFFFF, .12);
+        &[disabled] {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        &:not([disabled]) {
+            &:hover,
+            &.selected {
+                background-color: rgba(#FFFFFF, .12);
+
+                .caret-right-small-icon {
+                    opacity: 1;
+                }
+            }
+        }
+
+        span {
+            flex-grow: 1;
+        }
+
+        .caret-right-small-icon {
+            opacity: 0.3;
+            transition: opacity 200ms var(--nimiq-ease);
+        }
+
+        .circled-question-mark-icon {
+            color: var(--nimiq-orange);
         }
     }
 
-    .avatar {
+    .bank-icon,
+    .forbidden-icon {
         margin-right: 1rem;
         height: 3rem;
         width: 3rem;
         font-size: 1.625rem;
         letter-spacing: -0.05em;
+    }
+
+    li.more-count {
+        font-size: var(--small-size);
+        margin-left: 1.5rem;
+        margin-bottom: 1.75rem;
+        opacity: 0.5;
+    }
+
+    li.warning {
+        font-size: var(--small-size);
+        line-height: 130%;
+        margin: 0.5rem;
+        padding: 1rem;
+        padding-right: 1.625rem;
+        border-top: 1px solid rgba(white, 0.2);
+        opacity: 0.6;
     }
 }
 </style>

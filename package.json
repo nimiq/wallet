@@ -14,6 +14,7 @@
     "i18n:pull": "tx pull --all --parallel --no-interactive --force --minimum-perc 95",
     "i18n:push": "tx push --source",
     "i18n:sync": "yarn i18n:extract && yarn i18n:push; yarn i18n:pull",
+    "utils:getBankList": "node ./scripts/getBankList.js",
     "release": "./release.sh",
     "test": "echo 'No tests'"
   },
@@ -42,7 +43,8 @@
     "vue-responsive-components": "^0.2.3",
     "vue-router": "^3.1.6",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",
-    "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#master"
+    "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#master",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",

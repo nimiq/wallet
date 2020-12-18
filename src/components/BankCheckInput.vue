@@ -44,6 +44,7 @@
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
+import BANKS from '@/data/banksList/bankslist.json';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
@@ -70,44 +71,14 @@ export default defineComponent({
             set(value) { context.emit('input', value); },
         });
 
-        // TEST DATA
-        const banks = ref<BankInfos[]>([
-            {
-                name: 'Berliner Sparkasse',
-                type: SEPA_INSTANT_SUPPORT.FULL,
-            },
-            {
-                name: 'Stadtsparkasse Bad Honne',
-                type: SEPA_INSTANT_SUPPORT.FULL,
-            },
-            {
-                name: 'Sparkasse Bremen AG',
-                type: SEPA_INSTANT_SUPPORT.FULL,
-            },
-            {
-                name: 'Sparda Bank',
-                type: SEPA_INSTANT_SUPPORT.UNKNOWN,
-            },
-            {
-                name: 'Sparkasse Wuppertal',
-                type: SEPA_INSTANT_SUPPORT.FULL,
-            },
-            {
-                name: 'Sparkasse Attendorn-Lenn',
-                type: SEPA_INSTANT_SUPPORT.PARTIAL,
-            },
-            {
-                name: 'Sparkasse Bad Hersfeld-Rot',
-                type: SEPA_INSTANT_SUPPORT.NONE,
-            },
-        ]);
+        const banks: BankInfos[] = BANKS;
         const $bankAutocomplete = ref<HTMLUListElement | null>(null);
         const selectedBankIndex = ref(0);
 
         /* Filtering & Sorting Labels */
         const matchingBanks = computed(() =>
             localValue.value
-                ? Object.values(banks.value).filter((bank) =>
+                ? Object.values(banks).filter((bank) =>
                     bank.name
                     && bank.name.toLowerCase().includes(localValue.value.toLowerCase())
                     && bank.name.toLowerCase() !== localValue.value.toLowerCase(),
@@ -319,6 +290,9 @@ export default defineComponent({
 
         span {
             flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            mask: linear-gradient(90deg , white, white calc(100% - 5rem), rgba(255,255,255, 0) calc(100% - .5rem));
         }
 
         .caret-right-small-icon {
@@ -328,6 +302,7 @@ export default defineComponent({
 
         .circled-question-mark-icon {
             color: var(--nimiq-orange);
+            flex-shrink: 0;
         }
     }
 
@@ -338,6 +313,7 @@ export default defineComponent({
         width: 3rem;
         font-size: 1.625rem;
         letter-spacing: -0.05em;
+        flex-shrink: 0;
     }
 
     li.more-count {

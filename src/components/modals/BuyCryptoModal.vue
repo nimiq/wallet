@@ -329,7 +329,7 @@ export default defineComponent({
                 return estimate.value.from.amount - estimate.value.from.fee;
             },
             set: (value: number) => {
-                _fiatAmount.value = value;
+                _fiatAmount.value = value > 10 * 1e2 ? 10 * 1e2 : value;
                 _cryptoAmount.value = 0;
             },
         });
@@ -348,6 +348,13 @@ export default defineComponent({
                 _fiatAmount.value = 0;
             },
         });
+
+        // watch(fiatAmount, () => {
+        //     if (fiatAmount.value > 10 * 1e2 || _fiatAmount.value > 10 * 1e2) {
+        //         _fiatAmount.value = 0;
+        //         fiatAmount.value = 10 * 1e2;
+        //     }
+        // });
 
         const canSend = computed(() => !!(fiatAmount.value && estimate.value && userBank.value));
 

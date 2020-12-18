@@ -38,20 +38,29 @@ export const useTransactionsStore = createStore({
             if (!txs.length) return;
 
             let foundProxies = false;
+            const knownTxs: Transaction[] = [...Object.values(this.state.transactions), ...txs]; // includes new txs
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txs) {
                 // Detect proxies and observe them for tx-history and new incoming tx
                 if (isProxyData(plain.data.raw)) {
                     foundProxies = true;
-                    const proxyTxs = handleProxyTransaction(plain, [
-                        ...Object.values(this.state.transactions),
-                        // Need to pass processed transactions from this batch in as well,
-                        // as two related txs can be added in the same batch, and the store
-                        // is only updated after this loop.
-                        ...txs,
-                    ]);
-                    for (const tx of proxyTxs) {
-                        newTxs[tx.transactionHash] = tx;
+                    const relatedTx = handleProxyTransaction(plain, knownTxs);
+                    if (relatedTx) {
+                        // Need to re-assign the whole object in Vue 2 for change detection.
+                        // TODO: Simply assign transactions in Vue 3.
+                        newTxs[plain.transactionHash] = {
+                            ...plain,
+                            relatedTransactionHash: relatedTx.transactionHash,
+                        };
+                        newTxs[relatedTx.transactionHash] = {
+                            ...relatedTx,
+                            relatedTransactionHash: plain.transactionHash,
+                        };
+                        // Set relatedTransactionHash also on old tx objects for following iterations.
+                        plain.relatedTransactionHash = relatedTx.transactionHash;
+                        relatedTx.relatedTransactionHash = plain.transactionHash;
+                    } else {
+                        newTxs[plain.transactionHash] = plain;
                     }
                     continue;
                 }
@@ -85,7 +94,7 @@ export const useTransactionsStore = createStore({
                         const selector = (tx: Transaction) => tx.recipient === plain.sender && 'hashRoot' in tx.data;
 
                         // First search known transactions
-                        let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
+                        let fundingTx = knownTxs.find(selector);
 
                         // Then get funding tx from the blockchain
                         if (!fundingTx) {

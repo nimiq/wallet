@@ -32,7 +32,11 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:27
+#: src/components/modals/BuyCryptoModal.vue:92
+msgid "{value} remaining"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:33
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -67,7 +71,7 @@ msgstr ""
 msgid "3"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:82
+#: src/components/modals/BuyCryptoModal.vue:88
 #: src/components/swap/SwapModal.vue:51
 #: src/components/swap/SwapModal.vue:68
 msgid "30-day Limit"
@@ -210,6 +214,10 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:9
+msgid "BIC work too."
+msgstr ""
+
 #: src/components/BalanceDistribution.vue:68
 #: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
@@ -268,7 +276,7 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:150
+#: src/components/modals/BuyCryptoModal.vue:163
 #: src/components/modals/BuyCryptoModal.vue:40
 msgid "Buy Crypto"
 msgstr ""
@@ -281,7 +289,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:13
 msgid "Buy with credit card"
 msgstr ""
 
@@ -327,7 +335,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:222
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:213
 msgid "Choose an Address"
@@ -487,9 +495,12 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:88
 #: src/components/swap/SwapModal.vue:74
 msgid "During early access, these limits apply."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:100
+msgid "Each IBAN is additionally limited to swaps worth 1000€ in the last 30 days."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:18
@@ -790,6 +801,7 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:90
 #: src/components/swap/SwapModal.vue:53
 #: src/components/swap/SwapModal.vue:70
 msgid "loading..."
@@ -815,6 +827,7 @@ msgid "lost"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:73
+#: src/components/modals/BuyCryptoModal.vue:78
 #: src/components/swap/SwapModal.vue:59
 #: src/components/swap/SwapModal.vue:63
 msgid "Max."
@@ -932,6 +945,10 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:51
 #: src/components/modals/TransactionModal.vue:74
 msgid "Pending..."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:83
+msgid "Per-Swap Limit"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:11
@@ -1189,6 +1206,10 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:205
+msgid "Simulate EUR payment"
+msgstr ""
+
 #: src/components/modals/BtcActivationModal.vue:28
 #: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
@@ -1311,7 +1332,10 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:89
+#: src/components/modals/BuyCryptoModal.vue:97
+msgid "These are the limits of your crypto addresses in this account."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:75
 msgid "They will be increased gradually."
 msgstr ""
@@ -1502,11 +1526,11 @@ msgstr ""
 msgid "Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new account picker."
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:30
+#: src/components/BankCheckInput.vue:36
 msgid "Your bank needs to support SEPA Instant out transactions.Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

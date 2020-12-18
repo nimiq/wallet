@@ -69,25 +69,38 @@
                         </SwapFeesTooltip>
                         <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
                             <div slot="trigger" class="pill limits flex-row">
-                                <span>
+                                <span v-if="limits">
                                     {{ $t('Max.') }}
-                                    <FiatAmount :amount="limits.current / 100" currency="eur" hideDecimals/>
+                                    <FiatAmount :amount="currentLimitFiat"
+                                        :currency="selectedFiatCurrency" hideDecimals/>
                                 </span>
-                                <!-- <template v-else>
+                                <template v-else>
                                     {{ $t('Max.') }}
                                     <CircleSpinner/>
-                                </template> -->
+                                </template>
+                            </div>
+                            <div class="price-breakdown">
+                                <label>{{ $t('Per-Swap Limit') }}</label>
+                                <FiatAmount :amount="OASIS_LIMIT_PER_TRANSACTION"
+                                    :currency="selectedFiatCurrency" hideDecimals/>
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
-                                <FiatAmount :amount="limits.monthly / 100" currency="eur" hideDecimals/>
-                                <!-- <span v-else>{{ $t('loading...') }}</span> -->
+                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
                             </div>
+                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                <FiatConvertedAmount slot="value" :amount="limits.current" currency="nim" roundDown/>
+                            </i18n>
                             <div></div>
                             <p class="explainer">
-                                {{ $t('During early access, these limits apply.') }}
-                                {{ $t('They will be increased gradually.') }}
+                                {{ $t('These are the limits of your crypto addresses in this account.') }}
                             </p>
+                            <p class="explainer">
+                                {{ $t('Each IBAN is additionally limited to swaps worth 1000€ in the last 30 days.') }}
+                            </p>
+
+
                         </Tooltip>
                     </div>
                 </PageHeader>
@@ -216,7 +229,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount, Timer } from '@nimiq/vue-components';
+import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount, Timer, CircleSpinner } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
 import {
@@ -231,6 +244,8 @@ import {
     getSwap,
     AssetList,
     getAssets,
+    getLimits,
+    Limits,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
@@ -241,6 +256,7 @@ import {
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/browser';
+import allSettled from 'promise.allsettled';
 import { getNetworkClient } from '@/network';
 import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
@@ -285,6 +301,8 @@ enum Pages {
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
+const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
+
 export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
@@ -298,11 +316,7 @@ export default defineComponent({
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
         // TODO: Determine current limit from account transaction history
-        const limits = ref({
-            current: 100e2, // 100 €
-            monthly: 1000e2, // 1000 €
-        });
-
+        const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
         const assets = ref<AssetList>(null);
 
         const _fiatAmount = ref(0);
@@ -341,9 +355,54 @@ export default defineComponent({
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
 
             if (!swap.value) {
-                // fetchLimits();
+                fetchLimits();
                 fetchAssets();
             }
+        });
+
+        const { exchangeRates } = useFiatStore();
+
+        watch(exchangeRates, fetchLimits, {
+            lazy: true,
+        });
+
+        async function fetchLimits() {
+            if (!limits.value) {
+                if (!activeAccountInfo.value) return;
+
+                const allLimits = await allSettled(
+                    activeAccountInfo.value.addresses.map(
+                        (address) => getLimits(SwapAsset.NIM, address).then((newLimits) => ({
+                            ...newLimits,
+                            address,
+                        })),
+                    ),
+                );
+                const newLimits = allLimits
+                    .map((r) => r.status === 'fulfilled' ? r.value : null)
+                    .filter((r) => r !== null)
+                    .sort((a, b) => a!.current - b!.current)[0];
+
+                if (!newLimits) return;
+
+                limits.value = newLimits;
+            } else {
+                const newLimits = await getLimits(SwapAsset.NIM, limits.value.address);
+                limits.value = {
+                    ...newLimits,
+                    address: limits.value.address,
+                };
+            }
+        }
+
+        const currentLimitFiat = computed(() => {
+            if (!limits.value) return null;
+            if (!limits.value.current) return 0;
+
+            const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
+            if (!nimRate) return null;
+
+            return Math.min(Math.floor((limits.value.current / 1e5) * nimRate), OASIS_LIMIT_PER_TRANSACTION);
         });
 
         async function fetchAssets() {
@@ -369,7 +428,8 @@ export default defineComponent({
         const backgroundAddresses = computed(() =>
             addressInfos.value
                 .slice(0, 3)
-                .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value!.address)
+                .filter((addressInfo) => activeCurrency.value !== CryptoCurrency.NIM
+                    || addressInfo.address !== activeAddressInfo.value!.address)
                 .slice(0, 2)
                 .map((addressInfo) => addressInfo.address),
         );
@@ -377,8 +437,6 @@ export default defineComponent({
         const fiatCurrencyInfo = computed(() =>
             new CurrencyInfo(selectedFiatCurrency.value),
         );
-
-        const { exchangeRates } = useFiatStore();
 
         const eurPerNim = computed(() => {
             const data = estimate.value;
@@ -935,6 +993,8 @@ export default defineComponent({
             hasBitcoinAddresses,
             activeCurrency,
             btcUnit,
+            OASIS_LIMIT_PER_TRANSACTION,
+            currentLimitFiat,
         };
     },
     components: {
@@ -957,6 +1017,7 @@ export default defineComponent({
         MinimizeIcon,
         BitcoinIcon,
         SwapSepaFundingInstructions,
+        CircleSpinner,
     },
 });
 </script>
@@ -1154,7 +1215,7 @@ export default defineComponent({
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
-            max-width: 100%;
+            width: 100%;
             cursor: inherit;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }

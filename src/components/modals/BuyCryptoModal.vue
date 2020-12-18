@@ -174,15 +174,22 @@
                     @finished="finishSwap"
                 >
                     <SwapSepaFundingInstructions
+                        v-if="swap.fundingInstructions && swap.fundingInstructions.type === 'sepa'"
                         slot="manual-funding-instructions"
-                        :amount="345"
-                        :name="'TEN31 Bank'"
-                        :iban="'DE75512108001245126199'"
-                        :bic="'WEGBDE77'"
-                        :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
+                        :amount="swap.fundingInstructions.amount"
+                        :name="swap.fundingInstructions.recipient.name"
+                        :iban="swap.fundingInstructions.recipient.iban"
+                        :bic="swap.fundingInstructions.recipient.bic"
+                        :reference="swap.fundingInstructions.purpose"
                         @cancel="() => {}"
-                        @paid="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address).catch(() => {})"
+                        @paid="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
                     />
+                    <button v-else
+                        slot="manual-funding-instructions"
+                        class="nq-button light-blue"
+                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
+                        @mousedown.prevent
+                    >{{ $t('Simulate EUR payment') }}</button>
                 </SwapAnimation>
             </PageBody>
             <button v-if="swap.state !== SwapState.CREATE_OUTGOING"
@@ -242,7 +249,15 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency } from '@/lib/Constants';
-import { sandboxMockClearHtlc } from '@/lib/OasisApi';
+import {
+    init as initOasisApi,
+    getHtlc,
+    Htlc,
+    HtlcStatus,
+    sandboxMockClearHtlc,
+    TransactionType,
+    SepaClearingInstruction,
+} from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
 import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
@@ -760,6 +775,32 @@ export default defineComponent({
 
             const { setActiveSwap, setSwap } = useSwapsStore();
 
+            setActiveSwap({
+                ...confirmedSwap,
+                state: SwapState.SIGN_SWAP,
+                watchtowerNotified: false,
+                fundingSerializedTx: signedTransactions.eur,
+                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
+                    ? signedTransactions.nim!.serializedTx
+                    : signedTransactions.btc!.serializedTx,
+            });
+
+            // Fetch OASIS HTLC to get clearing instructions
+            initOasisApi(Config.oasis.apiEndpoint);
+            const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+            if (oasisHtlc.status !== HtlcStatus.PENDING) {
+                const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+                // swapError.value = 'Invalid swap state, swap aborted!';
+                cancelSwap({ id: swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing
+                .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
+
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
@@ -767,13 +808,9 @@ export default defineComponent({
             });
 
             setActiveSwap({
-                ...confirmedSwap,
+                ...swap.value!,
                 state: SwapState.AWAIT_INCOMING,
-                watchtowerNotified: false,
-                fundingSerializedTx: signedTransactions.eur,
-                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
-                    ? signedTransactions.nim!.serializedTx
-                    : signedTransactions.btc!.serializedTx,
+                fundingInstructions,
             });
 
             if (Config.fastspot.watchtowerEndpoint) {

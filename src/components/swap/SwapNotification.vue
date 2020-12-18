@@ -163,6 +163,19 @@ export default defineComponent({
                 // Handle regular swap process
                 // Note that each step falls through to the next when finished.
                 /* eslint-disable no-fallthrough */
+                case SwapState.SIGN_SWAP: {
+                    let unsubscribe: Function;
+                    await new Promise((resolve, reject) => {
+                        unsubscribe = useSwapsStore().subscribe((mutation, state) => {
+                            if (!state.activeSwap) {
+                                reject(new Error('Swap deleted'));
+                                return;
+                            }
+
+                            if (state.activeSwap.state === SwapState.AWAIT_INCOMING) resolve(true);
+                        });
+                    }).finally(() => unsubscribe());
+                }
                 case SwapState.AWAIT_INCOMING: {
                     const remoteFundingTx = await swapHandler.awaitIncoming((tx) => {
                         updateSwap({

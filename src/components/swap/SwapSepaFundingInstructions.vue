@@ -118,11 +118,11 @@ export default defineComponent({
         const page = ref(Pages.PAYMENT_DETAILS);
 
         function onCancel() {
-            context.root.$emit(Events.CANCEL);
+            context.emit(Events.CANCEL);
         }
 
         function onPaid() {
-            context.root.$emit(Events.PAID);
+            context.emit(Events.PAID);
             page.value = Pages.PROCESSING;
         }
 
@@ -263,6 +263,8 @@ export default defineComponent({
     }
 
     .nq-gray {
+        font-size: var(--body-size);
+        font-weight: 600;
         opacity: 0.5;
         max-width: 46rem;
         margin-left: auto;

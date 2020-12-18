@@ -26,7 +26,7 @@ export enum TransactionType {
     MOCK = 'mock', // Only available in Sandbox environment
 }
 
-type SepaRecipient = {
+export type SepaRecipient = {
     iban: string,
     name: string,
     bic?: string,
@@ -40,7 +40,7 @@ type SepaRecipient = {
     },
 }
 
-type SepaClearingInstruction = {
+export type SepaClearingInstruction = {
     type: TransactionType.SEPA,
     fee: number,
     amount: number,
@@ -48,14 +48,14 @@ type SepaClearingInstruction = {
     purpose?: string,
 }
 
-type MockClearingInstruction = {
+export type MockClearingInstruction = {
     type: TransactionType.MOCK,
     description: string,
 }
 
-type ClearingInstruction = SepaClearingInstruction | MockClearingInstruction;
+export type ClearingInstruction = SepaClearingInstruction | MockClearingInstruction;
 
-type SettlementInfo = {
+export type SettlementInfo = {
     type: TransactionType,
     fee: number,
 }
@@ -216,6 +216,7 @@ export async function sandboxMockClearHtlc(id: string): Promise<boolean> {
 
     return fetch(`${API_URL}/mock/clear/${id}`, {
         method: 'POST',
+        mode: 'no-cors',
     }).then(async (res) => {
         if (!res.ok) {
             throw new Error('Mock-clearing failed');

@@ -157,7 +157,7 @@
 
                     <button
                         class="nq-button light-blue"
-                        :disabled="!canSend"
+                        :disabled="!canSign"
                         @click="sign"
                         @mousedown.prevent
                     >{{ $t('Buy Crypto') }}</button>
@@ -356,7 +356,14 @@ export default defineComponent({
         //     }
         // });
 
-        const canSend = computed(() => !!(fiatAmount.value && estimate.value && userBank.value));
+        const canSign = computed(() =>
+            fiatAmount.value
+            // && !estimateError.value && !swapError.value
+            && estimate.value
+            && userBank.value
+            && limits.value
+            // && !fetchingEstimate.value,
+        );
 
         onMounted(() => {
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
@@ -977,7 +984,7 @@ export default defineComponent({
             page,
             backgroundAddresses,
             activeAddressInfo,
-            canSend,
+            canSign,
             fiatAmount,
             fiatCurrencyInfo,
             userBank,

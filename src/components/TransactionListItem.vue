@@ -26,8 +26,8 @@
             <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC && swapTransaction"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink"><CashlinkXSmallIcon/></div>
-            <div v-if="swapData" class="cashlink"><SwapSmallIcon/></div>
+            <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
+            <div v-if="swapData || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -121,13 +121,19 @@ export default defineComponent({
 
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapData = computed(() => {
-            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash);
+            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash)
+                || (props.transaction.relatedTransactionHash
+                    ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
+                    : null);
             if (!swapInfo) return null;
 
             return isIncoming.value
                 ? swapInfo.in || null
                 : swapInfo.out || null;
         });
+        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
+        // related to our address, always holds the proxy data.
+        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
 
@@ -136,6 +142,13 @@ export default defineComponent({
             }
 
             return null;
+        });
+
+        // Related Transaction
+        const { state: transactions$ } = useTransactionsStore();
+        const relatedTx = computed(() => {
+            if (!props.transaction.relatedTransactionHash) return null;
+            return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
         });
 
         // Data
@@ -155,24 +168,23 @@ export default defineComponent({
                 }) as string;
             }
 
-            if ('hashRoot' in props.transaction.data) {
+            if ('hashRoot' in props.transaction.data
+                || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
                 return context.root.$t('HTLC Creation') as string;
             }
-            if ('creator' in props.transaction.proof) {
-                return context.root.$t('HTLC Refund') as string;
-            }
-            if ('hashRoot' in props.transaction.proof) {
+            if ('hashRoot' in props.transaction.proof
+                || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
                 return context.root.$t('HTLC Settlement') as string;
+            }
+            if ('creator' in props.transaction.proof
+                || (relatedTx.value && 'creator' in relatedTx.value.proof)
+                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
+                // tx are regular transactions and we regard the tx from the proxy as refund
+                || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+                return context.root.$t('HTLC Refund') as string;
             }
 
             return parseData(props.transaction.data.raw);
-        });
-
-        // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
-        const relatedTx = computed(() => {
-            if (!props.transaction.relatedTransactionHash) return null;
-            return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
         });
 
         // Peer
@@ -182,15 +194,16 @@ export default defineComponent({
                 if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
             }
 
-            if (isCashlink.value) {
-                if (relatedTx.value) {
-                    return isIncoming.value
-                        ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                        : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
-                }
-
-                return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+            // For Cashlinks and swap proxies
+            if (relatedTx.value) {
+                return isIncoming.value
+                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                    : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
             }
+
+            if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
+
+            if (isCashlink.value) return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
 
             return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
         });
@@ -203,6 +216,10 @@ export default defineComponent({
                 if (swapData.value.asset === SwapAsset.EUR) {
                     return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
+            }
+
+            if (isSwapProxy.value && !relatedTx.value) {
+                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
             }
 
             // Label cashlinks
@@ -255,6 +272,7 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
+            isSwapProxy,
             peerAddress,
             peerLabel,
             SwapAsset,
@@ -369,7 +387,7 @@ svg {
             }
         }
 
-        .cashlink {
+        .cashlink-or-swap {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -524,7 +542,7 @@ svg {
                 margin: 0.25rem;
             }
 
-            .cashlink {
+            .cashlink-or-swap {
                 border-width: 0.25rem;
                 height: 2.5rem;
                 width: 2.5rem;

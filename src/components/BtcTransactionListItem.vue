@@ -159,7 +159,14 @@ export default defineComponent({
             if (!swapData.value) return null;
 
             if (swapData.value.asset === SwapAsset.NIM) {
-                return useTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+                let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
+                if (swapTx?.relatedTransactionHash) {
+                    // Avoid showing the swap proxy, instead show our related address. Note that we don't test for
+                    // the swap proxy detection extra data here as the swap tx holds htlc data instead. Only the related
+                    // tx holds the proxy identifying extra data.
+                    swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                }
+                return swapTx || null;
             }
 
             return null;
@@ -191,7 +198,15 @@ export default defineComponent({
         const peerAddresses = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+                    const swapPeerAddress = isIncoming.value
+                        ? swapTransaction.value.sender
+                        : swapTransaction.value.recipient;
+                    if (!useAddressStore().state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
+                        && !swapTransaction.value.relatedTransactionHash) {
+                        // Avoid displaying proxy address identicon until we know related address.
+                        return [''];
+                    }
+                    return [swapPeerAddress];
                 }
                 if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
             }
@@ -204,7 +219,8 @@ export default defineComponent({
         const peerLabel = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+                    return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
+                        || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {

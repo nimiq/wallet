@@ -2,7 +2,9 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
-            <i18n v-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
+            <template v-if="usesNimSwapProxy && !swapTransaction.relatedTransactionHash">{{ $t('Swap') }}</template>
+
+            <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddresses[0].substring(0, 9)
@@ -12,6 +14,8 @@
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
                     <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
                 </template>
+
+                <template v-else v-slot:address>?</template>
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
@@ -24,6 +28,8 @@
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
                     <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
                 </template>
+
+                <template v-else v-slot:address>?</template>
             </i18n>
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
@@ -91,7 +97,7 @@
                     <span v-else class="label" :class="{'unlabelled': !peerLabel}">
                         {{ peerLabel || $t('Unknown') }}
                     </span>
-                    <template v-if="peerAddresses[0] !== constants.BANK_ADDRESS">
+                    <template v-if="peerAddresses[0] && peerAddresses[0] !== constants.BANK_ADDRESS">
                         <Tooltip preferredPosition="bottom right" class="left-aligned"
                             v-for="address in peerAddresses.slice(0, 3)" :key="address"
                         >
@@ -145,7 +151,7 @@
                     </div>
                     <Avatar v-else :label="peerLabel || ''"/>
                     <input type="text" class="nq-input-s vanishing"
-                        v-if="recipientLabelAddress || !peerLabel"
+                        v-if="peerAddresses[0] && (recipientLabelAddress || !peerLabel)"
                         :placeholder="$t('Unknown')"
                         :value="peerLabel || ''"
                         @input="setRecipientLabel(recipientLabelAddress || peerAddresses[0], $event.target.value)"
@@ -153,12 +159,14 @@
                     <span v-else class="label" :class="{'unlabelled': !peerLabel}">
                         {{ peerLabel || $t('Unknown') }}
                     </span>
-                    <Tooltip preferredPosition="bottom left" class="right-aligned"
-                        v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                    >
-                        <ShortAddress :address="address" slot="trigger"/>
-                        {{ address }}
-                    </Tooltip>
+                    <template v-if="peerAddresses[0]">
+                        <Tooltip preferredPosition="bottom left" class="right-aligned"
+                            v-for="address in peerAddresses.slice(0, 3)" :key="address"
+                        >
+                            <ShortAddress :address="address" slot="trigger"/>
+                            {{ address }}
+                        </Tooltip>
+                    </template>
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
                     >{{ $t('+{n} more', {n: peerAddresses.length - 3}) }}</a>
@@ -201,7 +209,8 @@
                         <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
-                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction
+                            && (!usesNimSwapProxy || swapTransaction.relatedTransactionHash)"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
                         >
@@ -297,6 +306,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../../lib/Constants';
+import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
@@ -379,16 +389,37 @@ export default defineComponent({
             if (!swapData.value) return null;
 
             if (swapData.value.asset === SwapAsset.NIM) {
-                return useTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+                let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
+                if (swapTx?.relatedTransactionHash) {
+                    // Avoid showing the swap proxy, instead show our related address.
+                    swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                }
+                return swapTx || null;
             }
 
             return null;
+        });
+
+        const usesNimSwapProxy = computed(() => {
+            if (!swapTransaction.value) return false;
+            const swapPeerAddress = isIncoming.value
+                ? swapTransaction.value.sender
+                : swapTransaction.value.recipient;
+            // Note that we don't only test for the swap proxy detection extra data here as the swap tx holds htlc data
+            // instead. Only the related tx holds the proxy identifying extra data.
+            return isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
+                || swapTransaction.value.relatedTransactionHash
+                || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });
 
         // Peer
         const peerAddresses = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
+                    if (usesNimSwapProxy.value && !swapTransaction.value.relatedTransactionHash) {
+                        // Avoid displaying proxy address identicon until we know related address.
+                        return [''];
+                    }
                     return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
                 }
                 if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
@@ -402,7 +433,8 @@ export default defineComponent({
         const peerLabel = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+                    return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
+                        || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -474,16 +506,11 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
-        const showRefundButton = computed(() => {
-            if (isIncoming.value) return false;
-            if (!swapInfo.value) return false;
-            if (!swapInfo.value.in) return false;
-            if (swapInfo.value.in.asset !== SwapAsset.BTC) return false;
-            if (swapInfo.value.out) return false;
-            if (!swapInfo.value.in.htlc) return false;
-            if (swapInfo.value.in.htlc.timeoutTimestamp > blockTimestamp.value) return false;
-            return true;
-        });
+        const showRefundButton = computed(() => !isIncoming.value
+            && swapInfo.value?.in?.asset === SwapAsset.BTC
+            && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= blockTimestamp.value
+            && !swapInfo.value.out,
+        );
 
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapBtcData;
@@ -557,6 +584,7 @@ export default defineComponent({
             swapTransaction,
             SwapAsset,
             showRefundButton,
+            usesNimSwapProxy,
             refundHtlc,
         };
     },

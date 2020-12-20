@@ -40,10 +40,25 @@ export const useTransactionsStore = createStore({
             let foundProxies = false;
             const knownTxs: Transaction[] = [...Object.values(this.state.transactions), ...txs]; // includes new txs
             const newTxs: { [hash: string]: Transaction } = {};
+            const relatedProxyTransactions = new Map();
+
+            for (const knownTx of knownTxs) {
+                if (!knownTx.relatedTransactionHash) continue;
+                relatedProxyTransactions.set(knownTx.transactionHash, knownTx.relatedTransactionHash);
+                relatedProxyTransactions.set(knownTx.relatedTransactionHash, knownTx.transactionHash);
+            }
+
             for (const plain of txs) {
                 // Detect proxies and observe them for tx-history and new incoming tx
-                if (isProxyData(plain.data.raw)) {
+                if (isProxyData(plain.data.raw)
+                    // proxy transactions are not guaranteed to hold the special proxy extra data
+                    || relatedProxyTransactions.has(plain.transactionHash)
+                    || useProxyStore().allProxies.value.some(
+                        (proxy) => plain.sender === proxy || plain.recipient === proxy)
+                ) {
                     foundProxies = true;
+                    // make sure that a previously established related transaction is set again on transaction updates
+                    plain.relatedTransactionHash = relatedProxyTransactions.get(plain.transactionHash);
                     const relatedTx = handleProxyTransaction(plain, knownTxs);
                     if (relatedTx) {
                         // Need to re-assign the whole object in Vue 2 for change detection.
@@ -59,10 +74,9 @@ export const useTransactionsStore = createStore({
                         // Set relatedTransactionHash also on old tx objects for following iterations.
                         plain.relatedTransactionHash = relatedTx.transactionHash;
                         relatedTx.relatedTransactionHash = plain.transactionHash;
-                    } else {
-                        newTxs[plain.transactionHash] = plain;
+                        relatedProxyTransactions.set(plain.transactionHash, relatedTx.transactionHash);
+                        relatedProxyTransactions.set(relatedTx.transactionHash, plain.transactionHash);
                     }
-                    continue;
                 }
 
                 if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
@@ -153,7 +167,9 @@ export const useTransactionsStore = createStore({
                     }
                 }
 
-                newTxs[plain.transactionHash] = plain;
+                if (!newTxs[plain.transactionHash]) {
+                    newTxs[plain.transactionHash] = plain;
+                }
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection.

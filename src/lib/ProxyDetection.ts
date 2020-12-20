@@ -4,6 +4,7 @@ import { useAddressStore } from '@/stores/Address';
 
 export enum ProxyType {
     CASHLINK = 'cashlink',
+    HTLC_PROXY = 'htlc-proxy',
 }
 
 export enum ProxyTransactionDirection {
@@ -25,6 +26,10 @@ const ProxyExtraData = {
         [ProxyTransactionDirection.FUND]: proxyTransactionIdentifierToExtraData('CASH'),
         [ProxyTransactionDirection.REDEEM]: proxyTransactionIdentifierToExtraData('LINK'),
     },
+    [ProxyType.HTLC_PROXY]: {
+        [ProxyTransactionDirection.FUND]: proxyTransactionIdentifierToExtraData('HPFD'), // HTLC Proxy Funding
+        [ProxyTransactionDirection.REDEEM]: proxyTransactionIdentifierToExtraData('HPRD'), // HTLC Proxy Redeeming
+    },
 };
 
 export function isProxyData(data: string, proxyType?: ProxyType, transactionDirection?: ProxyTransactionDirection) {
@@ -37,8 +42,13 @@ export function isProxyData(data: string, proxyType?: ProxyType, transactionDire
 }
 
 export function handleProxyTransaction(tx: Transaction, knownTransactions: Transaction[]): Transaction | null {
+    const { state: addresses$ } = useAddressStore();
+    // Note: cashlink transactions always hold the proxy extra data. Also swap proxy transactions from or to our address
+    // hold the proxy extra data. Only the htlc creation transactions from a proxy hold the htlc data instead.
     const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
-    const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND);
+    const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
+        || addresses$.addressInfos[tx.sender] // sent from one of our addresses
+        || useProxyStore().allProxies.value.some((proxy) => tx.recipient === proxy); // sent to proxy
 
     const proxyAddress = isFunding ? tx.recipient : tx.sender;
     const proxyTransactions = knownTransactions.filter((knownTx) => knownTx.sender === proxyAddress
@@ -123,7 +133,6 @@ export function handleProxyTransaction(tx: Transaction, knownTransactions: Trans
     // Check whether we need to subscribe for network updates for the proxy address. This is the case if we don't know
     // the related transaction for a tx yet or if there is a transaction from or to the proxy which is not confirmed yet
     // and not related to one of our addresses which we are observing anyways.
-    const { state: addresses$ } = useAddressStore();
     const needToSubscribeToProxy = !relatedTx || proxyTransactions.some((proxyTx) =>
         // If there is a transaction for which we don't know the related tx yet, we have to subscribe.
         // However, for the currently checked tx and its related tx we allow relatedTransactionHash to not be set yet as

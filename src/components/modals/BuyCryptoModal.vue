@@ -159,14 +159,40 @@
                             </AmountInput>
                         </span>
                     </section>
+                </PageBody>
 
+                <PageFooter>
                     <button
                         class="nq-button light-blue"
                         :disabled="!canSign"
                         @click="sign"
                         @mousedown.prevent
                     >{{ $t('Buy Crypto') }}</button>
-                </PageBody>
+
+                    <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
+                        <AlertTriangleIcon/>
+                        {{ estimateError || swapError }}
+                    </div>
+                    <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
+                        <i18n
+                            path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                            tag="span"
+                        >
+                            <span slot="text">{{ $t('Buy Crypto') }}</span>
+                            <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
+                                Fastspot</a>
+                            <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
+                                Fastspot GO</a>
+                        </i18n>
+                    </div>
+                    <div v-else class="footer-notice nq-gray flex-row">
+                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
+                            <span slot="text">{{ $t('Buy Crypto') }}</span>
+                            <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
+                                Fastspot</a>
+                        </i18n>
+                    </div>
+                </PageFooter>
             </div>
         </transition>
 
@@ -234,7 +260,17 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon, Tooltip, FiatAmount, Timer, CircleSpinner } from '@nimiq/vue-components';
+import {
+    PageHeader,
+    PageBody,
+    PageFooter,
+    Identicon,
+    Tooltip,
+    FiatAmount,
+    Timer,
+    CircleSpinner,
+    AlertTriangleIcon,
+} from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
 import {
@@ -266,10 +302,10 @@ import { getNetworkClient } from '@/network';
 import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
-import { useAccountStore } from '@/stores/Account';
+import { AccountType, useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency } from '@/lib/Constants';
+import { CryptoCurrency, ENV_MAIN } from '@/lib/Constants';
 import {
     init as initOasisApi,
     getHtlc,
@@ -324,6 +360,17 @@ export default defineComponent({
         const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
         const assets = ref<AssetList>(null);
 
+        const estimateError = ref<string>(null);
+        const swapError = ref<string>(null);
+
+        onMounted(() => {
+            // For blocking Ledger from swaps (not yet supported by Hub)
+            if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
+                swapError.value = context.root.$t(
+                    'Ledger accounts do not support Swaps yet, check back soon!') as string;
+            }
+        });
+
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
             get: () => {
@@ -356,7 +403,7 @@ export default defineComponent({
 
         const canSign = computed(() =>
             fiatAmount.value
-            // && !estimateError.value && !swapError.value
+            && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
             && limits.value
@@ -661,7 +708,7 @@ export default defineComponent({
                 );
 
                 if (!newEstimate.from || !newEstimate.to) {
-                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                    throw new Error('UNEXPECTED: EUR or crypto price not present in estimate');
                 }
 
                 // Update local fees with latest feePerUnit values
@@ -679,7 +726,7 @@ export default defineComponent({
                 estimate.value = newEstimate;
             } catch (error) {
                 console.error(error); // eslint-disable-line no-console
-                // estimateError.value = error.message;
+                estimateError.value = error.message;
             }
             fetchingEstimate.value = false;
         }
@@ -717,10 +764,10 @@ export default defineComponent({
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                    // swapError.value = null;
+                    swapError.value = null;
                 } catch (error) {
                     console.error(error); // eslint-disable-line no-console
-                    // swapError.value = error.message;
+                    swapError.value = error.message;
                     reject(error);
                     return;
                 }
@@ -810,7 +857,7 @@ export default defineComponent({
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                // swapError.value = error.message;
+                swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();
@@ -841,7 +888,7 @@ export default defineComponent({
                 const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                // swapError.value = error.message;
+                swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();
@@ -856,7 +903,7 @@ export default defineComponent({
                 const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                // swapError.value = 'Invalid swap state, swap aborted!';
+                swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();
@@ -882,7 +929,7 @@ export default defineComponent({
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                // swapError.value = 'Invalid swap state, swap aborted!';
+                swapError.value = 'Invalid OASIS contract state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();
@@ -970,6 +1017,7 @@ export default defineComponent({
             if (!val) {
                 estimate.value = null;
                 clearTimeout(timeoutId);
+                estimateError.value = null;
                 return;
             }
 
@@ -978,8 +1026,8 @@ export default defineComponent({
             fetchingEstimate.value = true;
         }
 
-        watch(_fiatAmount, onInput);
-        watch(_cryptoAmount, onInput);
+        watch(_fiatAmount, onInput, { lazy: true });
+        watch(_cryptoAmount, onInput, { lazy: true });
 
         const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
             && (activeAccountInfo.value.btcAddresses || false)
@@ -1001,6 +1049,9 @@ export default defineComponent({
 
         // Update estimate on currency switch
         watch(activeCurrency, updateEstimate, { lazy: true });
+
+        // Does not need to be reactive, as the config doesn't change during runtime.
+        const isMainnet = Config.environment === ENV_MAIN;
 
         return {
             addressListOpened,
@@ -1036,12 +1087,16 @@ export default defineComponent({
             OASIS_LIMIT_PER_TRANSACTION,
             currentLimitFiat,
             currentLimitCrypto,
+            estimateError,
+            swapError,
+            isMainnet,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
+        PageFooter,
         Tooltip,
         BuyCryptoBankCheckOverlay,
         AmountInput,
@@ -1059,6 +1114,7 @@ export default defineComponent({
         BitcoinIcon,
         SwapSepaFundingInstructions,
         CircleSpinner,
+        AlertTriangleIcon,
     },
 });
 </script>
@@ -1242,6 +1298,7 @@ export default defineComponent({
     .page-body {
         padding-left: 5rem;
         padding-right: 5rem;
+        padding-bottom: 2rem;
     }
 
     .identicon-section {
@@ -1381,7 +1438,6 @@ export default defineComponent({
     .amount-section {
         text-align: center;
         align-self: stretch;
-        margin: 3rem 0 2rem;
 
         .primary-amount {
             align-self: stretch;
@@ -1433,9 +1489,30 @@ export default defineComponent({
     }
 
     .nq-button {
-        margin-top: 0;
-        width: calc(100% - 4rem);
+        // margin-top: 0;
     }
+}
+
+.footer-notice {
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: var(--small-size);
+    margin: -1.75rem 0 0.75rem;
+
+    svg {
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .nq-link {
+        color: inherit;
+        text-decoration: underline;
+    }
+}
+
+.nq-gray {
+    opacity: 0.5;
 }
 
 .animation-overlay {

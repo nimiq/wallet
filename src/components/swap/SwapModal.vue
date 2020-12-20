@@ -135,12 +135,14 @@
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
+
                 <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
                     <AlertTriangleIcon/>
                     {{ estimateError || swapError }}
                 </div>
                 <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
+                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
+                        <span slot="text">{{ $t('Confirm') }}</span>
                         <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
                             Fastspot</a>
                         <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
@@ -148,7 +150,8 @@
                     </i18n>
                 </div>
                 <div v-else class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot}." tag="span">
+                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
+                        <span slot="text">{{ $t('Confirm') }}</span>
                         <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
                             Fastspot</a>
                     </i18n>
@@ -646,7 +649,7 @@ export default defineComponent({
                         : null;
 
                 if (!nimPrice || !btcPrice) {
-                    throw new Error('UNEXPECTED: NIM or BTC price not included in estimate');
+                    throw new Error('UNEXPECTED: NIM or BTC price not present in estimate');
                 }
 
                 // Update local fees with latest feePerUnit values
@@ -1501,13 +1504,13 @@ export default defineComponent({
 .footer-notice {
     justify-content: center;
     align-items: center;
-    text-align: center;
     font-weight: 600;
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;
 
     svg {
         margin-right: 0.5rem;
+        flex-shrink: 0;
     }
 
     .nq-link {

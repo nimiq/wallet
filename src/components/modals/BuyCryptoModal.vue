@@ -359,8 +359,8 @@ export default defineComponent({
             // && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
-            && limits.value,
-            // && !fetchingEstimate.value,
+            && limits.value
+            && !fetchingEstimate.value,
         );
 
         onMounted(() => {
@@ -649,31 +649,39 @@ export default defineComponent({
         async function updateEstimate() {
             clearTimeout(timeoutId);
 
-            const { from, to } = getSwapParameters();
+            fetchingEstimate.value = true;
 
-            const newEstimate = await getEstimate(
-                // Need to force one of the function signatures
-                from as RequestAsset<SwapAsset>,
-                to as SwapAsset,
-            );
+            try {
+                const { from, to } = getSwapParameters();
 
-            if (!newEstimate.from || !newEstimate.to) {
-                throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                const newEstimate = await getEstimate(
+                    // Need to force one of the function signatures
+                    from as RequestAsset<SwapAsset>,
+                    to as SwapAsset,
+                );
+
+                if (!newEstimate.from || !newEstimate.to) {
+                    throw new Error('UNEXPECTED: EUR or NIM price not included in estimate');
+                }
+
+                // Update local fees with latest feePerUnit values
+                const { fundingFee, settlementFee } = calculateFees({
+                    eur: newEstimate.from.fee,
+                    nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit : 0,
+                    btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit : 0,
+                });
+
+                newEstimate.from.fee = fundingFee;
+                newEstimate.to.fee = settlementFee;
+
+                // TODO: Check against minimums
+
+                estimate.value = newEstimate;
+            } catch (error) {
+                console.error(error); // eslint-disable-line no-console
+                // estimateError.value = error.message;
             }
-
-            // Update local fees with latest feePerUnit values
-            const { fundingFee, settlementFee } = calculateFees({
-                eur: newEstimate.from.fee,
-                nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit : 0,
-                btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit : 0,
-            });
-
-            newEstimate.from.fee = fundingFee;
-            newEstimate.to.fee = settlementFee;
-
-            // TODO: Check against minimums
-
-            estimate.value = newEstimate;
+            fetchingEstimate.value = false;
         }
 
         async function sign() {
@@ -954,15 +962,20 @@ export default defineComponent({
             onClose();
         }
 
-        let timeoutId: NodeJS.Timeout;
+        const fetchingEstimate = ref(false);
+
+        let timeoutId: number;
+
         function onInput(val: number) {
             if (!val) {
                 estimate.value = null;
+                clearTimeout(timeoutId);
                 return;
             }
 
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
+            timeoutId = window.setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
+            fetchingEstimate.value = true;
         }
 
         watch(_fiatAmount, onInput);

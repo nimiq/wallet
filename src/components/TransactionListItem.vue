@@ -33,11 +33,11 @@
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">{{ peerAddress }}</div>
             <div class="time-and-message">
-                <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
-                <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
-                <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
-                <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
-                <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+                <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
+                <span v-else-if="state === TransactionState.PENDING">{{ $t('pending') }}</span>
+                <span v-else-if="state === TransactionState.EXPIRED">{{ $t('expired') }}</span>
+                <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
+                <span v-else-if="dateTime">{{ dateTime }}</span>
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
@@ -149,20 +149,20 @@ export default defineComponent({
             }
 
             if (swapData.value) {
-                return context.root.$t('Swapped {fromAsset} to {toAsset}', {
+                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                     fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
                     toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
-                });
+                }) as string;
             }
 
             if ('hashRoot' in props.transaction.data) {
-                return context.root.$t('HTLC Creation');
+                return context.root.$t('HTLC Creation') as string;
             }
             if ('creator' in props.transaction.proof) {
-                return context.root.$t('HTLC Refund');
+                return context.root.$t('HTLC Refund') as string;
             }
             if ('hashRoot' in props.transaction.proof) {
-                return context.root.$t('HTLC Settlement');
+                return context.root.$t('HTLC Settlement') as string;
             }
 
             return parseData(props.transaction.data.raw);

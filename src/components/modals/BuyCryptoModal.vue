@@ -94,10 +94,10 @@
                             </i18n>
                             <div></div>
                             <p class="explainer">
-                                {{ $t('These are the limits of your crypto addresses in this account.') }}
+                                {{ $t('Limits are tied to accounts and IBANs.') }}
                             </p>
                             <p class="explainer">
-                                {{ $t('Each IBAN is additionally limited to swaps worth 1000€ in the last 30 days.') }}
+                                {{ $t('During early access, these limits apply. They will be increased gradually.') }}
                             </p>
 
 

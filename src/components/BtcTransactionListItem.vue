@@ -34,11 +34,17 @@
                 <small v-if="peerAddresses.length > 1">+{{ peerAddresses.length - 1 }}</small>
             </div>
 
-            <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
-            <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
-            <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
-            <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
-            <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+            <div class="time-and-message">
+                <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
+                <span v-else-if="state === TransactionState.PENDING">{{ $t('pending') }}</span>
+                <span v-else-if="state === TransactionState.EXPIRED">{{ $t('expired') }}</span>
+                <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
+                <span v-else-if="dateTime">{{ dateTime }}</span>
+
+                <span v-if="data" class="message">
+                    <strong class="dot">&middot;</strong>{{ data }}
+                </span>
+            </div>
 
         </div>
         <div class="amounts" :class="{isIncoming}">
@@ -159,6 +165,28 @@ export default defineComponent({
             return null;
         });
 
+        // Data
+        const data = computed(() => {
+            if (swapData.value) {
+                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
+                    toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
+                }) as string;
+            }
+
+            // if ('hashRoot' in props.transaction.data) {
+            //     return context.root.$t('HTLC Creation');
+            // }
+            // if ('creator' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Refund');
+            // }
+            // if ('hashRoot' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Settlement');
+            // }
+
+            return '';
+        });
+
         // Peer
         const peerAddresses = computed(() => {
             if (swapData.value) {
@@ -249,6 +277,7 @@ export default defineComponent({
             dateDay,
             dateMonth,
             dateTime,
+            data,
             amountReceived,
             amountSent,
             fiatCurrency,
@@ -399,10 +428,17 @@ svg {
             }
         }
 
-        .time {
+        .time-and-message {
             font-size: var(--small-size);
-            opacity: .5;
             font-weight: 600;
+            opacity: .5;
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+            .dot {
+                margin: 0 0.875rem;
+                opacity: 0.6;
+            }
         }
     }
 

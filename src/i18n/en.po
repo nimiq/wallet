@@ -207,7 +207,7 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:183
+#: src/components/BtcTransactionListItem.vue:211
 #: src/components/modals/BtcTransactionModal.vue:407
 #: src/components/modals/TransactionModal.vue:491
 #: src/components/TransactionListItem.vue:204
@@ -506,7 +506,7 @@ msgid "During early access, these limits apply."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:100
-msgid "Each IBAN is additionally limited to swaps worth 1000€ in the last 30 days."
+msgid "During early access, these limits apply. They will be increased gradually."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:18
@@ -566,7 +566,7 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:39
+#: src/components/BtcTransactionListItem.vue:40
 #: src/components/TransactionListItem.vue:38
 msgid "expired"
 msgstr ""
@@ -619,7 +619,7 @@ msgstr ""
 msgid "Fetching"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:52
+#: src/components/BtcTransactionListItem.vue:58
 #: src/components/modals/TransactionModal.vue:202
 #: src/components/TransactionListItem.vue:53
 msgid "Fiat value unavailable"
@@ -741,7 +741,7 @@ msgstr ""
 msgid "Insufficient balance."
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:40
+#: src/components/BtcTransactionListItem.vue:41
 #: src/components/TransactionListItem.vue:39
 msgid "invalid"
 msgstr ""
@@ -779,7 +779,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:368
+#: src/components/modals/BuyCryptoModal.vue:369
 #: src/components/swap/SwapModal.vue:309
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -798,6 +798,10 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:46
 msgid "Limit of copied addresses reached."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:97
+msgid "Limits are tied to accounts and IBANs."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:181
@@ -907,7 +911,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:37
+#: src/components/BtcTransactionListItem.vue:38
 #: src/components/TransactionListItem.vue:36
 msgid "not sent"
 msgstr ""
@@ -940,7 +944,7 @@ msgstr ""
 msgid "or visit an exchange and get more."
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:38
+#: src/components/BtcTransactionListItem.vue:39
 #: src/components/TransactionListItem.vue:37
 msgid "pending"
 msgstr ""
@@ -1148,6 +1152,11 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
+#: src/components/BtcTransactionListItem.vue:171
+#: src/components/TransactionListItem.vue:152
+msgid "Sent {fromAsset} – Received {toAsset}"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:533
 msgid "Sent {nim} NIM"
 msgstr ""
@@ -1278,10 +1287,6 @@ msgstr ""
 msgid "Swap to {address}"
 msgstr ""
 
-#: src/components/TransactionListItem.vue:152
-msgid "Swapped {fromAsset} to {toAsset}"
-msgstr ""
-
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr ""
@@ -1337,10 +1342,6 @@ msgstr ""
 
 #: src/components/swap/SwapNotification.vue:14
 msgid "There's a problem"
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:97
-msgid "These are the limits of your crypto addresses in this account."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:75

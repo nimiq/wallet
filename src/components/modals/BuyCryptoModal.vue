@@ -139,12 +139,17 @@
 
                     <section class="amount-section">
                         <div class="flex-row primary-amount">
-                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" placeholder="0.00">
+                            <AmountInput v-model="fiatAmount"
+                                :max="currentLimitFiat ? currentLimitFiat * 1e2 : undefined"
+                                :decimals="fiatCurrencyInfo.decimals"
+                                placeholder="0.00"
+                            >
                                 <span slot="suffix">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount">
                             <AmountInput v-model="cryptoAmount"
+                                :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <span class="ticker" slot="suffix">
                                     {{ activeCurrency === CryptoCurrency.BTC
@@ -329,7 +334,7 @@ export default defineComponent({
                 return estimate.value.from.amount - estimate.value.from.fee;
             },
             set: (value: number) => {
-                _fiatAmount.value = value > 10 * 1e2 ? 10 * 1e2 : value;
+                _fiatAmount.value = value;
                 _cryptoAmount.value = 0;
             },
         });
@@ -349,19 +354,12 @@ export default defineComponent({
             },
         });
 
-        // watch(fiatAmount, () => {
-        //     if (fiatAmount.value > 10 * 1e2 || _fiatAmount.value > 10 * 1e2) {
-        //         _fiatAmount.value = 0;
-        //         fiatAmount.value = 10 * 1e2;
-        //     }
-        // });
-
         const canSign = computed(() =>
             fiatAmount.value
             // && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
-            && limits.value
+            && limits.value,
             // && !fetchingEstimate.value,
         );
 
@@ -417,6 +415,18 @@ export default defineComponent({
             if (!nimRate) return null;
 
             return Math.min(Math.floor((limits.value.current / 1e5) * nimRate), OASIS_LIMIT_PER_TRANSACTION);
+        });
+
+        const currentLimitCrypto = computed(() => {
+            if (!currentLimitFiat.value) return null;
+
+            const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
+            if (!rate) return null;
+
+            return capDecimals(
+                (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
+                activeCurrency.value.toUpperCase() as SwapAsset,
+            );
         });
 
         async function fetchAssets() {
@@ -976,6 +986,9 @@ export default defineComponent({
             return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
         }
 
+        // Update estimate on currency switch
+        watch(activeCurrency, updateEstimate, { lazy: true });
+
         return {
             addressListOpened,
             onClose,
@@ -1009,6 +1022,7 @@ export default defineComponent({
             btcUnit,
             OASIS_LIMIT_PER_TRANSACTION,
             currentLimitFiat,
+            currentLimitCrypto,
         };
     },
     components: {

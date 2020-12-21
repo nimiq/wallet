@@ -144,10 +144,16 @@
                                 :decimals="fiatCurrencyInfo.decimals"
                                 placeholder="0.00"
                             >
-                                <span slot="suffix">{{ selectedFiatCurrency.toUpperCase() }}</span>
+                                <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </div>
-                        <span class="secondary-amount">
+                        <span class="secondary-amount flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="31" height="29" viewBox="0 0 31 29">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                                    <path d="M.75 1.25v12.5a8 8 0 008 8h21.5" />
+                                    <path d="M23.75 15.25l6.5 6.5-6.5 6.5" stroke-linejoin="round"/>
+                                </g>
+                            </svg>
                             <AmountInput v-model="cryptoAmount"
                                 :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
@@ -1451,13 +1457,9 @@ export default defineComponent({
                 max-width: 100%;
                 font-weight: bold;
 
-                & /deep/ > span {
+                /deep/ .ticker {
                     font-size: 2.5rem;
-                    letter-spacing: 0.1rem;
-                }
-
-                /deep/ .label-input {
-                    margin-right: 1rem;
+                    margin-left: 1.25rem;
                 }
 
                 /deep/ .label-input * {
@@ -1470,13 +1472,24 @@ export default defineComponent({
 
         .secondary-amount {
             font-weight: 600;
-            opacity: 0.6;
+            justify-content: center;
+
+            > svg {
+                margin: 0 1rem;
+                opacity: 0.3;
+            }
 
             .amount-input {
-                & /deep/ > span {
+                width: auto;
+                margin-top: 0.375rem;
+
+                &.has-value:not(.focussed) {
+                    color: var(--text-60);
+                }
+
+                /deep/ .ticker {
                     font-weight: bold;
-                    font-size: 16px;
-                    letter-spacing: 0.8px;
+                    font-size: 2rem;
                 }
 
                 /deep/ .label-input * {
@@ -1486,10 +1499,6 @@ export default defineComponent({
                 }
             }
         }
-    }
-
-    .nq-button {
-        // margin-top: 0;
     }
 }
 

@@ -17,13 +17,14 @@
             >
                 <BankIcon v-if="bank.type !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
-                <span>{{
+                <span v-if="new RegExp(localValue, 'i').test(bank.name)">{{
                     getMatchPrefix(bank.name)
                     }}<strong>{{
                         getMatch(bank.name)
                     }}</strong>{{
                     getMatchSuffix(bank.name)
                 }}</span>
+                <span v-else>{{ bank.name }}</span>
                 <CaretRightSmallIcon class="caret-right-small-icon"
                     v-if="bank.type === SEPA_INSTANT_SUPPORT.FULL"/>
                 <CircledQuestionMarkIcon
@@ -79,9 +80,8 @@ export default defineComponent({
         const matchingBanks = computed(() =>
             localValue.value
                 ? Object.values(banks).filter((bank) =>
-                    bank.name
-                    && bank.name.toLowerCase().includes(localValue.value.toLowerCase())
-                    && bank.name.toLowerCase() !== localValue.value.toLowerCase(),
+                    (bank.name && RegExp(localValue.value, 'i').test(bank.name))
+                    || (bank.BIC && RegExp(localValue.value, 'i').test(bank.BIC)),
                 ).sort((a, b) => a.name.localeCompare(b.name)) : [],
         );
         const visibleBanks = computed(() => matchingBanks.value.slice(0, MAX_VISIBLE_ITEMS));

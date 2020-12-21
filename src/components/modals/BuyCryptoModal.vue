@@ -349,6 +349,13 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
+const OASIS_FEE_PERCENTAGE = 0.01; // 1%
+
+function calculateOasisFee(amount: number) {
+    // OASIS rounds 0.5 down
+    // https://stackoverflow.com/a/35827227
+    return -Math.round(-amount * OASIS_FEE_PERCENTAGE);
+}
 
 export default defineComponent({
     setup(props, context) {
@@ -384,7 +391,7 @@ export default defineComponent({
                 if (!estimate.value) return 0;
 
                 if (estimate.value.from.asset !== SwapAsset.EUR) return 0;
-                return estimate.value.from.amount - estimate.value.from.fee;
+                return estimate.value.from.amount + estimate.value.from.fee;
             },
             set: (value: number) => {
                 _fiatAmount.value = value;
@@ -668,7 +675,12 @@ export default defineComponent({
                 ? SwapAsset.BTC
                 : SwapAsset.NIM;
 
-            const fees = calculateFees();
+            const fees = calculateFees({
+                // https://stackoverflow.com/a/35827227
+                eur: _fiatAmount.value ? calculateOasisFee(_fiatAmount.value) : 0,
+                nim: 0,
+                btc: 0,
+            });
 
             if (_fiatAmount.value) {
                 return {
@@ -719,7 +731,10 @@ export default defineComponent({
 
                 // Update local fees with latest feePerUnit values
                 const { fundingFee, settlementFee } = calculateFees({
-                    eur: newEstimate.from.fee,
+                    eur: newEstimate.from.fee || (newEstimate.from.serviceEscrowFee
+                        ? 0
+                        : calculateOasisFee(newEstimate.from.amount)
+                    ),
                     nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit : 0,
                     btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit : 0,
                 });
@@ -759,7 +774,10 @@ export default defineComponent({
 
                     // Update local fees with latest feePerUnit values
                     const { fundingFee, settlementFee } = calculateFees({
-                        eur: swapSuggestion.from.fee,
+                        eur: swapSuggestion.from.fee || (swapSuggestion.from.serviceEscrowFee
+                            ? 0
+                            : calculateOasisFee(swapSuggestion.from.amount)
+                        ),
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit : 0,
                     });

@@ -184,11 +184,17 @@ export default defineComponent({
                     });
                     updateSwap({
                         state: SwapState.CREATE_OUTGOING,
+                        stateEnteredAt: Date.now(),
                         remoteFundingTx,
                     });
                 }
                 case SwapState.CREATE_OUTGOING: {
                     if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                        // Clear stateEnteredAt timestamp as it will be set when the user clicks "I Paid"
+                        updateSwap({
+                            stateEnteredAt: undefined,
+                        });
+
                         // Wait for OASIS HTLC to be funded out-of-band
                         const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
                             updateSwap({
@@ -212,6 +218,7 @@ export default defineComponent({
 
                         updateSwap({
                             state: SwapState.AWAIT_SECRET,
+                            stateEnteredAt: Date.now(),
                             fundingTx,
                             fundingError: undefined,
                         });
@@ -234,6 +241,7 @@ export default defineComponent({
 
                             updateSwap({
                                 state: SwapState.AWAIT_SECRET,
+                                stateEnteredAt: Date.now(),
                                 fundingTx,
                                 fundingError: undefined,
                             });
@@ -268,6 +276,7 @@ export default defineComponent({
                     window.clearInterval(interval!);
                     updateSwap({
                         state: SwapState.SETTLE_INCOMING,
+                        stateEnteredAt: Date.now(),
                         secret,
                     });
                 }
@@ -283,6 +292,7 @@ export default defineComponent({
                         }
                         updateSwap({
                             state: SwapState.COMPLETE,
+                            stateEnteredAt: Date.now(),
                             settlementTx,
                             settlementError: undefined,
                         });

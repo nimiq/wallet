@@ -71,6 +71,7 @@ export type Swap = {
 
 export type ActiveSwap = SwapObject & {
     state: SwapState,
+    stateEnteredAt: number,
     watchtowerNotified: boolean,
     fundingInstructions?: SepaClearingInstruction,
     fundingSerializedTx?: string,

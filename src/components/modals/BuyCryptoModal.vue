@@ -232,13 +232,14 @@
                         :iban="swap.fundingInstructions.recipient.iban"
                         :bic="swap.fundingInstructions.recipient.bic"
                         :reference="swap.fundingInstructions.purpose"
+                        :stateEnteredAt="swap.stateEnteredAt"
                         @cancel="() => {}"
-                        @paid="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
+                        @paid="onPaid"
                     />
                     <button v-else
                         slot="manual-funding-instructions"
                         class="nq-button light-blue"
-                        @click="sandboxMockClearHtlc(swap.contracts.EUR.htlc.address)"
+                        @click="onPaid"
                         @mousedown.prevent
                     >{{ $t('Simulate EUR payment') }}</button>
                 </SwapAnimation>
@@ -940,6 +941,7 @@ export default defineComponent({
             setActiveSwap({
                 ...confirmedSwap,
                 state: SwapState.SIGN_SWAP,
+                stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
                 fundingSerializedTx: signedTransactions.eur,
                 settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
@@ -972,6 +974,7 @@ export default defineComponent({
             setActiveSwap({
                 ...swap.value!,
                 state: SwapState.AWAIT_INCOMING,
+                stateEnteredAt: Date.now(),
                 fundingInstructions,
             });
 
@@ -1078,6 +1081,18 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        function onPaid() {
+            if (!isMainnet) sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+
+            if (!swap.value!.stateEnteredAt) {
+                const { setActiveSwap } = useSwapsStore();
+                setActiveSwap({
+                    ...swap.value!,
+                    stateEnteredAt: Date.now(),
+                });
+            }
+        }
+
         return {
             addressListOpened,
             onClose,
@@ -1096,7 +1111,6 @@ export default defineComponent({
             updateEstimate,
             estimate,
             cryptoAmount,
-            sandboxMockClearHtlc,
             swap,
             sign,
             goBack,
@@ -1115,6 +1129,7 @@ export default defineComponent({
             estimateError,
             swapError,
             isMainnet,
+            onPaid,
         };
     },
     components: {

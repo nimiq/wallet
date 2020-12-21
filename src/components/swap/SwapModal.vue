@@ -203,6 +203,7 @@
                         :iban="'DE75512108001245126199'"
                         :bic="'WEGBDE77'"
                         :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
+                        :stateEnteredAt="Date.now()"
                         @cancel="() => {}"
                     />
                 </SwapAnimation>
@@ -1125,6 +1126,7 @@ export default defineComponent({
                     },
                 },
                 state: SwapState.AWAIT_INCOMING,
+                stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
                 fundingSerializedTx: confirmedSwap.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx

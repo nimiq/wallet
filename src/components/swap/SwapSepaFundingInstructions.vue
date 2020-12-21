@@ -81,6 +81,9 @@
                 <p class="nq-gray">
                     {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}
                 </p>
+                <p class="nq-gray timer">
+                    {{ timer }}
+                </p>
                 <button class="nq-button-s inverse" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
                     {{ $t('Back to Bank Details') }}
                 </button>
@@ -90,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 
 enum Pages {
@@ -113,6 +116,10 @@ export default defineComponent({
             required: false,
         },
         reference: String,
+        stateEnteredAt: {
+            type: Number,
+            required: false,
+        },
     },
     setup(props, context) {
         const page = ref(Pages.PAYMENT_DETAILS);
@@ -124,13 +131,40 @@ export default defineComponent({
         function onPaid() {
             context.emit(Events.PAID);
             page.value = Pages.PROCESSING;
+            startTimer();
         }
+
+        const timer = ref('0:00');
+        let timerInterval = 0;
+
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = window.setInterval(timerTick, 1000);
+            timerTick();
+        }
+
+        function timerTick() {
+            if (!props.stateEnteredAt) {
+                timer.value = '';
+                return;
+            }
+
+            const diff = new Date(Date.now() - props.stateEnteredAt);
+            const minutes = diff.getUTCMinutes();
+            const seconds = diff.getUTCSeconds();
+            timer.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        onUnmounted(() => {
+            window.clearInterval(timerInterval);
+        });
 
         return {
             page,
             Pages,
             onCancel,
             onPaid,
+            timer,
         };
     },
     filters: {
@@ -271,8 +305,12 @@ export default defineComponent({
         margin-right: auto;
     }
 
+    .timer {
+        font-variant-numeric: tabular-nums;
+    }
+
     button {
-        margin-top: 10rem;
+        margin-top: 8rem;
     }
 }
 </style>

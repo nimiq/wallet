@@ -41,10 +41,11 @@
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
-                                1 NIM = <FiatAmount :amount="eurPerNim" :maxRelativeDeviation="0.001" currency="eur"/>
+                                1 NIM = <FiatAmount :amount="eurPerNim || 0"
+                                    :maxRelativeDeviation="0.001" currency="eur"/>
                             </div>
                             <div v-else slot="trigger" class="pill exchange-rate">
-                                1 BTC = <FiatAmount :amount="eurPerBtc" currency="eur"/>
+                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
                             </div>
                             <span>{{ $t('This rate includes the swap fee.') }}</span>
                             <p class="explainer">

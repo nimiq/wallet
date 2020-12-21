@@ -27,8 +27,18 @@
                 <span v-else>{{ bank.name }}</span>
                 <CaretRightSmallIcon class="caret-right-small-icon"
                     v-if="bank.type === SEPA_INSTANT_SUPPORT.FULL"/>
-                <CircledQuestionMarkIcon
-                    v-if="bank.type === SEPA_INSTANT_SUPPORT.PARTIAL || bank.type === SEPA_INSTANT_SUPPORT.UNKNOWN"/>
+
+                <Tooltip
+                    v-if="bank.type === SEPA_INSTANT_SUPPORT.PARTIAL || bank.type === SEPA_INSTANT_SUPPORT.UNKNOWN"
+                    class="circled-question-mark"
+                    preferredPosition="bottom left"
+                    theme="inverse"
+                    :container="this"
+                    :styles="{ transform: 'translate3d(5%, 2rem, 1px)' }">
+                    <CircledQuestionMarkIcon slot="trigger"/>
+                    <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
+                    <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
+                </Tooltip>
             </li>
             <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
                 {{ $tc('+ {count} more | + {count} more', matchingBanks.length - visibleBanks.length) }}
@@ -43,7 +53,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import { LabelInput, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 import BANKS from '@/data/banksList/bankslist.json';
 import BankIcon from './icons/BankIcon.vue';
@@ -192,6 +202,7 @@ export default defineComponent({
         BankIcon,
         CircledQuestionMarkIcon,
         ForbiddenIcon,
+        Tooltip,
     },
 });
 </script>
@@ -226,7 +237,7 @@ export default defineComponent({
 
     display: none;
     flex-direction: column;
-    overflow: auto;
+    overflow: visible;
 
     width: 90%;
     // max-height: 40rem;
@@ -288,7 +299,7 @@ export default defineComponent({
             }
         }
 
-        span {
+        span:first-of-type {
             flex-grow: 1;
             white-space: nowrap;
             overflow: hidden;
@@ -300,9 +311,28 @@ export default defineComponent({
             transition: opacity 200ms var(--nimiq-ease);
         }
 
-        .circled-question-mark-icon {
-            color: var(--nimiq-orange);
+        .circled-question-mark {
             flex-shrink: 0;
+            flex-grow: 0;
+
+            &.tooltip /deep/ .tooltip-box {
+                width: 32rem;
+            }
+
+            .circled-question-mark-icon {
+                color: var(--nimiq-orange);
+            }
+
+            p:first-child {
+                color: var(--text-100);
+                margin-bottom: 1rem;
+            }
+
+            p:last-child {
+                color: var(--text-60);
+                margin: 0;
+                font-size: var(--small-size);
+            }
         }
     }
 

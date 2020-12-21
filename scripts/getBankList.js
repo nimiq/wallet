@@ -4,30 +4,38 @@ const http = require('http');
 const fs = require('fs');
 const xlsx = require('xlsx');
 
-const XLSX_FILE_PATH = './src/data/banksList/bankslist.xlsx';
-const JSON_FILE_PATH = './src/data/banksList/bankslist.json';
+const DATA_FOLDER_PATH = './src/data/banksList';
+
+const EBA_RT1_XLSX_FILE_PATH = `${DATA_FOLDER_PATH}/EBA_RT1.xlsx`;
+const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/EBA_RT1.json`;
+const CUSTOM_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/customBanksList.json`;
+const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/banksList.json`;
 
 const FORCE_SCRAPER_RUN = (process.argv[2] === '--force-scaper-run');
 
 const RECIPE_KEY = 'GsFPmxRMalZSvC6dzQvx';
 const API_KEY = 'psrl7iwR894umiKSbEFQJ1wQfSOMBLbZ';
-// eslint-disable-next-line max-len
-const API_URL = `https://simplescraper.io/api/${RECIPE_KEY}?apikey=${API_KEY}${FORCE_SCRAPER_RUN ? '&run_now=true' : ''}`;
+const API_URL = `https://simplescraper.io/api/${RECIPE_KEY}?apikey=${API_KEY}${FORCE_SCRAPER_RUN ? '&run_now=true' : ''}`; // eslint-disable-line max-len
 
-function getBankListUrl() {
+function readFile(path) {
     return new Promise((resolve, reject) => {
-        https.get(API_URL, (response) => {
-            response.setEncoding('utf8');
-
-            let data = '';
-            response.on('data', (d) => data += d);
-            response.on('end', () => resolve(JSON.parse(data).data[0].BankList_link));
-            response.on('error', reject);
-        }).on('error', reject);
+        fs.readFile(path, { encoding: 'utf8' }, (err, data) => {
+            if (err) return reject(err);
+            return resolve(JSON.parse(data));
+        });
     });
 }
 
-async function download(url, filePath) {
+function writeFile(path, data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(path, JSON.stringify(data), (err) => {
+            if (err) return reject(err);
+            return resolve(data);
+        });
+    });
+}
+
+function download(url, filePath) {
     const proto = !url.charAt(4).localeCompare('s') ? https : http;
 
     return new Promise((resolve, reject) => {
@@ -57,35 +65,57 @@ async function download(url, filePath) {
     });
 }
 
-function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
+function getBankListUrl() {
     return new Promise((resolve, reject) => {
-        const workbook = xlsx.readFile(xlsxFilePath);
-        const jsonFile = xlsx.utils
-            .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
-            .slice(2)
-            .map((bank) => ({
-                BIC: bank.BIC,
-                name: bank.name
-                    .split(' ')
-                    .filter((word) => word)
-                    .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
-                    .join(' '),
-                country: bank.BIC.slice(4, 6),
-                support: {
-                    sepa: {
-                        // TEMP?: can we assume that banks at least fully support inbound sepa instant
-                        // if they are part of the list?
-                        inbound: 'sepa-instant-partial-full',
-                        outbound: 'sepa-instant-partial-support',
-                    },
-                },
-            }));
-
-        fs.writeFile(jsonFilePath, JSON.stringify(jsonFile), (err) => {
-            if (err) reject(err);
-            resolve(jsonFile.length);
-        });
+        https.get(API_URL, { encoding: 'utf8' }, (response) => {
+            let data = '';
+            response.on('data', (d) => data += d);
+            response.on('end', () => resolve(JSON.parse(data).data[0].BankList_link));
+            response.on('error', reject);
+        }).on('error', reject);
     });
+}
+
+async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
+    const workbook = xlsx.readFile(xlsxFilePath);
+    const jsonFile = xlsx.utils
+        .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
+        .slice(2)
+        .map((bank) => ({
+            BIC: bank.BIC,
+            name: bank.name
+                .split(' ')
+                .filter((word) => word)
+                .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
+                .join(' '),
+            country: bank.BIC.slice(4, 6),
+            support: {
+                sepa: {
+                    // TEMP?: can we assume that banks at least fully support inbound sepa instant
+                    // if they are part of the list?
+                    inbound: 'sepa-instant-partial-full',
+                    outbound: 'sepa-instant-partial-support',
+                },
+            },
+        }));
+
+    await writeFile(jsonFilePath, jsonFile);
+
+    return jsonFile.length;
+}
+
+async function mergeJson() {
+    const ebaRt1BankList = await readFile(EBA_RT1_JSON_FILE_PATH);
+    const customBankList = await readFile(CUSTOM_JSON_FILE_PATH);
+    const mergedJson = {};
+
+    for (const bank of ebaRt1BankList) mergedJson[bank.BIC] = bank;
+    for (const bank of customBankList) mergedJson[bank.BIC] = bank;
+
+    const mergedJsonArray = Object.values(mergedJson);
+    await writeFile(OUTPUT_JSON_FILE_PATH, mergedJsonArray);
+
+    return mergedJsonArray.length;
 }
 
 async function main() {
@@ -93,11 +123,15 @@ async function main() {
         process.stdout.write(`> Get download link from ${API_URL}\n`);
         const bankListXlsxUrl = await getBankListUrl();
 
-        process.stdout.write(`> Download ${bankListXlsxUrl}\n  > To ${XLSX_FILE_PATH}\n`);
-        await download(bankListXlsxUrl, XLSX_FILE_PATH);
+        process.stdout.write(`> Download ${bankListXlsxUrl}\n  > To ${EBA_RT1_XLSX_FILE_PATH}\n`);
+        await download(bankListXlsxUrl, EBA_RT1_XLSX_FILE_PATH);
 
-        process.stdout.write(`> Convert ${XLSX_FILE_PATH}\n  > To ${JSON_FILE_PATH}\n`);
-        const itemCount = await convertXlsxToJson(XLSX_FILE_PATH, JSON_FILE_PATH);
+        process.stdout.write(`> Convert ${EBA_RT1_XLSX_FILE_PATH}\n  > To ${EBA_RT1_JSON_FILE_PATH}\n`);
+        await convertXlsxToJson(EBA_RT1_XLSX_FILE_PATH, EBA_RT1_JSON_FILE_PATH);
+
+        process.stdout.write(`> Merge:\n  > ${EBA_RT1_JSON_FILE_PATH}\n  > ${CUSTOM_JSON_FILE_PATH}\n`);
+        process.stdout.write(`  > To:\n   > ${OUTPUT_JSON_FILE_PATH}\n`);
+        const itemCount = await mergeJson();
 
         process.stdout.write(`> Done!\n> ${itemCount} banks imported.\n`);
         process.exit(0);

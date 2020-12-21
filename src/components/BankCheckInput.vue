@@ -57,7 +57,7 @@
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
-import BANKS from '@/data/banksList/bankslist.json';
+import BANKS from '@/data/banksList/banksList.json';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';

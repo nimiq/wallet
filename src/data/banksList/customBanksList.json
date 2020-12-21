@@ -1,0 +1,13 @@
+[
+    {
+        "BIC": "CMCIFRPPXXX",
+        "name": "CIC",
+        "country": "FR",
+        "support": {
+            "sepa": {
+                "inbound": "sepa-instant-full-support",
+                "outbound": "sepa-instant-full-support"
+            }
+        }
+    }
+]

@@ -654,8 +654,8 @@ export default defineComponent({
 
                 // Update local fees with latest feePerUnit values
                 const { fundingFee, settlementFee } = calculateFees({
-                    nim: nimPrice.feePerUnit,
-                    btc: btcPrice.feePerUnit,
+                    nim: nimPrice.feePerUnit!,
+                    btc: btcPrice.feePerUnit!,
                 });
 
                 newEstimate.from.fee = fundingFee;
@@ -895,14 +895,14 @@ export default defineComponent({
                     // Update local fees with latest feePerUnit values
                     const { fundingFee, settlementFee } = calculateFees({
                         nim: swapSuggestion.from.asset === SwapAsset.NIM
-                            ? swapSuggestion.from.feePerUnit
+                            ? swapSuggestion.from.feePerUnit!
                             : swapSuggestion.to.asset === SwapAsset.NIM
-                                ? swapSuggestion.to.feePerUnit
+                                ? swapSuggestion.to.feePerUnit!
                                 : 0,
                         btc: swapSuggestion.from.asset === SwapAsset.BTC
-                            ? swapSuggestion.from.feePerUnit
+                            ? swapSuggestion.from.feePerUnit!
                             : swapSuggestion.to.asset === SwapAsset.BTC
-                                ? swapSuggestion.to.feePerUnit
+                                ? swapSuggestion.to.feePerUnit!
                                 : 0,
                     });
 

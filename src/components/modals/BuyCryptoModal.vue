@@ -735,8 +735,8 @@ export default defineComponent({
                         ? 0
                         : calculateOasisFee(newEstimate.from.amount)
                     ),
-                    nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit : 0,
-                    btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit : 0,
+                    nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
+                    btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,
                 });
 
                 newEstimate.from.fee = fundingFee;
@@ -778,8 +778,8 @@ export default defineComponent({
                             ? 0
                             : calculateOasisFee(swapSuggestion.from.amount)
                         ),
-                        nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit : 0,
-                        btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit : 0,
+                        nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
+                        btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
                     });
 
                     swapSuggestion.from.fee = fundingFee;

@@ -23,7 +23,7 @@
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
-    "@nimiq/fastspot-api": "^1.2.0",
+    "@nimiq/fastspot-api": "^1.2.1",
     "@nimiq/hub-api": "^1.4.0-beta.2",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.6.1",

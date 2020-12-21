@@ -18,6 +18,9 @@
                 <label>{{ $t('OASIS service fee') }}</label>
                 <FiatAmount :amount="oasisFeeFiat" :currency="currency"/>
             </div>
+            <p v-if="oasisFeePercentage !== undefined" class="explainer">
+                {{ $t('{perc}% of swap value.', { perc: oasisFeePercentage }) }}
+            </p>
         </template>
 
 
@@ -30,10 +33,10 @@
 
         <div class="price-breakdown">
             <label>{{ $t('Swap fee') }}</label>
-            <FiatAmount :amount="serviceExchangeFeeFiat" :currency="currency"/>
+            <FiatAmount :amount="serviceSwapFeeFiat" :currency="currency"/>
         </div>
         <p class="explainer">
-            {{ $t('{perc}% of swap value.', { perc: serviceExchangeFeePercentage }) }}
+            {{ $t('{perc}% of swap value.', { perc: serviceSwapFeePercentage }) }}
         </p>
 
         <hr>
@@ -46,7 +49,7 @@
                     (btcFeeFiat || 0)
                     + (oasisFeeFiat || 0)
                     + (nimFeeFiat || 0)
-                    + serviceExchangeFeeFiat"
+                    + serviceSwapFeeFiat"
                 :currency="currency"/>
         </div>
     </Tooltip>
@@ -67,12 +70,16 @@ export default defineComponent({
             type: Number,
             required: false,
         },
+        oasisFeePercentage: {
+            type: Number,
+            required: false,
+        },
         nimFeeFiat: {
             type: Number,
             required: false,
         },
-        serviceExchangeFeeFiat: Number,
-        serviceExchangeFeePercentage: Number,
+        serviceSwapFeeFiat: Number,
+        serviceSwapFeePercentage: Number,
         currency: String as () => FiatCurrency,
     },
     components: {

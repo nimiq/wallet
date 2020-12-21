@@ -56,9 +56,10 @@
                             preferredPosition="bottom left"
                             :btcFeeFiat="fiatFees.btcFeeFiat"
                             :oasisFeeFiat="fiatFees.oasisFeeFiat"
+                            :oasisFeePercentage="fiatFees.oasisFeePercentage"
                             :nimFeeFiat="fiatFees.nimFeeFiat"
-                            :serviceExchangeFeeFiat="fiatFees.serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="fiatFees.serviceExchangeFeePercentage"
+                            :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
                             :currency="selectedFiatCurrency"
                             :container="this"
                         >
@@ -555,6 +556,7 @@ export default defineComponent({
 
                 // TODO: Can we predict EUR fees?
                 const oasisFeeFiat = 0;
+                const oasisFeePercentage = 1;
 
                 let nimFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.NIM) {
@@ -586,16 +588,17 @@ export default defineComponent({
                         * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
                 }
 
-                const serviceExchangeFeePercentage = 0.2;
-                const serviceExchangeFeeFiat = 0;
+                const serviceSwapFeePercentage = 0.2;
+                const serviceSwapFeeFiat = 0;
 
                 return {
                     btcFeeFiat,
                     oasisFeeFiat,
+                    oasisFeePercentage,
                     nimFeeFiat,
-                    serviceExchangeFeePercentage,
-                    serviceExchangeFeeFiat,
-                    total: (btcFeeFiat || 0) + oasisFeeFiat + (nimFeeFiat || 0) + serviceExchangeFeeFiat,
+                    serviceSwapFeePercentage,
+                    serviceSwapFeeFiat,
+                    total: (btcFeeFiat || 0) + oasisFeeFiat + (nimFeeFiat || 0) + serviceSwapFeeFiat,
                     isHigh: false,
                 };
             }
@@ -604,6 +607,7 @@ export default defineComponent({
             const theirEurFee = data.from.serviceEscrowFee + data.from.serviceNetworkFee;
 
             const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
+            const oasisFeePercentage = Math.round((oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
 
             const myCryptoFee = data.to.fee;
             const theirCryptoFee = data.to.serviceNetworkFee;
@@ -617,17 +621,18 @@ export default defineComponent({
                     * exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!
                 : undefined;
 
-            const serviceExchangeFeePercentage = Math.round(data.serviceFeePercentage * 1000) / 10;
-            const serviceExchangeFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
+            const serviceSwapFeePercentage = Math.round(data.serviceFeePercentage * 1000) / 10;
+            const serviceSwapFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
 
-            const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceExchangeFeeFiat;
+            const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceSwapFeeFiat;
 
             return {
                 btcFeeFiat,
                 oasisFeeFiat,
+                oasisFeePercentage,
                 nimFeeFiat,
-                serviceExchangeFeePercentage,
-                serviceExchangeFeeFiat,
+                serviceSwapFeePercentage,
+                serviceSwapFeeFiat,
                 total,
                 isHigh: false,
             };
@@ -911,16 +916,6 @@ export default defineComponent({
             }
 
             const { swapId } = (await hubRequest);
-
-            // const swapFees = {
-            //     myBtcFeeFiat: myBtcFeeFiat.value,
-            //     myNimFeeFiat: myNimFeeFiat.value,
-            //     serviceBtcFeeFiat: serviceBtcFeeFiat.value,
-            //     serviceNimFeeFiat: serviceNimFeeFiat.value,
-            //     serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
-            //     serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
-            //     currency: currency.value,
-            // };
 
             if (!signedTransactions) {
                 // Hub popup cancelled
@@ -1564,7 +1559,7 @@ export default defineComponent({
     margin: -1.75rem 0 0.75rem;
 
     svg {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
         flex-shrink: 0;
     }
 

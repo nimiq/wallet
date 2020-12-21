@@ -24,8 +24,8 @@
                             preferredPosition="bottom left"
                             :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
                             :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
-                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
                             :currency="currency"
                             :container="this"
                         >
@@ -35,7 +35,7 @@
                                     + myNimFeeFiat
                                     + serviceBtcFeeFiat
                                     + serviceNimFeeFiat
-                                    + serviceExchangeFeeFiat"
+                                    + serviceSwapFeeFiat"
                                     :currency="currency"/>
                                 {{ $t('fees') }}
                             </div>
@@ -790,14 +790,14 @@ export default defineComponent({
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
-        const serviceExchangeFeePercentage = computed(() => {
+        const serviceSwapFeePercentage = computed(() => {
             if (!estimate.value) return 0;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 1000) / 10;
         });
 
-        const serviceExchangeFeeFiat = computed(() => {
+        const serviceSwapFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
             const data = swap.value || estimate.value;
@@ -820,7 +820,7 @@ export default defineComponent({
                 + myBtcFeeFiat.value
                 + serviceNimFeeFiat.value
                 + serviceBtcFeeFiat.value
-                + serviceExchangeFeeFiat.value;
+                + serviceSwapFeeFiat.value;
 
             return (totalFees / fromFiat) >= 0.3;
         });
@@ -1032,16 +1032,6 @@ export default defineComponent({
 
             const { swapId } = (await hubRequest);
 
-            const swapFees = {
-                myBtcFeeFiat: myBtcFeeFiat.value,
-                myNimFeeFiat: myNimFeeFiat.value,
-                serviceBtcFeeFiat: serviceBtcFeeFiat.value,
-                serviceNimFeeFiat: serviceNimFeeFiat.value,
-                serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
-                serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
-                currency: currency.value,
-            };
-
             if (!signedTransactions) {
                 // Hub popup cancelled
                 cancelSwap({ id: swapId } as PreSwap);
@@ -1079,7 +1069,6 @@ export default defineComponent({
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
-                fees: swapFees,
             });
 
             const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
@@ -1204,8 +1193,8 @@ export default defineComponent({
             myBtcFeeFiat,
             serviceNimFeeFiat,
             serviceBtcFeeFiat,
-            serviceExchangeFeeFiat,
-            serviceExchangeFeePercentage,
+            serviceSwapFeeFiat,
+            serviceSwapFeePercentage,
             isHighRelativeFees,
             onInput,
             onSwapBalanceBarChange,
@@ -1485,7 +1474,7 @@ export default defineComponent({
     margin: -1.75rem 0 0.75rem;
 
     svg {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
         flex-shrink: 0;
     }
 

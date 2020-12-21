@@ -2,7 +2,6 @@ import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
 import { Htlc, HtlcStatus, SepaClearingInstruction } from '../lib/OasisApi';
-import { FiatCurrency } from '../lib/Constants';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -58,15 +57,6 @@ export type Swap = {
     id?: string,
     in?: SwapNimData | SwapBtcData | SwapEurData,
     out?: SwapNimData | SwapBtcData | SwapEurData,
-    fees?: {
-        myBtcFeeFiat: number,
-        myNimFeeFiat: number,
-        serviceBtcFeeFiat: number,
-        serviceNimFeeFiat: number,
-        serviceExchangeFeeFiat: number,
-        serviceExchangeFeePercentage: number,
-        currency: FiatCurrency,
-    },
 };
 
 export type ActiveSwap = SwapObject & {

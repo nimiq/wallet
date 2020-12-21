@@ -663,33 +663,7 @@ export default defineComponent({
                 newEstimate.to.fee = settlementFee;
 
                 // Check against minimums
-                if (assets.value
-                    && assets.value[newEstimate.from.asset]
-                    && assets.value[newEstimate.from.asset].limits.minimum > newEstimate.from.amount
-                ) {
-                    const toCoinsFactor = newEstimate.from.asset === SwapAsset.NIM ? 1e5 : 1e8;
-                    const minimumFiat = (
-                        (assets.value[newEstimate.from.asset].limits.minimum + newEstimate.from.fee) / toCoinsFactor
-                    ) * exchangeRates.value[newEstimate.from.asset.toLowerCase()][currency.value]!;
-                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
-                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
-                    }) as string;
-                } // eslint-disable-line brace-style
-
-                else if (assets.value
-                    && assets.value[newEstimate.to.asset]
-                    && assets.value[newEstimate.to.asset].limits.minimum > newEstimate.to.amount
-                ) {
-                    const toCoinsFactor = newEstimate.to.asset === SwapAsset.NIM ? 1e5 : 1e8;
-                    const minimumFiat = (
-                        assets.value[newEstimate.to.asset].limits.minimum / toCoinsFactor
-                    ) * exchangeRates.value[newEstimate.to.asset.toLowerCase()][currency.value]!;
-                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
-                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
-                    }) as string;
-                } // eslint-disable-line brace-style
-
-                else if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
                     // Note: This currently only checks BTC fees!
                     const toCoinsFactor = 1e8;

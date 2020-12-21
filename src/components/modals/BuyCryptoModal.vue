@@ -313,7 +313,7 @@ import { useFiatStore } from '@/stores/Fiat';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_MAIN } from '@/lib/Constants';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import {
     init as initOasisApi,
     getHtlc,
@@ -367,7 +367,7 @@ export default defineComponent({
         const { btcUnit } = useSettingsStore();
 
         const addressListOpened = ref(false);
-        const selectedFiatCurrency = ref('eur');
+        const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
@@ -744,7 +744,27 @@ export default defineComponent({
                 newEstimate.from.fee = fundingFee;
                 newEstimate.to.fee = settlementFee;
 
-                // TODO: Check against minimums
+                // Check against minimums
+                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+                    // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
+                    if (newEstimate.to.asset === SwapAsset.BTC) {
+                        // Note: This currently only checks BTC fees!
+                        const btcPrice = newEstimate.to;
+                        const toCoinsFactor = 1e8;
+                        const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
+                            * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!;
+                        estimateError.value = context.root.$t(
+                            'The fees (currently {amount}) determine the minimum amount.',
+                            { amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
+                        ) as string;
+                    } else {
+                        estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
+                    }
+                } // eslint-disable-line brace-style
+
+                else {
+                    estimateError.value = null;
+                }
 
                 estimate.value = newEstimate;
             } catch (error) {

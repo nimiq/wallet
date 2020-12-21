@@ -6,7 +6,7 @@
         </PageHeader>
         <PageBody class="flex-column">
             <BankCheckInput v-model="bankName" :placeholder="$t('Enter bank name...')" @bank-selected="onBankSelected"/>
-            <span>{{ $t('BIC work too.') }}</span>
+            <span>{{ $t('BIC works, too.') }}</span>
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>

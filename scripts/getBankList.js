@@ -71,7 +71,14 @@ function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
                     .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
                     .join(' '),
                 country: bank.BIC.slice(4, 6),
-                type: 'sepa-instant-partial-support',
+                support: {
+                    sepa: {
+                        // TEMP?: can we assume that banks at least fully support inbound sepa instant
+                        // if they are part of the list?
+                        inbound: 'sepa-instant-partial-full',
+                        outbound: 'sepa-instant-partial-support',
+                    },
+                },
             }));
 
         fs.writeFile(jsonFilePath, JSON.stringify(jsonFile), (err) => {

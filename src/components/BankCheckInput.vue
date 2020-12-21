@@ -11,11 +11,12 @@
         <ul class="bank-autocomplete" v-if="matchingBanks && matchingBanks.length > 0" ref="$bankAutocomplete">
             <li class="bank" v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: selectedBankIndex === index }"
-                :disabled="bank.type === SEPA_INSTANT_SUPPORT.NONE"
+                :disabled="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE"
                 @mouseenter="selectedBankIndex = index"
                 @mousedown.prevent="selectBank(bank)"
+                :title="bank.name"
             >
-                <BankIcon v-if="bank.type !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
                 <span v-if="new RegExp(localValue, 'i').test(bank.name)">{{
                     getMatchPrefix(bank.name)
@@ -26,10 +27,11 @@
                 }}</span>
                 <span v-else>{{ bank.name }}</span>
                 <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-if="bank.type === SEPA_INSTANT_SUPPORT.FULL"/>
+                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL"/>
 
                 <Tooltip
-                    v-if="bank.type === SEPA_INSTANT_SUPPORT.PARTIAL || bank.type === SEPA_INSTANT_SUPPORT.UNKNOWN"
+                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.PARTIAL
+                        || bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.UNKNOWN"
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
@@ -87,13 +89,14 @@ export default defineComponent({
         const selectedBankIndex = ref(0);
 
         /* Filtering & Sorting Labels */
-        const matchingBanks = computed(() =>
-            localValue.value
-                ? Object.values(banks).filter((bank) =>
-                    (bank.name && RegExp(localValue.value, 'i').test(bank.name))
-                    || (bank.BIC && RegExp(localValue.value, 'i').test(bank.BIC)),
-                ).sort((a, b) => a.name.localeCompare(b.name)) : [],
-        );
+        const matchingBanks = computed(() => {
+            if (!localValue.value) return [];
+
+            const rgx = RegExp(localValue.value, 'i');
+            return Object.values(banks).filter((bank) =>
+                (bank.name && rgx.test(bank.name)) || (bank.BIC && rgx.test(bank.BIC)),
+            ).sort((a, b) => a.name.localeCompare(b.name));
+        });
         const visibleBanks = computed(() => matchingBanks.value.slice(0, MAX_VISIBLE_ITEMS));
 
         /* Reset the currently selected label to 0 on text input */
@@ -138,7 +141,7 @@ export default defineComponent({
 
         /* Executed when a bank is selected */
         function selectBank(bank: BankInfos) {
-            if (bank.type === SEPA_INSTANT_SUPPORT.NONE) {
+            if (bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE) {
                 (context.refs.$labelInput as LabelInput).focus();
                 return;
             }
@@ -148,8 +151,7 @@ export default defineComponent({
 
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
-            // matchingBanks.value.some((bank: BankInfos) => bank.type !== SEPA_INSTANT_SUPPORT.FULL),
-            true, // TEMP: always showing warning
+            matchingBanks.value.some((bank: BankInfos) => bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.FULL),
         );
 
         /* Those 3 functions are used to highlight the matched string in autocomplete list */

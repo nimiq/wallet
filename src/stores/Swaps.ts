@@ -93,8 +93,14 @@ export enum SEPA_INSTANT_SUPPORT {
 
 export type BankInfos = {
     name: string,
-    type: SEPA_INSTANT_SUPPORT,
     BIC: string,
+    support: {
+        sepa: {
+            inbound: SEPA_INSTANT_SUPPORT,
+            outbound: SEPA_INSTANT_SUPPORT,
+        },
+        // swift?
+    },
 }
 
 export type SwapsState = {

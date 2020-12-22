@@ -53,7 +53,7 @@ import { getHtlc, settleHtlc } from '../../lib/OasisApi';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeSwap, setActiveSwap, addFundingData } = useSwapsStore();
+        const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
         const swapIsErrored = computed(() => !!activeSwap.value
@@ -206,8 +206,7 @@ export default defineComponent({
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            // TODO: Where to get this info from? The activeSwap?
-                            // bankLabel?: string,
+                            bankLabel: userBank.value?.name,
                             // bankLogo?: string,
                             amount: fundingTx.amount,
                             htlc: {

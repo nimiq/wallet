@@ -5,8 +5,8 @@
         "country": "FR",
         "support": {
             "sepa": {
-                "inbound": "sepa-instant-full-support",
-                "outbound": "sepa-instant-full-support"
+                "inbound": "full-support",
+                "outbound": "full-support"
             }
         }
     },
@@ -16,8 +16,8 @@
         "country": "DE",
         "support": {
             "sepa": {
-                "inbound": "sepa-instant-partial-full",
-                "outbound": "sepa-instant-no-support"
+                "inbound": "full-support",
+                "outbound": "no-support"
             }
         }
     }

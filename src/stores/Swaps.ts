@@ -75,10 +75,10 @@ export type ActiveSwap = SwapObject & {
 }
 
 export enum SEPA_INSTANT_SUPPORT {
-    FULL = 'sepa-instant-full-support',
-    PARTIAL = 'sepa-instant-partial-support',
-    NONE = 'sepa-instant-no-support',
-    UNKNOWN = 'sepa-instant-unknown-support',
+    FULL = 'full-support',
+    PARTIAL = 'partial-support',
+    NONE = 'no-support',
+    UNKNOWN = 'unknown-support',
 }
 
 export type BankInfos = {

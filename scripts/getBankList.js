@@ -93,8 +93,8 @@ async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
                 sepa: {
                     // TEMP?: can we assume that banks at least fully support inbound sepa instant
                     // if they are part of the list?
-                    inbound: 'sepa-instant-partial-full',
-                    outbound: 'sepa-instant-partial-support',
+                    inbound: 'full-support',
+                    outbound: 'partial-support',
                 },
             },
         }));

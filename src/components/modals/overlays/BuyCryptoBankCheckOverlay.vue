@@ -1,16 +1,22 @@
 <template>
     <div class="buy-crypto-bank-check-overlay flex-column">
-        <PageHeader :backArrow="true" @back="back">
+        <PageHeader>
             {{ $t('Is your bank eligible?') }}
-            <div slot="more">{{ $t('You need a SEPA account that supports instant transactions.') }}</div>
+            <div slot="more" class="header-notice">
+                {{ $t('You need a SEPA account that supports instant transactions.') }}
+            </div>
         </PageHeader>
         <PageBody class="flex-column">
+            <div class="flex-grow"></div>
             <BankCheckInput v-model="bankName" :placeholder="$t('Enter bank name...')" @bank-selected="onBankSelected"/>
-            <span>{{ $t('BIC works, too.') }}</span>
+            <span class="bic-too">{{ $t('BIC works, too.') }}</span>
+            <div class="flex-grow"></div>
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>
-            <button class="nq-button-s">{{ $t('Buy with credit card') }}</button>
+            <a class="nq-button-s" href="https://nimiq.com/exchanges" target="_blank" @mousedown.prevent>
+                {{ $t('Buy on on exchange') }}
+            </a>
         </PageFooter>
     </div>
 </template>
@@ -29,14 +35,9 @@ export default defineComponent({
             context.emit('bank-selected', bank);
         }
 
-        function back() {
-            context.emit('back');
-        }
-
         return {
             bankName,
             onBankSelected,
-            back,
         };
     },
     components: {
@@ -58,11 +59,20 @@ export default defineComponent({
     /deep/ h1 {
         margin-bottom: 1rem;
     }
+
+    .header-notice {
+        font-size: var(--body-size);
+        max-width: 42rem;
+        margin: 1.25rem auto 0;
+    }
 }
 
 .page-body {
     overflow: visible;
-    padding-top: 10.375rem;
+
+    .flex-grow:last-child {
+        flex-grow: 2;
+    }
 
     .bank-check-input {
         transition: transform 300ms var(--nimiq-ease);
@@ -77,8 +87,9 @@ export default defineComponent({
         }
     }
 
-    & > span {
+    .bic-too {
         font-size: var(--small-size);
+        font-weight: 600;
         color: var(--text-40);
         margin-top: 1rem;
 
@@ -89,9 +100,10 @@ export default defineComponent({
 }
 
 .page-footer {
-    padding: 3rem;
+    padding-bottom: 3rem;
 
     span {
+        font-size: var(--body-size);
         color: var(--text-70);
     }
 }

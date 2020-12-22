@@ -13,7 +13,7 @@
                 </svg>
                 <!-- eslint-enable max-len -->
                 <div class="welcome-text">
-                    <span class="early-access">
+                    <span class="early-access flex-row">
                         <FlameIcon />
                         {{ $t('Early Access') }}
                     </span>
@@ -207,7 +207,6 @@
         <BuyCryptoBankCheckOverlay slot="overlay"
             v-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
-            @back="goBack"
         />
 
         <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
@@ -1208,15 +1207,17 @@ export default defineComponent({
     max-width: 100%;
 
     svg.welcome-euro-logo {
-        width: 10rem;
-        height: 10rem;
-        margin-bottom: 4rem;
+        width: 10.5rem;
+        height: 10.5rem;
+        margin-bottom: 3rem;
     }
 
     .welcome-text {
         text-align: center;
 
         .early-access {
+            justify-content: center;
+            align-items: center;
             font-size: 12px;
             font-weight: bold;
             color: #EAA617;
@@ -1228,7 +1229,7 @@ export default defineComponent({
 
         .nq-h1 {
             margin-top: 1rem;
-            margin-bottom: 2.25rem;
+            margin-bottom: 1rem;
             white-space: pre-line;
         }
 
@@ -1242,17 +1243,19 @@ export default defineComponent({
     ul.welcome-steps {
         list-style-type: none;
         padding-left: 0;
-        margin-bottom: 0;
+        margin: 0;
 
         span {
             display: inline-block;
-            width: 4rem;
-            height: 4rem;
+            width: 3.625rem;
+            height: 3.625rem;
             line-height: calc(4rem - (2 * 0.1875rem));
-            margin-right: 1rem;
+            font-weight: bold;
+            color: var(--text-60);
+            margin-right: 1.25rem;
             text-align: center;
             border-radius: 50%;
-            border: 0.1875rem solid var(--text-20);
+            box-shadow: 0 0 0 1.5px var(--text-20);
         }
 
         li {
@@ -1260,7 +1263,7 @@ export default defineComponent({
             flex-direction: row;
             align-items: center;
             margin-top: 0;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
     }
 
@@ -1294,6 +1297,7 @@ export default defineComponent({
     flex-grow: 1;
     font-size: var(--body-size);
     height: 100%;
+    overflow-y: auto;
 
     .page-header {
         // Reduce side padding to fit all three tooltip pills in one row
@@ -1351,8 +1355,10 @@ export default defineComponent({
     }
 
     .page-body {
-        padding-left: 5rem;
-        padding-right: 5rem;
+        @media (min-width: 420px) {
+            padding-left: 5rem;
+            padding-right: 5rem;
+        }
         padding-bottom: 2rem;
     }
 

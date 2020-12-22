@@ -47,7 +47,7 @@
             </li>
             <li class="warning" v-if="showWarning" key="warning">
                 {{ $t('Your bank needs to support SEPA Instant out transactions.'
-                    + 'Some banks don’t support it yet, but are likely to do so in the future.') }}
+                    + ' Some banks don’t support it yet, but are likely to do so in the future.') }}
             </li>
         </ul>
     </div>
@@ -241,7 +241,7 @@ export default defineComponent({
     flex-direction: column;
     overflow: visible;
 
-    width: 90%;
+    width: 100%;
     // max-height: 40rem;
     margin: 0;
     margin-top: -.25rem;
@@ -360,7 +360,6 @@ export default defineComponent({
         line-height: 130%;
         margin: 0.5rem;
         padding: 1rem;
-        padding-right: 1.625rem;
         border-top: 1px solid rgba(white, 0.2);
         opacity: 0.6;
     }

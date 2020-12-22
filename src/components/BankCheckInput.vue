@@ -13,7 +13,7 @@
                 :class="{ selected: selectedBankIndex === index }"
                 :disabled="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE"
                 @mouseenter="selectedBankIndex = index"
-                @mousedown.prevent="selectBank(bank)"
+                @click="selectBank(bank)" @mousedown.prevent
                 :title="bank.name"
             >
                 <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
@@ -319,6 +319,10 @@ export default defineComponent({
 
             &.tooltip /deep/ .tooltip-box {
                 width: 32rem;
+                box-shadow:
+                    0px 18px 38px rgba(31, 35, 72, 0.14),
+                    0px 7px 8.5px rgba(31, 35, 72, 0.08),
+                    0px 2px 2.5px rgba(31, 35, 72, 0.04);
             }
 
             .circled-question-mark-icon {

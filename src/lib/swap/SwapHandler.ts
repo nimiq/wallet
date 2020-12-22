@@ -1,9 +1,10 @@
 import { AssetAdapter, SwapAsset, Transaction, Client } from './IAssetAdapter';
 import { NimiqAssetAdapter } from './NimiqAssetAdapter';
 import { BitcoinAssetAdapter } from './BitcoinAssetAdapter';
+import { EuroAssetAdapter } from './EuroAssetAdapter';
 
 // Re-export to centralize exports
-export { SwapAsset };
+export { SwapAsset, Client, Transaction };
 
 export type Contract<TAsset extends SwapAsset> = {
     htlc: {
@@ -41,6 +42,8 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
                 return new NimiqAssetAdapter(client as Client<SwapAsset.NIM>) as AssetAdapter<SwapAsset>;
             case SwapAsset.BTC:
                 return new BitcoinAssetAdapter(client as Client<SwapAsset.BTC>) as AssetAdapter<SwapAsset>;
+            case SwapAsset.EUR:
+                return new EuroAssetAdapter(client as Client<SwapAsset.EUR>) as AssetAdapter<SwapAsset>;
             default:
                 throw new Error(`Unsupported asset: ${asset}`);
         }
@@ -68,12 +71,23 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         serializedTx: string,
         onPending: (tx: Transaction<FromAsset>) => any,
     ): Promise<Transaction<FromAsset>> {
-        const contract = this.swap.contracts[this.swap.from.asset] as Contract<ToAsset>;
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
         return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending);
     }
 
+    public async awaitOutgoing(onPending: (tx: Transaction<FromAsset>) => any): Promise<Transaction<FromAsset>> {
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
+
+        return this.fromAssetAdapter.awaitHtlcFunding(
+            contract.htlc.address,
+            this.swap.from.amount,
+            this.swap.from.asset === SwapAsset.NIM ? (contract as Contract<SwapAsset.NIM>).htlc.data : '',
+            onPending,
+        );
+    }
+
     public async awaitSecret(): Promise<string> {
-        const contract = this.swap.contracts[this.swap.from.asset] as Contract<ToAsset>;
+        const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
 
         return this.fromAssetAdapter.awaitSwapSecret(
             contract.htlc.address,

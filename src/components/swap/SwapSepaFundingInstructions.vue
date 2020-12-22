@@ -1,0 +1,345 @@
+<template>
+    <div class="swap-sepa-funding-instructions">
+        <transition name="fade" mode="out-in">
+            <div class="flex-column" v-if="page === Pages.PAYMENT_DETAILS">
+                <div class="row flex-row">
+                    <h1 class="nq-h1">
+                        {{ $t('Please transfer') }}
+                    </h1>
+                    <Copyable :text="(amount / 100).toString()" class="glass">
+                        <FiatAmount :amount="amount / 100" currency="eur"/>
+                    </Copyable>
+                </div>
+                <div class="row flex-row">
+                    <div class="tooltip-in-copyable flex-grow">
+                        <Copyable :text="name" class="glass flex-column">
+                            <div class="line flex-row">
+                                <label class="nq-label tooltip-spacing">{{ $t('Recipient') }}</label>
+                            </div>
+                            <div class="line flex-row">
+                                <strong>{{ name }}</strong>
+                            </div>
+                        </Copyable>
+                        <Tooltip
+                            preferredPosition="top left"
+                            :container="this"
+                            theme="inverse"
+                            :styles="{'width': '35rem'}"
+                        >
+                            <InfoCircleSmallIcon slot="trigger"/>
+                            <p class="intro">
+                                {{ $t('TEN31 Bank provides a bank account to lock your payment.') }}
+                            </p>
+                            <p class="explainer">
+                                {{ $t('As soon as your crypto is available, your Euro is processed to the seller.'
+                                    + ' In case of a problem or a time-out, your payment will be returned to your'
+                                    + ' bank account.') }}
+                            </p>
+                        </Tooltip>
+                    </div>
+                    <Copyable :text="iban" class="glass flex-column">
+                        <div class="line flex-row">
+                            <label class="nq-label">{{ $t('IBAN') }}</label>
+                            <label v-if="bic" class="nq-label bic">{{ bic }}</label>
+                        </div>
+                        <div class="line flex-row">
+                            <strong>{{ iban | formatIntoGroups(4, ' ', 2) }}</strong>
+                        </div>
+                    </Copyable>
+                </div>
+                <div class="row flex-row">
+                    <Copyable :text="reference" class="glass flex-column flex-grow">
+                        <div class="line flex-row">
+                            <label class="nq-label">{{ $t('Reference') }}</label>
+                            <label class="spacing-notice">{{ $t('Spacing optional') }}</label>
+                        </div>
+                        <div class="line flex-row">
+                            <strong>{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
+                        </div>
+                    </Copyable>
+                </div>
+                <div class="instant-warning flex-row">
+                    <span class="text">{{ $t('Your transaction must be SEPA Instant') }}</span>
+                    <Tooltip
+                        preferredPosition="top left"
+                        :container="this"
+                        theme="inverse"
+                        :styles="{'width': '35rem'}"
+                    >
+                        <InfoCircleSmallIcon slot="trigger"/>
+                        <p class="intro">{{ $t('Please ensure that you are sending an instant transaction!') }}</p>
+                        <p class="explainer">
+                            {{ $t('Regular transactions are too slow and will not process. Your bank might'
+                                + ' use another name, like ‘real-time transactions’ i.a.') }}
+                        </p>
+                    </Tooltip>
+                </div>
+                <div class="row flex-row">
+                    <!-- <button class="nq-button-s inverse" @click="onCancel" @mousedown.prevent>
+                        {{ $t('Cancel') }}
+                    </button> --><div></div>
+                    <button class="nq-button-pill inverse light-blue" @click="onPaid" @mousedown.prevent>
+                        {{ $t('I paid') }}
+                    </button>
+                </div>
+            </div>
+            <div v-else-if="page === Pages.PROCESSING" class="processing">
+                <h2 class="nq-h2">
+                    {{ $t('The bank is processing your transaction.\nThis might take up to 5 minutes.') }}
+                </h2>
+                <p class="nq-gray">
+                    {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}
+                </p>
+                <p class="nq-gray timer">
+                    {{ timer }}
+                </p>
+                <button class="nq-button-s inverse" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
+                    {{ $t('Back to Bank Details') }}
+                </button>
+            </div>
+        </transition>
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
+import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+
+enum Pages {
+    PAYMENT_DETAILS = 'payment-details',
+    PROCESSING = 'processing',
+}
+
+export enum Events {
+    CANCEL = 'cancel',
+    PAID = 'paid',
+}
+
+export default defineComponent({
+    props: {
+        amount: Number,
+        name: String,
+        iban: String,
+        bic: {
+            type: String,
+            required: false,
+        },
+        reference: String,
+        stateEnteredAt: {
+            type: Number,
+            required: false,
+        },
+    },
+    setup(props, context) {
+        const page = ref(Pages.PAYMENT_DETAILS);
+
+        function onCancel() {
+            context.emit(Events.CANCEL);
+        }
+
+        function onPaid() {
+            context.emit(Events.PAID);
+            page.value = Pages.PROCESSING;
+            startTimer();
+        }
+
+        const timer = ref('0:00');
+        let timerInterval = 0;
+
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = window.setInterval(timerTick, 1000);
+            timerTick();
+        }
+
+        function timerTick() {
+            if (!props.stateEnteredAt) {
+                timer.value = '';
+                return;
+            }
+
+            const diff = new Date(Date.now() - props.stateEnteredAt);
+            const minutes = diff.getUTCMinutes();
+            const seconds = diff.getUTCSeconds();
+            timer.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        onUnmounted(() => {
+            window.clearInterval(timerInterval);
+        });
+
+        return {
+            page,
+            Pages,
+            onCancel,
+            onPaid,
+            timer,
+        };
+    },
+    filters: {
+        formatIntoGroups(text: string, groupSize: number, separator: string, firstGroupSize?: number) {
+            let firstGroup = '';
+            if (firstGroupSize) {
+                firstGroup = text.substr(0, firstGroupSize);
+                text = text.substr(firstGroupSize);
+            }
+            text = text.replace(new RegExp(`.{${groupSize}}`, 'g'), `$&${separator}`);
+            if (firstGroup) {
+                text = `${firstGroup}${separator}${text}`;
+            }
+            // Remove separator behind last group
+            text = text.substr(0, text.length - separator.length);
+            return text;
+        },
+    },
+    components: {
+        Copyable,
+        FiatAmount,
+        Tooltip,
+        InfoCircleSmallIcon,
+    },
+});
+</script>
+
+<style lang="scss" scoped>
+.swap-sepa-funding-instructions {
+    padding: 2.25rem;
+}
+
+.row {
+    justify-content: space-between;
+}
+
+.row:first-child {
+    margin-bottom: 1rem;
+}
+
+.row + .row {
+    margin-top: 1rem;
+}
+
+.nq-h1 {
+    margin: 0 0 0 2rem;
+    line-height: 6rem;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+    border-radius: 0.625rem;
+    padding: 1.5rem 2rem;
+}
+
+.glass + .glass,
+.tooltip-in-copyable + .glass {
+    margin-left: 1rem;
+}
+
+.copyable.glass {
+    &.copied,
+    &:focus,
+    &:hover {
+        color: white !important;
+    }
+
+    /deep/ .background {
+        pointer-events: none;
+        background: white;
+    }
+}
+
+.tooltip-in-copyable {
+    position: relative;
+
+    > .tooltip {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+    }
+}
+
+.fiat-amount {
+    font-size: var(--h1-size);
+    font-weight: bold;
+    line-height: 1;
+    margin: 0 0.5rem;
+}
+
+.line {
+    justify-content: space-between;
+}
+
+.nq-label {
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0.75rem 0 1.25rem;
+
+    &.tooltip-spacing {
+        margin-right: 2.5rem;
+    }
+}
+
+.bic,
+.spacing-notice {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.bic {
+    font-weight: 600;
+    letter-spacing: .06em;
+}
+
+.spacing-notice {
+    font-size: var(--label-size);
+}
+
+.instant-warning {
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+
+    .text {
+        font-weight: 600;
+        opacity: 0.5;
+        margin-right: 1rem;
+    }
+}
+
+.tooltip .nq-icon {
+    opacity: 0.3;
+    transition: opacity 0.2s var(--nimiq-ease);
+}
+
+.tooltip.shown .nq-icon {
+    opacity: 0.5;
+}
+
+.tooltip .intro {
+    margin-bottom: 1rem;
+}
+
+.processing {
+    text-align: center;
+
+    .nq-h2 {
+        font-weight: normal;
+        white-space: pre-line;
+    }
+
+    .nq-gray {
+        font-size: var(--body-size);
+        font-weight: 600;
+        opacity: 0.5;
+        max-width: 46rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .timer {
+        font-variant-numeric: tabular-nums;
+    }
+
+    button {
+        margin-top: 8rem;
+    }
+}
+</style>

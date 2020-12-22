@@ -499,6 +499,7 @@ export default defineComponent({
             padding: 1rem 1.5rem 1rem 1rem;
             border-radius: 0.25rem;
             transition: background-color .3s var(--nimiq-ease);
+            white-space: nowrap;
 
             svg {
                 width: 2.75rem;

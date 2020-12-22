@@ -22,12 +22,10 @@
                         </Tooltip>
                         <SwapFeesTooltip
                             preferredPosition="bottom left"
-                            :myBtcFeeFiat="myBtcFeeFiat"
-                            :myNimFeeFiat="myNimFeeFiat"
-                            :serviceBtcFeeFiat="serviceBtcFeeFiat"
-                            :serviceNimFeeFiat="serviceNimFeeFiat"
-                            :serviceExchangeFeeFiat="serviceExchangeFeeFiat"
-                            :serviceExchangeFeePercentage="serviceExchangeFeePercentage"
+                            :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
+                            :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
+                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
                             :currency="currency"
                             :container="this"
                         >
@@ -37,7 +35,7 @@
                                     + myNimFeeFiat
                                     + serviceBtcFeeFiat
                                     + serviceNimFeeFiat
-                                    + serviceExchangeFeeFiat"
+                                    + serviceSwapFeeFiat"
                                     :currency="currency"/>
                                 {{ $t('fees') }}
                             </div>
@@ -134,12 +132,14 @@
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
+
                 <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
                     <AlertTriangleIcon/>
                     {{ estimateError || swapError }}
                 </div>
                 <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
+                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
+                        <span slot="text">{{ $t('Confirm') }}</span>
                         <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
                             Fastspot</a>
                         <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
@@ -147,7 +147,8 @@
                     </i18n>
                 </div>
                 <div v-else class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking 'confirm', you agree to the ToS of {Fastspot}." tag="span">
+                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
+                        <span slot="text">{{ $t('Confirm') }}</span>
                         <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
                             Fastspot</a>
                     </i18n>
@@ -161,13 +162,14 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="outgoingHtlcAddress"
+                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="incomingHtlcAddress"
+                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.fundingError || swap.settlementError"
-                    @finished="onAnimationComplete()"
+                    :switchSides="swap.from.asset === SwapAsset.BTC"
+                    @finished="finishSwap"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -251,6 +253,7 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
+import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -543,23 +546,23 @@ export default defineComponent({
 
             if (fixedAsset.value === SwapAsset.NIM) {
                 if (direction.value === SwapDirection.NIM_TO_BTC) {
-                    from = { NIM: (Math.abs(wantNim.value) - fundingFee!) / 1e5 };
+                    from = { NIM: (Math.abs(wantNim.value) - fundingFee) / 1e5 };
                     to = SwapAsset.BTC;
                 }
                 if (direction.value === SwapDirection.BTC_TO_NIM) {
                     from = SwapAsset.BTC;
-                    to = { NIM: (wantNim.value + settlementFee!) / 1e5 };
+                    to = { NIM: (wantNim.value + settlementFee) / 1e5 };
                 }
             }
 
             if (fixedAsset.value === SwapAsset.BTC) {
                 if (direction.value === SwapDirection.BTC_TO_NIM) {
-                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee!) / 1e8 };
+                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee) / 1e8 };
                     to = SwapAsset.NIM;
                 }
                 if (direction.value === SwapDirection.NIM_TO_BTC) {
                     from = SwapAsset.NIM;
-                    to = { BTC: (wantBtc.value + settlementFee!) / 1e8 };
+                    to = { BTC: (wantBtc.value + settlementFee) / 1e8 };
                 }
             }
 
@@ -611,46 +614,20 @@ export default defineComponent({
                         : null;
 
                 if (!nimPrice || !btcPrice) {
-                    throw new Error('UNEXPECTED: NIM or BTC price not included in estimate');
+                    throw new Error('UNEXPECTED: NIM or BTC price not present in estimate');
                 }
 
                 // Update local fees with latest feePerUnit values
                 const { fundingFee, settlementFee } = calculateFees({
-                    nim: nimPrice.feePerUnit,
-                    btc: btcPrice.feePerUnit,
+                    nim: nimPrice.feePerUnit!,
+                    btc: btcPrice.feePerUnit!,
                 });
 
                 newEstimate.from.fee = fundingFee;
                 newEstimate.to.fee = settlementFee;
 
                 // Check against minimums
-                if (assets.value
-                    && assets.value[newEstimate.from.asset]
-                    && assets.value[newEstimate.from.asset].limits.minimum > newEstimate.from.amount
-                ) {
-                    const toCoinsFactor = newEstimate.from.asset === SwapAsset.NIM ? 1e5 : 1e8;
-                    const minimumFiat = (
-                        (assets.value[newEstimate.from.asset].limits.minimum + newEstimate.from.fee) / toCoinsFactor
-                    ) * exchangeRates.value[newEstimate.from.asset.toLowerCase()][currency.value]!;
-                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
-                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
-                    }) as string;
-                } // eslint-disable-line brace-style
-
-                else if (assets.value
-                    && assets.value[newEstimate.to.asset]
-                    && assets.value[newEstimate.to.asset].limits.minimum > newEstimate.to.amount
-                ) {
-                    const toCoinsFactor = newEstimate.to.asset === SwapAsset.NIM ? 1e5 : 1e8;
-                    const minimumFiat = (
-                        assets.value[newEstimate.to.asset].limits.minimum / toCoinsFactor
-                    ) * exchangeRates.value[newEstimate.to.asset.toLowerCase()][currency.value]!;
-                    estimateError.value = context.root.$t('Minimum swap amount is {amount}', {
-                        amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
-                    }) as string;
-                } // eslint-disable-line brace-style
-
-                else if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
                     // Note: This currently only checks BTC fees!
                     const toCoinsFactor = 1e8;
@@ -777,14 +754,14 @@ export default defineComponent({
             return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
         });
 
-        const serviceExchangeFeePercentage = computed(() => {
+        const serviceSwapFeePercentage = computed(() => {
             if (!estimate.value) return 0;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 1000) / 10;
         });
 
-        const serviceExchangeFeeFiat = computed(() => {
+        const serviceSwapFeeFiat = computed(() => {
             if (!estimate.value) return 0;
 
             const data = swap.value || estimate.value;
@@ -807,7 +784,7 @@ export default defineComponent({
                 + myBtcFeeFiat.value
                 + serviceNimFeeFiat.value
                 + serviceBtcFeeFiat.value
-                + serviceExchangeFeeFiat.value;
+                + serviceSwapFeeFiat.value;
 
             return (totalFees / fromFiat) >= 0.3;
         });
@@ -855,14 +832,14 @@ export default defineComponent({
                     // Update local fees with latest feePerUnit values
                     const { fundingFee, settlementFee } = calculateFees({
                         nim: swapSuggestion.from.asset === SwapAsset.NIM
-                            ? swapSuggestion.from.feePerUnit
+                            ? swapSuggestion.from.feePerUnit!
                             : swapSuggestion.to.asset === SwapAsset.NIM
-                                ? swapSuggestion.to.feePerUnit
+                                ? swapSuggestion.to.feePerUnit!
                                 : 0,
                         btc: swapSuggestion.from.asset === SwapAsset.BTC
-                            ? swapSuggestion.from.feePerUnit
+                            ? swapSuggestion.from.feePerUnit!
                             : swapSuggestion.to.asset === SwapAsset.BTC
-                                ? swapSuggestion.to.feePerUnit
+                                ? swapSuggestion.to.feePerUnit!
                                 : 0,
                     });
 
@@ -971,23 +948,25 @@ export default defineComponent({
                     return;
                 }
 
-                const serviceExchangeFee = Math.round(
+                const serviceSwapFee = Math.round(
                     (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
                     * swapSuggestion.serviceFeePercentage,
                 );
 
                 const { addressInfos } = useAddressStore();
+                const { activeAccountInfo } = useAccountStore();
 
-                resolve({
+                const request: Omit<SetupSwapRequest, 'appName'> = {
+                    accountId: activeAccountInfo.value!.id,
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
                     fiatCurrency: currency.value,
-                    nimFiatRate: exchangeRates.value[CryptoCurrency.NIM][currency.value]!,
-                    btcFiatRate: exchangeRates.value[CryptoCurrency.BTC][currency.value]!,
-                    serviceFundingNetworkFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingNetworkFee: swapSuggestion.to.serviceNetworkFee,
-                    serviceExchangeFee,
+                    fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
+                    redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,
+                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
+                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    serviceSwapFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,
                         balance: addressInfo.balance || 0,
@@ -995,7 +974,9 @@ export default defineComponent({
                     bitcoinAccount: {
                         balance: accountBtcBalance.value,
                     },
-                } as Omit<SetupSwapRequest, 'appName'>);
+                };
+
+                resolve(request);
             });
 
             let signedTransactions: SetupSwapResult | null = null;
@@ -1013,19 +994,20 @@ export default defineComponent({
 
             const { swapId } = (await hubRequest);
 
-            const swapFees = {
-                myBtcFeeFiat: myBtcFeeFiat.value,
-                myNimFeeFiat: myNimFeeFiat.value,
-                serviceBtcFeeFiat: serviceBtcFeeFiat.value,
-                serviceNimFeeFiat: serviceNimFeeFiat.value,
-                serviceExchangeFeeFiat: serviceExchangeFeeFiat.value,
-                serviceExchangeFeePercentage: serviceExchangeFeePercentage.value,
-                currency: currency.value,
-            };
-
             if (!signedTransactions) {
                 // Hub popup cancelled
                 cancelSwap({ id: swapId } as PreSwap);
+                currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
+            if (!signedTransactions.nim || !signedTransactions.btc) {
+                const error = new Error('Internal error: Hub result did not contain NIM or BTC data');
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+                swapError.value = error.message;
+                cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();
                 return;
@@ -1049,7 +1031,6 @@ export default defineComponent({
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
-                fees: swapFees,
             });
 
             const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
@@ -1070,6 +1051,7 @@ export default defineComponent({
                     },
                 },
                 state: SwapState.AWAIT_INCOMING,
+                stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
                 fundingSerializedTx: confirmedSwap.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim.serializedTx
@@ -1123,18 +1105,6 @@ export default defineComponent({
             setActiveSwap(null);
         }
 
-        const incomingHtlcAddress = computed(() => {
-            if (!swap.value) return null;
-            const toAsset = swap.value.to.asset;
-            return swap.value.contracts[toAsset]!.htlc.address;
-        });
-
-        const outgoingHtlcAddress = computed(() => {
-            if (!swap.value) return null;
-            const fromAsset = swap.value.from.asset;
-            return swap.value.contracts[fromAsset]!.htlc.address;
-        });
-
         function finishSwap() {
             setActiveSwap(null);
             onClose();
@@ -1168,11 +1138,6 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
-        function onAnimationComplete() {
-            setActiveSwap(null);
-            onClose();
-        }
-
         return {
             onClose,
             satsPerNim,
@@ -1187,8 +1152,8 @@ export default defineComponent({
             myBtcFeeFiat,
             serviceNimFeeFiat,
             serviceBtcFeeFiat,
-            serviceExchangeFeeFiat,
-            serviceExchangeFeePercentage,
+            serviceSwapFeeFiat,
+            serviceSwapFeePercentage,
             isHighRelativeFees,
             onInput,
             onSwapBalanceBarChange,
@@ -1203,8 +1168,6 @@ export default defineComponent({
             SwapState,
             explorerTxLink,
             explorerAddrLink,
-            incomingHtlcAddress,
-            outgoingHtlcAddress,
             finishSwap,
             limits,
             currentLimitFiat,
@@ -1217,7 +1180,6 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             activeAddressInfo,
-            onAnimationComplete,
         };
     },
     components: {
@@ -1245,6 +1207,7 @@ export default defineComponent({
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
+        SwapSepaFundingInstructions,
     },
 });
 </script>
@@ -1464,13 +1427,13 @@ export default defineComponent({
 .footer-notice {
     justify-content: center;
     align-items: center;
-    text-align: center;
     font-weight: 600;
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;
 
     svg {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
+        flex-shrink: 0;
     }
 
     .nq-link {
@@ -1479,45 +1442,33 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay {
-    .page-header {
-        padding-bottom: 1rem;
-    }
-
-    .close-button {
-        display: none;
-    }
+.modal /deep/ .overlay .animation-overlay + .close-button {
+    display: none;
 }
 
-.animation-overlay {
-    .minimize-button {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        padding: 0;
-        height: 4rem;
-        width: 4rem;
+.minimize-button {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0;
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    transition: background .2s var(--nimiq-ease);
+
+    &::before {
         border-radius: 50%;
-        transition: background .2s var(--nimiq-ease);
-
-        &::before {
-            border-radius: 50%;
-        }
-
-        &:hover,
-        &:active,
-        &:focus {
-            background: rgba(255, 255, 255, 0.20);
-        }
-
-        &.top-right {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-        }
     }
 
-    .close-button {
-        display: none;
+    &:hover,
+    &:active,
+    &:focus {
+        background: rgba(255, 255, 255, 0.20);
+    }
+
+    &.top-right {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
     }
 }
 

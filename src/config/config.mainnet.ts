@@ -12,4 +12,9 @@ export default {
         apiKey: 'c20d43d0-8f60-4fca-a298-85e80f64d042',
         watchtowerEndpoint: 'https://watch.fastspot.io/main',
     },
+
+    oasis: {
+        apiEndpoint: 'https://oasis.ten31.com/v1',
+        feePercentage: 0, // 0% - Set to 0.01 for 1%
+    },
 };

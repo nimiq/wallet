@@ -1,8 +1,8 @@
 <template>
     <transition :name="swapIsOngoing ? 'minimize' : 'slide'">
-        <button v-if="activeSwap && $route.name !== 'swap'"
+        <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
             class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing, 'errored': swapIsErrored}"
-            @click="$router.push('/swap')"
+            @click="openSwap"
         >
             <div class="icon">
                 <AlertTriangleIcon v-if="swapIsErrored"/>
@@ -48,11 +48,12 @@ import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
-import { SwapHandler, Swap as GenericSwap, SwapAsset } from '../../lib/swap/SwapHandler';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
+import { getHtlc, settleHtlc } from '../../lib/OasisApi';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeSwap, setActiveSwap } = useSwapsStore();
+        const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
 
         const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
         const swapIsErrored = computed(() => !!activeSwap.value
@@ -86,10 +87,11 @@ export default defineComponent({
             });
         }
 
-        async function getClient(asset: SwapAsset) {
+        async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient();
                 case SwapAsset.BTC: return getElectrumClient();
+                case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
@@ -100,7 +102,7 @@ export default defineComponent({
             // Await Nimiq and Bitcoin consensus
             if (useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
-                await new Promise((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                await new Promise<void>((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
                     if (state === 'established') resolve();
                 }));
             }
@@ -109,7 +111,7 @@ export default defineComponent({
                 await electrum.waitForConsensusEstablished();
 
                 // If consensus was only just established, we need to wait for the first block event
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     const unsubscribe = useBtcNetworkStore().subscribe((mutation) => {
                         if (!mutation.payload.timestamp) return;
                         unsubscribe();
@@ -130,14 +132,11 @@ export default defineComponent({
                         isExpired = (contract as Contract<SwapAsset.NIM>).htlc.timeoutBlock <= height;
                         break;
                     }
-                    case SwapAsset.BTC: {
-                        isExpired = (contract as Contract<SwapAsset.BTC>).timeout <= timestamp;
+                    case SwapAsset.BTC:
+                    case SwapAsset.EUR: {
+                        isExpired = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>).timeout <= timestamp;
                         break;
                     }
-                    // case SwapAsset.EUR: {
-                    //     isExpired = (contract as Contract<SwapAsset.EUR>).timeout <= timestamp;
-                    //     break;
-                    // }
                     default: throw new Error('Invalid swap asset');
                 }
             }
@@ -164,46 +163,94 @@ export default defineComponent({
                 // Handle regular swap process
                 // Note that each step falls through to the next when finished.
                 /* eslint-disable no-fallthrough */
+                case SwapState.SIGN_SWAP: {
+                    let unsubscribe: Function;
+                    await new Promise((resolve, reject) => {
+                        unsubscribe = useSwapsStore().subscribe((mutation, state) => {
+                            if (!state.activeSwap) {
+                                reject(new Error('Swap deleted'));
+                                return;
+                            }
+
+                            if (state.activeSwap.state === SwapState.AWAIT_INCOMING) resolve(true);
+                        });
+                    }).finally(() => unsubscribe());
+                }
                 case SwapState.AWAIT_INCOMING: {
-                    const remoteFundingTx = await swapHandler.awaitIncoming(
-                        (tx) => {
-                            updateSwap({
-                                remoteFundingTx: tx,
-                            });
-                        },
-                    );
+                    const remoteFundingTx = await swapHandler.awaitIncoming((tx) => {
+                        updateSwap({
+                            remoteFundingTx: tx,
+                        });
+                    });
                     updateSwap({
                         state: SwapState.CREATE_OUTGOING,
+                        stateEnteredAt: Date.now(),
                         remoteFundingTx,
                     });
                 }
                 case SwapState.CREATE_OUTGOING: {
-                    try {
-                        const fundingTx = await swapHandler.createOutgoing(
-                            activeSwap.value!.fundingSerializedTx!,
-                            (tx) => {
-                                updateSwap({
-                                    fundingTx: tx,
-                                    fundingError: undefined,
-                                });
-                            },
-                        );
+                    if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                        // Clear stateEnteredAt timestamp as it will be set when the user clicks "I Paid"
+                        updateSwap({
+                            stateEnteredAt: undefined,
+                        });
 
-                        if (activeSwap.value!.from.asset === SwapAsset.BTC) {
-                            subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
-                        }
+                        // Wait for OASIS HTLC to be funded out-of-band
+                        const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
+                            updateSwap({
+                                fundingTx: htlc,
+                            });
+                        }) as Transaction<SwapAsset.EUR>;
+
+                        // As EUR payments are not otherwise detected by the Wallet, we use this
+                        // place to persist the relevant information in our store.
+                        addFundingData(fundingTx.hash.value, {
+                            asset: SwapAsset.EUR,
+                            bankLabel: userBank.value?.name,
+                            // bankLogo?: string,
+                            amount: fundingTx.amount,
+                            htlc: {
+                                id: fundingTx.id,
+                                timeoutTimestamp: fundingTx.expires,
+                            },
+                        });
 
                         updateSwap({
                             state: SwapState.AWAIT_SECRET,
+                            stateEnteredAt: Date.now(),
                             fundingTx,
                             fundingError: undefined,
                         });
-                    } catch (error) {
-                        updateSwap({
-                            fundingError: error.message as string,
-                        });
-                        setTimeout(processSwap, 2000); // 2 seconds
-                        return;
+                    } else {
+                        // Send HTLC funding transaction
+                        try {
+                            const fundingTx = await swapHandler.createOutgoing(
+                                activeSwap.value!.fundingSerializedTx!,
+                                (tx) => {
+                                    updateSwap({
+                                        fundingTx: tx,
+                                        fundingError: undefined,
+                                    });
+                                },
+                            );
+
+                            if (activeSwap.value!.from.asset === SwapAsset.BTC) {
+                                subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
+                            }
+
+                            updateSwap({
+                                state: SwapState.AWAIT_SECRET,
+                                stateEnteredAt: Date.now(),
+                                fundingTx,
+                                fundingError: undefined,
+                            });
+                        } catch (error) {
+                            updateSwap({
+                                fundingError: error.message as string,
+                            });
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            return;
+                        }
                     }
                 }
                 case SwapState.AWAIT_SECRET: {
@@ -214,9 +261,10 @@ export default defineComponent({
                             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             interval = window.setInterval(async () => {
                                 try {
-                                    const foo = await getSwap(activeSwap.value!.id) as Swap;
-                                    if (foo.secret) {
-                                        resolve(foo.secret);
+                                    const swap = await getSwap(activeSwap.value!.id) as Swap;
+                                    if (swap.secret) {
+                                        // TODO: Validate that this secret corresponds to the swap hash
+                                        resolve(swap.secret);
                                     }
                                 } catch (error) {
                                     // Ignore
@@ -227,6 +275,7 @@ export default defineComponent({
                     window.clearInterval(interval!);
                     updateSwap({
                         state: SwapState.SETTLE_INCOMING,
+                        stateEnteredAt: Date.now(),
                         secret,
                     });
                 }
@@ -242,6 +291,7 @@ export default defineComponent({
                         }
                         updateSwap({
                             state: SwapState.COMPLETE,
+                            stateEnteredAt: Date.now(),
                             settlementTx,
                             settlementError: undefined,
                         });
@@ -267,10 +317,24 @@ export default defineComponent({
             window.removeEventListener('beforeunload', onUnload);
         }
 
+        function openSwap() {
+            if (!activeSwap.value) return;
+            const swapPair = [activeSwap.value.from.asset, activeSwap.value.to.asset].sort();
+
+            if (swapPair[0] === SwapAsset.BTC && swapPair[1] === SwapAsset.NIM) {
+                context.root.$router.push('/swap');
+            } else if (activeSwap.value.from.asset === SwapAsset.EUR) {
+                context.root.$router.push('/buy-crypto');
+            } else {
+                throw new Error('Unhandled swap type, cannot open correct swap modal');
+            }
+        }
+
         return {
             activeSwap,
             swapIsOngoing,
             swapIsErrored,
+            openSwap,
         };
     },
     components: {

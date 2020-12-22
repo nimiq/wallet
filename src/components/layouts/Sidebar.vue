@@ -24,7 +24,19 @@
         </div>
 
         <div class="trade-actions">
-            <button class="nq-button-s inverse"
+            <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
+                <button class="nq-button-s inverse"
+                    @click="$router.push('/buy-crypto?sidebar=true')"
+                    @mousedown.prevent
+                    :disabled="$route.name !== 'root'"
+                >{{ $t('Buy') }}</button>
+                <button class="nq-button-s inverse"
+                    @click="$router.push('/trade?sidebar=true')"
+                    @mousedown.prevent
+                    :disabled="$route.name !== 'root'"
+                >{{ $t('Sell') }}</button>
+            </template>
+            <button v-else class="nq-button-s inverse"
                 @click="$router.push('/trade?sidebar=true')"
                 @mousedown.prevent
                 :disabled="$route.name !== 'root'"
@@ -67,6 +79,7 @@ import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 
 import { useAddressStore } from '../../stores/Address';
+import { useSettingsStore, Trial } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
@@ -84,6 +97,7 @@ export default defineComponent({
         }
 
         const isTestnet = Config.environment === ENV_TEST || Config.environment === ENV_DEV;
+        const isDev = Config.environment === ENV_DEV;
 
         const priceChartTimeRange = ref(TimeRange['24h']);
         function switchPriceChartTimeRange() {
@@ -103,12 +117,17 @@ export default defineComponent({
             }
         }
 
+        const { trials } = useSettingsStore();
+
         return {
             navigateTo,
             resetState,
             isTestnet,
+            isDev,
             priceChartTimeRange,
             switchPriceChartTimeRange,
+            trials,
+            Trial,
         };
     },
     components: {

@@ -5,6 +5,7 @@ export {
 
 export const FIAT_PRICE_UNAVAILABLE = null;
 export const CASHLINK_ADDRESS = 'cashlink';
+export const BANK_ADDRESS = 'bank';
 
 export const ENV_MAIN = 'main';
 export const ENV_TEST = 'test';

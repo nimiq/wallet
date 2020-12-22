@@ -14,6 +14,7 @@
     "i18n:pull": "tx pull --all --parallel --no-interactive --force --minimum-perc 95",
     "i18n:push": "tx push --source",
     "i18n:sync": "yarn i18n:extract && yarn i18n:push; yarn i18n:pull",
+    "utils:getBankList": "node ./scripts/getBankList.js",
     "release": "./release.sh",
     "test": "echo 'No tests'"
   },
@@ -22,8 +23,8 @@
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
-    "@nimiq/fastspot-api": "^1.1.1",
-    "@nimiq/hub-api": "^1.3.1",
+    "@nimiq/fastspot-api": "^1.2.1",
+    "@nimiq/hub-api": "^1.4.0-beta.2",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/network-client": "^0.6.1",
     "@nimiq/style": "^0.8.2",
@@ -42,7 +43,8 @@
     "vue-responsive-components": "^0.2.3",
     "vue-router": "^3.1.6",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",
-    "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#master"
+    "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#master",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",

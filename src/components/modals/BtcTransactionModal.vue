@@ -2,19 +2,27 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel}">
 
-            <i18n v-if="swapTransaction && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-slot:address>
+            <i18n v-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
+                <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddresses[0].substring(0, 9)
                     }}</label>
                 </template>
+
+                <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
+                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                </template>
             </i18n>
 
-            <i18n v-else-if="swapTransaction" path="Swap to {address}" :tag="false">
-                <template v-slot:address>
+            <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
+                <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddresses[0].substring(0, 9)
                     }}</label>
+                </template>
+
+                <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
+                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
                 </template>
             </i18n>
 
@@ -66,8 +74,11 @@
         <PageBody class="flex-column" :class="state">
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <div v-if="swapTransaction" class="identicon-container">
-                        <Identicon :address="peerAddresses[0]"/>
+                    <div v-if="swapData" class="identicon-container">
+                        <Identicon
+                            v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                            :address="peerAddresses[0]"/>
+                        <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
                         <SwapMediumIcon/>
                     </div>
                     <Avatar v-else :label="peerLabel || ''"/>
@@ -80,12 +91,14 @@
                     <span v-else class="label" :class="{'unlabelled': !peerLabel}">
                         {{ peerLabel || $t('Unknown') }}
                     </span>
-                    <Tooltip preferredPosition="bottom right" class="left-aligned"
-                        v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                    >
-                        <ShortAddress :address="address" slot="trigger"/>
-                        {{ address }}
-                    </Tooltip>
+                    <template v-if="peerAddresses[0] !== constants.BANK_ADDRESS">
+                        <Tooltip preferredPosition="bottom right" class="left-aligned"
+                            v-for="address in peerAddresses.slice(0, 3)" :key="address"
+                        >
+                            <ShortAddress :address="address" slot="trigger"/>
+                            {{ address }}
+                        </Tooltip>
+                    </template>
 
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
                         {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
@@ -123,8 +136,11 @@
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <div v-if="swapTransaction" class="identicon-container">
-                        <Identicon :address="peerAddresses[0]"/>
+                    <div v-if="swapData" class="identicon-container">
+                        <Identicon
+                            v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                            :address="peerAddresses[0]"/>
+                        <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
                         <SwapMediumIcon/>
                     </div>
                     <Avatar v-else :label="peerLabel || ''"/>
@@ -181,11 +197,11 @@
                             </Tooltip>
                         </div>
                     </transition>
-                    <template v-if="swapTransaction">
+                    <template v-if="swapData">
                         <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
-                        <button class="reset flex-row"
+                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction" class="reset flex-row"
                             @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
                         >
                             <div class="icon" :class="{'incoming': !isIncoming}">
@@ -194,11 +210,21 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
-                                :currency="(isIncoming ? swapInfo.in : swapInfo.out).asset.toLowerCase()"
-                                class="swapped-amount"
-                                :class="{'incoming': !isIncoming}"
+                                :currency="swapData.asset.toLowerCase()"
+                                class="swapped-amount" :class="{'incoming': !isIncoming}"
                                 value-mask/>
                         </button>
+                        <div v-else-if="swapData.asset === SwapAsset.EUR" class="flex-row">
+                            <div class="icon" :class="{'incoming': !isIncoming}">
+                                <GroundedArrowUpIcon v-if="isIncoming"/>
+                                <GroundedArrowDownIcon v-else/>
+                            </div>
+                            <FiatAmount
+                                :amount="swapData.amount / 100"
+                                :currency="swapData.asset.toLowerCase()"
+                                class="swapped-amount" :class="{'incoming': !isIncoming}"
+                                value-mask/>
+                        </div>
                     </template>
                 </div>
             </div>
@@ -258,6 +284,7 @@ import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import FastspotIcon from '../icons/FastspotIcon.vue';
+import BankIcon from '../icons/BankIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -267,7 +294,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../../lib/Constants';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
@@ -285,7 +312,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+        const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
         const {
@@ -338,15 +365,19 @@ export default defineComponent({
 
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
-
-        const swapTransaction = computed(() => {
+        const swapData = computed(() => {
             if (!swapInfo.value) return null;
 
-            const swapData = isIncoming.value ? swapInfo.value.in : swapInfo.value.out;
-            if (!swapData) return null;
+            return isIncoming.value
+                ? swapInfo.value.in || null
+                : swapInfo.value.out || null;
+        });
 
-            if (swapData.asset === SwapAsset.NIM) {
-                return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
+        const swapTransaction = computed(() => {
+            if (!swapData.value) return null;
+
+            if (swapData.value.asset === SwapAsset.NIM) {
+                return useTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
             return null;
@@ -354,17 +385,27 @@ export default defineComponent({
 
         // Peer
         const peerAddresses = computed(() => {
-            if (swapTransaction.value) {
-                return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
+                    return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+                }
+                if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
             }
+
             return (isIncoming.value
                 ? transaction.value.inputs.map((input) => input.address || input.script)
                 : outputsSent.value.map((output) => output.address || output.script)
             ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
         });
         const peerLabel = computed(() => {
-            if (swapTransaction.value) {
-                return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
+                    return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+                }
+
+                if (swapData.value.asset === SwapAsset.EUR) {
+                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
+                }
             }
 
             if (isIncoming.value) {
@@ -511,7 +552,7 @@ export default defineComponent({
             recipientLabelAddress,
             setSenderLabel,
             setRecipientLabel,
-            swapInfo,
+            swapData,
             swapTransaction,
             SwapAsset,
             showRefundButton,
@@ -539,6 +580,7 @@ export default defineComponent({
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
         FastspotIcon,
+        BankIcon,
         Identicon,
         SwapMediumIcon,
         SwapFeesTooltip,
@@ -640,11 +682,13 @@ export default defineComponent({
 }
 
 .avatar,
+.bank-icon,
 .address-info > svg {
     position: relative;
     width: 8rem;
     height: 8rem;
     font-size: 3.75rem;
+    display: block;
 }
 
 .address-info > svg {
@@ -654,7 +698,7 @@ export default defineComponent({
 .address-info .identicon-container {
     position: relative;
 
-    > svg {
+    > svg:last-child {
         position: absolute;
         right: 0;
         bottom: -1.125rem;

@@ -21,8 +21,9 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <div v-if="swapTransaction" class="identicon-container">
-            <Identicon :address="peerAddresses[0]"/>
+        <div v-if="swapData" class="identicon-container">
+            <Identicon v-if="swapData.asset === SwapAsset.NIM && swapTransaction" :address="peerAddresses[0]"/>
+            <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
             <SwapSmallIcon/>
         </div>
         <Avatar v-else :label="peerLabel || ''"/>
@@ -33,11 +34,17 @@
                 <small v-if="peerAddresses.length > 1">+{{ peerAddresses.length - 1 }}</small>
             </div>
 
-            <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
-            <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
-            <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
-            <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
-            <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+            <div class="time-and-message">
+                <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
+                <span v-else-if="state === TransactionState.PENDING">{{ $t('pending') }}</span>
+                <span v-else-if="state === TransactionState.EXPIRED">{{ $t('expired') }}</span>
+                <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
+                <span v-else-if="dateTime">{{ dateTime }}</span>
+
+                <span v-if="data" class="message">
+                    <strong class="dot">&middot;</strong>{{ data }}
+                </span>
+            </div>
 
         </div>
         <div class="amounts" :class="{isIncoming}">
@@ -80,8 +87,9 @@ import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
@@ -93,8 +101,8 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
-        const constants = { FIAT_PRICE_UNAVAILABLE };
+    setup(props, context) {
+        const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
         const {
             state: btcAddresses$,
@@ -138,33 +146,70 @@ export default defineComponent({
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         const { getSwapByTransactionHash } = useSwapsStore();
+        const swapData = computed(() => {
+            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash);
+            if (!swapInfo) return null;
+
+            return isIncoming.value
+                ? swapInfo.in || null
+                : swapInfo.out || null;
+        });
+
         const swapTransaction = computed(() => {
-            const swap = getSwapByTransactionHash.value(props.transaction.transactionHash);
-            if (!swap) return null;
+            if (!swapData.value) return null;
 
-            const swapData = isIncoming.value ? swap.in : swap.out;
-            if (!swapData) return null;
-
-            if (swapData.asset === SwapAsset.NIM) {
-                return useTransactionsStore().state.transactions[swapData.transactionHash] || null;
+            if (swapData.value.asset === SwapAsset.NIM) {
+                return useTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
             return null;
         });
 
+        // Data
+        const data = computed(() => {
+            if (swapData.value) {
+                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
+                    toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
+                }) as string;
+            }
+
+            // if ('hashRoot' in props.transaction.data) {
+            //     return context.root.$t('HTLC Creation');
+            // }
+            // if ('creator' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Refund');
+            // }
+            // if ('hashRoot' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Settlement');
+            // }
+
+            return '';
+        });
+
         // Peer
         const peerAddresses = computed(() => {
-            if (swapTransaction.value) {
-                return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
+                    return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+                }
+                if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
             }
+
             return (isIncoming.value
                 ? props.transaction.inputs.map((input) => input.address || input.script)
                 : outputsSent.value.map((output) => output.address || output.script)
             ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
         });
         const peerLabel = computed(() => {
-            if (swapTransaction.value) {
-                return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
+                    return useAddressStore().state.addressInfos[peerAddresses.value[0]].label;
+                }
+
+                if (swapData.value.asset === SwapAsset.EUR) {
+                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
+                }
             }
 
             if (isIncoming.value) {
@@ -232,6 +277,7 @@ export default defineComponent({
             dateDay,
             dateMonth,
             dateTime,
+            data,
             amountReceived,
             amountSent,
             fiatCurrency,
@@ -239,6 +285,8 @@ export default defineComponent({
             isIncoming,
             peerAddresses,
             peerLabel,
+            SwapAsset,
+            swapData,
             swapTransaction,
         };
     },
@@ -252,6 +300,7 @@ export default defineComponent({
         FiatAmount,
         // HistoricValueIcon,
         Identicon,
+        BankIcon,
         SwapSmallIcon,
     },
 });
@@ -327,7 +376,7 @@ svg {
     .identicon-container {
         position: relative;
 
-        > svg {
+        > svg:last-child {
             position: absolute;
             right: -0.125rem;
             bottom: -0.375rem;
@@ -340,10 +389,15 @@ svg {
             border: 0.375rem solid white;
         }
 
-        .identicon {
+        .identicon,
+        svg.bank-icon {
             width: 6rem;
             height: 6rem;
             flex-shrink: 0;
+        }
+
+        svg.bank-icon {
+            padding: 0.375rem;
         }
     }
 
@@ -374,10 +428,17 @@ svg {
             }
         }
 
-        .time {
+        .time-and-message {
             font-size: var(--small-size);
-            opacity: .5;
             font-weight: 600;
+            opacity: .5;
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+            .dot {
+                margin: 0 0.875rem;
+                opacity: 0.6;
+            }
         }
     }
 

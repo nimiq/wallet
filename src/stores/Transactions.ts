@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { init as initFastspotApi, getContract, SwapAsset } from '@nimiq/fastspot-api';
+import Config from 'config';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -74,6 +75,7 @@ export const useTransactionsStore = createStore({
                             asset: SwapAsset.NIM,
                             transactionHash: plain.transactionHash,
                             htlc: {
+                                address: plain.recipient,
                                 refundAddress: fundingData.sender,
                                 redeemAddress: fundingData.recipient,
                                 timeoutBlockHeight: fundingData.timeout,
@@ -127,6 +129,18 @@ export const useTransactionsStore = createStore({
                         useSwapsStore().addSettlementData(settlementData.hashRoot, {
                             asset: SwapAsset.NIM,
                             transactionHash: plain.transactionHash,
+                        });
+
+                        // Check this swap with the Fastspot API to detect if this was a EUR swap
+                        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                        getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
+                            if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                useSwapsStore().addFundingData(settlementData.hashRoot, {
+                                    asset: SwapAsset.EUR,
+                                    amount: contractWithEstimate.from.amount,
+                                    // We cannot get bank info or EUR HTLC details from this.
+                                });
+                            }
                         });
                     }
                 }

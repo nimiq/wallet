@@ -1,18 +1,23 @@
 <template>
     <button v-on="$listeners" class="address-button reset flex-row">
         <div class="identicon-wrapper">
-            <Identicon :address="addressInfo.address"/>
+            <BitcoinIcon v-if="addressInfo.type === CryptoCurrency.BTC"/>
+            <Identicon v-else :address="addressInfo.address"/>
             <VestingIcon v-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
         <div v-if="addressInfo.balance !== null" class="balances">
             <span class="crypto-balance">
                 <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
-                <Amount :amount="addressInfo.balance" value-mask/>
+                <Amount
+                    :amount="addressInfo.balance"
+                    :currency="currentCurrency"
+                    value-mask/>
             </span>
             <FiatConvertedAmount
                 class="fiat-balance"
                 :amount="addressInfo.balance"
+                :currency="currentCurrency"
                 value-mask/>
         </div>
         <div v-else class="balances">???</div>
@@ -21,23 +26,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import VestingIcon from './icons/VestingIcon.vue';
 import { AddressInfo, AddressType } from '../stores/Address';
+import { CryptoCurrency } from '../lib/Constants';
+import BitcoinIcon from './icons/BitcoinIcon.vue';
 
 export default defineComponent({
     props: {
         addressInfo: {
-            type: Object as () => AddressInfo,
+            type: Object as () => AddressInfo |
+                Pick<AddressInfo, 'address' | 'label' | 'balance'> & { type: CryptoCurrency.BTC },
             required: true,
         },
     },
-    setup() {
+    setup(props) {
+        const currentCurrency = computed(() =>
+            props.addressInfo.type === CryptoCurrency.BTC ? CryptoCurrency.BTC : CryptoCurrency.NIM,
+        );
+
         return {
             AddressType,
+            CryptoCurrency,
+            currentCurrency,
         };
     },
     components: {
@@ -46,6 +60,7 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         VestingIcon,
+        BitcoinIcon,
     },
 });
 </script>
@@ -58,17 +73,22 @@ export default defineComponent({
     border-radius: 0.75rem;
 }
 
-.identicon {
+.identicon,
+.bitcoin {
     width: 5.75rem !important;
     height: 5.75rem;
     flex-shrink: 0;
     margin: -0.375rem 0 -0.375rem;
 }
 
+.bitcoin {
+    color: var(--bitcoin-orange);
+}
+
 .identicon-wrapper {
     position: relative;
 
-    > svg {
+    > svg:not(.bitcoin) {
         position: absolute;
         right: -1rem;
         bottom: -0.5rem;
@@ -84,6 +104,7 @@ export default defineComponent({
     font-weight: 600;
     margin: 0 2rem;
     flex-grow: 1;
+    text-align: left;
 }
 
 .balances {

@@ -27,6 +27,10 @@ export default defineComponent({
             type: Number,
             default: 8,
         },
+        max: {
+            type: Number,
+            required: false,
+        },
         placeholder: {
             type: String,
             default: '0',
@@ -96,14 +100,23 @@ export default defineComponent({
         }
 
         function updateValue(value: string) {
-            liveValue.value = formatValue(value.replace(/,/, '.'));
-            valueInLuna.value = Number(liveValue.value || 0) * 10 ** props.decimals;
+            let newValue = formatValue(value.replace(/,/, '.'));
+            let newValueInLuna = Number(newValue || 0) * 10 ** props.decimals;
+
+            if (props.max && props.max < newValueInLuna) {
+                newValueInLuna = props.max;
+                newValue = String(newValueInLuna / 10 ** props.decimals);
+            }
+
+            liveValue.value = newValue;
+            valueInLuna.value = newValueInLuna;
         }
 
-        function onInput(event: InputEvent) {
-            updateValue((event.target as HTMLInputElement).value);
+        function onInput(event: { target: EventTarget | null }) {
+            const target = event.target as HTMLInputElement;
 
-            (event.target as HTMLInputElement).value = liveValue.value;
+            updateValue(target.value);
+            target.value = liveValue.value;
 
             if (lastEmittedValue.value !== valueInLuna.value) {
                 context.emit('input', valueInLuna.value);
@@ -113,7 +126,15 @@ export default defineComponent({
 
         watch(() => props.value, (newValue: number | undefined) => {
             if (newValue === valueInLuna.value) return;
-            updateValue(newValue ? (newValue / 10 ** props.decimals).toString() : '');
+            updateValue(newValue ? String(newValue / 10 ** props.decimals) : '');
+        });
+
+        watch(() => props.max, (newMax: number | undefined) => {
+            // Disabling a max value, or setting it higher than the current value, has no effect on
+            // the current value, but will take effect only on the next input.
+            if (!newMax || newMax >= valueInLuna.value) return;
+
+            onInput({ target: context.refs.$input as EventTarget });
         });
 
         return {

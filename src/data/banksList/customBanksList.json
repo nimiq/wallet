@@ -9,5 +9,16 @@
                 "outbound": "sepa-instant-full-support"
             }
         }
+    },
+    {
+        "BIC": "NTSBDEB1",
+        "name": "N26 Bank Gmbh",
+        "country": "DE",
+        "support": {
+            "sepa": {
+                "inbound": "sepa-instant-partial-full",
+                "outbound": "sepa-instant-no-support"
+            }
+        }
     }
 ]

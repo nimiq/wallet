@@ -351,12 +351,11 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
-const OASIS_FEE_PERCENTAGE = 0.01; // 1%
 
 function calculateOasisFee(amount: number) {
     // OASIS rounds 0.5 down
     // https://stackoverflow.com/a/35827227
-    return -Math.round(-amount * OASIS_FEE_PERCENTAGE);
+    return -Math.round(-amount * Config.oasis.feePercentage);
 }
 
 export default defineComponent({

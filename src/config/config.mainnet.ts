@@ -14,6 +14,7 @@ export default {
     },
 
     oasis: {
-        apiEndpoint: 'https://api.nimiqoasis.com/v1',
+        apiEndpoint: 'https://oasis.ten31.com/v1',
+        feePercentage: 0, // 0% - Set to 0.01 for 1%
     },
 };

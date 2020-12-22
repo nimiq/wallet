@@ -192,6 +192,10 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr ""
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:34
+msgid "As soon as your crypto is available, your Euro is processed to the seller. In case of a problem or a time-out, your payment will be returned to your bank account."
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
@@ -204,7 +208,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:97
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -717,11 +721,11 @@ msgstr ""
 msgid "HTLC Settlement"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:73
+#: src/components/swap/SwapSepaFundingInstructions.vue:82
 msgid "I paid"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:33
+#: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
 msgstr ""
 
@@ -792,7 +796,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:384
+#: src/components/modals/BuyCryptoModal.vue:383
 #: src/components/swap/SwapModal.vue:274
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -986,7 +990,7 @@ msgstr ""
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:61
+#: src/components/swap/SwapSepaFundingInstructions.vue:70
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr ""
 
@@ -1033,11 +1037,11 @@ msgstr ""
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:16
+#: src/components/swap/SwapSepaFundingInstructions.vue:17
 msgid "Recipient"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:44
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
 msgid "Reference"
 msgstr ""
 
@@ -1050,7 +1054,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:63
+#: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
@@ -1248,7 +1252,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:45
+#: src/components/swap/SwapSepaFundingInstructions.vue:54
 msgid "Spacing optional"
 msgstr ""
 
@@ -1307,22 +1311,26 @@ msgstr ""
 msgid "Tell us here"
 msgstr ""
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:31
+msgid "TEN31 Bank provides a bank account to lock your payment."
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:79
+#: src/components/swap/SwapSepaFundingInstructions.vue:88
 msgid ""
 "The bank is processing your transaction.\n"
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:760
+#: src/components/modals/BuyCryptoModal.vue:759
 #: src/components/swap/SwapModal.vue:636
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:765
+#: src/components/modals/BuyCryptoModal.vue:764
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1397,7 +1405,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:82
+#: src/components/swap/SwapSepaFundingInstructions.vue:91
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
@@ -1583,7 +1591,7 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:53
+#: src/components/swap/SwapSepaFundingInstructions.vue:62
 msgid "Your transaction must be SEPA Instant"
 msgstr ""
 

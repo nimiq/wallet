@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened || swapAnimationOverlayOpened"
+        :showOverlay="!!swap || addressListOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <div class="page flex-column main-page">
@@ -75,9 +75,6 @@
                                 {{ $t('They will be increased gradually.') }}
                             </p>
                         </Tooltip>
-                        <button class="pill flex-row nq-button-s" @click="swapAnimationOverlayOpened = true">
-                            svg test
-                        </button>
                     </div>
                 </div>
             </PageHeader>
@@ -174,39 +171,6 @@
                     :switchSides="swap.from.asset === SwapAsset.BTC"
                     @finished="finishSwap"
                 />
-            </PageBody>
-            <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
-                <MinimizeIcon/>
-            </button>
-        </div>
-
-        <div v-else-if="swapAnimationOverlayOpened" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem;" class="flex-column">
-                <SwapAnimation
-                    :swapState="SwapState.SIGN_SWAP"
-                    :fromAsset="SwapAsset.EUR"
-                    :fromAmount="241"
-                    fromAddress="H6FZQVVJUMFA4MUMWBUNF6J4H"
-                    :toAsset="SwapAsset.BTC"
-                    :toAmount="34e3"
-                    toAddress="tb1q9p4zd0t9c6vvtkh929dxyfek3dns8fyyv90tygvcsfdawrhxephs28y0mp"
-                    :nimAddress="activeAddressInfo.address"
-                    :error="''"
-                    :switchSides="false"
-                    :manualFunding="true"
-                    @finished="finishSwap"
-                >
-                    <SwapSepaFundingInstructions
-                        slot="manual-funding-instructions"
-                        :amount="345"
-                        :name="'TEN31 Bank'"
-                        :iban="'DE75512108001245126199'"
-                        :bic="'WEGBDE77'"
-                        :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
-                        :stateEnteredAt="Date.now()"
-                        @cancel="() => {}"
-                    />
-                </SwapAnimation>
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
                 <MinimizeIcon/>
@@ -828,8 +792,6 @@ export default defineComponent({
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
-            } else if (swapAnimationOverlayOpened.value === true) {
-                swapAnimationOverlayOpened.value = false;
             } else {
                 context.root.$router.back();
             }
@@ -1176,9 +1138,6 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
-        // TEMP
-        const swapAnimationOverlayOpened = ref(false);
-
         return {
             onClose,
             satsPerNim,
@@ -1220,7 +1179,6 @@ export default defineComponent({
             addressListOverlayOpened,
             onAddressSelected,
             isMainnet,
-            swapAnimationOverlayOpened,
             activeAddressInfo,
         };
     },

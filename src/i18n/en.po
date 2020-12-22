@@ -309,12 +309,12 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:186
-#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:141
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:197
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -350,7 +350,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:261
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:217
+#: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
 msgstr ""
 
@@ -374,9 +374,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:137
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:154
+#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:151
 msgid "Confirm"
 msgstr ""
 
@@ -793,7 +793,7 @@ msgid "Learn more here"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:384
-#: src/components/swap/SwapModal.vue:310
+#: src/components/swap/SwapModal.vue:274
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -1318,7 +1318,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:760
-#: src/components/swap/SwapModal.vue:672
+#: src/components/swap/SwapModal.vue:636
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 

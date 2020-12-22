@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Daniel, 2020\n"
-"Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/107022/ko/)\n"
+"Language-Team: Korean (https://www.transifex.com/nimiq-foundation/teams/110181/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -19,8 +19,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:221
-#: src/components/modals/TransactionModal.vue:239
+#: src/components/modals/BtcTransactionModal.vue:244
+#: src/components/modals/TransactionModal.vue:263
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}개의 승인 | {count}개의 승인"
 
@@ -28,28 +28,45 @@ msgstr "{count}개의 승인 | {count}개의 승인"
 msgid "{count} Peer | {count} Peers"
 msgstr "{count}개의 피어 | {count}개의 피어"
 
+#: src/components/layouts/AddressOverview.vue:100
 #: src/components/layouts/AddressOverview.vue:15
-#: src/components/layouts/AddressOverview.vue:87
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}개의 처리 중인 캐시링크 | {count}개의 처리 중인 캐시링크"
 
-#: src/components/modals/TransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:265
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:21
-msgid "{perc}% of exchange value."
+#: src/components/swap/SwapFeesTooltip.vue:22
+#: src/components/swap/SwapFeesTooltip.vue:39
+msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:106
-#: src/components/modals/BtcTransactionModal.vue:121
-#: src/components/modals/BtcTransactionModal.vue:147
-#: src/components/modals/BtcTransactionModal.vue:91
+#: src/components/modals/BuyCryptoModal.vue:94
+msgid "{value} remaining"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:46
+msgid "+ {count} more | + {count} more"
+msgstr ""
+
+#: src/components/modals/BtcTransactionModal.vue:104
+#: src/components/modals/BtcTransactionModal.vue:119
+#: src/components/modals/BtcTransactionModal.vue:134
+#: src/components/modals/BtcTransactionModal.vue:163
 msgid "+{n} more"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:28
+msgid "1"
 msgstr ""
 
 #: src/components/FeeSelector.vue:8
 msgid "15m"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:29
+msgid "2"
 msgstr ""
 
 #: src/components/FeeSelector.vue:7
@@ -60,11 +77,20 @@ msgstr ""
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 채팅 & 전화 지원"
 
+#: src/components/modals/BuyCryptoModal.vue:30
+msgid "3"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:90
+#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+msgid "30-day Limit"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:230
+#: src/components/layouts/Settings.vue:267
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -84,7 +110,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "계정"
 
-#: src/components/layouts/AccountOverview.vue:80
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Activate"
 msgstr ""
 
@@ -92,7 +118,11 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/BtcCopiedAddress.vue:13
+#: src/components/layouts/Settings.vue:131
+msgid "Add"
+msgstr ""
+
+#: src/components/BtcCopiedAddress.vue:14
 msgid ""
 "Add a label to quickly find the transaction in your history, once it was "
 "sent."
@@ -102,7 +132,7 @@ msgstr ""
 msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:139
+#: src/components/modals/SendModal.vue:141
 msgid "Add a public message..."
 msgstr "공개 메시지 추가..."
 
@@ -110,9 +140,13 @@ msgstr "공개 메시지 추가..."
 msgid "Add account"
 msgstr "계정 추가"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:25
 msgid "Add address"
 msgstr "주소 추가"
+
+#: src/components/layouts/Settings.vue:127
+msgid "Add an existing vesting contract to your wallet."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -120,8 +154,8 @@ msgid ""
 "to your account"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:100
-#: src/components/modals/TransactionModal.vue:149
+#: src/components/modals/TransactionModal.vue:109
+#: src/components/modals/TransactionModal.vue:161
 msgid "Add contact"
 msgstr "연락처 추가"
 
@@ -133,6 +167,10 @@ msgstr "주소를 사용할 수 없나요?"
 msgid "Addresses"
 msgstr "주소"
 
+#: src/components/layouts/Settings.vue:121
+msgid "Advanced"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:101
 #: src/components/layouts/Settings.vue:41
 msgid "all"
@@ -142,7 +180,7 @@ msgstr "전체"
 msgid "All in one easy place."
 msgstr "모든 것을 딱 한 곳에서."
 
-#: src/components/layouts/AccountOverview.vue:87
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -155,8 +193,8 @@ msgid ""
 "controlling version."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:33
-#: src/components/modals/BtcSendModal.vue:35
+#: src/components/modals/BtcReceiveModal.vue:35
+#: src/components/modals/BtcSendModal.vue:34
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -174,39 +212,57 @@ msgstr "그리고 {BTC}, 암호화폐의 금본위이자 가치의 견고한 저
 msgid "Android and iOS App"
 msgstr "안드로이드와 iOS 앱"
 
-#: src/components/swap/SwapFeesTooltip.vue:10
+#: src/components/swap/SwapSepaFundingInstructions.vue:34
+msgid ""
+"As soon as your crypto is available, your Euro is processed to the seller. "
+"In case of a problem or a time-out, your payment will be returned to your "
+"bank account."
+msgstr ""
+
+#: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:202
-msgid "Awaiting incoming HTLC..."
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:246
-msgid "Awaiting publishing of secret..."
+#: src/components/swap/SwapAnimation.vue:163
+msgid "Awaiting swap secret"
 msgstr ""
 
 #: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "주소로 돌아가기"
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:97
+msgid "Back to Bank Details"
+msgstr ""
+
 #: src/components/layouts/AccountOverview.vue:25
 msgid "Backup"
 msgstr "백업"
 
-#: src/components/BalanceDistribution.vue:59
-#: src/components/layouts/AccountOverview.vue:62
-#: src/components/layouts/AddressOverview.vue:55
+#: src/components/BtcTransactionListItem.vue:211
+#: src/components/modals/BtcTransactionModal.vue:407
+#: src/components/modals/TransactionModal.vue:491
+#: src/components/TransactionListItem.vue:204
+msgid "Bank Account"
+msgstr ""
+
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
+msgid "BIC works, too."
+msgstr ""
+
+#: src/components/BalanceDistribution.vue:68
+#: src/components/layouts/AccountOverview.vue:61
+#: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
 #: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:113
-#: src/components/modals/BtcTransactionModal.vue:97
-#: src/components/modals/TransactionModal.vue:436
-#: src/components/TransactionListItem.vue:175
+#: src/components/modals/BtcTransactionModal.vue:110
+#: src/components/modals/BtcTransactionModal.vue:126
+#: src/components/modals/TransactionModal.vue:487
+#: src/components/TransactionListItem.vue:200
 msgid "Bitcoin"
 msgstr "비트코인"
 
-#: src/components/modals/BtcSendModal.vue:118
+#: src/components/modals/BtcSendModal.vue:126
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -216,13 +272,15 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:218
-#: src/components/modals/TransactionModal.vue:236
+#: src/components/modals/BtcTransactionModal.vue:241
+#: src/components/modals/TransactionModal.vue:260
 msgid "Block #{height}"
 msgstr "블록 #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:228
-#: src/components/modals/TransactionModal.vue:250
+#: src/components/modals/BtcTransactionModal.vue:251
+#: src/components/modals/TransactionModal.vue:272
+#: src/components/swap/SwapAnimation.vue:148
+#: src/components/swap/SwapAnimation.vue:80
 msgid "Block explorer"
 msgstr "블록 탐색기"
 
@@ -234,11 +292,15 @@ msgstr "블록 높이"
 msgid "Browser"
 msgstr "브라우저"
 
-#: src/components/swap/SwapFeesTooltip.vue:6
-msgid "BTC network fees"
+#: src/components/swap/SwapFeesTooltip.vue:8
+msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:31
+#: src/components/layouts/Sidebar.vue:32
+msgid "Buy"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:43
 msgid "Buy & Sell"
 msgstr "구매 & 판매"
 
@@ -252,35 +314,57 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr "당신의 지갑으로 거래하세요."
 
+#: src/components/modals/BuyCryptoModal.vue:178
+#: src/components/modals/BuyCryptoModal.vue:189
+#: src/components/modals/BuyCryptoModal.vue:198
+#: src/components/modals/BuyCryptoModal.vue:40
+msgid "Buy Crypto"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:20
+msgid "Buy Crypto with Fiat"
+msgstr ""
+
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
 msgstr "NIM 구매"
 
-#: src/components/modals/SendModal.vue:165
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
+msgid "Buy on on exchange"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:167
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/swap/SwapModal.vue:189
-msgid "Cancel"
+#: src/components/modals/BuyCryptoModal.vue:186
+#: src/components/swap/SwapModal.vue:141
+msgid ""
+"By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/swap/SwapModal.vue:150
+msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
-#: src/components/modals/TransactionModal.vue:442
+#: src/components/modals/TransactionModal.vue:498
 #: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:181
+#: src/components/TransactionListItem.vue:211
 msgid "Cashlink"
 msgstr "캐시링크"
 
-#: src/components/modals/TransactionModal.vue:27
+#: src/components/modals/TransactionModal.vue:35
 msgid "Cashlink from {address}"
 msgstr "{address}로부터의 캐시링크"
 
-#: src/components/modals/TransactionModal.vue:35
+#: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink to {address}"
 msgstr "{address}로의 캐시링크"
 
@@ -296,19 +380,24 @@ msgstr "언어 설정을 바꿉니다."
 msgid "Choose a Recipient"
 msgstr "받는 사람을 고르세요"
 
-#: src/components/modals/SendModal.vue:155
+#: src/components/modals/BuyCryptoModal.vue:261
+#: src/components/modals/SendModal.vue:157
+#: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:143
 msgid "Clear"
 msgstr "지우기"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:137
 msgid "Clear Cache"
 msgstr "캐시 비우기"
 
-#: src/components/layouts/AccountOverview.vue:76
+#: src/components/swap/SwapNotification.vue:24
+msgid "Click for more information"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "곧 출시"
@@ -317,11 +406,12 @@ msgstr "곧 출시"
 msgid "Coming soon"
 msgstr "곧 출시"
 
-#: src/components/swap/SwapModal.vue:150
+#: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:151
 msgid "Confirm"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:45
+#: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
 msgstr "축하합니다"
@@ -342,9 +432,17 @@ msgstr "연결됨"
 msgid "connecting"
 msgstr "연결 중"
 
+#: src/components/BtcTransactionList.vue:45
+msgid "Connection lost"
+msgstr ""
+
 #: src/components/NetworkStats.vue:4
 msgid "Consensus"
 msgstr "합의"
+
+#: src/components/BankCheckInput.vue:42
+msgid "Contact your bank to find out if your account is eligible."
+msgstr ""
 
 #: src/components/ContactShortcuts.vue:9
 msgid "Contacts"
@@ -373,7 +471,7 @@ msgid ""
 " await."
 msgstr "새로운 계정을 만들고 자금을 이체하세요. 새로운 기능과 가능성이 기다립니다."
 
-#: src/components/modals/BtcReceiveModal.vue:39
+#: src/components/modals/BtcReceiveModal.vue:43
 msgid "Create a new single-use address."
 msgstr ""
 
@@ -381,32 +479,32 @@ msgstr ""
 msgid "Create backup"
 msgstr "백업 생성"
 
-#: src/components/modals/BtcReceiveModal.vue:75
+#: src/components/modals/BtcReceiveModal.vue:81
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
 msgstr "지불 링크 생성"
 
-#: src/components/modals/BtcReceiveModal.vue:221
+#: src/components/modals/BtcReceiveModal.vue:195
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:215
+#: src/components/modals/BtcReceiveModal.vue:189
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:209
+#: src/components/modals/BtcReceiveModal.vue:183
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:203
+#: src/components/modals/BtcReceiveModal.vue:177
 msgid "Created {count} second ago | Created {count} seconds ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:200
+#: src/components/modals/BtcReceiveModal.vue:174
 msgid "Created just now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:227
+#: src/components/modals/BtcReceiveModal.vue:201
 msgid "Created some time ago"
 msgstr ""
 
@@ -414,29 +512,24 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr "신용 카드 허용"
 
-#: src/components/swap/SwapModal.vue:30 src/components/swap/SwapModal.vue:48
-msgid "Daily Limit"
-msgstr ""
-
-#: src/components/layouts/Settings.vue:121
-msgid "Developer"
-msgstr "개발자"
-
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:179
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "면책 조항"
 
-#: src/components/swap/SwapModal.vue:169
-#: src/components/swap/SwapNotification.vue:20
-msgid "Don't close your Wallet"
+#: src/components/swap/SwapAnimation.vue:172
+msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:90
+#: src/components/swap/SwapNotification.vue:27
+msgid "Don't close your wallet!"
+msgstr ""
+
+#: src/components/modals/BtcReceiveModal.vue:96
 msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
-#: src/components/ContactBook.vue:49 src/components/swap/SwapModal.vue:278
+#: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "완료"
 
@@ -448,19 +541,25 @@ msgstr "다운로드 해 안전하게 보관하세요. 공유하지도, 잃어�
 msgid "Download your Login File"
 msgstr "로그인 파일 다운로드"
 
-#: src/components/modals/BtcSendModal.vue:111
+#: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:58
+#: src/components/swap/SwapModal.vue:74
 msgid "During early access, these limits apply."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:24
+#: src/components/modals/BuyCryptoModal.vue:102
+msgid ""
+"During early access, these limits apply. They will be increased gradually."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:18
+#: src/components/swap/SwapModal.vue:46
 msgid "Early Access"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:26
+#: src/components/swap/SwapModal.vue:48
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -484,8 +583,8 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
-#: src/components/modals/BtcSendModal.vue:467
-#: src/components/modals/SendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:435
+#: src/components/modals/SendModal.vue:502
 msgid "Edit transaction"
 msgstr "거래 수정"
 
@@ -493,34 +592,49 @@ msgstr "거래 수정"
 msgid "Enter address"
 msgstr "주소 입력"
 
-#: src/components/modals/BtcSendModal.vue:16
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
+msgid "Enter bank name..."
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:15
 msgid "Enter recipient address..."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:151
+msgid "Enter the password of the trial you want to enable, then press enter."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:177
+msgid "Error:"
 msgstr ""
 
 #: src/components/NetworkStats.vue:47
 msgid "established"
 msgstr "접속됨"
 
-#: src/components/swap/SwapFeesTooltip.vue:17
-msgid "Exchange fee"
+#: src/components/modals/BtcTransactionModal.vue:13
+#: src/components/modals/BtcTransactionModal.vue:25
+#: src/components/modals/TransactionModal.vue:13
+#: src/components/modals/TransactionModal.vue:25
+msgid "Euro"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:38
-#: src/components/TransactionListItem.vue:37
+#: src/components/BtcTransactionListItem.vue:40
+#: src/components/TransactionListItem.vue:38
 msgid "expired"
 msgstr "만료"
 
-#: src/components/modals/BtcTransactionModal.vue:51
-#: src/components/modals/TransactionModal.vue:74
+#: src/components/modals/BtcTransactionModal.vue:59
+#: src/components/modals/TransactionModal.vue:82
 msgid "Expired"
 msgstr "만료"
 
-#: src/components/modals/SendModal.vue:357
+#: src/components/modals/SendModal.vue:358
 msgid "express"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:51
-#: src/components/modals/TransactionModal.vue:74
+#: src/components/modals/BtcTransactionModal.vue:59
+#: src/components/modals/TransactionModal.vue:82
 msgid "Failed"
 msgstr "실패"
 
@@ -544,34 +658,44 @@ msgstr "수도꼭지 사용 불가"
 msgid "Faucet unavailable (wrong network)"
 msgstr "수도꼭지 사용 불가(잘못된 네트워크)"
 
-#: src/components/modals/SendModal.vue:121
+#: src/components/modals/SendModal.vue:123
 msgid "fee"
 msgstr "수수료"
 
-#: src/components/BtcTransactionList.vue:36
+#: src/components/modals/BuyCryptoModal.vue:69
+#: src/components/swap/SwapModal.vue:40
+msgid "fees"
+msgstr ""
+
+#: src/components/BtcTransactionList.vue:38
 #: src/components/TransactionList.vue:48
 msgid "Fetching"
 msgstr "불러 오는 중"
 
-#: src/components/BtcTransactionListItem.vue:51
-#: src/components/modals/TransactionModal.vue:185
-#: src/components/TransactionListItem.vue:52
+#: src/components/BtcTransactionListItem.vue:58
+#: src/components/modals/TransactionModal.vue:202
+#: src/components/TransactionListItem.vue:53
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:253
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
+
+#: src/components/modals/BuyCryptoModal.vue:30
+msgid "Finalize the swap by bank transfer."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:164
+#: src/components/swap/SwapAnimation.vue:165
+msgid "Finalizing swap"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
 msgstr "초심자용"
 
-#: src/components/modals/BetaNoticeModal.vue:22
-msgid "forum thread"
-msgstr "포럼 스레드"
-
-#: src/components/modals/SendModal.vue:347
+#: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr ""
 
@@ -592,11 +716,10 @@ msgstr "NIM 얻기"
 msgid "Get NIM and BTC"
 msgstr "NIM과 BTC 얻기"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:31
 msgid "Got feedback? Found a bug?"
 msgstr "피드백이 있나요? 버그를 찾으셨나요?"
 
-#: src/components/modals/BetaNoticeModal.vue:25
 #: src/components/modals/BtcActivationModal.vue:22
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
@@ -616,30 +739,33 @@ msgid ""
 "and shared login information."
 msgstr "이제 하나의 비밀번호와 공유 로그인 정보로 여러 주소를 쉽고 편리하게 다룰 수 있습니다."
 
-#: src/components/modals/BtcTransactionModal.vue:180
-#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/BtcTransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:213
 msgid "Historic value"
 msgstr "당시 가치"
 
-#: src/components/modals/TransactionModal.vue:396
-#: src/components/TransactionListItem.vue:138
+#: src/components/modals/TransactionModal.vue:440
+#: src/components/TransactionListItem.vue:159
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:399
-#: src/components/TransactionListItem.vue:141
+#: src/components/modals/TransactionModal.vue:443
+#: src/components/TransactionListItem.vue:162
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:402
-#: src/components/TransactionListItem.vue:144
+#: src/components/modals/TransactionModal.vue:446
+#: src/components/TransactionListItem.vue:165
 msgid "HTLC Settlement"
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:18
-msgid ""
-"If you find a bug or have feedback, please share it in this {forum-thread}."
-msgstr "버그를 찾거나 의견이 있으시면 {forum-thread}에 공유해 주세요."
+#: src/components/swap/SwapSepaFundingInstructions.vue:82
+msgid "I paid"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:42
+msgid "IBAN"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -662,23 +788,19 @@ msgstr "개선된 접근성"
 msgid "In cooperation with"
 msgstr "협력 기관"
 
-#: src/components/swap/SwapModal.vue:204
-msgid "Incoming HTLC verified!"
-msgstr ""
-
-#: src/components/modals/BtcSendModal.vue:107
+#: src/components/modals/BtcSendModal.vue:108
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:91
-#: src/components/modals/SendModal.vue:129
+#: src/components/modals/BtcSendModal.vue:90
+#: src/components/modals/SendModal.vue:131
 msgid "Insufficient balance."
 msgstr "잔고 부족."
 
-#: src/components/BtcTransactionListItem.vue:39
-#: src/components/TransactionListItem.vue:38
+#: src/components/BtcTransactionListItem.vue:41
+#: src/components/TransactionListItem.vue:39
 msgid "invalid"
 msgstr "올바르지 않음"
 
@@ -686,16 +808,20 @@ msgstr "올바르지 않음"
 msgid "Invite a friend with a"
 msgstr "초대할 친구에게 보낼"
 
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
+msgid "Is your bank eligible?"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:66
 msgid "It is fast, safe and makes you truly independent."
 msgstr "빠르고 안전하며 진정한 독립성을 제공합니다."
 
-#: src/components/swap/SwapModal.vue:172
+#: src/components/swap/SwapNotification.vue:30
 msgid "It's safe to close your wallet now"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:23
-msgid "It's safe to close your Wallet now"
+#: src/components/BtcCopiedAddress.vue:9
+msgid "Label the sender"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:17
@@ -711,17 +837,48 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/layouts/AddressOverview.vue:122
+#: src/components/modals/BuyCryptoModal.vue:383
+#: src/components/swap/SwapModal.vue:274
+msgid "Ledger accounts do not support Swaps yet, check back soon!"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:135
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "시작합니다! 당신의 Nimiq 계정을 만드세요:"
+
+#: src/components/modals/BuyCryptoModal.vue:34
+msgid "Let's go"
+msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
 msgstr "경량 노드"
 
+#: src/components/modals/BtcReceiveModal.vue:46
+msgid "Limit of copied addresses reached."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:99
+msgid "Limits are tied to accounts and IBANs."
+msgstr ""
+
+#: src/components/modals/TransactionModal.vue:181
+msgid "Link not available in this browser"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:54
 msgid "Load file"
 msgstr "파일 불러오기"
+
+#: src/components/modals/BuyCryptoModal.vue:92
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+msgid "loading..."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:158
+#: src/components/swap/SwapAnimation.vue:161
+msgid "Locking up {asset}"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:14
 msgid ""
@@ -739,12 +896,10 @@ msgstr "로그아웃"
 msgid "lost"
 msgstr "끊김"
 
-#: src/components/swap/SwapModal.vue:41
+#: src/components/modals/BuyCryptoModal.vue:75
+#: src/components/modals/BuyCryptoModal.vue:80
+#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
 msgid "Max."
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:35 src/components/swap/SwapModal.vue:53
-msgid "Monthly Limit"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
@@ -759,11 +914,11 @@ msgstr ""
 "여러 개의 주소와 로그인 파일은\n"
 "새로운 계정에서만 지원됩니다."
 
-#: src/components/modals/SendModal.vue:53
+#: src/components/modals/SendModal.vue:54
 msgid "Name this contact..."
 msgstr "연락처 이름 붙이기..."
 
-#: src/components/modals/BtcSendModal.vue:11
+#: src/components/modals/BtcSendModal.vue:10
 msgid "Name this recipient..."
 msgstr ""
 
@@ -771,16 +926,16 @@ msgstr ""
 msgid "Name your contact"
 msgstr "연락처에 이름을 붙여주세요"
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:56
 msgid "Network"
 msgstr "네트워크"
 
-#: src/components/modals/BtcSendModal.vue:104
+#: src/components/modals/BtcSendModal.vue:105
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:13
-msgid "NIM network fees"
+#: src/components/swap/SwapFeesTooltip.vue:29
+msgid "NIM network fee"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:28
@@ -806,11 +961,11 @@ msgid ""
 "from your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:120
+#: src/components/modals/BtcSendModal.vue:128
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:70
+#: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr "찾은 거래 없음"
@@ -820,12 +975,20 @@ msgstr "찾은 거래 없음"
 msgid "None"
 msgstr "없음"
 
-#: src/components/BtcTransactionListItem.vue:36
-#: src/components/TransactionListItem.vue:35
+#: src/components/BankCheckInput.vue:41
+msgid "Not all accounts provided by this bank support instant transactions."
+msgstr ""
+
+#: src/components/BtcTransactionListItem.vue:38
+#: src/components/TransactionListItem.vue:36
 msgid "not sent"
 msgstr "전송되지 않음"
 
-#: src/components/layouts/Settings.vue:239
+#: src/components/swap/SwapFeesTooltip.vue:18
+msgid "OASIS service fee"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:276
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -849,12 +1012,8 @@ msgstr "하나 더"
 msgid "or visit an exchange and get more."
 msgstr "또는 거래소를 찾아 더 많이 얻으세요."
 
-#: src/components/swap/SwapModal.vue:226
-msgid "Outgoing HTLC created!"
-msgstr ""
-
-#: src/components/BtcTransactionListItem.vue:37
-#: src/components/TransactionListItem.vue:36
+#: src/components/BtcTransactionListItem.vue:39
+#: src/components/TransactionListItem.vue:37
 msgid "pending"
 msgstr "처리 중"
 
@@ -862,22 +1021,30 @@ msgstr "처리 중"
 msgid "Pending Cashlinks"
 msgstr "처리 중인 캐시링크"
 
-#: src/components/modals/BtcTransactionModal.vue:43
-#: src/components/modals/TransactionModal.vue:66
+#: src/components/modals/BtcTransactionModal.vue:51
+#: src/components/modals/TransactionModal.vue:74
 msgid "Pending..."
 msgstr "처리 중..."
 
-#: src/components/swap/SwapModal.vue:165
+#: src/components/modals/BuyCryptoModal.vue:85
+msgid "Per-Swap Limit"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
 msgid "Performing Swap"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:13
+#: src/components/swap/SwapNotification.vue:17
 msgid "Performing swap {progress}/5"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:10
 msgid "Please do not use your Mainnet accounts!"
 msgstr "메인넷 계정을 사용하지 마세요!"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:70
+msgid "Please ensure that you are sending an instant transaction!"
+msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:13
 msgid ""
@@ -893,11 +1060,11 @@ msgstr ""
 "자산을 통제하는 당신의 키를 보유합니다. Nimiq은 브라우저를 통해 당신의 정보를 생성, 저장 및 액세스하고, 블록체인과 쉽게 "
 "상호작용할 수 있도록만 합니다."
 
-#: src/components/swap/SwapModal.vue:156
-msgid "Powered by Fastspot. Proceed to agree with its {ToS-link}."
+#: src/components/swap/SwapSepaFundingInstructions.vue:7
+msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:103
+#: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "받기"
@@ -918,36 +1085,46 @@ msgstr "NIM 받기"
 msgid "Receive some free NIM to get started."
 msgstr "무료 NIM을 얼마 받고 시작하세요."
 
-#: src/components/modals/BtcTransactionModal.vue:54
-#: src/components/modals/TransactionModal.vue:77
+#: src/components/modals/BtcTransactionModal.vue:62
+#: src/components/modals/TransactionModal.vue:85
 msgid "received at {dateAndTime}"
 msgstr "{dateAndTime}에 받음"
 
-#: src/components/modals/BtcReceiveModal.vue:48
+#: src/components/modals/BtcReceiveModal.vue:54
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:51
+#: src/components/modals/BtcReceiveModal.vue:57
 msgid "Recently copied"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:263
-msgid "Redeeming incoming HTLC..."
+#: src/components/swap/SwapSepaFundingInstructions.vue:17
+msgid "Recipient"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
+msgid "Reference"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:160
 msgid "Reference currency"
 msgstr "참조 통화"
 
-#: src/components/modals/BtcTransactionModal.vue:212
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/BtcTransactionModal.vue:234
+#: src/components/modals/TransactionModal.vue:253
 msgid "Refund"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:72
+msgid ""
+"Regular transactions are too slow and will not process. Your bank might use "
+"another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
-#: src/components/layouts/AddressOverview.vue:47
+#: src/components/layouts/AddressOverview.vue:54
 msgid "Rename"
 msgstr "이름 바꾸기"
 
@@ -955,14 +1132,23 @@ msgstr "이름 바꾸기"
 msgid "Request failed"
 msgstr "요청 실패"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/AddressOverview.vue:36
+#: src/components/layouts/AddressOverview.vue:60
+msgid "Rescan"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:139
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
-#: src/components/modals/BtcSendModal.vue:466
-#: src/components/modals/SendModal.vue:494
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:501
 msgid "Retry"
 msgstr "재시도"
+
+#: src/components/swap/SwapAnimation.vue:179
+msgid "Retrying..."
+msgstr ""
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
@@ -972,8 +1158,7 @@ msgstr "로그인 파일 저장"
 msgid "Save now"
 msgstr "지금 저장"
 
-#: src/components/modals/BtcReceiveModal.vue:111
-#: src/components/modals/ReceiveModal.vue:39
+#: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
 "Scan the code to send\n"
 "money to this address"
@@ -993,17 +1178,25 @@ msgstr "거래 검색"
 msgid "Search transactions by contact, address, etc."
 msgstr "연락처, 주소 등으로 검색"
 
+#: src/components/modals/BuyCryptoModal.vue:28
+msgid "Select a currency and an amount."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:109
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:98
+#: src/components/layouts/Sidebar.vue:37
+msgid "Sell"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:111
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "보내기"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:93
-#: src/components/modals/SendModal.vue:131
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/SendModal.vue:133
 msgid "Send all"
 msgstr "모두 보내기"
 
@@ -1016,10 +1209,10 @@ msgid ""
 "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr "중간자 없이 NIM을 주고받으며 진정한 탈중앙화를 누리세요."
 
-#: src/components/modals/BtcSendModal.vue:131
+#: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:150
+#: src/components/modals/SendModal.vue:152
 msgid "Send Transaction"
 msgstr "거래 전송"
 
@@ -1027,38 +1220,39 @@ msgstr "거래 전송"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
-#: src/components/swap/SwapModal.vue:224
-msgid "Sending outgoing HTLC..."
-msgstr ""
-
-#: src/components/modals/BtcSendModal.vue:463
-#: src/components/modals/SendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/SendModal.vue:498
 msgid "Sending Transaction"
 msgstr "거래 전송 중"
 
-#: src/components/modals/BtcSendModal.vue:521
+#: src/components/modals/BtcSendModal.vue:489
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:517
+#: src/components/modals/BtcSendModal.vue:485
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:526
+#: src/components/BtcTransactionListItem.vue:171
+#: src/components/TransactionListItem.vue:152
+msgid "Sent {fromAsset} – Received {toAsset}"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:533
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM을 보냄"
 
-#: src/components/modals/SendModal.vue:522
+#: src/components/modals/SendModal.vue:529
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim}NIM을 {name}에게 보냄"
 
-#: src/components/modals/BtcTransactionModal.vue:59
-#: src/components/modals/TransactionModal.vue:82
+#: src/components/modals/BtcTransactionModal.vue:67
+#: src/components/modals/TransactionModal.vue:90
 msgid "sent at {dateAndTime}"
 msgstr "{dateAndTime}에 보냄"
 
-#: src/components/modals/SendModal.vue:63
-#: src/components/modals/SendModal.vue:74
+#: src/components/modals/SendModal.vue:65
+#: src/components/modals/SendModal.vue:76
 msgid "Set Amount"
 msgstr "금액 설정"
 
@@ -1066,7 +1260,11 @@ msgstr "금액 설정"
 msgid "Set fee"
 msgstr "수수료 설정"
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/swap/SwapAnimation.vue:156
+msgid "Setting up swap"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:64
 msgid "Settings"
 msgstr "설정"
 
@@ -1074,8 +1272,7 @@ msgstr "설정"
 msgid "Share a single-use address with the sender."
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:119
-#: src/components/modals/ReceiveModal.vue:46
+#: src/components/modals/overlays/PaymentLinkOverlay.vue:6
 msgid ""
 "Share the link or QR code with the sender.\n"
 "Optionally include an amount. "
@@ -1087,8 +1284,7 @@ msgstr ""
 msgid "Share your address with the sender."
 msgstr "송금인에게 주소를 공유하세요."
 
-#: src/components/modals/BtcReceiveModal.vue:117
-#: src/components/modals/ReceiveModal.vue:44
+#: src/components/modals/overlays/PaymentLinkOverlay.vue:4
 msgid "Share your Payment Link"
 msgstr "지불 링크 공유하기"
 
@@ -1101,33 +1297,33 @@ msgstr "내 주소 모두 표시"
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
-#: src/components/modals/TransactionModal.vue:165
+#: src/components/modals/TransactionModal.vue:179
 msgid "Show Link"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:188
-msgid "Sign"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:184
-msgid "Signing swap..."
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:123
+#: src/components/layouts/AddressOverview.vue:136
 msgid "Signup"
 msgstr "가입"
+
+#: src/components/modals/BuyCryptoModal.vue:244
+msgid "Simulate EUR payment"
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:28
 #: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr "지금은 넘어가기"
 
-#: src/components/modals/BtcSendModal.vue:532
-#: src/components/modals/SendModal.vue:537
+#: src/components/modals/BtcSendModal.vue:500
+#: src/components/modals/SendModal.vue:544
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
 
-#: src/components/modals/SendModal.vue:163
+#: src/components/swap/SwapSepaFundingInstructions.vue:54
+msgid "Spacing optional"
+msgstr ""
+
+#: src/components/modals/SendModal.vue:165
 msgid "Speed up your Transaction"
 msgstr "거래 속도를 높이세요"
 
@@ -1139,7 +1335,7 @@ msgstr "NIM 지분을 걸어 보상을 받고 네트워크를 지키세요."
 msgid "Staking"
 msgstr "지분 걸기"
 
-#: src/components/modals/SendModal.vue:352
+#: src/components/modals/SendModal.vue:353
 msgid "standard"
 msgstr ""
 
@@ -1151,12 +1347,8 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr "NIM을 보관하고 주고 받으세요."
 
-#: src/components/swap/SwapModal.vue:166
-msgid "Swap Complete"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:265
-msgid "Swap complete!"
+#: src/components/swap/SwapFeesTooltip.vue:35
+msgid "Swap fee"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:5
@@ -1164,24 +1356,17 @@ msgstr ""
 msgid "Swap from {address}"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:5
+#: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:248
-msgid "Swap secret published!"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:191
-msgid "Swap signed!"
-msgstr ""
-
-#: src/components/swap/SwapNotification.vue:16
+#: src/components/swap/SwapAnimation.vue:7
+#: src/components/swap/SwapNotification.vue:20
 msgid "Swap successful!"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:13
-#: src/components/modals/TransactionModal.vue:13
+#: src/components/modals/BtcTransactionModal.vue:17
+#: src/components/modals/TransactionModal.vue:17
 msgid "Swap to {address}"
 msgstr ""
 
@@ -1189,20 +1374,31 @@ msgstr ""
 msgid "syncing"
 msgstr "동기화 중"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:32
 msgid "Tell us here"
 msgstr "여기에 말씀해주세요"
 
-#: src/components/swap/SwapModal.vue:157
-msgid "terms of service"
+#: src/components/swap/SwapSepaFundingInstructions.vue:31
+msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
 msgstr "테스트넷"
 
-#: src/components/swap/SwapModal.vue:17
-msgid "The exchange rate might change depending on the swap volume."
+#: src/components/swap/SwapSepaFundingInstructions.vue:88
+msgid ""
+"The bank is processing your transaction.\n"
+"This might take up to 5 minutes."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:759
+#: src/components/swap/SwapModal.vue:636
+msgid "The fees (currently {amount}) determine the minimum amount."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:764
+msgid "The fees determine the minimum amount."
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
@@ -1223,11 +1419,10 @@ msgstr "새로운 로그인 파일은 당신의 계정과 주소에 접근하는
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Nimiq 지갑은 웹 지갑을 넘어 하나의 네트워크 노드입니다."
 
-#: src/components/modals/BetaNoticeModal.vue:16
-msgid ""
-"The Wallet is still in Beta. Your funds are safe, there just might be some "
-"visual issues."
-msgstr "지갑은 아직 베타 단계입니다. 당신의 자산은 안전하지만 화면 상의 문제가 조금 있을 수도 있습니다."
+#: src/components/modals/BuyCryptoModal.vue:52
+#: src/components/swap/SwapModal.vue:20
+msgid "The rate might change depending on the swap volume."
+msgstr ""
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1243,16 +1438,16 @@ msgstr "여러 선택지가 있습니다. 신용 카드를 활용하거나 암�
 msgid "There is no ‘forgot password’"
 msgstr "'비밀번호 찾기'란 없습니다"
 
-#: src/components/swap/SwapModal.vue:59
+#: src/components/swap/SwapNotification.vue:14
+msgid "There's a problem"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:75
 msgid "They will be increased gradually."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:28
+#: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
-msgstr ""
-
-#: src/components/swap/SwapFeesTooltip.vue:4
-msgid "This amount includes:"
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
@@ -1263,23 +1458,34 @@ msgstr "본 계정은 구 계정입니다"
 msgid "This is a single-use address"
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:7
+#: src/components/BtcAddressInput.vue:12
 msgid "This is not a valid address"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:230
-#: src/components/BtcTransactionList.vue:252
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr "이달"
 
-#: src/components/swap/SwapModal.vue:15
-msgid "This rate includes the exchange fee."
+#: src/components/modals/BuyCryptoModal.vue:50
+#: src/components/swap/SwapModal.vue:18
+msgid "This rate includes the swap fee."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:91
+msgid ""
+"This service will soon be sped up significantly by banks updating their "
+"infrastructure."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:12
+msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:36
@@ -1291,21 +1497,21 @@ msgstr ""
 msgid "Total Balance"
 msgstr "전체 잔고"
 
-#: src/components/swap/SwapFeesTooltip.vue:25
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Total fees"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:21
-#: src/components/modals/TransactionModal.vue:43
+#: src/components/modals/BtcTransactionModal.vue:29
+#: src/components/modals/TransactionModal.vue:51
 msgid "Transaction from {address}"
 msgstr "{address}로부터의 거래"
 
-#: src/components/modals/BtcTransactionModal.vue:29
-#: src/components/modals/TransactionModal.vue:51
+#: src/components/modals/BtcTransactionModal.vue:37
+#: src/components/modals/TransactionModal.vue:59
 msgid "Transaction to {address}"
 msgstr "{address}로의 거래"
 
-#: src/components/modals/BtcSendModal.vue:121
+#: src/components/modals/BtcSendModal.vue:129
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 
@@ -1313,32 +1519,32 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "자금 이체하기"
 
+#: src/components/layouts/Settings.vue:149
+msgid "Trials"
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr "지도를 트윗하세요!"
 
-#: src/components/modals/TransactionModal.vue:443
-#: src/components/TransactionListItem.vue:182
+#: src/components/modals/TransactionModal.vue:499
+#: src/components/TransactionListItem.vue:212
 msgid "Unclaimed Cashlink"
 msgstr "미인수 캐시링크"
 
-#: src/components/modals/BtcTransactionModal.vue:133
-#: src/components/modals/BtcTransactionModal.vue:138
-#: src/components/modals/BtcTransactionModal.vue:76
-#: src/components/modals/BtcTransactionModal.vue:81
+#: src/components/modals/BtcTransactionModal.vue:149
+#: src/components/modals/BtcTransactionModal.vue:154
+#: src/components/modals/BtcTransactionModal.vue:87
+#: src/components/modals/BtcTransactionModal.vue:92
 msgid "Unknown"
-msgstr ""
-
-#: src/components/BtcCopiedAddress.vue:9
-msgid "Unlabelled"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "초 고성능의 브라우저 기반 지불결제 코인, {NIM}을 사용하세요."
 
-#: src/components/modals/BtcReceiveModal.vue:31
-#: src/components/modals/BtcSendModal.vue:32
+#: src/components/modals/BtcReceiveModal.vue:33
+#: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 
@@ -1346,35 +1552,41 @@ msgstr ""
 msgid "Use it to access your account from any device."
 msgstr "이것을 사용해서 어떤 기기에서든 계정에 접근하세요."
 
-#: src/components/modals/BtcReceiveModal.vue:95
+#: src/components/modals/BtcReceiveModal.vue:101
 msgid ""
 "Use labels instead of contacts to easily identify transactions in your "
 "history."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:8
+#: src/components/swap/SwapModal.vue:11
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/modals/BetaNoticeModal.vue:13
-msgid ""
-"Welcome to the\n"
-"new Nimiq Wallet"
+#: src/components/layouts/Settings.vue:125
+msgid "Vesting Contract"
 msgstr ""
-"새로운 Nimiq 지갑에\n"
-"오신 것을 환영합니다"
+
+#: src/components/modals/BuyCryptoModal.vue:29
+msgid "Wait for the swap to be set up."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:23
+msgid ""
+"Welcome to the first fiat-to-crypto swap.\n"
+"It’s simple, fast and decentralized."
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr "그리고요?"
 
-#: src/components/modals/BtcReceiveModal.vue:85
+#: src/components/modals/BtcReceiveModal.vue:91
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
-"privacy.Reuse of addresses does not result in a loss of funds."
+"privacy. Reuse of addresses does not result in a loss of funds."
 msgstr ""
 
-#: src/components/BtcCopiedAddress.vue:15 src/components/BtcLabelInput.vue:20
+#: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""
 "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
@@ -1395,16 +1607,24 @@ msgstr "구 계정을 사용중입니다"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:46
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
+msgid "You need a SEPA account that supports instant transactions."
+msgstr ""
+
+#: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
 msgid "You now own crypto!"
 msgstr "당신은 이제 암호화폐를 가지고 있습니다!"
 
-#: src/components/modals/BtcSendModal.vue:84
+#: src/components/swap/SwapAnimation.vue:169
+msgid "You will finalize your purchase by bank transfer."
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:83
 msgid "You will send {amount}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:125
+#: src/components/modals/SendModal.vue:127
 msgid "You will send {amount} NIM"
 msgstr "{amount} NIM을 보내게 됩니다"
 
@@ -1423,6 +1643,16 @@ msgid ""
 "Your accounts are now legacy accounts. Easily switch, edit and create "
 "accounts with the new account picker."
 msgstr "당신의 계정은 이제 구 계정입니다. 새로운 계정 선택기를 통해 손쉽게 계정을 바꾸고 수정하고 생성하세요."
+
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:16
+msgid "Your bank is not eligible?"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:49
+msgid ""
+"Your bank needs to support SEPA Instant out transactions. Some banks don’t "
+"support it yet, but are likely to do so in the future."
+msgstr ""
 
 #: src/components/NetworkMap.vue:22
 msgid "Your browser"
@@ -1448,7 +1678,11 @@ msgid ""
 "to profit from new features."
 msgstr "당신의 NIM은 구 계정에 보관되어 있습니다. 정식 계정으로 옮겨 새로운 기능을 이용하세요."
 
-#: src/components/BtcTransactionList.vue:55
+#: src/components/swap/SwapSepaFundingInstructions.vue:62
+msgid "Your transaction must be SEPA Instant"
+msgstr ""
+
+#: src/components/BtcTransactionList.vue:64
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr "거래 내역이 여기에 표시됩니다"

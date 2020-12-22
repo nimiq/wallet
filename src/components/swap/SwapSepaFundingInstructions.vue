@@ -11,23 +11,32 @@
                     </Copyable>
                 </div>
                 <div class="row flex-row">
-                    <Copyable :text="name" class="glass flex-column flex-grow">
-                        <div class="line flex-row">
-                            <label class="nq-label">{{ $t('Recipient') }}</label>
-                            <!-- <Tooltip preferredPosition="top left" :container="this">
-                                <InfoCircleSmallIcon slot="trigger"/>
+                    <div class="tooltip-in-copyable flex-grow">
+                        <Copyable :text="name" class="glass flex-column">
+                            <div class="line flex-row">
+                                <label class="nq-label tooltip-spacing">{{ $t('Recipient') }}</label>
+                            </div>
+                            <div class="line flex-row">
+                                <strong>{{ name }}</strong>
+                            </div>
+                        </Copyable>
+                        <Tooltip
+                            preferredPosition="top left"
+                            :container="this"
+                            theme="inverse"
+                            :styles="{'width': '35rem'}"
+                        >
+                            <InfoCircleSmallIcon slot="trigger"/>
+                            <p class="intro">
                                 {{ $t('TEN31 Bank provides a bank account to lock your payment.') }}
-                                <p class="explainer">
-                                    {{ $t('As soon as your crypto is available, your Euro is processed to the seller.'
-                                        + ' In case of a problem or a time-out, your payment will be returned to your'
-                                        + ' bank account.') }}
-                                </p>
-                            </Tooltip> -->
-                        </div>
-                        <div class="line flex-row">
-                            <strong>{{ name }}</strong>
-                        </div>
-                    </Copyable>
+                            </p>
+                            <p class="explainer">
+                                {{ $t('As soon as your crypto is available, your Euro is processed to the seller.'
+                                    + ' In case of a problem or a time-out, your payment will be returned to your'
+                                    + ' bank account.') }}
+                            </p>
+                        </Tooltip>
+                    </div>
                     <Copyable :text="iban" class="glass flex-column">
                         <div class="line flex-row">
                             <label class="nq-label">{{ $t('IBAN') }}</label>
@@ -219,10 +228,11 @@ export default defineComponent({
     color: white !important;
     border-radius: 0.625rem;
     padding: 1.5rem 2rem;
+}
 
-    + .glass {
-        margin-left: 1rem;
-    }
+.glass + .glass,
+.tooltip-in-copyable + .glass {
+    margin-left: 1rem;
 }
 
 .copyable.glass {
@@ -235,6 +245,16 @@ export default defineComponent({
     /deep/ .background {
         pointer-events: none;
         background: white;
+    }
+}
+
+.tooltip-in-copyable {
+    position: relative;
+
+    > .tooltip {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
     }
 }
 
@@ -252,6 +272,10 @@ export default defineComponent({
 .nq-label {
     color: rgba(255, 255, 255, 0.4);
     margin: 0.75rem 0 1.25rem;
+
+    &.tooltip-spacing {
+        margin-right: 2.5rem;
+    }
 }
 
 .bic,
@@ -278,14 +302,19 @@ export default defineComponent({
         opacity: 0.5;
         margin-right: 1rem;
     }
+}
 
-    .tooltip .nq-icon {
-        opacity: 0.3;
-    }
+.tooltip .nq-icon {
+    opacity: 0.3;
+    transition: opacity 0.2s var(--nimiq-ease);
+}
+
+.tooltip.shown .nq-icon {
+    opacity: 0.5;
 }
 
 .tooltip .intro {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .processing {

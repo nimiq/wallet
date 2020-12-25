@@ -257,7 +257,7 @@
             />
         </div>
 
-        <div v-if="addressListOpened" slot="overlay" class="page flex-column">
+        <div v-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false" :showBitcoin="true"/>
@@ -1197,7 +1197,6 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     flex-grow: 1;
-    overflow-y: visible; // needed for ios Safari
 }
 
 .welcome.page-body {
@@ -1284,12 +1283,25 @@ export default defineComponent({
     }
 }
 
-.header__address-list {
-    padding-bottom: 2rem;
-}
+.address-list-overlay {
+    overflow: hidden;
 
-.page__address-list {
-    padding: 0 2rem 4rem;
+    .page-header {
+        padding-bottom: 2rem;
+    }
+
+    .page-body {
+        padding: 0 2rem 4rem;
+    }
+
+    .address-list {
+        --padding-sides: 2rem;
+        max-height: 100%;
+
+        /deep/ .scroll-mask.bottom {
+            bottom: -1px;
+        }
+    }
 }
 
 .setup-buy {

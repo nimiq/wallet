@@ -1291,7 +1291,7 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 2rem 4rem;
+        padding: 0 2rem 2rem;
     }
 
     .address-list {

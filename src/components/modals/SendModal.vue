@@ -686,6 +686,7 @@ export default defineComponent({
     .page__contact-list {
         padding-right: 0;
         padding-left: 0;
+        min-height: 0;
     }
 
     .page__address-list {

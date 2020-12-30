@@ -416,6 +416,7 @@ export default defineComponent({
     overflow: hidden;
     position: relative;
     border-radius: 0.625rem;
+    font-size: var(--body-size);
 
     background: var(--nimiq-blue);
     background-image: var(--nimiq-blue-bg);

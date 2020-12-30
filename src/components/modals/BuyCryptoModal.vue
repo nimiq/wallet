@@ -20,7 +20,8 @@
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
-                        {{ $t('Welcome to the first fiat-to-crypto swap.\nIt’s simple, fast and decentralized.') }}
+                        {{ $t('Welcome to the first fiat-to-crypto atomic swap.\n'
+                            + 'It’s simple, fast and decentralized.') }}
                     </p>
                 </div>
 
@@ -1196,6 +1197,10 @@ export default defineComponent({
 
 .modal /deep/ .overlay .animation-overlay + .close-button {
     display: none;
+}
+
+.page {
+    font-size: var(--body-size);
 }
 
 .page-body {

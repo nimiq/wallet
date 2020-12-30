@@ -204,6 +204,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .swap-sepa-funding-instructions {
     padding: 2.25rem;
+    font-size: var(--body-size);
 }
 
 .row {

@@ -1519,11 +1519,8 @@ export default defineComponent({
 
     .amount-section {
         text-align: center;
-        align-self: stretch;
 
         .primary-amount {
-            align-self: stretch;
-            justify-content: center;
             align-items: flex-end;
             color: var(--nimiq-light-blue);
             margin-bottom: 1rem;
@@ -1548,10 +1545,9 @@ export default defineComponent({
 
         .secondary-amount {
             font-weight: 600;
-            justify-content: center;
 
             > svg {
-                margin: 0 1rem;
+                margin: 0 1rem 0 1.5rem;
                 opacity: 0.3;
             }
 

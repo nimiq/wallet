@@ -108,7 +108,7 @@ export default defineComponent({
             }
             if (useBtcNetworkStore().state.consensus !== 'established') {
                 const electrum = await getElectrumClient();
-                await electrum.waitForConsensusEstablished();
+                // await electrum.waitForConsensusEstablished();
 
                 // If consensus was only just established, we need to wait for the first block event
                 await new Promise<void>((resolve) => {

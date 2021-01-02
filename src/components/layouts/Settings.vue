@@ -194,7 +194,7 @@ import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
-import { useSettingsStore, ColorMode /* , Trial */ } from '../../stores/Settings';
+import { useSettingsStore, ColorMode, Trial } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract } from '../../hub';
@@ -297,9 +297,8 @@ export default defineComponent({
             }
 
             switch (hash) {
-                case 'nope': break;
-                // case '301bc5e02f0cf97c5efd61c78c3cfe6ee443cdfd4d17703e7515dccbcc618c3c':
-                //     settings.enableTrial(Trial.BUY_WITH_EURO); break;
+                case '301bc5e02f0cf97c5efd61c78c3cfe6ee443cdfd4d17703e7515dccbcc618c3c':
+                    settings.enableTrial(Trial.BUY_WITH_EURO); break;
                 default: el.value = 'Nope, no cookie for you'; return;
             }
 

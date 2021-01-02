@@ -416,14 +416,14 @@ export default defineComponent({
             },
         });
 
-        const canSign = false; /* computed(() =>
+        const canSign = computed(() =>
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
             && limits.value
             && !fetchingEstimate.value,
-        ); */
+        );
 
         onMounted(() => {
             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
@@ -779,11 +779,6 @@ export default defineComponent({
         }
 
         async function sign() {
-            alert('Disabled, for now.'); // eslint-disable-line no-alert
-            return false;
-        }
-
-        async function dummy() { // eslint-disable-line @typescript-eslint/no-unused-vars
             // currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor

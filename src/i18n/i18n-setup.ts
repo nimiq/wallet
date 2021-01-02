@@ -8,20 +8,23 @@ export const Languages = [{
     code: 'en',
     name: 'English',
 }, {
+    code: 'es',
+    name: 'Español',
+}, {
+    code: 'zh',
+    name: '简体中文',
+}, {
     code: 'de',
     name: 'Deutsch',
 }, {
     code: 'fr',
     name: 'Français',
 }, {
-    code: 'zh',
-    name: '简体中文',
-}, {
-    code: 'es',
-    name: 'Español',
-}, {
     code: 'ru',
     name: 'Русский',
+}, {
+    code: 'uk',
+    name: 'Українська',
 // }, {
 //     code: 'tr',
 //     name: 'Türkçe',

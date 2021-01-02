@@ -43,7 +43,7 @@ msgstr "{fee} комісія"
 msgid "{perc}% of swap value."
 msgstr "{perc}% вартості обміну."
 
-#: src/components/modals/BuyCryptoModal.vue:94
+#: src/components/modals/BuyCryptoModal.vue:98
 msgid "{value} remaining"
 msgstr "{value} залишок"
 
@@ -58,7 +58,7 @@ msgstr "+ {count} інший | + {count} інші"
 msgid "+{n} more"
 msgstr "+{n} більше"
 
-#: src/components/modals/BuyCryptoModal.vue:28
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "1"
 msgstr "1"
 
@@ -66,7 +66,7 @@ msgstr "1"
 msgid "15m"
 msgstr "15 хв."
 
-#: src/components/modals/BuyCryptoModal.vue:29
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "2"
 msgstr "2"
 
@@ -78,11 +78,11 @@ msgstr "2-4 год."
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7 Чат та телефонна підтримка"
 
-#: src/components/modals/BuyCryptoModal.vue:30
+#: src/components/modals/BuyCryptoModal.vue:34
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:90
+#: src/components/modals/BuyCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
 msgid "30-day Limit"
 msgstr "30-денний ліміт"
@@ -333,14 +333,14 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr "Купуйте і продавайте через гаманець."
 
-#: src/components/modals/BuyCryptoModal.vue:178
-#: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/modals/BuyCryptoModal.vue:198
-#: src/components/modals/BuyCryptoModal.vue:40
+#: src/components/modals/BuyCryptoModal.vue:182
+#: src/components/modals/BuyCryptoModal.vue:193
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr "Купити крипту"
 
-#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/BuyCryptoModal.vue:23
 msgid "Buy Crypto with Fiat"
 msgstr "Купляйте крипту через фіат"
 
@@ -349,8 +349,8 @@ msgid "Buy NIM"
 msgstr "Купити NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on on exchange"
-msgstr "Купити на біржі"
+msgid "Buy on an exchange"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -360,7 +360,7 @@ msgstr ""
 "Додавши комісію за переказ, ви можете вплинути на те, як швидко він буде "
 "оброблений."
 
-#: src/components/modals/BuyCryptoModal.vue:186
+#: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/swap/SwapModal.vue:141
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -368,7 +368,7 @@ msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot} та"
 " {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -404,7 +404,7 @@ msgstr "Змінити налаштування мови."
 msgid "Choose a Recipient"
 msgstr "Виберіть одержувача"
 
-#: src/components/modals/BuyCryptoModal.vue:261
+#: src/components/modals/BuyCryptoModal.vue:287
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
@@ -581,14 +581,14 @@ msgstr "Тривалість і комісія є приблизними."
 msgid "During early access, these limits apply."
 msgstr "Ці обмеження застосовуються під час раннього доступу."
 
-#: src/components/modals/BuyCryptoModal.vue:102
+#: src/components/modals/BuyCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
 "Під час раннього доступу застосовуються ці обмеження. Вони будуть зняті "
 "поступово."
 
-#: src/components/modals/BuyCryptoModal.vue:18
+#: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/swap/SwapModal.vue:46
 msgid "Early Access"
 msgstr "Ранній доступ"
@@ -702,7 +702,7 @@ msgstr "Фонд недоступний (невірна мережа)"
 msgid "fee"
 msgstr "комісія"
 
-#: src/components/modals/BuyCryptoModal.vue:69
+#: src/components/modals/BuyCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:40
 msgid "fees"
 msgstr "комісія"
@@ -722,7 +722,7 @@ msgstr "Сума у фіаті недоступна"
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
-#: src/components/modals/BuyCryptoModal.vue:30
+#: src/components/modals/BuyCryptoModal.vue:34
 msgid "Finalize the swap by bank transfer."
 msgstr "Завершіть обмін банківським переказом."
 
@@ -883,7 +883,7 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/modals/BuyCryptoModal.vue:383
+#: src/components/modals/BuyCryptoModal.vue:409
 #: src/components/swap/SwapModal.vue:274
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr "Наразі, Ledger рахунки не підтримують можливість обміну."
@@ -892,7 +892,7 @@ msgstr "Наразі, Ledger рахунки не підтримують можл
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
 msgstr "Вперед!"
 
@@ -904,7 +904,7 @@ msgstr "Денний режим"
 msgid "Limit of copied addresses reached."
 msgstr "Вичерпано ліміт скопійованих адрес."
 
-#: src/components/modals/BuyCryptoModal.vue:99
+#: src/components/modals/BuyCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr "Ліміти прив'язані до рахунків та IBAN."
 
@@ -916,7 +916,7 @@ msgstr "Посилання не доступне у вашому веб-огля
 msgid "Load file"
 msgstr "Завантажити"
 
-#: src/components/modals/BuyCryptoModal.vue:92
+#: src/components/modals/BuyCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "loading..."
 msgstr "завантаження..."
@@ -942,8 +942,8 @@ msgstr "Вийти"
 msgid "lost"
 msgstr "Втрачено"
 
-#: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/BuyCryptoModal.vue:80
+#: src/components/modals/BuyCryptoModal.vue:79
+#: src/components/modals/BuyCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
 msgid "Max."
 msgstr "Макс."
@@ -1075,7 +1075,7 @@ msgstr "В очікуванні"
 msgid "Pending..."
 msgstr "Очікується..."
 
-#: src/components/modals/BuyCryptoModal.vue:85
+#: src/components/modals/BuyCryptoModal.vue:89
 msgid "Per-Swap Limit"
 msgstr "Ліміт на обмін"
 
@@ -1231,7 +1231,7 @@ msgstr "Пошук переказів"
 msgid "Search transactions by contact, address, etc."
 msgstr "Пошук переказів за контактами, адресами, тощо."
 
-#: src/components/modals/BuyCryptoModal.vue:28
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Select a currency and an amount."
 msgstr "Виберіть валюту та суму."
 
@@ -1360,7 +1360,7 @@ msgstr "Показати"
 msgid "Signup"
 msgstr "Приєднатися"
 
-#: src/components/modals/BuyCryptoModal.vue:244
+#: src/components/modals/BuyCryptoModal.vue:243
 msgid "Simulate EUR payment"
 msgstr "Імітуйте оплату в євро"
 
@@ -1452,12 +1452,12 @@ msgstr ""
 "Банк обробляє вашу операцію.\n"
 "Це може зайняти до 5 хвилин."
 
-#: src/components/modals/BuyCryptoModal.vue:759
+#: src/components/modals/BuyCryptoModal.vue:788
 #: src/components/swap/SwapModal.vue:636
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/modals/BuyCryptoModal.vue:764
+#: src/components/modals/BuyCryptoModal.vue:793
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
 
@@ -1480,7 +1480,7 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "Додаток гаманця Німік це більше ніж гаманець - це повноцінний вузол мережі."
 
-#: src/components/modals/BuyCryptoModal.vue:52
+#: src/components/modals/BuyCryptoModal.vue:56
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "Курс може змінюватися в залежності від суми обміну."
@@ -1532,7 +1532,7 @@ msgstr "Невірна адреса"
 msgid "This month"
 msgstr "Цього місяця"
 
-#: src/components/modals/BuyCryptoModal.vue:50
+#: src/components/modals/BuyCryptoModal.vue:54
 #: src/components/swap/SwapModal.vue:18
 msgid "This rate includes the swap fee."
 msgstr "Дана ставка включає комісію за обмін."
@@ -1639,17 +1639,15 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr "Контракт Наділення Прав"
 
-#: src/components/modals/BuyCryptoModal.vue:29
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "Wait for the swap to be set up."
 msgstr "Зачекайте, поки буде встановлений обмін."
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:26
 msgid ""
-"Welcome to the first fiat-to-crypto swap.\n"
+"Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
-"Ласкаво просимо до першого обміну фіат-криптовалюта\n"
-"Це просто, швидко та децентралізовано."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

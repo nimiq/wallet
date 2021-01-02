@@ -43,7 +43,7 @@ msgstr "{fee} 费用"
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
 
-#: src/components/modals/BuyCryptoModal.vue:94
+#: src/components/modals/BuyCryptoModal.vue:98
 msgid "{value} remaining"
 msgstr ""
 
@@ -58,7 +58,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+另外{n}个"
 
-#: src/components/modals/BuyCryptoModal.vue:28
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "1"
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 msgid "15m"
 msgstr "15分钟"
 
-#: src/components/modals/BuyCryptoModal.vue:29
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "2"
 msgstr ""
 
@@ -78,11 +78,11 @@ msgstr "2-4小时"
 msgid "24/7 Chat & Phone Support"
 msgstr "24/7文字和电话支持"
 
-#: src/components/modals/BuyCryptoModal.vue:30
+#: src/components/modals/BuyCryptoModal.vue:34
 msgid "3"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:90
+#: src/components/modals/BuyCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
 msgid "30-day Limit"
 msgstr "30天限制"
@@ -319,14 +319,14 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr "用您的钱包买卖"
 
-#: src/components/modals/BuyCryptoModal.vue:178
-#: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/modals/BuyCryptoModal.vue:198
-#: src/components/modals/BuyCryptoModal.vue:40
+#: src/components/modals/BuyCryptoModal.vue:182
+#: src/components/modals/BuyCryptoModal.vue:193
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/BuyCryptoModal.vue:23
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
@@ -335,7 +335,7 @@ msgid "Buy NIM"
 msgstr "购买 NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on on exchange"
+msgid "Buy on an exchange"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:167
@@ -344,13 +344,13 @@ msgid ""
 "will be processed."
 msgstr "通过增加交易费用，您可以提升交易的处理速度"
 
-#: src/components/modals/BuyCryptoModal.vue:186
+#: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/swap/SwapModal.vue:141
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -385,7 +385,7 @@ msgstr "更改您的语言设置。"
 msgid "Choose a Recipient"
 msgstr "选择接收者"
 
-#: src/components/modals/BuyCryptoModal.vue:261
+#: src/components/modals/BuyCryptoModal.vue:287
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
@@ -554,12 +554,12 @@ msgstr "持续时间和费用均为估算。"
 msgid "During early access, these limits apply."
 msgstr "这些限制适用于抢先体验期间。"
 
-#: src/components/modals/BuyCryptoModal.vue:102
+#: src/components/modals/BuyCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:18
+#: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/swap/SwapModal.vue:46
 msgid "Early Access"
 msgstr "抢先体验"
@@ -667,7 +667,7 @@ msgstr "水龙头无法使用（网络错误）"
 msgid "fee"
 msgstr "费用"
 
-#: src/components/modals/BuyCryptoModal.vue:69
+#: src/components/modals/BuyCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:40
 msgid "fees"
 msgstr ""
@@ -687,7 +687,7 @@ msgstr "法币无法使用"
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
-#: src/components/modals/BuyCryptoModal.vue:30
+#: src/components/modals/BuyCryptoModal.vue:34
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
@@ -842,7 +842,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/modals/BuyCryptoModal.vue:383
+#: src/components/modals/BuyCryptoModal.vue:409
 #: src/components/swap/SwapModal.vue:274
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -851,7 +851,7 @@ msgstr ""
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建您的Nimiq帐户："
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
 msgstr ""
 
@@ -863,7 +863,7 @@ msgstr "轻节点"
 msgid "Limit of copied addresses reached."
 msgstr "已达到复制地址的限制"
 
-#: src/components/modals/BuyCryptoModal.vue:99
+#: src/components/modals/BuyCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr ""
 
@@ -875,7 +875,7 @@ msgstr ""
 msgid "Load file"
 msgstr "加载文件"
 
-#: src/components/modals/BuyCryptoModal.vue:92
+#: src/components/modals/BuyCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
 msgid "loading..."
 msgstr "载入中..."
@@ -901,8 +901,8 @@ msgstr "登出"
 msgid "lost"
 msgstr "遗失"
 
-#: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/BuyCryptoModal.vue:80
+#: src/components/modals/BuyCryptoModal.vue:79
+#: src/components/modals/BuyCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
 msgid "Max."
 msgstr "最高"
@@ -1031,7 +1031,7 @@ msgstr "待处理的现金链接"
 msgid "Pending..."
 msgstr "待处理..."
 
-#: src/components/modals/BuyCryptoModal.vue:85
+#: src/components/modals/BuyCryptoModal.vue:89
 msgid "Per-Swap Limit"
 msgstr ""
 
@@ -1182,7 +1182,7 @@ msgstr "搜索交易"
 msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
-#: src/components/modals/BuyCryptoModal.vue:28
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Select a currency and an amount."
 msgstr ""
 
@@ -1309,7 +1309,7 @@ msgstr "显示链接"
 msgid "Signup"
 msgstr "注册"
 
-#: src/components/modals/BuyCryptoModal.vue:244
+#: src/components/modals/BuyCryptoModal.vue:243
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1396,12 +1396,12 @@ msgid ""
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:759
+#: src/components/modals/BuyCryptoModal.vue:788
 #: src/components/swap/SwapModal.vue:636
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 
-#: src/components/modals/BuyCryptoModal.vue:764
+#: src/components/modals/BuyCryptoModal.vue:793
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1423,7 +1423,7 @@ msgstr "新的登录文件是个用来访问您的账户及地址简单方便的
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点。"
 
-#: src/components/modals/BuyCryptoModal.vue:52
+#: src/components/modals/BuyCryptoModal.vue:56
 #: src/components/swap/SwapModal.vue:20
 msgid "The rate might change depending on the swap volume."
 msgstr "汇率可能会根据交换量而变化。"
@@ -1473,7 +1473,7 @@ msgstr "这不是一个有效地址"
 msgid "This month"
 msgstr "本月份"
 
-#: src/components/modals/BuyCryptoModal.vue:50
+#: src/components/modals/BuyCryptoModal.vue:54
 #: src/components/swap/SwapModal.vue:18
 msgid "This rate includes the swap fee."
 msgstr "此价格包括交换费"
@@ -1570,13 +1570,13 @@ msgstr "使用滑块或编辑值来设置交换。"
 msgid "Vesting Contract"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:29
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "Wait for the swap to be set up."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:26
 msgid ""
-"Welcome to the first fiat-to-crypto swap.\n"
+"Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
 

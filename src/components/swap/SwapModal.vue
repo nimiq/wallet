@@ -961,6 +961,8 @@ export default defineComponent({
                     swapId: swapSuggestion.id,
                     fund,
                     redeem,
+
+                    layout: 'slider',
                     fiatCurrency: currency.value,
                     fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
                     redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,

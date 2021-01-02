@@ -1,15 +1,18 @@
 <template>
     <Modal class="btc-activation-modal"
         :class="{'wider-overlay': !!swap}"
-        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
+        :showOverlay="page === Pages.BANK_CHECK
+            || addressListOpened
+            || !!swap
+            || (!isDev && !trials.includes(Trial.BUY_WITH_EURO))"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
                 <!-- eslint-disable max-len -->
-                <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83">
-                    <path stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
-                    <path stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
+                <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+                    <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
+                    <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
                 </svg>
                 <!-- eslint-enable max-len -->
                 <div class="welcome-text">
@@ -205,11 +208,6 @@
             </div>
         </transition>
 
-        <BuyCryptoBankCheckOverlay slot="overlay"
-            v-if="page === Pages.BANK_CHECK"
-            @bank-selected="onBankSelected"
-        />
-
         <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
@@ -258,7 +256,34 @@
             />
         </div>
 
-        <div v-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
+        <div v-else-if="!isDev && !trials.includes(Trial.BUY_WITH_EURO)"
+            slot="overlay" class="page flex-column closed-beta"
+        >
+            <!-- eslint-disable max-len -->
+            <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+                <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
+                <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
+            </svg>
+            <!-- eslint-enable max-len -->
+            <PageHeader>Private Testing</PageHeader>
+            <PageBody>
+                <p>
+                    EUR swaps are currently in closed-beta and require unlocking to access.
+                    Please contact Max if you wish to try it out now:
+                </p>
+                <p>
+                    Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link" target="_blank">@Max_Nimiq</a><br>
+                    Email: <a href="mailto:maxburger@nimiq.com" class="nq-link">maxburger@nimiq.com</a>
+                </p>
+            </PageBody>
+        </div>
+
+        <BuyCryptoBankCheckOverlay slot="overlay"
+            v-else-if="page === Pages.BANK_CHECK"
+            @bank-selected="onBankSelected"
+        />
+
+        <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false" :showBitcoin="true"/>
@@ -312,9 +337,9 @@ import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
 import { AccountType, useAccountStore } from '@/stores/Account';
-import { useSettingsStore } from '@/stores/Settings';
+import { useSettingsStore, Trial } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
+import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import {
     init as initOasisApi,
     getHtlc,
@@ -416,8 +441,11 @@ export default defineComponent({
             },
         });
 
+        const isDev = Config.environment === ENV_DEV;
+
         const canSign = computed(() =>
-            fiatAmount.value
+            (isDev || trials.value.includes(Trial.BUY_WITH_EURO))
+            && fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
@@ -778,7 +806,11 @@ export default defineComponent({
             fetchingEstimate.value = false;
         }
 
+        const { trials } = useSettingsStore();
+
         async function sign() {
+            if (!isDev && !trials.value.includes(Trial.BUY_WITH_EURO)) return;
+
             // currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -1144,6 +1176,9 @@ export default defineComponent({
             swapError,
             isMainnet,
             onPaid,
+            isDev,
+            trials,
+            Trial,
         };
     },
     components: {
@@ -1198,22 +1233,32 @@ export default defineComponent({
     font-size: var(--body-size);
 }
 
+.page.closed-beta {
+    text-align: center;
+    align-items: center;
+
+    svg.welcome-euro-logo {
+        margin-top: 8rem;
+        margin-bottom: 2rem;
+    }
+}
+
 .page-body {
     justify-content: space-between;
     align-items: center;
     flex-grow: 1;
 }
 
+svg.welcome-euro-logo {
+    width: 10.5rem;
+    height: 10.5rem;
+    margin-bottom: 3rem;
+}
+
 .welcome.page-body {
     padding-top: 6.25rem;
     width: 52.5rem;
     max-width: 100%;
-
-    svg.welcome-euro-logo {
-        width: 10.5rem;
-        height: 10.5rem;
-        margin-bottom: 3rem;
-    }
 
     .welcome-text {
         text-align: center;

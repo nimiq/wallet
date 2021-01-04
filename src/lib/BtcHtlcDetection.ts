@@ -154,6 +154,11 @@ export async function isHtlcFunding(
     const htlcOutput = tx.outputs.find((output) => output.address?.length === HTLC_ADDRESS_LENGTH);
     if (!htlcOutput) return false;
 
+    // Multi-sig addresses have the same length as HTLC addresses. To avoid triggering a search for txs
+    // from multi-sig addresses, which sometimes return a change output to themselves, we check if a tx
+    // input is from the same supposed HTLC address, which should never be the case for an HTLC funding.
+    if (tx.inputs.some((input) => input.address === htlcOutput.address!)) return false;
+
     // Find HTLC details (in Bitcoin, the HTLC details are not part of the HTLC funding transaction)
 
     // Try Fastspot API
@@ -177,16 +182,21 @@ export async function isHtlcFunding(
     }
 
     // See if we can find the settlement transaction for the HTLC
-    const electrum = await getElectrumClient();
-    const history = await electrum.getTransactionsByAddress(htlcOutput.address!, 0 /* tx.blockHeight */, [tx]);
-    for (const htx of history) {
-        const htlcDetails = await isHtlcSettlement(htx); // eslint-disable-line no-await-in-loop
-        if (htlcDetails) {
-            return {
-                ...htlcDetails,
-                outputIndex: htlcOutput.index,
-            };
+    try {
+        const electrum = await getElectrumClient();
+        const history = await electrum.getTransactionsByAddress(htlcOutput.address!, tx.blockHeight, [tx], 2);
+        for (const htx of history) {
+            const htlcDetails = await isHtlcSettlement(htx); // eslint-disable-line no-await-in-loop
+            if (htlcDetails) {
+                return {
+                    ...htlcDetails,
+                    outputIndex: htlcOutput.index,
+                };
+            }
         }
+    } catch (error) {
+        console.error(error); // eslint-disable-line no-console
+        if (Config.reportToSentry) captureException(error);
     }
 
     return false;

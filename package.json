@@ -40,6 +40,7 @@
     "v-click-outside": "^3.0.1",
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.5",
+    "vue-notification": "^1.3.20",
     "vue-responsive-components": "^0.2.3",
     "vue-router": "^3.1.6",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",

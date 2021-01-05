@@ -19,6 +19,8 @@
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>
         </div>
+
+        <notifications position="top center"/>
     </div><!-- #app -->
 </template>
 

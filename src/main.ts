@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
 // @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
+import Notifications from 'vue-notification';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 
 import App from './App.vue';
@@ -30,6 +31,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
+Vue.use(Notifications);
 
 initStorage();
 syncFromHub();

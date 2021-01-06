@@ -101,7 +101,7 @@ export default defineComponent({
 
         function updateValue(value: string) {
             let newValue = formatValue(value.replace(/,/, '.'));
-            let newValueInLuna = Number(newValue || 0) * 10 ** props.decimals;
+            let newValueInLuna = Math.round(Number(newValue || 0) * 10 ** props.decimals);
 
             if (props.max && props.max < newValueInLuna) {
                 newValueInLuna = props.max;

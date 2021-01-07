@@ -1,43 +1,51 @@
 <template>
-    <transition :name="swapIsOngoing ? 'minimize' : 'slide'">
+    <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
-            class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing, 'errored': swapIsErrored}"
+            class="reset swap-notification flex-row" :class="{
+                'complete': swapIsComplete,
+                'expired': swapIsExpired,
+                'errored': swapIsErrored && !swapIsExpired,
+            }"
             @click="openSwap"
         >
             <div class="icon">
-                <AlertTriangleIcon v-if="swapIsErrored"/>
-                <LoadingSpinner v-else-if="swapIsOngoing"/>
-                <CheckmarkIcon v-else/>
+                <StopwatchIcon v-if="swapIsExpired" />
+                <AlertTriangleIcon v-else-if="swapIsErrored"/>
+                <CheckmarkIcon v-else-if="swapIsComplete"/>
+                <LoadingSpinner v-else/>
             </div>
             <div class="content flex-column">
-                <div v-if="swapIsErrored" class="status">
+                <div v-if="swapIsExpired" class="status">
+                    {{ $t('Swap has expired') }}
+                </div>
+                <div v-else-if="swapIsErrored" class="status">
                     {{ $t('There\'s a problem') }}
                 </div>
-                <div v-else-if="swapIsOngoing" class="status">
-                    {{ $t('Performing swap {progress}/5', { progress: activeSwap.state + 1 }) }}
-                </div>
-                <div v-else class="status">
+                <div v-else-if="swapIsComplete" class="status">
                     {{ $t('Swap successful!') }}
                 </div>
+                <div v-else class="status">
+                    {{ $t('Performing swap {progress}/5', { progress: (activeSwap ? activeSwap.state : 0) + 1 }) }}
+                </div>
 
-                <span v-if="swapIsErrored" class="closing-notice">
+                <span v-if="swapIsExpired || swapIsErrored" class="closing-notice">
                     {{ $t('Click for more information') }}
                 </span>
-                <span v-else-if="swapIsOngoing" class="closing-notice nq-orange">
-                    {{ $t('Don\'t close your wallet!') }}
-                </span>
-                <span v-else class="closing-notice">
+                <span v-else-if="swapIsComplete" class="closing-notice">
                     {{ $t('It\'s safe to close your wallet now') }}
                 </span>
+                <span v-else class="closing-notice nq-orange">
+                    {{ $t('Don\'t close your wallet!') }}
+                </span>
             </div>
-            <MaximizeIcon v-if="swapIsOngoing"/>
+            <MaximizeIcon v-if="!swapIsComplete"/>
         </button>
     </transition>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, watch } from '@vue/composition-api';
-import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
@@ -61,7 +69,8 @@ export default defineComponent({
     setup(props, context) {
         const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
 
-        const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
+        const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
+        const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
         const swapIsErrored = computed(() => !!activeSwap.value
             && (activeSwap.value.fundingError || activeSwap.value.settlementError),
         );
@@ -370,7 +379,8 @@ export default defineComponent({
 
         return {
             activeSwap,
-            swapIsOngoing,
+            swapIsComplete,
+            swapIsExpired,
             swapIsErrored,
             openSwap,
         };
@@ -380,6 +390,7 @@ export default defineComponent({
         CheckmarkIcon,
         AlertTriangleIcon,
         MaximizeIcon,
+        StopwatchIcon,
     },
 });
 </script>
@@ -407,6 +418,11 @@ export default defineComponent({
         background-color: var(--nimiq-orange);
         background-image: var(--nimiq-orange-bg);
     }
+
+    &.expired {
+        background-color: var(--nimiq-gold);
+        background-image: var(--nimiq-gold-bg);
+    }
 }
 
 .icon {
@@ -418,9 +434,13 @@ export default defineComponent({
         margin: auto;
 
         &.nq-icon {
-            width: 3rem;
-            height: 3rem;
+            width: 4rem;
+            height: 4rem;
         }
+    }
+
+    .complete & .nq-icon {
+        padding: 0.5rem;
     }
 }
 

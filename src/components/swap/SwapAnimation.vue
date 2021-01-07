@@ -7,6 +7,21 @@
             <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
         </div>
 
+        <div class="expired-background flex-column nq-gold-bg" :class="{'visible': state === SwapState.EXPIRED}">
+            <div class="flex-grow"></div>
+            <StopwatchIcon/>
+            <h1 class="title nq-h1">{{ $t('Swap has expired') }}</h1>
+            <p class="expired-text">
+                {{ $t('If your funds were sent, but you have not received them back and have not received your'
+                    + ' target currency, please contact the Nimiq Team with the following reference:') }}
+            </p>
+            <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
+            <div class="flex-grow"></div>
+            <button class="nq-button gold inverse" @click="$emit('cancel')" @mousedown.prevent>
+                {{ $t('Close') }}
+            </button>
+        </div>
+
         <div class="nq-card-header">
             <h1 class="nq-h1">{{ $t('Performing Swap') }}</h1>
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
@@ -185,7 +200,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
-import { CheckmarkIcon, Identicon, Tooltip, FiatAmount } from '@nimiq/vue-components';
+import { CheckmarkIcon, Identicon, Tooltip, FiatAmount, StopwatchIcon, Copyable } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
@@ -202,6 +217,10 @@ import BankSvg from './animation/bank.svg';
 
 export default defineComponent({
     props: {
+        swapId: {
+            type: String,
+            required: true,
+        },
         swapState: {
             type: Number as () => SwapState,
             required: true,
@@ -403,6 +422,8 @@ export default defineComponent({
         ShortAddress,
         BlueLink,
         FiatAmount,
+        StopwatchIcon,
+        Copyable,
     },
 });
 </script>
@@ -427,7 +448,8 @@ export default defineComponent({
     }
 }
 
-.success-background {
+.success-background,
+.expired-background {
     position: absolute;
     top: 0;
     right: 0;
@@ -450,7 +472,41 @@ export default defineComponent({
 
     &.visible {
         opacity: 1;
-        z-index: 1;
+        z-index: 2;
+        pointer-events: all;
+    }
+}
+
+.expired-background {
+    padding-bottom: 2rem;
+
+    .nq-icon {
+        font-size: 11rem;
+    }
+
+    .expired-text {
+        padding: 0 2rem 2rem;
+        max-width: 58rem;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .expired-swap-id {
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        text-align: center;
+        margin: 0 0.5rem;
+
+        /deep/ .background {
+            background: white;
+        }
+
+        &:hover,
+        &:focus,
+        &.copied {
+            color: white !important;
+        }
     }
 }
 

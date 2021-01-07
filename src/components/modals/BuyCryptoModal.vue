@@ -211,6 +211,7 @@
         <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
+                    :swapId="swap.id"
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
@@ -222,6 +223,7 @@
                     :error="swap.fundingError || swap.settlementError"
                     :manualFunding="true"
                     @finished="finishSwap"
+                    @cancel="finishSwap"
                 >
                     <SwapSepaFundingInstructions
                         v-if="swap.fundingInstructions && swap.fundingInstructions.type === 'sepa'"

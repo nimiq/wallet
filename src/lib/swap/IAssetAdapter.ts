@@ -52,4 +52,6 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
     awaitSwapSecret(address: string, data: string): Promise<string>;
 
     settleHtlc(serializedTx: string, secret: string, hash: string): Promise<Transaction<TAsset>>;
+
+    stop(reason: Error): void;
 }

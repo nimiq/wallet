@@ -195,8 +195,7 @@ export default defineComponent({
 
             switch (activeSwap.value!.state) {
                 case SwapState.EXPIRED: {
-                    // Handle expired swap
-                    // setActiveSwap(null);
+                    // Expired swaps are handled by special UI and user action in SwapAnimation
                     break;
                 }
                 // Handle regular swap process
@@ -216,6 +215,8 @@ export default defineComponent({
                     }).finally(() => unsubscribe());
                 }
                 case SwapState.AWAIT_INCOMING: {
+                    if (await checkExpired()) break;
+
                     const remoteFundingTx = await swapHandler.awaitIncoming((tx) => {
                         updateSwap({
                             remoteFundingTx: tx,
@@ -228,6 +229,8 @@ export default defineComponent({
                     });
                 }
                 case SwapState.CREATE_OUTGOING: {
+                    if (await checkExpired()) break;
+
                     if (activeSwap.value!.from.asset === SwapAsset.EUR) {
                         // Clear stateEnteredAt timestamp as it will be set when the user clicks "I Paid"
                         updateSwap({

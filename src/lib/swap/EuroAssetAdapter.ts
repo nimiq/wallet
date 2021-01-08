@@ -1,3 +1,5 @@
+import { captureException } from '@sentry/browser';
+import Config from 'config';
 import { Htlc, HtlcStatus, SettlementInstruction } from '../OasisApi';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
@@ -24,6 +26,11 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
                 if (test(htlc)) return htlc;
             } catch (error) {
                 console.error(error); // eslint-disable-line no-console
+
+                if (error.message !== 'HTLC not found') {
+                    // TODO: Extract error handling from libswap to application
+                    if (Config.reportToSentry) captureException(error);
+                }
             }
             return null;
         };

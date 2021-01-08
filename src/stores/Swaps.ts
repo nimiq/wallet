@@ -67,11 +67,10 @@ export type ActiveSwap = SwapObject & {
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
-    fundingError?: string,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     secret?: string,
-    settlementError?: string,
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    error?: string,
 }
 
 export enum SEPA_INSTANT_SUPPORT {

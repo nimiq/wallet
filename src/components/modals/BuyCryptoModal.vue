@@ -224,7 +224,7 @@
                     :toAmount="swap.to.amount - swap.to.fee"
                     :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
-                    :error="swap.fundingError || swap.settlementError"
+                    :error="swap.error"
                     :manualFunding="true"
                     @finished="finishSwap"
                     @cancel="finishSwap"

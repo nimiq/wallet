@@ -733,6 +733,10 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
+#: src/components/swap/SwapNotification.vue:110
+msgid "If this error persists, check your internet connection or reload the page to reconnect."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:15
 msgid "If your funds were sent, but you have not received them back and have not received your target currency, please contact the Nimiq Team with the following reference:"
 msgstr ""
@@ -919,6 +923,10 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:128
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
+msgstr ""
+
+#: src/components/swap/SwapNotification.vue:109
+msgid "No connection to {chain} network."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:79

@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
@@ -62,7 +62,7 @@ import { getHtlc, settleHtlc } from '../../lib/OasisApi';
 import Time from '../../lib/Time';
 
 enum SwapError {
-    EXPIRED = 'expired',
+    EXPIRED = 'EXPIRED',
 }
 
 export default defineComponent({
@@ -71,9 +71,7 @@ export default defineComponent({
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
-        const swapIsErrored = computed(() => !!activeSwap.value
-            && (activeSwap.value.fundingError || activeSwap.value.settlementError),
-        );
+        const swapIsErrored = computed(() => !!activeSwap.value && activeSwap.value.error);
 
         function onUnload(event: BeforeUnloadEvent) {
             // Firefox respects the event cancellation to prompt the user
@@ -101,6 +99,47 @@ export default defineComponent({
                 ...update,
             });
         }
+
+        const currentError = ref<string>(null);
+
+        const processingError = computed(() => {
+            if (currentError.value) return currentError.value;
+
+            const consensusErrorMsg = (chain: 'Nimiq' | 'Bitcoin') => `
+                ${context.root.$t('No connection to {chain} network.', { chain })}
+                ${context.root.$t('If this error persists, check your internet connection or '
+                    + 'reload the page to reconnect.')}
+            `;
+
+            if (activeSwap.value) {
+                const swap = activeSwap.value;
+
+                if ([SwapState.AWAIT_INCOMING, SwapState.SETTLE_INCOMING].includes(swap.state)) {
+                    if (swap.to.asset === SwapAsset.NIM && useNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Nimiq');
+                    }
+                    if (swap.to.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Bitcoin');
+                    }
+                }
+
+                if ([SwapState.CREATE_OUTGOING, SwapState.AWAIT_SECRET].includes(swap.state)) {
+                    if (swap.from.asset === SwapAsset.NIM && useNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Nimiq');
+                    }
+                    if (swap.from.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Bitcoin');
+                    }
+                }
+            }
+
+            return undefined;
+        });
+
+        watch(processingError, (error: string | undefined) => {
+            if (!activeSwap.value) return;
+            updateSwap({ error });
+        });
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
@@ -275,7 +314,6 @@ export default defineComponent({
                             state: SwapState.AWAIT_SECRET,
                             stateEnteredAt: Date.now(),
                             fundingTx,
-                            fundingError: undefined,
                         });
                     } else {
                         // Send HTLC funding transaction
@@ -285,8 +323,8 @@ export default defineComponent({
                                 (tx) => {
                                     updateSwap({
                                         fundingTx: tx,
-                                        fundingError: undefined,
                                     });
+                                    currentError.value = null;
                                 },
                             );
 
@@ -298,18 +336,17 @@ export default defineComponent({
                                 state: SwapState.AWAIT_SECRET,
                                 stateEnteredAt: Date.now(),
                                 fundingTx,
-                                fundingError: undefined,
                             });
                         } catch (error) {
                             if (error.message === SwapError.EXPIRED) return;
 
-                            updateSwap({
-                                fundingError: error.message as string,
-                            });
+                            currentError.value = error.message;
                             setTimeout(processSwap, 2000); // 2 seconds
                             cleanUp();
                             return;
                         }
+
+                        currentError.value = null;
                     }
                 }
                 case SwapState.AWAIT_SECRET: {
@@ -355,22 +392,22 @@ export default defineComponent({
                         if (activeSwap.value!.to.asset === SwapAsset.BTC) {
                             subscribeToAddresses([(settlementTx as BtcTransactionDetails).outputs[0].address!]);
                         }
+
                         updateSwap({
                             state: SwapState.COMPLETE,
                             stateEnteredAt: Date.now(),
                             settlementTx,
-                            settlementError: undefined,
                         });
                     } catch (error) {
                         if (error.message === SwapError.EXPIRED) return;
 
-                        updateSwap({
-                            settlementError: error.message as string,
-                        });
+                        currentError.value = error.message;
                         setTimeout(processSwap, 2000); // 2 seconds
                         cleanUp();
                         return;
                     }
+
+                    currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
                     setTimeout(() => {

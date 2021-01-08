@@ -155,6 +155,10 @@ export default defineComponent({
                         default: throw new Error('Invalid swap asset');
                     }
                 }
+
+                // eslint-disable-next-line no-console
+                console.debug('Checked expiry - expires in', swap.expires - timestamp, 'seconds');
+
                 return false;
             }
 

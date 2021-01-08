@@ -18,7 +18,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         id: string,
         test: (htlc: HtlcDetails) => boolean,
     ): Promise<HtlcDetails> {
-        const check = async () => {
+        const check = async (): Promise<Htlc<HtlcStatus> | null> => {
             try {
                 const htlc = await this.client.getHtlc(id);
                 if (test(htlc)) return htlc;

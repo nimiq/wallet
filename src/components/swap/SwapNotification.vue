@@ -134,9 +134,15 @@ export default defineComponent({
                 const timestamp = await Time.now(true);
                 const swap = activeSwap.value!;
 
+                const remainingTimes: number[] = [];
+
                 // When we haven't funded our HTLC yet, we need to abort when the quote expires.
-                if (swap.state <= SwapState.AWAIT_INCOMING && swap.expires <= timestamp) {
-                    return true;
+                if (swap.state <= SwapState.AWAIT_INCOMING) {
+                    remainingTimes.push(swap.expires - timestamp);
+
+                    if (swap.expires <= timestamp) {
+                        return true;
+                    }
                 }
 
                 // Otherwise, the swap expires when the first HTLC expires
@@ -144,12 +150,16 @@ export default defineComponent({
                     switch (contract!.asset) {
                         case SwapAsset.NIM: {
                             const height = useNetworkStore().height.value;
-                            if ((contract as Contract<SwapAsset.NIM>).htlc.timeoutBlock <= height) return true;
+                            const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
+                            remainingTimes.push((timeoutBlock - height) * 60);
+                            if (timeoutBlock <= height) return true;
                             break;
                         }
                         case SwapAsset.BTC:
                         case SwapAsset.EUR: {
-                            if ((contract as Contract<SwapAsset.BTC | SwapAsset.EUR>).timeout <= timestamp) return true;
+                            const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
+                            remainingTimes.push(timeout - timestamp);
+                            if (timeout <= timestamp) return true;
                             break;
                         }
                         default: throw new Error('Invalid swap asset');
@@ -157,7 +167,7 @@ export default defineComponent({
                 }
 
                 // eslint-disable-next-line no-console
-                console.debug('Checked expiry - expires in', swap.expires - timestamp, 'seconds');
+                console.debug('Swap expires in', Math.min(...remainingTimes), 'seconds');
 
                 return false;
             }

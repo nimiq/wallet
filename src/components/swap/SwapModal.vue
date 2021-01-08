@@ -1433,6 +1433,11 @@ export default defineComponent({
     font-weight: 600;
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;
+    text-align: center;
+
+    &.nq-orange {
+        text-align: left;
+    }
 
     svg {
         margin-right: 1rem;

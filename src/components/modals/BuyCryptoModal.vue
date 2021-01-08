@@ -191,10 +191,14 @@
                             tag="span"
                         >
                             <span slot="text">{{ $t('Buy Crypto') }}</span>
-                            <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
-                                Fastspot</a>
-                            <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
-                                Fastspot GO</a>
+                            <span slot="Fastspot">
+                                <a href="https://fastspot.io/terms"
+                                    target="_blank" class="nq-link">Fastspot</a>,
+                                <a href="https://go.fastspot.io/terms"
+                                    target="_blank" class="nq-link">Fastspot GO</a>
+                            </span>
+                            <a slot="FastspotGO" href="https://www.ten31.com/oasis/terms"
+                                target="_blank" class="nq-link">OASIS</a>
                         </i18n>
                     </div>
                     <div v-else class="footer-notice nq-gray flex-row">
@@ -1620,6 +1624,11 @@ svg.welcome-euro-logo {
     font-weight: 600;
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;
+    text-align: center;
+
+    &.nq-orange {
+        text-align: left;
+    }
 
     svg {
         margin-right: 1rem;

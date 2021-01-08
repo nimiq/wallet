@@ -94,17 +94,19 @@ export const useBtcTransactionsStore = createStore({
                             outputIndex: settlementData.outputIndex,
                         });
 
-                        // Check this swap with the Fastspot API to detect if this was a EUR swap
-                        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-                        getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
-                            if (contractWithEstimate.from.asset === SwapAsset.EUR) {
-                                useSwapsStore().addFundingData(settlementData.hash, {
-                                    asset: SwapAsset.EUR,
-                                    amount: contractWithEstimate.from.amount,
-                                    // We cannot get bank info or EUR HTLC details from this.
-                                });
-                            }
-                        });
+                        if (!useSwapsStore().state.swaps[settlementData.hash].in) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                            getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
+                                if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    useSwapsStore().addFundingData(settlementData.hash, {
+                                        asset: SwapAsset.EUR,
+                                        amount: contractWithEstimate.from.amount,
+                                        // We cannot get bank info or EUR HTLC details from this.
+                                    });
+                                }
+                            }).catch(() => undefined);
+                        }
                     }
                 }
 

@@ -131,17 +131,19 @@ export const useTransactionsStore = createStore({
                             transactionHash: plain.transactionHash,
                         });
 
-                        // Check this swap with the Fastspot API to detect if this was a EUR swap
-                        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-                        getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
-                            if (contractWithEstimate.from.asset === SwapAsset.EUR) {
-                                useSwapsStore().addFundingData(settlementData.hashRoot, {
-                                    asset: SwapAsset.EUR,
-                                    amount: contractWithEstimate.from.amount,
-                                    // We cannot get bank info or EUR HTLC details from this.
-                                });
-                            }
-                        });
+                        if (!useSwapsStore().state.swaps[settlementData.hashRoot].in) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                            getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
+                                if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    useSwapsStore().addFundingData(settlementData.hashRoot, {
+                                        asset: SwapAsset.EUR,
+                                        amount: contractWithEstimate.from.amount,
+                                        // We cannot get bank info or EUR HTLC details from this.
+                                    });
+                                }
+                            }).catch(() => undefined);
+                        }
                     }
                 }
 

@@ -75,6 +75,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
     }
 
     public async fundHtlc(address: string, serializedTx: string): Promise<TransactionDetails> {
+        if (this.stopped) throw new Error('BitcoinAssetAdapter called while stopped');
         return this.sendTransaction(serializedTx);
     }
 
@@ -108,7 +109,6 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
     }
 
     private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {
-        if (this.stopped) throw new Error('BitcoinAssetAdapter called while stopped');
         return this.client.sendTransaction(serializedTx);
     }
 }

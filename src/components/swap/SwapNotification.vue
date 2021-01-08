@@ -306,11 +306,17 @@ export default defineComponent({
                     let interval: number;
                     const secret = await Promise.race<Promise<string>>([
                         swapHandler.awaitSecret(),
-                        new Promise((resolve) => {
+                        new Promise((resolve, reject) => {
                             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             interval = window.setInterval(async () => {
+                                if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
+                                    window.clearInterval(interval);
+                                    reject(new Error(SwapError.EXPIRED));
+                                    return;
+                                }
+
                                 try {
-                                    const swap = await getSwap(activeSwap.value!.id) as Swap;
+                                    const swap = await getSwap(activeSwap.value.id) as Swap;
                                     if (swap.secret) {
                                         // TODO: Validate that this secret corresponds to the swap hash
                                         resolve(swap.secret);
@@ -359,7 +365,7 @@ export default defineComponent({
                 case SwapState.COMPLETE: {
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in the SwapModal.
-                        if (context.root.$route.name === 'swap') return;
+                        if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }

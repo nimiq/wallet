@@ -159,6 +159,7 @@
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
+                    :swapId="swap.id"
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
@@ -170,6 +171,7 @@
                     :error="swap.fundingError || swap.settlementError"
                     :switchSides="swap.from.asset === SwapAsset.BTC"
                     @finished="finishSwap"
+                    @cancel="finishSwap"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>

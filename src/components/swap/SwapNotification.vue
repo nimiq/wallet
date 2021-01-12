@@ -1,46 +1,55 @@
 <template>
-    <transition :name="swapIsOngoing ? 'minimize' : 'slide'">
+    <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
-            class="reset swap-notification flex-row" :class="{'complete': !swapIsOngoing, 'errored': swapIsErrored}"
+            class="reset swap-notification flex-row" :class="{
+                'complete': swapIsComplete,
+                'expired': swapIsExpired,
+                'errored': swapIsErrored && !swapIsExpired,
+            }"
             @click="openSwap"
         >
             <div class="icon">
-                <AlertTriangleIcon v-if="swapIsErrored"/>
-                <LoadingSpinner v-else-if="swapIsOngoing"/>
-                <CheckmarkIcon v-else/>
+                <StopwatchIcon v-if="swapIsExpired" />
+                <AlertTriangleIcon v-else-if="swapIsErrored"/>
+                <CheckmarkIcon v-else-if="swapIsComplete"/>
+                <LoadingSpinner v-else/>
             </div>
             <div class="content flex-column">
-                <div v-if="swapIsErrored" class="status">
+                <div v-if="swapIsExpired" class="status">
+                    {{ $t('Swap has expired') }}
+                </div>
+                <div v-else-if="swapIsErrored" class="status">
                     {{ $t('There\'s a problem') }}
                 </div>
-                <div v-else-if="swapIsOngoing" class="status">
-                    {{ $t('Performing swap {progress}/5', { progress: activeSwap.state + 1 }) }}
-                </div>
-                <div v-else class="status">
+                <div v-else-if="swapIsComplete" class="status">
                     {{ $t('Swap successful!') }}
                 </div>
+                <div v-else class="status">
+                    {{ $t('Performing swap {progress}/5', { progress: (activeSwap ? activeSwap.state : 0) + 1 }) }}
+                </div>
 
-                <span v-if="swapIsErrored" class="closing-notice">
+                <span v-if="swapIsExpired || swapIsErrored" class="closing-notice">
                     {{ $t('Click for more information') }}
                 </span>
-                <span v-else-if="swapIsOngoing" class="closing-notice nq-orange">
-                    {{ $t('Don\'t close your wallet!') }}
-                </span>
-                <span v-else class="closing-notice">
+                <span v-else-if="swapIsComplete" class="closing-notice">
                     {{ $t('It\'s safe to close your wallet now') }}
                 </span>
+                <span v-else class="closing-notice nq-orange">
+                    {{ $t('Don\'t close your wallet!') }}
+                </span>
             </div>
-            <MaximizeIcon v-if="swapIsOngoing"/>
+            <MaximizeIcon v-if="!swapIsComplete"/>
         </button>
     </transition>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, watch } from '@vue/composition-api';
-import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
+import { captureException } from '@sentry/browser';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
@@ -50,12 +59,18 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import { getHtlc, settleHtlc } from '../../lib/OasisApi';
+import Time from '../../lib/Time';
+
+enum SwapError {
+    EXPIRED = 'expired',
+}
 
 export default defineComponent({
     setup(props, context) {
         const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
 
-        const swapIsOngoing = computed(() => !!activeSwap.value && activeSwap.value.state < SwapState.COMPLETE);
+        const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
+        const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
         const swapIsErrored = computed(() => !!activeSwap.value
             && (activeSwap.value.fundingError || activeSwap.value.settlementError),
         );
@@ -99,51 +114,62 @@ export default defineComponent({
         async function processSwap() {
             console.info('Processing swap'); // eslint-disable-line no-console
 
+            const swapsNim = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.NIM);
+            const swapsBtc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.BTC);
+            // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
+
             // Await Nimiq and Bitcoin consensus
-            if (useNetworkStore().state.consensus !== 'established') {
+            if (swapsNim && useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
                 await new Promise<void>((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
                     if (state === 'established') resolve();
                 }));
             }
-            if (useBtcNetworkStore().state.consensus !== 'established') {
-                // const electrum = await getElectrumClient();
-                // await electrum.waitForConsensusEstablished();
-
-                // If consensus was only just established, we need to wait for the first block event
-                await new Promise<void>((resolve) => {
-                    const unsubscribe = useBtcNetworkStore().subscribe((mutation) => {
-                        if (!mutation.payload.timestamp) return;
-                        unsubscribe();
-                        resolve();
-                    });
-                });
+            if (swapsBtc && useBtcNetworkStore().state.consensus !== 'established') {
+                const electrum = await getElectrumClient();
+                await electrum.waitForConsensusEstablished();
             }
 
-            // Get current timestamp from a trusted source, not the user's device
-            const { timestamp } = useBtcNetworkStore().state;
+            async function isExpired() {
+                const timestamp = await Time.now(true);
+                const swap = activeSwap.value!;
 
-            // Check for swap expiry
-            let isExpired = false;
-            for (const contract of Object.values(activeSwap.value!.contracts)) {
-                switch (contract!.asset) {
-                    case SwapAsset.NIM: {
-                        const height = useNetworkStore().height.value;
-                        isExpired = (contract as Contract<SwapAsset.NIM>).htlc.timeoutBlock <= height;
-                        break;
+                const remainingTimes: number[] = [];
+
+                // When we haven't funded our HTLC yet, we need to abort when the quote expires.
+                if (swap.state <= SwapState.AWAIT_INCOMING) {
+                    remainingTimes.push(swap.expires - timestamp);
+
+                    if (swap.expires <= timestamp) {
+                        return true;
                     }
-                    case SwapAsset.BTC:
-                    case SwapAsset.EUR: {
-                        isExpired = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>).timeout <= timestamp;
-                        break;
-                    }
-                    default: throw new Error('Invalid swap asset');
                 }
-            }
 
-            if (isExpired) {
-                setActiveSwap(null);
-                return;
+                // Otherwise, the swap expires when the first HTLC expires
+                for (const contract of Object.values(swap.contracts)) {
+                    switch (contract!.asset) {
+                        case SwapAsset.NIM: {
+                            const height = useNetworkStore().height.value;
+                            const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
+                            remainingTimes.push((timeoutBlock - height) * 60);
+                            if (timeoutBlock <= height) return true;
+                            break;
+                        }
+                        case SwapAsset.BTC:
+                        case SwapAsset.EUR: {
+                            const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
+                            remainingTimes.push(timeout - timestamp);
+                            if (timeout <= timestamp) return true;
+                            break;
+                        }
+                        default: throw new Error('Invalid swap asset');
+                    }
+                }
+
+                // eslint-disable-next-line no-console
+                console.debug('Swap expires in', Math.min(...remainingTimes), 'seconds');
+
+                return false;
             }
 
             const swapHandler = new SwapHandler(
@@ -154,10 +180,36 @@ export default defineComponent({
 
             window.addEventListener('beforeunload', onUnload);
 
+            // Set up expiry watchers
+            async function checkExpired() {
+                if (await isExpired()) {
+                    swapHandler.stop(new Error(SwapError.EXPIRED));
+                    updateSwap({
+                        state: SwapState.EXPIRED,
+                    });
+                    cleanUp();
+                    return true;
+                }
+                return false;
+            }
+            // // Check expiry when quote expires
+            // const timeout1 = window.setTimeout(
+            //     checkExpired,
+            //     (activeSwap.value!.expires * 1000) - await Time.now() + 1000,
+            // );
+            let expiryCheckInterval = -1;
+            if (!await checkExpired()) {
+                expiryCheckInterval = window.setInterval(checkExpired, 60 * 1000); // Every minute
+            }
+
+            function cleanUp() {
+                window.removeEventListener('beforeunload', onUnload);
+                window.clearInterval(expiryCheckInterval);
+            }
+
             switch (activeSwap.value!.state) {
                 case SwapState.EXPIRED: {
-                    // Handle expired swap
-                    setActiveSwap(null);
+                    // Expired swaps are handled by special UI and user action in SwapAnimation
                     break;
                 }
                 // Handle regular swap process
@@ -177,6 +229,8 @@ export default defineComponent({
                     }).finally(() => unsubscribe());
                 }
                 case SwapState.AWAIT_INCOMING: {
+                    if (await checkExpired()) break;
+
                     const remoteFundingTx = await swapHandler.awaitIncoming((tx) => {
                         updateSwap({
                             remoteFundingTx: tx,
@@ -189,6 +243,8 @@ export default defineComponent({
                     });
                 }
                 case SwapState.CREATE_OUTGOING: {
+                    if (await checkExpired()) break;
+
                     if (activeSwap.value!.from.asset === SwapAsset.EUR) {
                         // Clear stateEnteredAt timestamp as it will be set when the user clicks "I Paid"
                         updateSwap({
@@ -245,10 +301,13 @@ export default defineComponent({
                                 fundingError: undefined,
                             });
                         } catch (error) {
+                            if (error.message === SwapError.EXPIRED) return;
+
                             updateSwap({
                                 fundingError: error.message as string,
                             });
                             setTimeout(processSwap, 2000); // 2 seconds
+                            cleanUp();
                             return;
                         }
                     }
@@ -257,17 +316,24 @@ export default defineComponent({
                     let interval: number;
                     const secret = await Promise.race<Promise<string>>([
                         swapHandler.awaitSecret(),
-                        new Promise((resolve) => {
+                        new Promise((resolve, reject) => {
                             initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             interval = window.setInterval(async () => {
+                                if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
+                                    window.clearInterval(interval);
+                                    reject(new Error(SwapError.EXPIRED));
+                                    return;
+                                }
+
                                 try {
-                                    const swap = await getSwap(activeSwap.value!.id) as Swap;
+                                    const swap = await getSwap(activeSwap.value.id) as Swap;
                                     if (swap.secret) {
                                         // TODO: Validate that this secret corresponds to the swap hash
                                         resolve(swap.secret);
                                     }
                                 } catch (error) {
-                                    // Ignore
+                                    console.error(error); // eslint-disable-line no-console
+                                    if (Config.reportToSentry) captureException(error);
                                 }
                             }, 5 * 1000); // Every 5 seconds
                         }),
@@ -296,17 +362,20 @@ export default defineComponent({
                             settlementError: undefined,
                         });
                     } catch (error) {
+                        if (error.message === SwapError.EXPIRED) return;
+
                         updateSwap({
                             settlementError: error.message as string,
                         });
                         setTimeout(processSwap, 2000); // 2 seconds
+                        cleanUp();
                         return;
                     }
                 }
                 case SwapState.COMPLETE: {
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in the SwapModal.
-                        if (context.root.$route.name === 'swap') return;
+                        if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }
@@ -314,7 +383,8 @@ export default defineComponent({
                 default:
                     break;
             }
-            window.removeEventListener('beforeunload', onUnload);
+
+            cleanUp();
         }
 
         function openSwap() {
@@ -332,7 +402,8 @@ export default defineComponent({
 
         return {
             activeSwap,
-            swapIsOngoing,
+            swapIsComplete,
+            swapIsExpired,
             swapIsErrored,
             openSwap,
         };
@@ -342,6 +413,7 @@ export default defineComponent({
         CheckmarkIcon,
         AlertTriangleIcon,
         MaximizeIcon,
+        StopwatchIcon,
     },
 });
 </script>
@@ -369,6 +441,11 @@ export default defineComponent({
         background-color: var(--nimiq-orange);
         background-image: var(--nimiq-orange-bg);
     }
+
+    &.expired {
+        background-color: var(--nimiq-gold);
+        background-image: var(--nimiq-gold-bg);
+    }
 }
 
 .icon {
@@ -380,9 +457,13 @@ export default defineComponent({
         margin: auto;
 
         &.nq-icon {
-            width: 3rem;
-            height: 3rem;
+            width: 4rem;
+            height: 4rem;
         }
+    }
+
+    .complete & .nq-icon {
+        padding: 0.5rem;
     }
 }
 

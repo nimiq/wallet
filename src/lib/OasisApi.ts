@@ -156,7 +156,7 @@ export async function createHtlc(
         if (y.length === 64) {
             contract.beneficiary.y = hexToBase64(y);
         } else if (fromBase64Url(y).length !== 32) {
-            throw new Error('Beneficiary x must be in HEX or Base64Url format');
+            throw new Error('Beneficiary y must be in HEX or Base64Url format');
         }
         while (contract.beneficiary.y.slice(-1) === '.') {
             contract.beneficiary.y = contract.beneficiary.y.slice(0, -1);

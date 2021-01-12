@@ -105,4 +105,9 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
             this.swap.hash,
         );
     }
+
+    public stop(reason: Error) {
+        this.fromAssetAdapter.stop(reason);
+        this.toAssetAdapter.stop(reason);
+    }
 }

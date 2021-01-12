@@ -11,6 +11,9 @@ export interface NimiqClient {
 }
 
 export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
+    private cancelCallback: ((reason: Error) => void) | null = null;
+    private stopped = false;
+
     constructor(private client: NimiqClient) {}
 
     public async findTransaction(
@@ -18,17 +21,23 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         test: (tx: TransactionDetails) => boolean,
     ): Promise<TransactionDetails> {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             const listener = (tx: TransactionDetails) => {
                 if (!test(tx)) return false;
 
                 this.client.removeListener(handle);
+                this.cancelCallback = null;
                 resolve(tx);
                 return true;
             };
 
             // First subscribe to new transactions
             const handle = await this.client.addTransactionListener(listener, [address]);
+
+            this.cancelCallback = (reason: Error) => {
+                this.client.removeListener(handle);
+                reject(reason);
+            };
 
             // Then check history
             const history = await this.client.getTransactionsByAddress(address);
@@ -96,7 +105,13 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         return this.sendTransaction(serializedTx);
     }
 
+    public stop(reason: Error): void {
+        if (this.cancelCallback) this.cancelCallback(reason);
+        this.stopped = true;
+    }
+
     private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {
+        if (this.stopped) throw new Error('NimiqAssetAdapter called while stopped');
         const tx = await this.client.sendTransaction(serializedTx);
         if (tx.state === TransactionState.NEW) throw new Error('Failed to send transaction');
         return tx;

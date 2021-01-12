@@ -11,6 +11,9 @@ export interface BitcoinClient {
 }
 
 export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
+    private cancelCallback: ((reason: Error) => void) | null = null;
+    private stopped = false;
+
     constructor(private client: BitcoinClient) {}
 
     public async findTransaction(
@@ -18,17 +21,23 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
         test: (tx: TransactionDetails) => boolean,
     ): Promise<TransactionDetails> {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             const listener = (tx: TransactionDetails) => {
                 if (!test(tx)) return false;
 
                 this.client.removeListener(handle);
+                this.cancelCallback = null;
                 resolve(tx);
                 return true;
             };
 
             // First subscribe to new transactions
             const handle = await this.client.addTransactionListener(listener, [address]);
+
+            this.cancelCallback = (reason: Error) => {
+                this.client.removeListener(handle);
+                reject(reason);
+            };
 
             // Then check history
             const history = await this.client.getTransactionsByAddress(address);
@@ -66,6 +75,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
     }
 
     public async fundHtlc(address: string, serializedTx: string): Promise<TransactionDetails> {
+        if (this.stopped) throw new Error('BitcoinAssetAdapter called while stopped');
         return this.sendTransaction(serializedTx);
     }
 
@@ -91,6 +101,11 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
             `${secret}01`,
         );
         return this.sendTransaction(serializedTx);
+    }
+
+    public stop(reason: Error): void {
+        if (this.cancelCallback) this.cancelCallback(reason);
+        this.stopped = true;
     }
 
     private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {

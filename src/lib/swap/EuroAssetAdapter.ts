@@ -9,13 +9,16 @@ export interface OasisClient {
 }
 
 export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
+    private cancelCallback: ((reason: Error) => void) | null = null;
+    private stopped = false;
+
     constructor(private client: OasisClient) {}
 
     public async findTransaction(
         id: string,
         test: (htlc: HtlcDetails) => boolean,
     ): Promise<HtlcDetails> {
-        const check = async () => {
+        const check = async (): Promise<Htlc<HtlcStatus> | null> => {
             try {
                 const htlc = await this.client.getHtlc(id);
                 if (test(htlc)) return htlc;
@@ -30,15 +33,21 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         if (htlc) return htlc;
 
         // Keep checking on an interval
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const interval = window.setInterval(() => {
                 check().then((htlc) => { // eslint-disable-line no-shadow
                     if (htlc) {
                         window.clearInterval(interval);
+                        this.cancelCallback = null;
                         resolve(htlc);
                     }
                 });
             }, 5 * 1000); // Every 5 seconds
+
+            this.cancelCallback = (reason: Error) => {
+                window.clearInterval(interval);
+                reject(reason);
+            };
         });
     }
 
@@ -81,7 +90,13 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         return tx.preimage.value;
     }
 
+    public stop(reason: Error): void {
+        if (this.cancelCallback) this.cancelCallback(reason);
+        this.stopped = true;
+    }
+
     public async settleHtlc(settlementJWS: string, secret: string): Promise<HtlcDetails> {
+        if (this.stopped) throw new Error('EuroAssetAdapter called while stopped');
         const payload = JSON.parse(atob(settlementJWS.split('.')[1])) as SettlementInstruction;
         return this.client.settleHtlc(payload.contractId, secret, settlementJWS);
     }

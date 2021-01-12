@@ -1,13 +1,18 @@
-import { TransactionDetails, TransactionState } from '@nimiq/electrum-client';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
-export { TransactionDetails };
+export type TransactionDetails = import('@nimiq/electrum-client').TransactionDetails;
+export type ConsensusState = import('@nimiq/electrum-client').ConsensusState;
 
 export interface BitcoinClient {
     addTransactionListener(listener: (tx: TransactionDetails) => any, addresses: string[]): number | Promise<number>;
-    getTransactionsByAddress(address: string): Promise<TransactionDetails[]>;
+    getTransactionsByAddress(
+        address: string,
+        sinceBlockHeight?: number,
+        knownTransactions?: TransactionDetails[],
+    ): Promise<TransactionDetails[]>;
     removeListener(handle: number): void | Promise<void>;
     sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
+    addConsensusChangedListener(listener: (consensusState: ConsensusState) => any): number | Promise<number>;
 }
 
 export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
@@ -25,25 +30,47 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
             const listener = (tx: TransactionDetails) => {
                 if (!test(tx)) return false;
 
-                this.client.removeListener(handle);
-                this.cancelCallback = null;
+                cleanup();
                 resolve(tx);
                 return true;
             };
 
             // First subscribe to new transactions
-            const handle = await this.client.addTransactionListener(listener, [address]);
+            const transactionListener = await this.client.addTransactionListener(listener, [address]);
 
-            this.cancelCallback = (reason: Error) => {
-                this.client.removeListener(handle);
-                reject(reason);
+            // Setup a transaction history check function
+            let history: TransactionDetails[] = [];
+            const checkHistory = async () => {
+                history = await this.client.getTransactionsByAddress(address, 0, history);
+                for (const tx of history) {
+                    if (listener(tx)) break;
+                }
             };
 
-            // Then check history
-            const history = await this.client.getTransactionsByAddress(address);
-            for (const tx of history) {
-                if (listener(tx)) break;
-            }
+            // Then check transaction history
+            checkHistory();
+
+            // Re-check transaction history when consensus is re-established
+            const consensusListener = await this.client.addConsensusChangedListener(
+                (consensusState: ConsensusState) => consensusState === 'established' && checkHistory(),
+            );
+
+            // Also re-check transaction history every minute to catch cases where subscription fails
+            // or a short connection outage happened that didn't register as a consensus event.
+            const historyCheckInterval = window.setInterval(checkHistory, 60 * 1000); // Every minute
+
+            const cleanup = () => {
+                this.client.removeListener(transactionListener);
+                this.client.removeListener(consensusListener);
+                window.clearInterval(historyCheckInterval);
+                this.cancelCallback = null;
+            };
+
+            // Assign global cancel callback
+            this.cancelCallback = (reason: Error) => {
+                cleanup();
+                reject(reason);
+            };
         });
     }
 
@@ -62,7 +89,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
 
                 if (tx.replaceByFee) {
                     // Must wait until mined
-                    if (tx.state === TransactionState.MINED || tx.state === TransactionState.CONFIRMED) return true;
+                    if (tx.state === 'mined' || tx.state === 'confirmed') return true;
 
                     if (typeof onPending === 'function') onPending(tx);
 

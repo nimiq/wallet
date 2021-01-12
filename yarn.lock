@@ -951,10 +951,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/network-client@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.6.1.tgz#479d60d3a4c6292c09be1fecc65836c78d811690"
-  integrity sha512-xTczmLqso2U7xSpDHSCtUlbf/++n6zezdqnbtukiPprO96+ZvPmTAF0IshCUwrwMYtugbcdj+C+q24UG4nF6cg==
+"@nimiq/network-client@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.6.3.tgz#112c764f1daa429dde243b76b730cbb2afe942bc"
+  integrity sha512-867OsnurWT717qKxYGea8SNmWJoM5nzhbPF2a7RVbnJyYj9i006kIdxlUwEEPrIRmFMn0XVhDgte2oe+4MxllQ==
   dependencies:
     "@nimiq/core-web" "1.5.3"
     "@nimiq/rpc-events" "^0.0.8"

@@ -43,16 +43,19 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         return new Promise((resolve, reject) => {
             const interval = window.setInterval(() => {
                 check().then((htlc) => { // eslint-disable-line no-shadow
-                    if (htlc) {
-                        window.clearInterval(interval);
-                        this.cancelCallback = null;
-                        resolve(htlc);
-                    }
+                    if (!htlc) return;
+                    cleanup();
+                    resolve(htlc);
                 });
             }, 5 * 1000); // Every 5 seconds
 
-            this.cancelCallback = (reason: Error) => {
+            const cleanup = () => {
                 window.clearInterval(interval);
+                this.cancelCallback = null;
+            };
+
+            this.cancelCallback = (reason: Error) => {
+                cleanup();
                 reject(reason);
             };
         });

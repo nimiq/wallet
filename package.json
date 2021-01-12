@@ -26,7 +26,7 @@
     "@nimiq/fastspot-api": "^1.2.1",
     "@nimiq/hub-api": "^1.4.1-beta.1",
     "@nimiq/iqons": "^1.5.2",
-    "@nimiq/network-client": "^0.6.1",
+    "@nimiq/network-client": "^0.6.3",
     "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.6.0",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",

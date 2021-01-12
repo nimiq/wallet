@@ -167,6 +167,8 @@ async function main() {
         process.stdout.write(`  > To:\n   > ${OUTPUT_JSON_FILE_PATH}\n`);
         const itemCount = await mergeJson();
 
+        // TODO?: generate 1 file per country, so we load only banks that we need to display
+
         process.stdout.write(`> Done!\n> ${itemCount} banks imported.\n`);
         process.exit(0);
     } catch (e) {

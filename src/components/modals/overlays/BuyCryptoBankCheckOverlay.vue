@@ -8,7 +8,7 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-grow"></div>
-            <BankCheckInput v-model="bankName" :placeholder="$t('Enter bank name...')" @bank-selected="onBankSelected"/>
+            <BankCheckInput v-model="bankName" :placeholder="$t('Enter bank name')" @bank-selected="onBankSelected"/>
             <span class="bic-too">{{ $t('BIC works, too.') }}</span>
             <div class="flex-grow"></div>
         </PageBody>

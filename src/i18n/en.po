@@ -37,7 +37,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:46
+#: src/components/BankCheckInput.vue:81
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -313,12 +313,12 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:190
-#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:141
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:205
-#: src/components/swap/SwapModal.vue:155
+#: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -354,7 +354,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:296
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:229
+#: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
 msgstr ""
 
@@ -382,9 +382,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:137
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:156
+#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:153
 msgid "Confirm"
 msgstr ""
 
@@ -415,7 +415,7 @@ msgstr ""
 msgid "Consensus"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:42
+#: src/components/BankCheckInput.vue:77
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -561,7 +561,7 @@ msgid "Enter address"
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
-msgid "Enter bank name..."
+msgid "Enter bank name"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:15
@@ -809,7 +809,7 @@ msgid "Learn more here"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:440
-#: src/components/swap/SwapModal.vue:323
+#: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -871,6 +871,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:59
 #: src/components/swap/SwapModal.vue:63
 msgid "Max."
+msgstr ""
+
+#: src/components/BankCheckInput.vue:39
+msgid "More locations will be supported soon."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:14
@@ -939,7 +943,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:41
+#: src/components/BankCheckInput.vue:76
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1117,6 +1121,7 @@ msgid ""
 "money to this address"
 msgstr ""
 
+#: src/components/BankCheckInput.vue:26
 #: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr ""
@@ -1347,7 +1352,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:821
-#: src/components/swap/SwapModal.vue:685
+#: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1588,7 +1593,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:49
+#: src/components/BankCheckInput.vue:84
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

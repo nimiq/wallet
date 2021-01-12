@@ -223,7 +223,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:178
 msgid "Awaiting swap secret"
 msgstr ""
 
@@ -279,8 +279,8 @@ msgstr "블록 #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:251
 #: src/components/modals/TransactionModal.vue:272
-#: src/components/swap/SwapAnimation.vue:148
-#: src/components/swap/SwapAnimation.vue:80
+#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "블록 탐색기"
 
@@ -316,7 +316,7 @@ msgstr "당신의 지갑으로 거래하세요."
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:206
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
@@ -345,7 +345,7 @@ msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -380,9 +380,9 @@ msgstr "언어 설정을 바꿉니다."
 msgid "Choose a Recipient"
 msgstr "받는 사람을 고르세요"
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:293
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:183
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
@@ -394,8 +394,12 @@ msgstr "지우기"
 msgid "Clear Cache"
 msgstr "캐시 비우기"
 
-#: src/components/swap/SwapNotification.vue:24
+#: src/components/swap/SwapNotification.vue:32
 msgid "Click for more information"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:21
+msgid "Close"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
@@ -517,11 +521,11 @@ msgstr "신용 카드 허용"
 msgid "Disclaimer"
 msgstr "면책 조항"
 
-#: src/components/swap/SwapAnimation.vue:172
+#: src/components/swap/SwapAnimation.vue:187
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:27
+#: src/components/swap/SwapNotification.vue:38
 msgid "Don't close your wallet!"
 msgstr ""
 
@@ -604,7 +608,7 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:177
+#: src/components/swap/SwapAnimation.vue:192
 msgid "Error:"
 msgstr ""
 
@@ -686,8 +690,8 @@ msgstr "파일에 들어있는 연락처가 없습니다."
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:164
-#: src/components/swap/SwapAnimation.vue:165
+#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:180
 msgid "Finalizing swap"
 msgstr ""
 
@@ -767,6 +771,19 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
+#: src/components/swap/SwapNotification.vue:110
+msgid ""
+"If this error persists, check your internet connection or reload the page to"
+" reconnect."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:15
+msgid ""
+"If your funds were sent, but you have not received them back and have not "
+"received your target currency, please contact the Nimiq Team with the "
+"following reference:"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "연락처 불러오기"
@@ -816,7 +833,7 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr "빠르고 안전하며 진정한 독립성을 제공합니다."
 
-#: src/components/swap/SwapNotification.vue:30
+#: src/components/swap/SwapNotification.vue:35
 msgid "It's safe to close your wallet now"
 msgstr ""
 
@@ -837,8 +854,8 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/modals/BuyCryptoModal.vue:409
-#: src/components/swap/SwapModal.vue:274
+#: src/components/modals/BuyCryptoModal.vue:415
+#: src/components/swap/SwapModal.vue:276
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -875,8 +892,8 @@ msgstr "파일 불러오기"
 msgid "loading..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:158
-#: src/components/swap/SwapAnimation.vue:161
+#: src/components/swap/SwapAnimation.vue:173
+#: src/components/swap/SwapAnimation.vue:176
 msgid "Locking up {asset}"
 msgstr ""
 
@@ -965,6 +982,10 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
+#: src/components/swap/SwapNotification.vue:109
+msgid "No connection to {chain} network."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1030,11 +1051,11 @@ msgstr "처리 중..."
 msgid "Per-Swap Limit"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:11
+#: src/components/swap/SwapAnimation.vue:26
 msgid "Performing Swap"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:17
+#: src/components/swap/SwapNotification.vue:28
 msgid "Performing swap {progress}/5"
 msgstr ""
 
@@ -1146,7 +1167,7 @@ msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 
 msgid "Retry"
 msgstr "재시도"
 
-#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:194
 msgid "Retrying..."
 msgstr ""
 
@@ -1260,7 +1281,7 @@ msgstr "금액 설정"
 msgid "Set fee"
 msgstr "수수료 설정"
 
-#: src/components/swap/SwapAnimation.vue:156
+#: src/components/swap/SwapAnimation.vue:171
 msgid "Setting up swap"
 msgstr ""
 
@@ -1305,7 +1326,7 @@ msgstr ""
 msgid "Signup"
 msgstr "가입"
 
-#: src/components/modals/BuyCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:249
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1356,12 +1377,17 @@ msgstr ""
 msgid "Swap from {address}"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:13
+#: src/components/swap/SwapNotification.vue:19
+msgid "Swap has expired"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:7
-#: src/components/swap/SwapNotification.vue:20
+#: src/components/swap/SwapNotification.vue:25
 msgid "Swap successful!"
 msgstr ""
 
@@ -1392,12 +1418,12 @@ msgid ""
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:788
-#: src/components/swap/SwapModal.vue:636
+#: src/components/modals/BuyCryptoModal.vue:794
+#: src/components/swap/SwapModal.vue:638
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:793
+#: src/components/modals/BuyCryptoModal.vue:799
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1438,7 +1464,7 @@ msgstr "여러 선택지가 있습니다. 신용 카드를 활용하거나 암�
 msgid "There is no ‘forgot password’"
 msgstr "'비밀번호 찾기'란 없습니다"
 
-#: src/components/swap/SwapNotification.vue:14
+#: src/components/swap/SwapNotification.vue:22
 msgid "There's a problem"
 msgstr ""
 
@@ -1484,7 +1510,7 @@ msgid ""
 "infrastructure."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:12
+#: src/components/swap/SwapAnimation.vue:27
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
@@ -1616,7 +1642,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr "당신은 이제 암호화폐를 가지고 있습니다!"
 
-#: src/components/swap/SwapAnimation.vue:169
+#: src/components/swap/SwapAnimation.vue:184
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 

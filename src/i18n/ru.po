@@ -240,7 +240,7 @@ msgstr ""
 "Обмен проводится двумя \n"
 "транзакциями BTC."
 
-#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:178
 msgid "Awaiting swap secret"
 msgstr "Ждем обмен"
 
@@ -299,8 +299,8 @@ msgstr "Блок #{height} "
 
 #: src/components/modals/BtcTransactionModal.vue:251
 #: src/components/modals/TransactionModal.vue:272
-#: src/components/swap/SwapAnimation.vue:148
-#: src/components/swap/SwapAnimation.vue:80
+#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Обозреватель блоков"
 
@@ -338,7 +338,7 @@ msgstr "Купить или продать в вашем кошельке."
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:206
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
@@ -367,7 +367,7 @@ msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -402,9 +402,9 @@ msgstr "Изменить язык интерфейса."
 msgid "Choose a Recipient"
 msgstr "Указать Получателя"
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:293
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:183
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
@@ -416,9 +416,13 @@ msgstr "Сброс"
 msgid "Clear Cache"
 msgstr "Очистить Кэш"
 
-#: src/components/swap/SwapNotification.vue:24
+#: src/components/swap/SwapNotification.vue:32
 msgid "Click for more information"
 msgstr "Кликните для подробной информации"
+
+#: src/components/swap/SwapAnimation.vue:21
+msgid "Close"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -541,11 +545,11 @@ msgstr "Принимаются кредитные карты"
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
-#: src/components/swap/SwapAnimation.vue:172
+#: src/components/swap/SwapAnimation.vue:187
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:27
+#: src/components/swap/SwapNotification.vue:38
 msgid "Don't close your wallet!"
 msgstr "Не закрывайте Ваш кошелек!"
 
@@ -638,7 +642,7 @@ msgstr "Введите адрес получателя..."
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:177
+#: src/components/swap/SwapAnimation.vue:192
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -720,8 +724,8 @@ msgstr "Файл не содержит контакты."
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:164
-#: src/components/swap/SwapAnimation.vue:165
+#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:180
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
 
@@ -803,6 +807,19 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
+#: src/components/swap/SwapNotification.vue:110
+msgid ""
+"If this error persists, check your internet connection or reload the page to"
+" reconnect."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:15
+msgid ""
+"If your funds were sent, but you have not received them back and have not "
+"received your target currency, please contact the Nimiq Team with the "
+"following reference:"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Импортировать контакты"
@@ -856,7 +873,7 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Это быстро, безопасно и делает вас по-настоящему независимым. "
 
-#: src/components/swap/SwapNotification.vue:30
+#: src/components/swap/SwapNotification.vue:35
 msgid "It's safe to close your wallet now"
 msgstr "Теперь можно закрыть кошелек"
 
@@ -877,8 +894,8 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/modals/BuyCryptoModal.vue:409
-#: src/components/swap/SwapModal.vue:274
+#: src/components/modals/BuyCryptoModal.vue:415
+#: src/components/swap/SwapModal.vue:276
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -915,8 +932,8 @@ msgstr "Загрузить файл"
 msgid "loading..."
 msgstr "загрузка..."
 
-#: src/components/swap/SwapAnimation.vue:158
-#: src/components/swap/SwapAnimation.vue:161
+#: src/components/swap/SwapAnimation.vue:173
+#: src/components/swap/SwapAnimation.vue:176
 msgid "Locking up {asset}"
 msgstr "Блокируем {asset}"
 
@@ -1006,6 +1023,10 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Кошелёк Nimiq не поддерживает подпись транзакций для Биткоина."
 
+#: src/components/swap/SwapNotification.vue:109
+msgid "No connection to {chain} network."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1071,11 +1092,11 @@ msgstr "Обрабатывается..."
 msgid "Per-Swap Limit"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:11
+#: src/components/swap/SwapAnimation.vue:26
 msgid "Performing Swap"
 msgstr "Обмен выполняется"
 
-#: src/components/swap/SwapNotification.vue:17
+#: src/components/swap/SwapNotification.vue:28
 msgid "Performing swap {progress}/5"
 msgstr "Обмен выполняется {progress}/5"
 
@@ -1190,7 +1211,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:194
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 
@@ -1307,7 +1328,7 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
-#: src/components/swap/SwapAnimation.vue:156
+#: src/components/swap/SwapAnimation.vue:171
 msgid "Setting up swap"
 msgstr "Настройка обмена"
 
@@ -1352,7 +1373,7 @@ msgstr "Показать ссылку"
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
-#: src/components/modals/BuyCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:249
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1404,12 +1425,17 @@ msgstr "Комиссия"
 msgid "Swap from {address}"
 msgstr "Обменять с {address}"
 
+#: src/components/swap/SwapAnimation.vue:13
+#: src/components/swap/SwapNotification.vue:19
+msgid "Swap has expired"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr "Обменять NIM и BTC"
 
 #: src/components/swap/SwapAnimation.vue:7
-#: src/components/swap/SwapNotification.vue:20
+#: src/components/swap/SwapNotification.vue:25
 msgid "Swap successful!"
 msgstr "Обмен успешен!"
 
@@ -1440,12 +1466,12 @@ msgid ""
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:788
-#: src/components/swap/SwapModal.vue:636
+#: src/components/modals/BuyCryptoModal.vue:794
+#: src/components/swap/SwapModal.vue:638
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 
-#: src/components/modals/BuyCryptoModal.vue:793
+#: src/components/modals/BuyCryptoModal.vue:799
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1493,7 +1519,7 @@ msgid "There is no ‘forgot password’"
 msgstr ""
 "Обратите внимание, что функция восстановления пароля не предусмотрена."
 
-#: src/components/swap/SwapNotification.vue:14
+#: src/components/swap/SwapNotification.vue:22
 msgid "There's a problem"
 msgstr "Есть проблема"
 
@@ -1541,7 +1567,7 @@ msgid ""
 "infrastructure."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:12
+#: src/components/swap/SwapAnimation.vue:27
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Обмен децентрализован, как и сам блокчейн"
 
@@ -1684,7 +1710,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr "Теперь ты владеешь криптовалютой!"
 
-#: src/components/swap/SwapAnimation.vue:169
+#: src/components/swap/SwapAnimation.vue:184
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 

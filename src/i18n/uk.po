@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2020
-# Petro M <petro.matsyburka@outlook.com>, 2020
 # Daniel, 2021
+# Petro M <petro.matsyburka@outlook.com>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2021\n"
+"Last-Translator: Petro M <petro.matsyburka@outlook.com>, 2021\n"
 "Language-Team: Ukrainian (https://www.transifex.com/nimiq-foundation/teams/110181/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: uk\n"
@@ -238,7 +238,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Атомарні обміни потребують дві BTC транзакції."
 
-#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:178
 msgid "Awaiting swap secret"
 msgstr "Очікуємо на ключі обміну"
 
@@ -296,8 +296,8 @@ msgstr "Блок #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:251
 #: src/components/modals/TransactionModal.vue:272
-#: src/components/swap/SwapAnimation.vue:148
-#: src/components/swap/SwapAnimation.vue:80
+#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Оглядач блоків"
 
@@ -335,14 +335,14 @@ msgstr "Купуйте і продавайте через гаманець."
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:206
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr "Купити крипту"
 
 #: src/components/modals/BuyCryptoModal.vue:23
 msgid "Buy Crypto with Fiat"
-msgstr "Купляйте крипту через фіат"
+msgstr "Купляйте крипту через традиційні гроші"
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -350,7 +350,7 @@ msgstr "Купити NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "Buy on an exchange"
-msgstr ""
+msgstr "Купуйте на біржі"
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -368,7 +368,7 @@ msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot} та"
 " {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -404,9 +404,9 @@ msgstr "Змінити налаштування мови."
 msgid "Choose a Recipient"
 msgstr "Виберіть одержувача"
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:293
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:183
 msgid "Choose an Address"
 msgstr "Виберіть адресу"
 
@@ -418,9 +418,13 @@ msgstr "Очистити"
 msgid "Clear Cache"
 msgstr "Очистити кеш"
 
-#: src/components/swap/SwapNotification.vue:24
+#: src/components/swap/SwapNotification.vue:32
 msgid "Click for more information"
 msgstr "Натисніть для отримання додаткової інформації"
+
+#: src/components/swap/SwapAnimation.vue:21
+msgid "Close"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -546,11 +550,11 @@ msgstr "Кредитні картки приймаються"
 msgid "Disclaimer"
 msgstr "Застереження"
 
-#: src/components/swap/SwapAnimation.vue:172
+#: src/components/swap/SwapAnimation.vue:187
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Не закривайте свій гаманець, поки обмін не буде завершено!"
 
-#: src/components/swap/SwapNotification.vue:27
+#: src/components/swap/SwapNotification.vue:38
 msgid "Don't close your wallet!"
 msgstr "Не закривайте свій гаманець!"
 
@@ -644,7 +648,7 @@ msgstr ""
 "Введіть пароль пробної версії, яку потрібно увімкнути, а потім натисніть "
 "клавішу Enter."
 
-#: src/components/swap/SwapAnimation.vue:177
+#: src/components/swap/SwapAnimation.vue:192
 msgid "Error:"
 msgstr "Помилка:"
 
@@ -726,8 +730,8 @@ msgstr "Файл не містить контактів."
 msgid "Finalize the swap by bank transfer."
 msgstr "Завершіть обмін банківським переказом."
 
-#: src/components/swap/SwapAnimation.vue:164
-#: src/components/swap/SwapAnimation.vue:165
+#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:180
 msgid "Finalizing swap"
 msgstr "Завершення обміну"
 
@@ -809,6 +813,19 @@ msgstr "Я заплатив"
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/swap/SwapNotification.vue:110
+msgid ""
+"If this error persists, check your internet connection or reload the page to"
+" reconnect."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:15
+msgid ""
+"If your funds were sent, but you have not received them back and have not "
+"received your target currency, please contact the Nimiq Team with the "
+"following reference:"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Додати контакти"
@@ -852,7 +869,7 @@ msgstr "некоректний"
 
 #: src/components/TransactionList.vue:60
 msgid "Invite a friend with a"
-msgstr "Запросити друга через"
+msgstr "Запросіть друга через"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -862,7 +879,7 @@ msgstr "Чи може банк здійснювати оператцію?"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Це швидко, безпечно і робить вас дійсно незалежним."
 
-#: src/components/swap/SwapNotification.vue:30
+#: src/components/swap/SwapNotification.vue:35
 msgid "It's safe to close your wallet now"
 msgstr "Тепер можна закрити веб-оглядач"
 
@@ -883,8 +900,8 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/modals/BuyCryptoModal.vue:409
-#: src/components/swap/SwapModal.vue:274
+#: src/components/modals/BuyCryptoModal.vue:415
+#: src/components/swap/SwapModal.vue:276
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr "Наразі, Ledger рахунки не підтримують можливість обміну."
 
@@ -921,8 +938,8 @@ msgstr "Завантажити"
 msgid "loading..."
 msgstr "завантаження..."
 
-#: src/components/swap/SwapAnimation.vue:158
-#: src/components/swap/SwapAnimation.vue:161
+#: src/components/swap/SwapAnimation.vue:173
+#: src/components/swap/SwapAnimation.vue:176
 msgid "Locking up {asset}"
 msgstr "Замикаємо {asset}"
 
@@ -1014,6 +1031,10 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Гаманець Німік не підтримує повідомлень у переказах."
 
+#: src/components/swap/SwapNotification.vue:109
+msgid "No connection to {chain} network."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1079,11 +1100,11 @@ msgstr "Очікується..."
 msgid "Per-Swap Limit"
 msgstr "Ліміт на обмін"
 
-#: src/components/swap/SwapAnimation.vue:11
+#: src/components/swap/SwapAnimation.vue:26
 msgid "Performing Swap"
 msgstr "Проводиться обмін"
 
-#: src/components/swap/SwapNotification.vue:17
+#: src/components/swap/SwapNotification.vue:28
 msgid "Performing swap {progress}/5"
 msgstr "Проводиться обмін {progress}/5"
 
@@ -1199,7 +1220,7 @@ msgstr "Скинути налаштування веб-оглядача і пе�
 msgid "Retry"
 msgstr "Спробувати знову"
 
-#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:194
 msgid "Retrying..."
 msgstr "Пробуємо ще..."
 
@@ -1315,7 +1336,7 @@ msgstr "Вкажіть суму"
 msgid "Set fee"
 msgstr "Задати комісію"
 
-#: src/components/swap/SwapAnimation.vue:156
+#: src/components/swap/SwapAnimation.vue:171
 msgid "Setting up swap"
 msgstr "Обмін налаштовується"
 
@@ -1360,7 +1381,7 @@ msgstr "Показати"
 msgid "Signup"
 msgstr "Приєднатися"
 
-#: src/components/modals/BuyCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:249
 msgid "Simulate EUR payment"
 msgstr "Імітуйте оплату в євро"
 
@@ -1414,12 +1435,17 @@ msgstr "Комісія за обмін"
 msgid "Swap from {address}"
 msgstr "Обмін з {address}"
 
+#: src/components/swap/SwapAnimation.vue:13
+#: src/components/swap/SwapNotification.vue:19
+msgid "Swap has expired"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr "Обмінюйте NIM і BTC"
 
 #: src/components/swap/SwapAnimation.vue:7
-#: src/components/swap/SwapNotification.vue:20
+#: src/components/swap/SwapNotification.vue:25
 msgid "Swap successful!"
 msgstr "Обмін було проведено успішно!"
 
@@ -1452,12 +1478,12 @@ msgstr ""
 "Банк обробляє вашу операцію.\n"
 "Це може зайняти до 5 хвилин."
 
-#: src/components/modals/BuyCryptoModal.vue:788
-#: src/components/swap/SwapModal.vue:636
+#: src/components/modals/BuyCryptoModal.vue:794
+#: src/components/swap/SwapModal.vue:638
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/modals/BuyCryptoModal.vue:793
+#: src/components/modals/BuyCryptoModal.vue:799
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
 
@@ -1501,7 +1527,7 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr "Функція \"відновлення паролю\" НЕ існує"
 
-#: src/components/swap/SwapNotification.vue:14
+#: src/components/swap/SwapNotification.vue:22
 msgid "There's a problem"
 msgstr "Сталася проблема"
 
@@ -1549,7 +1575,7 @@ msgstr ""
 "Незабаром цю послугу значно прискорять банки, які оновлюють свою "
 "інфраструктуру."
 
-#: src/components/swap/SwapAnimation.vue:12
+#: src/components/swap/SwapAnimation.vue:27
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Цей обмін є децентралізованим, так як і блокчейн."
 
@@ -1648,6 +1674,8 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
+"Вітаємо на першому у світі атоманому обміні фіату на крипту.\n"
+"Це просто, швидко і децентралізовано."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
@@ -1693,7 +1721,7 @@ msgstr "Вам потрібен рахунок SEPA, який підтримує
 msgid "You now own crypto!"
 msgstr "Тепер у вас є криптовалюта!"
 
-#: src/components/swap/SwapAnimation.vue:169
+#: src/components/swap/SwapAnimation.vue:184
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Ви завершите свою покупку банківським переказом."
 

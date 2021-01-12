@@ -241,7 +241,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Wymiany niepodzielne wymagają dwóch transakcji BTC."
 
-#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:178
 msgid "Awaiting swap secret"
 msgstr "Oczekiwanie na sekret wymiany"
 
@@ -299,8 +299,8 @@ msgstr "Blok nr {height}"
 
 #: src/components/modals/BtcTransactionModal.vue:251
 #: src/components/modals/TransactionModal.vue:272
-#: src/components/swap/SwapAnimation.vue:148
-#: src/components/swap/SwapAnimation.vue:80
+#: src/components/swap/SwapAnimation.vue:163
+#: src/components/swap/SwapAnimation.vue:95
 msgid "Block explorer"
 msgstr "Eksplorator bloków"
 
@@ -338,7 +338,7 @@ msgstr "Kupuj i sprzedawaj z poziomu swojego portfela."
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:206
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr "Kup kryptowalutę"
@@ -371,7 +371,7 @@ msgstr ""
 "Klikając „{text}”, akceptujesz warunki świadczenia usługi {Fastspot} i "
 "{FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Klikając „{text}”, akceptujesz warunki świadczenia usługi {Fastspot}."
@@ -406,9 +406,9 @@ msgstr "Zmień ustawienia języka."
 msgid "Choose a Recipient"
 msgstr "Wybierz odbiorcę"
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:293
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:183
 msgid "Choose an Address"
 msgstr "Wybierz adres"
 
@@ -420,9 +420,13 @@ msgstr "Wyczyść"
 msgid "Clear Cache"
 msgstr "Wyczyść pamięć cache"
 
-#: src/components/swap/SwapNotification.vue:24
+#: src/components/swap/SwapNotification.vue:32
 msgid "Click for more information"
 msgstr "Kliknij, by uzyskać więcej informacji"
+
+#: src/components/swap/SwapAnimation.vue:21
+msgid "Close"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -547,11 +551,11 @@ msgstr "Obsługa kart kredytowych"
 msgid "Disclaimer"
 msgstr "Wyłączenie odpowiedzialności"
 
-#: src/components/swap/SwapAnimation.vue:172
+#: src/components/swap/SwapAnimation.vue:187
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Nie zamykaj portfela do momentu zakończenia wymiany!"
 
-#: src/components/swap/SwapNotification.vue:27
+#: src/components/swap/SwapNotification.vue:38
 msgid "Don't close your wallet!"
 msgstr "Nie zamykaj portfela!"
 
@@ -643,7 +647,7 @@ msgstr "Wpisz adres odbiorcy…"
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "Wpisz hasło wersji próbnej, którą chcesz aktywować, i naciśnij enter."
 
-#: src/components/swap/SwapAnimation.vue:177
+#: src/components/swap/SwapAnimation.vue:192
 msgid "Error:"
 msgstr "Błąd:"
 
@@ -725,8 +729,8 @@ msgstr "Plik nie zawiera kontaktów."
 msgid "Finalize the swap by bank transfer."
 msgstr "Sfinalizuj wymianę, wykonując przelew."
 
-#: src/components/swap/SwapAnimation.vue:164
-#: src/components/swap/SwapAnimation.vue:165
+#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:180
 msgid "Finalizing swap"
 msgstr "Finalizowanie wymiany"
 
@@ -808,6 +812,19 @@ msgstr "Płacę"
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/swap/SwapNotification.vue:110
+msgid ""
+"If this error persists, check your internet connection or reload the page to"
+" reconnect."
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:15
+msgid ""
+"If your funds were sent, but you have not received them back and have not "
+"received your target currency, please contact the Nimiq Team with the "
+"following reference:"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
 msgstr "Zaimportuj kontakty"
@@ -863,7 +880,7 @@ msgstr ""
 "Jest szybki, bezpieczny i sprawia, że możesz się cieszyć pełną "
 "niezależnością."
 
-#: src/components/swap/SwapNotification.vue:30
+#: src/components/swap/SwapNotification.vue:35
 msgid "It's safe to close your wallet now"
 msgstr "Możesz teraz bezpiecznie zamknąć portfel"
 
@@ -884,8 +901,8 @@ msgstr "Dowiedz się więcej"
 msgid "Learn more here"
 msgstr "Dowiedz się więcej tutaj"
 
-#: src/components/modals/BuyCryptoModal.vue:409
-#: src/components/swap/SwapModal.vue:274
+#: src/components/modals/BuyCryptoModal.vue:415
+#: src/components/swap/SwapModal.vue:276
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 "Konta powiązane z portfelem Ledger nie obsługują jeszcze funkcji wymiany. "
@@ -924,8 +941,8 @@ msgstr "Wczytaj plik"
 msgid "loading..."
 msgstr "wczytywanie…"
 
-#: src/components/swap/SwapAnimation.vue:158
-#: src/components/swap/SwapAnimation.vue:161
+#: src/components/swap/SwapAnimation.vue:173
+#: src/components/swap/SwapAnimation.vue:176
 msgid "Locking up {asset}"
 msgstr "Zamrażanie {asset}"
 
@@ -1019,6 +1036,10 @@ msgstr ""
 "Portfel Nimiq nie obsługuje funkcji dodawania wiadomości do transakcji w "
 "sieci bitcoina."
 
+#: src/components/swap/SwapNotification.vue:109
+msgid "No connection to {chain} network."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1086,11 +1107,11 @@ msgstr "Oczekuje…"
 msgid "Per-Swap Limit"
 msgstr "Limit przed wymianą"
 
-#: src/components/swap/SwapAnimation.vue:11
+#: src/components/swap/SwapAnimation.vue:26
 msgid "Performing Swap"
 msgstr "Dokonywanie wymiany"
 
-#: src/components/swap/SwapNotification.vue:17
+#: src/components/swap/SwapNotification.vue:28
 msgid "Performing swap {progress}/5"
 msgstr "Dokonywanie wymiany {progress}/5"
 
@@ -1210,7 +1231,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Ponów"
 
-#: src/components/swap/SwapAnimation.vue:179
+#: src/components/swap/SwapAnimation.vue:194
 msgid "Retrying..."
 msgstr "Ponawianie…"
 
@@ -1327,7 +1348,7 @@ msgstr "Wpisz kwotę"
 msgid "Set fee"
 msgstr "Ustaw opłatę"
 
-#: src/components/swap/SwapAnimation.vue:156
+#: src/components/swap/SwapAnimation.vue:171
 msgid "Setting up swap"
 msgstr "Przygotowywanie wymiany"
 
@@ -1372,7 +1393,7 @@ msgstr "Pokaż link"
 msgid "Signup"
 msgstr "Zarejestruj się"
 
-#: src/components/modals/BuyCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:249
 msgid "Simulate EUR payment"
 msgstr "Symuluj płatność w EUR"
 
@@ -1425,12 +1446,17 @@ msgstr "Opłata za wymianę"
 msgid "Swap from {address}"
 msgstr "Wymiana z adresu {address}"
 
+#: src/components/swap/SwapAnimation.vue:13
+#: src/components/swap/SwapNotification.vue:19
+msgid "Swap has expired"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
 msgstr "Wymień NIM i BTC"
 
 #: src/components/swap/SwapAnimation.vue:7
-#: src/components/swap/SwapNotification.vue:20
+#: src/components/swap/SwapNotification.vue:25
 msgid "Swap successful!"
 msgstr "Wymiana pomyślna!"
 
@@ -1465,12 +1491,12 @@ msgstr ""
 "Bank przetwarza transakcję.\n"
 "Może to potrwać do 5 minut."
 
-#: src/components/modals/BuyCryptoModal.vue:788
-#: src/components/swap/SwapModal.vue:636
+#: src/components/modals/BuyCryptoModal.vue:794
+#: src/components/swap/SwapModal.vue:638
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Minimalna kwota zależy od wysokości opłat (obecnie {amount})."
 
-#: src/components/modals/BuyCryptoModal.vue:793
+#: src/components/modals/BuyCryptoModal.vue:799
 msgid "The fees determine the minimum amount."
 msgstr "Minimalna kwota zależy od wysokości opłat."
 
@@ -1516,7 +1542,7 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr "Nie ma funkcji przypominania hasła"
 
-#: src/components/swap/SwapNotification.vue:14
+#: src/components/swap/SwapNotification.vue:22
 msgid "There's a problem"
 msgstr "Istnieje pewien problem"
 
@@ -1564,7 +1590,7 @@ msgstr ""
 "Banki wkrótce znacząco przyspieszą tę usługę, ulepszając swoją "
 "infrastrukturę."
 
-#: src/components/swap/SwapAnimation.vue:12
+#: src/components/swap/SwapAnimation.vue:27
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Wymiana ta jest tak zdecentralizowana jak sieć blockchain."
 
@@ -1711,7 +1737,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr "Dysponujesz teraz kryptowalutą!"
 
-#: src/components/swap/SwapAnimation.vue:169
+#: src/components/swap/SwapAnimation.vue:184
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Finalizacja transakcji odbywa się przez wykonanie przelewu."
 

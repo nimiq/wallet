@@ -427,7 +427,7 @@ msgstr "Klicke hier für mehr infos"
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -816,6 +816,8 @@ msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
 msgstr ""
+"Wenn dieser Fehler weiterhin besteht, überprüfe deine Internetverbindung "
+"oder lade die Seite neu, um die Verbindung wiederherzustellen."
 
 #: src/components/swap/SwapAnimation.vue:15
 msgid ""
@@ -823,6 +825,9 @@ msgid ""
 "received your target currency, please contact the Nimiq Team with the "
 "following reference:"
 msgstr ""
+"Wenn dein Geld verschickt wurde, du es aber nicht zurückerhalten hast und "
+"deine Zielwährung nicht erhalten hast, kontaktiere bitte das Nimiq Team mit "
+"der folgenden Referenz:"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1033,7 +1038,7 @@ msgstr ""
 
 #: src/components/swap/SwapNotification.vue:109
 msgid "No connection to {chain} network."
-msgstr ""
+msgstr "Keine Verbindung zum {chain}-Netzwerk"
 
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
@@ -1441,7 +1446,7 @@ msgstr "Sicherer Tausch von {address}"
 #: src/components/swap/SwapAnimation.vue:13
 #: src/components/swap/SwapNotification.vue:19
 msgid "Swap has expired"
-msgstr ""
+msgstr "Swap ist ausgelaufen"
 
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"

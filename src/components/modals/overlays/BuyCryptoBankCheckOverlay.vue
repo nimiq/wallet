@@ -14,9 +14,9 @@
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>
-            <a class="nq-button-s" href="https://nimiq.com/exchanges" target="_blank" @mousedown.prevent>
-                {{ $t('Buy on an exchange') }}
-            </a>
+            <button class="nq-button-s" @click="$router.replace('/moonpay')" @mousedown.prevent>
+                {{ $t('Buy with Credit Card') }}
+            </button>
         </PageFooter>
     </div>
 </template>

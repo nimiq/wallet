@@ -104,7 +104,12 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
 
         if (tx.state === 'pending') {
             if (typeof onPending === 'function') onPending(tx);
-            return this.awaitHtlcFunding(tx.recipient, tx.value, tx.data.raw);
+            const resendInterval = window.setInterval(
+                () => this.sendTransaction(serializedTx),
+                60 * 1000, // Every 1 minute
+            );
+            return this.awaitHtlcFunding(tx.recipient, tx.value, tx.data.raw)
+                .finally(() => window.clearInterval(resendInterval));
         }
 
         return tx;

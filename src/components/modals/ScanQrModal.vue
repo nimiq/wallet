@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { PageHeader, PageBody, QrScanner } from '@nimiq/vue-components';
+import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
     createNimiqRequestLink,
@@ -99,11 +99,10 @@ export default defineComponent({
         };
     },
     components: {
-        PageHeader,
         PageBody,
         QrScanner,
         Modal,
-    } as any,
+    },
 });
 </script>
 

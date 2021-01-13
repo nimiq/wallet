@@ -312,8 +312,8 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
-msgid "Buy on an exchange"
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
+msgid "Buy with Credit Card"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:167
@@ -1446,6 +1446,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
+msgstr ""
+
+#: src/components/modals/MoonpayModal.vue:8
+msgid "This service is operated by {link}"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:110

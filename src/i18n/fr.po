@@ -354,8 +354,8 @@ msgid "Buy NIM"
 msgstr "Acheter des NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
-msgstr "Acheter sur une plateforme d'échange"
+msgid "Buy with Credit Card"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -376,6 +376,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
+
+#: src/components/modals/MoonpayModal.vue:12
+msgid "Cancel"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
@@ -427,7 +431,7 @@ msgstr "Cliquez pour plus d'informations"
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -819,6 +823,8 @@ msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
 msgstr ""
+"Si cette erreur persiste, vérifiez votre connexion Internet ou rechargez la "
+"page pour vous reconnecter."
 
 #: src/components/swap/SwapAnimation.vue:15
 msgid ""
@@ -826,6 +832,9 @@ msgid ""
 "received your target currency, please contact the Nimiq Team with the "
 "following reference:"
 msgstr ""
+"Si vos fonds ont été envoyés, mais que vous ne les avez pas reçus en retour "
+"et que vous n'avez pas reçu votre monnaie cible, veuillez contacter l'équipe"
+" Nimiq en indiquant la référence suivante :"
 
 #: src/components/layouts/Settings.vue:47
 msgid "Import Contacts"
@@ -1037,7 +1046,7 @@ msgstr ""
 
 #: src/components/swap/SwapNotification.vue:109
 msgid "No connection to {chain} network."
-msgstr ""
+msgstr "Pas de connexion au réseau {chain}."
 
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
@@ -1446,7 +1455,7 @@ msgstr "Swap depuis {address}"
 #: src/components/swap/SwapAnimation.vue:13
 #: src/components/swap/SwapNotification.vue:19
 msgid "Swap has expired"
-msgstr ""
+msgstr "Le swap a expiré"
 
 #: src/components/swap/SwapModal.vue:8
 msgid "Swap NIM and BTC"
@@ -1576,6 +1585,10 @@ msgstr "Ce taux inclut les frais de swap."
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
+
+#: src/components/modals/MoonpayModal.vue:8
+msgid "This service is operated by {link}"
+msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:91
 msgid ""

@@ -2,12 +2,12 @@
 # Translators:
 # Пётр Павлович <faentoad@gmail.com>, 2020
 # Daniel, 2020
-# Vad <vjuruss@gmail.com>, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
+# Vad <vjuruss@gmail.com>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2020\n"
+"Last-Translator: Vad <vjuruss@gmail.com>, 2021\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -352,7 +352,7 @@ msgid "Buy NIM"
 msgstr "Купить NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
+msgid "Buy with Credit Card"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:167
@@ -371,6 +371,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
+
+#: src/components/modals/MoonpayModal.vue:12
+msgid "Cancel"
+msgstr "Отменить"
 
 #: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
@@ -1560,6 +1564,10 @@ msgstr ""
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
 msgstr "Данный сервис не доступен в Вашем регионе."
+
+#: src/components/modals/MoonpayModal.vue:8
+msgid "This service is operated by {link}"
+msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:91
 msgid ""

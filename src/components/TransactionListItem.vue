@@ -23,7 +23,7 @@
         </div>
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC && swapTransaction"/>
+            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
@@ -134,15 +134,6 @@ export default defineComponent({
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
         const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
-        const swapTransaction = computed(() => {
-            if (!swapData.value) return null;
-
-            if (swapData.value.asset === SwapAsset.BTC) {
-                return useBtcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
-            }
-
-            return null;
-        });
 
         // Related Transaction
         const { state: transactions$ } = useTransactionsStore();
@@ -190,7 +181,7 @@ export default defineComponent({
         // Peer
         const peerAddress = computed(() => {
             if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) return 'bitcoin';
+                if (swapData.value.asset === SwapAsset.BTC) return 'bitcoin';
                 if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
             }
 
@@ -209,13 +200,15 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) {
+                if (swapData.value.asset === SwapAsset.BTC) {
                     return context.root.$t('Bitcoin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
                     return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
+
+                return swapData.value.asset.toUpperCase();
             }
 
             if (isSwapProxy.value && !relatedTx.value) {
@@ -277,7 +270,6 @@ export default defineComponent({
             peerLabel,
             SwapAsset,
             swapData,
-            swapTransaction,
         };
     },
     components: {

@@ -5,7 +5,7 @@
             <label v-if="isSwapProxy && !swapData">{{ $t('Swap') }}</label>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.BTC && swapTransaction" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>
@@ -19,7 +19,7 @@
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.BTC && swapTransaction" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
                     <label><i>&nbsp;</i>{{
                         peerLabel || peerAddress.substring(0, 9)
                     }}</label>
@@ -104,7 +104,7 @@
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <div class="identicon">
-                        <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC && swapTransaction"/>
+                        <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -156,7 +156,7 @@
                 <div class="address-info flex-column">
                     <div class="identicon">
                         <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC && swapTransaction"/>
+                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -480,10 +480,12 @@ export default defineComponent({
         // Peer
         const peerAddress = computed(() => {
             if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) {
-                    return isIncoming.value
-                        ? swapTransaction.value.inputs[0].address!
-                        : swapTransaction.value.outputs[0].address!;
+                if (swapData.value.asset === SwapAsset.BTC) {
+                    return swapTransaction.value
+                        ? isIncoming.value
+                            ? swapTransaction.value.inputs[0].address!
+                            : swapTransaction.value.outputs[0].address!
+                        : ''; // we don't know the peer address
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -506,7 +508,7 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC && swapTransaction.value) {
+                if (swapData.value.asset === SwapAsset.BTC) {
                     return context.root.$t('Bitcoin');
                 }
 

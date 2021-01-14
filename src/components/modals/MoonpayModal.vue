@@ -21,6 +21,8 @@ import { PageFooter } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { ENV_MAIN } from '../../lib/Constants';
+import { useSettingsStore } from '../../stores/Settings';
+import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -31,6 +33,8 @@ export default defineComponent({
             ? 'https://buy.moonpay.com?apiKey=xxx'
             : 'https://buy-staging.moonpay.com?apiKey=pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO';
 
+        const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
+        const baseCurrencyCode = useFiatStore().state.currency;
         const defaultCurrencyCode = useAccountStore().state.activeCurrency;
 
         const walletAddresses = {
@@ -41,6 +45,8 @@ export default defineComponent({
         const widgetUrl = [
             domain,
             'colorCode=%231F2348',
+            `language=${language}`,
+            `baseCurrencyCode=${baseCurrencyCode}`,
             `defaultCurrencyCode=${defaultCurrencyCode}`,
             `walletAddresses=${encodeURIComponent(JSON.stringify(walletAddresses))}`,
         ].join('&');

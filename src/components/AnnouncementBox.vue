@@ -18,14 +18,15 @@ const STORAGE_KEY = 'announcement-box-dismissed';
 
 export default defineComponent({
     setup(props, context) {
+        // text and cta must be functions for translations to work!
         let text: () => LocaleMessage = () => '';
         let cta: () => LocaleMessage = () => '';
         let action: string | Function = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
         // // Dark Mode
-        // text = context.root.$t('View your Wallet in Dark Mode!');
-        // cta = context.root.$t('Check it out');
+        // text = () => context.root.$t('View your Wallet in Dark Mode!');
+        // cta = () => context.root.$t('Check it out');
         // action = () => context.root.$router.push('/settings');
 
         text = () => context.root.$t('Got feedback? Found a bug?');

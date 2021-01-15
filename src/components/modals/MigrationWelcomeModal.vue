@@ -57,7 +57,7 @@
                 <p class="nq-text">
                     <BlueLink
                         href="https://www.nimiq.com/blog/the-biggest-release-since-mainnet-launch/"
-                        target="_blank"
+                        target="_blank" rel="noopener"
                     >{{ $t('Learn more here') }}</BlueLink>
                 </p>
             </div>

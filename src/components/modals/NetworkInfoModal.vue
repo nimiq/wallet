@@ -15,7 +15,7 @@
                 <p>
                     {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
                 </p>
-                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank">
+                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank" rel="noopener">
                     {{ $t('Learn more') }}
                 </BlueLink>
             </div>

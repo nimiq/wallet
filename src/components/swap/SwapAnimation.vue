@@ -91,7 +91,7 @@
                 {{ assetToName(leftAsset) }} HTLC
                 <template v-if="!switchSides ? fromAddress : toAddress">
                     <ShortAddress :address="!switchSides ? fromAddress : toAddress"/>
-                    <BlueLink :href="explorerAddrLink(leftAsset, !switchSides ? fromAddress : toAddress)" target="_blank">
+                    <BlueLink :href="explorerAddrLink(leftAsset, !switchSides ? fromAddress : toAddress)" target="_blank" rel="noopener">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>
@@ -159,7 +159,7 @@
                 {{ assetToName(rightAsset) }} HTLC
                 <template v-if="!switchSides ? toAddress : fromAddress">
                     <ShortAddress :address="!switchSides ? toAddress : fromAddress"/>
-                    <BlueLink :href="explorerAddrLink(rightAsset, !switchSides ? toAddress : fromAddress)" target="_blank">
+                    <BlueLink :href="explorerAddrLink(rightAsset, !switchSides ? toAddress : fromAddress)" target="_blank" rel="noopener">
                         {{ $t('Block explorer') }}
                     </BlueLink>
                 </template>

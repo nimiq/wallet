@@ -65,12 +65,12 @@
             <!-- <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
             <a v-if="isMainnet"
-                :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank"
+                :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank" rel="noopener"
                 class="nq-button green"
                 @mousedown.prevent
             >{{ $t('Receive free NIM') }}</a>
             <a v-else
-                href="https://testnet-faucet.mempool.co/" target="_blank"
+                href="https://testnet-faucet.mempool.co/" target="_blank" rel="noopener"
                 class="nq-button green"
                 @mousedown.prevent
             >{{ $t('Get free test BTC') }}</a> -->

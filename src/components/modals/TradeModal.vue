@@ -1,15 +1,15 @@
 <template>
     <Modal class="trade-modal">
         <PageBody class="flex-column">
+            <!-- eslint-disable max-len -->
             <div class="exchange-area flex-column">
                 <header>
                     <h1 class="nq-h1">{{ $t('Get NIM and BTC') }}</h1>
-                    <!-- eslint-disable-next-line max-len -->
                     <i18n :path="'There are many options, use a credit card or trade\u00a0crypto. You can find more exchanges on {link}'"
                         tag="p" class="nq-text intro"
                     >
                         <template v-slot:link>
-                            <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank">
+                            <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank" rel="noopener">
                                 nimiq.com/exchanges
                             </a>
                         </template>
@@ -21,7 +21,7 @@
                             <img src="../../assets/exchanges/kucoin.svg">
                             KuCoin
                             <a class="nq-button-pill light-blue flex-row"
-                                href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
+                                href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
                                 @mousedown.prevent
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
@@ -31,7 +31,7 @@
                         </ul>
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
-                            href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
+                            href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
                             @mousedown.prevent
                         >{{ $t('To {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
                     </div>
@@ -41,7 +41,7 @@
                             <img src="../../assets/exchanges/changehero.svg">
                             ChangeHero
                             <a class="nq-button-pill light-blue flex-row"
-                                href="https://changehero.io/?to=nim" target="_blank"
+                                href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
                                 @mousedown.prevent
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
@@ -51,44 +51,44 @@
                         </ul>
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
-                            href="https://changehero.io/?to=nim" target="_blank"
+                            href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
                             @mousedown.prevent
                         >{{ $t('To {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">
-                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank">
+                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/kucoin.svg">
                     </a>
-                    <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank">
+                    <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/hitbtc.svg">
                     </a>
                     <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
-                        title="Changelly" target="_blank"
+                        title="Changelly" target="_blank" rel="noopener"
                     ><img src="../../assets/exchanges/changelly.svg">
                     </a>
-                    <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank">
+                    <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/bitladon.svg">
                     </a>
-                    <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank">
+                    <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/changehero.svg">
                     </a>
-                    <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank">
+                    <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/btcalpha.svg">
                     </a>
-                    <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank">
+                    <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coinswitch.svg">
                     </a>
-                    <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank">
+                    <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coindcx.svg">
                     </a>
-                    <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank">
+                    <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/swapzone.svg">
                     </a>
-                    <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank">
+                    <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/swapspace.svg">
                     </a>
-                    <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank">
+                    <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coinspot.svg">
                     </a>
                 </div>
@@ -104,7 +104,7 @@
                     {{ $t('Starting with EU\u00a0bank\u00a0accounts soon.') }}
                 </p>
                 <footer>
-                    <BlueLink href="https://nimiq.com/oasis" target="_blank">{{ $t('Learn more') }}</BlueLink>
+                    <BlueLink href="https://nimiq.com/oasis" target="_blank" rel="noopener">{{ $t('Learn more') }}</BlueLink>
                     <!-- <div class="flex-grow"></div> -->
                     <div>
                         <p class="nq-text">{{ $t('In cooperation with') }}</p>
@@ -112,6 +112,7 @@
                     </div>
                 </footer>
             </div>
+            <!-- eslint-enable max-len -->
         </PageBody>
     </Modal>
 </template>

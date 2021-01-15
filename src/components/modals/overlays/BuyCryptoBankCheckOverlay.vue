@@ -14,7 +14,7 @@
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>
-            <a class="nq-button-s" href="https://nimiq.com/exchanges" target="_blank" @mousedown.prevent>
+            <a class="nq-button-s" href="https://nimiq.com/exchanges" target="_blank" rel="noopener" @mousedown.prevent>
                 {{ $t('Buy on an exchange') }}
             </a>
         </PageFooter>

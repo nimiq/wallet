@@ -100,9 +100,9 @@
                         </Tooltip>
                     </template>
 
-                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
-                    </a>
+                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
+                        target="_blank" rel="noopener" class="nq-link"
+                    >{{ $t('+{n} more', {n: peerAddresses.length - 3}) }}</a>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -115,9 +115,9 @@
                         {{ address }}
                     </Tooltip>
 
-                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
-                    </a>
+                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
+                        target="_blank" rel="noopener" class="nq-link"
+                    >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
                 </div>
             </div>
             <div v-else class="flex-row sender-recipient">
@@ -130,9 +130,9 @@
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
                     </Tooltip>
-                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: ownAddresses.length - 3}) }}
-                    </a>
+                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
+                        target="_blank" rel="noopener" class="nq-link"
+                    >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -159,9 +159,9 @@
                         <ShortAddress :address="address" slot="trigger"/>
                         {{ address }}
                     </Tooltip>
-                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink" target="_blank" class="nq-link">
-                        {{ $t('+{n} more', {n: peerAddresses.length - 3}) }}
-                    </a>
+                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
+                        target="_blank" rel="noopener" class="nq-link"
+                    >{{ $t('+{n} more', {n: peerAddresses.length - 3}) }}</a>
                 </div>
             </div>
 
@@ -247,7 +247,7 @@
 
                 <BlueLink
                     :href="explorerTxLink('BTC', transaction.transactionHash)"
-                    target="_blank"
+                    target="_blank" rel="noopener"
                 >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
         </PageBody>

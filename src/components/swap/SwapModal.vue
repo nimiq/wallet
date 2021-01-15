@@ -140,17 +140,20 @@
                 <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
                     <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
                         <span slot="text">{{ $t('Confirm') }}</span>
-                        <a slot="Fastspot" href="https://fastspot.io/terms" target="_blank" class="nq-link">
-                            Fastspot</a>
-                        <a slot="FastspotGO" href="https://go.fastspot.io/terms" target="_blank" class="nq-link">
-                            Fastspot GO</a>
+                        <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
+                            target="_blank" rel="noopener"
+                        >Fastspot</a>
+                        <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
+                            target="_blank" rel="noopener"
+                        >Fastspot GO</a>
                     </i18n>
                 </div>
                 <div v-else class="footer-notice nq-gray flex-row">
                     <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
                         <span slot="text">{{ $t('Confirm') }}</span>
-                        <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
-                            Fastspot</a>
+                        <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
+                            target="_blank" rel="noopener"
+                        >Fastspot</a>
                     </i18n>
                 </div>
             </PageFooter>

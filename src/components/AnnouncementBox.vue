@@ -1,7 +1,7 @@
 <template>
     <div v-if="!wasDismissed && text()" class="announcement-box nq-green-bg">
         <p>{{ text() }}</p>
-        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank">{{ cta() }}</BlueLink>
+        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank" rel="noopener">{{ cta() }}</BlueLink>
         <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon/></button>
         <CrossCloseButton class="top-right" @click="close"/>
     </div>

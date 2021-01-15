@@ -268,7 +268,7 @@
                     </template>
                 </i18n>
 
-                <BlueLink :href="explorerTxLink('NIM', transaction.transactionHash)" target="_blank">
+                <BlueLink :href="explorerTxLink('NIM', transaction.transactionHash)" target="_blank" rel="noopener">
                     {{ $t('Block explorer') }}
                 </BlueLink>
             </Tooltip>

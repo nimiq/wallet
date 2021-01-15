@@ -15,7 +15,7 @@
 
         <!-- #NimiqWorldWide -->
         <div class="tweet-note">
-            <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank"
+            <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank" rel="noopener"
                 class="tweet-note--inner"
             >
                 <EventIcon />

@@ -193,19 +193,20 @@
                             <span slot="text">{{ $t('Buy Crypto') }}</span>
                             <span slot="Fastspot">
                                 <a href="https://fastspot.io/terms"
-                                    target="_blank" class="nq-link">Fastspot</a>,
+                                    target="_blank" rel="noopener" class="nq-link">Fastspot</a>,
                                 <a href="https://go.fastspot.io/terms"
-                                    target="_blank" class="nq-link">Fastspot GO</a>
+                                    target="_blank" rel="noopener" class="nq-link">Fastspot GO</a>
                             </span>
                             <a slot="FastspotGO" href="https://www.ten31.com/oasis/terms"
-                                target="_blank" class="nq-link">OASIS</a>
+                                target="_blank" rel="noopener" class="nq-link">OASIS</a>
                         </i18n>
                     </div>
                     <div v-else class="footer-notice nq-gray flex-row">
                         <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
                             <span slot="text">{{ $t('Buy Crypto') }}</span>
-                            <a slot="Fastspot" href="https://test.fastspot.io/terms" target="_blank" class="nq-link">
-                                Fastspot</a>
+                            <a slot="Fastspot" href="https://test.fastspot.io/terms"
+                                target="_blank" rel="noopener" class="nq-link"
+                            >Fastspot</a>
                         </i18n>
                     </div>
                 </PageFooter>
@@ -278,7 +279,9 @@
                     Please contact Max if you wish to try it out now:
                 </p>
                 <p>
-                    Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link" target="_blank">@Max_Nimiq</a><br>
+                    Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link"
+                        target="_blank" rel="noopener"
+                    >@Max_Nimiq</a><br>
                     Email: <a href="mailto:maxburger@nimiq.com" class="nq-link">maxburger@nimiq.com</a>
                 </p>
             </PageBody>

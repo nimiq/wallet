@@ -244,8 +244,13 @@ export default defineComponent({
             flex-direction: row;
             width: 100%;
 
-            > div:not(:last-child) {
+            > div {
                 padding-right: 0.5rem;
+                min-width: 1rem;
+
+                &:last-child {
+                    margin-right: -0.5rem;
+                }
             }
 
             .tooltip {

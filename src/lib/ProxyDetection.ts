@@ -32,7 +32,11 @@ const ProxyExtraData = {
     },
 };
 
-export function isProxyData(data: string, proxyType?: ProxyType, transactionDirection?: ProxyTransactionDirection) {
+export function isProxyData(
+    data: string,
+    proxyType?: ProxyType,
+    transactionDirection?: ProxyTransactionDirection,
+): boolean {
     data = data.toLowerCase();
     const proxyTypesToCheck = proxyType ? [proxyType] : Object.values(ProxyType);
     const directionsToCheck = transactionDirection
@@ -41,18 +45,25 @@ export function isProxyData(data: string, proxyType?: ProxyType, transactionDire
     return proxyTypesToCheck.some((type) => directionsToCheck.some((dir) => ProxyExtraData[type][dir] === data));
 }
 
-export function handleProxyTransaction(tx: Transaction, knownTransactions: Transaction[]): Transaction | null {
+// Get the proxy address of a proxy transaction. The tx must have been checked before to be an actual proxy transaction.
+export function getProxyAddress(tx: Transaction): string {
     const { state: addresses$ } = useAddressStore();
     // Note: cashlink transactions always hold the proxy extra data. Also swap proxy transactions from or to our address
     // hold the proxy extra data. Only the htlc creation transactions from a proxy hold the htlc data instead.
-    const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
     const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
-        || addresses$.addressInfos[tx.sender] // sent from one of our addresses
+        || !!addresses$.addressInfos[tx.sender] // sent from one of our addresses
         || useProxyStore().allProxies.value.some((proxy) => tx.recipient === proxy); // sent to proxy
+    return isFunding ? tx.recipient : tx.sender;
+}
 
-    const proxyAddress = isFunding ? tx.recipient : tx.sender;
-    const proxyTransactions = knownTransactions.filter((knownTx) => knownTx.sender === proxyAddress
-        || knownTx.recipient === proxyAddress);
+export function handleProxyTransaction(
+    tx: Transaction,
+    knownProxyTransactions: Map<string, Transaction[]>,
+): Transaction | null {
+    const proxyAddress = getProxyAddress(tx);
+    const proxyTransactions = knownProxyTransactions.get(proxyAddress) || [tx];
+    const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
+    const isFunding = proxyAddress === tx.recipient;
 
     // Check if the related tx is already known.
     // This can be the case when I send proxies/cashlinks between two of my own addresses,
@@ -60,6 +71,7 @@ export function handleProxyTransaction(tx: Transaction, knownTransactions: Trans
     // transaction-history or subscription.
 
     const { addFundedProxy, addClaimedProxy, removeProxy } = useProxyStore();
+    const { state: addresses$ } = useAddressStore();
 
     let relatedTx: Transaction | undefined;
     if (tx.relatedTransactionHash) {
@@ -119,15 +131,24 @@ export function handleProxyTransaction(tx: Transaction, knownTransactions: Trans
             ),
         );
 
-        // if there are multiple matching transactions (if any) assign them in a FIFO manner (assign first matching
-        // funding tx to a redeeming tx and first matching redeeming tx to a funding tx). Therefore sort by time and
-        // pick the first.
-        [relatedTx] = potentialRelatedTxs.sort((tx1, tx2) => !!tx1.timestamp && !!tx2.timestamp
-            ? tx1.timestamp - tx2.timestamp
-            : !!tx1.blockHeight && !!tx2.blockHeight
-                ? tx1.blockHeight - tx2.blockHeight
-                : tx1.validityStartHeight - tx2.validityStartHeight,
-        );
+        // If there are multiple matching transactions (if any) pick the one which is time wise the closest.
+        // For a funding tx that is the earliest redeeming tx and for a redeeming tx the latest funding tx (LIFO).
+        // Note that we iterate the transactions in Transactions.ts from most recent to oldest to ensure correct LIFO
+        // assignments for funding transactions. Otherwise for funding transactions A and B and redeeming transaction C,
+        // A-C would be matched instead of B-C for given transaction order A B C.
+        const isCloser = (checkedValue: number, currentBest: number) => isFunding
+            ? checkedValue < currentBest
+            : checkedValue > currentBest;
+        for (const potentialRelatedTx of potentialRelatedTxs) {
+            if (!relatedTx
+                || (!!relatedTx.timestamp && !!potentialRelatedTx.timestamp
+                    ? isCloser(potentialRelatedTx.timestamp, relatedTx.timestamp)
+                    : !!relatedTx.blockHeight && !!potentialRelatedTx.blockHeight
+                        ? isCloser(potentialRelatedTx.blockHeight, relatedTx.blockHeight)
+                        : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight))) {
+                relatedTx = potentialRelatedTx;
+            }
+        }
     }
 
     // Check whether we need to subscribe for network updates for the proxy address. This is the case if we don't know

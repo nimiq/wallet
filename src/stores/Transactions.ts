@@ -5,7 +5,7 @@ import Config from 'config';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
-import { isProxyData, handleProxyTransaction } from '../lib/ProxyDetection';
+import { isProxyData, getProxyAddress, handleProxyTransaction } from '../lib/ProxyDetection';
 import { useProxyStore } from './Proxy';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
@@ -37,29 +37,63 @@ export const useTransactionsStore = createStore({
         async addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
-            let foundProxies = false;
             const knownTxs: Transaction[] = [...Object.values(this.state.transactions), ...txs]; // includes new txs
+            const proxyTxs: Map<string, Transaction[]> = new Map(); // map proxy address -> transactions
             const newTxs: { [hash: string]: Transaction } = {};
-            const relatedProxyTransactions = new Map();
 
+            const isProxyTransaction = (tx: Transaction) => !!tx.relatedTransactionHash
+                || isProxyData(tx.data.raw)
+                // additional checks as proxy transactions are not guaranteed to hold the special proxy extra data
+                || proxyTxs.has(tx.sender)
+                || proxyTxs.has(tx.recipient);
+
+            // Collect known proxies. Note that at least either the funding or redeeming proxy tx hold the proxy extra
+            // data and that this transaction is known to us before the related tx because it's from or to one of our
+            // addresses. Thus, it comes before the related transaction in the knownTxs array, such that the related
+            // transaction is not missed in the loop, even if it does not hold the data.
             for (const knownTx of knownTxs) {
-                if (!knownTx.relatedTransactionHash) continue;
-                relatedProxyTransactions.set(knownTx.transactionHash, knownTx.relatedTransactionHash);
-                relatedProxyTransactions.set(knownTx.relatedTransactionHash, knownTx.transactionHash);
+                if (!isProxyTransaction(knownTx)) continue;
+                const proxyAddress = getProxyAddress(knownTx);
+                let proxyTransactions = proxyTxs.get(proxyAddress);
+                if (!proxyTransactions) {
+                    proxyTransactions = [];
+                    proxyTxs.set(proxyAddress, proxyTransactions);
+                }
+                proxyTransactions.push(knownTx);
+            }
+
+            // check for entirely new proxy transactions (that have not just updated their state)
+            const newProxyTransactions = txs.filter((tx) => !this.state.transactions[tx.transactionHash]
+                && isProxyTransaction(tx));
+            // if we have new proxy transactions, we have to re-evaluate our related tx mappings for that proxy
+            if (newProxyTransactions.length) {
+                const transactionsToProcess: {[hash: string]: Transaction} = txs.reduce((res, tx) => {
+                    res[tx.transactionHash] = tx;
+                    return res;
+                }, {} as {[hash: string]: Transaction});
+
+                const updatedProxies = new Set(newProxyTransactions.map(getProxyAddress));
+                for (const updatedProxyAddress of updatedProxies) {
+                    const proxyTransactionsToUpdate = proxyTxs.get(updatedProxyAddress);
+                    if (!proxyTransactionsToUpdate) continue;
+                    for (const tx of proxyTransactionsToUpdate) {
+                        delete tx.relatedTransactionHash;
+                        // Add transactions to update for re-evaluation. Assign by transaction hash to avoid
+                        // duplications. Note that the transaction order of txs is preserved and we generally try to
+                        // preserve an ordering of recent transactions to older transactions.
+                        if (transactionsToProcess[tx.transactionHash]) continue;
+                        transactionsToProcess[tx.transactionHash] = tx;
+                    }
+                }
+
+                txs = Object.values(transactionsToProcess);
             }
 
             for (const plain of txs) {
-                // Detect proxies and observe them for tx-history and new incoming tx
-                if (isProxyData(plain.data.raw)
-                    // proxy transactions are not guaranteed to hold the special proxy extra data
-                    || relatedProxyTransactions.has(plain.transactionHash)
-                    || useProxyStore().allProxies.value.some(
-                        (proxy) => plain.sender === proxy || plain.recipient === proxy)
-                ) {
-                    foundProxies = true;
-                    // make sure that a previously established related transaction is set again on transaction updates
-                    plain.relatedTransactionHash = relatedProxyTransactions.get(plain.transactionHash);
-                    const relatedTx = handleProxyTransaction(plain, knownTxs);
+                // Detect proxies and observe them for tx-history and new incoming tx. Note that we iterate the
+                // transactions from more recent to older, for correct LIFO assignment of funding proxy transactions.
+                if (isProxyTransaction(plain)) {
+                    const relatedTx = handleProxyTransaction(plain, proxyTxs);
                     if (relatedTx) {
                         // Need to re-assign the whole object in Vue 2 for change detection.
                         // TODO: Simply assign transactions in Vue 3.
@@ -74,8 +108,6 @@ export const useTransactionsStore = createStore({
                         // Set relatedTransactionHash also on old tx objects for following iterations.
                         plain.relatedTransactionHash = relatedTx.transactionHash;
                         relatedTx.relatedTransactionHash = plain.transactionHash;
-                        relatedProxyTransactions.set(plain.transactionHash, relatedTx.transactionHash);
-                        relatedProxyTransactions.set(relatedTx.transactionHash, plain.transactionHash);
                     }
                 }
 
@@ -181,7 +213,7 @@ export const useTransactionsStore = createStore({
 
             this.calculateFiatAmounts();
 
-            if (foundProxies) {
+            if (newProxyTransactions.length) {
                 useProxyStore().triggerNetwork();
             }
         },

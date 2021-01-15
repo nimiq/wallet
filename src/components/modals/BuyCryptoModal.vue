@@ -427,8 +427,9 @@ export default defineComponent({
                 return estimate.value.from.amount + estimate.value.from.fee;
             },
             set: (value: number) => {
-                _fiatAmount.value = value;
                 _cryptoAmount.value = 0;
+                _fiatAmount.value = value;
+                onInput(value);
             },
         });
 
@@ -442,8 +443,9 @@ export default defineComponent({
                 return capDecimals(estimate.value.to.amount - estimate.value.to.fee, estimate.value.to.asset);
             },
             set: (value: number) => {
-                _cryptoAmount.value = value;
                 _fiatAmount.value = 0;
+                _cryptoAmount.value = value;
+                onInput(value);
             },
         });
 
@@ -1094,20 +1096,17 @@ export default defineComponent({
         let timeoutId: number;
 
         function onInput(val: number) {
+            clearTimeout(timeoutId);
+
             if (!val) {
                 estimate.value = null;
-                clearTimeout(timeoutId);
                 estimateError.value = null;
                 return;
             }
 
-            clearTimeout(timeoutId);
             timeoutId = window.setTimeout(updateEstimate, ESTIMATE_UPDATE_DEBOUNCE_DURATION);
             fetchingEstimate.value = true;
         }
-
-        watch(_fiatAmount, onInput, { lazy: true });
-        watch(_cryptoAmount, onInput, { lazy: true });
 
         const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
             && (activeAccountInfo.value.btcAddresses || false)

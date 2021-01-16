@@ -5,8 +5,7 @@ import Config from 'config';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
-import { isProxyData, getProxyAddress, handleProxyTransaction } from '../lib/ProxyDetection';
-import { useProxyStore } from './Proxy';
+import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 
@@ -25,45 +24,6 @@ export enum TransactionState {
     CONFIRMED = 'confirmed',
 }
 
-// map proxy address -> transaction hashes -> transaction
-let knownProxyTxs: {[proxyAddress: string]: {[transactionHash: string]: Transaction}} | undefined;
-
-function isProxyTransaction(tx: Transaction): boolean {
-    return !!tx.relatedTransactionHash
-        || isProxyData(tx.data.raw)
-        // additional checks as proxy transactions are not guaranteed to hold the special proxy extra data
-        || (!!knownProxyTxs && (!!knownProxyTxs[tx.sender] || !!knownProxyTxs[tx.recipient]));
-}
-
-function collectKnownProxies(txs: Transaction[]) {
-    if (!knownProxyTxs) {
-        knownProxyTxs = {};
-    }
-    for (const tx of txs) {
-        if (!isProxyTransaction(tx)) continue;
-        const proxyAddress = getProxyAddress(tx);
-        let proxyTransactions = knownProxyTxs[proxyAddress];
-        if (!proxyTransactions) {
-            proxyTransactions = {};
-            knownProxyTxs[proxyAddress] = proxyTransactions;
-        }
-        tx.relatedTransactionHash = tx.relatedTransactionHash
-            || proxyTransactions[tx.transactionHash]?.relatedTransactionHash;
-        proxyTransactions[tx.transactionHash] = tx;
-    }
-}
-
-function cleanupKnownProxies(txs: Transaction[]) {
-    if (!knownProxyTxs) return;
-    for (const tx of txs) {
-        if (!isProxyTransaction(tx)) continue;
-        const proxyAddress = getProxyAddress(tx);
-        const proxyTransactions = knownProxyTxs[proxyAddress];
-        if (!proxyTransactions) continue;
-        delete proxyTransactions[tx.transactionHash];
-    }
-}
-
 export const useTransactionsStore = createStore({
     id: 'transactions',
     state: () => ({
@@ -78,68 +38,14 @@ export const useTransactionsStore = createStore({
 
             const newTxs: { [hash: string]: Transaction } = {};
 
-            // Collect known proxies. Note that at least either the funding or redeeming proxy tx hold the proxy extra
-            // data and that this transaction is known to us before the related tx because it's from or to one of our
-            // addresses. Thus, it is added to the known proxy transactions already at the time we check the related tx
-            // and the related transaction is not missed in collectKnownProxies, even if it does not hold the data.
-            if (!knownProxyTxs) {
-                // initialize the known proxy transactions
-                knownProxyTxs = {};
-                collectKnownProxies([...Object.values(this.state.transactions)]);
-            }
-            collectKnownProxies(txs);
-
-            // check for entirely new proxy transactions (that have not just updated their state)
-            const newProxyTransactions = txs.filter((tx) => !this.state.transactions[tx.transactionHash]
-                && isProxyTransaction(tx));
-            // if we have new proxy transactions, we have to re-evaluate our related tx mappings for that proxy
-            if (newProxyTransactions.length) {
-                const transactionsToProcess: {[hash: string]: Transaction} = txs.reduce((res, tx) => {
-                    res[tx.transactionHash] = tx;
-                    return res;
-                }, {} as {[hash: string]: Transaction});
-
-                const updatedProxies = new Set(newProxyTransactions.map(getProxyAddress));
-                for (const updatedProxyAddress of updatedProxies) {
-                    if (!knownProxyTxs[updatedProxyAddress]) continue;
-                    const proxyTransactionsToUpdate = Object.values(knownProxyTxs[updatedProxyAddress]);
-                    for (const tx of proxyTransactionsToUpdate) {
-                        delete tx.relatedTransactionHash;
-                        // Add transactions to update for re-evaluation. Assign by transaction hash to avoid
-                        // duplications. Note that the transaction order of txs is preserved and we generally try to
-                        // preserve an ordering of recent transactions to older transactions.
-                        if (transactionsToProcess[tx.transactionHash]) continue;
-                        transactionsToProcess[tx.transactionHash] = tx;
-                    }
-                }
-
-                txs = Object.values(transactionsToProcess);
-            }
+            // Detect proxies and observe them for tx-history and new incoming txs.
+            detectProxyTransactions(txs, this.state.transactions);
 
             for (const plain of txs) {
-                // Detect proxies and observe them for tx-history and new incoming tx. Note that we iterate the
-                // transactions from more recent to older, for correct LIFO assignment of funding proxy transactions.
-                if (isProxyTransaction(plain)) {
-                    const relatedTx = handleProxyTransaction(plain, knownProxyTxs);
-                    if (relatedTx) {
-                        // Need to re-assign the whole object in Vue 2 for change detection.
-                        // TODO: Simply assign transactions in Vue 3.
-                        newTxs[plain.transactionHash] = {
-                            ...plain,
-                            relatedTransactionHash: relatedTx.transactionHash,
-                        };
-                        newTxs[relatedTx.transactionHash] = {
-                            ...relatedTx,
-                            relatedTransactionHash: plain.transactionHash,
-                        };
-                        // Set relatedTransactionHash also on old tx objects for following iterations.
-                        plain.relatedTransactionHash = relatedTx.transactionHash;
-                        relatedTx.relatedTransactionHash = plain.transactionHash;
-                    }
-                }
+                newTxs[plain.transactionHash] = plain;
 
+                // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
-                    // Detect swaps
                     // HTLC Creation
                     if ('hashRoot' in plain.data) {
                         const fundingData = plain.data as {
@@ -225,10 +131,6 @@ export const useTransactionsStore = createStore({
                         }
                     }
                 }
-
-                if (!newTxs[plain.transactionHash]) {
-                    newTxs[plain.transactionHash] = plain;
-                }
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection.
@@ -239,10 +141,15 @@ export const useTransactionsStore = createStore({
             };
 
             this.calculateFiatAmounts();
+        },
 
-            if (newProxyTransactions.length) {
-                useProxyStore().triggerNetwork();
-            }
+        setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction) {
+            transaction.relatedTransactionHash = relatedTransaction.transactionHash;
+            relatedTransaction.relatedTransactionHash = transaction.transactionHash;
+            // Need to re-assign the whole object in Vue 2 for change detection.
+            // TODO: Simply assign transactions in Vue 3.
+            this.state.transactions[transaction.transactionHash] = { ...transaction };
+            this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
         },
 
         async calculateFiatAmounts() {
@@ -273,7 +180,7 @@ export const useTransactionsStore = createStore({
             for (const tx of txs) {
                 delete transactions[tx.transactionHash];
             }
-            cleanupKnownProxies(txs);
+            cleanupKnownProxyTransactions(txs);
             // TODO cleanup swap store
             this.state.transactions = transactions;
         },

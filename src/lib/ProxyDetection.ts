@@ -58,10 +58,10 @@ export function getProxyAddress(tx: Transaction): string {
 
 export function handleProxyTransaction(
     tx: Transaction,
-    knownProxyTransactions: Map<string, Transaction[]>,
+    knownProxyTransactions: {[proxyAddress: string]: {[transactionHash: string]: Transaction}},
 ): Transaction | null {
     const proxyAddress = getProxyAddress(tx);
-    const proxyTransactions = knownProxyTransactions.get(proxyAddress) || [tx];
+    const proxyTransactions = Object.values(knownProxyTransactions[proxyAddress]) || [tx];
     const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
     const isFunding = proxyAddress === tx.recipient;
 

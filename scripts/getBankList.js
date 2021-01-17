@@ -110,7 +110,18 @@ async function mergeJson() {
     const mergedJson = {};
 
     for (const bank of ebaRt1BankList) mergedJson[bank.BIC] = bank;
-    for (const bank of customBankList) mergedJson[bank.BIC] = bank;
+    for (const bank of customBankList) {
+        if (!mergedJson[bank.BIC]) mergedJson[bank.BIC] = bank;
+        else {
+            mergedJson[bank.BIC].name = bank.name || mergedJson[bank.BIC].name;
+            mergedJson[bank.BIC].country = bank.country || mergedJson[bank.BIC].country;
+
+            mergedJson[bank.BIC].support.sepa.inbound = bank.support?.sepa?.inbound
+                || mergedJson[bank.BIC].support.sepa.inbound;
+            mergedJson[bank.BIC].support.sepa.outbound = bank.support?.sepa?.outbound
+                || mergedJson[bank.BIC].support.sepa.outbound;
+        }
+    }
 
     const mergedJsonArray = Object.values(mergedJson);
     await writeFile(OUTPUT_JSON_FILE_PATH, mergedJsonArray);

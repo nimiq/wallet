@@ -1,22 +1,16 @@
 [
     {
         "BIC": "CMCIFRPPXXX",
-        "name": "CIC",
-        "country": "FR",
         "support": {
             "sepa": {
-                "inbound": "full-support",
                 "outbound": "full-support"
             }
         }
     },
     {
         "BIC": "NTSBDEB1",
-        "name": "N26 Bank Gmbh",
-        "country": "DE",
         "support": {
             "sepa": {
-                "inbound": "full-support",
                 "outbound": "no-support"
             }
         }

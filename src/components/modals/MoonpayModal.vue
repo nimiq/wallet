@@ -65,6 +65,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.modal /deep/ .small-page {
+    height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
+}
+
 .modal /deep/ .close-button {
     display: none;
 }
@@ -81,6 +85,10 @@ iframe {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 2rem 2rem;
+
+    @media (max-width: 700px) { // Full mobile breakpoint
+        padding-bottom: 1.5rem;
+    }
 
     span {
         font-size: var(--small-size);

@@ -54,10 +54,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
-import BANKS from '@/data/banksList/banksList.json';
+import loadBankList from '@/data/banksList';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
@@ -84,16 +84,20 @@ export default defineComponent({
             set(value) { context.emit('input', value); },
         });
 
-        const banks: BankInfos[] = BANKS;
+        const banks = ref<BankInfos[]>([]);
         const $bankAutocomplete = ref<HTMLUListElement | null>(null);
         const selectedBankIndex = ref(0);
+
+        onMounted(() => {
+            loadBankList().then((BANKS) => banks.value = BANKS);
+        });
 
         /* Filtering & Sorting Labels */
         const matchingBanks = computed(() => {
             if (!localValue.value) return [];
 
             const rgx = RegExp(localValue.value, 'i');
-            return Object.values(banks).filter((bank) =>
+            return Object.values(banks.value).filter((bank) =>
                 (bank.name && rgx.test(bank.name)) || (bank.BIC && rgx.test(bank.BIC)),
             ).sort((a, b) => a.name.localeCompare(b.name));
         });

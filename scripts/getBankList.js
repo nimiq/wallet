@@ -6,10 +6,10 @@ const xlsx = require('xlsx');
 
 const DATA_FOLDER_PATH = './src/data/banksList';
 
-const EBA_RT1_XLSX_FILE_PATH = `${DATA_FOLDER_PATH}/EBA_RT1.xlsx`;
-const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/EBA_RT1.json`;
+const EBA_RT1_XLSX_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.xlsx`;
+const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.json`;
 const CUSTOM_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/customBanksList.json`;
-const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/banksList.json`;
+const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/banksList.json`;
 
 const FORCE_SCRAPER_RUN = (process.argv[2] === '--force-scaper-run');
 
@@ -78,26 +78,32 @@ function getBankListUrl() {
 
 async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
     const workbook = xlsx.readFile(xlsxFilePath);
-    const jsonFile = xlsx.utils
+    const jsonFile = {};
+
+    xlsx.utils
         .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
         .slice(2)
-        .map((bank) => ({
-            BIC: bank.BIC,
-            name: bank.name
-                .split(' ')
-                .filter((word) => word)
-                .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
-                .join(' '),
-            country: bank.BIC.slice(4, 6),
-            support: {
-                sepa: {
-                    // TEMP?: can we assume that banks at least fully support inbound sepa instant
-                    // if they are part of the list?
-                    inbound: 'full-support',
-                    outbound: 'partial-support',
+        .forEach((bank) => {
+            if (jsonFile[bank.BIC]) {
+                process.stdout.write(`\x1b[33mWarning:\x1b[0m Duplicate entries for BIC \x1b[36m${bank.BIC}\x1b[0m\n`);
+            }
+            jsonFile[bank.BIC] = {
+                name: bank.name
+                    .split(' ')
+                    .filter((word) => word)
+                    .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
+                    .join(' '),
+                country: bank.BIC.slice(4, 6),
+                support: {
+                    sepa: {
+                        // TEMP?: can we assume that banks at least fully support inbound sepa instant
+                        // if they are part of the list?
+                        inbound: 'full-support',
+                        outbound: 'partial-support',
+                    },
                 },
-            },
-        }));
+            };
+        });
 
     await writeFile(jsonFilePath, jsonFile);
 
@@ -105,25 +111,42 @@ async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
 }
 
 async function mergeJson() {
-    const ebaRt1BankList = await readFile(EBA_RT1_JSON_FILE_PATH);
-    const customBankList = await readFile(CUSTOM_JSON_FILE_PATH);
-    const mergedJson = {};
+    const ebaRt1Banks = await readFile(EBA_RT1_JSON_FILE_PATH);
+    const customBanks = await readFile(CUSTOM_JSON_FILE_PATH);
 
-    for (const bank of ebaRt1BankList) mergedJson[bank.BIC] = bank;
-    for (const bank of customBankList) {
-        if (!mergedJson[bank.BIC]) mergedJson[bank.BIC] = bank;
+    const customBanksBicList = Object.keys(customBanks);
+
+    for (const BIC of customBanksBicList) {
+        if (!ebaRt1Banks[BIC]) ebaRt1Banks[BIC] = { ...customBanks[BIC], BIC };
         else {
-            mergedJson[bank.BIC].name = bank.name || mergedJson[bank.BIC].name;
-            mergedJson[bank.BIC].country = bank.country || mergedJson[bank.BIC].country;
+            ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || ebaRt1Banks[BIC].BIC || BIC;
+            ebaRt1Banks[BIC].name = customBanks[BIC].name || ebaRt1Banks[BIC].name;
+            ebaRt1Banks[BIC].country = customBanks[BIC].country || ebaRt1Banks[BIC].country;
 
-            mergedJson[bank.BIC].support.sepa.inbound = bank.support?.sepa?.inbound
-                || mergedJson[bank.BIC].support.sepa.inbound;
-            mergedJson[bank.BIC].support.sepa.outbound = bank.support?.sepa?.outbound
-                || mergedJson[bank.BIC].support.sepa.outbound;
+            if (customBanks[BIC].support && customBanks[BIC].support.sepa) {
+                if (customBanks[BIC].support.sepa.inbound) {
+                    ebaRt1Banks[BIC].support.sepa.inbound = customBanks[BIC].support.sepa.inbound;
+                }
+                if (customBanks[BIC].support.sepa.outbound) {
+                    ebaRt1Banks[BIC].support.sepa.outbound = customBanks[BIC].support.sepa.outbound;
+                }
+            }
+
+            if (!ebaRt1Banks[BIC].name) {
+                process.stdout.write(`\x1b[33mWarning:\x1b[0m Missing Bank name for BIC \x1b[36m${BIC}\x1b[0m\n`);
+            }
+            if (!ebaRt1Banks[BIC].support.sepa.inbound) {
+                process.stdout.write(
+                    `\x1b[33mWarning:\x1b[0m Missing SEPA inbound support infos for BIC \x1b[36m${BIC}\x1b[0m\n`);
+            }
+            if (!ebaRt1Banks[BIC].support.sepa.outbound) {
+                process.stdout.write(
+                    `\x1b[33mWarning:\x1b[0m Missing SEPA outbound support infos for BIC \x1b[36m${BIC}\x1b[0m\n`);
+            }
         }
     }
 
-    const mergedJsonArray = Object.values(mergedJson);
+    const mergedJsonArray = Object.values(ebaRt1Banks);
     await writeFile(OUTPUT_JSON_FILE_PATH, mergedJsonArray);
 
     return mergedJsonArray.length;

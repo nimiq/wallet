@@ -1,18 +1,11 @@
-[
-    {
-        "BIC": "CMCIFRPPXXX",
-        "support": {
-            "sepa": {
-                "outbound": "full-support"
-            }
-        }
+{
+    "CMCIFRPPXXX": {
+        "name": "CIC",
+        "support": { "sepa": {
+            "outbound": "full-support"
+        }}
     },
-    {
-        "BIC": "NTSBDEB1",
-        "support": {
-            "sepa": {
-                "outbound": "no-support"
-            }
-        }
-    }
-]
+    "NTSBDEB1": { "support": { "sepa": {
+        "outbound": "no-support"
+    }}}
+}

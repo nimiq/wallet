@@ -6,7 +6,7 @@
                     <h1 class="nq-h1">
                         {{ $t('Please transfer') }}
                     </h1>
-                    <Copyable :text="(amount / 100).toString()" class="glass">
+                    <Copyable :text="(amount / 100).toString().replace('.', ',')" class="glass">
                         <FiatAmount :amount="amount / 100" currency="eur"/>
                     </Copyable>
                 </div>

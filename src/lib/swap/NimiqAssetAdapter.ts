@@ -104,9 +104,9 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         if (serializedProxyTx) {
             // Wait for proxy to be funded before forwarding funds into htlc.
             // The proxy funding tx had already been broadcast by the hub but send it again just to be sure.
-            const proxyTx = await this.sendTransaction(serializedProxyTx);
+            const proxyTx = await this.sendTransaction(serializedProxyTx, false);
             const resendInterval = window.setInterval(
-                () => this.sendTransaction(serializedProxyTx),
+                () => this.sendTransaction(serializedProxyTx, false),
                 60 * 1000, // Every 1 minute
             );
             await this.findTransaction(proxyTx.recipient, (tx) => tx.transactionHash === proxyTx.transactionHash
@@ -114,12 +114,12 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
             ).finally(() => window.clearInterval(resendInterval));
         }
 
-        const htlcTx = await this.sendTransaction(serializedTx);
+        const htlcTx = await this.sendTransaction(serializedTx, false);
 
-        if (htlcTx.state === 'pending') {
+        if (htlcTx.state === 'new' || htlcTx.state === 'pending') {
             if (typeof onPending === 'function') onPending(htlcTx);
             const resendInterval = window.setInterval(
-                () => this.sendTransaction(serializedTx),
+                () => this.sendTransaction(serializedTx, false),
                 60 * 1000, // Every 1 minute
             );
             return this.awaitHtlcFunding(htlcTx.recipient, htlcTx.value, htlcTx.data.raw)
@@ -155,12 +155,13 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         );
         const htlcTx = await this.sendTransaction(serializedTx);
 
-        if (serializedProxyTx) {
-            // Wait for htlc transaction to the proxy to be mined and then forward the funds.
-            await this.findTransaction(htlcTx.recipient, (tx) => tx.transactionHash === htlcTx.transactionHash
-                && (tx.state === 'mined' || tx.state === 'confirmed'));
-            await this.sendTransaction(serializedProxyTx);
-        }
+        // Not used anymore as htlc redeeming is not forwarded through the proxy anymore
+        // if (serializedProxyTx) {
+        //     // Wait for htlc transaction to the proxy to be mined and then forward the funds.
+        //     await this.findTransaction(htlcTx.recipient, (tx) => tx.transactionHash === htlcTx.transactionHash
+        //         && (tx.state === 'mined' || tx.state === 'confirmed'));
+        //     await this.sendTransaction(serializedProxyTx);
+        // }
 
         return htlcTx;
     }
@@ -170,10 +171,10 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         this.stopped = true;
     }
 
-    private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {
+    private async sendTransaction(serializedTx: string, throwOnFailure = true): Promise<TransactionDetails> {
         if (this.stopped) throw new Error('NimiqAssetAdapter called while stopped');
         const tx = await this.client.sendTransaction(serializedTx);
-        if (tx.state === 'new') throw new Error('Failed to send transaction');
+        if (throwOnFailure && tx.state === 'new') throw new Error('Failed to send transaction');
         return tx;
     }
 }

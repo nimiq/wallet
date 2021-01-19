@@ -82,6 +82,10 @@ export function detectProxyTransactions(
     txs: Transaction[],
     knownTransactions: {[transactionHash: string]: Transaction},
 ) {
+    const { addFundedProxy, addClaimedProxy, removeProxy, triggerNetwork } = useProxyStore();
+    const { state: addresses$ } = useAddressStore();
+    const { setRelatedTransaction, state: transactions$ } = useTransactionsStore();
+
     // Update known proxies. Note that at least either the funding or redeeming proxy tx hold the proxy extra data and
     // that this transaction is known to us before the related tx because it's from or to one of our addresses. Thus, it
     // is added to the known proxy transactions already at the time we check the related tx and the related transaction
@@ -121,19 +125,17 @@ export function detectProxyTransactions(
             proxyTransactions = {};
             knownProxyTransactions[proxyAddress] = proxyTransactions;
         }
-        tx.relatedTransactionHash = tx.relatedTransactionHash
-            || proxyTransactions[tx.transactionHash]?.relatedTransactionHash;
         proxyTransactions[tx.transactionHash] = tx;
     }
 
     for (const proxyToReEvaluate of proxiesToReEvaluate) {
         for (const tx of Object.values(knownProxyTransactions[proxyToReEvaluate])) {
-            delete tx.relatedTransactionHash;
+            setRelatedTransaction(tx, null);
+            knownProxyTransactions![proxyToReEvaluate][tx.transactionHash] = transactions$.transactions[
+                tx.transactionHash];
         }
     }
 
-    const { addFundedProxy, addClaimedProxy, removeProxy, triggerNetwork } = useProxyStore();
-    const { state: addresses$ } = useAddressStore();
     let needToTriggerNetwork = false;
     for (const proxyToProcess of proxiesToProcess) {
         const proxyTransactions = Object.values(knownProxyTransactions[proxyToProcess]);
@@ -169,9 +171,33 @@ export function detectProxyTransactions(
     triggerNetwork();
 }
 
+function isHtlcTransaction(tx: Transaction): boolean {
+    return 'hashRoot' in tx.data // htlc creation
+        || 'creator' in tx.proof // htlc refunding
+        || 'hashRoot' in tx.proof; // htlc settlement
+}
+
 function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions: Transaction[]) {
     const { state: addresses$ } = useAddressStore();
-    const { setRelatedTransaction } = useTransactionsStore();
+    const { setRelatedTransaction, state: transactions$ } = useTransactionsStore();
+
+    // We expect transactions to be sorted from most recent to oldest which is generally the case for fetched histories.
+    // However, new transactions we get via subscriptions, are added later to knownProxyTransactions and therefore at
+    // the end of the array. Also for htlc proxies prioritize transactions involved in actual htlc creation / redeeming
+    // for them to find their match before remaining transactions are matched as proxy refunds.
+    proxyTransactions.sort((tx1, tx2) => {
+        // first sort by htlc involvement
+        const isTx1HtlcTransaction = isHtlcTransaction(tx1);
+        const isTx2HtlcTransaction = isHtlcTransaction(tx2);
+        if (isTx1HtlcTransaction && !isTx2HtlcTransaction) return -1;
+        if (!isTx1HtlcTransaction && isTx2HtlcTransaction) return 1;
+        // then sort by date
+        return tx1.timestamp && tx2.timestamp
+            ? tx2.timestamp - tx1.timestamp
+            : tx1.blockHeight && tx2.blockHeight
+                ? tx2.blockHeight - tx1.blockHeight
+                : tx2.validityStartHeight - tx1.validityStartHeight;
+    });
 
     for (const tx of proxyTransactions) {
         if (tx.relatedTransactionHash) continue;
@@ -180,8 +206,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         // Note that the proxy might be reused and we have to find the right related tx amongst others. Also note that
         // we don't detect the related transaction by proxy extra data because it is not required to include this data.
         // Also note that our available potentialRelatedTxs depend on which transactions have already been fetched from
-        // the network and which not. Thus, there might be a slight non-determinism due to the order in which network
-        // responses reach us.
+        // the network and which not.
         let relatedTx: Transaction | undefined;
         const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
         const isFunding = proxyAddress === tx.recipient;
@@ -238,16 +263,18 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         // Note that we iterate the transactions from most recent to oldest to ensure correct LIFO assignments for
         // funding transactions. Otherwise for funding transactions A and B and redeeming transaction C, A-C would be
         // matched instead of B-C for given transaction order A B C.
-        const isCloser = (checkedValue: number, currentBest: number) => isFunding
-            ? checkedValue < currentBest
-            : checkedValue > currentBest;
+        const isCloser = (checkedValue: number, currentBest: number, allowEquality = false) =>
+            (allowEquality && checkedValue === currentBest)
+            || (isFunding
+                ? checkedValue < currentBest
+                : checkedValue > currentBest);
         for (const potentialRelatedTx of potentialRelatedTxs) {
             if (!relatedTx
                 || (!!relatedTx.timestamp && !!potentialRelatedTx.timestamp
                     ? isCloser(potentialRelatedTx.timestamp, relatedTx.timestamp)
                     : !!relatedTx.blockHeight && !!potentialRelatedTx.blockHeight
                         ? isCloser(potentialRelatedTx.blockHeight, relatedTx.blockHeight)
-                        : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight))) {
+                        : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight, true))) {
                 relatedTx = potentialRelatedTx;
             }
         }
@@ -255,5 +282,8 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         if (!relatedTx) continue;
 
         setRelatedTransaction(tx, relatedTx);
+        knownProxyTransactions![proxyAddress][tx.transactionHash] = transactions$.transactions[tx.transactionHash];
+        knownProxyTransactions![proxyAddress][relatedTx.transactionHash] = transactions$.transactions[
+            relatedTx.transactionHash];
     }
 }

@@ -38,11 +38,26 @@ export const useTransactionsStore = createStore({
 
             const newTxs: { [hash: string]: Transaction } = {};
 
+            // re-apply known fiatValue and relatedTransactionHash
+            for (const tx of txs) {
+                const knownTx = this.state.transactions[tx.transactionHash];
+                if (!knownTx) continue;
+                if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
+                    tx.relatedTransactionHash = knownTx.relatedTransactionHash;
+                }
+                if (!tx.fiatValue && knownTx.fiatValue) {
+                    tx.fiatValue = knownTx.fiatValue;
+                }
+            }
+
             // Detect proxies and observe them for tx-history and new incoming txs.
             detectProxyTransactions(txs, this.state.transactions);
 
             for (const plain of txs) {
-                newTxs[plain.transactionHash] = plain;
+                newTxs[plain.transactionHash] = Object.assign(
+                    this.state.transactions[plain.transactionHash] || plain,
+                    plain,
+                );
 
                 // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
@@ -143,11 +158,16 @@ export const useTransactionsStore = createStore({
             this.calculateFiatAmounts();
         },
 
-        setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction) {
-            transaction.relatedTransactionHash = relatedTransaction.transactionHash;
-            relatedTransaction.relatedTransactionHash = transaction.transactionHash;
+        setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction | null) {
             // Need to re-assign the whole object in Vue 2 for change detection.
             // TODO: Simply assign transactions in Vue 3.
+            if (relatedTransaction === null) {
+                delete transaction.relatedTransactionHash;
+                this.state.transactions[transaction.transactionHash] = { ...transaction };
+                return;
+            }
+            transaction.relatedTransactionHash = relatedTransaction.transactionHash;
+            relatedTransaction.relatedTransactionHash = transaction.transactionHash;
             this.state.transactions[transaction.transactionHash] = { ...transaction };
             this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
         },

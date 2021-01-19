@@ -920,12 +920,29 @@ export default defineComponent({
     }
 
     .animation {
+        --upscale: 1.58;
+
         &.left-to-right {
-            transform: translate(28.75rem, -19.5rem) scale(1.58);
+            transform: translate(28.75rem, -19.5rem) scale(var(--upscale));
+
+            .tooltip /deep/ .tooltip-box {
+                transform-origin: 5rem 4.25rem;
+            }
         }
 
         &.right-to-left {
-            transform: translate(-28.75rem, -19.5rem) scale(1.58);
+            transform: translate(-28.75rem, -19.5rem) scale(var(--upscale));
+
+            .tooltip /deep/ .tooltip-box {
+                transform-origin: 13rem 4.25rem;
+            }
+        }
+
+        .tooltip /deep/ {
+            .trigger::after,
+            .tooltip-box {
+                transform: scale(calc(1 / var(--upscale)));
+            }
         }
     }
 }

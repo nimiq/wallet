@@ -874,7 +874,7 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
                     if (useNetworkStore().state.consensus !== 'established') {
-                        await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                        await new Promise<void>((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
                             if (state === 'established') res();
                         }));
                     }
@@ -1130,7 +1130,11 @@ export default defineComponent({
         }
 
         // Update estimate on currency switch
-        watch(activeCurrency, updateEstimate, { lazy: true });
+        watch(activeCurrency, () => {
+            if (_fiatAmount.value || _cryptoAmount.value) {
+                updateEstimate();
+            }
+        }, { lazy: true });
 
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;

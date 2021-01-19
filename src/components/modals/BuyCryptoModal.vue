@@ -387,10 +387,32 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
 
-function calculateOasisFee(amount: number) {
+function calculateOasisFee(amount: number, previousFee = 0, iteration = 1): number {
+    /**
+     * This function uses recursion to find the correct fee for a given amount,
+     * taking into consideration that the net amount is used in the request to Fastspot.
+     * The net amount plus the fee must result in the `amount` given to this function:
+     *
+     * NET + (FEE_PERCENTAGE * NET) = AMOUNT
+     *
+     * Because the fee might change when the net amount changes, this function
+     * recurses with the newly calculated fee, and only returns when the fee of the
+     * net amount is the same after two iterations.
+     *
+     * This function also returns after 3 iterations, to safeguard against an edge case
+     * where the net amount and the fee fluctuate up and down each iteration, as is the
+     * case for an amount of 5000 units and a 1% fee for example.
+     */
+
     // OASIS rounds 0.5 down
     // https://stackoverflow.com/a/35827227
-    return -Math.round(-amount * Config.oasis.feePercentage);
+    const fee = -Math.round(-(amount - previousFee) * Config.oasis.feePercentage);
+
+    // Exit condition
+    if (fee === previousFee || iteration >= 3) return fee;
+
+    // Recursion
+    return calculateOasisFee(amount, fee, iteration + 1);
 }
 
 export default defineComponent({

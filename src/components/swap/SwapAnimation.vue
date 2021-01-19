@@ -539,14 +539,14 @@ export default defineComponent({
     /deep/ .tooltip-box {
         background: white;
         color: var(--nimiq-blue);
-        left: 1rem !important;
+        left: 0 !important;
 
         transform-origin: 50% calc(100% + 7rem);
     }
 
     &.right /deep/ .tooltip-box {
         left: auto !important;
-        right: 1rem !important;
+        right: 0 !important;
     }
 
     svg {

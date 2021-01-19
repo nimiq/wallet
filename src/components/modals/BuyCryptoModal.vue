@@ -257,7 +257,7 @@
                 <MinimizeIcon/>
             </button>
             <Timer v-else :startTime="Date.now()" :endTime="swap.expires * 1000"
-                theme="inverse" :tooltipProps="{
+                theme="white" maxUnit="minute" :tooltipProps="{
                     preferredPosition: 'bottom left',
                 }"
             />
@@ -1708,6 +1708,11 @@ svg.welcome-euro-logo {
         position: absolute;
         top: 2.5rem;
         right: 2.5rem;
+
+        /deep/ .tooltip-box {
+            font-size: var(--small-size);
+            padding: 1.25rem 1.5rem;
+        }
     }
 }
 

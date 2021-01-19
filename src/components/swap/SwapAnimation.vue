@@ -360,7 +360,7 @@ export default defineComponent({
                 case SwapState.AWAIT_SECRET:
                     delay = 2.6; break; // Stroke-color-change + background fill
                 case SwapState.SETTLE_INCOMING:
-                    delay = 3.2; break; // Puzzle pieces move in + 180° turn + pieces move out
+                    delay = 1.6; break; // Puzzle pieces move in + artificial delay to see UI state
                 case SwapState.COMPLETE:
                     delay = 1; break; // Scale up (zoom in)
                 default:
@@ -646,12 +646,12 @@ export default defineComponent({
 
     .info-icon {
         transition:
-            transform 1.2s ease 1s, // To rotate when pieces rotate in .settle-incoming
+            // transform 1.2s ease 1s, // To rotate when pieces rotate in .settle-incoming
             stroke 1s var(--nimiq-ease) 1.6s; // To change color when a white puzzle piece fills
     }
 
-    .left .info-icon { transform-origin: 8.5% 84.5%; }
-    .right .info-icon { transform-origin: 91.5% 84.5%; }
+    // .left .info-icon { transform-origin: 8.5% 84.5%; }
+    // .right .info-icon { transform-origin: 91.5% 84.5%; }
 
     &.sign-swap {
         transform: scale(1.94);
@@ -677,12 +677,12 @@ export default defineComponent({
         .right { transform: translate3d(+2.5rem, 0, 0); }
     }
 
-    &.settle-incoming,
-    &.complete {
-        .info-icon {
-            transform: rotate(-180deg);
-        }
-    }
+    // &.settle-incoming,
+    // &.complete {
+    //     .info-icon {
+    //         transform: rotate(-180deg);
+    //     }
+    // }
 
     &.create-outgoing.right-to-left,
     &.await-secret,
@@ -766,34 +766,34 @@ export default defineComponent({
 
     &.settle-incoming,
     &.complete {
-        transform: rotate(180deg);
+        // transform: rotate(180deg);
 
-        .left { animation: piece-left-in-out 3.2s 1 var(--nimiq-ease) forwards; }
-        .right { animation: piece-right-in-out 3.2s 1 var(--nimiq-ease) forwards; }
+        .left { animation: piece-left-in-out 1s 1 var(--nimiq-ease) forwards; }
+        .right { animation: piece-right-in-out 1s 1 var(--nimiq-ease) forwards; }
 
-        .identicon,
-        .logo {
-            transform: rotate(-180deg);
-            transition: transform 1.2s ease 1s;
-            transform-origin: 66.66% 50%;
-        }
+        // .identicon,
+        // .logo {
+        //     transform: rotate(-180deg);
+        //     transition: transform 1.2s ease 1s;
+        //     transform-origin: 66.66% 50%;
+        // }
 
-        .left .identicon,
-        .left .logo {
-            transform-origin: 33.33% 50%;
-        }
+        // .left .identicon,
+        // .left .logo {
+        //     transform-origin: 33.33% 50%;
+        // }
 
-        .tooltip /deep/ .tooltip-box {
-            // animation: tooltip-box-rotate 3.2s 1 var(--nimiq-ease) forwards;
-            transform: rotate(180deg);
-            transition: opacity .3s var(--nimiq-ease), transform 1.2s ease 1s;
-        }
+        // .tooltip /deep/ .tooltip-box {
+        //     // animation: tooltip-box-rotate 3.2s 1 var(--nimiq-ease) forwards;
+        //     transform: rotate(180deg);
+        //     transition: opacity .3s var(--nimiq-ease), transform 1.2s ease 1s;
+        // }
 
-        .tooltip /deep/ .trigger::after {
-            // animation: tooltip-arrow-rotate 3.2s 1 var(--nimiq-ease) forwards;
-            transform: scale(-1) rotate(-180deg) translateY(14rem);
-            transition: opacity .3s var(--nimiq-ease) 16ms, visibility .3s, transform 1.2s ease 1s;
-        }
+        // .tooltip /deep/ .trigger::after {
+        //     // animation: tooltip-arrow-rotate 3.2s 1 var(--nimiq-ease) forwards;
+        //     transform: scale(-1) /* rotate(-180deg) */ translateY(14rem);
+        //     transition: opacity .3s var(--nimiq-ease) 16ms, visibility .3s, transform 1.2s ease 1s;
+        // }
 
         .swap-amount {
             opacity: 0;
@@ -802,7 +802,7 @@ export default defineComponent({
     }
 
     &.complete {
-        transform: rotate(180deg) scale(1.94);
+        transform: /* rotate(180deg) */ scale(1.94);
 
         .spinner,
         .left,
@@ -811,8 +811,8 @@ export default defineComponent({
             opacity: 0;
         }
 
-        .left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
-        .right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
+        // .left { animation: piece-left-scale-out 1s 1 var(--nimiq-ease) forwards; }
+        // .right { animation: piece-right-scale-out 1s 1 var(--nimiq-ease) forwards; }
     }
 }
 
@@ -834,16 +834,18 @@ export default defineComponent({
 
 @keyframes piece-left-in-out {
     0%     { transform: translate3d(-2.5rem, 0, 0); }
-    31.25% { transform: translate3d(+7.25rem, 0, 0); }
-    68.75% { transform: translate3d(+7.25rem, 0, 0); }
-    100%   { transform: translate3d(-2.5rem, 0, 0); }
+    to     { transform: translate3d(+7.25rem, 0, 0); }
+    // 31.25% { transform: translate3d(+7.25rem, 0, 0); }
+    // 68.75% { transform: translate3d(+7.25rem, 0, 0); }
+    // 100%   { transform: translate3d(-2.5rem, 0, 0); }
 }
 
 @keyframes piece-right-in-out {
     0%     { transform: translate3d(+2.5rem, 0, 0); }
-    31.25% { transform: translate3d(-7.25rem, 0, 0); }
-    68.75% { transform: translate3d(-7.25rem, 0, 0); }
-    100%   { transform: translate3d(+2.5rem, 0, 0); }
+    to     { transform: translate3d(-7.25rem, 0, 0); }
+    // 31.25% { transform: translate3d(-7.25rem, 0, 0); }
+    // 68.75% { transform: translate3d(-7.25rem, 0, 0); }
+    // 100%   { transform: translate3d(+2.5rem, 0, 0); }
 }
 
 // @keyframes tooltip-box-rotate {
@@ -860,15 +862,15 @@ export default defineComponent({
 //     100%   { transform: scale(1) translateY(14rem); opacity: 1; }
 // }
 
-@keyframes piece-left-scale-out {
-    0%     { transform: translate3d(-2.5rem, 0, 0); }
-    100%   { transform: translate3d(-15rem, 0, 0); }
-}
+// @keyframes piece-left-scale-out {
+//     0%     { transform: translate3d(-2.5rem, 0, 0); }
+//     100%   { transform: translate3d(-15rem, 0, 0); }
+// }
 
-@keyframes piece-right-scale-out {
-    0%     { transform: translate3d(+2.5rem, 0, 0); }
-    100%   { transform: translate3d(+15rem, 0, 0); }
-}
+// @keyframes piece-right-scale-out {
+//     0%     { transform: translate3d(+2.5rem, 0, 0); }
+//     100%   { transform: translate3d(+15rem, 0, 0); }
+// }
 
 .nq-card-footer {
     margin-top: 3rem;
@@ -954,13 +956,13 @@ export default defineComponent({
 
     &.settle-incoming {
         @media (max-width: 500px) {
-            transform: scale(0.8) rotate(180deg);
+            transform: scale(0.8) /* rotate(180deg) */;
         }
         @media (max-width: 400px) {
-            transform: scale(0.7) rotate(180deg);
+            transform: scale(0.7) /* rotate(180deg) */;
         }
         @media (max-width: 350px) {
-            transform: scale(0.65) rotate(180deg);
+            transform: scale(0.65) /* rotate(180deg) */;
         }
     }
 }

@@ -210,9 +210,7 @@ import BlueLink from '../BlueLink.vue';
 import { SwapState } from '../../stores/Swaps';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
-// @ts-ignore
 import BitcoinSvg from './animation/bitcoin.svg';
-// @ts-ignore
 import BankSvg from './animation/bank.svg';
 
 export default defineComponent({

@@ -103,14 +103,15 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             });
         }
 
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const btcAddress of account.btcAddresses[chain]) {
-                const existingAddressInfo: BtcAddressInfo | {} = btcAddressStore.state.addressInfos[btcAddress] || {};
+                const existingAddressInfo: BtcAddressInfo | Record<string, never> = btcAddressStore
+                    .state.addressInfos[btcAddress] || {};
+
                 btcAddressInfos.push({
                     address: btcAddress,
-                    used: false,
-                    utxos: [],
-                    ...existingAddressInfo,
+                    used: existingAddressInfo.used || false,
+                    utxos: existingAddressInfo.utxos || [],
                 });
             }
         }
@@ -130,7 +131,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         accountInfos.push({
             id: account.accountId,
-            // @ts-ignore Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
+            // @ts-expect-error Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
             type: account.type,
             label: account.label,
             fileExported: account.fileExported,

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
-// @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
+// @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 

@@ -40,7 +40,7 @@ export function initStorage() {
     if (storedTxs) {
         const txs: Transaction[] = JSON.parse(storedTxs);
         transactionsStore.patch({
-            // @ts-ignore Some weird error about a type missmatch
+            // @ts-expect-error Some weird error about a type missmatch
             transactions: txs,
         });
         transactionsStore.calculateFiatAmounts();
@@ -115,7 +115,7 @@ export function initStorage() {
     const storedContacts = localStorage.getItem(PersistentStorageKeys.CONTACTS);
     if (storedContacts) {
         const contacts: ContactsState = JSON.parse(storedContacts);
-        // @ts-ignore Some weird error about a type missmatch
+        // @ts-expect-error Some weird error about a type missmatch
         contactsStore.patch({ contacts });
     }
 
@@ -172,7 +172,7 @@ export function initStorage() {
     if (storedBtcTxs) {
         const txs: BtcTransaction[] = JSON.parse(storedBtcTxs);
         btcTransactionsStore.patch({
-            // @ts-ignore Some weird error about a type missmatch
+            // @ts-expect-error Some weird error about a type missmatch
             transactions: txs,
         });
         btcTransactionsStore.calculateFiatAmounts();

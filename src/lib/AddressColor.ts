@@ -1,4 +1,4 @@
-// @ts-ignore Could not find a declaration file for module '@nimiq/iqons'.
+// @ts-expect-error Could not find a declaration file for module '@nimiq/iqons'.
 import { getBackgroundColorName } from '@nimiq/iqons';
 
 export function getColorClass(address: string) {

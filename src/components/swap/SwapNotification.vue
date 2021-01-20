@@ -212,7 +212,7 @@ export default defineComponent({
             }
 
             const swapHandler = new SwapHandler(
-                activeSwap.value! as GenericSwap<SwapAsset, SwapAsset>,
+                activeSwap.value as unknown as GenericSwap<SwapAsset, SwapAsset>,
                 await getClient(activeSwap.value!.from.asset as SwapAsset),
                 await getClient(activeSwap.value!.to.asset as SwapAsset),
             );
@@ -255,7 +255,7 @@ export default defineComponent({
                 // Note that each step falls through to the next when finished.
                 /* eslint-disable no-fallthrough */
                 case SwapState.SIGN_SWAP: {
-                    let unsubscribe: Function;
+                    let unsubscribe: () => void;
                     await new Promise((resolve, reject) => {
                         unsubscribe = useSwapsStore().subscribe((mutation, state) => {
                             if (!state.activeSwap) {

@@ -9,10 +9,9 @@ export { SwapAsset, Client, Transaction };
 export type Contract<TAsset extends SwapAsset> = {
     htlc: {
         address: string,
-    }
-    & (TAsset extends SwapAsset.NIM ? { data: string }
-    : TAsset extends SwapAsset.BTC ? { script: string }
-    : {}),
+        data: TAsset extends SwapAsset.NIM ? string : never,
+        script: TAsset extends SwapAsset.BTC ? string : never,
+    },
 }
 
 export type Swap<FromAsset extends SwapAsset, ToAsset extends SwapAsset> = {

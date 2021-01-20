@@ -1,7 +1,7 @@
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
+import type { TransactionDetails, ConsensusState } from '@nimiq/electrum-client';
 
-export type TransactionDetails = import('@nimiq/electrum-client').TransactionDetails;
-export type ConsensusState = import('@nimiq/electrum-client').ConsensusState;
+export { TransactionDetails, ConsensusState };
 
 export interface BitcoinClient {
     addTransactionListener(listener: (tx: TransactionDetails) => any, addresses: string[]): number | Promise<number>;

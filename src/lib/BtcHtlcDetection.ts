@@ -54,7 +54,7 @@ async function decodeBtcHtlcScript(script: string) {
     }
 
     // Check timeout
-    // @ts-ignore Argument of type 'Buffer' is not assignable to parameter of type 'Buffer'
+    // @ts-expect-error Argument of type 'Buffer' is not assignable to parameter of type 'Buffer'
     const timeoutTimestamp = BitcoinJS.script.number.decode(BitcoinJS.Buffer.from(asm[++i], 'hex')) + (60 * 60);
     if (asm[++i] !== 'OP_CHECKLOCKTIMEVERIFY' || asm[++i] !== 'OP_DROP') throw error;
 

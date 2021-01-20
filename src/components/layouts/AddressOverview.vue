@@ -149,9 +149,9 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { ResponsiveDirective } from 'vue-responsive-components';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';

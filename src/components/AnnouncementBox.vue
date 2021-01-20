@@ -21,7 +21,7 @@ export default defineComponent({
         // text and cta must be functions for translations to work!
         let text: () => LocaleMessage = () => '';
         let cta: () => LocaleMessage = () => '';
-        let action: string | Function = '';
+        let action: string | (() => LocaleMessage) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
         // // Dark Mode

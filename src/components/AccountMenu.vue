@@ -77,7 +77,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { AlertTriangleIcon, Identicon, MenuDotsIcon } from '@nimiq/vue-components';
-// @ts-ignore Could not find a declaration file for module 'v-click-outside'.
+// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
@@ -163,11 +163,6 @@ export default defineComponent({
             onAccountSelected,
             $button,
         };
-    },
-    mounted() {
-        // prevent click outside event with popupItem.
-        // @ts-ignore
-        this.popupItem = this.$el;
     },
     components: {
         LoginFileIcon,

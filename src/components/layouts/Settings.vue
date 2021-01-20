@@ -189,7 +189,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
@@ -310,7 +310,7 @@ export default defineComponent({
         function enableVestingSetting() {
             showVestingSetting.value = true;
         }
-        // @ts-ignore
+        // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
         return {

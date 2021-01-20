@@ -105,7 +105,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';

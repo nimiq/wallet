@@ -108,17 +108,23 @@ export type Htlc<TStatus extends HtlcStatus> = {
     },
     preimage: {
         size: 32,
-    } & (TStatus extends HtlcStatus.SETTLED ? { value: string } : {}),
+        value: TStatus extends HtlcStatus.SETTLED ? string : never,
+    },
     expires: number,
-} & (TStatus extends HtlcStatus.PENDING ? { clearing: ClearingInstruction[] } : {})
-  & (TStatus extends HtlcStatus.CLEARED ? { settlement: SettlementInfo[] } : {})
+    clearing: TStatus extends HtlcStatus.PENDING ? ClearingInstruction[] : never,
+    settlement: TStatus extends HtlcStatus.CLEARED ? SettlementInfo [] : never,
+}
 
 export function init(url: string) {
     if (!url) throw new Error('url must be provided');
     API_URL = url;
 }
 
-async function api(path: string, method: 'POST' | 'GET' | 'DELETE', body?: object): Promise<OasisHtlc<HtlcStatus>> {
+async function api(
+    path: string,
+    method: 'POST' | 'GET' | 'DELETE',
+    body?: Record<string, unknown>,
+): Promise<OasisHtlc<HtlcStatus>> {
     if (!API_URL) throw new Error('API URL not set, call init() first');
 
     const response = await fetch(`${API_URL}${path}`, {
@@ -226,11 +232,10 @@ export async function sandboxMockClearHtlc(id: string): Promise<boolean> {
 }
 
 function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc<TStatus> {
-    // @ts-ignore
     const contract: Htlc<TStatus> = {
         id: htlc.id,
         status: htlc.status,
-        asset: htlc.asset.toUpperCase(),
+        asset: htlc.asset.toUpperCase() as Asset,
         amount: coinsToUnits(htlc.asset, htlc.amount),
         beneficiary: {
             ...htlc.beneficiary,
@@ -246,6 +251,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
             ...htlc.hash,
             value: base64ToHex(htlc.hash.value),
         },
+        // @ts-expect-error Type string is not assignable to type TStatus extends HtlcStatus.SETTLED ? string : never
         preimage: {
             ...htlc.preimage,
             ...('value' in htlc.preimage ? {

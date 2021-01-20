@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 
 import AddressListItem from './AddressListItem.vue';

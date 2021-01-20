@@ -92,7 +92,7 @@
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos, useSwapsStore } from '@/stores/Swaps';
-// @ts-ignore Could not find a declaration file for module 'v-click-outside'.
+// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import loadBankList from '@/data/banksList';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';

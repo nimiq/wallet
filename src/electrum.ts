@@ -181,7 +181,7 @@ export async function launchElectrum() {
                 && tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress)));
 
         // Check tx history
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 1;
 
             let gap = 0;
@@ -207,7 +207,7 @@ export async function launchElectrum() {
 
         // Subscribe to addresses that now have UTXOs
         const addressesToWatch: string[] = [];
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const addressInfo of addressSet.value[chain]) {
                 if (addressInfo.utxos.length > 0) {
                     addressesToWatch.push(addressInfo.address);

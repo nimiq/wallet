@@ -20,9 +20,7 @@ export default defineComponent({
         watch(() => props.code, (newCode, oldCode) => {
             if (oldCode === newCode) return;
 
-            import(
-                /* webpackChunkName: "square-flag-[request]" */
-                `../assets/flags/square/${props.code}.svg`)
+            import(`../assets/flags/square/${props.code}.svg`)
                 .then((data) => {
                     path.value = data.default;
                     imageIsVisible.value = true;

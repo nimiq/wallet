@@ -31,7 +31,7 @@
     "@nimiq/utils": "^0.6.0",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",
     "@sentry/vue": "^6.0.0",
-    "@vue/composition-api": "^0.4.0",
+    "@vue/composition-api": "^0.6.7",
     "core-js": "^3.6.4",
     "pinia": "^0.0.5",
     "promise.allsettled": "^1.0.2",

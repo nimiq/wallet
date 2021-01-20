@@ -56,7 +56,7 @@ export default defineComponent({
                 case Columns.ADDRESS: routeClass.value = 'column-address'; break;
                 default: break;
             }
-        });
+        }, { immediate: true });
 
         watch(() => context.root.$route.query, (newQuery, oldQuery) => {
             if (!newQuery) return;
@@ -65,7 +65,7 @@ export default defineComponent({
             } else if (oldQuery && oldQuery.sidebar) {
                 routeClass.value = 'column-account';
             }
-        });
+        }, { immediate: true });
 
         const { accountInfos } = useAccountStore();
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.

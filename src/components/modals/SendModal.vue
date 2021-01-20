@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, watchEffect } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -257,7 +257,7 @@ export default defineComponent({
             if (newVal === null || oldVal === null) return;
             if (newVal.type !== RecipientType.CONTACT) return;
             setContact(newVal.address, newVal.label);
-        }, { deep: true });
+        }, { deep: true, immediate: true });
 
         const recentContacts = computed(() => contacts.value.slice(0, 3));
         const hasOwnAddresses = computed(() => addressInfos.value.length - 1 > 0);
@@ -386,9 +386,9 @@ export default defineComponent({
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
             fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === 'nim') return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -479,7 +479,7 @@ export default defineComponent({
             } else if (currentPage === Pages.AMOUNT_INPUT) {
                 focus(amountInputRef);
             }
-        });
+        }, { immediate: true });
 
         watch(recipientDetailsOpened, (isOpened) => {
             if (isOpened) {
@@ -489,7 +489,7 @@ export default defineComponent({
             } else {
                 focus(amountInputRef);
             }
-        });
+        }, { immediate: true });
 
         /**
          * Status Screen

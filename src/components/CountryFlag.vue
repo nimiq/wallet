@@ -1,5 +1,5 @@
 <template>
-    <img class="country-flag" :src="require(`../assets/flags/square/${code}.svg`)" :alt="code"/>
+    <img class="country-flag" :src="require(`../assets/flags/square/flag-${code}.svg`)" :alt="code"/>
 </template>
 
 <script lang="ts">

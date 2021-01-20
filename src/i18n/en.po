@@ -29,7 +29,7 @@ msgid "{fee} fee"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:39
+#: src/components/swap/SwapFeesTooltip.vue:38
 msgid "{perc}% of swap value."
 msgstr ""
 
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:25
+#: src/components/modals/BtcActivationModal.vue:24
 msgid "Activate Bitcoin"
 msgstr ""
 
@@ -289,9 +289,9 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:206
+#: src/components/modals/BuyCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:192
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
@@ -312,12 +312,12 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:190
+#: src/components/modals/BuyCryptoModal.vue:189
 #: src/components/swap/SwapModal.vue:141
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:205
+#: src/components/modals/BuyCryptoModal.vue:204
 #: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -352,7 +352,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:296
+#: src/components/modals/BuyCryptoModal.vue:295
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
@@ -551,7 +551,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:435
+#: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:502
 msgid "Edit transaction"
 msgstr ""
@@ -688,7 +688,7 @@ msgstr ""
 msgid "Got feedback? Found a bug?"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:22
+#: src/components/modals/BtcActivationModal.vue:21
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr ""
@@ -808,7 +808,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:440
+#: src/components/modals/BuyCryptoModal.vue:439
 #: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -907,7 +907,7 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:29
+#: src/components/swap/SwapFeesTooltip.vue:28
 msgid "NIM network fee"
 msgstr ""
 
@@ -1098,7 +1098,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:433
 #: src/components/modals/SendModal.vue:501
 msgid "Retry"
 msgstr ""
@@ -1176,16 +1176,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:498
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:489
+#: src/components/modals/BtcSendModal.vue:488
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:485
+#: src/components/modals/BtcSendModal.vue:484
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1259,16 +1259,16 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:250
+#: src/components/modals/BuyCryptoModal.vue:249
 msgid "Simulate EUR payment"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/BtcActivationModal.vue:27
 #: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:500
+#: src/components/modals/BtcSendModal.vue:499
 #: src/components/modals/SendModal.vue:544
 msgid "Something went wrong"
 msgstr ""
@@ -1301,7 +1301,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:35
+#: src/components/swap/SwapFeesTooltip.vue:34
 msgid "Swap fee"
 msgstr ""
 
@@ -1351,12 +1351,12 @@ msgid ""
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:821
+#: src/components/modals/BuyCryptoModal.vue:820
 #: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:826
+#: src/components/modals/BuyCryptoModal.vue:825
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1415,8 +1415,8 @@ msgstr ""
 msgid "This is not a valid address"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:241
-#: src/components/BtcTransactionList.vue:263
+#: src/components/BtcTransactionList.vue:240
+#: src/components/BtcTransactionList.vue:262
 #: src/components/TransactionList.vue:251
 #: src/components/TransactionList.vue:273
 msgid "This month"
@@ -1448,7 +1448,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:45
+#: src/components/swap/SwapFeesTooltip.vue:44
 msgid "Total fees"
 msgstr ""
 

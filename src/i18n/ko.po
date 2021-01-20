@@ -38,7 +38,7 @@ msgid "{fee} fee"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:39
+#: src/components/swap/SwapFeesTooltip.vue:38
 msgid "{perc}% of swap value."
 msgstr ""
 
@@ -46,14 +46,14 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:46
+#: src/components/BankCheckInput.vue:81
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:104
-#: src/components/modals/BtcTransactionModal.vue:119
-#: src/components/modals/BtcTransactionModal.vue:134
-#: src/components/modals/BtcTransactionModal.vue:163
+#: src/components/modals/BtcTransactionModal.vue:105
+#: src/components/modals/BtcTransactionModal.vue:120
+#: src/components/modals/BtcTransactionModal.vue:135
+#: src/components/modals/BtcTransactionModal.vue:164
 msgid "+{n} more"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr "계정"
 msgid "Activate"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:25
+#: src/components/modals/BtcActivationModal.vue:24
 msgid "Activate Bitcoin"
 msgstr ""
 
@@ -314,9 +314,9 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr "당신의 지갑으로 거래하세요."
 
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/BuyCryptoModal.vue:206
+#: src/components/modals/BuyCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:192
+#: src/components/modals/BuyCryptoModal.vue:205
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
@@ -339,14 +339,14 @@ msgid ""
 "will be processed."
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
-#: src/components/modals/BuyCryptoModal.vue:190
+#: src/components/modals/BuyCryptoModal.vue:189
 #: src/components/swap/SwapModal.vue:141
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:205
-#: src/components/swap/SwapModal.vue:150
+#: src/components/modals/BuyCryptoModal.vue:204
+#: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -380,9 +380,9 @@ msgstr "언어 설정을 바꿉니다."
 msgid "Choose a Recipient"
 msgstr "받는 사람을 고르세요"
 
-#: src/components/modals/BuyCryptoModal.vue:293
+#: src/components/modals/BuyCryptoModal.vue:295
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:183
+#: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
@@ -411,7 +411,7 @@ msgid "Coming soon"
 msgstr "곧 출시"
 
 #: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:142
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:153
 msgid "Confirm"
 msgstr ""
 
@@ -444,7 +444,7 @@ msgstr ""
 msgid "Consensus"
 msgstr "합의"
 
-#: src/components/BankCheckInput.vue:42
+#: src/components/BankCheckInput.vue:77
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -587,7 +587,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
-#: src/components/modals/BtcSendModal.vue:435
+#: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:502
 msgid "Edit transaction"
 msgstr "거래 수정"
@@ -597,7 +597,7 @@ msgid "Enter address"
 msgstr "주소 입력"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
-msgid "Enter bank name..."
+msgid "Enter bank name"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:15
@@ -716,15 +716,15 @@ msgstr "일반"
 msgid "Get NIM"
 msgstr "NIM 얻기"
 
-#: src/components/modals/TradeModal.vue:6
+#: src/components/modals/TradeModal.vue:7
 msgid "Get NIM and BTC"
 msgstr "NIM과 BTC 얻기"
 
-#: src/components/AnnouncementBox.vue:31
+#: src/components/AnnouncementBox.vue:32
 msgid "Got feedback? Found a bug?"
 msgstr "피드백이 있나요? 버그를 찾으셨나요?"
 
-#: src/components/modals/BtcActivationModal.vue:22
+#: src/components/modals/BtcActivationModal.vue:21
 #: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr "알겠습니다"
@@ -854,8 +854,8 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/modals/BuyCryptoModal.vue:415
-#: src/components/swap/SwapModal.vue:276
+#: src/components/modals/BuyCryptoModal.vue:439
+#: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -919,6 +919,10 @@ msgstr "끊김"
 msgid "Max."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:39
+msgid "More locations will be supported soon."
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
 msgstr "여러 주소"
@@ -951,7 +955,7 @@ msgstr "네트워크"
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:29
+#: src/components/swap/SwapFeesTooltip.vue:28
 msgid "NIM network fee"
 msgstr ""
 
@@ -996,7 +1000,7 @@ msgstr "찾은 거래 없음"
 msgid "None"
 msgstr "없음"
 
-#: src/components/BankCheckInput.vue:41
+#: src/components/BankCheckInput.vue:76
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1162,7 +1166,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:433
 #: src/components/modals/SendModal.vue:501
 msgid "Retry"
 msgstr "재시도"
@@ -1187,7 +1191,7 @@ msgstr ""
 "코드를 스캔하여\n"
 "이 주소로 송금하세요"
 
-#: src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:26 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "검색"
 
@@ -1241,16 +1245,16 @@ msgstr "거래 전송"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "당신의 지갑에서 BTC를 주고 받고 보관하세요."
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:498
 msgid "Sending Transaction"
 msgstr "거래 전송 중"
 
-#: src/components/modals/BtcSendModal.vue:489
+#: src/components/modals/BtcSendModal.vue:488
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:485
+#: src/components/modals/BtcSendModal.vue:484
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1330,12 +1334,12 @@ msgstr "가입"
 msgid "Simulate EUR payment"
 msgstr ""
 
-#: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/BtcActivationModal.vue:27
 #: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr "지금은 넘어가기"
 
-#: src/components/modals/BtcSendModal.vue:500
+#: src/components/modals/BtcSendModal.vue:499
 #: src/components/modals/SendModal.vue:544
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
@@ -1368,7 +1372,7 @@ msgstr ""
 msgid "Store, send and receive NIM."
 msgstr "NIM을 보관하고 주고 받으세요."
 
-#: src/components/swap/SwapFeesTooltip.vue:35
+#: src/components/swap/SwapFeesTooltip.vue:34
 msgid "Swap fee"
 msgstr ""
 
@@ -1400,7 +1404,7 @@ msgstr ""
 msgid "syncing"
 msgstr "동기화 중"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:33
 msgid "Tell us here"
 msgstr "여기에 말씀해주세요"
 
@@ -1418,12 +1422,12 @@ msgid ""
 "This might take up to 5 minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:794
-#: src/components/swap/SwapModal.vue:638
+#: src/components/modals/BuyCryptoModal.vue:820
+#: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:799
+#: src/components/modals/BuyCryptoModal.vue:825
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1488,8 +1492,8 @@ msgstr ""
 msgid "This is not a valid address"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:241
-#: src/components/BtcTransactionList.vue:263
+#: src/components/BtcTransactionList.vue:240
+#: src/components/BtcTransactionList.vue:262
 #: src/components/TransactionList.vue:251
 #: src/components/TransactionList.vue:273
 msgid "This month"
@@ -1523,7 +1527,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr "전체 잔고"
 
-#: src/components/swap/SwapFeesTooltip.vue:45
+#: src/components/swap/SwapFeesTooltip.vue:44
 msgid "Total fees"
 msgstr ""
 
@@ -1674,7 +1678,7 @@ msgstr "당신의 계정은 이제 구 계정입니다. 새로운 계정 선택�
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:49
+#: src/components/BankCheckInput.vue:84
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

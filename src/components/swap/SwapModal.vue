@@ -226,7 +226,7 @@ import {
     RequestAsset,
     getSwap,
 } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import allSettled from 'promise.allsettled';
 import Config from 'config';
 import Modal from '../modals/Modal.vue';
@@ -870,7 +870,7 @@ export default defineComponent({
                 // Await Nimiq and Bitcoin consensus
                 const nimiqClient = await getNetworkClient();
                 if (useNetworkStore().state.consensus !== 'established') {
-                    await new Promise((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                    await new Promise<void>((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
                         if (state === 'established') res();
                     }));
                 }

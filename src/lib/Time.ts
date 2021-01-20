@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import Config from 'config';
 
 export default class Time {

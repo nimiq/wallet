@@ -49,7 +49,7 @@ window.setTimeout(
 const { language } = useSettingsStore();
 loadLanguage(language.value);
 
-startSentry(Vue);
+startSentry();
 
 const app = new Vue({
     router,

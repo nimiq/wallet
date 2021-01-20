@@ -339,7 +339,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import allSettled from 'promise.allsettled';
 import { getNetworkClient } from '@/network';
 import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';

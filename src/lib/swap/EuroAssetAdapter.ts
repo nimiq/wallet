@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import Config from 'config';
 import { Htlc, HtlcStatus, SettlementInstruction } from '../OasisApi';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';

@@ -49,7 +49,7 @@ import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from 
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';

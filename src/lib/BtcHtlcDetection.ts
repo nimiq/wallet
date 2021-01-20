@@ -1,6 +1,6 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getContract, init as initFastspotApi, SwapAsset } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/vue';
 import Config from 'config';
 import { getElectrumClient } from '../electrum';
 import { loadBitcoinJS } from './BitcoinJSLoader';

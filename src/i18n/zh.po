@@ -335,8 +335,8 @@ msgid "Buy NIM"
 msgstr "购买 NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
-msgstr ""
+msgid "Buy with Credit Card"
+msgstr "用信用卡购买"
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -354,6 +354,10 @@ msgstr "点击“ {text}”，即表示您同意{Fastspot}和{FastspotGO}的服�
 #: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示您同意{Fastspot}的服务条款。"
+
+#: src/components/modals/MoonpayModal.vue:12
+msgid "Cancel"
+msgstr "取消"
 
 #: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
@@ -1513,6 +1517,10 @@ msgstr "此价格包括交换费"
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
 msgstr "您所在的地区目前尚未提供这项服务"
+
+#: src/components/modals/MoonpayModal.vue:8
+msgid "This service is operated by {link}"
+msgstr "该服务由{link}经营"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:91
 msgid ""

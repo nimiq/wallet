@@ -45,12 +45,15 @@ import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
+
+import type {
+    DisplayNames as IntlDisplayNames,
+    DisplayNamesOptions as IntlDisplayNamesOptions,
+} from '@formatjs/intl-displaynames';
+
 import { getNetworkClient } from '../network';
 import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR, Node, NodeType } from '../lib/NetworkMap';
 import { useSettingsStore } from '../stores/Settings';
-
-import type { DisplayNames as IntlDisplayNames } from '@formatjs/intl-displaynames';
-import type { DisplayNamesOptions as IntlDisplayNamesOptions } from '@formatjs/intl-displaynames';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {

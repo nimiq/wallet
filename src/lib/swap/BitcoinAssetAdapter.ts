@@ -1,5 +1,5 @@
-import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 import type { TransactionDetails, ConsensusState } from '@nimiq/electrum-client';
+import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
 export { TransactionDetails, ConsensusState };
 

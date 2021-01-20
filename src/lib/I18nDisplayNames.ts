@@ -1,9 +1,12 @@
 import { watch } from '@vue/composition-api';
 import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
-import { useSettingsStore } from '@/stores/Settings';
 
-import type { DisplayNames as IntlDisplayNames } from '@formatjs/intl-displaynames';
-import type { DisplayNamesOptions as IntlDisplayNamesOptions } from '@formatjs/intl-displaynames';
+import type {
+    DisplayNames as IntlDisplayNames,
+    DisplayNamesOptions as IntlDisplayNamesOptions,
+} from '@formatjs/intl-displaynames';
+
+import { useSettingsStore } from '../stores/Settings';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {

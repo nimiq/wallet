@@ -2,7 +2,6 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
 import { ENV_MAIN } from './Constants';
 
-
 export function explorerTxLink(asset: SwapAsset, hash: string) {
     switch (asset) {
         case SwapAsset.NIM:

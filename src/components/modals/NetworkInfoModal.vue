@@ -124,7 +124,6 @@ export default defineComponent({
             100% 100%
         );
 
-
         img {
             height: 100%;
             width: auto;

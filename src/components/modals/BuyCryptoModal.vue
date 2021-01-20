@@ -106,7 +106,6 @@
                                 {{ $t('During early access, these limits apply. They will be increased gradually.') }}
                             </p>
 
-
                         </Tooltip>
                     </div>
                 </PageHeader>

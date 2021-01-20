@@ -106,7 +106,6 @@ export default defineComponent({
     }
 }
 
-
 /* #NimiqWorldWide */
 
 .network-stats {

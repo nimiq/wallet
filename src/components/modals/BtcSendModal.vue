@@ -357,7 +357,6 @@ export default defineComponent({
             && amount.value <= maxSendableAmount.value,
         );
 
-
         const addressInputValue = ref(''); // Used for setting the address from a request URI
 
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {

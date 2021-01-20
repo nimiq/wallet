@@ -180,7 +180,6 @@ export default defineComponent({
                     const senderLabel = getSenderLabel.value(address);
                     if (senderLabel) return senderLabel;
 
-
                     const ownedAddressInfo = btcAddresses$.addressInfos[address];
                     if (ownedAddressInfo) {
                         // Find account label

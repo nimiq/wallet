@@ -718,7 +718,6 @@ export default defineComponent({
     }
 }
 
-
 .label,
 .nq-input-s {
     font-size: var(--body-size);

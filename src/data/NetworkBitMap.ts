@@ -1,4 +1,3 @@
-
 /* eslint-disable */
 // TODO create const hexagons[] above at compile time out of this bitmap.
 export default [

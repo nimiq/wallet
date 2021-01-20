@@ -23,7 +23,6 @@
             </p>
         </template>
 
-
         <template v-if="nimFeeFiat !== undefined">
             <div class="price-breakdown">
                 <label>{{ $t('NIM network fee') }}</label>

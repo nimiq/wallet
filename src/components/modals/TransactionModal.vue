@@ -2,7 +2,9 @@
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader :class="{'inline-header': !peerLabel && !(isSwapProxy && !swapData)}">
 
-            <label v-if="isSwapProxy && !swapData">{{ $t('Swap') }}</label>
+            <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
+
+            <template v-else-if="isSwapProxy && !swapData">{{ $t('Swap') }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
@@ -254,7 +256,7 @@
                     </template>
                 </div>
 
-                <div class="message">{{ data }}</div>
+                <div v-if="data" class="message">{{ data }}</div>
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
@@ -415,21 +417,28 @@ export default defineComponent({
             return null;
         });
 
+        // Related Transaction
+        const { state: transactions$ } = useTransactionsStore();
+        const relatedTx = computed(() => {
+            if (!transaction.value.relatedTransactionHash) return null;
+            return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
+        });
+
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash)
             || (transaction.value.relatedTransactionHash
                 ? getSwapByTransactionHash.value(transaction.value.relatedTransactionHash)
                 : null));
-        const swapData = computed(() => {
-            if (!swapInfo.value) return null;
-
-            return isIncoming.value
-                ? swapInfo.value.in || null
-                : swapInfo.value.out || null;
-        });
+        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
         const isSwapProxy = computed(() => isProxyData(transaction.value.data.raw, ProxyType.HTLC_PROXY));
+        const isCancelledSwap = computed(() =>
+            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
+            // Funded proxy and then refunded without creating an actual htlc?
+            || (isSwapProxy.value && (isIncoming.value
+                ? transaction.value.recipient === relatedTx.value?.sender
+                : transaction.value.sender === relatedTx.value?.recipient)));
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -446,17 +455,10 @@ export default defineComponent({
             return null;
         });
 
-        // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
-        const relatedTx = computed(() => {
-            if (!transaction.value.relatedTransactionHash) return null;
-            return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
-        });
-
         const data = computed(() => {
             if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
 
-            if (swapData.value) return '';
+            if (swapData.value && !isCancelledSwap.value) return '';
 
             if ('hashRoot' in transaction.value.data
                 || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
@@ -507,6 +509,14 @@ export default defineComponent({
             return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
         });
         const peerLabel = computed(() => {
+            if (isSwapProxy.value && !relatedTx.value) {
+                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
+            }
+
+            if (isCancelledSwap.value) {
+                return context.root.$t('Cancelled Swap');
+            }
+
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC) {
                     return context.root.$t('Bitcoin');
@@ -517,10 +527,6 @@ export default defineComponent({
                 }
 
                 return swapData.value.asset.toUpperCase();
-            }
-
-            if (isSwapProxy.value && !relatedTx.value) {
-                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
             }
 
             // Label cashlinks
@@ -625,6 +631,7 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
+            isCancelledSwap,
             isSwapProxy,
             peerAddress,
             peerLabel,

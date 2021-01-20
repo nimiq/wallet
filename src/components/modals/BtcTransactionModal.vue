@@ -1,8 +1,13 @@
 <template>
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
-        <PageHeader :class="{'inline-header': !peerLabel}">
+        <PageHeader
+            :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}">
 
-            <template v-if="usesNimSwapProxy && !swapTransaction.relatedTransactionHash">{{ $t('Swap') }}</template>
+            <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
+
+            <template v-else-if="usesNimSwapProxy && !swapTransaction.relatedTransactionHash">{{
+                $t('Swap')
+            }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
@@ -85,6 +90,7 @@
                             v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
                         <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
                     <Avatar v-else :label="peerLabel || ''"/>
@@ -147,6 +153,7 @@
                             v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
                         <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
                     <Avatar v-else :label="peerLabel || ''"/>
@@ -205,7 +212,7 @@
                             </Tooltip>
                         </div>
                     </transition>
-                    <template v-if="swapData">
+                    <template v-if="swapData && (swapTransaction || swapData.asset === SwapAsset.EUR)">
                         <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
@@ -238,6 +245,8 @@
                         </div>
                     </template>
                 </div>
+
+                <div v-if="data" class="message">{{ data }}</div>
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
@@ -377,13 +386,9 @@ export default defineComponent({
 
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
-        const swapData = computed(() => {
-            if (!swapInfo.value) return null;
-
-            return isIncoming.value
-                ? swapInfo.value.in || null
-                : swapInfo.value.out || null;
-        });
+        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        const isCancelledSwap = computed(() =>
+            swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -412,6 +417,25 @@ export default defineComponent({
                 || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });
 
+        // Data
+        const data = computed(() => {
+            if (isCancelledSwap.value) {
+                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
+            }
+
+            // if ('hashRoot' in props.transaction.data) {
+            //     return context.root.$t('HTLC Creation');
+            // }
+            // if ('creator' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Refund');
+            // }
+            // if ('hashRoot' in props.transaction.proof) {
+            //     return context.root.$t('HTLC Settlement');
+            // }
+
+            return '';
+        });
+
         // Peer
         const peerAddresses = computed(() => {
             if (swapData.value) {
@@ -431,6 +455,10 @@ export default defineComponent({
             ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
         });
         const peerLabel = computed(() => {
+            if (isCancelledSwap.value) {
+                return context.root.$t('Cancelled Swap');
+            }
+
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
@@ -440,6 +468,8 @@ export default defineComponent({
                 if (swapData.value.asset === SwapAsset.EUR) {
                     return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
+
+                return swapData.value.asset.toUpperCase();
             }
 
             if (isIncoming.value) {
@@ -561,6 +591,7 @@ export default defineComponent({
             TransactionState,
             datum,
             time,
+            data,
             outputsReceived,
             amountReceived,
             inputsSent,
@@ -583,8 +614,9 @@ export default defineComponent({
             swapData,
             swapTransaction,
             SwapAsset,
-            showRefundButton,
             usesNimSwapProxy,
+            isCancelledSwap,
+            showRefundButton,
             refundHtlc,
         };
     },
@@ -934,6 +966,14 @@ export default defineComponent({
         .swapped-amount {
             color: var(--nimiq-green);
         }
+    }
+
+    .message {
+        margin: 1rem 0;
+        text-align: center;
+        font-size: var(--body-size);
+        line-height: 1.375;
+        word-break: break-word;
     }
 }
 

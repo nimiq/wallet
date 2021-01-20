@@ -91,7 +91,6 @@ import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/C
 import { isProxyData, ProxyType } from '../lib/ProxyDetection';
 import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
-import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 
 export default defineComponent({
     props: {
@@ -119,28 +118,28 @@ export default defineComponent({
             return props.transaction.recipient === activeAddress.value;
         });
 
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapData = computed(() => {
-            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash)
-                || (props.transaction.relatedTransactionHash
-                    ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
-                    : null);
-            if (!swapInfo) return null;
-
-            return isIncoming.value
-                ? swapInfo.in || null
-                : swapInfo.out || null;
-        });
-        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
-        // related to our address, always holds the proxy data.
-        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
-
         // Related Transaction
         const { state: transactions$ } = useTransactionsStore();
         const relatedTx = computed(() => {
             if (!props.transaction.relatedTransactionHash) return null;
             return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
         });
+
+        const { getSwapByTransactionHash } = useSwapsStore();
+        const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash)
+            || (props.transaction.relatedTransactionHash
+                ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
+                : null));
+        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
+        // related to our address, always holds the proxy data.
+        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
+        const isCancelledSwap = computed(() =>
+            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
+            // Funded proxy and then refunded without creating an actual htlc?
+            || (isSwapProxy.value && (isIncoming.value
+                ? props.transaction.recipient === relatedTx.value?.sender
+                : props.transaction.sender === relatedTx.value?.recipient)));
 
         // Data
         const isCashlink = computed(() => isProxyData(props.transaction.data.raw, ProxyType.CASHLINK));
@@ -152,7 +151,7 @@ export default defineComponent({
                 return hubCashlink ? hubCashlink.message : '';
             }
 
-            if (swapData.value) {
+            if (swapData.value && !isCancelledSwap.value) {
                 return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                     fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
                     toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
@@ -199,6 +198,14 @@ export default defineComponent({
             return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
         });
         const peerLabel = computed(() => {
+            if (isSwapProxy.value && !relatedTx.value) {
+                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
+            }
+
+            if (isCancelledSwap.value) {
+                return context.root.$t('Cancelled Swap');
+            }
+
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC) {
                     return context.root.$t('Bitcoin') as string;
@@ -209,10 +216,6 @@ export default defineComponent({
                 }
 
                 return swapData.value.asset.toUpperCase();
-            }
-
-            if (isSwapProxy.value && !relatedTx.value) {
-                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
             }
 
             // Label cashlinks

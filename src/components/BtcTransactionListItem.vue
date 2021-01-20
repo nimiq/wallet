@@ -24,6 +24,7 @@
         <div v-if="swapData" class="identicon-container">
             <Identicon v-if="swapData.asset === SwapAsset.NIM && swapTransaction" :address="peerAddresses[0]"/>
             <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+            <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>
         </div>
         <Avatar v-else :label="peerLabel || ''"/>
@@ -146,14 +147,10 @@ export default defineComponent({
         const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         const { getSwapByTransactionHash } = useSwapsStore();
-        const swapData = computed(() => {
-            const swapInfo = getSwapByTransactionHash.value(props.transaction.transactionHash);
-            if (!swapInfo) return null;
-
-            return isIncoming.value
-                ? swapInfo.in || null
-                : swapInfo.out || null;
-        });
+        const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash));
+        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        const isCancelledSwap = computed(() =>
+            swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -175,10 +172,14 @@ export default defineComponent({
         // Data
         const data = computed(() => {
             if (swapData.value) {
-                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
-                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
-                    toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
-                }) as string;
+                if (!isCancelledSwap.value) {
+                    return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                        fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
+                        toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
+                    }) as string;
+                }
+
+                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
             }
 
             // if ('hashRoot' in props.transaction.data) {
@@ -217,6 +218,10 @@ export default defineComponent({
             ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
         });
         const peerLabel = computed(() => {
+            if (isCancelledSwap.value) {
+                return context.root.$t('Cancelled Swap');
+            }
+
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
@@ -226,6 +231,8 @@ export default defineComponent({
                 if (swapData.value.asset === SwapAsset.EUR) {
                     return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
+
+                return swapData.value.asset.toUpperCase();
             }
 
             if (isIncoming.value) {
@@ -304,6 +311,7 @@ export default defineComponent({
             SwapAsset,
             swapData,
             swapTransaction,
+            isCancelledSwap,
         };
     },
     components: {
@@ -414,6 +422,10 @@ svg {
 
         svg.bank-icon {
             padding: 0.375rem;
+        }
+
+        .avatar {
+            margin: .375rem;
         }
     }
 

@@ -63,6 +63,7 @@ import Time from '../../lib/Time';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
+    DELETED = 'DELETED',
 }
 
 export default defineComponent({
@@ -221,6 +222,12 @@ export default defineComponent({
 
             // Set up expiry watchers
             async function checkExpired() {
+                if (!activeSwap.value) {
+                    swapHandler.stop(new Error(SwapError.DELETED));
+                    cleanUp();
+                    return true;
+                }
+
                 if (await isExpired()) {
                     swapHandler.stop(new Error(SwapError.EXPIRED));
                     updateSwap({
@@ -339,6 +346,7 @@ export default defineComponent({
                             });
                         } catch (error) {
                             if (error.message === SwapError.EXPIRED) return;
+                            if (error.message === SwapError.DELETED) return;
 
                             currentError.value = error.message;
                             setTimeout(processSwap, 2000); // 2 seconds
@@ -400,6 +408,7 @@ export default defineComponent({
                         });
                     } catch (error) {
                         if (error.message === SwapError.EXPIRED) return;
+                        if (error.message === SwapError.DELETED) return;
 
                         currentError.value = error.message;
                         setTimeout(processSwap, 2000); // 2 seconds

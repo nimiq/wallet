@@ -208,7 +208,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:96
+#: src/components/swap/SwapSepaFundingInstructions.vue:116
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -313,17 +313,21 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:141
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:155
+#: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:78
+#: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:95
+msgid "Cancel Swap"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:247
@@ -358,7 +362,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:229
+#: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
 msgstr ""
 
@@ -386,9 +390,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:137
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:156
+#: src/components/swap/SwapModal.vue:134
+#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:153
 msgid "Confirm"
 msgstr ""
 
@@ -430,6 +434,10 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/WelcomeModal.vue:93
 msgid "Continue"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:92
+msgid "Continue Swap"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:100
@@ -737,7 +745,7 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:110
+#: src/components/swap/SwapNotification.vue:111
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -813,7 +821,7 @@ msgid "Learn more here"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:438
-#: src/components/swap/SwapModal.vue:323
+#: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -933,7 +941,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:109
+#: src/components/swap/SwapNotification.vue:110
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1345,14 +1353,14 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:87
+#: src/components/swap/SwapSepaFundingInstructions.vue:104
 msgid ""
 "The bank is processing your transaction.\n"
 "This might take up to {min} minutes."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:819
-#: src/components/swap/SwapModal.vue:685
+#: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1431,7 +1439,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:90
+#: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
@@ -1611,6 +1619,12 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:77
 msgid "Your Login File, in combination with your password, grants access."
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:88
+msgid ""
+"Your monthly purchase limit will still\n"
+"be reduced, even if you cancel now."
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9

@@ -231,7 +231,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr "주소로 돌아가기"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:97
+#: src/components/swap/SwapSepaFundingInstructions.vue:116
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -350,6 +350,14 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:79
+msgid "Cancel"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:95
+msgid "Cancel Swap"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
@@ -380,7 +388,7 @@ msgstr "언어 설정을 바꿉니다."
 msgid "Choose a Recipient"
 msgstr "받는 사람을 고르세요"
 
-#: src/components/modals/BuyCryptoModal.vue:295
+#: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
@@ -456,6 +464,10 @@ msgstr "연락처"
 #: src/components/modals/WelcomeModal.vue:93
 msgid "Continue"
 msgstr "계속하기"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:92
+msgid "Continue Swap"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:100
 msgid "Continue to Login File"
@@ -763,7 +775,7 @@ msgstr ""
 msgid "HTLC Settlement"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:82
+#: src/components/swap/SwapSepaFundingInstructions.vue:81
 msgid "I paid"
 msgstr ""
 
@@ -771,7 +783,7 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:110
+#: src/components/swap/SwapNotification.vue:111
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -854,7 +866,7 @@ msgstr "더 알아보기"
 msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
-#: src/components/modals/BuyCryptoModal.vue:439
+#: src/components/modals/BuyCryptoModal.vue:438
 #: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -986,7 +998,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:109
+#: src/components/swap/SwapNotification.vue:110
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1067,7 +1079,7 @@ msgstr ""
 msgid "Please do not use your Mainnet accounts!"
 msgstr "메인넷 계정을 사용하지 마세요!"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:70
+#: src/components/swap/SwapSepaFundingInstructions.vue:69
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr ""
 
@@ -1141,7 +1153,7 @@ msgstr "참조 통화"
 msgid "Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:72
+#: src/components/swap/SwapSepaFundingInstructions.vue:71
 msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
 "another name, like ‘real-time transactions’ i.a."
@@ -1344,10 +1356,6 @@ msgstr "지금은 넘어가기"
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:54
-msgid "Spacing optional"
-msgstr ""
-
 #: src/components/modals/SendModal.vue:165
 msgid "Speed up your Transaction"
 msgstr "거래 속도를 높이세요"
@@ -1416,18 +1424,18 @@ msgstr ""
 msgid "Testnet"
 msgstr "테스트넷"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:104
 msgid ""
 "The bank is processing your transaction.\n"
-"This might take up to 5 minutes."
+"This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:820
+#: src/components/modals/BuyCryptoModal.vue:819
 #: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:825
+#: src/components/modals/BuyCryptoModal.vue:824
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1508,7 +1516,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:91
+#: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
 "infrastructure."
@@ -1702,13 +1710,19 @@ msgstr "당신의 브라우저는 하나의 노드입니다"
 msgid "Your Login File, in combination with your password, grants access."
 msgstr "패스와드와 결합된 당신의 로그인 파일이 접근 권한을 부여합니다."
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:88
+msgid ""
+"Your monthly purchase limit will still\n"
+"be reduced, even if you cancel now."
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""
 "Your NIM are stored in a legacy account. Transfer them to a regular account "
 "to profit from new features."
 msgstr "당신의 NIM은 구 계정에 보관되어 있습니다. 정식 계정으로 옮겨 새로운 기능을 이용하세요."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:62
+#: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"
 msgstr ""
 

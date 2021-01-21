@@ -1,13 +1,13 @@
 # 
 # Translators:
 # Talleyrand <baptistekugener@wanadoo.fr>, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2020
 # Daniel, 2020
 # Matheo <matheo@nimiq.com>, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2021\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -250,7 +250,7 @@ msgstr "En attente du secret du swap"
 msgid "Back to addresses"
 msgstr "Retour aux adresses"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:97
+#: src/components/swap/SwapSepaFundingInstructions.vue:116
 msgid "Back to Bank Details"
 msgstr "Retour aux coordonnées bancaires"
 
@@ -377,6 +377,14 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:79
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:95
+msgid "Cancel Swap"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:247
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
@@ -407,7 +415,7 @@ msgstr "Modifier vos paramètres de langue."
 msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
-#: src/components/modals/BuyCryptoModal.vue:295
+#: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
@@ -483,6 +491,10 @@ msgstr "Contacts"
 #: src/components/modals/WelcomeModal.vue:93
 msgid "Continue"
 msgstr "Continue"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:92
+msgid "Continue Swap"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:100
 msgid "Continue to Login File"
@@ -637,7 +649,7 @@ msgstr "Entrez l'adresse"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
 msgid "Enter bank name"
-msgstr ""
+msgstr "Entrez le nom de la banque"
 
 #: src/components/modals/BtcSendModal.vue:15
 msgid "Enter recipient address..."
@@ -806,7 +818,7 @@ msgstr "Remboursement du HTLC"
 msgid "HTLC Settlement"
 msgstr "Règlement du HTLC"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:82
+#: src/components/swap/SwapSepaFundingInstructions.vue:81
 msgid "I paid"
 msgstr "J'ai payé"
 
@@ -814,7 +826,7 @@ msgstr "J'ai payé"
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:110
+#: src/components/swap/SwapNotification.vue:111
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -906,7 +918,7 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/modals/BuyCryptoModal.vue:439
+#: src/components/modals/BuyCryptoModal.vue:438
 #: src/components/swap/SwapModal.vue:279
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
@@ -1044,7 +1056,7 @@ msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 "Le Wallet Nimiq ne supporte pas les messages de transaction pour Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:109
+#: src/components/swap/SwapNotification.vue:110
 msgid "No connection to {chain} network."
 msgstr "Pas de connexion au réseau {chain}."
 
@@ -1127,7 +1139,7 @@ msgstr "Exécution du Swap {progress}/5"
 msgid "Please do not use your Mainnet accounts!"
 msgstr "Veuillez ne pas utiliser vos comptes Mainnet !"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:70
+#: src/components/swap/SwapSepaFundingInstructions.vue:69
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Veuillez vous assurer que vous envoyez une transaction instantanée !"
 
@@ -1205,7 +1217,7 @@ msgstr "Devise de référence"
 msgid "Refund"
 msgstr "Remboursement"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:72
+#: src/components/swap/SwapSepaFundingInstructions.vue:71
 msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
 "another name, like ‘real-time transactions’ i.a."
@@ -1415,10 +1427,6 @@ msgstr "Ignorer pour l'instant"
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:54
-msgid "Spacing optional"
-msgstr "Espaces facultatifs"
-
 #: src/components/modals/SendModal.vue:165
 msgid "Speed up your Transaction"
 msgstr "Accélérer votre Transaction"
@@ -1488,20 +1496,20 @@ msgstr ""
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:104
 msgid ""
 "The bank is processing your transaction.\n"
-"This might take up to 5 minutes."
+"This might take up to {min} minutes."
 msgstr ""
 "La banque traite votre transaction.\n"
-"Cela peut prendre jusqu'à 5 minutes."
+"Cela peut prendre jusqu'à {min} minutes."
 
-#: src/components/modals/BuyCryptoModal.vue:820
+#: src/components/modals/BuyCryptoModal.vue:819
 #: src/components/swap/SwapModal.vue:641
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
 
-#: src/components/modals/BuyCryptoModal.vue:825
+#: src/components/modals/BuyCryptoModal.vue:824
 msgid "The fees determine the minimum amount."
 msgstr "Les frais déterminent le montant minimum."
 
@@ -1586,7 +1594,7 @@ msgstr "Ce taux inclut les frais de swap."
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:91
+#: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
 "infrastructure."
@@ -1812,6 +1820,12 @@ msgid "Your Login File, in combination with your password, grants access."
 msgstr ""
 "Votre fichier de connexion, associé à votre mot de passe, vous donne accès."
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:88
+msgid ""
+"Your monthly purchase limit will still\n"
+"be reduced, even if you cancel now."
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""
 "Your NIM are stored in a legacy account. Transfer them to a regular account "
@@ -1820,7 +1834,7 @@ msgstr ""
 "Vos NIM sont hébergés sur un ancien type de compte. Transférez les sur un "
 "nouveau compte pour profiter de nouvelles fonctionalitées."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:62
+#: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"
 msgstr "Votre transaction doit être SEPA Instant"
 

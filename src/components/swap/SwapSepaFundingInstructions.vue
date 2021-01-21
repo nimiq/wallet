@@ -51,7 +51,6 @@
                     <Copyable :text="reference" class="glass flex-column flex-grow">
                         <div class="line flex-row">
                             <label class="nq-label">{{ $t('Reference') }}</label>
-                            <label class="spacing-notice">{{ $t('Spacing optional') }}</label>
                         </div>
                         <div class="line flex-row">
                             <strong>{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
@@ -279,18 +278,10 @@ export default defineComponent({
     }
 }
 
-.bic,
-.spacing-notice {
-    color: rgba(255, 255, 255, 0.3);
-}
-
 .bic {
+    color: rgba(255, 255, 255, 0.3);
     font-weight: 600;
     letter-spacing: .06em;
-}
-
-.spacing-notice {
-    font-size: var(--label-size);
 }
 
 .instant-warning {

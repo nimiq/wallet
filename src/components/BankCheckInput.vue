@@ -8,9 +8,9 @@
         @keydown="onKeyDown"
     >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
-        <div class="country-selector" v-click-outside="() => countryDropdownOpened = false" v-if="countries.length > 0">
+        <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
             <button class="reset trigger" @click="countryDropdownOpened = true">
-                <CountryFlag :code="currentCountry ? currentCountry.code : ''" />
+                <CountryFlag v-if="currentCountry" :code="currentCountry.code" />
                 <img src="../assets/arrow-down.svg" />
             </button>
             <div v-if="countryDropdownOpened" class="country-dropdown">
@@ -317,6 +317,10 @@ export default defineComponent({
                 });
             } else if (countries.value.length > 0) {
                 selectCountry(countries.value[0]);
+            } else {
+                watch(banks, () => {
+                    if (!currentCountry.value) selectCountry(countries.value[0]);
+                });
             }
         });
 

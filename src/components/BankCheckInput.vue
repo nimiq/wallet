@@ -8,7 +8,7 @@
         @keydown="onKeyDown"
     >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
-        <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
+        <div class="country-selector" v-click-outside="() => countryDropdownOpened = false" v-if="countries.length > 0">
             <button class="reset trigger" @click="countryDropdownOpened = true">
                 <CountryFlag :code="currentCountry ? currentCountry.code : ''" />
                 <img src="../assets/arrow-down.svg" />

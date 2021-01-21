@@ -53,7 +53,8 @@
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                         </Tooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                            ref="$limitsTooltip">
                             <div slot="trigger" class="pill limits flex-row">
                                 <span v-if="limits">
                                     {{ $t('Max.') }}
@@ -656,6 +657,12 @@ export default defineComponent({
             fetchingEstimate.value = false;
         }
 
+        function openLimitsTooltip() {
+            if (context.refs.$limitsTooltip && !(context.refs.$limitsTooltip as Tooltip).isShown) {
+                (context.refs.$limitsTooltip as Tooltip).show();
+            }
+        }
+
         function onInput(asset: SwapAsset, amount: number) {
             if (debounce) {
                 clearTimeout(debounce);
@@ -676,6 +683,8 @@ export default defineComponent({
                     : Infinity;
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
+
+                if (limit === 0) openLimitsTooltip();
             }
             if (asset === SwapAsset.BTC) {
                 fixedAsset.value = SwapAsset.BTC;
@@ -685,6 +694,8 @@ export default defineComponent({
                     : Infinity;
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
+
+                if (limit === 0) openLimitsTooltip();
             }
 
             if (!amount) {

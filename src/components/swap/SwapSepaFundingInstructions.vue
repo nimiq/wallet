@@ -148,7 +148,6 @@ export default defineComponent({
         function startTimer() {
             if (timerInterval) return;
             timerInterval = window.setInterval(timerTick, 1000);
-            timerTick();
         }
 
         function timerTick() {

@@ -238,7 +238,7 @@
                         :bic="swap.fundingInstructions.recipient.bic"
                         :reference="swap.fundingInstructions.purpose"
                         :stateEnteredAt="swap.stateEnteredAt"
-                        @cancel="() => {}"
+                        @cancel="finishSwap"
                         @paid="onPaid"
                     />
                     <button v-else

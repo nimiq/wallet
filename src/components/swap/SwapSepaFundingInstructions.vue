@@ -74,17 +74,37 @@
                     </Tooltip>
                 </div>
                 <div class="row flex-row">
-                    <!-- <button class="nq-button-s inverse" @click="onCancel" @mousedown.prevent>
-                        {{ $t('Cancel') }}
-                    </button> --><div></div>
+                    <button class="nq-button-s inverse lighter"
+                        @click="showCancelConfirmation = true" @mousedown.prevent
+                    >{{ $t('Cancel') }}</button>
                     <button class="nq-button-pill inverse light-blue" @click="onPaid" @mousedown.prevent>
                         {{ $t('I paid') }}
                     </button>
                 </div>
+                <transition name="fade" duration="500">
+                    <div v-if="showCancelConfirmation" class="cancel-confirmation flex-column">
+                        <div class="page flex-column">
+                            <p>
+                                {{ $t('Your monthly purchase limit will still\nbe reduced, even if you cancel now.') }}
+                            </p>
+                            <div class="cancel-confirm-buttons flex-row">
+                                <button class="nq-button-s" @click="showCancelConfirmation = false" @mousedown.prevent>
+                                    {{ $t('Continue Swap') }}
+                                </button>
+                                <button class="nq-button-s red" @click="onCancel" @mousedown.prevent>
+                                    {{ $t('Cancel Swap') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
             </div>
             <div v-else-if="page === Pages.PROCESSING" class="processing">
                 <h2 class="nq-h2">
-                    {{ $t('The bank is processing your transaction.\nThis might take up to 5 minutes.') }}
+                    {{ $t(
+                        'The bank is processing your transaction.\nThis might take up to {min} minutes.',
+                        { min: 6},
+                    ) }}
                 </h2>
                 <p class="nq-gray">
                     {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}
@@ -92,7 +112,7 @@
                 <p class="nq-gray timer">
                     {{ timer }}
                 </p>
-                <button class="nq-button-s inverse" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
+                <button class="nq-button-s inverse lighter" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
                     {{ $t('Back to Bank Details') }}
                 </button>
             </div>
@@ -166,12 +186,15 @@ export default defineComponent({
             window.clearInterval(timerInterval);
         });
 
+        const showCancelConfirmation = ref(false);
+
         return {
             page,
             Pages,
             onCancel,
             onPaid,
             timer,
+            showCancelConfirmation,
         };
     },
     filters: {
@@ -295,6 +318,15 @@ export default defineComponent({
     }
 }
 
+.nq-button-s.inverse.lighter {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:hover,
+    &:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+
 .tooltip .nq-icon {
     opacity: 0.3;
     transition: opacity 0.2s var(--nimiq-ease);
@@ -331,6 +363,48 @@ export default defineComponent({
 
     button {
         margin-top: 8rem;
+    }
+}
+
+.cancel-confirmation {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // align-items: center;
+
+    --transition-time: 0.3s;
+
+    .page {
+        background: white;
+        color: var(--text-100);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin: 1rem;
+        width: 42rem;
+        max-width: 100%;
+        align-items: center;
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            width: calc(100% - 2rem);
+        }
+
+        p {
+            display: inline-block;
+            font-size: var(--body-size);
+            font-weight: 600;
+            margin: 1rem 0 3rem;
+            white-space: pre-line;
+        }
+
+        .cancel-confirm-buttons {
+            align-self: stretch;
+            justify-content: space-between;
+        }
+    }
+
+    &.fade-leave-active {
+        pointer-events: none;
     }
 }
 </style>

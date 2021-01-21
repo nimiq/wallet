@@ -208,7 +208,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:97
+#: src/components/swap/SwapSepaFundingInstructions.vue:96
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -313,13 +313,17 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:144
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:155
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:78
+msgid "Cancel"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:247
@@ -352,9 +356,9 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:295
+#: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:229
 msgid "Choose an Address"
 msgstr ""
 
@@ -382,9 +386,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:134
-#: src/components/swap/SwapModal.vue:142
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:137
+#: src/components/swap/SwapModal.vue:145
+#: src/components/swap/SwapModal.vue:156
 msgid "Confirm"
 msgstr ""
 
@@ -725,7 +729,7 @@ msgstr ""
 msgid "HTLC Settlement"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:82
+#: src/components/swap/SwapSepaFundingInstructions.vue:81
 msgid "I paid"
 msgstr ""
 
@@ -808,8 +812,8 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:439
-#: src/components/swap/SwapModal.vue:279
+#: src/components/modals/BuyCryptoModal.vue:438
+#: src/components/swap/SwapModal.vue:323
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -1010,7 +1014,7 @@ msgstr ""
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:70
+#: src/components/swap/SwapSepaFundingInstructions.vue:69
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr ""
 
@@ -1074,7 +1078,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:72
+#: src/components/swap/SwapSepaFundingInstructions.vue:71
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
@@ -1273,10 +1277,6 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:54
-msgid "Spacing optional"
-msgstr ""
-
 #: src/components/modals/SendModal.vue:165
 msgid "Speed up your Transaction"
 msgstr ""
@@ -1345,18 +1345,18 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:87
 msgid ""
 "The bank is processing your transaction.\n"
-"This might take up to 5 minutes."
+"This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:820
-#: src/components/swap/SwapModal.vue:641
+#: src/components/modals/BuyCryptoModal.vue:819
+#: src/components/swap/SwapModal.vue:685
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:825
+#: src/components/modals/BuyCryptoModal.vue:824
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1431,7 +1431,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:91
+#: src/components/swap/SwapSepaFundingInstructions.vue:90
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
@@ -1617,7 +1617,7 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:62
+#: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"
 msgstr ""
 

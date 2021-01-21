@@ -280,8 +280,7 @@
                 <p>
                     Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link"
                         target="_blank" rel="noopener"
-                    >@Max_Nimiq</a><br>
-                    Email: <a href="mailto:maxburger@nimiq.com" class="nq-link">maxburger@nimiq.com</a>
+                    >@Max_Nimiq</a>
                 </p>
             </PageBody>
         </div>

@@ -46,10 +46,8 @@
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
             <button
                 :disabled="!totalFiatAccountBalance"
-                class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent
-            >
-                <SwapIcon/>
-            </button>
+                class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent
+            ><SwapIcon/></button>
         </div>
         <div v-if="hasBitcoinAddresses"
             class="currency flex-column btc"
@@ -219,15 +217,29 @@ export default defineComponent({
             width: 4rem;
             height: 4rem;
             border-radius: 2rem;
-            background-color: #e4e4e4; // var(--text-6) but without transparency
-            box-shadow: 0 1rem 1rem 0.5rem var(--bg-base);
+            /**
+             * We need to add a background (of the same color as the base color) to the button, as a transparent
+             * background leads to the account balances to leak through the button, when it is close to one side
+             * of the distribution bar.
+             * Box-shadow is applied on top of the background color, so we need to change the box-shadow color,
+             * with a fixed background-color. The transition property is adjusted accordingly, with the same
+             * settings as in @nimiq/style.
+             */
+            background-color: var(--bg-base);
+            color: var(--text-50);
+            --box-color: var(--text-6);
+            box-shadow: 0 1rem 1rem 0.5rem var(--bg-base), inset 0 0 0 3rem var(--box-color);
 
-            svg {
-                opacity: 0.5;
-            }
+            transition: color .3s var(--nimiq-ease), box-shadow .3s var(--nimiq-ease);
 
             &::before {
                 display: none;
+            }
+
+            &:hover,
+            &:focus {
+                --box-color: var(--text-12);
+                color: var(--text-70);
             }
         }
     }

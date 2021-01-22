@@ -55,7 +55,7 @@
                         </Tooltip>
                         <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
                             ref="$limitsTooltip">
-                            <div slot="trigger" class="pill limits flex-row">
+                            <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
                                 <span v-if="limits">
                                     {{ $t('Max.') }}
                                     <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
@@ -658,12 +658,13 @@ export default defineComponent({
         }
 
         function openLimitsTooltip() {
-            if (context.refs.$limitsTooltip && !(context.refs.$limitsTooltip as Tooltip).isShown) {
-                (context.refs.$limitsTooltip as Tooltip).show();
-            }
+            if (!context.refs.$limitsTooltip) return;
+            (context.refs.$limitsTooltip as Tooltip).show();
         }
 
-        function onInput(asset: SwapAsset, amount: number) {
+        const isLimitReached = ref(false);
+
+        function onInput(asset: SwapAsset, amount: number, originalAmount?: number) {
             if (debounce) {
                 clearTimeout(debounce);
             }
@@ -679,22 +680,24 @@ export default defineComponent({
                 fixedAsset.value = SwapAsset.NIM;
                 const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
                 const limit = nimRate && currentLimitFiat.value !== null
-                    ? (currentLimitFiat.value / nimRate) * 1e5
+                    ? Math.floor((currentLimitFiat.value / nimRate) * 1e5)
                     : Infinity;
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
 
+                isLimitReached.value = Math.abs(originalAmount || wantNim.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
             if (asset === SwapAsset.BTC) {
                 fixedAsset.value = SwapAsset.BTC;
                 const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
                 const limit = btcRate && currentLimitFiat.value !== null
-                    ? (currentLimitFiat.value / btcRate) * 1e8
+                    ? Math.floor((currentLimitFiat.value / btcRate) * 1e8)
                     : Infinity;
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
 
+                isLimitReached.value = Math.abs(originalAmount || wantBtc.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
 
@@ -1130,19 +1133,18 @@ export default defineComponent({
         }
 
         function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
-            const { asset } = swapInfo;
-            let { amount } = swapInfo;
+            const { asset, amount } = swapInfo;
 
             // Only cap decimals on the amount when not the whole address/account balance is used
             const balance = asset === SwapAsset.NIM
                 ? (activeAddressInfo.value!.balance) || 0
                 : accountBtcBalance.value;
 
-            if (Math.abs(amount) < balance) {
-                amount = capDecimals(amount, asset);
-            }
+            const cappedAmount = Math.abs(amount) < balance
+                ? capDecimals(amount, asset)
+                : undefined;
 
-            onInput(asset, amount);
+            onInput(asset, cappedAmount || amount, amount);
         }
 
         const { amountsHidden, btcUnit } = useSettingsStore();
@@ -1189,6 +1191,7 @@ export default defineComponent({
             explorerAddrLink,
             finishSwap,
             limits,
+            isLimitReached,
             currentLimitFiat,
             currentlySigning,
             amountsHidden,
@@ -1297,15 +1300,12 @@ export default defineComponent({
     border-radius: 5rem;
     box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
 
+    transition: color 0.3s var(--nimiq-ease), box-shadow 0.3s var(--nimiq-ease);
+
     &.fees {
         svg,
         .fiat-amount {
             margin-right: 0.5rem;
-        }
-
-        &.high-fees {
-            color: var(--nimiq-red);
-            box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
         }
     }
 
@@ -1318,6 +1318,12 @@ export default defineComponent({
             height: 1.75rem;
             width: 1.75rem;
         }
+    }
+
+    &.high-fees,
+    &.limit-reached {
+        color: var(--nimiq-red);
+        box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
     }
 }
 

@@ -48,7 +48,7 @@ msgstr "{perc}% вартості обміну."
 msgid "{value} remaining"
 msgstr "{value} залишок"
 
-#: src/components/BankCheckInput.vue:81
+#: src/components/BankCheckInput.vue:84
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} інший | + {count} інші"
 
@@ -84,7 +84,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:94
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:69
 msgid "30-day Limit"
 msgstr "30-денний ліміт"
 
@@ -181,6 +181,10 @@ msgstr "Розширені"
 msgid "all"
 msgstr "Усі"
 
+#: src/components/BankCheckInput.vue:170
+msgid "All countries"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:48
 msgid "All in one easy place."
 msgstr "Все в одному зручному місці."
@@ -266,7 +270,7 @@ msgstr "Банківський рахунок"
 msgid "BIC works, too."
 msgstr "BIC працює також."
 
-#: src/components/BalanceDistribution.vue:68
+#: src/components/BalanceDistribution.vue:66
 #: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
@@ -314,11 +318,11 @@ msgstr "Веб-оглядач"
 msgid "BTC network fee"
 msgstr "Комісія BTC"
 
-#: src/components/layouts/Sidebar.vue:32
+#: src/components/layouts/Sidebar.vue:30
 msgid "Buy"
 msgstr "Купити"
 
-#: src/components/layouts/Sidebar.vue:43
+#: src/components/layouts/Sidebar.vue:37
 msgid "Buy & Sell"
 msgstr "Купити і продати"
 
@@ -362,7 +366,7 @@ msgstr ""
 "оброблений."
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -370,7 +374,7 @@ msgstr ""
 " {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot}."
@@ -415,7 +419,7 @@ msgstr "Виберіть одержувача"
 
 #: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:187
 msgid "Choose an Address"
 msgstr "Виберіть адресу"
 
@@ -443,8 +447,8 @@ msgstr "Незабаром"
 msgid "Coming soon"
 msgstr "Незабаром"
 
-#: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:142
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:135 src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:154
 msgid "Confirm"
 msgstr "Підтвердити"
 
@@ -477,7 +481,7 @@ msgstr "Зв'язок втрачений"
 msgid "Consensus"
 msgstr "Консенсус"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:80
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Зв’яжіться зі своїм банком, щоб з’ясувати, чи ваш рахунок підходить для "
@@ -594,7 +598,7 @@ msgstr "Завантажте файл-ключ"
 msgid "Duration and fees are estimates."
 msgstr "Тривалість і комісія є приблизними."
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:75
 msgid "During early access, these limits apply."
 msgstr "Ці обмеження застосовуються під час раннього доступу."
 
@@ -914,7 +918,7 @@ msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
 #: src/components/modals/BuyCryptoModal.vue:438
-#: src/components/swap/SwapModal.vue:279
+#: src/components/swap/SwapModal.vue:280
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr "Наразі, Ledger рахунки не підтримують можливість обміну."
 
@@ -947,7 +951,7 @@ msgid "Load file"
 msgstr "Завантажити"
 
 #: src/components/modals/BuyCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
 msgid "loading..."
 msgstr "завантаження..."
 
@@ -974,11 +978,11 @@ msgstr "Втрачено"
 
 #: src/components/modals/BuyCryptoModal.vue:79
 #: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:60 src/components/swap/SwapModal.vue:64
 msgid "Max."
 msgstr "Макс."
 
-#: src/components/BankCheckInput.vue:39
+#: src/components/BankCheckInput.vue:42
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -1006,7 +1010,7 @@ msgstr "Вкажіть ім'я відправника..."
 msgid "Name your contact"
 msgstr "Назвіть контакт"
 
-#: src/components/layouts/Sidebar.vue:56
+#: src/components/layouts/Sidebar.vue:52
 msgid "Network"
 msgstr "Мережа"
 
@@ -1062,7 +1066,7 @@ msgstr "Переказів не знайдено"
 msgid "None"
 msgstr "Ні"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:79
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
@@ -1257,7 +1261,7 @@ msgstr ""
 "Відскануйте код щоб вислати\n"
 "кошти на цю адресу"
 
-#: src/components/BankCheckInput.vue:26 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:27 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Пошук"
 
@@ -1277,7 +1281,7 @@ msgstr "Виберіть валюту та суму."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Обрати у яких одиницях відображати Біткоїн."
 
-#: src/components/layouts/Sidebar.vue:37
+#: src/components/layouts/Sidebar.vue:33
 msgid "Sell"
 msgstr "Продати"
 
@@ -1357,7 +1361,7 @@ msgstr "Задати комісію"
 msgid "Setting up swap"
 msgstr "Обмін налаштовується"
 
-#: src/components/layouts/Sidebar.vue:64
+#: src/components/layouts/Sidebar.vue:60
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -1492,7 +1496,7 @@ msgstr ""
 "Це може зайняти до {min} хвилин."
 
 #: src/components/modals/BuyCryptoModal.vue:819
-#: src/components/swap/SwapModal.vue:641
+#: src/components/swap/SwapModal.vue:642
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
@@ -1544,7 +1548,7 @@ msgstr "Функція \"відновлення паролю\" НЕ існує"
 msgid "There's a problem"
 msgstr "Сталася проблема"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:76
 msgid "They will be increased gradually."
 msgstr "Вони будуть поступово зняті."
 
@@ -1770,7 +1774,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Ваш банк не відповідає вимогам?"
 
-#: src/components/BankCheckInput.vue:84
+#: src/components/BankCheckInput.vue:87
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

@@ -49,7 +49,7 @@ msgstr "{perc}% des Tauschwerts."
 msgid "{value} remaining"
 msgstr "{value} verbleibend"
 
-#: src/components/BankCheckInput.vue:81
+#: src/components/BankCheckInput.vue:84
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} weiteres | + {count} weitere"
 
@@ -85,7 +85,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:94
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:69
 msgid "30-day Limit"
 msgstr "30-Tage-Limit"
 
@@ -182,6 +182,10 @@ msgstr "Fortgeschritten"
 msgid "all"
 msgstr "alle"
 
+#: src/components/BankCheckInput.vue:170
+msgid "All countries"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:48
 msgid "All in one easy place."
 msgstr "Alles an einem Ort."
@@ -266,7 +270,7 @@ msgstr "Bankkonto"
 msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
-#: src/components/BalanceDistribution.vue:68
+#: src/components/BalanceDistribution.vue:66
 #: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
@@ -315,11 +319,11 @@ msgstr "Browser"
 msgid "BTC network fee"
 msgstr "BTC-Netzwerkgebühr"
 
-#: src/components/layouts/Sidebar.vue:32
+#: src/components/layouts/Sidebar.vue:30
 msgid "Buy"
 msgstr "Kaufen"
 
-#: src/components/layouts/Sidebar.vue:43
+#: src/components/layouts/Sidebar.vue:37
 msgid "Buy & Sell"
 msgstr "Kaufen & Verkaufen"
 
@@ -363,7 +367,7 @@ msgstr ""
 "schnell deine Transaktion verarbeitet wird."
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -371,7 +375,7 @@ msgstr ""
 "{Fastspot} und {FastspotGO} zu."
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Wenn du auf '{text}' klickst, stimmst du den Nutzungsbedingungen von "
@@ -417,7 +421,7 @@ msgstr "Empfänger auswählen"
 
 #: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:187
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
@@ -445,8 +449,8 @@ msgstr "Bald"
 msgid "Coming soon"
 msgstr "Bald"
 
-#: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:142
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:135 src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:154
 msgid "Confirm"
 msgstr "Bestätigen"
 
@@ -479,7 +483,7 @@ msgstr "Verbindung verloren"
 msgid "Consensus"
 msgstr "Konsensus"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:80
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Kontaktiere deine Bank, um herauszufinden, ob dein Konto geeignet ist."
@@ -593,7 +597,7 @@ msgstr "Login-Datei speichern"
 msgid "Duration and fees are estimates."
 msgstr "Dauer und Gebühren sind Schätzungen."
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:75
 msgid "During early access, these limits apply."
 msgstr "Während des Testzugangs gelten diese Einschränkungen."
 
@@ -917,7 +921,7 @@ msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
 #: src/components/modals/BuyCryptoModal.vue:438
-#: src/components/swap/SwapModal.vue:279
+#: src/components/swap/SwapModal.vue:280
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 "Ledger-Konten werden für Swaps noch nicht unterstützt. Wir arbeiten daran!"
@@ -951,7 +955,7 @@ msgid "Load file"
 msgstr "Datei laden"
 
 #: src/components/modals/BuyCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
 msgid "loading..."
 msgstr "lade..."
 
@@ -978,11 +982,11 @@ msgstr "unterbrochen"
 
 #: src/components/modals/BuyCryptoModal.vue:79
 #: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:60 src/components/swap/SwapModal.vue:64
 msgid "Max."
 msgstr "Max."
 
-#: src/components/BankCheckInput.vue:39
+#: src/components/BankCheckInput.vue:42
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -1010,7 +1014,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:56
+#: src/components/layouts/Sidebar.vue:52
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1067,7 +1071,7 @@ msgstr "Keine Transaktionen gefunden"
 msgid "None"
 msgstr "Keine"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:79
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
@@ -1267,7 +1271,7 @@ msgstr ""
 "Code scannen um Geld\n"
 "an diese Adresse zu senden"
 
-#: src/components/BankCheckInput.vue:26 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:27 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Suchen"
 
@@ -1288,7 +1292,7 @@ msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
 
-#: src/components/layouts/Sidebar.vue:37
+#: src/components/layouts/Sidebar.vue:33
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -1368,7 +1372,7 @@ msgstr "Gebühr festlegen"
 msgid "Setting up swap"
 msgstr "Tausch wird aufgesetzt"
 
-#: src/components/layouts/Sidebar.vue:64
+#: src/components/layouts/Sidebar.vue:60
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -1502,7 +1506,7 @@ msgstr ""
 "Das kann bis zu {min} Minuten dauern."
 
 #: src/components/modals/BuyCryptoModal.vue:819
-#: src/components/swap/SwapModal.vue:641
+#: src/components/swap/SwapModal.vue:642
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindest-Betrag."
 
@@ -1557,7 +1561,7 @@ msgstr "Es gibt kein \"Passwort vergessen\""
 msgid "There's a problem"
 msgstr "Es gibt ein Problem"
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:76
 msgid "They will be increased gradually."
 msgstr "Sie werden schrittweise erhöht."
 
@@ -1782,7 +1786,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Deine Bank ist nicht geeignet?"
 
-#: src/components/BankCheckInput.vue:84
+#: src/components/BankCheckInput.vue:87
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

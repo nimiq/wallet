@@ -46,7 +46,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:81
+#: src/components/BankCheckInput.vue:84
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgid "3"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:94
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:68
+#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:69
 msgid "30-day Limit"
 msgstr ""
 
@@ -176,6 +176,10 @@ msgstr ""
 msgid "all"
 msgstr "전체"
 
+#: src/components/BankCheckInput.vue:170
+msgid "All countries"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:48
 msgid "All in one easy place."
 msgstr "모든 것을 딱 한 곳에서."
@@ -250,7 +254,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:68
+#: src/components/BalanceDistribution.vue:66
 #: src/components/layouts/AccountOverview.vue:61
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:88
@@ -296,11 +300,11 @@ msgstr "브라우저"
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:32
+#: src/components/layouts/Sidebar.vue:30
 msgid "Buy"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:43
+#: src/components/layouts/Sidebar.vue:37
 msgid "Buy & Sell"
 msgstr "구매 & 판매"
 
@@ -340,13 +344,13 @@ msgid ""
 msgstr "거래 수수료를 추가하여, 거래가 처리되는 속도에 영향을 줄 수 있습니다."
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:152
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -390,7 +394,7 @@ msgstr "받는 사람을 고르세요"
 
 #: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:187
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
@@ -418,8 +422,8 @@ msgstr "곧 출시"
 msgid "Coming soon"
 msgstr "곧 출시"
 
-#: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:142
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:135 src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:154
 msgid "Confirm"
 msgstr ""
 
@@ -452,7 +456,7 @@ msgstr ""
 msgid "Consensus"
 msgstr "합의"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:80
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -561,7 +565,7 @@ msgstr "로그인 파일 다운로드"
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:75
 msgid "During early access, these limits apply."
 msgstr ""
 
@@ -867,7 +871,7 @@ msgid "Learn more here"
 msgstr "여기서 더 알아보기"
 
 #: src/components/modals/BuyCryptoModal.vue:438
-#: src/components/swap/SwapModal.vue:279
+#: src/components/swap/SwapModal.vue:280
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 
@@ -900,7 +904,7 @@ msgid "Load file"
 msgstr "파일 불러오기"
 
 #: src/components/modals/BuyCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:70
+#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
 msgid "loading..."
 msgstr ""
 
@@ -927,11 +931,11 @@ msgstr "끊김"
 
 #: src/components/modals/BuyCryptoModal.vue:79
 #: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:59 src/components/swap/SwapModal.vue:63
+#: src/components/swap/SwapModal.vue:60 src/components/swap/SwapModal.vue:64
 msgid "Max."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:39
+#: src/components/BankCheckInput.vue:42
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -959,7 +963,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr "연락처에 이름을 붙여주세요"
 
-#: src/components/layouts/Sidebar.vue:56
+#: src/components/layouts/Sidebar.vue:52
 msgid "Network"
 msgstr "네트워크"
 
@@ -1012,7 +1016,7 @@ msgstr "찾은 거래 없음"
 msgid "None"
 msgstr "없음"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:79
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1203,7 +1207,7 @@ msgstr ""
 "코드를 스캔하여\n"
 "이 주소로 송금하세요"
 
-#: src/components/BankCheckInput.vue:26 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:27 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "검색"
 
@@ -1223,7 +1227,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:37
+#: src/components/layouts/Sidebar.vue:33
 msgid "Sell"
 msgstr ""
 
@@ -1301,7 +1305,7 @@ msgstr "수수료 설정"
 msgid "Setting up swap"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:64
+#: src/components/layouts/Sidebar.vue:60
 msgid "Settings"
 msgstr "설정"
 
@@ -1431,7 +1435,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:819
-#: src/components/swap/SwapModal.vue:641
+#: src/components/swap/SwapModal.vue:642
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -1480,7 +1484,7 @@ msgstr "'비밀번호 찾기'란 없습니다"
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:76
 msgid "They will be increased gradually."
 msgstr ""
 
@@ -1686,7 +1690,7 @@ msgstr "당신의 계정은 이제 구 계정입니다. 새로운 계정 선택�
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:84
+#: src/components/BankCheckInput.vue:87
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

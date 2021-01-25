@@ -10,7 +10,8 @@
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
         <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
             <button class="reset trigger" @click="countryDropdownOpened = true">
-                <CountryFlag v-if="currentCountry" :code="currentCountry.code" />
+                <FlagIcon v-if="currentCountry && currentCountry.code === 'all'"/>
+                <CountryFlag v-else-if="currentCountry" :code="currentCountry.code" />
                 <img src="../assets/arrow-down.svg" />
             </button>
             <div v-if="countryDropdownOpened" class="country-dropdown">
@@ -34,7 +35,9 @@
                         @click="selectCountry(country)"
                         @mouseenter="selectedCountryIndex = index"
                     >
-                        <CountryFlag :code="country.code" /> {{ country.name }}
+                        <FlagIcon v-if="country.code === 'all'"/>
+                        <CountryFlag v-else :code="country.code" />
+                        {{ country.name }}
                     </li>
                     <li class="info">{{ $t('More locations will be supported soon.') }}</li>
                 </ul>
@@ -91,7 +94,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
-import { SEPA_INSTANT_SUPPORT, BankInfos, useSwapsStore } from '@/stores/Swaps';
+import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import loadBankList from '@/data/banksList';
@@ -100,6 +103,7 @@ import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
+import FlagIcon from './icons/FlagIcon.vue';
 
 const MAX_VISIBLE_ITEMS = 3;
 
@@ -161,15 +165,27 @@ export default defineComponent({
                 name: i18nCountryName.of(code) || '',
             }));
 
-            return Object.values(unfilteredCountries)
-                .filter((country) => country.name && rgx.test(country.name))
-                .sort((a, b) => a.name.localeCompare(b.name));
+            unfilteredCountries.unshift({
+                code: 'all',
+                name: context.root.$t('All countries') as string,
+            });
+
+            const filteredCountries = unfilteredCountries
+                .filter((country) => country.name && rgx.test(country.name));
+
+            return filteredCountries
+                .sort((a, b) => {
+                    if (a.code === 'all') return -1;
+                    if (b.code === 'all') return 1;
+                    return a.name.localeCompare(b.name);
+                });
         });
 
         /* List of available banks in the currently selected country */
-        const availableBanks = computed(() =>
-            banks.value.filter((bank) => bank.country === currentCountry.value?.code) as BankInfos[],
-        );
+        const availableBanks = computed(() => {
+            if (currentCountry.value?.code === 'all') return banks.value;
+            return banks.value.filter((bank) => bank.country === currentCountry.value?.code);
+        });
 
         /* List of banks matching the BIC or Name search */
         const matchingBanks = computed(() => {
@@ -307,21 +323,11 @@ export default defineComponent({
             }
         }
 
-        // initialize currently selected country
         onMounted(() => {
-            const { userBank } = useSwapsStore();
-            if (userBank && userBank.value) {
-                selectCountry({
-                    name: i18nCountryName.of(userBank.value?.country) || '',
-                    code: userBank.value?.country,
-                });
-            } else if (countries.value.length > 0) {
-                selectCountry(countries.value[0]);
-            } else {
-                watch(banks, () => {
-                    if (!currentCountry.value) selectCountry(countries.value[0]);
-                });
-            }
+            selectCountry(countries.value[0]);
+            watch(banks, () => {
+                if (!currentCountry.value) selectCountry(countries.value[0]);
+            });
         });
 
         /* Country dropdown watch: onOpen -> focus input | onClose -> clear input */
@@ -375,6 +381,7 @@ export default defineComponent({
         ForbiddenIcon,
         Tooltip,
         CountryFlag,
+        FlagIcon,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -411,6 +418,15 @@ export default defineComponent({
     }
 }
 
+.flag-icon {
+    display: block;
+    width: 2.875rem;
+    height: 2.875rem;
+    background: var(--text-10);
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
 .country-selector {
     .trigger {
         display: flex;
@@ -423,6 +439,7 @@ export default defineComponent({
         top: 50%;
         transform: translateY(-50%);
 
+        .flag-icon,
         .country-flag {
             margin-right: 0.625rem;
         }
@@ -515,6 +532,11 @@ export default defineComponent({
                 &.selected {
                     background-color: rgba(#FFFFFF, .12);
                 }
+            }
+
+            .flag-icon {
+                background: rgba(255, 255, 255, 0.1);
+                margin-right: 0.75rem;
             }
 
             .country-flag {

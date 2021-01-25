@@ -191,7 +191,12 @@ export default defineComponent({
         const matchingBanks = computed(() => {
             if (!localValue.value) return [];
 
-            const rgx = RegExp(localValue.value, 'i');
+            const searchTerm = localValue.value
+                .replace(/ä/g, 'ae')
+                .replace(/ö/g, 'oe')
+                .replace(/ü/g, 'ue');
+
+            const rgx = RegExp(searchTerm, 'i');
             return Object.values(availableBanks.value).filter((bank) =>
                 (bank.name && rgx.test(bank.name)) || (bank.BIC && rgx.test(bank.BIC)),
             ).sort((a, b) => a.name.localeCompare(b.name));
@@ -213,22 +218,22 @@ export default defineComponent({
             const oldBankIndex = selectedBankIndex.value;
 
             if (countryDropdownOpened.value) { // country list
-                switch (event.keyCode) {
-                    case 40: // down arrow key
+                switch (event.key) {
+                    case 'ArrowDown':
                         event.preventDefault();
                         selectedCountryIndex.value = Math.max(0, Math.min(
                             countries.value.length - 1, selectedCountryIndex.value + 1),
                         );
                         break;
 
-                    case 38: // up arrow key
+                    case 'ArrowUp':
                         event.preventDefault();
                         selectedCountryIndex.value = Math.max(0, Math.min(
                             countries.value.length - 1, selectedCountryIndex.value - 1),
                         );
                         break;
 
-                    case 13: // enter key
+                    case 'Enter':
                         if (countries.value[selectedCountryIndex.value]) {
                             selectCountry(countries.value[selectedCountryIndex.value]);
                         } else if (countries.value.length > 0) {
@@ -247,22 +252,22 @@ export default defineComponent({
                     });
                 }
             } else { // bank list
-                switch (event.keyCode) {
-                    case 40: // down arrow key
+                switch (event.key) {
+                    case 'ArrowDown':
                         event.preventDefault();
                         selectedBankIndex.value = Math.max(0, Math.min(
                             visibleBanks.value.length - 1, selectedBankIndex.value + 1),
                         );
                         break;
 
-                    case 38: // up arrow key
+                    case 'ArrowUp':
                         event.preventDefault();
                         selectedBankIndex.value = Math.max(0, Math.min(
                             visibleBanks.value.length - 1, selectedBankIndex.value - 1),
                         );
                         break;
 
-                    case 13: // enter key
+                    case 'Enter':
                         selectBank(visibleBanks.value[selectedBankIndex.value]);
                         break;
 

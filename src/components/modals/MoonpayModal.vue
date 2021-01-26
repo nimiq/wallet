@@ -1,7 +1,8 @@
 <template>
     <Modal class="moonpay-modal">
         <!-- Iframe allow list from Moonpay docs -->
-        <iframe :src="url" allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0">
+        <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
+        <iframe v-else :src="url" allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0">
             <p>Your browser does not support iframes.</p>
         </iframe>
         <PageFooter>
@@ -16,11 +17,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageFooter } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
-import { ENV_MAIN } from '../../lib/Constants';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
@@ -29,21 +29,18 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 
 export default defineComponent({
     setup() {
-        const domain = Config.environment === ENV_MAIN
-            ? 'https://buy.moonpay.com?apiKey=xxx'
-            : 'https://buy-staging.moonpay.com?apiKey=pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO';
-
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const baseCurrencyCode = useFiatStore().state.currency;
         const defaultCurrencyCode = useAccountStore().state.activeCurrency;
 
         const walletAddresses = {
-            nim: useAddressStore().state.activeAddress,
+            // Remove spaces in NIM address, as spaces are invalid URI components
+            nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
             btc: useBtcAddressStore().availableExternalAddresses.value[0],
         };
 
         const widgetUrl = [
-            domain,
+            Config.moonpay.widgetUrl,
             'colorCode=%231F2348',
             `language=${language}`,
             `baseCurrencyCode=${baseCurrencyCode}`,
@@ -51,7 +48,17 @@ export default defineComponent({
             `walletAddresses=${encodeURIComponent(JSON.stringify(walletAddresses))}`,
         ].join('&');
 
-        const url = /* signUrl( */widgetUrl/* ) */;
+        const url = ref<string>(null);
+
+        fetch(Config.moonpay.signatureEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: widgetUrl,
+            }),
+        }).then((response) => response.text()).then((signature) => {
+            url.value = `${widgetUrl}&signature=${encodeURIComponent(signature)}`;
+        });
 
         return {
             url,
@@ -71,6 +78,14 @@ export default defineComponent({
 
 .modal /deep/ .close-button {
     display: none;
+}
+
+.placeholder {
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: var(--small-size);
+    opacity: 0.5;
 }
 
 iframe {

@@ -330,6 +330,7 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
+#: src/components/modals/MoonpayModal.vue:13
 #: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
 msgstr ""
@@ -860,6 +861,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:68
 msgid "Load file"
+msgstr ""
+
+#: src/components/modals/MoonpayModal.vue:4
+msgid "Loading Moonpay..."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:96
@@ -1448,7 +1453,7 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
-#: src/components/modals/MoonpayModal.vue:8
+#: src/components/modals/MoonpayModal.vue:9
 msgid "This service is operated by {link}"
 msgstr ""
 

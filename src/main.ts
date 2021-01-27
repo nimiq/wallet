@@ -5,7 +5,7 @@ import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 
 import App from './App.vue';
-import './registerServiceWorker';
+import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
 import { syncFromHub } from './hub';
 import { launchNetwork } from './network';
@@ -30,6 +30,8 @@ Vue.config.productionTip = false;
 
 Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
+
+serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
 initStorage();
 syncFromHub();

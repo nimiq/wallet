@@ -9,6 +9,20 @@
         </div>
 
         <div class="column left-column flex-column">
+            <section v-if="updateAvailable">
+                <div class="setting update-available">
+                    <div class="description">
+                        <label class="nq-h2 nq-green">{{ $t('Update Available') }}</label>
+                        <p class="nq-text">
+                            {{ $t('An update to the Wallet is available, update now!') }}
+                        </p>
+                    </div>
+                    <CircleSpinner v-if="applyingWalletUpdate"/>
+                    <button v-else class="nq-button-pill green" @click="applyWalletUpdate" @mousedown.prevent
+                    >{{ $t('Update now') }}</button>
+                </div>
+            </section>
+
             <section>
                 <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -78,7 +92,7 @@
                             {{ $t('Go through the product again') }}
                         </p>
                     </div>
-                    <button class="nq-button-pill light-blue disabled" @mousedown.prevent>
+                    <button class="nq-button-pill light-blue" @mousedown.prevent disabled>
                         {{ $t('Start Tour') }}
                     </button>
                 </div> -->
@@ -189,6 +203,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
+import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
@@ -305,6 +320,25 @@ export default defineComponent({
             el.value = 'OK, trial enabled';
         }
 
+        const applyingWalletUpdate = ref(false);
+
+        async function applyWalletUpdate() {
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (!registration || !registration.waiting) return; // TODO: Show feedback to user
+
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
+                if (applyingWalletUpdate.value) return;
+                applyingWalletUpdate.value = true;
+                // Must wait to reload to give cache enough time to be updated
+                setTimeout(() => window.location.href = window.location.origin, 1000);
+            });
+
+            // Sending this message to the waiting service-worker activates it,
+            // which in turn triggers the `controllerchange` event subscribed above.
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+
         const showVestingSetting = ref(false);
 
         function enableVestingSetting() {
@@ -326,12 +360,15 @@ export default defineComponent({
             loadFile,
             showVestingSetting,
             onTrialPassword,
+            applyWalletUpdate,
+            applyingWalletUpdate,
         };
     },
     components: {
         MenuIcon,
         Portal,
         CrossCloseButton,
+        CircleSpinner,
     },
 });
 </script>
@@ -400,11 +437,15 @@ section {
     border-radius: 3.75rem;
     font-size: var(--body-size);
 
-    &.disabled {
+    &:disabled {
         filter: grayscale(100%);
         cursor: normal;
         pointer-events: none;
     }
+}
+
+.update-available /deep/ .circle-spinner {
+    margin: 0.375rem;
 }
 
 .setting:last-child .nq-text {

@@ -99,7 +99,10 @@ export function initStorage() {
     const storedSettings = localStorage.getItem(StorageKeys.SETTINGS);
     if (storedSettings) {
         const settingsState: SettingsState = JSON.parse(storedSettings);
-        settingsStore.patch(settingsState);
+        settingsStore.patch({
+            ...settingsState,
+            updateAvailable: false,
+        });
     }
 
     unsubscriptions.push(

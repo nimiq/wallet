@@ -5,6 +5,7 @@
             <div class="menu-bar flex-row">
                 <button class="reset menu-button" @click="$router.push({name: 'network', query: {sidebar: true}})">
                     <MenuIcon/>
+                    <AttentionDot v-if="updateAvailable"/>
                 </button>
                 <button
                     class="nq-button-s inverse account-button"
@@ -40,7 +41,9 @@ import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
+import AttentionDot from '../AttentionDot.vue';
 import { WIDTH } from '../../lib/NetworkMap';
+import { useSettingsStore } from '../../stores/Settings';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
@@ -62,11 +65,14 @@ export default defineComponent({
             $map.value!.scrollTo(scrollTarget, 0);
         }
 
+        const { updateAvailable } = useSettingsStore();
+
         return {
             showNetworkInfo,
             onNetworkInfoClosed,
             $map,
             scrollMap,
+            updateAvailable,
         };
     },
     components: {
@@ -75,6 +81,7 @@ export default defineComponent({
         MenuIcon,
         InfoCircleIcon,
         NetworkInfoModal,
+        AttentionDot,
     },
 });
 </script>
@@ -134,8 +141,11 @@ export default defineComponent({
 
     button.reset {
         padding: 1rem;
-        opacity: 0.3;
         font-size: 3rem;
+
+        svg {
+            opacity: 0.3;
+        }
     }
 
     .menu-button,
@@ -184,6 +194,14 @@ export default defineComponent({
             width: 3.5rem;
             height: 2.75rem;
             box-sizing: content-box;
+            position: relative;
+
+            .attention-dot {
+                position: absolute;
+                top: 0;
+                right: 0;
+                border: 0.375rem solid #171b3c;
+            }
         }
 
         .nq-button-s {

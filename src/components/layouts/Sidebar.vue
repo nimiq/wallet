@@ -58,6 +58,7 @@
         >
             <GearIcon/>
             <span class="label">{{ $t('Settings') }}</span>
+            <AttentionDot v-if="updateAvailable"/>
         </button>
     </div>
 </template>
@@ -73,6 +74,7 @@ import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
+import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
 import { useSettingsStore, Trial } from '../../stores/Settings';
@@ -114,7 +116,7 @@ export default defineComponent({
             }
         }
 
-        const { trials } = useSettingsStore();
+        const { trials, updateAvailable } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -129,6 +131,7 @@ export default defineComponent({
             isLegacyAccount,
             trials,
             Trial,
+            updateAvailable,
         };
     },
     components: {
@@ -140,6 +143,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleIcon,
         StreetconeIcon,
+        AttentionDot,
     },
 });
 </script>
@@ -282,6 +286,7 @@ button > :first-child {
     margin: 0 0.5rem;
     align-self: stretch;
     flex-shrink: 0;
+    position: relative;
 }
 
 .settings,
@@ -316,6 +321,12 @@ button > :first-child {
             color: rgba(255, 255, 255, 1);
         }
     }
+}
+
+.attention-dot {
+    position: absolute;
+    top: 1.25rem;
+    left: 3.5rem;
 }
 
 .network {

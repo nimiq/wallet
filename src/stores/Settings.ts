@@ -38,6 +38,7 @@ export type SettingsState = {
     btcDecimals: 0 | 3 | 8,
     btcUnit: BtcUnit,
     trials: Trial[],
+    updateAvailable: boolean,
 };
 
 export const useSettingsStore = createStore({
@@ -50,6 +51,7 @@ export const useSettingsStore = createStore({
         btcDecimals: 0,
         btcUnit: BtcUnits.btc,
         trials: [],
+        updateAvailable: false,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
@@ -59,6 +61,7 @@ export const useSettingsStore = createStore({
         btcDecimals: (state): Readonly<number> => state.btcDecimals,
         btcUnit: (state): Readonly<BtcUnit> => state.btcUnit,
         trials: (state): Readonly<Trial[]> => state.trials,
+        updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
     },
     actions: {
         setDecimals(num: 0 | 2 | 5 = 0) {

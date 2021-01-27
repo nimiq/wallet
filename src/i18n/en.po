@@ -82,7 +82,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:267
+#: src/components/layouts/Settings.vue:282
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:81
+#: src/components/layouts/AccountOverview.vue:82
 msgid "Activate"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:145
 msgid "Add"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:141
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -153,12 +153,12 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:121
+#: src/components/layouts/Settings.vue:135
 msgid "Advanced"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:101
-#: src/components/layouts/Settings.vue:41
+#: src/components/layouts/Settings.vue:115
+#: src/components/layouts/Settings.vue:55
 msgid "all"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:88
+#: src/components/layouts/AccountOverview.vue:89
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -186,6 +186,10 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:17
+msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:40
@@ -208,7 +212,7 @@ msgstr ""
 msgid "Awaiting swap secret"
 msgstr ""
 
-#: src/components/layouts/Network.vue:14
+#: src/components/layouts/Network.vue:15
 msgid "Back to addresses"
 msgstr ""
 
@@ -232,9 +236,9 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/BalanceDistribution.vue:66
-#: src/components/layouts/AccountOverview.vue:61
+#: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:88
+#: src/components/layouts/Settings.vue:102
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:126
@@ -247,7 +251,7 @@ msgstr ""
 msgid "Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:107
+#: src/components/layouts/Settings.vue:121
 msgid "Bitcoin Unit"
 msgstr ""
 
@@ -334,7 +338,7 @@ msgstr ""
 msgid "Cancel Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:247
+#: src/components/layouts/Settings.vue:262
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -356,7 +360,7 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:19
+#: src/components/layouts/Settings.vue:33
 msgid "Change your language setting."
 msgstr ""
 
@@ -370,11 +374,11 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:157
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:151
 msgid "Clear Cache"
 msgstr ""
 
@@ -501,7 +505,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:193
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -559,11 +563,11 @@ msgstr ""
 msgid "Edit contacts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:94
+#: src/components/layouts/Settings.vue:108
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:34
+#: src/components/layouts/Settings.vue:48
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
@@ -584,7 +588,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:151
+#: src/components/layouts/Settings.vue:165
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -662,7 +666,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:253
+#: src/components/layouts/Settings.vue:268
 msgid "File contains no contacts."
 msgstr ""
 
@@ -687,7 +691,7 @@ msgstr ""
 msgid "Full Node"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:13
+#: src/components/layouts/Settings.vue:27
 msgid "General"
 msgstr ""
 
@@ -757,11 +761,11 @@ msgstr ""
 msgid "If your funds were sent, but you have not received them back and have not received your target currency, please contact the Nimiq Team with the following reference:"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:61
 msgid "Import Contacts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:49
+#: src/components/layouts/Settings.vue:63
 msgid "Import contacts that you exported from the Safe."
 msgstr ""
 
@@ -811,7 +815,7 @@ msgstr ""
 msgid "Label the sender"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:31
 msgid "Language"
 msgstr ""
 
@@ -853,7 +857,7 @@ msgstr ""
 msgid "Link not available in this browser"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:54
+#: src/components/layouts/Settings.vue:68
 msgid "Load file"
 msgstr ""
 
@@ -954,8 +958,8 @@ msgstr ""
 msgid "No transactions found"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:39
-#: src/components/layouts/Settings.vue:99
+#: src/components/layouts/Settings.vue:113
+#: src/components/layouts/Settings.vue:53
 msgid "None"
 msgstr ""
 
@@ -972,7 +976,7 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:276
+#: src/components/layouts/Settings.vue:291
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1081,7 +1085,7 @@ msgstr ""
 msgid "Reference"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:160
+#: src/components/layouts/Settings.vue:174
 msgid "Reference currency"
 msgstr ""
 
@@ -1110,7 +1114,7 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:139
+#: src/components/layouts/Settings.vue:153
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -1154,7 +1158,7 @@ msgstr ""
 msgid "Select a currency and an amount."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:109
+#: src/components/layouts/Settings.vue:123
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
@@ -1262,8 +1266,8 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:32
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:106
+#: src/components/layouts/Settings.vue:46
 msgid "Show Decimals"
 msgstr ""
 
@@ -1482,7 +1486,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:149
+#: src/components/layouts/Settings.vue:163
 msgid "Trials"
 msgstr ""
 
@@ -1500,6 +1504,14 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:87
 #: src/components/modals/BtcTransactionModal.vue:92
 msgid "Unknown"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:15
+msgid "Update Available"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:22
+msgid "Update now"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35
@@ -1523,7 +1535,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:139
 msgid "Vesting Contract"
 msgstr ""
 

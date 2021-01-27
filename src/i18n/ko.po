@@ -90,7 +90,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:267
+#: src/components/layouts/Settings.vue:282
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "계정"
 
-#: src/components/layouts/AccountOverview.vue:81
+#: src/components/layouts/AccountOverview.vue:82
 msgid "Activate"
 msgstr ""
 
@@ -118,7 +118,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:145
 msgid "Add"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr "계정 추가"
 msgid "Add address"
 msgstr "주소 추가"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:141
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -167,12 +167,12 @@ msgstr "주소를 사용할 수 없나요?"
 msgid "Addresses"
 msgstr "주소"
 
-#: src/components/layouts/Settings.vue:121
+#: src/components/layouts/Settings.vue:135
 msgid "Advanced"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:101
-#: src/components/layouts/Settings.vue:41
+#: src/components/layouts/Settings.vue:115
+#: src/components/layouts/Settings.vue:55
 msgid "all"
 msgstr "전체"
 
@@ -184,7 +184,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr "모든 것을 딱 한 곳에서."
 
-#: src/components/layouts/AccountOverview.vue:88
+#: src/components/layouts/AccountOverview.vue:89
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -207,6 +207,10 @@ msgstr ""
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "복구 단어, 비밀번호와 로그인 파일은 항상 백업하세요."
+
+#: src/components/layouts/Settings.vue:17
+msgid "An update to the Wallet is available, update now!"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:40
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
@@ -231,7 +235,7 @@ msgstr ""
 msgid "Awaiting swap secret"
 msgstr ""
 
-#: src/components/layouts/Network.vue:14
+#: src/components/layouts/Network.vue:15
 msgid "Back to addresses"
 msgstr "주소로 돌아가기"
 
@@ -255,9 +259,9 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/BalanceDistribution.vue:66
-#: src/components/layouts/AccountOverview.vue:61
+#: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:88
+#: src/components/layouts/Settings.vue:102
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:126
@@ -272,7 +276,7 @@ msgid ""
 "instead to find transactions in your history easily."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:107
+#: src/components/layouts/Settings.vue:121
 msgid "Bitcoin Unit"
 msgstr ""
 
@@ -334,7 +338,7 @@ msgid "Buy NIM"
 msgstr "NIM 구매"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
+msgid "Buy with Credit Card"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:167
@@ -354,6 +358,7 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
+#: src/components/modals/MoonpayModal.vue:13
 #: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
 msgstr ""
@@ -362,7 +367,7 @@ msgstr ""
 msgid "Cancel Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:247
+#: src/components/layouts/Settings.vue:262
 msgid "Cannot import contacts, wrong file format."
 msgstr "파일 형식이 잘못되어 연락처를 불러올 수 없습니다."
 
@@ -384,7 +389,7 @@ msgstr "{address}로의 캐시링크"
 msgid "Change password"
 msgstr "비밀번호 변경"
 
-#: src/components/layouts/Settings.vue:19
+#: src/components/layouts/Settings.vue:33
 msgid "Change your language setting."
 msgstr "언어 설정을 바꿉니다."
 
@@ -398,11 +403,11 @@ msgstr "받는 사람을 고르세요"
 msgid "Choose an Address"
 msgstr "주소를 고르세요"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:157
 msgid "Clear"
 msgstr "지우기"
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:151
 msgid "Clear Cache"
 msgstr "캐시 비우기"
 
@@ -532,7 +537,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr "신용 카드 허용"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:193
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "면책 조항"
@@ -595,11 +600,11 @@ msgstr ""
 msgid "Edit contacts"
 msgstr "연락처 수정"
 
-#: src/components/layouts/Settings.vue:94
+#: src/components/layouts/Settings.vue:108
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:34
+#: src/components/layouts/Settings.vue:48
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "NIM 잔고에 표시할 소수점의 개수를 바꾸세요."
 
@@ -620,7 +625,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:151
+#: src/components/layouts/Settings.vue:165
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -698,7 +703,7 @@ msgstr "불러 오는 중"
 msgid "Fiat value unavailable"
 msgstr "명목화폐 값 사용 불가"
 
-#: src/components/layouts/Settings.vue:253
+#: src/components/layouts/Settings.vue:268
 msgid "File contains no contacts."
 msgstr "파일에 들어있는 연락처가 없습니다."
 
@@ -723,7 +728,7 @@ msgstr ""
 msgid "Full Node"
 msgstr "완전 노드"
 
-#: src/components/layouts/Settings.vue:13
+#: src/components/layouts/Settings.vue:27
 msgid "General"
 msgstr "일반"
 
@@ -800,11 +805,11 @@ msgid ""
 "following reference:"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:61
 msgid "Import Contacts"
 msgstr "연락처 불러오기"
 
-#: src/components/layouts/Settings.vue:49
+#: src/components/layouts/Settings.vue:63
 msgid "Import contacts that you exported from the Safe."
 msgstr "금고에서 내보냈던 연락처를 불러오세요."
 
@@ -857,7 +862,7 @@ msgstr ""
 msgid "Label the sender"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:31
 msgid "Language"
 msgstr "언어"
 
@@ -899,9 +904,13 @@ msgstr ""
 msgid "Link not available in this browser"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:54
+#: src/components/layouts/Settings.vue:68
 msgid "Load file"
 msgstr "파일 불러오기"
+
+#: src/components/modals/MoonpayModal.vue:4
+msgid "Loading Moonpay..."
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
@@ -1011,8 +1020,8 @@ msgstr ""
 msgid "No transactions found"
 msgstr "찾은 거래 없음"
 
-#: src/components/layouts/Settings.vue:39
-#: src/components/layouts/Settings.vue:99
+#: src/components/layouts/Settings.vue:113
+#: src/components/layouts/Settings.vue:53
 msgid "None"
 msgstr "없음"
 
@@ -1029,7 +1038,7 @@ msgstr "전송되지 않음"
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:276
+#: src/components/layouts/Settings.vue:291
 msgid "OK! Contacts imported successfully."
 msgstr "됐어요! 연락처를 잘 불러왔습니다."
 
@@ -1148,7 +1157,7 @@ msgstr ""
 msgid "Reference"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:160
+#: src/components/layouts/Settings.vue:174
 msgid "Reference currency"
 msgstr "참조 통화"
 
@@ -1178,7 +1187,7 @@ msgstr "요청 실패"
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:139
+#: src/components/layouts/Settings.vue:153
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "지갑 설정을 초기화하고 블록체인에서 데이터를 다시 가져옵니다."
 
@@ -1223,7 +1232,7 @@ msgstr "연락처, 주소 등으로 검색"
 msgid "Select a currency and an amount."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:109
+#: src/components/layouts/Settings.vue:123
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
@@ -1333,8 +1342,8 @@ msgstr "지불 링크 공유하기"
 msgid "Show all my addresses"
 msgstr "내 주소 모두 표시"
 
-#: src/components/layouts/Settings.vue:32
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:106
+#: src/components/layouts/Settings.vue:46
 msgid "Show Decimals"
 msgstr "소수점 표시"
 
@@ -1520,6 +1529,10 @@ msgstr ""
 msgid "This service is currently not available in your region."
 msgstr ""
 
+#: src/components/modals/MoonpayModal.vue:9
+msgid "This service is operated by {link}"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
@@ -1561,7 +1574,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "자금 이체하기"
 
-#: src/components/layouts/Settings.vue:149
+#: src/components/layouts/Settings.vue:163
 msgid "Trials"
 msgstr ""
 
@@ -1579,6 +1592,14 @@ msgstr "미인수 캐시링크"
 #: src/components/modals/BtcTransactionModal.vue:87
 #: src/components/modals/BtcTransactionModal.vue:92
 msgid "Unknown"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:15
+msgid "Update Available"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:22
+msgid "Update now"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35
@@ -1604,7 +1625,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:139
 msgid "Vesting Contract"
 msgstr ""
 

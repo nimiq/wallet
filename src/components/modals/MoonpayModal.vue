@@ -33,10 +33,14 @@ export default defineComponent({
         const baseCurrencyCode = useFiatStore().state.currency;
         const defaultCurrencyCode = useAccountStore().state.activeCurrency;
 
+        // Having a BTC address must be optional, so that the widget also works
+        // for legacy or non-bitcoin-activated accounts.
+        const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0];
+
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
-            btc: useBtcAddressStore().availableExternalAddresses.value[0],
+            ...(btcAddress ? { btc: btcAddress } : {}),
         };
 
         const widgetUrl = [

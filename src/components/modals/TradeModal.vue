@@ -33,35 +33,33 @@
                         <a class="nq-button-pill light-blue flex-row"
                             href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
                             @mousedown.prevent
-                        >{{ $t('To {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', { exchange: 'KuCoin' }) }}<ArrowRightSmallIcon/></a>
                     </div>
                     <div class="separator"></div>
-                    <div class="exchange changehero flex-column">
+                    <div class="exchange moonpay flex-column">
                         <h2 class="nq-h1 flex-row">
-                            <img src="../../assets/exchanges/changehero.svg">
-                            ChangeHero
-                            <a class="nq-button-pill light-blue flex-row"
-                                href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
-                                @mousedown.prevent
-                            >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
+                            <img src="../../assets/exchanges/moonpay.svg">
+                            MoonPay
+                            <router-link class="nq-button-pill light-blue flex-row" to="moonpay" @mousedown.prevent>
+                                {{ $t('Get NIM') }}<ArrowRightSmallIcon/>
+                            </router-link>
                         </h2>
                         <ul>
-                            <li>{{ $t('For beginners') }}</li>
                             <li>{{ $t('Credit Card accepted') }}</li>
+                            <li>{{ $t('Pays out to Nimiq Wallet') }}</li>
                         </ul>
                         <div class="flex-grow"></div>
-                        <a class="nq-button-pill light-blue flex-row"
-                            href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
-                            @mousedown.prevent
-                        >{{ $t('To {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
+                        <router-link class="nq-button-pill light-blue flex-row" to="moonpay" @mousedown.prevent>
+                            {{ $t('To {exchange}', { exchange: 'MoonPay' }) }}<ArrowRightSmallIcon/>
+                        </router-link>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">
-                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/kucoin.svg">
-                    </a>
                     <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/hitbtc.svg">
+                    </a>
+                    <a href="https://bitmax.io" title="BitMax" target="_blank" rel="noopener">
+                        <img src="../../assets/exchanges/bitmax.svg">
                     </a>
                     <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
                         title="Changelly" target="_blank" rel="noopener"
@@ -210,7 +208,7 @@ export default defineComponent({
             }
         }
 
-        &.changehero {
+        &.moonpay {
             flex-grow: 1.2;
 
             h2 img {

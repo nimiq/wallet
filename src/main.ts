@@ -31,62 +31,65 @@ Vue.config.productionTip = false;
 Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 
-serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
+async function start() {
+    await initStorage(); // Must be awaited before starting Vue
+    syncFromHub(); // Can run parallel to Vue initialization
 
-initStorage();
-syncFromHub();
-const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
+    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
-// Update exchange rates every 2 minutes. If the last update was
-// less than 2 minutes ago, wait the remaining time first.
-window.setTimeout(
-    () => {
-        updateExchangeRates();
-        setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
-    },
-    Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
-);
+    // Update exchange rates every 2 minutes. If the last update was
+    // less than 2 minutes ago, wait the remaining time first.
+    const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
+    window.setTimeout(
+        () => {
+            updateExchangeRates();
+            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+        },
+        Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
+    );
 
-// Fetch language file
-const { language } = useSettingsStore();
-loadLanguage(language.value);
+    // Fetch language file
+    const { language } = useSettingsStore();
+    loadLanguage(language.value);
 
-startSentry();
+    startSentry();
 
-const app = new Vue({
-    router,
-    i18n,
-    render: (h) => h(App),
-}).$mount('#app');
+    const app = new Vue({
+        router,
+        i18n,
+        render: (h) => h(App),
+    }).$mount('#app');
 
-router.afterEach((to, from) => {
-    // console.debug('route-changed', from, to);
-    app.$emit('route-changed', to, from);
-});
+    router.afterEach((to, from) => {
+        // console.debug('route-changed', from, to);
+        app.$emit('route-changed', to, from);
+    });
 
-launchNetwork();
-launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
+    launchNetwork();
+    launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
+
+    router.onReady(() => {
+        // console.debug(router.currentRoute, window.history.state);
+
+        // Vue-Router sets a history.state. If a state exists, this means this was
+        // a page-reload and we don't need to set up the initial routing anymore.
+        if (window.history.state) return;
+
+        if (router.currentRoute.path !== '/') {
+            const startRoute = router.currentRoute.fullPath;
+            app.$once('route-changed', () => Vue.nextTick().then(() => {
+                // Use push, so the user is able to use the OS' back button.
+                // Use fullpath to also capture query params, like used in payment links.
+                router.push(startRoute);
+            }));
+        }
+        router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
+    });
+}
+start();
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {
         readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }
-
-router.onReady(() => {
-    // console.debug(router.currentRoute, window.history.state);
-
-    // Vue-Router sets a history.state. If a state exists, this means this was
-    // a page-reload and we don't need to set up the initial routing anymore.
-    if (window.history.state) return;
-
-    if (router.currentRoute.path !== '/') {
-        const startRoute = router.currentRoute.fullPath;
-        app.$once('route-changed', () => Vue.nextTick().then(() => {
-            // Use push, so the user is able to use the OS' back button.
-            // Use fullpath to also capture query params, like used in payment links.
-            router.push(startRoute);
-        }));
-    }
-    router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
-});

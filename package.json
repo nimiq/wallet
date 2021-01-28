@@ -33,6 +33,7 @@
     "@sentry/vue": "^6.0.0",
     "@vue/composition-api": "^0.4.0",
     "core-js": "^3.6.4",
+    "idb-keyval": "^5.0.2",
     "pinia": "^0.0.5",
     "promise.allsettled": "^1.0.2",
     "register-service-worker": "^1.7.0",

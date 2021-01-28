@@ -9,9 +9,7 @@ export default class Time {
 
         const now = Date.now() + this.offset;
 
-        if (withoutMillis) return Math.floor(now / 1000);
-
-        return now;
+        return withoutMillis ? Math.floor(now / 1000) : now;
     }
 
     public static async updateOffset() {

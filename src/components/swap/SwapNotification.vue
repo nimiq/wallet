@@ -178,11 +178,8 @@ export default defineComponent({
 
                 // When we haven't funded our HTLC yet, we need to abort when the quote expires.
                 if (swap.state <= SwapState.AWAIT_INCOMING) {
+                    if (swap.expires <= timestamp) return true;
                     remainingTimes.push(swap.expires - timestamp);
-
-                    if (swap.expires <= timestamp) {
-                        return true;
-                    }
                 }
 
                 // Otherwise, the swap expires when the first HTLC expires
@@ -191,15 +188,15 @@ export default defineComponent({
                         case SwapAsset.NIM: {
                             const height = useNetworkStore().height.value;
                             const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
-                            remainingTimes.push((timeoutBlock - height) * 60);
                             if (timeoutBlock <= height) return true;
+                            remainingTimes.push((timeoutBlock - height) * 60);
                             break;
                         }
                         case SwapAsset.BTC:
                         case SwapAsset.EUR: {
                             const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
-                            remainingTimes.push(timeout - timestamp);
                             if (timeout <= timestamp) return true;
+                            remainingTimes.push(timeout - timestamp);
                             break;
                         }
                         default: throw new Error('Invalid swap asset');

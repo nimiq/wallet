@@ -1,10 +1,5 @@
 {
-    "CMCIFRPPXXX": {
-        "name": "CIC",
-        "support": { "sepa": {
-            "outbound": "full-support"
-        }}
-    },
+    "CMCIFRPPXXX": { "name": "CIC" },
     "NTSBDEB1": { "support": { "sepa": {
         "outbound": "no-support"
     }}}

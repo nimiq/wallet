@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Daniel, 2020
-# Sven <sven@nimiq.com>, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Sven <sven@nimiq.com>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2021\n"
 "Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -91,7 +91,7 @@ msgstr "30天限制"
 msgid "6h+"
 msgstr "6小时以上"
 
-#: src/components/layouts/Settings.vue:267
+#: src/components/layouts/Settings.vue:282
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:81
+#: src/components/layouts/AccountOverview.vue:82
 msgid "Activate"
 msgstr "激活"
 
@@ -119,7 +119,7 @@ msgstr "激活"
 msgid "Activate Bitcoin"
 msgstr "激活比特币"
 
-#: src/components/layouts/Settings.vue:131
+#: src/components/layouts/Settings.vue:145
 msgid "Add"
 msgstr "添加"
 
@@ -145,7 +145,7 @@ msgstr "添加账户"
 msgid "Add address"
 msgstr "添加地址"
 
-#: src/components/layouts/Settings.vue:127
+#: src/components/layouts/Settings.vue:141
 msgid "Add an existing vesting contract to your wallet."
 msgstr "将现有的归属合同添加到您的钱包"
 
@@ -170,12 +170,12 @@ msgstr "地址无法使用？"
 msgid "Addresses"
 msgstr "地址"
 
-#: src/components/layouts/Settings.vue:121
+#: src/components/layouts/Settings.vue:135
 msgid "Advanced"
 msgstr "进阶的"
 
-#: src/components/layouts/Settings.vue:101
-#: src/components/layouts/Settings.vue:41
+#: src/components/layouts/Settings.vue:115
+#: src/components/layouts/Settings.vue:55
 msgid "all"
 msgstr "全部"
 
@@ -187,7 +187,7 @@ msgstr ""
 msgid "All in one easy place."
 msgstr "全部都在一个簡單的地方"
 
-#: src/components/layouts/AccountOverview.vue:88
+#: src/components/layouts/AccountOverview.vue:89
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -210,6 +210,10 @@ msgstr "尽管重复使用地址不会造成资金损失，但我们强烈建议
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "请随时备份您的恢复字，密码和登录文件。"
+
+#: src/components/layouts/Settings.vue:17
+msgid "An update to the Wallet is available, update now!"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:40
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
@@ -234,7 +238,7 @@ msgstr "原子交换需要进行两次比特币交易。"
 msgid "Awaiting swap secret"
 msgstr "等待交换密语"
 
-#: src/components/layouts/Network.vue:14
+#: src/components/layouts/Network.vue:15
 msgid "Back to addresses"
 msgstr "返回地址"
 
@@ -258,9 +262,9 @@ msgid "BIC works, too."
 msgstr "BIC也能用"
 
 #: src/components/BalanceDistribution.vue:66
-#: src/components/layouts/AccountOverview.vue:61
+#: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:88
+#: src/components/layouts/Settings.vue:102
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:126
@@ -275,7 +279,7 @@ msgid ""
 "instead to find transactions in your history easily."
 msgstr "比特币地址仅被使用一次，因此没有联系人。请改用标签，让您在您的历史记录中轻松查找交易。"
 
-#: src/components/layouts/Settings.vue:107
+#: src/components/layouts/Settings.vue:121
 msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
@@ -319,7 +323,7 @@ msgstr ""
 "通过银行转账买卖BTC。\n"
 "即将推出！"
 
-#: src/components/modals/TradeModal.vue:98
+#: src/components/modals/TradeModal.vue:96
 msgid "Buy and sell with your wallet."
 msgstr "用您的钱包买卖"
 
@@ -339,8 +343,8 @@ msgid "Buy NIM"
 msgstr "购买 NIM"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
-msgstr ""
+msgid "Buy with Credit Card"
+msgstr "用信用卡购买"
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -359,6 +363,7 @@ msgstr "点击“ {text}”，即表示您同意{Fastspot}和{FastspotGO}的服�
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示您同意{Fastspot}的服务条款。"
 
+#: src/components/modals/MoonpayModal.vue:13
 #: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
 msgstr "取消"
@@ -367,7 +372,7 @@ msgstr "取消"
 msgid "Cancel Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:247
+#: src/components/layouts/Settings.vue:262
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
@@ -389,7 +394,7 @@ msgstr "发送至{address}的现金链接"
 msgid "Change password"
 msgstr "更改密码"
 
-#: src/components/layouts/Settings.vue:19
+#: src/components/layouts/Settings.vue:33
 msgid "Change your language setting."
 msgstr "更改您的语言设置。"
 
@@ -403,11 +408,11 @@ msgstr "选择接收者"
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:157
 msgid "Clear"
 msgstr "清除"
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:151
 msgid "Clear Cache"
 msgstr "清除缓存"
 
@@ -423,7 +428,7 @@ msgstr "关闭"
 msgid "Coming soon"
 msgstr "即将推出"
 
-#: src/components/modals/TradeModal.vue:97
+#: src/components/modals/TradeModal.vue:95
 msgid "Coming soon"
 msgstr "即将推出"
 
@@ -533,11 +538,11 @@ msgstr "刚创建"
 msgid "Created some time ago"
 msgstr "在一段时间前创建"
 
-#: src/components/modals/TradeModal.vue:50
+#: src/components/modals/TradeModal.vue:48
 msgid "Credit Card accepted"
 msgstr "接受信用卡"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:193
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -600,11 +605,11 @@ msgstr "在性能极高的支付币NIM和加密货币的黄金标准比特币之
 msgid "Edit contacts"
 msgstr "编辑联络人"
 
-#: src/components/layouts/Settings.vue:94
+#: src/components/layouts/Settings.vue:108
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr "编辑比特币值可见的小数位数。"
 
-#: src/components/layouts/Settings.vue:34
+#: src/components/layouts/Settings.vue:48
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数。"
 
@@ -625,7 +630,7 @@ msgstr "输入银行名称"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/layouts/Settings.vue:151
+#: src/components/layouts/Settings.vue:165
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "输入您要启用的试用版的密码，然后按Enter。"
 
@@ -703,7 +708,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:253
+#: src/components/layouts/Settings.vue:268
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -716,10 +721,6 @@ msgstr "通过银行转帐完成最终交换。"
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
-#: src/components/modals/TradeModal.vue:49
-msgid "For beginners"
-msgstr "初学者友好"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "免费"
@@ -728,12 +729,12 @@ msgstr "免费"
 msgid "Full Node"
 msgstr "完整节点"
 
-#: src/components/layouts/Settings.vue:13
+#: src/components/layouts/Settings.vue:27
 msgid "General"
 msgstr "一般"
 
 #: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:46
+#: src/components/modals/TradeModal.vue:44
 msgid "Get NIM"
 msgstr "获取 NIM"
 
@@ -805,11 +806,11 @@ msgid ""
 "following reference:"
 msgstr "如果您的资金已经发出，但您还没有收到回款，也没有收到您的目标货币，请联系Nimiq团队。请参考以下内容："
 
-#: src/components/layouts/Settings.vue:47
+#: src/components/layouts/Settings.vue:61
 msgid "Import Contacts"
 msgstr "导入联系人"
 
-#: src/components/layouts/Settings.vue:49
+#: src/components/layouts/Settings.vue:63
 msgid "Import contacts that you exported from the Safe."
 msgstr "导入从保险箱中导出的联系人"
 
@@ -822,7 +823,7 @@ msgstr "导入到任意浏览器中，输入密码即可使用相同的地址。
 msgid "Improved Accessibility"
 msgstr "改善的可及性"
 
-#: src/components/modals/TradeModal.vue:110
+#: src/components/modals/TradeModal.vue:108
 msgid "In cooperation with"
 msgstr "合作伙伴"
 
@@ -862,12 +863,12 @@ msgstr "您现在可以安全关闭电子钱包"
 msgid "Label the sender"
 msgstr "标注发件人"
 
-#: src/components/layouts/Settings.vue:17
+#: src/components/layouts/Settings.vue:31
 msgid "Language"
 msgstr "语言"
 
 #: src/components/modals/NetworkInfoModal.vue:19
-#: src/components/modals/TradeModal.vue:107
+#: src/components/modals/TradeModal.vue:105
 msgid "Learn more"
 msgstr "了解更多"
 
@@ -904,9 +905,13 @@ msgstr "限额与账户和IBAN挂钩。"
 msgid "Link not available in this browser"
 msgstr "链接在此浏览器中不可用"
 
-#: src/components/layouts/Settings.vue:54
+#: src/components/layouts/Settings.vue:68
 msgid "Load file"
 msgstr "加载文件"
+
+#: src/components/modals/MoonpayModal.vue:4
+msgid "Loading Moonpay..."
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
@@ -997,7 +1002,7 @@ msgstr ""
 "Nimiq对任何损失概不负责：Nimiq, wallet.nimiq.com, hub.nimiq.com "
 "&keyguard.nimiq.com，以及一些正在积极开发的函式库。"
 
-#: src/components/modals/TradeModal.vue:100
+#: src/components/modals/TradeModal.vue:98
 msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
@@ -1016,8 +1021,8 @@ msgstr "没有连接到 {chain} 网络"
 msgid "No transactions found"
 msgstr "交易未找到"
 
-#: src/components/layouts/Settings.vue:39
-#: src/components/layouts/Settings.vue:99
+#: src/components/layouts/Settings.vue:113
+#: src/components/layouts/Settings.vue:53
 msgid "None"
 msgstr "无"
 
@@ -1034,7 +1039,7 @@ msgstr "未发送"
 msgid "OASIS service fee"
 msgstr "OASIS服务费"
 
-#: src/components/layouts/Settings.vue:276
+#: src/components/layouts/Settings.vue:291
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -1057,6 +1062,10 @@ msgstr "还有一件事"
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
 msgstr "或访问交易所获取更多"
+
+#: src/components/modals/TradeModal.vue:49
+msgid "Pays out to Nimiq Wallet"
+msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:39
 #: src/components/TransactionListItem.vue:37
@@ -1152,7 +1161,7 @@ msgstr "接收者"
 msgid "Reference"
 msgstr "参考"
 
-#: src/components/layouts/Settings.vue:160
+#: src/components/layouts/Settings.vue:174
 msgid "Reference currency"
 msgstr "参考货币"
 
@@ -1182,7 +1191,7 @@ msgstr "请求失败"
 msgid "Rescan"
 msgstr "重新扫描"
 
-#: src/components/layouts/Settings.vue:139
+#: src/components/layouts/Settings.vue:153
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置您的钱包设置并从区块链重新加载数据。"
 
@@ -1227,7 +1236,7 @@ msgstr "通过联系人，地址等搜索交易"
 msgid "Select a currency and an amount."
 msgstr "请选择货币和金额。"
 
-#: src/components/layouts/Settings.vue:109
+#: src/components/layouts/Settings.vue:123
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
@@ -1337,8 +1346,8 @@ msgstr "分享您的付款链接"
 msgid "Show all my addresses"
 msgstr "显示我所有的地址"
 
-#: src/components/layouts/Settings.vue:32
-#: src/components/layouts/Settings.vue:92
+#: src/components/layouts/Settings.vue:106
+#: src/components/layouts/Settings.vue:46
 msgid "Show Decimals"
 msgstr "显示小数"
 
@@ -1380,7 +1389,7 @@ msgstr "质押"
 msgid "standard"
 msgstr "标准"
 
-#: src/components/modals/TradeModal.vue:104
+#: src/components/modals/TradeModal.vue:102
 msgid "Starting with EU bank accounts soon."
 msgstr "即将开始欧盟银行帐户的使用"
 
@@ -1526,6 +1535,10 @@ msgstr "此价格包括交换费"
 msgid "This service is currently not available in your region."
 msgstr "您所在的地区目前尚未提供这项服务"
 
+#: src/components/modals/MoonpayModal.vue:9
+msgid "This service is operated by {link}"
+msgstr "该服务由{link}经营"
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
@@ -1537,7 +1550,7 @@ msgid "This swap is as decentralized as the blockchain itself."
 msgstr "交换与区块链本身一样是去中心化"
 
 #: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
+#: src/components/modals/TradeModal.vue:53
 msgid "To {exchange}"
 msgstr "返回{exchange}"
 
@@ -1567,7 +1580,7 @@ msgstr "由于比特币的出块时间，交易需要10分钟以上"
 msgid "Transfer funds"
 msgstr "转移资金"
 
-#: src/components/layouts/Settings.vue:149
+#: src/components/layouts/Settings.vue:163
 msgid "Trials"
 msgstr "试用版"
 
@@ -1586,6 +1599,14 @@ msgstr "未认领的现金链接"
 #: src/components/modals/BtcTransactionModal.vue:92
 msgid "Unknown"
 msgstr "未知"
+
+#: src/components/layouts/Settings.vue:15
+msgid "Update Available"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:22
+msgid "Update now"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:35
 msgid "Use {NIM}, the super performant and browser- based payment coin."
@@ -1610,7 +1631,7 @@ msgstr "使用标签取代联系人，让您可以轻松识别历史记录中的
 msgid "Use the slider or edit values to set up a swap."
 msgstr "使用滑块或编辑值来设置交换。"
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:139
 msgid "Vesting Contract"
 msgstr "归属合同"
 

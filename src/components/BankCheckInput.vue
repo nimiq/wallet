@@ -414,6 +414,11 @@ export default defineComponent({
 
             &::placeholder {
                 transition: color 200ms var(--nimiq-ease);
+                mask: linear-gradient(90deg,
+                    white,
+                    white calc(100% - 5rem),
+                    rgba(255,255,255, 0) calc(100% - .25rem),
+                );
             }
 
             .disabled & {

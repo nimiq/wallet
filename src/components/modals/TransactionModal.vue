@@ -110,7 +110,7 @@
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
-                        <div v-if="swapData || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
+                        <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
                     </div>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="peerAddress && (peerIsContact || !peerLabel)"
@@ -162,7 +162,7 @@
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
-                        <div v-if="swapData || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
+                        <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
                     </div>
                     <input type="text" class="nq-input-s vanishing"
                         v-if="peerAddress && (peerIsContact || !peerLabel)"
@@ -642,6 +642,7 @@ export default defineComponent({
             hubCashlink,
             manageCashlink,
             amountsHidden,
+            swapInfo,
             swapData,
             swapTransaction,
             SwapAsset,

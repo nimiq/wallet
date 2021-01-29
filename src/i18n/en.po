@@ -236,7 +236,7 @@ msgstr ""
 msgid "Backup"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:232
+#: src/components/BtcTransactionListItem.vue:235
 #: src/components/modals/BtcTransactionModal.vue:469
 #: src/components/modals/TransactionModal.vue:526
 #: src/components/TransactionListItem.vue:215
@@ -354,7 +354,7 @@ msgstr ""
 msgid "Cancel Swap"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:222
+#: src/components/BtcTransactionListItem.vue:225
 #: src/components/modals/BtcTransactionModal.vue:459
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
@@ -634,7 +634,7 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:41
+#: src/components/BtcTransactionListItem.vue:44
 #: src/components/TransactionListItem.vue:38
 msgid "expired"
 msgstr ""
@@ -687,7 +687,7 @@ msgstr ""
 msgid "Fetching"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:59
+#: src/components/BtcTransactionListItem.vue:62
 #: src/components/modals/TransactionModal.vue:210
 #: src/components/TransactionListItem.vue:53
 msgid "Fiat value unavailable"
@@ -752,7 +752,7 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:182
+#: src/components/BtcTransactionListItem.vue:185
 #: src/components/modals/BtcTransactionModal.vue:423
 #: src/components/modals/TransactionModal.vue:465
 #: src/components/TransactionListItem.vue:163
@@ -760,7 +760,7 @@ msgstr ""
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:182
+#: src/components/BtcTransactionListItem.vue:185
 #: src/components/modals/BtcTransactionModal.vue:423
 #: src/components/modals/TransactionModal.vue:476
 #: src/components/TransactionListItem.vue:174
@@ -817,7 +817,7 @@ msgstr ""
 msgid "Insufficient balance."
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:42
+#: src/components/BtcTransactionListItem.vue:45
 #: src/components/TransactionListItem.vue:39
 msgid "invalid"
 msgstr ""
@@ -995,7 +995,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:39
+#: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
 msgid "not sent"
 msgstr ""
@@ -1028,7 +1028,7 @@ msgstr ""
 msgid "Pays out to Nimiq Wallet"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:40
+#: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
 msgid "pending"
 msgstr ""
@@ -1241,7 +1241,7 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/BtcTransactionListItem.vue:176
+#: src/components/BtcTransactionListItem.vue:179
 #: src/components/TransactionListItem.vue:155
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
@@ -1349,7 +1349,7 @@ msgid "Store, send and receive NIM."
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/BtcTransactionListItem.vue:228
+#: src/components/BtcTransactionListItem.vue:231
 #: src/components/modals/BtcTransactionModal.vue:465
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:513

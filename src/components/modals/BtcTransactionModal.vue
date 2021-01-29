@@ -85,11 +85,11 @@
         <PageBody class="flex-column" :class="state">
             <div v-if="isIncoming" class="flex-row sender-recipient">
                 <div class="address-info flex-column">
-                    <div v-if="swapData" class="identicon-container">
+                    <div v-if="swapInfo" class="identicon-container">
                         <Identicon
-                            v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                            v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
-                        <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
@@ -148,11 +148,11 @@
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
-                    <div v-if="swapData" class="identicon-container">
+                    <div v-if="swapInfo" class="identicon-container">
                         <Identicon
-                            v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                            v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
-                        <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
@@ -611,6 +611,7 @@ export default defineComponent({
             recipientLabelAddress,
             setSenderLabel,
             setRecipientLabel,
+            swapInfo,
             swapData,
             swapTransaction,
             SwapAsset,

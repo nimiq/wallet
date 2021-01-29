@@ -27,7 +27,7 @@
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
-            <div v-if="swapData || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
+            <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -272,6 +272,7 @@ export default defineComponent({
             peerAddress,
             peerLabel,
             SwapAsset,
+            swapInfo,
             swapData,
         };
     },

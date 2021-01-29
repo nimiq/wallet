@@ -21,9 +21,12 @@
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
             <AlertTriangleIcon/>
         </div>
-        <div v-if="swapData" class="identicon-container">
-            <Identicon v-if="swapData.asset === SwapAsset.NIM && swapTransaction" :address="peerAddresses[0]"/>
-            <BankIcon v-else-if="swapData.asset === SwapAsset.EUR"/>
+        <div v-if="swapInfo" class="identicon-container">
+            <Identicon
+                v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
+                :address="peerAddresses[0]"
+            />
+            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>
         </div>
@@ -309,6 +312,7 @@ export default defineComponent({
             peerAddresses,
             peerLabel,
             SwapAsset,
+            swapInfo,
             swapData,
             swapTransaction,
             isCancelledSwap,

@@ -56,7 +56,7 @@
                 <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
 
-                <span v-if="new RegExp(localValue, 'i').test(bank.name)">{{
+                <span v-if="shouldHighlightMatch(bank.name)">{{
                     getMatchPrefix(bank.name)
                     }}<strong>{{
                         getMatch(bank.name)
@@ -112,6 +112,10 @@ type CountryInfo = {
     code: string,
 }
 
+function unicodeNormalize(s: string) {
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 export default defineComponent({
     props: {
         value: {
@@ -131,6 +135,14 @@ export default defineComponent({
             get: () => props.value,
             set(value) { context.emit('input', value); },
         });
+        const normalizedLocalValue = computed(() =>
+            unicodeNormalize(localValue.value
+                .replace(/ä/g, 'ae')
+                .replace(/ö/g, 'oe')
+                .replace(/ü/g, 'ue')
+                .trim(),
+            ),
+        );
 
         const $bankSearchInput = ref<LabelInput | null>(null);
         const $countrySearchInput = ref<HTMLInputElement | null>(null);
@@ -144,10 +156,14 @@ export default defineComponent({
         const countrySearch = ref<string>();
 
         const i18nCountryName = new I18nDisplayNames('region');
+        const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
         /* Lazy-load the complete bank lists */
         const banks = ref<BankInfos[]>([]);
-        onMounted(() => loadBankList().then((BANKS) => banks.value = BANKS));
+        onMounted(() => {
+            selectCountry(countries.value[0]);
+            loadBankList().then((BANKS) => banks.value = BANKS);
+        });
 
         /* List of country there's an available bank in. Filtered by country name from countrySearch */
         const countries = computed(() => {
@@ -177,7 +193,7 @@ export default defineComponent({
                 .sort((a, b) => {
                     if (a.code === 'all') return -1;
                     if (b.code === 'all') return 1;
-                    return a.name.localeCompare(b.name);
+                    return intlCollator.compare(a.name, b.name);
                 });
         });
 
@@ -191,15 +207,26 @@ export default defineComponent({
         const matchingBanks = computed(() => {
             if (!localValue.value) return [];
 
-            const searchTerm = localValue.value
-                .replace(/ä/g, 'ae')
-                .replace(/ö/g, 'oe')
-                .replace(/ü/g, 'ue');
+            const rgx = RegExp(normalizedLocalValue.value, 'i');
 
-            const rgx = RegExp(searchTerm, 'i');
-            return Object.values(availableBanks.value).filter((bank) =>
-                (bank.name && rgx.test(bank.name)) || (bank.BIC && rgx.test(bank.BIC)),
-            ).sort((a, b) => a.name.localeCompare(b.name));
+            return Object.values(availableBanks.value).filter((bank) => {
+                const normalizedBankName = unicodeNormalize(bank.name);
+
+                return (normalizedBankName && rgx.test(normalizedBankName)) || (bank.BIC && rgx.test(bank.BIC));
+            }).sort((a, b) => {
+                const aStartWithSearchTerm = unicodeNormalize(a.name).toLowerCase()
+                    .startsWith(normalizedLocalValue.value.toLowerCase());
+                const bStartWithSearchTerm = unicodeNormalize(b.name).toLowerCase()
+                    .startsWith(normalizedLocalValue.value.toLowerCase());
+
+                if (aStartWithSearchTerm && !bStartWithSearchTerm) return -1;
+                if (!aStartWithSearchTerm && bStartWithSearchTerm) return 1;
+
+                if (a.name.length < b.name.length) return -1;
+                if (b.name.length < a.name.length) return 1;
+
+                return intlCollator.compare(a.name, b.name);
+            });
         });
 
         /* List of banks displayed to the user. Based on MAX_VISIBLE_ITEMS */
@@ -301,26 +328,43 @@ export default defineComponent({
 
         /* Those 3 functions are used to highlight the matched string in the bank autocomplete list */
         function getMatchPrefix(s: string) {
-            const rgx = new RegExp(`^(.*?)${localValue.value}`, 'i');
-            const match = s.match(rgx);
+            const normalizedStr = unicodeNormalize(s);
+            const rgx = new RegExp(`^(.*?)${normalizedLocalValue.value}`, 'i');
+            const match = normalizedStr.match(rgx);
 
-            return (match ? match[1] : '');
+            if (!match) return '';
+
+            return s.substr(0, match[1].length);
         }
         function getMatch(s: string) {
-            const rgx = new RegExp(`${localValue.value}`, 'i');
-            const match = s.match(rgx);
+            const normalizedStr = unicodeNormalize(s);
+            const rgx = new RegExp(normalizedLocalValue.value, 'i');
+            const match = normalizedStr.match(rgx);
 
-            return (match ? match[0] : '');
+            if (!match) return '';
+
+            return s.substr(normalizedStr.indexOf(match[0]), match[0].length);
         }
         function getMatchSuffix(s: string) {
-            const rgx = new RegExp(`${localValue.value}(.*?)$`, 'i');
-            const match = s.match(rgx);
+            const normalizedStr = unicodeNormalize(s);
+            const rgx = new RegExp(`${normalizedLocalValue.value}(.*?)$`, 'i');
+            const match = normalizedStr.match(rgx);
 
-            return (match ? match[1] : '');
+            if (!match) return '';
+
+            const tmp = s.substr(normalizedStr.lastIndexOf(match[1]));
+
+            return tmp;
+        }
+
+        /* if the search match the bank name: return true. Otherwise it's probaly a BIC search: return false */
+        function shouldHighlightMatch(bankName: string) {
+            const rgx = new RegExp(normalizedLocalValue.value, 'i');
+            return rgx.test(unicodeNormalize(bankName));
         }
 
         /* set a country as the currently selected one */
-        function selectCountry(country: Omit<CountryInfo, 'currency'>) {
+        function selectCountry(country: CountryInfo) {
             currentCountry.value = country;
 
             if (countryDropdownOpened.value) {
@@ -328,19 +372,16 @@ export default defineComponent({
             }
         }
 
-        onMounted(() => {
-            selectCountry(countries.value[0]);
-            watch(banks, () => {
-                if (!currentCountry.value) selectCountry(countries.value[0]);
-            });
-        });
-
-        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input */
+        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
         watch(countryDropdownOpened, (newBool, oldBool) => {
-            if (newBool && !oldBool && $countrySearchInput.value) {
+            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
                 $countrySearchInput.value.focus();
-            } else if (!newBool && oldBool) {
+            } else if (!newBool && oldBool) { // onClose
                 countrySearch.value = '';
+
+                if ($bankSearchInput.value) {
+                    $bankSearchInput.value.focus();
+                }
             }
         });
 
@@ -364,6 +405,7 @@ export default defineComponent({
             getMatchPrefix,
             getMatch,
             getMatchSuffix,
+            shouldHighlightMatch,
 
             countries,
             currentCountry,

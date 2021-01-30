@@ -231,7 +231,7 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:16
 msgid "BIC works, too."
 msgstr ""
 
@@ -312,7 +312,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
 msgid "Buy on an exchange"
 msgstr ""
 
@@ -580,7 +580,8 @@ msgstr ""
 msgid "Enter address"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:13
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:14
 msgid "Enter bank name"
 msgstr ""
 
@@ -1613,7 +1614,7 @@ msgstr ""
 msgid "Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new account picker."
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:16
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:20
 msgid "Your bank is not eligible?"
 msgstr ""
 

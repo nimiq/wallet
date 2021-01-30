@@ -96,8 +96,7 @@ async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
                 country: bank.BIC.slice(4, 6),
                 support: {
                     sepa: {
-                        // TEMP?: can we assume that banks at least fully support inbound sepa instant
-                        // if they are part of the list?
+                        // We assume that banks at least fully support inbound sepa instant if they are part of the list
                         inbound: 'full-support',
                         outbound: 'partial-support',
                     },

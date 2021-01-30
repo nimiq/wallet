@@ -114,12 +114,15 @@ async function mergeJson() {
     const ebaRt1Banks = await readFile(EBA_RT1_JSON_FILE_PATH);
     const customBanks = await readFile(CUSTOM_JSON_FILE_PATH);
 
+    const ebaRt1BanksBicList = Object.keys(ebaRt1Banks);
     const customBanksBicList = Object.keys(customBanks);
+
+    for (const BIC of ebaRt1BanksBicList) ebaRt1Banks[BIC].BIC = BIC;
 
     for (const BIC of customBanksBicList) {
         if (!ebaRt1Banks[BIC]) ebaRt1Banks[BIC] = { ...customBanks[BIC], BIC };
         else {
-            ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || ebaRt1Banks[BIC].BIC || BIC;
+            ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || BIC;
             ebaRt1Banks[BIC].name = customBanks[BIC].name || ebaRt1Banks[BIC].name;
             ebaRt1Banks[BIC].country = customBanks[BIC].country || ebaRt1Banks[BIC].country;
 

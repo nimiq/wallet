@@ -443,7 +443,7 @@ export default defineComponent({
                 const { nextChangeAddress } = useBtcAddressStore();
                 if (!nextChangeAddress.value) {
                     // FIXME: If no unused change address is found, need to request new ones from Hub!
-                    throw new Error('No more unused change addresses (not yet implemented)');
+                    throw new Error('No more unused change addresses)');
                 }
                 changeAddress = nextChangeAddress.value;
             }

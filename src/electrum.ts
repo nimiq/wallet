@@ -251,16 +251,18 @@ export async function launchElectrum() {
     // (This is not really necessary, since an internal address can only receive txs from an external
     // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
     const nextUnusedChangeAddress = computed(() => {
-        if (!addressSet.value.internal.length) return null;
+        if (!addressSet.value.internal.length) return undefined;
 
-        const address = addressSet.value.internal
-            .find((addressInfo) => !addressInfo.used)?.address;
+        const unusedAddresses = addressSet.value.internal
+            .filter((addressInfo) => !addressInfo.used)
+            .map((addressInfo) => addressInfo.address);
 
-        if (!address) {
+        // When only 2 unused change addresses are left, get new ones from Hub
+        if (unusedAddresses.length <= 2) {
             addBtcAddresses(useAccountStore().activeAccountId.value!, 'internal');
         }
 
-        return address;
+        return unusedAddresses[0];
     });
     watch([nextUnusedChangeAddress, isFetchingTxHistory], ([address, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing

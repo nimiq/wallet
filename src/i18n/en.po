@@ -162,7 +162,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:170
+#: src/components/BankCheckInput.vue:186
 msgid "All countries"
 msgstr ""
 

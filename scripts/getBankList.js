@@ -3,6 +3,7 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const xlsx = require('xlsx');
+const scraperjs = require('scraperjs'); // https://github.com/ruipgil/scraperjs
 
 const DATA_FOLDER_PATH = './src/data/banksList';
 
@@ -11,11 +12,8 @@ const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.json`;
 const CUSTOM_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/customBanksList.json`;
 const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/banksList.json`;
 
-const FORCE_SCRAPER_RUN = (process.argv[2] === '--force-scaper-run');
-
-const RECIPE_KEY = 'GsFPmxRMalZSvC6dzQvx';
-const API_KEY = 'psrl7iwR894umiKSbEFQJ1wQfSOMBLbZ';
-const API_URL = `https://simplescraper.io/api/${RECIPE_KEY}?apikey=${API_KEY}${FORCE_SCRAPER_RUN ? '&run_now=true' : ''}`; // eslint-disable-line max-len
+const EBA_CLEARING_BASEURL = 'https://www.ebaclearing.eu';
+const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/instant-payments/participants/`;
 
 function readFile(path) {
     return new Promise((resolve, reject) => {
@@ -67,12 +65,20 @@ function download(url, filePath) {
 
 function getBankListUrl() {
     return new Promise((resolve, reject) => {
-        https.get(API_URL, { encoding: 'utf8' }, (response) => {
-            let data = '';
-            response.on('data', (d) => data += d);
-            response.on('end', () => resolve(JSON.parse(data).data[0].BankList_link));
-            response.on('error', reject);
-        }).on('error', reject);
+        scraperjs.StaticScraper
+            .create(EBA_CLEARING_PAGE)
+            .scrape(($) => {
+                const obj = $('.text-rte:not(.clear) a');
+
+                if (!obj || obj.length === 0) {
+                    reject(Error('Scraper error: BankListUrl not found, please update css selector.'));
+                    return null;
+                }
+
+                return EBA_CLEARING_BASEURL + obj[0].attribs.href;
+            })
+            .catch(reject)
+            .then(resolve);
     });
 }
 
@@ -156,7 +162,7 @@ async function mergeJson() {
 
 async function main() {
     try {
-        process.stdout.write(`> Get download link from ${API_URL}\n`);
+        process.stdout.write(`> Get download link from ${EBA_CLEARING_PAGE}\n`);
         const bankListXlsxUrl = await getBankListUrl();
 
         process.stdout.write(`> Download ${bankListXlsxUrl}\n  > To ${EBA_RT1_XLSX_FILE_PATH}\n`);

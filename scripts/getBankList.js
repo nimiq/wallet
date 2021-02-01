@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable import/no-extraneous-dependencies */
+
 const https = require('https');
 const http = require('http');
 const fs = require('fs');

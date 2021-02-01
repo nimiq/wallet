@@ -139,8 +139,7 @@ export default defineComponent({
             unicodeNormalize(localValue.value
                 .replace(/ä/g, 'ae')
                 .replace(/ö/g, 'oe')
-                .replace(/ü/g, 'ue')
-                .trim(),
+                .replace(/ü/g, 'ue'),
             ),
         );
 
@@ -340,10 +339,19 @@ export default defineComponent({
             const normalizedStr = unicodeNormalize(s);
             const rgx = new RegExp(normalizedLocalValue.value, 'i');
             const match = normalizedStr.match(rgx);
+            const maxlen = 25;
+            let i = 2;
 
             if (!match) return '';
 
-            return s.substr(normalizedStr.indexOf(match[0]), match[0].length);
+            const originalMatch = s.substr(normalizedStr.indexOf(match[0]), match[0].length);
+
+            if (originalMatch.length <= 4 || s.length < maxlen) return originalMatch;
+            if (s.length - (originalMatch.length - 4) <= maxlen) {
+                i = 2 + (maxlen - (s.length - (originalMatch.length - 4)));
+            }
+
+            return `${originalMatch.substr(0, 2)}...${originalMatch.substr(originalMatch.length - i, i)}`;
         }
         function getMatchSuffix(s: string) {
             const normalizedStr = unicodeNormalize(s);
@@ -440,7 +448,7 @@ export default defineComponent({
 @import '../scss/mixins.scss';
 
 .bank-check-input {
-    width: 78%;
+    width: 35.5rem;
     margin: 0 auto;
 
     position: relative;
@@ -611,14 +619,14 @@ export default defineComponent({
     flex-direction: column;
     overflow: visible;
 
-    width: 100%;
+    width: 42.5rem;
     margin: 0;
     margin-top: -.25rem;
     padding: .5rem;
 
     position: absolute;
     z-index: 4;
-    top: 51px; // TEMP: input height
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
 
@@ -744,7 +752,11 @@ export default defineComponent({
 
 @media (max-width: 450px) { // Vue-components breakpoint
     .bank-check-input {
-        width: 95%;
+        width: 80%;
+    }
+
+    .bank-autocomplete {
+        width: 130%;
     }
 }
 

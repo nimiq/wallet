@@ -54,7 +54,7 @@
             :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
         >
             <div class="distribution ">
-                <div style="width: 100%" class="btc-bar">
+                <div style="width: 100%">
                     <Tooltip
                         preferredPosition="top left"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
@@ -263,12 +263,9 @@ export default defineComponent({
                 &:last-child {
                     margin-right: -0.5rem;
                 }
-            }
 
-            > div.btc-bar {
-                padding-right: 0;
-
-                &:last-child {
+                &:only-child {
+                    padding-right: 0rem;
                     margin-right: 0rem;
                 }
             }

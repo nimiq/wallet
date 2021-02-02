@@ -304,7 +304,7 @@ import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
-    name: 'transaction-modal',
+    name: 'btc-transaction-modal',
     props: {
         hash: {
             type: String,
@@ -649,6 +649,18 @@ export default defineComponent({
 
         .amount-block {
             opacity: 0.4;
+        }
+    }
+
+    button.reset.flex-row {
+        border-radius: 8rem;
+        padding: 0.25rem 1.5rem;
+        margin: -0.25rem -1.5rem;
+        transition: background-color var(--transition-time) var(--nimiq-ease);
+
+        &:hover,
+        &:focus{
+            background-color: #F2F2F4;
         }
     }
 }

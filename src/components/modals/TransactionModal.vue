@@ -231,7 +231,7 @@
                                 class="swapped-amount" :class="{'incoming': !isIncoming}"
                                 value-mask/>
                         </button>
-                        <div v-else-if="swapData.asset === SwapAsset.EUR" class="flex-row">
+                        <div v-else-if="swapData.asset === SwapAsset.EUR" class="reset">
                             <div class="icon" :class="{'incoming': !isIncoming}">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
                                 <GroundedArrowDownIcon v-else/>
@@ -698,6 +698,18 @@ export default defineComponent({
 
         .amount-and-message {
             opacity: 0.4;
+        }
+    }
+
+    button.reset.flex-row {
+        border-radius: 8rem;
+        padding: 0.25rem 1.5rem;
+        margin: -0.25rem -1.5rem;
+        transition: background-color var(--transition-time) var(--nimiq-ease);
+
+        &:hover,
+        &:focus{
+            background-color: #EDFAF8;
         }
     }
 }

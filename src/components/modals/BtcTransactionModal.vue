@@ -266,7 +266,7 @@
                 <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
 
                 <BlueLink
-                    :href="explorerTxLink('BTC', transaction.transactionHash)"
+                    :href="blockExplorerLink"
                     target="_blank" rel="noopener"
                 >{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
@@ -542,6 +542,8 @@ export default defineComponent({
             && !swapInfo.value.out,
         );
 
+        const blockExplorerLink = computed(() => explorerTxLink(SwapAsset.BTC, transaction.value.transactionHash));
+
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapBtcData;
             const htlcDetails = swapIn.htlc!;
@@ -606,7 +608,7 @@ export default defineComponent({
             // peerIsContact,
             // setContact,
             amountsHidden,
-            explorerTxLink,
+            blockExplorerLink,
             senderLabelAddress,
             recipientLabelAddress,
             setSenderLabel,

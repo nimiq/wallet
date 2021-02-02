@@ -1,22 +1,24 @@
 <template>
-    <div class="account-balance" :class="{'privacy-on': amountsHidden}">
-        <h2 class="nq-label flex-row">
-            <span>{{ $t('Total Balance') }}</span>
-            <button class="reset" @click="toggleAmountsHidden" @mousedown.prevent>
-                <PrivacyOffIcon v-if="!amountsHidden"/>
-                <PrivacyOnIcon v-else/>
-            </button>
-        </h2>
-        <div class="fiat-amount" ref="$fiatAmountContainer">
-            <FiatAmount
-                v-if="fiatAmount !== undefined"
-                :amount="fiatAmount"
-                :currency="fiatCurrency"
-                ref="$fiatAmount"
-                :style="{ fontSize: `${fiatAmountFontSize}rem` }"
-                value-mask
-            />
-            <span v-else class="fiat-amount">&nbsp;</span>
+    <div class="account-balance-container">
+        <div class="account-balance" :class="{'privacy-on': amountsHidden}">
+            <h2 class="nq-label flex-row">
+                <span>{{ $t('Total Balance') }}</span>
+                <button class="reset" @click="toggleAmountsHidden" @mousedown.prevent>
+                    <PrivacyOffIcon v-if="!amountsHidden"/>
+                    <PrivacyOnIcon v-else/>
+                </button>
+            </h2>
+            <div class="fiat-amount" ref="$fiatAmountContainer">
+                <FiatAmount
+                    v-if="fiatAmount !== undefined"
+                    :amount="fiatAmount"
+                    :currency="fiatCurrency"
+                    ref="$fiatAmount"
+                    :style="{ fontSize: `${fiatAmountFontSize}rem` }"
+                    value-mask
+                />
+                <span v-else class="fiat-amount">&nbsp;</span>
+            </div>
         </div>
         <BalanceDistribution/>
     </div>
@@ -111,7 +113,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.account-balance {
+.account-balance,
+.account-balance-container {
     text-align: center;
 }
 

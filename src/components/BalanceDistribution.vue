@@ -44,16 +44,21 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <button
-                :disabled="!totalFiatAccountBalance"
-                class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent
-            ><SwapIcon/></button>
+            <Tooltip preferredPosition="top right" ref="swapTooltip" noFocus="true">
+                <button
+                    :disabled="!totalFiatAccountBalance"
+                    @focus.stop="$refs.swapTooltip.show()"
+                    @blur.stop="$refs.swapTooltip.hide()"
+                    class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
+                ><SwapIcon/></button>
+                <span class="nq-text-s">{{ $t('Swap NIM ↔ BTC') }}</span>
+            </Tooltip>
         </div>
         <div v-if="hasBitcoinAddresses"
             class="currency flex-column btc"
             :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
         >
-            <div class="distribution ">
+            <div class="distribution">
                 <div style="width: 100%">
                     <Tooltip
                         preferredPosition="top left"
@@ -195,6 +200,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/mixins.scss';
+
 .balance-distribution {
     display: flex;
     flex-direction: row;
@@ -240,6 +247,18 @@ export default defineComponent({
             &:focus {
                 --box-color: var(--text-12);
                 color: var(--text-70);
+            }
+        }
+
+        .tooltip {
+            /deep/ .tooltip-box {
+                padding: 1rem;
+                transform: translate(calc(26px - 50%), -2rem);
+            }
+
+            .nq-text-s {
+            white-space: nowrap;
+            margin: 0 0 0.25rem;
             }
         }
     }

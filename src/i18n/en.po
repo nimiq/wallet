@@ -162,7 +162,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:184
+#: src/components/BankCheckInput.vue:186
 msgid "All countries"
 msgstr ""
 
@@ -235,7 +235,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:66
+#: src/components/BalanceDistribution.vue:71
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:102
@@ -1343,6 +1343,10 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:13
 #: src/components/swap/SwapNotification.vue:19
 msgid "Swap has expired"
+msgstr ""
+
+#: src/components/BalanceDistribution.vue:54
+msgid "Swap NIM ↔ BTC"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:8

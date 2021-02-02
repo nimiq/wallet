@@ -880,6 +880,8 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: 600;
         color: var(--text-50);
+        display: flex;
+        align-items: center;
 
         .tooltip {
             /deep/ .trigger {

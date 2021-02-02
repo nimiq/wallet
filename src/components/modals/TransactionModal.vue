@@ -138,7 +138,7 @@
                 <div class="address-info flex-column">
                     <Identicon :address="transaction.sender"/>
                     <span class="label">{{ myLabel }}</span>
-                    <Tooltip v-if="swapData" preferredPosition="bottom left" class="left-aligned">
+                    <Tooltip v-if="swapData" preferredPosition="bottom right" class="left-aligned">
                         <ShortAddress :address="transaction.sender" slot="trigger"/>
                         {{ transaction.sender }}
                     </Tooltip>

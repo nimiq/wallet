@@ -899,6 +899,11 @@ export default defineComponent({
             width: auto;
             max-width: 100%;
             min-height: 5rem;
+
+            & /deep/ .ticker:hover,
+            & /deep/ .ticker:focus-within {
+                color: var(--nimiq-light-blue);
+            }
         }
 
         .amount-menu /deep/ .button {
@@ -934,11 +939,13 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input {
+            .amount-input /deep/,
+            .amount-input /deep/ .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ input {
+            .amount-input /deep/ .nq-input {
+                color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }

@@ -76,6 +76,7 @@ export default defineComponent({
 .button {
     align-items: center;
     cursor: pointer;
+    transition: color var(--attr-duration) var(--nimiq-ease);
 
     &::after {
         content: '';
@@ -93,7 +94,8 @@ export default defineComponent({
     }
 
     &:hover,
-    &:active {
+    &:active,
+    &:focus-within {
         &::after {
             opacity: 0.7;
         }

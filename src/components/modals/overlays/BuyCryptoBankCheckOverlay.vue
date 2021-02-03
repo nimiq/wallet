@@ -12,6 +12,8 @@
                 @bank-selected="onBankSelected"
                 :placeholder="$t('Enter bank name')"
                 :title="$t('Enter bank name')"
+                :class="{ writing }"
+                ref="$bankCheckInput"
             />
             <span class="bic-too">{{ $t('BIC works, too.') }}</span>
             <div class="flex-grow"></div>
@@ -26,22 +28,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { BankInfos } from '@/stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
         const bankName = ref('');
+
+        const writing = computed(() => bankName.value.length !== 0);
 
         function onBankSelected(bank: BankInfos) {
             context.emit('bank-selected', bank);
         }
 
+        onMounted(async () => {
+            await context.root.$nextTick();
+            if ($bankCheckInput.value) $bankCheckInput.value.focus();
+        });
+
         return {
+            $bankCheckInput,
             bankName,
             onBankSelected,
+            writing,
         };
     },
     components: {

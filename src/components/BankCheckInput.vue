@@ -1,10 +1,6 @@
 <template>
     <div class="bank-check-input"
-        :class="{
-            disabled,
-            autocomplete: matchingBanks && matchingBanks.length > 0 && localValue.length >= 2,
-            writing: localValue.length > 0,
-        }"
+        :class="{ disabled }"
         @keydown="onKeyDown"
     >
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
@@ -43,7 +39,10 @@
                 </ul>
             </div>
         </div>
-        <ul class="bank-autocomplete" v-if="matchingBanks && matchingBanks.length > 0" ref="$bankAutocomplete">
+        <ul class="bank-autocomplete" ref="$bankAutocomplete"
+            v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2"
+            :class="{ scroll: isScrollable }"
+        >
             <li class="bank"
                 v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: selectedBankIndex === index }"
@@ -73,15 +72,17 @@
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
-                    :container="this"
-                    :styles="{ transform: 'translate3d(5%, 2rem, 1px)' }">
+                    :container="{ $el: $bankAutocomplete }"
+                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <CircledQuestionMarkIcon slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
             </li>
             <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
-                {{ $tc('+ {count} more | + {count} more', matchingBanks.length - visibleBanks.length) }}
+                <a @click="isScrollable = true">
+                    {{ $tc('+ {count} more | + {count} more', matchingBanks.length - visibleBanks.length) }}
+                </a>
             </li>
             <li class="warning" v-if="showWarning" key="warning">
                 {{ $t('Your bank needs to support SEPA Instant out transactions.'
@@ -104,8 +105,6 @@ import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
 import FlagIcon from './icons/FlagIcon.vue';
-
-const MAX_VISIBLE_ITEMS = 3;
 
 type CountryInfo = {
     name: string,
@@ -228,8 +227,12 @@ export default defineComponent({
             });
         });
 
-        /* List of banks displayed to the user. Based on MAX_VISIBLE_ITEMS */
-        const visibleBanks = computed(() => matchingBanks.value.slice(0, MAX_VISIBLE_ITEMS));
+        /* List of banks displayed to the user. */
+        const visibleBanks = computed(() =>
+            isScrollable.value
+                ? matchingBanks.value
+                : matchingBanks.value.slice(0, 3),
+        );
 
         /* Reset the selectedBankIndex to 0 on text input */
         watch(localValue, () => selectedBankIndex.value = 0);
@@ -304,7 +307,7 @@ export default defineComponent({
                 if (selectedBankIndex.value !== oldBankIndex && $bankAutocomplete.value) {
                     $bankAutocomplete.value.children[selectedBankIndex.value].scrollIntoView({
                         behavior: 'smooth',
-                        block: 'nearest',
+                        block: 'center',
                     });
                 }
             }
@@ -339,7 +342,7 @@ export default defineComponent({
             const normalizedStr = unicodeNormalize(s);
             const rgx = new RegExp(normalizedLocalValue.value, 'i');
             const match = normalizedStr.match(rgx);
-            const maxlen = 25;
+            const maxlen = 23;
             let i = 2;
 
             if (!match) return '';
@@ -393,6 +396,10 @@ export default defineComponent({
             }
         });
 
+        const isScrollable = ref(false);
+
+        watch([localValue, countrySearch], () => isScrollable.value = false);
+
         return {
             SEPA_INSTANT_SUPPORT,
 
@@ -421,6 +428,8 @@ export default defineComponent({
             selectCountry,
             selectedCountryIndex,
             countrySearch,
+
+            isScrollable,
         };
     },
     methods: {
@@ -615,7 +624,7 @@ export default defineComponent({
 .bank-autocomplete {
     @extend %custom-scrollbar-inverse;
 
-    display: none;
+    display: flex;
     flex-direction: column;
     overflow: visible;
 
@@ -638,18 +647,17 @@ export default defineComponent({
     text-align: left;
     user-select: none;
 
-    .autocomplete & {
-        display: flex;
-    }
-
-    .label-input:not(:focus-within) ~ & {
-        display: none;
+    &.scroll {
+        max-height: 37.5rem;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     li.bank {
         display: flex;
         flex-direction: row;
         align-items: center;
+        flex-shrink: 0;
         padding: 1.5rem;
         border-radius: 0.25rem;
         font-weight: 400;
@@ -737,7 +745,16 @@ export default defineComponent({
         font-size: var(--small-size);
         margin-left: 1.5rem;
         margin-bottom: 1.75rem;
-        opacity: 0.5;
+
+        a {
+            opacity: .5;
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                opacity: .75;
+            }
+        }
     }
 
     li.warning {

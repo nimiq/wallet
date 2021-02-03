@@ -162,7 +162,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:185
+#: src/components/BankCheckInput.vue:184
 msgid "All countries"
 msgstr ""
 
@@ -231,7 +231,7 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:16
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
 msgstr ""
 
@@ -312,7 +312,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
 msgid "Buy with Credit Card"
 msgstr ""
 
@@ -432,7 +432,7 @@ msgstr ""
 msgid "Consensus"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:80
+#: src/components/BankCheckInput.vue:79
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -899,7 +899,7 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:42
+#: src/components/BankCheckInput.vue:38
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -969,7 +969,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:79
+#: src/components/BankCheckInput.vue:78
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1147,7 +1147,7 @@ msgid ""
 "money to this address"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:27
+#: src/components/BankCheckInput.vue:23
 #: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr ""
@@ -1623,11 +1623,11 @@ msgstr ""
 msgid "Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new account picker."
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:20
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:87
+#: src/components/BankCheckInput.vue:88
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

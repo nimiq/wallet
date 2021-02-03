@@ -1,14 +1,14 @@
-#
+# 
 # Translators:
 # Talleyrand, 2020
 # Daniel, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2021
-# Robinson BARAIS, 2021
 # Matheo <matheo@nimiq.com>, 2021
-#
+# Robinson BARAIS, 2021
+# 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2021\n"
+"Last-Translator: Robinson BARAIS, 2021\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -185,7 +185,7 @@ msgstr "Avancé"
 msgid "all"
 msgstr "Toutes"
 
-#: src/components/BankCheckInput.vue:170
+#: src/components/BankCheckInput.vue:184
 msgid "All countries"
 msgstr "Tous les pays"
 
@@ -274,7 +274,7 @@ msgstr "Sauvegarder"
 msgid "Bank Account"
 msgstr "Compte bancaire"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:12
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
 msgstr "Le BIC fonctionne aussi."
 
@@ -362,9 +362,9 @@ msgstr "Acheter de la Crypto avec des Fiats"
 msgid "Buy NIM"
 msgstr "Acheter des NIM"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-msgid "Buy on an exchange"
-msgstr "Acheter sur une plateforme d'échange"
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
+msgid "Buy with Credit Card"
+msgstr "Acheter avec une carte de crédit"
 
 #: src/components/modals/SendModal.vue:167
 msgid ""
@@ -386,6 +386,7 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
 
+#: src/components/modals/MoonpayModal.vue:13
 #: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
 msgstr "Annuler"
@@ -488,7 +489,7 @@ msgstr "Connexion perdue"
 msgid "Consensus"
 msgstr "Consensus"
 
-#: src/components/BankCheckInput.vue:80
+#: src/components/BankCheckInput.vue:79
 msgid "Contact your bank to find out if your account is eligible."
 msgstr "Contactez votre banque pour savoir si votre compte est éligible."
 
@@ -656,7 +657,8 @@ msgstr "Éditer la transaction"
 msgid "Enter address"
 msgstr "Entrez l'adresse"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:11
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:13
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:14
 msgid "Enter bank name"
 msgstr "Entrez le nom de la banque"
 
@@ -962,6 +964,10 @@ msgstr "Lien non disponible dans ce navigateur"
 msgid "Load file"
 msgstr "Charger le fichier"
 
+#: src/components/modals/MoonpayModal.vue:4
+msgid "Loading Moonpay..."
+msgstr "Chargement de Moonpay..."
+
 #: src/components/modals/BuyCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
 msgid "loading..."
@@ -994,7 +1000,7 @@ msgstr "perdu"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/BankCheckInput.vue:42
+#: src/components/BankCheckInput.vue:38
 msgid "More locations will be supported soon."
 msgstr "Plus de zones géographiques seront supportées prochainement..."
 
@@ -1079,7 +1085,7 @@ msgstr "Aucune transaction trouvée"
 msgid "None"
 msgstr "Aucun"
 
-#: src/components/BankCheckInput.vue:79
+#: src/components/BankCheckInput.vue:78
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
@@ -1281,7 +1287,7 @@ msgstr ""
 "Scannez le code pour envoyer\n"
 "de l'argent à cette adresse."
 
-#: src/components/BankCheckInput.vue:27 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:23 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Rechercher"
 
@@ -1603,6 +1609,10 @@ msgstr "Ce taux inclut les frais de swap."
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
+#: src/components/modals/MoonpayModal.vue:9
+msgid "This service is operated by {link}"
+msgstr "Ce service est géré par {link}"
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:110
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
@@ -1802,11 +1812,11 @@ msgstr ""
 "Vos utilisez un ancien type de compte. Changez, éditez et créez facilement "
 "des comptes avec le nouveau sélecteur de comptes."
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:16
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
 msgid "Your bank is not eligible?"
 msgstr "Votre banque n'est pas éligible ?"
 
-#: src/components/BankCheckInput.vue:87
+#: src/components/BankCheckInput.vue:88
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

@@ -42,6 +42,9 @@ const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './component
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 
+const MoonpayModal = () =>
+    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
+
 Vue.use(VueRouter);
 
 export enum Columns {
@@ -181,6 +184,14 @@ const routes: RouteConfig[] = [{
             name: 'swap',
             props: { modal: true },
             meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/moonpay',
+            components: {
+                modal: MoonpayModal,
+            },
+            name: 'moonpay',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
         }],
     }, {
         path: '/settings',

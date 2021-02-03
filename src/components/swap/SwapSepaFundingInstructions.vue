@@ -53,7 +53,7 @@
                             <label class="nq-label">{{ $t('Reference') }}</label>
                         </div>
                         <div class="line flex-row">
-                            <strong>{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
+                            <strong class="reference">{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
                         </div>
                     </Copyable>
                 </div>
@@ -304,6 +304,12 @@ export default defineComponent({
     color: rgba(255, 255, 255, 0.3);
     font-weight: 600;
     letter-spacing: .06em;
+}
+
+.reference {
+    font-family: 'Fira Mono', monospace;
+    font-weight: 500;
+    word-spacing: -0.2em;
 }
 
 .instant-warning {

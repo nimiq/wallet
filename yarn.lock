@@ -1015,7 +1015,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#a5d982d33ddede7c1870a8daef2a4c8e1782b350"
+  resolved "https://github.com/nimiq/vue-components#b9337a429c6467f7625803246449753dbd21385d"
   dependencies:
     "@nimiq/style" "^0.8.2"
     big-integer "^1.6.44"

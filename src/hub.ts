@@ -210,7 +210,10 @@ export async function syncFromHub() {
 export async function onboard(asRedirect = false) {
     if (asRedirect === true) {
         const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
-        hubApi.onboard({ appName: APP_NAME }, behavior);
+        hubApi.onboard({
+            appName: APP_NAME,
+            disableBack: true,
+        }, behavior);
         return null;
     }
 

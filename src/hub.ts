@@ -23,6 +23,10 @@ const hubApi = new HubApi(Config.hubEndpoint);
 let welcomeRoute = '';
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+    // Store the returned account(s). For first-time signups on iOS/Safari, this is the only time
+    // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
+    processAndStoreAccounts(accounts);
+
     if (!accounts[0].wordsExported && !accounts[0].fileExported) {
         // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
         // which also have no exports.
@@ -145,7 +149,9 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     // deriving new addresses via the iframe. We therefore cannot simply overwrite all stored
     // Bitcoin address infos in the Wallet, as that would likely delete previously additional
     // derived ones.
-    btcAddressStore.addAddressInfos(btcAddressInfos);
+    if (btcAddressInfos.length) {
+        btcAddressStore.addAddressInfos(btcAddressInfos);
+    }
 
     if (replaceState) {
         addressStore.setAddressInfos(addressInfos);

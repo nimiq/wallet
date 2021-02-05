@@ -1,12 +1,6 @@
 <template>
     <Modal v-bind="$attrs" v-on="$listeners" emitClose>
-        <PageHeader
-            :backArrow="page > 1"
-            @back="page -= 1"
-            progressIndicator
-            :numberSteps="activeAccountInfo.type === AccountType.LEDGER ? 2 : 3"
-            :step="page"
-        >
+        <PageHeader :backArrow="page > 1" @back="page -= 1">
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}
                 <p slot="more" class="nq-notice info">
@@ -19,13 +13,6 @@
                 {{ $t('Your browser is a Node') }}
                 <p slot="more" class="nq-notice info">
                     {{ $t('Connect directly to the Nimiq blockchain.\nBe independent from any middleman.') }}
-                </p>
-            </template>
-
-            <template v-if="page === 3">
-                {{ $t('Download your Login File') }}
-                <p slot="more" class="nq-notice info">
-                    {{ $t('Nimiq does not store your personal data.\nUse your Login File to log in.') }}
                 </p>
             </template>
         </PageHeader>
@@ -71,38 +58,11 @@
             </div>
         </PageBody>
 
-        <PageBody v-else-if="page === 3" class="left-aligned">
-            <div class="text page3-text">
-                <p class="nq-text">
-                    {{ $t('Your Login File, in combination with your password, grants access.') }}
-                </p>
-                <p class="nq-text">
-                    {{ $t('Download it and store it safely. Don’t share it – don’t lose it.') }}
-                </p>
-                <p class="nq-text">
-                    {{ $t('Use it to access your account from any device.') }}
-                </p>
-            </div>
-            <div class="visual login-file">
-                <img src="../../assets/slides/login-file-half.svg" key="login-file">
-            </div>
-        </PageBody>
-
         <PageFooter>
             <button class="nq-button light-blue" @click="onButtonClick" @mousedown.prevent>
                 <template v-if="page === 1">{{ $t('Continue') }}</template>
-                <template v-if="page === 2">
-                    {{ activeAccountInfo.type === AccountType.LEDGER
-                        ? $t('Got it')
-                        : $t('One more thing')
-                    }}
-                </template>
-                <template v-if="page === 3">{{ $t('Continue to Login File') }}</template>
+                <template v-if="page === 2"> {{ $t('Let\'s go!') }}</template>
             </button>
-            <a v-if="page === 3" class="nq-link skip flex-row" href="javascript:void(0)" @click="$router.back()">
-                {{ $t('Skip for now') }}
-                <CaretRightSmallIcon/>
-            </a>
             <div v-if="page === 1" class="flex-row flags">
                 <Tooltip v-for="lang in Languages" :key="lang.code"
                     :preferredPosition="width > 700 ? 'bottom' : 'top'"
@@ -124,8 +84,6 @@ import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon, Identic
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
-import { useAccountStore, AccountType } from '../../stores/Account';
-import { backup } from '../../hub';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAddressStore } from '../../stores/Address';
@@ -135,23 +93,9 @@ export default defineComponent({
     setup(props, context) {
         const page = ref(1);
 
-        function reset() {
-            page.value = 1;
-        }
-
-        const { activeAccountInfo } = useAccountStore();
-
         async function onButtonClick() {
-            if (activeAccountInfo.value!.type === AccountType.LEDGER && page.value === 2) {
+            if (page.value === 2) {
                 context.root.$router.back();
-            } else if (page.value === 3) {
-                // Go to backup
-                const backedUp = await backup(activeAccountInfo.value!.id, {});
-
-                if (backedUp) {
-                    // Close modal
-                    context.root.$router.back();
-                }
             } else {
                 page.value += 1;
             }
@@ -165,13 +109,10 @@ export default defineComponent({
 
         return {
             page,
-            reset,
             onButtonClick,
             Languages,
             settings$,
             setLanguage,
-            activeAccountInfo,
-            AccountType,
             activeAddress,
             width,
         };
@@ -197,6 +138,10 @@ export default defineComponent({
     .page-header {
         white-space: pre-line;
         padding-bottom: 2.5rem;
+    }
+
+    .page-header .nq-notice {
+        margin-top: 2rem;
     }
 
     .page-body {

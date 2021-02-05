@@ -166,7 +166,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:48
+#: src/components/modals/WelcomeModal.vue:35
 msgid "All in one easy place."
 msgstr ""
 
@@ -192,7 +192,7 @@ msgstr ""
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:40
+#: src/components/modals/WelcomeModal.vue:27
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Congrats"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:21
+#: src/components/modals/WelcomeModal.vue:15
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
@@ -441,16 +441,12 @@ msgid "Contacts"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/WelcomeModal.vue:93
+#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:100
-msgid "Continue to Login File"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:30
@@ -525,14 +521,6 @@ msgstr ""
 
 #: src/components/ContactBook.vue:49
 msgid "Done"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:80
-msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:26
-msgid "Download your Login File"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:112
@@ -711,7 +699,6 @@ msgid "Got feedback? Found a bug?"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr ""
 
@@ -719,7 +706,7 @@ msgstr ""
 msgid "Got it!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:11
+#: src/components/modals/WelcomeModal.vue:5
 msgid "Great, you’re here!"
 msgstr ""
 
@@ -805,7 +792,7 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:53
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
@@ -841,6 +828,10 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Let's go!"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -937,12 +928,6 @@ msgstr ""
 msgid "NIM network fee"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:28
-msgid ""
-"Nimiq does not store your personal data.\n"
-"Use your Login File to log in."
-msgstr ""
-
 #: src/components/modals/DisclaimerModal.vue:17
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
 msgstr ""
@@ -996,10 +981,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:97
-msgid "One more thing"
 msgstr ""
 
 #: src/components/TransactionList.vue:62
@@ -1183,7 +1164,7 @@ msgstr ""
 msgid "Send all"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:63
+#: src/components/modals/WelcomeModal.vue:50
 msgid "Send and receive NIM directly on the blockchain."
 msgstr ""
 
@@ -1290,7 +1271,6 @@ msgid "Simulate EUR payment"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr ""
 
@@ -1319,7 +1299,7 @@ msgstr ""
 msgid "Starting with EU bank accounts soon."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:13
+#: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr ""
 
@@ -1392,7 +1372,7 @@ msgstr ""
 msgid "The new Login Files are an easy and convenient way to gain access to your account and its addresses."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:60
+#: src/components/modals/WelcomeModal.vue:47
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
@@ -1524,17 +1504,13 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
+#: src/components/modals/WelcomeModal.vue:22
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:33
 #: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:83
-msgid "Use it to access your account from any device."
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:101
@@ -1639,12 +1615,8 @@ msgstr ""
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:19
+#: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:77
-msgid "Your Login File, in combination with your password, grants access."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88

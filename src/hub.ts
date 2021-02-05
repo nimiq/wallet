@@ -27,9 +27,9 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
-        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
-        // which also have no exports.
+    const accountStore = useAccountStore();
+
+    if (Object.keys(accountStore.state.accountInfos).length === 1) {
         welcomeRoute = '/welcome';
     } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         welcomeRoute = '/btc-activation/activated';
@@ -224,11 +224,7 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts);
 
-    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
-        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
-        // which also have no exports.
-        router.push('/welcome');
-    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+    if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         router.push('/btc-activation/activated');
     }
 

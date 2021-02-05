@@ -40,7 +40,9 @@ hubApi.on(HubApi.RequestType.MIGRATE, () => {
     welcomeRoute = '/migration-welcome';
 });
 
-hubApi.checkRedirectResponse();
+export async function initHubApi() {
+    return hubApi.checkRedirectResponse();
+}
 
 const APP_NAME = 'Wallet';
 

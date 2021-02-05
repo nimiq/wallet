@@ -7,7 +7,7 @@ import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-comp
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
-import { syncFromHub } from './hub';
+import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
 import { useFiatStore } from './stores/Fiat';
@@ -33,6 +33,7 @@ Vue.use(VueVirtualScroller);
 
 async function start() {
     await initStorage(); // Must be awaited before starting Vue
+    await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);

@@ -185,7 +185,7 @@ msgstr "Усі"
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:48
+#: src/components/modals/WelcomeModal.vue:35
 msgid "All in one easy place."
 msgstr "Все в одному зручному місці."
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:40
+#: src/components/modals/WelcomeModal.vue:27
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr "І {BTC}, золотий стандарт криптовалют та засіб збереження капіталу."
 
@@ -462,7 +462,7 @@ msgstr "Підтвердити"
 msgid "Congrats"
 msgstr "Вітаємо"
 
-#: src/components/modals/WelcomeModal.vue:21
+#: src/components/modals/WelcomeModal.vue:15
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
@@ -497,17 +497,13 @@ msgid "Contacts"
 msgstr "Контакти"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/WelcomeModal.vue:93
+#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "Продовжити"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:100
-msgid "Continue to Login File"
-msgstr "Перейти до файла-ключа"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -588,16 +584,6 @@ msgstr ""
 #: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "Готово"
-
-#: src/components/modals/WelcomeModal.vue:80
-msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr ""
-"Завантажте і зберігайте у надійному місці. Нікому не надсилайте цей файл і "
-"не загубіть його."
-
-#: src/components/modals/WelcomeModal.vue:26
-msgid "Download your Login File"
-msgstr "Завантажте файл-ключ"
 
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
@@ -788,7 +774,6 @@ msgid "Got feedback? Found a bug?"
 msgstr "Маєте відгук? Знайшли помилку?"
 
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr "Зрозуміло"
 
@@ -796,7 +781,7 @@ msgstr "Зрозуміло"
 msgid "Got it!"
 msgstr "Зрозуміло!"
 
-#: src/components/modals/WelcomeModal.vue:11
+#: src/components/modals/WelcomeModal.vue:5
 msgid "Great, you’re here!"
 msgstr "Ура, ви на місці!"
 
@@ -898,7 +883,7 @@ msgstr "Запросіть друга через"
 msgid "Is your bank eligible?"
 msgstr "Чи може банк здійснювати оператцію?"
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:53
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Це швидко, безпечно і робить вас дійсно незалежним."
 
@@ -935,6 +920,10 @@ msgstr "Розпочнемо! Створіть рахунок у мережі Н
 #: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
 msgstr "Вперед!"
+
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Let's go!"
+msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
@@ -1032,14 +1021,6 @@ msgstr "Комісія мережі: {sats} сат/вБайт"
 msgid "NIM network fee"
 msgstr "Комісія NIM"
 
-#: src/components/modals/WelcomeModal.vue:28
-msgid ""
-"Nimiq does not store your personal data.\n"
-"Use your Login File to log in."
-msgstr ""
-"Німік не зберігає ваші особисті дані.\n"
-"Використовуйте файл-ключ, щоб увійти."
-
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
 "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, "
@@ -1104,10 +1085,6 @@ msgstr "Один рахунок може мати декілька адрес."
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
 msgstr "Один рахунок - багато адрес"
-
-#: src/components/modals/WelcomeModal.vue:97
-msgid "One more thing"
-msgstr "Ще одна річ"
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
@@ -1305,7 +1282,7 @@ msgstr "Відправити"
 msgid "Send all"
 msgstr "Переказати все"
 
-#: src/components/modals/WelcomeModal.vue:63
+#: src/components/modals/WelcomeModal.vue:50
 msgid "Send and receive NIM directly on the blockchain."
 msgstr "Переказуйте і отримуйте NIM прямо у блокчейні."
 
@@ -1417,7 +1394,6 @@ msgid "Simulate EUR payment"
 msgstr "Імітуйте оплату в євро"
 
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr "Попустити"
 
@@ -1449,7 +1425,7 @@ msgstr ""
 "банківських рахунків\n"
 "ЄС."
 
-#: src/components/modals/WelcomeModal.vue:13
+#: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr "Зберігайте, надсилайте і отримуйте NIM."
 
@@ -1528,7 +1504,7 @@ msgid ""
 "account and its addresses."
 msgstr "Новий файл-ключ це зручний спосіб отримати доступ до вашого рахунку."
 
-#: src/components/modals/WelcomeModal.vue:60
+#: src/components/modals/WelcomeModal.vue:47
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "Додаток гаманця Німік це більше ніж гаманець - це повноцінний вузол мережі."
@@ -1671,7 +1647,7 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
+#: src/components/modals/WelcomeModal.vue:22
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "Використовуйте {NIM}, ефективна, веб-орієнтована криптовалюта."
 
@@ -1680,12 +1656,6 @@ msgstr "Використовуйте {NIM}, ефективна, веб-оріє�
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Використовуйте нову Біткоїн адресу для кожного переказу задля приватності."
-
-#: src/components/modals/WelcomeModal.vue:83
-msgid "Use it to access your account from any device."
-msgstr ""
-"Використовуйте файл-ключ що отримати доступ до вашого рахунку із будь-якого "
-"пристрою."
 
 #: src/components/modals/BtcReceiveModal.vue:101
 msgid ""
@@ -1816,15 +1786,11 @@ msgstr ""
 "Ваш веб-оглядач напряму під'єднується до списку пірів з усього світу. Таким "
 "чином ви є повноцінним учасником блокчейну."
 
-#: src/components/modals/WelcomeModal.vue:19
+#: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
 msgstr ""
 "Ваш веб-оглядач\n"
 "є вузлом мережі."
-
-#: src/components/modals/WelcomeModal.vue:77
-msgid "Your Login File, in combination with your password, grants access."
-msgstr "Файл-ключ, у комбінації з паролем, надає доступ до рахунку."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88
 msgid ""

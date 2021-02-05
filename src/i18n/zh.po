@@ -183,7 +183,7 @@ msgstr "全部"
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:48
+#: src/components/modals/WelcomeModal.vue:35
 msgid "All in one easy place."
 msgstr "全部都在一个簡單的地方"
 
@@ -215,7 +215,7 @@ msgstr "请随时备份您的恢复字，密码和登录文件。"
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:40
+#: src/components/modals/WelcomeModal.vue:27
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr "而{BTC}，则是加密技术的黄金标准和健全的价值存储。"
 
@@ -442,7 +442,7 @@ msgstr "确认"
 msgid "Congrats"
 msgstr "恭喜"
 
-#: src/components/modals/WelcomeModal.vue:21
+#: src/components/modals/WelcomeModal.vue:15
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
@@ -475,17 +475,13 @@ msgid "Contacts"
 msgstr "联系信息"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/WelcomeModal.vue:93
+#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "继续"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:100
-msgid "Continue to Login File"
-msgstr "前往登录文件"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -562,14 +558,6 @@ msgstr "不要重复使用地址，并为每笔交易创建一个新的地址。
 #: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "完成"
-
-#: src/components/modals/WelcomeModal.vue:80
-msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr "下载并安全存储，不要分享－不要遺失。"
-
-#: src/components/modals/WelcomeModal.vue:26
-msgid "Download your Login File"
-msgstr "下载您的登录文件"
 
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
@@ -752,7 +740,6 @@ msgid "Got feedback? Found a bug?"
 msgstr "您有反馈吗？发现错误了？"
 
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr "已取得"
 
@@ -760,7 +747,7 @@ msgstr "已取得"
 msgid "Got it!"
 msgstr "已取得！"
 
-#: src/components/modals/WelcomeModal.vue:11
+#: src/components/modals/WelcomeModal.vue:5
 msgid "Great, you’re here!"
 msgstr "太棒了，您在这里！"
 
@@ -856,7 +843,7 @@ msgstr "使用...邀请朋友"
 msgid "Is your bank eligible?"
 msgstr "你的银行是否符合条件？"
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:53
 msgid "It is fast, safe and makes you truly independent."
 msgstr "快速、安全，让您真正独立。"
 
@@ -893,6 +880,10 @@ msgstr "让我们开始吧！创建您的Nimiq帐户："
 #: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
 msgstr "我们走吧"
+
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Let's go!"
+msgstr ""
 
 #: src/components/NetworkMap.vue:29
 msgid "Light Node"
@@ -990,14 +981,6 @@ msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 msgid "NIM network fee"
 msgstr "NIM网络费用"
 
-#: src/components/modals/WelcomeModal.vue:28
-msgid ""
-"Nimiq does not store your personal data.\n"
-"Use your Login File to log in."
-msgstr ""
-"Nimiq不会存储您的个人数据，\n"
-"請使用您的登录文件登录。"
-
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
 "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, "
@@ -1059,10 +1042,6 @@ msgstr "一个帐户现在可以拥有多个地址"
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
 msgstr "一个帐户，多个地址"
-
-#: src/components/modals/WelcomeModal.vue:97
-msgid "One more thing"
-msgstr "还有一件事"
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
@@ -1255,7 +1234,7 @@ msgstr "发送"
 msgid "Send all"
 msgstr "全部发送"
 
-#: src/components/modals/WelcomeModal.vue:63
+#: src/components/modals/WelcomeModal.vue:50
 msgid "Send and receive NIM directly on the blockchain."
 msgstr "直接在区块链上发送和接收NIM。"
 
@@ -1365,7 +1344,6 @@ msgid "Simulate EUR payment"
 msgstr "模拟欧元付款"
 
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr "暂时跳过"
 
@@ -1394,7 +1372,7 @@ msgstr "标准"
 msgid "Starting with EU bank accounts soon."
 msgstr "即将开始欧盟银行帐户的使用"
 
-#: src/components/modals/WelcomeModal.vue:13
+#: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr "存储、发送和接收NIM"
 
@@ -1473,7 +1451,7 @@ msgid ""
 "account and its addresses."
 msgstr "新的登录文件是个用来访问您的账户及地址简单方便的方式"
 
-#: src/components/modals/WelcomeModal.vue:60
+#: src/components/modals/WelcomeModal.vue:47
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点。"
 
@@ -1609,7 +1587,7 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
+#: src/components/modals/WelcomeModal.vue:22
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "使用性能优异且基于浏览器的支付硬币{NIM}。"
 
@@ -1617,10 +1595,6 @@ msgstr "使用性能优异且基于浏览器的支付硬币{NIM}。"
 #: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr "每笔交易都使用新的比特币地址，以提高隐私性。"
-
-#: src/components/modals/WelcomeModal.vue:83
-msgid "Use it to access your account from any device."
-msgstr "使用登录文件，您可以从任何设备访问您的帐户。"
 
 #: src/components/modals/BtcReceiveModal.vue:101
 msgid ""
@@ -1738,13 +1712,9 @@ msgid ""
 "This makes you a first-class citizen of the blockchain."
 msgstr "您的浏览器直接连接到一组在世界他处的端点，这将让你成为区块链的头等公民。"
 
-#: src/components/modals/WelcomeModal.vue:19
+#: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
 msgstr "您的浏览器是一个节点"
-
-#: src/components/modals/WelcomeModal.vue:77
-msgid "Your Login File, in combination with your password, grants access."
-msgstr "您的登录文件结合密码，将授予您访问权限。"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88
 msgid ""

@@ -711,6 +711,7 @@ export default defineComponent({
 
         .swap-amount {
             opacity: 0.5;
+            animation: pulsate 2s infinite 0.2s;
         }
     }
 

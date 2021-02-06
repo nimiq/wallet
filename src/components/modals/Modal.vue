@@ -118,7 +118,7 @@ export default defineComponent({
     left: 0;
     z-index: 5;
     background: rgba(31, 35, 72, 0.5);
-    border-radius: 1rem;
+    border-radius: 1.25rem;
 }
 
 .overlay {

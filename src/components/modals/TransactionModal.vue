@@ -251,11 +251,8 @@
                 <div class="message">{{ data }}</div>
             </div>
 
+            <div class="flex-spacer"></div>
             <!-- <button class="nq-button-s">Send more</button> -->
-            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
-                {{ $t('Refund') }}
-            </button>
-            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -297,9 +294,7 @@ import {
     CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
-import { SwapAsset, getAssets, init as initFastspotApi } from '@nimiq/fastspot-api';
-import Config from 'config';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -325,11 +320,9 @@ import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../../lib/Constants';
 import { isCashlinkData } from '../../lib/CashlinkDetection';
 import { useCashlinkStore } from '../../stores/Cashlink';
-import { manageCashlink, refundSwap } from '../../hub';
-import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
+import { manageCashlink } from '../../hub';
+import { useSwapsStore } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
-import { sendTransaction } from '../../network';
-import { useAccountStore } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
@@ -536,50 +529,6 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
-        const showRefundButton = computed(() => {
-            if (isIncoming.value) return false;
-            if (!swapInfo.value) return false;
-            if (!swapInfo.value.in) return false;
-            if (swapInfo.value.in.asset !== SwapAsset.NIM) return false;
-            if (swapInfo.value.out) return false;
-            if (!swapInfo.value.in.htlc) return false;
-            if (swapInfo.value.in.htlc.timeoutBlockHeight > blockHeight.value) return false;
-            return true;
-        });
-
-        async function refundHtlc() {
-            const swapIn = swapInfo.value!.in as SwapNimData;
-            const htlcDetails = swapIn.htlc!;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
-                initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-                const assets = await getAssets();
-                const { feePerUnit } = assets[SwapAsset.NIM];
-                const fee = feePerUnit * 167; // 167 = NIM HTLC refunding tx size
-
-                const request: Omit<RefundSwapRequest, 'appName'> = {
-                    accountId: useAccountStore().activeAccountId.value!,
-                    refund: {
-                        type: SwapAsset.NIM,
-                        sender: transaction.value.recipient, // HTLC address
-                        recipient: htlcDetails.refundAddress, // My address, must be refund address of HTLC
-                        value: transaction.value.value - fee,
-                        fee,
-                        validityStartHeight: blockHeight.value,
-                    },
-                };
-
-                resolve(request);
-            });
-
-            const tx = await refundSwap(requestPromise);
-            if (!tx) return;
-            const plainTx = await sendTransaction(tx as SignedTransaction);
-            await context.root.$nextTick();
-            context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
-        }
-
         return {
             transaction,
             constants,
@@ -604,8 +553,6 @@ export default defineComponent({
             swapData,
             swapTransaction,
             SwapAsset,
-            showRefundButton,
-            refundHtlc,
             explorerTxLink,
         };
     },

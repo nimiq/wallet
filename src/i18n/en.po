@@ -490,28 +490,24 @@ msgstr ""
 msgid "Create payment link"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:195
+#: src/components/modals/BtcReceiveModal.vue:193
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:189
+#: src/components/modals/BtcReceiveModal.vue:183
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:183
-msgid "Created {count} minute ago | Created {count} minutes ago"
-msgstr ""
-
 #: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} second ago | Created {count} seconds ago"
+msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:174
 msgid "Created just now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:201
-msgid "Created some time ago"
+#: src/components/modals/BtcReceiveModal.vue:191
+msgid "Created yesterday"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:50
@@ -1385,12 +1381,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:819
+#: src/components/modals/BuyCryptoModal.vue:818
 #: src/components/swap/SwapModal.vue:648
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:824
+#: src/components/modals/BuyCryptoModal.vue:823
 msgid "The fees determine the minimum amount."
 msgstr ""
 

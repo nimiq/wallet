@@ -170,14 +170,8 @@ export default defineComponent({
         function getTimeLabel(timestamp: number): string {
             const difference = now.value - timestamp;
 
-            if (difference < 1 * second) {
-                return context.root.$tc('Created just now');
-            }
             if (difference < 1 * minute) {
-                return context.root.$tc(
-                    'Created {count} second ago | Created {count} seconds ago',
-                    Math.trunc(difference / second),
-                );
+                return context.root.$tc('Created just now');
             }
             if (difference < 1 * hour) {
                 return context.root.$tc(
@@ -191,14 +185,15 @@ export default defineComponent({
                     Math.trunc(difference / hour),
                 );
             }
-            if (difference >= 1 * day) {
-                return context.root.$tc(
-                    'Created {count} day ago | Created {count} days ago',
-                    Math.trunc(difference / day),
-                );
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (timestamp > yesterday.setHours(0, 0, 0, 0)) {
+                return context.root.$t('Created yesterday') as string;
             }
-
-            return context.root.$tc('Created some time ago');
+            return context.root.$tc(
+                'Created {count} day ago | Created {count} days ago',
+                Math.trunc(difference / day),
+            );
         }
 
         // Copied addresses

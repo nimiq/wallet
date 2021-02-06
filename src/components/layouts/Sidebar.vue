@@ -263,6 +263,7 @@ export default defineComponent({
 
 .trade-actions {
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 .trade-actions .nq-button-s {

@@ -1,5 +1,5 @@
 <template>
-    <Tooltip :styles="{width: '31.5rem'}" v-bind="$attrs" class="swap-fees-tooltip">
+    <Tooltip :styles="{width: '34.5rem'}" v-bind="$attrs" class="swap-fees-tooltip">
         <slot name="trigger" slot="trigger">
             <InfoCircleSmallIcon />
         </slot>

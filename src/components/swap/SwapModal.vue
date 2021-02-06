@@ -129,34 +129,42 @@
             <PageFooter>
                 <button
                     class="nq-button light-blue"
-                    :disabled="!canSign || currentlySigning"
+                    :disabled="!canSign || currentlySigning || !networkState.isReady"
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
 
-                <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
-                    <AlertTriangleIcon/>
-                    {{ estimateError || swapError }}
-                </div>
-                <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}." tag="span">
-                        <span slot="text">{{ $t('Confirm') }}</span>
-                        <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
-                            target="_blank" rel="noopener"
-                        >Fastspot</a>
-                        <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
-                            target="_blank" rel="noopener"
-                        >Fastspot GO</a>
-                    </i18n>
-                </div>
-                <div v-else class="footer-notice nq-gray flex-row">
-                    <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                        <span slot="text">{{ $t('Confirm') }}</span>
-                        <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
-                            target="_blank" rel="noopener"
-                        >Fastspot</a>
-                    </i18n>
-                </div>
+                <transition-group name="fadeY">
+                    <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
+                        :key="networkState.message">
+                        <CircleSpinner/>
+                        {{ networkState.message }}
+                    </div>
+                    <div v-else-if="estimateError || swapError" class="footer-notice nq-orange flex-row" key="2">
+                        <AlertTriangleIcon/>
+                        {{ estimateError || swapError }}
+                    </div>
+                    <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row" key="3">
+                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                            tag="span">
+                            <span slot="text">{{ $t('Confirm') }}</span>
+                            <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
+                                target="_blank" rel="noopener"
+                            >Fastspot</a>
+                            <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
+                                target="_blank" rel="noopener"
+                            >Fastspot GO</a>
+                        </i18n>
+                    </div>
+                    <div v-else class="footer-notice nq-gray flex-row" key="4">
+                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
+                            <span slot="text">{{ $t('Confirm') }}</span>
+                            <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
+                                target="_blank" rel="noopener"
+                            >Fastspot</a>
+                        </i18n>
+                    </div>
+                </transition-group>
             </PageFooter>
         </div>
 
@@ -211,7 +219,6 @@ import {
     HtlcSettlementInstructions,
     SetupSwapResult,
 } from '@nimiq/hub-api';
-import { NetworkClient } from '@nimiq/network-client';
 import {
     init as initFastspotApi,
     cancelSwap,
@@ -249,12 +256,11 @@ import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
-import { getNetworkClient } from '../../network';
-import { getElectrumClient } from '../../electrum';
 import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
@@ -824,6 +830,28 @@ export default defineComponent({
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );
 
+        const networkState = computed(() => {
+            const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
+            const { consensus: btcConsensus } = useBtcNetworkStore();
+            let message: string | null = null;
+
+            if (nimiqConsensus.value !== 'established'
+                && btcConsensus.value !== 'established') {
+                message = context.root.$i18n.t('Connecting to Nimiq & Bitcoin networks') as string;
+            } else if (nimiqConsensus.value !== 'established') {
+                message = context.root.$i18n.t('Connecting to Nimiq network') as string;
+            } else if (btcConsensus.value !== 'established') {
+                message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
+            } else if (!nimiqHeight.value) {
+                message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
+            }
+
+            return {
+                message,
+                isReady: !message,
+            };
+        });
+
         /**
          * SWAP PROCESS
          */
@@ -881,17 +909,7 @@ export default defineComponent({
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
 
-                // Await Nimiq and Bitcoin consensus
-                const nimiqClient = await getNetworkClient();
-                if (useNetworkStore().state.consensus !== 'established') {
-                    await new Promise<void>((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                        if (state === 'established') res();
-                    }));
-                }
-                const electrumClient = await getElectrumClient();
-                await electrumClient.waitForConsensusEstablished();
-
-                const validityStartHeight = useNetworkStore().state.height;
+                const validityStartHeight = useNetworkStore().height.value;
 
                 if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {
@@ -1202,6 +1220,7 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             activeAddressInfo,
+            networkState,
         };
     },
     components: {
@@ -1456,6 +1475,7 @@ export default defineComponent({
     font-size: var(--small-size);
     margin: -1.75rem 0 0.75rem;
     text-align: center;
+    height: 2rem;
 
     &.nq-orange {
         text-align: left;
@@ -1469,6 +1489,43 @@ export default defineComponent({
     .nq-link {
         color: inherit;
         text-decoration: underline;
+    }
+
+    /deep/ .circle-spinner {
+        margin-right: 1rem;
+    }
+
+    &.fadeY-enter-active, &.fadeY-leave-active {
+        will-change: transform, opacity;
+        transition: {
+            property: opacity, transform;
+            duration: 500ms;
+            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+        }
+    }
+
+    &.fadeY-leave-active {
+        position: absolute;
+        width: calc(100% - 2rem);
+    }
+
+    &.fadeY-enter-active {
+        transition-delay: 50ms;
+    }
+
+    &.fadeY-leave,
+    &.fadeY-enter-to {
+        transform: translateY(0);
+    }
+
+    &.fadeY-enter {
+        opacity: 0;
+        transform: translateY(.5rem);
+    }
+
+    &.fadeY-leave-to {
+        opacity: 0;
+        transform: translateY(-.5rem);
     }
 }
 

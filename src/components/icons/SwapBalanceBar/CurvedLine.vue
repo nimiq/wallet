@@ -44,12 +44,12 @@ export default defineComponent({
 
             return Math.round(props.width);
         });
-        const angleSize = 12;
+        const angleSize = computed(() => Math.max(8, Math.min(12, Math.sqrt(localWidth.value))));
         const y = computed(() =>
             Math.round(
                 Math.max(3,
                     Math.min(10,
-                        angleSize - (props.width / 10),
+                        angleSize.value - (props.width / 10),
                     ),
                 ),
             ),
@@ -58,7 +58,7 @@ export default defineComponent({
             Math.round(
                 Math.max(0,
                     Math.min(12,
-                        angleSize - (props.width / 10),
+                        angleSize.value - (props.width / 10),
                     ),
                 ),
             ),
@@ -68,16 +68,16 @@ export default defineComponent({
             M 1 1
             v 1
             s
-                0 ${angleSize - y.value}
-                ${angleSize - x.value} ${angleSize}
+                0 ${angleSize.value - y.value}
+                ${angleSize.value - x.value} ${angleSize.value}
             S
-                ${Math.round(props.width) - (((angleSize - x.value) * 2) + 1)}
-                    ${props.height - (angleSize + y.value + 3)}
-                ${Math.round(props.width) - (angleSize + 1) + x.value}
-                    ${props.height - (angleSize + 3)}
+                ${Math.round(props.width) - (((angleSize.value - x.value) * 2) + 1)}
+                    ${props.height - (angleSize.value + y.value + 3)}
+                ${Math.round(props.width) - (angleSize.value + 1) + x.value}
+                    ${props.height - (angleSize.value + 3)}
             s
-                ${angleSize - x.value} ${angleSize}
-                ${angleSize - x.value} ${angleSize}
+                ${angleSize.value - x.value} ${angleSize.value}
+                ${angleSize.value - x.value} ${angleSize.value}
             v 1
         `);
 

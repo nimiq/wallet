@@ -612,9 +612,8 @@ export default defineComponent({
             if (!data) {
                 // Predict fees
 
-                // TODO: Can we predict EUR fees?
                 const oasisFeeFiat = 0;
-                const oasisFeePercentage = 1;
+                const oasisFeePercentage = Config.oasis.feePercentage * 100;
 
                 let nimFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.NIM) {

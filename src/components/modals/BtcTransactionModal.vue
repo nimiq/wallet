@@ -201,28 +201,30 @@
                         <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
-                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction" class="reset flex-row"
+                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction"
+                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
                         >
-                            <div class="icon" :class="{'incoming': !isIncoming}">
+                            <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
                                 <GroundedArrowDownIcon v-else/>
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
                                 :currency="swapData.asset.toLowerCase()"
-                                class="swapped-amount" :class="{'incoming': !isIncoming}"
+                                class="swapped-amount"
                                 value-mask/>
                         </button>
-                        <div v-else-if="swapData.asset === SwapAsset.EUR" class="flex-row">
-                            <div class="icon" :class="{'incoming': !isIncoming}">
+                        <div v-else-if="swapData.asset === SwapAsset.EUR"
+                            class="swap-other-side flex-row" :class="{'incoming': !isIncoming}">
+                            <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
                                 <GroundedArrowDownIcon v-else/>
                             </div>
                             <FiatAmount
                                 :amount="swapData.amount / 100"
                                 :currency="swapData.asset.toLowerCase()"
-                                class="swapped-amount" :class="{'incoming': !isIncoming}"
+                                class="swapped-amount"
                                 value-mask/>
                         </div>
                     </template>
@@ -304,7 +306,7 @@ import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
-    name: 'transaction-modal',
+    name: 'btc-transaction-modal',
     props: {
         hash: {
             type: String,
@@ -651,6 +653,23 @@ export default defineComponent({
             opacity: 0.4;
         }
     }
+
+    button.swap-other-side {
+        border-radius: 8rem;
+        padding: 0.25rem 1.5rem;
+        margin: -0.25rem -1.5rem;
+        transition: background-color var(--transition-time) var(--nimiq-ease);
+
+        &:hover,
+        &:focus{
+            background-color: #F2F2F4;
+        }
+
+        &.incoming:hover,
+        &.incoming:focus{
+            background-color: #EDFAF8;
+        }
+    }
 }
 
 .opacity-60 {
@@ -831,6 +850,7 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: 600;
         color: var(--text-50);
+        line-height: 1;
 
         .tooltip {
             /deep/ .trigger {
@@ -882,9 +902,11 @@ export default defineComponent({
         font-weight: bold;
     }
 
-    .icon.incoming,
-    .swapped-amount.incoming {
-        color: var(--nimiq-green);
+    .swap-other-side.incoming {
+        .icon,
+        .swapped-amount {
+            color: var(--nimiq-green);
+        }
     }
 }
 

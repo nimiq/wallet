@@ -1,5 +1,5 @@
 <template>
-    <div class="amount-input" :class="{'has-value': valueInLuna > 0, 'focussed': isFocussed}">
+    <div class="amount-input" :class="{'has-value': valueInLuna >= 0, 'focussed': isFocussed}">
         <slot name="prefix"/>
         <form class="label-input" @submit.prevent ref="$fullWidth">
             <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>
@@ -181,11 +181,11 @@ input {
     padding: 0 0.25rem;
     max-width: 100%;
     text-align: center;
-    color: inherit !important;
+    transition: box-shadow 0.2s var(--nimiq-ease), width 50ms ease-out, color 0.2s var(--nimiq-ease);
 
-    // Remove color transition (handled by .amount-input parent)
-    // Add width transition
-    transition: box-shadow .2s var(--nimiq-ease), width 50ms ease-out;
+    &:hover {
+        --border-color: rgba(5, 130, 202, 0.2);
+    }
 }
 
 .full-width {
@@ -199,25 +199,34 @@ input {
     width: 100%;
     font-size: 8rem;
     color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
-    transition: color .2s var(--nimiq-ease);
+
+    form {
+        display: flex;
+    }
+
+    .ticker {
+        margin-left: 1rem;
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 4.5rem;
+    }
+
+    &.has-value {
+        color: var(--nimiq-blue);
+    }
+
+    &.has-value .nq-input:hover {
+        color: var(--nimiq-light-blue);
+    }
+
+    &.has-value .nq-input:focus-within {
+        --border-color: rgba(5, 130, 202, 0.4);
+    }
 }
 
-.amount-input.has-value {
-    color: var(--nimiq-blue);
-}
-
-.amount-input.focussed {
+.amount-input.focussed .ticker,
+// .label-input:hover + .ticker,
+.label-input:focus-within + .ticker {
     color: var(--nimiq-light-blue);
-}
-
-.amount-input form {
-    display: flex;
-}
-
-.amount-input .ticker {
-    margin-left: 1rem;
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 4.5rem;
 }
 </style>

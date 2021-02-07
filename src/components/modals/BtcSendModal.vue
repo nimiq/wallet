@@ -185,7 +185,7 @@ export enum RecipientType {
 }
 
 export default defineComponent({
-    name: 'send-btc-modal',
+    name: 'btc-send-modal',
     props: {
         requestUri: {
             type: String,
@@ -814,6 +814,13 @@ export default defineComponent({
             max-width: 100%;
             min-height: 5rem;
             z-index: 5;
+
+            .ticker {
+                &:hover,
+                &:focus-within {
+                    color: var(--nimiq-light-blue);
+                }
+            }
         }
 
         .amount-menu /deep/ .button {
@@ -839,11 +846,13 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input {
+            .amount-input /deep/,
+            .amount-input /deep/ .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ input {
+            .amount-input /deep/ .nq-input {
+                color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }

@@ -44,10 +44,15 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <button
-                :disabled="!totalFiatAccountBalance"
-                class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent
-            ><SwapIcon/></button>
+            <Tooltip preferredPosition="top right" ref="swapTooltip" noFocus>
+                <button
+                    :disabled="!totalFiatAccountBalance"
+                    @focus.stop="$refs.swapTooltip.show()"
+                    @blur.stop="$refs.swapTooltip.hide()"
+                    class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
+                ><SwapIcon/></button>
+                <span class="nq-text-s">{{ $t('Swap NIM ↔ BTC') }}</span>
+            </Tooltip>
         </div>
         <div v-if="hasBitcoinAddresses"
             class="currency flex-column btc"
@@ -242,6 +247,12 @@ export default defineComponent({
                 color: var(--text-70);
             }
         }
+
+        .tooltip /deep/ .tooltip-box {
+            padding: 1rem;
+            transform: translate(calc(26px - 50%), -2rem);
+            white-space: nowrap;
+        }
     }
 
     .currency {
@@ -262,6 +273,10 @@ export default defineComponent({
 
                 &:last-child {
                     margin-right: -0.5rem;
+                }
+
+                &:only-child {
+                    padding-right: 0rem;
                 }
             }
 

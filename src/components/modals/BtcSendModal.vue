@@ -815,9 +815,11 @@ export default defineComponent({
             min-height: 5rem;
             z-index: 5;
 
-            & /deep/ .ticker:hover,
-            & /deep/ .ticker:focus-within {
-                color: var(--nimiq-light-blue);
+            .ticker {
+                &:hover,
+                &:focus-within {
+                    color: var(--nimiq-light-blue);
+                }
             }
         }
 

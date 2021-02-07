@@ -44,7 +44,7 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <Tooltip preferredPosition="top right" ref="swapTooltip" noFocus="true">
+            <Tooltip preferredPosition="top right" ref="swapTooltip" noFocus>
                 <button
                     :disabled="!totalFiatAccountBalance"
                     @focus.stop="$refs.swapTooltip.show()"
@@ -200,8 +200,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
-
 .balance-distribution {
     display: flex;
     flex-direction: row;
@@ -250,16 +248,10 @@ export default defineComponent({
             }
         }
 
-        .tooltip {
-            /deep/ .tooltip-box {
-                padding: 1rem;
-                transform: translate(calc(26px - 50%), -2rem);
-            }
-
-            .nq-text-s {
+        .tooltip /deep/ .tooltip-box {
+            padding: 1rem;
+            transform: translate(calc(26px - 50%), -2rem);
             white-space: nowrap;
-            margin: 0 0 0.25rem;
-            }
         }
     }
 
@@ -285,7 +277,6 @@ export default defineComponent({
 
                 &:only-child {
                     padding-right: 0rem;
-                    margin-right: 0rem;
                 }
             }
 

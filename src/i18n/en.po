@@ -162,7 +162,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:186
+#: src/components/BankCheckInput.vue:184
 msgid "All countries"
 msgstr ""
 
@@ -1482,7 +1482,7 @@ msgstr ""
 msgid "To {exchange}"
 msgstr ""
 
-#: src/components/AccountBalance.vue:4
+#: src/components/AccountBalance.vue:5
 msgid "Total Balance"
 msgstr ""
 

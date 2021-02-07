@@ -200,23 +200,19 @@ input {
     font-size: 8rem;
     color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
 
-    &.has-value {
-        color: var(--nimiq-blue);
-    }
-
-    & form {
+    form {
         display: flex;
     }
 
-    & .ticker {
+    .ticker {
         margin-left: 1rem;
         font-size: 4rem;
         font-weight: 700;
         line-height: 4.5rem;
     }
 
-    &.focussed .ticker {
-        color: var(--nimiq-light-blue);
+    &.has-value {
+        color: var(--nimiq-blue);
     }
 
     &.has-value .nq-input:hover {
@@ -226,5 +222,11 @@ input {
     &.has-value .nq-input:focus-within {
         --border-color: rgba(5, 130, 202, 0.4);
     }
+}
+
+.amount-input.focussed .ticker,
+// .label-input:hover + .ticker,
+.label-input:focus-within + .ticker {
+    color: var(--nimiq-light-blue);
 }
 </style>

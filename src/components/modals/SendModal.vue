@@ -900,9 +900,11 @@ export default defineComponent({
             max-width: 100%;
             min-height: 5rem;
 
-            & /deep/ .ticker:hover,
-            & /deep/ .ticker:focus-within {
-                color: var(--nimiq-light-blue);
+            .ticker {
+                &:hover,
+                &:focus-within {
+                    color: var(--nimiq-light-blue);
+                }
             }
         }
 

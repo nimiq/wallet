@@ -134,37 +134,42 @@
                     @mousedown.prevent
                 >{{ $t('Confirm') }}</button>
 
-                <transition-group name="fadeY">
-                    <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
-                        :key="networkState.message">
-                        <CircleSpinner/>
-                        {{ networkState.message }}
-                    </div>
-                    <div v-else-if="estimateError || swapError" class="footer-notice nq-orange flex-row" key="2">
-                        <AlertTriangleIcon/>
-                        {{ estimateError || swapError }}
-                    </div>
-                    <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row" key="3">
-                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
-                            tag="span">
-                            <span slot="text">{{ $t('Confirm') }}</span>
-                            <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
-                                target="_blank" rel="noopener"
-                            >Fastspot</a>
-                            <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
-                                target="_blank" rel="noopener"
-                            >Fastspot GO</a>
-                        </i18n>
-                    </div>
-                    <div v-else class="footer-notice nq-gray flex-row" key="4">
-                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                            <span slot="text">{{ $t('Confirm') }}</span>
-                            <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
-                                target="_blank" rel="noopener"
-                            >Fastspot</a>
-                        </i18n>
-                    </div>
-                </transition-group>
+                <div class="footer-wrapper" :style="footerHeight && { '--footer-height': `${footerHeight}px` }">
+                    <transition name="fadeY"
+                        @enter="(el) => footerHeight = el.offsetHeight"
+                        @after-enter="() => footerHeight = null"
+                    >
+                        <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
+                            :key="networkState.message">
+                            <CircleSpinner/>
+                            {{ networkState.message }}
+                        </div>
+                        <div v-else-if="estimateError || swapError" class="footer-notice nq-orange flex-row" key="2">
+                            <AlertTriangleIcon/>
+                            {{ estimateError || swapError }}
+                        </div>
+                        <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row" key="3">
+                            <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                                tag="span">
+                                <span slot="text">{{ $t('Confirm') }}</span>
+                                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
+                                    target="_blank" rel="noopener"
+                                >Fastspot</a>
+                                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
+                                    target="_blank" rel="noopener"
+                                >Fastspot GO</a>
+                            </i18n>
+                        </div>
+                        <div v-else class="footer-notice nq-gray flex-row" key="4">
+                            <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
+                                <span slot="text">{{ $t('Confirm') }}</span>
+                                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
+                                    target="_blank" rel="noopener"
+                                >Fastspot</a>
+                            </i18n>
+                        </div>
+                    </transition>
+                </div>
             </PageFooter>
         </div>
 
@@ -1177,6 +1182,9 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        // Used to transition height of the footer when switching between messages
+        const footerHeight = ref<number | null>(null);
+
         return {
             onClose,
             satsPerNim,
@@ -1221,6 +1229,7 @@ export default defineComponent({
             isMainnet,
             activeAddressInfo,
             networkState,
+            footerHeight,
         };
     },
     components: {
@@ -1468,14 +1477,23 @@ export default defineComponent({
     }
 }
 
+.footer-wrapper {
+    position: relative;
+    margin: -1.75rem 0 0.75rem;
+    height: var(--footer-height);
+    transition: {
+        property: height;
+        duration: 500ms;
+        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+    }
+}
+
 .footer-notice {
     justify-content: center;
     align-items: center;
     font-weight: 600;
     font-size: var(--small-size);
-    margin: -1.75rem 0 0.75rem;
     text-align: center;
-    height: 2rem;
 
     &.nq-orange {
         text-align: left;
@@ -1506,7 +1524,7 @@ export default defineComponent({
 
     &.fadeY-leave-active {
         position: absolute;
-        width: calc(100% - 2rem);
+        width: 100%;
     }
 
     &.fadeY-enter-active {

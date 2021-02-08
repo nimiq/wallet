@@ -231,8 +231,11 @@
                 </div>
             </div>
 
-            <div class="flex-spacer"></div>
             <!-- <button class="nq-button-s">Send more</button> -->
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
+            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -268,7 +271,9 @@ import {
     Identicon,
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { RefundSwapRequest } from '@nimiq/hub-api';
+import { SwapAsset, getAssets, init as initFastspotApi } from '@nimiq/fastspot-api';
+import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -292,9 +297,12 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../../lib/Constants';
-import { useSwapsStore } from '../../stores/Swaps';
+import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
+import { estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { refundSwap } from '../../hub';
+import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
@@ -466,6 +474,60 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
+        const showRefundButton = computed(() => {
+            if (isIncoming.value) return false;
+            if (!swapInfo.value) return false;
+            if (!swapInfo.value.in) return false;
+            if (swapInfo.value.in.asset !== SwapAsset.BTC) return false;
+            if (swapInfo.value.out) return false;
+            if (!swapInfo.value.in.htlc) return false;
+            if (swapInfo.value.in.htlc.timeoutTimestamp > blockTimestamp.value) return false;
+            return true;
+        });
+
+        async function refundHtlc() {
+            const swapIn = swapInfo.value!.in as SwapBtcData;
+            const htlcDetails = swapIn.htlc!;
+            const htlcOutput = outputsSent.value[0];
+
+            // eslint-disable-next-line no-async-promise-executor
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+                const assets = await getAssets();
+                const { feePerUnit } = assets[SwapAsset.BTC];
+                // 102 extra weight units for BTC HTLC refund tx
+                const fee = estimateFees(1, 1, feePerUnit, 102);
+
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.BTC,
+                        input: {
+                            address: htlcOutput.address!, // HTLC address
+                            transactionHash: transaction.value.transactionHash,
+                            outputIndex: htlcOutput.index,
+                            outputScript: htlcOutput.script,
+                            value: htlcOutput.value,
+                            witnessScript: htlcDetails.script,
+                        },
+                        output: {
+                            address: useBtcAddressStore().availableExternalAddresses.value[0],
+                            value: htlcOutput.value - fee,
+                        },
+                        refundAddress: htlcDetails.refundAddress, // My address, must be refund address of HTLC
+                    },
+                };
+
+                resolve(request);
+            });
+
+            const tx = await refundSwap(requestPromise);
+            if (!tx) return;
+            const plainTx = await sendTransaction(tx);
+            await context.root.$nextTick();
+            context.root.$router.replace(`/btc-transaction/${plainTx.transactionHash}`);
+        }
+
         return {
             transaction,
             constants,
@@ -495,6 +557,8 @@ export default defineComponent({
             swapData,
             swapTransaction,
             SwapAsset,
+            showRefundButton,
+            refundHtlc,
         };
     },
     components: {

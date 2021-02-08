@@ -1,5 +1,5 @@
 <template>
-    <div class="amount-input" :class="{'has-value': valueInLuna >= 0, 'focussed': isFocussed}">
+    <div class="amount-input" :class="{'has-value': liveValue.length > 0, 'focussed': isFocussed}">
         <slot name="prefix"/>
         <form class="label-input" @submit.prevent ref="$fullWidth">
             <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>

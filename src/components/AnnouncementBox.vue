@@ -21,7 +21,7 @@ export default defineComponent({
         // text and cta must be functions for translations to work!
         let text: () => LocaleMessage = () => '';
         let cta: () => LocaleMessage = () => '';
-        let action: string | (() => LocaleMessage) = '';
+        let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
         // // Dark Mode
@@ -29,10 +29,10 @@ export default defineComponent({
         // cta = () => context.root.$t('Check it out');
         // action = () => context.root.$router.push('/settings');
 
-        text = () => context.root.$t('Got feedback? Found a bug?');
-        cta = () => context.root.$t('Tell us here');
-        action = 'https://forum.nimiq.community/t/new-wallet-feedback-thread/845';
-        storageKey = 'feedback-and-bugs';
+        text = () => context.root.$t('Buy NIM & BTC with Credit Card!');
+        cta = () => context.root.$t('To {exchange}', { exchange: 'MoonPay' });
+        action = () => context.root.$router.push('moonpay');
+        storageKey = 'buy-with-moonpay';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 

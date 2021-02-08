@@ -21,7 +21,7 @@ msgstr "{accounts} conservan, manejan y agregan direcciones."
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} envían y reciben transacciones."
 
-#: src/components/modals/BtcTransactionModal.vue:244
+#: src/components/modals/BtcTransactionModal.vue:243
 #: src/components/modals/TransactionModal.vue:263
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmación | {count} Confirmaciones"
@@ -188,7 +188,7 @@ msgstr "todo"
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:48
+#: src/components/modals/WelcomeModal.vue:35
 msgid "All in one easy place."
 msgstr "Todo en un mismo lugar"
 
@@ -227,7 +227,7 @@ msgstr ""
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:40
+#: src/components/modals/WelcomeModal.vue:27
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr ""
 "Y {BTC}, el estándar dorado en criptomonedas y un confiable medio de "
@@ -265,8 +265,8 @@ msgid "Backup"
 msgstr "Respaldar"
 
 #: src/components/BtcTransactionListItem.vue:211
-#: src/components/modals/BtcTransactionModal.vue:407
-#: src/components/modals/TransactionModal.vue:491
+#: src/components/modals/BtcTransactionModal.vue:401
+#: src/components/modals/TransactionModal.vue:487
 #: src/components/TransactionListItem.vue:204
 msgid "Bank Account"
 msgstr ""
@@ -275,14 +275,14 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:66
+#: src/components/BalanceDistribution.vue:71
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:102
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:126
-#: src/components/modals/TransactionModal.vue:487
+#: src/components/modals/TransactionModal.vue:483
 #: src/components/TransactionListItem.vue:200
 msgid "Bitcoin"
 msgstr "Bitcoin"
@@ -300,12 +300,12 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Unidad Bitcoin"
 
-#: src/components/modals/BtcTransactionModal.vue:241
+#: src/components/modals/BtcTransactionModal.vue:240
 #: src/components/modals/TransactionModal.vue:260
 msgid "Block #{height}"
 msgstr "Bloque #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:251
+#: src/components/modals/BtcTransactionModal.vue:250
 #: src/components/modals/TransactionModal.vue:272
 #: src/components/swap/SwapAnimation.vue:163
 #: src/components/swap/SwapAnimation.vue:95
@@ -340,7 +340,7 @@ msgstr ""
 "Compre y venda BTC por medio de una transferencia Bancaria.\n"
 "¡Muy pronto!"
 
-#: src/components/modals/TradeModal.vue:98
+#: src/components/modals/TradeModal.vue:96
 msgid "Buy and sell with your wallet."
 msgstr "Comprar y vender con su billetera."
 
@@ -372,13 +372,13 @@ msgstr ""
 " será procesada."
 
 #: src/components/modals/BuyCryptoModal.vue:189
-#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:152
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:164
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -395,7 +395,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
-#: src/components/modals/TransactionModal.vue:498
+#: src/components/modals/TransactionModal.vue:494
 #: src/components/TransactionList.vue:61
 #: src/components/TransactionListItem.vue:211
 msgid "Cashlink"
@@ -423,7 +423,7 @@ msgstr "Elija un Destinatario"
 
 #: src/components/modals/BuyCryptoModal.vue:294
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:187
+#: src/components/swap/SwapModal.vue:200
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
@@ -447,12 +447,12 @@ msgstr ""
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/modals/TradeModal.vue:97
+#: src/components/modals/TradeModal.vue:95
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/swap/SwapModal.vue:135 src/components/swap/SwapModal.vue:143
-#: src/components/swap/SwapModal.vue:154
+#: src/components/swap/SwapModal.vue:135 src/components/swap/SwapModal.vue:154
+#: src/components/swap/SwapModal.vue:165
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -461,7 +461,7 @@ msgstr "Confirmar"
 msgid "Congrats"
 msgstr "Felicidades"
 
-#: src/components/modals/WelcomeModal.vue:21
+#: src/components/modals/WelcomeModal.vue:15
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
@@ -476,6 +476,18 @@ msgstr "Conectado a"
 #: src/components/NetworkStats.vue:46
 msgid "connecting"
 msgstr "conectando"
+
+#: src/components/swap/SwapModal.vue:849
+msgid "Connecting to Bitcoin network"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:845
+msgid "Connecting to Nimiq & Bitcoin networks"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:847
+msgid "Connecting to Nimiq network"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:45
 msgid "Connection lost"
@@ -494,17 +506,13 @@ msgid "Contacts"
 msgstr "Contactos"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/WelcomeModal.vue:93
+#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "Continuar"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:100
-msgid "Continue to Login File"
-msgstr "Continuar a el Archivo de Sesión"
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -535,31 +543,27 @@ msgstr "Crear respaldo"
 msgid "Create payment link"
 msgstr "Crear un link de pago"
 
-#: src/components/modals/BtcReceiveModal.vue:195
+#: src/components/modals/BtcReceiveModal.vue:193
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr "Creada hace {count} días | Creada hace {count} días."
 
-#: src/components/modals/BtcReceiveModal.vue:189
+#: src/components/modals/BtcReceiveModal.vue:183
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr "Creada hace {count} horas | Creada hace {count} horas."
 
-#: src/components/modals/BtcReceiveModal.vue:183
+#: src/components/modals/BtcReceiveModal.vue:177
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr "Creada hace {count} minutos | Creada hace {count} minutos."
-
-#: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} second ago | Created {count} seconds ago"
-msgstr "Creada hace {count} segundos | Creada hace {count} segundos."
 
 #: src/components/modals/BtcReceiveModal.vue:174
 msgid "Created just now"
 msgstr "Recién creada"
 
-#: src/components/modals/BtcReceiveModal.vue:201
-msgid "Created some time ago"
-msgstr "Creada hace algún tiempo"
+#: src/components/modals/BtcReceiveModal.vue:191
+msgid "Created yesterday"
+msgstr ""
 
-#: src/components/modals/TradeModal.vue:50
+#: src/components/modals/TradeModal.vue:48
 msgid "Credit Card accepted"
 msgstr "Tarjeta de Crédito aceptada"
 
@@ -584,14 +588,6 @@ msgstr ""
 #: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "Listo"
-
-#: src/components/modals/WelcomeModal.vue:80
-msgid "Download it and store it safely. Don’t share it – don’t lose it."
-msgstr "Descargue y almacene de forma segura. No lo comparta - no lo pierda."
-
-#: src/components/modals/WelcomeModal.vue:26
-msgid "Download your Login File"
-msgstr "Descargue su Archivo de Sesión"
 
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Duration and fees are estimates."
@@ -748,10 +744,6 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr "Finalizar intercambio"
 
-#: src/components/modals/TradeModal.vue:49
-msgid "For beginners"
-msgstr "Para novatos"
-
 #: src/components/modals/SendModal.vue:348
 msgid "free"
 msgstr "gratis"
@@ -765,7 +757,7 @@ msgid "General"
 msgstr "General"
 
 #: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:46
+#: src/components/modals/TradeModal.vue:44
 msgid "Get NIM"
 msgstr "Obtener NIM"
 
@@ -778,7 +770,6 @@ msgid "Got feedback? Found a bug?"
 msgstr "¿Quieres decirnos algo? ¿Encontraste un error?"
 
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:96
 msgid "Got it"
 msgstr "Lo tengo"
 
@@ -786,7 +777,7 @@ msgstr "Lo tengo"
 msgid "Got it!"
 msgstr "¡Lo tengo!"
 
-#: src/components/modals/WelcomeModal.vue:11
+#: src/components/modals/WelcomeModal.vue:5
 msgid "Great, you’re here!"
 msgstr "¡Genial, ya estás aquí!"
 
@@ -803,17 +794,17 @@ msgstr ""
 msgid "Historic value"
 msgstr "Valor histórico"
 
-#: src/components/modals/TransactionModal.vue:440
+#: src/components/modals/TransactionModal.vue:436
 #: src/components/TransactionListItem.vue:159
 msgid "HTLC Creation"
 msgstr "Creación de HTLC"
 
-#: src/components/modals/TransactionModal.vue:443
+#: src/components/modals/TransactionModal.vue:439
 #: src/components/TransactionListItem.vue:162
 msgid "HTLC Refund"
 msgstr "Reembolso de HTLC"
 
-#: src/components/modals/TransactionModal.vue:446
+#: src/components/modals/TransactionModal.vue:442
 #: src/components/TransactionListItem.vue:165
 msgid "HTLC Settlement"
 msgstr "Establecimiento del HTLC"
@@ -858,7 +849,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Accesibilidad Mejorada"
 
-#: src/components/modals/TradeModal.vue:110
+#: src/components/modals/TradeModal.vue:108
 msgid "In cooperation with"
 msgstr "En cooperación con"
 
@@ -888,7 +879,7 @@ msgstr "Invite a un amigo a"
 msgid "Is your bank eligible?"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:53
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Es rápido, seguro y le hace realmente independiente."
 
@@ -905,7 +896,7 @@ msgid "Language"
 msgstr "Idioma"
 
 #: src/components/modals/NetworkInfoModal.vue:19
-#: src/components/modals/TradeModal.vue:107
+#: src/components/modals/TradeModal.vue:105
 msgid "Learn more"
 msgstr "Aprenda más"
 
@@ -914,7 +905,7 @@ msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
 #: src/components/modals/BuyCryptoModal.vue:438
-#: src/components/swap/SwapModal.vue:280
+#: src/components/swap/SwapModal.vue:291
 msgid "Ledger accounts do not support Swaps yet, check back soon!"
 msgstr ""
 "Las cuentas de Ledger no soportan Intercambios aún, Inténtelo de nuevo "
@@ -926,6 +917,10 @@ msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 
 #: src/components/modals/BuyCryptoModal.vue:38
 msgid "Let's go"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:64
+msgid "Let's go!"
 msgstr ""
 
 #: src/components/NetworkMap.vue:29
@@ -1024,14 +1019,6 @@ msgstr "Cuota de red: {sats} sat/vByte"
 msgid "NIM network fee"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:28
-msgid ""
-"Nimiq does not store your personal data.\n"
-"Use your Login File to log in."
-msgstr ""
-"Nimiq no almacena sus datos personales. Utilice su Archivo de Acceso para "
-"iniciar sesión."
-
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
 "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, "
@@ -1042,7 +1029,7 @@ msgstr ""
 "hub.nimiq.com & keyguard.nimiq.com, y algunas de las librerías subyacentes "
 "están bajo continuo desarrollo."
 
-#: src/components/modals/TradeModal.vue:100
+#: src/components/modals/TradeModal.vue:98
 msgid ""
 "Nimiq OASIS enables decentra­lized buying and selling of crypto directly "
 "from your wallet."
@@ -1097,13 +1084,13 @@ msgstr "Una cuenta ahora puede tener múltiples direcciones."
 msgid "One Account, many Addresses"
 msgstr "Una Cuenta, muchas Direcciones"
 
-#: src/components/modals/WelcomeModal.vue:97
-msgid "One more thing"
-msgstr "Una cosa mas"
-
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
 msgstr "O visite una casa de cambio y consiga más."
+
+#: src/components/modals/TradeModal.vue:49
+msgid "Pays out to Nimiq Wallet"
+msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:39
 #: src/components/TransactionListItem.vue:37
@@ -1208,11 +1195,6 @@ msgstr ""
 msgid "Reference currency"
 msgstr "Moneda de referencia"
 
-#: src/components/modals/BtcTransactionModal.vue:234
-#: src/components/modals/TransactionModal.vue:253
-msgid "Refund"
-msgstr "Reembolso"
-
 #: src/components/swap/SwapSepaFundingInstructions.vue:71
 msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
@@ -1299,7 +1281,7 @@ msgstr "Enviar"
 msgid "Send all"
 msgstr "Enviar todo"
 
-#: src/components/modals/WelcomeModal.vue:63
+#: src/components/modals/WelcomeModal.vue:50
 msgid "Send and receive NIM directly on the blockchain."
 msgstr "Envíe y reciba NIM directamente en la cadena de bloques."
 
@@ -1411,7 +1393,6 @@ msgid "Simulate EUR payment"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/WelcomeModal.vue:103
 msgid "Skip for now"
 msgstr "Saltar por ahora"
 
@@ -1438,11 +1419,11 @@ msgstr "Participación"
 msgid "standard"
 msgstr "Estándar"
 
-#: src/components/modals/TradeModal.vue:104
+#: src/components/modals/TradeModal.vue:102
 msgid "Starting with EU bank accounts soon."
 msgstr "Empezando con cuentas de bancos de UE pronto."
 
-#: src/components/modals/WelcomeModal.vue:13
+#: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr "Almacene, envíe y reciba NIM."
 
@@ -1458,6 +1439,10 @@ msgstr "Intercambiar desde {address}"
 #: src/components/swap/SwapAnimation.vue:13
 #: src/components/swap/SwapNotification.vue:19
 msgid "Swap has expired"
+msgstr ""
+
+#: src/components/BalanceDistribution.vue:54
+msgid "Swap NIM ↔ BTC"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:8
@@ -1496,12 +1481,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:819
-#: src/components/swap/SwapModal.vue:642
+#: src/components/modals/BuyCryptoModal.vue:818
+#: src/components/swap/SwapModal.vue:653
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 
-#: src/components/modals/BuyCryptoModal.vue:824
+#: src/components/modals/BuyCryptoModal.vue:823
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1521,7 +1506,7 @@ msgstr ""
 "Los nuevos Archivos de Sesión son una forma fácil y conveniente de ganar "
 "acceso a su cuenta y sus direcciones."
 
-#: src/components/modals/WelcomeModal.vue:60
+#: src/components/modals/WelcomeModal.vue:47
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "La billetera Nimiq es mas que una billetera web, es un nodo de la red."
@@ -1603,11 +1588,11 @@ msgid "This swap is as decentralized as the blockchain itself."
 msgstr "El intercambio es tan decentralizado como la cadena de bloques."
 
 #: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
+#: src/components/modals/TradeModal.vue:53
 msgid "To {exchange}"
 msgstr "Hacia {exchange}"
 
-#: src/components/AccountBalance.vue:4
+#: src/components/AccountBalance.vue:5
 msgid "Total Balance"
 msgstr "Balance Total"
 
@@ -1642,7 +1627,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr "¡Twitea tu mapa!"
 
-#: src/components/modals/TransactionModal.vue:499
+#: src/components/modals/TransactionModal.vue:495
 #: src/components/TransactionListItem.vue:212
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink no canjeado"
@@ -1662,7 +1647,7 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
+#: src/components/modals/WelcomeModal.vue:22
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "Use {NIM}, la moneda con super rendimiento y nativa al navegador."
 
@@ -1672,10 +1657,6 @@ msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Use una nueva dirección Bitcoin por cada transacción para mejorar la "
 "privacidad."
-
-#: src/components/modals/WelcomeModal.vue:83
-msgid "Use it to access your account from any device."
-msgstr "Utilícelo para acceder a su cuenta desde cualquier dispositivo."
 
 #: src/components/modals/BtcReceiveModal.vue:101
 msgid ""
@@ -1695,6 +1676,10 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:33
 msgid "Wait for the swap to be set up."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:851
+msgid "Waiting for Nimiq network informations"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
@@ -1803,13 +1788,9 @@ msgstr ""
 "Esto lo convierte en un usuario de primera categoría de la cadena de "
 "bloques."
 
-#: src/components/modals/WelcomeModal.vue:19
+#: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
 msgstr "Su navegador es un Nodo"
-
-#: src/components/modals/WelcomeModal.vue:77
-msgid "Your Login File, in combination with your password, grants access."
-msgstr "Su Archivo de Sesión, combinado con su password, le brinda acceso."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88
 msgid ""

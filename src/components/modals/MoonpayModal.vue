@@ -1,24 +1,27 @@
 <template>
     <Modal class="moonpay-modal">
-        <!-- Iframe allow list from Moonpay docs -->
+        <header class="flex-row">
+            <Tooltip preferredPosition="bottom right">
+                <InfoCircleSmallIcon slot="trigger"/>
+                <i18n path="This service is operated by {link}" tag="span">
+                    <a slot="link" href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
+                </i18n>
+            </Tooltip>
+            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
+            <div class="flex-spacer"></div>
+        </header>
+        <div class="separator"></div>
         <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
+        <!-- Iframe allow list from Moonpay docs -->
         <iframe v-else :src="url" allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0">
             <p>Your browser does not support iframes.</p>
         </iframe>
-        <PageFooter>
-            <i18n path="This service is operated by {link}" tag="span">
-                <a slot="link" href="https://moonpay.com" target="_blank">moonpay.com</a>
-            </i18n>
-            <button class="nq-button-s" @click="$router.back()" @mousedown.prevent>
-                {{ $t('Cancel') }}
-            </button>
-        </PageFooter>
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageFooter } from '@nimiq/vue-components';
+import { Tooltip, InfoCircleSmallIcon, PageFooter } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -71,6 +74,8 @@ export default defineComponent({
     components: {
         PageFooter,
         Modal,
+        Tooltip,
+        InfoCircleSmallIcon,
     },
 });
 </script>
@@ -80,8 +85,39 @@ export default defineComponent({
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
-.modal /deep/ .close-button {
-    display: none;
+header {
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 3rem;
+
+    .tooltip /deep/ {
+        .trigger {
+            color: var(--text-30);
+        }
+
+        .tooltip-box {
+            font-size: var(--small-size);
+            width: 23.5rem;
+
+            a {
+                color: inherit;
+            }
+        }
+    }
+
+    img {
+        width: 114px;
+    }
+
+    .flex-spacer {
+        width: 2.25rem;
+    }
+}
+
+.separator {
+    height: 2px;
+    margin: -2px 2rem 2px;
+    box-shadow: 0 1.5px 0 0 var(--text-14);
 }
 
 .placeholder {
@@ -95,32 +131,7 @@ export default defineComponent({
 iframe {
     flex-grow: 1;
     align-self: stretch;
-    border-top-left-radius: 1.25rem;
-    border-top-right-radius: 1.25rem;
-}
-
-.page-footer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 2rem 2rem;
-
-    @media (max-width: 700px) { // Full mobile breakpoint
-        padding-bottom: 1.5rem;
-    }
-
-    span {
-        font-size: var(--small-size);
-        font-weight: 600;
-        opacity: 0.8;
-
-        a {
-            color: inherit;
-        }
-    }
-
-    button {
-        margin-left: 1.5rem;
-    }
+    border-bottom-left-radius: 1.25rem;
+    border-bottom-right-radius: 1.25rem;
 }
 </style>

@@ -93,7 +93,7 @@ msgstr "30-Tage-Limit"
 msgid "6h+"
 msgstr "6h+"
 
-#: src/components/layouts/Settings.vue:282
+#: src/components/layouts/Settings.vue:285
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -121,7 +121,7 @@ msgstr "Aktivieren"
 msgid "Activate Bitcoin"
 msgstr "Bitcoin aktivieren"
 
-#: src/components/layouts/Settings.vue:145
+#: src/components/layouts/Settings.vue:147
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -148,7 +148,7 @@ msgstr "Konto hinzufügen"
 msgid "Add address"
 msgstr "Adresse hinzufügen"
 
-#: src/components/layouts/Settings.vue:141
+#: src/components/layouts/Settings.vue:143
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Füge deiner Wallet einen weiteren Vesting-Vertrag hinzu."
 
@@ -173,12 +173,12 @@ msgstr "Adresse nicht bekannt?"
 msgid "Addresses"
 msgstr "Adressen"
 
-#: src/components/layouts/Settings.vue:135
+#: src/components/layouts/Settings.vue:137
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
-#: src/components/layouts/Settings.vue:115
-#: src/components/layouts/Settings.vue:55
+#: src/components/layouts/Settings.vue:117
+#: src/components/layouts/Settings.vue:57
 msgid "all"
 msgstr "alle"
 
@@ -223,6 +223,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
+msgstr ""
+
+#: src/components/UpdateNotification.vue:3
+msgid "An update to the Wallet is available."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:27
@@ -277,7 +281,7 @@ msgstr "BIC funktioniert auch."
 #: src/components/BalanceDistribution.vue:71
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:102
+#: src/components/layouts/Settings.vue:104
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:126
@@ -295,7 +299,7 @@ msgstr ""
 " Verwende stattdessen Beschriftungen, um Transaktionen später leicht "
 "wiederzufinden."
 
-#: src/components/layouts/Settings.vue:121
+#: src/components/layouts/Settings.vue:123
 msgid "Bitcoin Unit"
 msgstr "Bitcoin-Einheit"
 
@@ -358,6 +362,10 @@ msgstr "Krypto mit Fiatgeld kaufen"
 msgid "Buy NIM"
 msgstr "NIM kaufen"
 
+#: src/components/AnnouncementBox.vue:32
+msgid "Buy NIM & BTC with Credit Card!"
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
 msgid "Buy with Credit Card"
 msgstr "Mit Kreditkarte kaufen"
@@ -385,7 +393,6 @@ msgstr ""
 "Wenn du auf '{text}' klickst, stimmst du den Nutzungsbedingungen von "
 "{Fastspot} zu."
 
-#: src/components/modals/MoonpayModal.vue:13
 #: src/components/swap/SwapSepaFundingInstructions.vue:79
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -394,7 +401,7 @@ msgstr "Abbrechen"
 msgid "Cancel Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:262
+#: src/components/layouts/Settings.vue:265
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
@@ -416,7 +423,7 @@ msgstr "Cashlink an {address}"
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: src/components/layouts/Settings.vue:33
+#: src/components/layouts/Settings.vue:35
 msgid "Change your language setting."
 msgstr "Ändere deine Spracheinstellung."
 
@@ -430,11 +437,11 @@ msgstr "Empfänger auswählen"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/Settings.vue:157
+#: src/components/layouts/Settings.vue:159
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/components/layouts/Settings.vue:151
+#: src/components/layouts/Settings.vue:153
 msgid "Clear Cache"
 msgstr "Zwischenspeicher löschen"
 
@@ -571,7 +578,7 @@ msgstr ""
 msgid "Credit Card accepted"
 msgstr "Kreditkartenzahlung möglich"
 
-#: src/components/layouts/Settings.vue:193
+#: src/components/layouts/Settings.vue:195
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
@@ -633,11 +640,11 @@ msgstr ""
 msgid "Edit contacts"
 msgstr "Kontakte bearbeiten"
 
-#: src/components/layouts/Settings.vue:108
+#: src/components/layouts/Settings.vue:110
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr "Wie viele Nachkommenstellen möchtest du für BTC sehen?"
 
-#: src/components/layouts/Settings.vue:48
+#: src/components/layouts/Settings.vue:50
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
@@ -659,7 +666,7 @@ msgstr "Bankname eingeben"
 msgid "Enter recipient address..."
 msgstr "Empfängeradresse eingeben..."
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:167
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Gib das Passwort der Testversion ein, die du aktivieren möchtest, und drücke"
@@ -739,7 +746,7 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:268
+#: src/components/layouts/Settings.vue:271
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
@@ -760,7 +767,7 @@ msgstr "gratis"
 msgid "Full Node"
 msgstr "Full Node"
 
-#: src/components/layouts/Settings.vue:27
+#: src/components/layouts/Settings.vue:29
 msgid "General"
 msgstr "Allgemein"
 
@@ -772,10 +779,6 @@ msgstr "Hol dir NIM"
 #: src/components/modals/TradeModal.vue:7
 msgid "Get NIM and BTC"
 msgstr "Hol dir NIM und BTC"
-
-#: src/components/AnnouncementBox.vue:32
-msgid "Got feedback? Found a bug?"
-msgstr "Feedback? Bugs?"
 
 #: src/components/modals/BtcActivationModal.vue:21
 msgid "Got it"
@@ -843,11 +846,11 @@ msgstr ""
 "deine Zielwährung nicht erhalten hast, kontaktiere bitte das Nimiq Team mit "
 "der folgenden Referenz:"
 
-#: src/components/layouts/Settings.vue:61
+#: src/components/layouts/Settings.vue:63
 msgid "Import Contacts"
 msgstr "Kontakte importieren"
 
-#: src/components/layouts/Settings.vue:63
+#: src/components/layouts/Settings.vue:65
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importiere Kontakte, die du aus dem Safe exportiert hast."
 
@@ -904,7 +907,7 @@ msgstr "Du kannst dein Wallet jetzt schließen"
 msgid "Label the sender"
 msgstr "Benenne den Sender"
 
-#: src/components/layouts/Settings.vue:31
+#: src/components/layouts/Settings.vue:33
 msgid "Language"
 msgstr "Sprache"
 
@@ -951,11 +954,11 @@ msgstr "Die Begrenzung sind an Konten und IBANs geknüpft."
 msgid "Link not available in this browser"
 msgstr "Link in diesem Browser nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:68
+#: src/components/layouts/Settings.vue:70
 msgid "Load file"
 msgstr "Datei laden"
 
-#: src/components/modals/MoonpayModal.vue:4
+#: src/components/modals/MoonpayModal.vue:14
 msgid "Loading Moonpay..."
 msgstr ""
 
@@ -1063,8 +1066,8 @@ msgstr "Keine Verbindung zum {chain}-Netzwerk"
 msgid "No transactions found"
 msgstr "Keine Transaktionen gefunden"
 
-#: src/components/layouts/Settings.vue:113
-#: src/components/layouts/Settings.vue:53
+#: src/components/layouts/Settings.vue:115
+#: src/components/layouts/Settings.vue:55
 msgid "None"
 msgstr "Keine"
 
@@ -1081,7 +1084,7 @@ msgstr "nicht gesendet"
 msgid "OASIS service fee"
 msgstr "OASIS-Servicegebühr"
 
-#: src/components/layouts/Settings.vue:291
+#: src/components/layouts/Settings.vue:294
 msgid "OK! Contacts imported successfully."
 msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
@@ -1205,7 +1208,7 @@ msgstr "Empfänger"
 msgid "Reference"
 msgstr "Verwendungszweck"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Referenzwährung"
 
@@ -1233,7 +1236,7 @@ msgstr "Anfrage fehlgeschlagen"
 msgid "Rescan"
 msgstr "Neu scannen"
 
-#: src/components/layouts/Settings.vue:153
+#: src/components/layouts/Settings.vue:155
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
@@ -1279,7 +1282,7 @@ msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 msgid "Select a currency and an amount."
 msgstr "Währung und Menge auswählen"
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:125
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
@@ -1392,8 +1395,8 @@ msgstr "Teile deinen Zahlungslink"
 msgid "Show all my addresses"
 msgstr "Alle meine Adressen anzeigen"
 
-#: src/components/layouts/Settings.vue:106
-#: src/components/layouts/Settings.vue:46
+#: src/components/layouts/Settings.vue:108
+#: src/components/layouts/Settings.vue:48
 msgid "Show Decimals"
 msgstr "Nachkommastellen"
 
@@ -1477,10 +1480,6 @@ msgstr "Sicherer Tausch mit {address}"
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "abgleichen"
-
-#: src/components/AnnouncementBox.vue:33
-msgid "Tell us here"
-msgstr "Sag uns hier Bescheid"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
@@ -1592,7 +1591,7 @@ msgstr "Dieser Betrag enthält die Tauschgebühr."
 msgid "This service is currently not available in your region."
 msgstr "Dieser Service ist aktuell in deiner Region nicht verfügbar."
 
-#: src/components/modals/MoonpayModal.vue:9
+#: src/components/modals/MoonpayModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "Dieser Service wird von {link} bereitgestellt."
 
@@ -1608,6 +1607,7 @@ msgstr ""
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Dieser Tausch ist so dezentralisiert, wie die Blockchain selbst."
 
+#: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:53
 msgid "To {exchange}"
@@ -1640,7 +1640,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Guthaben überweisen"
 
-#: src/components/layouts/Settings.vue:163
+#: src/components/layouts/Settings.vue:165
 msgid "Trials"
 msgstr "Testversionen"
 
@@ -1664,7 +1664,8 @@ msgstr "Unbekannt"
 msgid "Update Available"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:22
+#: src/components/layouts/Settings.vue:24
+#: src/components/UpdateNotification.vue:8
 msgid "Update now"
 msgstr ""
 
@@ -1693,7 +1694,7 @@ msgstr ""
 "Benutze den Schieberegler oder ändere die Werte, um einen sicheren Tausch zu"
 " starten."
 
-#: src/components/layouts/Settings.vue:139
+#: src/components/layouts/Settings.vue:141
 msgid "Vesting Contract"
 msgstr "Vesting-Vertrag"
 

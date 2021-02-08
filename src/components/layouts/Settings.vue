@@ -18,7 +18,9 @@
                         </p>
                     </div>
                     <CircleSpinner v-if="applyingWalletUpdate"/>
-                    <button v-else class="nq-button-pill green" @click="applyWalletUpdate" @mousedown.prevent
+                    <button v-else
+                        class="nq-button-pill green"
+                        @click="applyWalletUpdate" @mousedown.prevent
                     >{{ $t('Update now') }}</button>
                 </div>
             </section>
@@ -216,6 +218,7 @@ import { addVestingContract } from '../../hub';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
+import { updateServiceWorker } from '../../registerServiceWorker';
 
 declare global {
     function digestMessage(message: string): Promise<string>;
@@ -323,20 +326,8 @@ export default defineComponent({
         const applyingWalletUpdate = ref(false);
 
         async function applyWalletUpdate() {
-            const registration = await navigator.serviceWorker.getRegistration();
-            if (!registration || !registration.waiting) return; // TODO: Show feedback to user
-
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
-                if (applyingWalletUpdate.value) return;
-                applyingWalletUpdate.value = true;
-                // Must wait to reload to give cache enough time to be updated
-                setTimeout(() => window.location.href = window.location.origin, 1000);
-            });
-
-            // Sending this message to the waiting service-worker activates it,
-            // which in turn triggers the `controllerchange` event subscribed above.
-            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            await updateServiceWorker();
+            applyingWalletUpdate.value = true;
         }
 
         const showVestingSetting = ref(false);

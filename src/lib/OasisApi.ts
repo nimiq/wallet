@@ -21,6 +21,21 @@ export enum HtlcStatus {
     EXPIRED = 'expired',
 }
 
+export enum ClearingStatus {
+    WAITING = 'waiting',
+    PARTIAL = 'partial',
+    DENIED = 'denied',
+}
+
+export enum SettlementStatus {
+    WAITING = 'waiting',
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    DENIED = 'denied',
+    CONFIRMED = 'confirmed',
+    FAILED = 'failed',
+}
+
 export enum TransactionType {
     SEPA = 'sepa',
     MOCK = 'mock', // Only available in Sandbox environment
@@ -42,7 +57,6 @@ export type SepaRecipient = {
 
 export type SepaClearingInstruction = {
     type: TransactionType.SEPA,
-    fee: number,
     amount: number,
     recipient: SepaRecipient,
     purpose?: string,
@@ -55,9 +69,29 @@ export type MockClearingInstruction = {
 
 export type ClearingInstruction = SepaClearingInstruction | MockClearingInstruction;
 
-export type SettlementInfo = {
+export type ClearingInfo<CStatus extends ClearingStatus> = {
+    status: CStatus,
+    type?: TransactionType,
+    options: ClearingInstruction[],
+    details: CStatus extends ClearingStatus.PARTIAL ? {
+        amount: number,
+    } : CStatus extends ClearingStatus.DENIED ? {
+        reason: string,
+    } : never,
+}
+
+export type SettlementInfo<SStatus extends SettlementStatus> = {
+    status: SStatus,
+    type?: TransactionType,
+    options: SStatus extends SettlementStatus.PENDING | SettlementStatus.DENIED | SettlementStatus.FAILED
+        ? SettlementDescriptor[] : never,
+    details: SStatus extends SettlementStatus.DENIED | SettlementStatus.FAILED ? {
+        reason: string,
+    } : never,
+}
+
+export type SettlementDescriptor = {
     type: TransactionType,
-    fee: number,
 }
 
 export type SepaSettlementInstruction = {
@@ -101,6 +135,7 @@ export type Htlc<TStatus extends HtlcStatus> = {
     status: TStatus,
     asset: Asset,
     amount: number,
+    fee: number,
     beneficiary: OctetKeyPair | EllipticCurveKey,
     hash: {
         algorithm: 'sha256' | 'blake2b', // 'sha512' excluded for now, as it requires a different preimage size
@@ -111,8 +146,8 @@ export type Htlc<TStatus extends HtlcStatus> = {
         value: TStatus extends HtlcStatus.SETTLED ? string : never,
     },
     expires: number,
-    clearing: TStatus extends HtlcStatus.PENDING ? ClearingInstruction[] : never,
-    settlement: TStatus extends HtlcStatus.CLEARED ? SettlementInfo [] : never,
+    clearing: TStatus extends HtlcStatus.PENDING ? ClearingInfo<ClearingStatus> : never,
+    settlement: TStatus extends HtlcStatus.CLEARED ? SettlementInfo<SettlementStatus> : never,
 }
 
 export function init(url: string) {
@@ -143,7 +178,9 @@ async function api(
 }
 
 export async function createHtlc(
-    contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'>,
+    contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'> & {
+        includeFee: boolean,
+    },
 ): Promise<Htlc<HtlcStatus.PENDING>> {
     if (contract.beneficiary.kty === KeyType.OCTET_KEY_PAIR || contract.beneficiary.kty === KeyType.ELLIPTIC_CURVE) {
         const { x } = contract.beneficiary;
@@ -237,14 +274,12 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
         status: htlc.status,
         asset: htlc.asset.toUpperCase() as Asset,
         amount: coinsToUnits(htlc.asset, htlc.amount),
+        fee: coinsToUnits(htlc.asset, htlc.fee, true),
         beneficiary: {
             ...htlc.beneficiary,
-            ...(htlc.beneficiary.kty === KeyType.OCTET_KEY_PAIR ? {
-                x: base64ToHex((htlc.beneficiary as OctetKeyPair).x),
-            } : {}),
+            x: base64ToHex(htlc.beneficiary.x),
             ...(htlc.beneficiary.kty === KeyType.ELLIPTIC_CURVE ? {
-                x: base64ToHex((htlc.beneficiary as EllipticCurveKey).x),
-                y: base64ToHex((htlc.beneficiary as EllipticCurveKey).y),
+                y: base64ToHex(htlc.beneficiary.y),
             } : {}),
         },
         hash: {
@@ -259,22 +294,27 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
             } : {}),
         },
         expires: Math.floor(Date.parse(htlc.expires) / 1000),
-        ...('clearing' in (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>) ? {
-            clearing: (htlc as unknown as OasisHtlc<HtlcStatus.PENDING>).clearing.map((instructions) => ({
-                ...instructions,
-                ...('fee' in instructions ? {
-                    fee: coinsToUnits(htlc.asset, instructions.fee, true),
+        ...('clearing' in htlc ? {
+            clearing: {
+                ...htlc.clearing,
+                options: htlc.clearing.options.map((instructions) => ({
+                    ...instructions,
+                    ...('amount' in instructions ? {
+                        amount: coinsToUnits(htlc.asset, instructions.amount),
+                    } : {}),
+                })),
+                ...(htlc.clearing.status === ClearingStatus.PARTIAL ? {
+                    details: {
+                        amount: coinsToUnits(
+                            htlc.asset,
+                            (htlc.clearing as ClearingInfo<ClearingStatus.PARTIAL>).details.amount,
+                        ),
+                    },
                 } : {}),
-                ...('amount' in instructions ? {
-                    amount: coinsToUnits(htlc.asset, instructions.amount),
-                } : {}),
-            })),
+            },
         } : {}),
-        ...('settlement' in (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>) ? {
-            settlement: (htlc as unknown as OasisHtlc<HtlcStatus.CLEARED>).settlement.map((instructions) => ({
-                ...instructions,
-                fee: coinsToUnits(htlc.asset, instructions.fee, true),
-            })),
+        ...('settlement' in htlc ? {
+            settlement: htlc.settlement,
         } : {}),
     };
 

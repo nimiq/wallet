@@ -1021,7 +1021,7 @@ export default defineComponent({
                 updateEstimate();
                 return;
             }
-            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing
+            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing.options
                 .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
 
             // Add swap details to swap store

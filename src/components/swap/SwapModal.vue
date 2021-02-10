@@ -126,51 +126,34 @@
                 </div>
             </PageBody>
 
-            <PageFooter>
-                <button
-                    class="nq-button light-blue"
-                    :disabled="!canSign || currentlySigning || !networkState.isReady"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Confirm') }}</button>
-
-                <div class="footer-wrapper" :style="footerHeight && { '--footer-height': `${footerHeight}px` }">
-                    <transition name="fadeY"
-                        @enter="(el) => footerHeight = el.offsetHeight"
-                        @after-enter="() => footerHeight = null"
-                    >
-                        <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
-                            :key="networkState.message">
-                            <CircleSpinner/>
-                            {{ networkState.message }}
-                        </div>
-                        <div v-else-if="estimateError || swapError" class="footer-notice nq-orange flex-row" key="2">
-                            <AlertTriangleIcon/>
-                            {{ estimateError || swapError }}
-                        </div>
-                        <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row" key="3">
-                            <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
-                                tag="span">
-                                <span slot="text">{{ $t('Confirm') }}</span>
-                                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
-                                    target="_blank" rel="noopener"
-                                >Fastspot</a>
-                                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
-                                    target="_blank" rel="noopener"
-                                >Fastspot GO</a>
-                            </i18n>
-                        </div>
-                        <div v-else class="footer-notice nq-gray flex-row" key="4">
-                            <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                                <span slot="text">{{ $t('Confirm') }}</span>
-                                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
-                                    target="_blank" rel="noopener"
-                                >Fastspot</a>
-                            </i18n>
-                        </div>
-                    </transition>
-                </div>
-            </PageFooter>
+            <SwapModalFooter
+                :disabled="!canSign || currentlySigning"
+                :error="estimateError || swapError"
+                @click="sign"
+            >
+                <template v-slot:cta>{{ $t('Confirm') }}</template>
+                <i18n v-if="isMainnet"
+                    path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                    tag="span"
+                >
+                    <span slot="text">{{ $t('Confirm') }}</span>
+                    <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
+                        target="_blank" rel="noopener"
+                    >Fastspot</a>
+                    <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
+                        target="_blank" rel="noopener"
+                    >Fastspot GO</a>
+                </i18n>
+                <i18n v-else
+                    path="By clicking '{text}', you agree to the ToS of {Fastspot}."
+                    tag="span"
+                >
+                    <span slot="text">{{ $t('Confirm') }}</span>
+                    <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
+                        target="_blank" rel="noopener"
+                    >Fastspot</a>
+                </i18n>
+            </SwapModalFooter>
         </div>
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
@@ -265,12 +248,12 @@ import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
+import SwapModalFooter from './SwapModalFooter.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -835,28 +818,6 @@ export default defineComponent({
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );
 
-        const networkState = computed(() => {
-            const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
-            const { consensus: btcConsensus } = useBtcNetworkStore();
-            let message: string | null = null;
-
-            if (nimiqConsensus.value !== 'established'
-                && btcConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Nimiq & Bitcoin networks') as string;
-            } else if (nimiqConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Nimiq network') as string;
-            } else if (btcConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
-            } else if (!nimiqHeight.value) {
-                message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
-            }
-
-            return {
-                message,
-                isReady: !message,
-            };
-        });
-
         /**
          * SWAP PROCESS
          */
@@ -1182,9 +1143,6 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
-        // Used to transition height of the footer when switching between messages
-        const footerHeight = ref<number | null>(null);
-
         return {
             onClose,
             satsPerNim,
@@ -1228,8 +1186,6 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             activeAddressInfo,
-            networkState,
-            footerHeight,
         };
     },
     components: {
@@ -1258,6 +1214,7 @@ export default defineComponent({
         AddressList,
         SwapAnimation,
         SwapSepaFundingInstructions,
+        SwapModalFooter,
     },
 });
 </script>
@@ -1272,10 +1229,6 @@ export default defineComponent({
     flex-grow: 1;
     font-size: var(--body-size);
     height: 100%;
-
-    .nq-button {
-        margin: 0 4rem 3rem;
-    }
 }
 
 .page-header {
@@ -1297,10 +1250,6 @@ export default defineComponent({
     flex-grow: 1;
     padding-bottom: 2rem;
     overflow: visible;
-}
-
-.nq-gray {
-    opacity: 0.5;
 }
 
 .pills {
@@ -1474,76 +1423,6 @@ export default defineComponent({
                 opacity: 0.6;
             }
         }
-    }
-}
-
-.footer-wrapper {
-    position: relative;
-    margin: -1.75rem 0 0.75rem;
-    height: var(--footer-height);
-    transition: {
-        property: height;
-        duration: 500ms;
-        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
-    }
-}
-
-.footer-notice {
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    font-size: var(--small-size);
-    text-align: center;
-
-    &.nq-orange {
-        text-align: left;
-    }
-
-    svg {
-        margin-right: 1rem;
-        flex-shrink: 0;
-    }
-
-    .nq-link {
-        color: inherit;
-        text-decoration: underline;
-    }
-
-    /deep/ .circle-spinner {
-        margin-right: 1rem;
-    }
-
-    &.fadeY-enter-active, &.fadeY-leave-active {
-        will-change: transform, opacity;
-        transition: {
-            property: opacity, transform;
-            duration: 500ms;
-            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
-        }
-    }
-
-    &.fadeY-leave-active {
-        position: absolute;
-        width: 100%;
-    }
-
-    &.fadeY-enter-active {
-        transition-delay: 50ms;
-    }
-
-    &.fadeY-leave,
-    &.fadeY-enter-to {
-        transform: translateY(0);
-    }
-
-    &.fadeY-enter {
-        opacity: 0;
-        transform: translateY(.5rem);
-    }
-
-    &.fadeY-leave-to {
-        opacity: 0;
-        transform: translateY(-.5rem);
     }
 }
 

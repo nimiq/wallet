@@ -172,43 +172,36 @@
                     </section>
                 </PageBody>
 
-                <PageFooter>
-                    <button
-                        class="nq-button light-blue"
-                        :disabled="!canSign"
-                        @click="sign"
-                        @mousedown.prevent
-                    >{{ $t('Buy Crypto') }}</button>
-
-                    <div v-if="estimateError || swapError" class="footer-notice nq-orange flex-row">
-                        <AlertTriangleIcon/>
-                        {{ estimateError || swapError }}
-                    </div>
-                    <div v-else-if="isMainnet" class="footer-notice nq-gray flex-row">
-                        <i18n
-                            path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
-                            tag="span"
-                        >
-                            <span slot="text">{{ $t('Buy Crypto') }}</span>
-                            <span slot="Fastspot">
-                                <a href="https://fastspot.io/terms"
-                                    target="_blank" rel="noopener" class="nq-link">Fastspot</a>,
-                                <a href="https://go.fastspot.io/terms"
-                                    target="_blank" rel="noopener" class="nq-link">Fastspot GO</a>
-                            </span>
-                            <a slot="FastspotGO" href="https://www.ten31.com/oasis/terms"
-                                target="_blank" rel="noopener" class="nq-link">OASIS</a>
-                        </i18n>
-                    </div>
-                    <div v-else class="footer-notice nq-gray flex-row">
-                        <i18n path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                            <span slot="text">{{ $t('Buy Crypto') }}</span>
-                            <a slot="Fastspot" href="https://test.fastspot.io/terms"
-                                target="_blank" rel="noopener" class="nq-link"
-                            >Fastspot</a>
-                        </i18n>
-                    </div>
-                </PageFooter>
+                <SwapModalFooter
+                    :disabled="!canSign"
+                    :error="estimateError || swapError"
+                    @click="sign"
+                >
+                    <template v-slot:cta>{{ $t('Buy Crypto') }}</template>
+                    <i18n v-if="isMainnet"
+                        path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                        tag="span"
+                    >
+                        <span slot="text">{{ $t('Buy Crypto') }}</span>
+                        <span slot="Fastspot">
+                            <a href="https://fastspot.io/terms"
+                                target="_blank" rel="noopener" class="nq-link">Fastspot</a>,
+                            <a href="https://go.fastspot.io/terms"
+                                target="_blank" rel="noopener" class="nq-link">Fastspot GO</a>
+                        </span>
+                        <a slot="FastspotGO" href="https://www.ten31.com/oasis/terms"
+                            target="_blank" rel="noopener" class="nq-link">OASIS</a>
+                    </i18n>
+                    <i18n v-else
+                        path="By clicking '{text}', you agree to the ToS of {Fastspot}."
+                        tag="span"
+                    >
+                        <span slot="text">{{ $t('Buy Crypto') }}</span>
+                        <a slot="Fastspot" href="https://test.fastspot.io/terms"
+                            target="_blank" rel="noopener" class="nq-link"
+                        >Fastspot</a>
+                    </i18n>
+                </SwapModalFooter>
             </div>
         </transition>
 
@@ -373,6 +366,7 @@ import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
+import SwapModalFooter from '../swap/SwapModalFooter.vue';
 
 enum Pages {
     WELCOME,
@@ -1235,6 +1229,7 @@ export default defineComponent({
         SwapSepaFundingInstructions,
         CircleSpinner,
         AlertTriangleIcon,
+        SwapModalFooter,
     },
 });
 </script>
@@ -1643,33 +1638,6 @@ svg.welcome-euro-logo {
             }
         }
     }
-}
-
-.footer-notice {
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    font-size: var(--small-size);
-    margin: -1.75rem 0 0.75rem;
-    text-align: center;
-
-    &.nq-orange {
-        text-align: left;
-    }
-
-    svg {
-        margin-right: 1rem;
-        flex-shrink: 0;
-    }
-
-    .nq-link {
-        color: inherit;
-        text-decoration: underline;
-    }
-}
-
-.nq-gray {
-    opacity: 0.5;
 }
 
 .animation-overlay {

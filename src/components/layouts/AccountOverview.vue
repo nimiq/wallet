@@ -520,10 +520,15 @@ export default defineComponent({
             width: 3rem;
             height: 3rem;
 
-            &.syncing, &.established {
+            &.syncing {
                 // Generated with https://codepen.io/sosuke/full/Pjoqqp to make white into ~nimiq-blue
                 filter: brightness(0.1) sepia(27%) saturate(3808%) hue-rotate(216deg) brightness(91%) contrast(89%);
                 opacity: 0.3;
+            }
+
+            &.established {
+                filter: none;
+                color: var(--text-30);
             }
 
             /deep/ svg {

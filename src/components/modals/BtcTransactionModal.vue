@@ -942,6 +942,10 @@ export default defineComponent({
                 padding: 1rem;
                 transform: translateY(-1.5rem);
             }
+
+            /deep/ [value-mask]::after{
+                margin-right: 0;
+            }
         }
     }
 

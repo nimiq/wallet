@@ -378,6 +378,7 @@ export default defineComponent({
         };
 
         &.active {
+            pointer-events: none;
             color: var(--text-100);
         }
 

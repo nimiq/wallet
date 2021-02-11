@@ -108,11 +108,11 @@ export default defineComponent({
         svg {
             display: block;
         }
-    }
 
-    .qr-button:hover,
-    .qr-button:focus {
-        opacity: 0.8;
+        &:hover,
+        &:focus {
+            opacity: 0.8;
+        }
     }
 
     .identicon {

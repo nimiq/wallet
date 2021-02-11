@@ -579,10 +579,16 @@ footer {
         right: 3rem;
         bottom: 3rem;
         opacity: .4;
+        transition: opacity 250ms var(--nimiq-ease);
 
         svg {
             width: 4rem;
             height: auto;
+        }
+
+        &:hover,
+        &:focus {
+            opacity: 0.8;
         }
     }
 }

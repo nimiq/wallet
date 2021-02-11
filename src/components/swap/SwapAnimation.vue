@@ -916,6 +916,7 @@ export default defineComponent({
     .animation.right-to-left .right .swap-amount {
         opacity: 0;
         pointer-events: none;
+        animation: none;
     }
 
     .animation {

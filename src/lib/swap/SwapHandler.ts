@@ -55,14 +55,14 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         this.toAssetAdapter = SwapHandler.makeAssetAdapter(this.swap.to.asset, toClient);
     }
 
-    public async awaitIncoming(onPending: (tx: Transaction<ToAsset>) => any): Promise<Transaction<ToAsset>> {
+    public async awaitIncoming(onUpdate: (tx: Transaction<ToAsset>) => any): Promise<Transaction<ToAsset>> {
         const contract = this.swap.contracts[this.swap.to.asset] as Contract<ToAsset>;
 
         return this.toAssetAdapter.awaitHtlcFunding(
             contract.htlc.address,
             this.swap.to.amount,
             this.swap.to.asset === SwapAsset.NIM ? (contract as Contract<SwapAsset.NIM>).htlc.data : '',
-            onPending,
+            onUpdate,
         );
     }
 
@@ -75,14 +75,14 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         return this.fromAssetAdapter.fundHtlc(contract.htlc.address, serializedTx, onPending, serializedProxyTx);
     }
 
-    public async awaitOutgoing(onPending: (tx: Transaction<FromAsset>) => any): Promise<Transaction<FromAsset>> {
+    public async awaitOutgoing(onUpdate: (tx: Transaction<FromAsset>) => any): Promise<Transaction<FromAsset>> {
         const contract = this.swap.contracts[this.swap.from.asset] as Contract<FromAsset>;
 
         return this.fromAssetAdapter.awaitHtlcFunding(
             contract.htlc.address,
             this.swap.from.amount,
             this.swap.from.asset === SwapAsset.NIM ? (contract as Contract<SwapAsset.NIM>).htlc.data : '',
-            onPending,
+            onUpdate,
         );
     }
 

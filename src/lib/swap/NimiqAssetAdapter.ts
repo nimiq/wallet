@@ -87,10 +87,12 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
                 if (tx.value !== value) return false;
                 if (typeof tx.data.raw !== 'string' || tx.data.raw !== data) return false;
 
+                // Must wait until mined
+                if (tx.state === 'mined' || tx.state === 'confirmed') return true;
+
                 if (typeof onPending === 'function') onPending(tx);
 
-                // Must wait until mined
-                return tx.state === 'mined' || tx.state === 'confirmed';
+                return false;
             },
         );
     }
@@ -133,7 +135,7 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         return this.findTransaction(
             address,
             (tx) => tx.sender === address
-                && typeof (tx.proof as any as { preImage: string }).preImage === 'string',
+                && typeof (tx.proof as any as { preImage: unknown }).preImage === 'string',
         );
     }
 

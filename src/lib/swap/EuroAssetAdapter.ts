@@ -65,20 +65,18 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         id: string,
         value: number,
         data?: string,
-        onPending?: (htlc: HtlcDetails) => any,
+        onUpdate?: (htlc: HtlcDetails) => any,
     ): Promise<HtlcDetails> {
-        let calledOnPending = false;
         return this.findTransaction(
             id,
             (htlc) => {
-                if (htlc.status === HtlcStatus.PENDING && !calledOnPending) {
-                    if (typeof onPending === 'function') onPending(htlc);
-                    calledOnPending = true;
-                }
                 if (htlc.amount !== value) return false;
-                if (htlc.status !== HtlcStatus.CLEARED && htlc.status !== HtlcStatus.SETTLED) return false;
 
-                return true;
+                if (htlc.status === HtlcStatus.CLEARED || htlc.status === HtlcStatus.SETTLED) return true;
+
+                if (typeof onUpdate === 'function') onUpdate(htlc);
+
+                return false;
             },
         );
     }
@@ -91,7 +89,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
     public async awaitHtlcSettlement(id: string): Promise<Htlc<HtlcStatus.SETTLED>> {
         return this.findTransaction(
             id,
-            (htlc) => typeof (htlc as Htlc<HtlcStatus.SETTLED>).preimage.value === 'string',
+            (htlc) => typeof htlc.preimage.value === 'string',
         ) as Promise<Htlc<HtlcStatus.SETTLED>>;
     }
 

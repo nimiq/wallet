@@ -73,7 +73,7 @@ export type ClearingInfo<CStatus extends ClearingStatus> = {
     status: CStatus,
     type?: TransactionType,
     options: ClearingInstruction[],
-    details: CStatus extends ClearingStatus.PARTIAL ? {
+    detail: CStatus extends ClearingStatus.PARTIAL ? {
         amount: number,
     } : CStatus extends ClearingStatus.DENIED ? {
         reason: string,
@@ -85,7 +85,7 @@ export type SettlementInfo<SStatus extends SettlementStatus> = {
     type?: TransactionType,
     options: SStatus extends SettlementStatus.PENDING | SettlementStatus.DENIED | SettlementStatus.FAILED
         ? SettlementDescriptor[] : never,
-    details: SStatus extends SettlementStatus.DENIED | SettlementStatus.FAILED ? {
+    detail: SStatus extends SettlementStatus.DENIED | SettlementStatus.FAILED ? {
         reason: string,
     } : never,
 }
@@ -304,10 +304,10 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
                     } : {}),
                 })),
                 ...(htlc.clearing.status === ClearingStatus.PARTIAL ? {
-                    details: {
+                    detail: {
                         amount: coinsToUnits(
                             htlc.asset,
-                            (htlc.clearing as ClearingInfo<ClearingStatus.PARTIAL>).details.amount,
+                            (htlc.clearing as ClearingInfo<ClearingStatus.PARTIAL>).detail.amount,
                         ),
                     },
                 } : {}),

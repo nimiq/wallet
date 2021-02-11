@@ -306,6 +306,10 @@ export default defineComponent({
         flex-grow: 1;
     }
 
+    .address-button.active {
+        pointer-events: none;
+    }
+
     .address-button:hover,
     .address-button:focus,
     .address-button.active,

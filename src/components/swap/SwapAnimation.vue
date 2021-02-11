@@ -7,19 +7,31 @@
             <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
         </div>
 
-        <div class="expired-background flex-column nq-gold-bg" :class="{'visible': state === SwapState.EXPIRED}">
+        <div class="expired-background flex-column nq-orange-bg" :class="{'visible': state === SwapState.EXPIRED}">
+            <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
             <StopwatchIcon/>
-            <h1 class="title nq-h1">{{ $t('Swap has expired') }}</h1>
+            <h1 class="title nq-h1">{{ $t('The Swap expired') }}</h1>
             <p class="expired-text">
-                {{ $t('If your funds were sent, but you have not received them back and have not received your'
-                    + ' target currency, please contact the Nimiq Team with the following reference:') }}
+                {{ $t('No funds were received so the swap expired.') }}<br>
+                <template v-if="fromAsset === SwapAsset.EUR">
+                    {{ $t('Any funds sent will be refunded within 1-3 days.') }}
+                </template>
+                <template v-else>
+                    {{ $t('Any funds sent will be refunded.') }}
+                </template>
             </p>
-            <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
+            <template v-if="fromAsset === SwapAsset.EUR">
+                <p class="expired-text">
+                    {{ $t('Click on ‘Troubleshooting’ to learn more.') }}
+                </p>
+                <a class="nq-button-s inverse"
+                    href="https://fastspot.io/faq" target="_blank" rel="noopener" @mousedown.prevent
+                >{{ $t('Troubleshooting') }}</a>
+            </template>
             <div class="flex-grow"></div>
-            <button class="nq-button gold inverse" @click="$emit('cancel')" @mousedown.prevent>
-                {{ $t('Close') }}
-            </button>
+            <span class="swap-id-notice">{{ $t('Please keep your Swap ID for reference.') }}</span>
+            <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
         </div>
 
         <div class="nq-card-header">
@@ -200,7 +212,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
-import { CheckmarkIcon, Identicon, Tooltip, FiatAmount, StopwatchIcon, Copyable } from '@nimiq/vue-components';
+import {
+    CheckmarkIcon,
+    Identicon,
+    Tooltip,
+    FiatAmount,
+    StopwatchIcon,
+    Copyable,
+    CloseButton,
+} from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
@@ -422,6 +442,7 @@ export default defineComponent({
         FiatAmount,
         StopwatchIcon,
         Copyable,
+        CloseButton,
     },
 });
 </script>
@@ -465,7 +486,7 @@ export default defineComponent({
 
     .title {
         line-height: 1;
-        margin-top: 4rem;
+        margin-top: 5rem;
     }
 
     &.visible {
@@ -476,27 +497,58 @@ export default defineComponent({
 }
 
 .expired-background {
-    padding-bottom: 2rem;
+    padding: 2rem 2rem 1rem;
+
+    .close-button {
+        /deep/ svg {
+            opacity: 0.6;
+        }
+
+        &:hover,
+        &:focus {
+            /deep/ svg {
+                opacity: 0.8;
+            }
+        }
+    }
 
     .nq-icon {
         font-size: 11rem;
+        margin-top: 2.5rem;
+    }
+
+    .title {
+        margin-bottom: 0;
     }
 
     .expired-text {
-        padding: 0 2rem 2rem;
         max-width: 58rem;
         text-align: center;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-top: 1.25rem;
+
+        + .expired-text {
+            margin-top: -1rem;
+        }
+    }
+
+    .swap-id-notice {
+        font-size: var(--small-size);
         font-weight: 600;
     }
 
     .expired-swap-id {
+        font-size: var(--small-size);
         font-weight: bold;
+        padding: 0.5rem 1.5rem;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 0.5rem;
+        border-radius: 5rem;
         text-align: center;
-        margin: 0 0.5rem;
+        margin: 0.5rem 0.5rem 0;
 
         /deep/ .background {
+            border-radius: inherit;
             background: white;
         }
 

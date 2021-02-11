@@ -910,9 +910,10 @@ export default defineComponent({
         left: 2rem;
 
         /deep/ .trigger svg {
+            height: 2rem;
             opacity: .3;
 
-            transition: color var(--short-transition-duration) var(--nimiq-ease);
+            transition: opacity var(--short-transition-duration) var(--nimiq-ease);
         }
 
         & /deep/ .trigger:hover svg,

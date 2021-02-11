@@ -1350,6 +1350,10 @@ export default defineComponent({
     margin-top: 1.5rem;
 }
 
+.amount-input /deep/ form input.nq-input {
+    padding: 0.25rem;
+}
+
 .amount-input.has-value {
     &.positive-value /deep/ form{
         .nq-input {

@@ -168,6 +168,17 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         return htlcTx;
     }
 
+    public async awaitSettlementConfirmation(address: string): Promise<TransactionDetails> {
+        return this.findTransaction(address, (tx) => {
+            if (tx.sender !== address) return false;
+            if (typeof (tx.proof as any as { preImage: unknown }).preImage !== 'string') return false;
+            if (tx.state === 'invalidated' || tx.state === 'expired') {
+                throw new Error(`Transaction is ${tx.state}`);
+            }
+            return tx.state === 'mined' || tx.state === 'confirmed';
+        });
+    }
+
     public stop(reason: Error): void {
         if (this.cancelCallback) this.cancelCallback(reason);
         this.stopped = true;

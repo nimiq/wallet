@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/vue';
 import Config from 'config';
-import { Htlc, HtlcStatus, SettlementInstruction } from '../OasisApi';
+import { Htlc, HtlcStatus, SettlementInstruction, SettlementStatus } from '../OasisApi';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
 export type HtlcDetails = Htlc<HtlcStatus>;
@@ -98,14 +98,24 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         return tx.preimage.value;
     }
 
-    public stop(reason: Error): void {
-        if (this.cancelCallback) this.cancelCallback(reason);
-        this.stopped = true;
-    }
-
     public async settleHtlc(settlementJWS: string, secret: string): Promise<HtlcDetails> {
         if (this.stopped) throw new Error('EuroAssetAdapter called while stopped');
         const payload = JSON.parse(atob(settlementJWS.split('.')[1])) as SettlementInstruction;
         return this.client.settleHtlc(payload.contractId, secret, settlementJWS);
+    }
+
+    public async awaitSettlementConfirmation(id: string): Promise<HtlcDetails> {
+        return this.findTransaction(id, (htlc) => {
+            if (htlc.status !== HtlcStatus.SETTLED) return false;
+            if (htlc.settlement.status === SettlementStatus.DENIED) {
+                throw new Error(htlc.settlement.detail.reason);
+            }
+            return htlc.settlement.status === SettlementStatus.ACCEPTED;
+        });
+    }
+
+    public stop(reason: Error): void {
+        if (this.cancelCallback) this.cancelCallback(reason);
+        this.stopped = true;
     }
 }

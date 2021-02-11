@@ -108,6 +108,11 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         );
     }
 
+    public async awaitIncomingConfirmation(): Promise<Transaction<ToAsset>> {
+        const contract = this.swap.contracts[this.swap.to.asset] as Contract<ToAsset>;
+        return this.toAssetAdapter.awaitSettlementConfirmation(contract.htlc.address);
+    }
+
     public stop(reason: Error) {
         this.fromAssetAdapter.stop(reason);
         this.toAssetAdapter.stop(reason);

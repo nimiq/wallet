@@ -130,6 +130,16 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
         return this.sendTransaction(serializedTx);
     }
 
+    public async awaitSettlementConfirmation(address: string): Promise<TransactionDetails> {
+        return this.findTransaction(address, (tx) => {
+            if (!tx.inputs.some((input) => input.address === address && input.witness.length === 5)) return false;
+            if (tx.state === 'invalidated') {
+                throw new Error(`Transaction is ${tx.state}`);
+            }
+            return tx.state === 'mined' || tx.state === 'confirmed';
+        });
+    }
+
     public stop(reason: Error): void {
         if (this.cancelCallback) this.cancelCallback(reason);
         this.stopped = true;

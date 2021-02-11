@@ -403,6 +403,11 @@ export default defineComponent({
                             subscribeToAddresses([(settlementTx as BtcTransactionDetails).outputs[0].address!]);
                         }
 
+                        if (activeSwap.value!.to.asset === SwapAsset.EUR) {
+                            await swapHandler.awaitIncomingConfirmation();
+                            // TODO: Handle limit exceeding here, differently from general sending error.
+                        }
+
                         updateSwap({
                             state: SwapState.COMPLETE,
                             stateEnteredAt: Date.now(),

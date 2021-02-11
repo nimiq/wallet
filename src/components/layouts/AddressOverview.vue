@@ -561,8 +561,9 @@ export default defineComponent({
     }
 
     &:disabled {
-        opacity: 0.5;
         pointer-events: none;
+        background: rgba(131, 131, 131, 0.07);
+        color: var(--text-30);
     }
 }
 

@@ -220,7 +220,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:116
+#: src/components/swap/SwapSepaFundingInstructions.vue:124
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -1488,6 +1488,10 @@ msgstr ""
 msgid "Trials"
 msgstr ""
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:121
+msgid "Troubleshooting"
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr ""
@@ -1640,6 +1644,10 @@ msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:113
+msgid "Your payment has not been received yet. There might be an issue."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:61

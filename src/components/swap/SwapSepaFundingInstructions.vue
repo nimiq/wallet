@@ -103,14 +103,22 @@
                 <h2 class="nq-h2">
                     {{ $t(
                         'The bank is processing your transaction.\nThis might take up to {min} minutes.',
-                        { min: 6},
+                        { min: EXPECTED_DETECTION_DURATION},
                     ) }}
                 </h2>
-                <p class="nq-gray">
+                <p v-if="!takesLongerThanUsual" class="nq-gray">
                     {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}
                 </p>
-                <p class="nq-gray timer">
-                    {{ timer }}
+                <p v-else class="nq-orange">
+                    {{ $t('Your payment has not been received yet. There might be an issue.') }}
+                </p>
+                <p class="nq-gray flex-row action-row" :class="{'nq-orange': takesLongerThanUsual}">
+                    <span class="timer">{{ timer }}</span>
+                    <a v-if="takesLongerThanUsual"
+                        class="nq-button-s orange inverse"
+                        href="https://fastspot.io/faq" target="_blank" rel="noopener"
+                        @mousedown.prevent
+                    >{{ $t('Troubleshooting') }}</a>
                 </p>
                 <button class="nq-button-s inverse lighter" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
                     {{ $t('Back to Bank Details') }}
@@ -133,6 +141,8 @@ export enum Events {
     CANCEL = 'cancel',
     PAID = 'paid',
 }
+
+const EXPECTED_DETECTION_DURATION = 4; // minutes
 
 export default defineComponent({
     props: {
@@ -162,8 +172,9 @@ export default defineComponent({
             startTimer();
         }
 
-        const timer = ref('0:00');
+        const timer = ref('00:00');
         let timerInterval = 0;
+        const takesLongerThanUsual = ref(false);
 
         function startTimer() {
             if (timerInterval) return;
@@ -177,9 +188,16 @@ export default defineComponent({
             }
 
             const diff = new Date(Date.now() - props.stateEnteredAt);
+            const hours = diff.getUTCHours();
             const minutes = diff.getUTCMinutes();
             const seconds = diff.getUTCSeconds();
-            timer.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            timer.value = [
+                ...(hours ? [hours.toString().padStart(2, '0')] : []),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0'),
+            ].join(':');
+
+            takesLongerThanUsual.value = hours > 0 || minutes >= EXPECTED_DETECTION_DURATION;
         }
 
         onUnmounted(() => {
@@ -195,6 +213,8 @@ export default defineComponent({
             onPaid,
             timer,
             showCancelConfirmation,
+            EXPECTED_DETECTION_DURATION,
+            takesLongerThanUsual,
         };
     },
     filters: {
@@ -354,21 +374,56 @@ export default defineComponent({
         white-space: pre-line;
     }
 
-    .nq-gray {
+    .nq-gray,
+    .nq-orange {
         font-size: var(--body-size);
         font-weight: 600;
-        opacity: 0.5;
         max-width: 46rem;
         margin-left: auto;
         margin-right: auto;
     }
 
-    .timer {
-        font-variant-numeric: tabular-nums;
+    .nq-gray {
+        opacity: 0.5;
+    }
+
+    .nq-orange {
+        opacity: 1;
+        color: var(--nimiq-orange);
+        max-width: 37rem;
+    }
+
+    .action-row {
+        justify-content: center;
+        align-items: center;
+
+        .timer {
+            font-variant-numeric: tabular-nums;
+            line-height: 1.7;
+        }
+
+        &.nq-orange .timer {
+            line-height: 1.3;
+            font-size: var(--small-size);
+            box-shadow: 0 0 0 1.5px rgba(252, 135, 2, 0.4);
+            border-radius: 5rem;
+            padding: 0.375rem 1.25rem;
+        }
+
+        .nq-button-s {
+            margin-left: 1.5rem;
+            background: rgba(252, 135, 2, 0.2);
+            color: var(--nimiq-orange);
+
+            &:hover,
+            &:focus {
+                background: rgba(252, 135, 2, 0.3);
+            }
+        }
     }
 
     button {
-        margin-top: 8rem;
+        margin-top: 7rem;
     }
 }
 

@@ -147,7 +147,7 @@ export type Htlc<TStatus extends HtlcStatus> = {
     },
     expires: number,
     clearing: TStatus extends HtlcStatus.PENDING ? ClearingInfo<ClearingStatus> : never,
-    settlement: TStatus extends HtlcStatus.CLEARED ? SettlementInfo<SettlementStatus> : never,
+    settlement: TStatus extends HtlcStatus.CLEARED | HtlcStatus.SETTLED ? SettlementInfo<SettlementStatus> : never,
 }
 
 export function init(url: string) {

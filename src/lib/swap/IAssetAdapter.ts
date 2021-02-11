@@ -59,7 +59,10 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
         serializedProxyTx?: string,
     ): Promise<Transaction<TAsset>>;
 
-    awaitSettlementConfirmation(address: string): Promise<Transaction<TAsset>>;
+    awaitSettlementConfirmation(
+        address: string,
+        onUpdate?: (tx: Transaction<TAsset>) => any,
+    ): Promise<Transaction<TAsset>>;
 
     stop(reason: Error): void;
 }

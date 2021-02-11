@@ -101,16 +101,23 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
     public async settleHtlc(settlementJWS: string, secret: string): Promise<HtlcDetails> {
         if (this.stopped) throw new Error('EuroAssetAdapter called while stopped');
         const payload = JSON.parse(atob(settlementJWS.split('.')[1])) as SettlementInstruction;
-        return this.client.settleHtlc(payload.contractId, secret, settlementJWS);
+        const htlc = await this.client.settleHtlc(payload.contractId, secret, settlementJWS);
+        if (htlc.status !== HtlcStatus.SETTLED || htlc.settlement.status !== SettlementStatus.PENDING) {
+            throw new Error('Could not settle OASIS HTLC (invalid secret?)');
+        }
+        return htlc;
     }
 
-    public async awaitSettlementConfirmation(id: string): Promise<HtlcDetails> {
+    public async awaitSettlementConfirmation(id: string, onUpdate?: (tx: HtlcDetails) => any): Promise<HtlcDetails> {
         return this.findTransaction(id, (htlc) => {
             if (htlc.status !== HtlcStatus.SETTLED) return false;
-            if (htlc.settlement.status === SettlementStatus.DENIED) {
-                throw new Error(htlc.settlement.detail.reason);
-            }
-            return htlc.settlement.status === SettlementStatus.ACCEPTED;
+
+            if (htlc.settlement.status === SettlementStatus.ACCEPTED
+                || htlc.settlement.status === SettlementStatus.CONFIRMED) return true;
+
+            if (typeof onUpdate === 'function') onUpdate(htlc);
+
+            return false;
         });
     }
 

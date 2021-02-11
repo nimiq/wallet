@@ -1,3 +1,4 @@
+import { onUpdated } from '@vue/composition-api';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
 export type TransactionDetails = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
@@ -168,14 +169,16 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         return htlcTx;
     }
 
-    public async awaitSettlementConfirmation(address: string): Promise<TransactionDetails> {
+    public async awaitSettlementConfirmation(
+        address: string,
+        onUpdate?: (tx: TransactionDetails) => any,
+    ): Promise<TransactionDetails> {
         return this.findTransaction(address, (tx) => {
             if (tx.sender !== address) return false;
             if (typeof (tx.proof as any as { preImage: unknown }).preImage !== 'string') return false;
-            if (tx.state === 'invalidated' || tx.state === 'expired') {
-                throw new Error(`Transaction is ${tx.state}`);
-            }
-            return tx.state === 'mined' || tx.state === 'confirmed';
+            if (tx.state === 'mined' || tx.state === 'confirmed') return true;
+            if (typeof onUpdate === 'function') onUpdate(tx);
+            return false;
         });
     }
 

@@ -58,7 +58,7 @@ import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
-import { getHtlc, settleHtlc } from '../../lib/OasisApi';
+import { ClearingStatus, getHtlc, Htlc, HtlcStatus, settleHtlc, SettlementStatus } from '../../lib/OasisApi';
 import Time from '../../lib/Time';
 
 enum SwapError {
@@ -299,6 +299,14 @@ export default defineComponent({
                             updateSwap({
                                 fundingTx: htlc,
                             });
+
+                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
+                                // TODO: Handle partial funding
+                            }
+
+                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
+                                // TODO: Handle limit excess
+                            }
                         }) as Transaction<SwapAsset.EUR>;
 
                         // As EUR payments are not otherwise detected by the Wallet, we use this
@@ -404,8 +412,15 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
-                            await swapHandler.awaitIncomingConfirmation();
-                            // TODO: Handle limit exceeding here, differently from general sending error.
+                            await swapHandler.awaitIncomingConfirmation((htlc) => {
+                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED) {
+                                    // TODO: Handle limit excess
+                                }
+
+                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
+                                    // TODO: Handle failed payout
+                                }
+                            });
                         }
 
                         updateSwap({

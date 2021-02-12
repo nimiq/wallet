@@ -545,7 +545,7 @@ export default defineComponent({
 }
 
 .send, .receive {
-    margin: 0 1rem;
+    margin: 0 0.5rem;
     align-items: center;
 
     padding: 1.125rem 2rem;
@@ -567,8 +567,12 @@ export default defineComponent({
     }
 }
 
-.send .nq-icon {
-    transform: rotateZ(-90deg);
+.send {
+    margin-left: 1rem;
+
+    .nq-icon {
+        transform: rotateZ(-90deg);
+    }
 }
 
 .receive {

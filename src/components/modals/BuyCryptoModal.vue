@@ -1456,7 +1456,7 @@ svg.welcome-euro-logo {
 
                 position: absolute;
                 left: -50%;
-                animation: separatorSliding 3s infinite;
+                animation: separatorSliding 2.2s infinite;
 
                 @keyframes separatorSliding {
                     0% { transform: translateX(0) }

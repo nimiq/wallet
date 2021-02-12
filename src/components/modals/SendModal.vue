@@ -82,7 +82,9 @@
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
-                    <div class="separator"></div>
+                    <div class="separator-wrapper">
+                            <div class="separator"></div>
+                        </div>
                     <IdenticonButton
                         :address="recipientWithLabel.address"
                         :label="recipientWithLabel.label"
@@ -793,6 +795,7 @@ export default defineComponent({
 
     .identicon-section {
         justify-content: center;
+        align-items: center;
         align-self: stretch;
         margin-bottom: 3.5rem;
 
@@ -805,13 +808,34 @@ export default defineComponent({
             }
         }
 
-        .separator {
-            height: 0.25rem;
-            background: var(--text-14);
-            border-radius: 500px;
+        .separator-wrapper {
+            --height: 0.25rem;
+
+            height: var(--height);
+            margin-left: 1rem;
+            margin-right: 1rem;
+            margin-bottom: 5rem;
+
+            position: relative;
             flex-grow: 1;
-            margin: 5rem 2rem 0;
-            max-width: 8rem;
+            overflow: hidden;
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+            .separator {
+                height: 100%;
+                width: 50%;
+                background: var(--text-14);
+                border-radius: calc(var(--height) / 2);
+
+                position: absolute;
+                left: -50%;
+                animation: separatorSliding 2.2s infinite;
+
+                @keyframes separatorSliding {
+                    0% { transform: translateX(0) }
+                    100% { transform: translateX(300%) }
+                }
+            }
         }
     }
 
@@ -977,6 +1001,13 @@ export default defineComponent({
 
         .amount {
             margin-top: 3rem;
+        }
+    }
+
+    .page-body {
+        @media (min-width: 420px) {
+            padding-left: 5rem;
+            padding-right: 5rem;
         }
     }
 

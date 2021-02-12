@@ -111,6 +111,10 @@
                     <AmountInput
                         :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
                         @input="onInput(SwapAsset.NIM, $event)"
+                        :class="{
+                            'positive-value': wantNim > 0 || capDecimals(getNim, SwapAsset.NIM) > 0,
+                            'negative-value': wantNim < 0 || capDecimals(getNim, SwapAsset.NIM) < 0,
+                        }"
                         :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
                     </AmountInput>
                     <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
@@ -122,6 +126,10 @@
                     <AmountInput
                         :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
                         @input="onInput(SwapAsset.BTC, $event)"
+                        :class="{
+                            'positive-value': wantBtc > 0 || capDecimals(getBtc, SwapAsset.BTC) > 0,
+                            'negative-value': wantBtc < 0 || capDecimals(getBtc, SwapAsset.BTC) < 0,
+                        }"
                         :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
                         <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                     </AmountInput>
@@ -1342,6 +1350,62 @@ export default defineComponent({
     margin-top: 1.5rem;
 }
 
+.amount-input.has-value {
+    &.positive-value /deep/ form{
+        .nq-input {
+            color: var(--nimiq-green);
+            --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
+        }
+
+        .nq-input:focus-within,
+        .nq-input:hover {
+            --border-color: rgba(33,188,165,0.4); /* Based on Nimiq Green */
+        }
+    }
+
+    &.negative-value /deep/ form{
+        .nq-input {
+            color: var(--nimiq-blue);
+        }
+
+        .nq-input:focus-within,
+        .nq-input:hover  {
+            color: var(--nimiq-light-blue);
+            --border-color: rgba(5, 130, 202, 0.2);
+        }
+    }
+
+    &.focussed {
+        &.positive-value /deep/ {
+            .ticker {
+                color: var(--nimiq-green);
+            }
+
+            .nq-input:focus-within,
+            .nq-input:hover {
+                --border-color: rgba(33,188,165,0.5); /* Based on Nimiq Green */
+            }
+        }
+
+        &.negative-value /deep/ {
+            .ticker {
+                color: var(--nimiq-light-blue);
+            }
+
+            .nq-input {
+                color: rgba(5, 130, 202, 0.7);
+                --border-color: rgba(5, 130, 202, 0.2);
+            }
+
+            .nq-input:focus-within,
+            .nq-input:hover  {
+                color: var(--nimiq-light-blue);
+                --border-color: rgba(5, 130, 202, 0.3);
+            }
+        }
+    }
+}
+
 .amount-input,
 .new-balances .amount {
     --size: var(--h2-size);
@@ -1385,7 +1449,7 @@ export default defineComponent({
 
     .new-balances &,
     .swap-amounts .nq-blue & {
-        opacity: 0.4;
+        opacity: 0.7;
     }
 }
 

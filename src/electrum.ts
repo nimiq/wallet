@@ -182,7 +182,7 @@ export async function launchElectrum() {
 
         // Check tx history
         for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
-            const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 1;
+            const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 5;
 
             let gap = 0;
             let addressInfos = addressSet.value[chain];
@@ -222,6 +222,7 @@ export async function launchElectrum() {
 
     // Subscribe to all unused external addresses until the gap limit
     const unusedExternalAddresses = computed(() => {
+        if (isFetchingTxHistory.value) return null;
         if (!addressSet.value.external.length) return null;
 
         let gap = 0;
@@ -251,6 +252,7 @@ export async function launchElectrum() {
     // (This is not really necessary, since an internal address can only receive txs from an external
     // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
     const nextUnusedChangeAddress = computed(() => {
+        if (isFetchingTxHistory.value) return undefined;
         if (!addressSet.value.internal.length) return undefined;
 
         const unusedAddresses = addressSet.value.internal

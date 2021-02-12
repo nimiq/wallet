@@ -202,7 +202,7 @@ export default defineComponent({
             setRecipientLabel,
             getRecipientLabel,
         } = useBtcLabelsStore();
-        const { state: network$ } = useBtcNetworkStore();
+        const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
@@ -353,6 +353,7 @@ export default defineComponent({
             recipientWithLabel.value
             && recipientWithLabel.value.address
             && hasHeight.value
+            && !isFetchingTxHistory.value
             && amount.value
             && amount.value <= maxSendableAmount.value,
         );

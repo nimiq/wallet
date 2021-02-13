@@ -337,7 +337,7 @@ import { manageCashlink, refundSwap } from '../../hub';
 import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { sendTransaction } from '../../network';
-import { useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 
 export default defineComponent({
@@ -580,8 +580,12 @@ export default defineComponent({
                 || (isSwapProxy.value
                 && !relatedTx.value
                 && transaction.value.state === TransactionState.CONFIRMED
-                && transaction.value.blockHeight! <= blockHeight.value - 90) // consider proxy "expired" after 90 blocks
-            ),
+                && transaction.value.blockHeight! <= blockHeight.value - 15) // consider proxy "expired" after 15 blocks
+            )
+            // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
+            // Note that we only check the active account here to save us scanning through all our accounts as typically
+            // the transaction modal is opened from our current account's transaction history.
+            && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
         async function refundHtlc() {

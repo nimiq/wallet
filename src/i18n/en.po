@@ -237,7 +237,7 @@ msgid "Backup"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:235
-#: src/components/modals/BtcTransactionModal.vue:469
+#: src/components/modals/BtcTransactionModal.vue:473
 #: src/components/modals/TransactionModal.vue:526
 #: src/components/TransactionListItem.vue:215
 msgid "Bank Account"
@@ -355,7 +355,7 @@ msgid "Cancel Swap"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:225
-#: src/components/modals/BtcTransactionModal.vue:459
+#: src/components/modals/BtcTransactionModal.vue:463
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:517
@@ -753,7 +753,7 @@ msgid "Historic value"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:185
-#: src/components/modals/BtcTransactionModal.vue:423
+#: src/components/modals/BtcTransactionModal.vue:427
 #: src/components/modals/TransactionModal.vue:465
 #: src/components/TransactionListItem.vue:163
 #: src/lib/DataFormatting.ts:21
@@ -761,7 +761,7 @@ msgid "HTLC Creation"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:185
-#: src/components/modals/BtcTransactionModal.vue:423
+#: src/components/modals/BtcTransactionModal.vue:427
 #: src/components/modals/TransactionModal.vue:476
 #: src/components/TransactionListItem.vue:174
 msgid "HTLC Refund"
@@ -1350,7 +1350,7 @@ msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:231
-#: src/components/modals/BtcTransactionModal.vue:465
+#: src/components/modals/BtcTransactionModal.vue:469
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:513
 #: src/components/modals/TransactionModal.vue:7

@@ -309,7 +309,7 @@ import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
@@ -336,6 +336,10 @@ export default defineComponent({
         const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
+        // Note that as the transaction modal is typically opened from the active account's transaction history, we base
+        // our calculations here on the active account and its addresses. This yields wrong results if the opened
+        // transaction modal (e.g. opened via url) does not belong to the active account but saves us scanning through
+        // all accounts in the common case.
         const {
             state: btcAddresses$,
             activeInternalAddresses,
@@ -539,7 +543,9 @@ export default defineComponent({
         const showRefundButton = computed(() => !isIncoming.value
             && swapInfo.value?.in?.asset === SwapAsset.BTC
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= blockTimestamp.value
-            && !swapInfo.value.out,
+            && !swapInfo.value.out
+            // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
+            && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
         const blockExplorerLink = computed(() => explorerTxLink(SwapAsset.BTC, transaction.value.transactionHash));

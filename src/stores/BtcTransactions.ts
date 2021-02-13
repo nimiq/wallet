@@ -4,7 +4,7 @@ import { getHistoricExchangeRates } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
@@ -138,9 +138,9 @@ export const useBtcTransactionsStore = createStore({
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
-        async calculateFiatAmounts() {
+        async calculateFiatAmounts(fiat?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = useFiatStore().currency.value;
+            const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && tx.outputs.some((output) => !output.fiatValue || !(fiatCurrency in output.fiatValue)),
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;

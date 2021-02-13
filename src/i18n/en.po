@@ -33,7 +33,7 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:98
+#: src/components/modals/BuyCryptoModal.vue:99
 msgid "{value} remaining"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:51
-#: src/components/swap/SwapModal.vue:69
+#: src/components/swap/SwapModal.vue:70
 msgid "30-day Limit"
 msgstr ""
 
@@ -309,9 +309,9 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/BuyCryptoModal.vue:185
-#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:182
+#: src/components/modals/BuyCryptoModal.vue:187
+#: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr ""
@@ -336,13 +336,13 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/swap/SwapModal.vue:136
+#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/swap/SwapModal.vue:138
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/swap/SwapModal.vue:148
+#: src/components/modals/BuyCryptoModal.vue:198
+#: src/components/swap/SwapModal.vue:150
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -393,9 +393,9 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:289
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:183
+#: src/components/swap/SwapModal.vue:185
 msgid "Choose an Address"
 msgstr ""
 
@@ -427,9 +427,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:134
-#: src/components/swap/SwapModal.vue:139
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:136
+#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:153
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -564,11 +564,11 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:77
 msgid "During early access, these limits apply."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:106
+#: src/components/modals/BuyCryptoModal.vue:108
 msgid "During early access, these limits apply. They will be increased gradually."
 msgstr ""
 
@@ -875,7 +875,7 @@ msgstr ""
 msgid "Limit of copied addresses reached."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:103
+#: src/components/modals/BuyCryptoModal.vue:105
 msgid "Limits are tied to accounts and IBANs."
 msgstr ""
 
@@ -891,9 +891,9 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:53
-#: src/components/swap/SwapModal.vue:71
+#: src/components/modals/BuyCryptoModal.vue:97
+#: src/components/swap/SwapModal.vue:54
+#: src/components/swap/SwapModal.vue:73
 msgid "loading..."
 msgstr ""
 
@@ -918,8 +918,8 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:79
 #: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:60
-#: src/components/swap/SwapModal.vue:64
+#: src/components/swap/SwapModal.vue:61
+#: src/components/swap/SwapModal.vue:65
 msgid "Max."
 msgstr ""
 
@@ -1311,7 +1311,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:242
+#: src/components/modals/BuyCryptoModal.vue:244
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1407,12 +1407,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:764
-#: src/components/swap/SwapModal.vue:624
+#: src/components/modals/BuyCryptoModal.vue:745
+#: src/components/swap/SwapModal.vue:609
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:769
+#: src/components/modals/BuyCryptoModal.vue:750
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1455,7 +1455,7 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:76
+#: src/components/swap/SwapModal.vue:78
 msgid "They will be increased gradually."
 msgstr ""
 

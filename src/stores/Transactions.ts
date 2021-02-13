@@ -3,7 +3,7 @@ import { getHistoricExchangeRates } from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
@@ -170,9 +170,9 @@ export const useTransactionsStore = createStore({
             this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
         },
 
-        async calculateFiatAmounts() {
+        async calculateFiatAmounts(fiat?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = useFiatStore().currency.value;
+            const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && (!tx.fiatValue || !(fiatCurrency in tx.fiatValue)),
             ) as Array<Transaction & { timestamp: number }>;

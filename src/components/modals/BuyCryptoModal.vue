@@ -92,11 +92,13 @@
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                                <FiatConvertedAmount slot="value" :amount="limits.current" currency="nim" roundDown/>
+                                <FiatConvertedAmount slot="value"
+                                    :amount="limits.current.luna" currency="nim" roundDown/>
                             </i18n>
                             <div></div>
                             <p class="explainer">
@@ -318,8 +320,6 @@ import {
     getSwap,
     AssetList,
     getAssets,
-    getLimits,
-    Limits,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
@@ -330,12 +330,11 @@ import {
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/vue';
-import allSettled from 'promise.allsettled';
 import { getNetworkClient } from '@/network';
 import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
-import { AccountType, useAccountStore } from '@/stores/Account';
+import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore, Trial } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
@@ -366,6 +365,7 @@ import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
+import { useSwapLimits } from '../../composables/useSwapLimits';
 
 enum Pages {
     WELCOME,
@@ -381,7 +381,7 @@ const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
 export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
-        const { addressInfos, activeAddressInfo } = useAddressStore();
+        const { addressInfos, activeAddressInfo, activeAddress } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
 
@@ -390,8 +390,6 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
-        // TODO: Determine current limit from account transaction history
-        const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
         const assets = ref<AssetList>(null);
 
         const estimateError = ref<string>(null);
@@ -443,54 +441,37 @@ export default defineComponent({
 
         onMounted(() => {
             if (!swap.value) {
-                fetchLimits();
                 fetchAssets();
             }
         });
 
         const { exchangeRates } = useFiatStore();
 
-        watch(exchangeRates, fetchLimits, {
-            lazy: true,
+        const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
+            nimAddress: activeAddress.value!,
         });
 
-        async function fetchLimits() {
-            if (!limits.value) {
-                if (!activeAccountInfo.value) return;
-
-                const allLimits = await allSettled(
-                    activeAccountInfo.value.addresses.map(
-                        (address) => getLimits(SwapAsset.NIM, address).then((newLimits) => ({
-                            ...newLimits,
-                            address,
-                        })),
-                    ),
-                );
-                const newLimits = allLimits
-                    .map((r) => r.status === 'fulfilled' ? r.value : null)
-                    .filter((r) => r !== null)
-                    .sort((a, b) => a!.current - b!.current)[0];
-
-                if (!newLimits) return;
-
-                limits.value = newLimits;
+        // Re-run limit calculation when address changes
+        watch([activeCurrency, activeAddress], ([currency, address]) => {
+            if (currency === CryptoCurrency.NIM) {
+                limitsNimAddress.value = address || undefined;
             } else {
-                const newLimits = await getLimits(SwapAsset.NIM, limits.value.address);
-                limits.value = {
-                    ...newLimits,
-                    address: limits.value.address,
-                };
+                limitsNimAddress.value = undefined;
             }
-        }
+        }, { lazy: true });
+
+        // Re-run limit calculation when exchange rates change
+        watch(exchangeRates, () => {
+            if (limits.value) recalculateLimits();
+        }, { lazy: true, deep: true });
 
         const currentLimitFiat = computed(() => {
             if (!limits.value) return null;
-            if (!limits.value.current) return 0;
 
             const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
             if (!nimRate) return null;
 
-            return Math.min(Math.floor((limits.value.current / 1e5) * nimRate), OASIS_LIMIT_PER_TRANSACTION);
+            return Math.min(Math.floor((limits.value.current.luna / 1e5) * nimRate), OASIS_LIMIT_PER_TRANSACTION);
         });
 
         const currentLimitCrypto = computed(() => {
@@ -794,7 +775,7 @@ export default defineComponent({
                 let swapSuggestion!: PreSwap;
 
                 const { availableExternalAddresses } = useBtcAddressStore();
-                const nimAddress = activeAddressInfo.value!.address;
+                const nimAddress = activeAddress.value!;
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {

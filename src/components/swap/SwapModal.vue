@@ -49,7 +49,8 @@
                                 ' They will be increased gradually.') }}</p>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                         </Tooltip>
@@ -67,7 +68,8 @@
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits" :amount="limits.monthly" currency="nim" roundDown/>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <div></div>
@@ -214,15 +216,12 @@ import {
     Estimate,
     getEstimate,
     PreSwap,
-    Limits,
-    getLimits,
     AssetList,
     getAssets,
     RequestAsset,
     getSwap,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
-import allSettled from 'promise.allsettled';
 import Config from 'config';
 import Modal from '../modals/Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
@@ -245,7 +244,7 @@ import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
-import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
@@ -253,6 +252,7 @@ import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 import SwapModalFooter from './SwapModalFooter.vue';
+import { useSwapLimits } from '../../composables/useSwapLimits';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -268,62 +268,47 @@ export default defineComponent({
 
         const currentlySigning = ref(false);
 
-        const limits = ref<Limits<SwapAsset.NIM> & { address: string }>(null);
         const assets = ref<AssetList>(null);
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
-        const { activeAddressInfo, selectAddress } = useAddressStore();
+        const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         onMounted(() => {
             if (!swap.value) {
-                fetchLimits();
                 fetchAssets();
             }
         });
 
-        watch(exchangeRates, fetchLimits, {
-            lazy: true,
+        const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
+            nimAddress: activeAddress.value!,
         });
 
-        async function fetchLimits() {
-            if (!limits.value) {
-                const { activeAccountInfo } = useAccountStore();
-                if (!activeAccountInfo.value) return;
+        // Re-run limit calculation when address changes
+        watch(activeAddress, (address) => {
+            limitsNimAddress.value = address || undefined;
+        }, { lazy: true });
 
-                const allLimits = await allSettled(
-                    activeAccountInfo.value.addresses.map(
-                        (address) => getLimits(SwapAsset.NIM, address).then((newLimits) => ({
-                            ...newLimits,
-                            address,
-                        })),
-                    ),
-                );
-                const newLimits = allLimits
-                    .map((r) => r.status === 'fulfilled' ? r.value : null)
-                    .filter((r) => r !== null)
-                    .sort((a, b) => a!.current - b!.current)[0];
-
-                if (!newLimits) return;
-
-                limits.value = newLimits;
-            } else {
-                const newLimits = await getLimits(SwapAsset.NIM, limits.value.address);
-                limits.value = {
-                    ...newLimits,
-                    address: limits.value.address,
-                };
-            }
-        }
+        // Re-run limit calculation when exchange rates change
+        watch(exchangeRates, () => {
+            if (limits.value) recalculateLimits();
+        }, { lazy: true, deep: true });
 
         const currentLimitFiat = computed(() => {
             if (!limits.value) return null;
-            if (!limits.value.current) return 0;
+
+            // const usdBtcRate = exchangeRates.value[CryptoCurrency.BTC][FiatCurrency.USD];
+            // const localBtcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
+
+            // if (!usdBtcRate || !localBtcRate) return null;
+            // const usdToLocalRate = localBtcRate / usdBtcRate;
+
+            // return Math.floor(limits.value.current.usd * usdToLocalRate);
 
             const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
             if (!nimRate) return null;
 
-            return Math.floor((limits.value.current / 1e5) * nimRate);
+            return Math.floor((limits.value.current.luna / 1e5) * nimRate);
         });
 
         async function fetchAssets() {

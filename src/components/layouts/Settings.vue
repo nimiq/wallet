@@ -240,10 +240,10 @@ export default defineComponent({
 
         const { currency, setCurrency } = useFiatStore();
 
-        function clearCache() {
+        async function clearCache() {
             /* eslint-disable-next-line no-restricted-globals, no-alert */
             if (!confirm('Really clear cache?')) return;
-            clearStorage();
+            await clearStorage();
             window.location.reload();
         }
 

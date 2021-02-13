@@ -262,12 +262,12 @@ export async function initStorage() {
     );
 }
 
-export function clearStorage() {
+export async function clearStorage() {
     for (const unsub of unsubscriptions) {
         unsub();
     }
     for (const key of Object.values(StorageKeys)) {
-        Storage.del(key);
+        await Storage.del(key); // eslint-disable-line no-await-in-loop
     }
 }
 

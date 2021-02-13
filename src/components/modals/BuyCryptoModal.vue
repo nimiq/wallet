@@ -221,6 +221,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
                     :manualFunding="true"
+                    :oasisLimitExceeded="oasisLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 >
@@ -346,6 +347,9 @@ import {
     sandboxMockClearHtlc,
     TransactionType,
     SepaClearingInstruction,
+    ClearingStatus,
+    ClearingInfo,
+    DeniedReason,
 } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
@@ -1094,6 +1098,20 @@ export default defineComponent({
             }
         }
 
+        const oasisLimitExceeded = computed(() => {
+            if (!swap.value) return false;
+            if (!swap.value.fundingTx) return false;
+            const htlc = swap.value.fundingTx as Htlc<HtlcStatus>;
+
+            if (htlc.status !== HtlcStatus.PENDING) return false;
+            const pendingHtlc = htlc as Htlc<HtlcStatus.PENDING>;
+
+            if (pendingHtlc.clearing.status !== ClearingStatus.DENIED) return false;
+            const deniedClearingInfo = pendingHtlc.clearing as ClearingInfo<ClearingStatus.DENIED>;
+
+            return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
+        });
+
         return {
             addressListOpened,
             onClose,
@@ -1134,6 +1152,7 @@ export default defineComponent({
             isDev,
             trials,
             Trial,
+            oasisLimitExceeded,
         };
     },
     components: {

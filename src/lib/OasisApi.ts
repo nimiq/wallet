@@ -36,6 +36,10 @@ export enum SettlementStatus {
     FAILED = 'failed',
 }
 
+export enum DeniedReason {
+    LIMIT_EXCEEDED = 'limit-exceeded',
+}
+
 export enum TransactionType {
     SEPA = 'sepa',
     MOCK = 'mock', // Only available in Sandbox environment

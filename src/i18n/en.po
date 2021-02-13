@@ -220,7 +220,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:190
+#: src/components/swap/SwapAnimation.vue:204
 msgid "Awaiting swap secret"
 msgstr ""
 
@@ -274,8 +274,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:271
 #: src/components/modals/TransactionModal.vue:283
-#: src/components/swap/SwapAnimation.vue:107
-#: src/components/swap/SwapAnimation.vue:175
+#: src/components/swap/SwapAnimation.vue:121
+#: src/components/swap/SwapAnimation.vue:189
 msgid "Block explorer"
 msgstr ""
 
@@ -393,7 +393,7 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:289
+#: src/components/modals/BuyCryptoModal.vue:290
 #: src/components/modals/SendModal.vue:157
 #: src/components/swap/SwapModal.vue:185
 msgid "Choose an Address"
@@ -544,7 +544,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:199
+#: src/components/swap/SwapAnimation.vue:213
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -619,7 +619,7 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:204
+#: src/components/swap/SwapAnimation.vue:218
 msgid "Error:"
 msgstr ""
 
@@ -701,8 +701,8 @@ msgstr ""
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:191
-#: src/components/swap/SwapAnimation.vue:192
+#: src/components/swap/SwapAnimation.vue:205
+#: src/components/swap/SwapAnimation.vue:206
 msgid "Finalizing swap"
 msgstr ""
 
@@ -897,8 +897,8 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:185
-#: src/components/swap/SwapAnimation.vue:188
+#: src/components/swap/SwapAnimation.vue:199
+#: src/components/swap/SwapAnimation.vue:202
 msgid "Locking up {asset}"
 msgstr ""
 
@@ -1000,6 +1000,10 @@ msgstr ""
 msgid "not sent"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:41
+msgid "OASIS limit exceeded"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr ""
@@ -1046,7 +1050,7 @@ msgstr ""
 msgid "Per-Swap Limit"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:38
+#: src/components/swap/SwapAnimation.vue:52
 msgid "Performing Swap"
 msgstr ""
 
@@ -1063,6 +1067,7 @@ msgid "Please ensure that you are sending an instant transaction!"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:33
+#: src/components/swap/SwapAnimation.vue:47
 msgid "Please keep your Swap ID for reference."
 msgstr ""
 
@@ -1155,7 +1160,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:206
+#: src/components/swap/SwapAnimation.vue:220
 msgid "Retrying..."
 msgstr ""
 
@@ -1268,7 +1273,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:183
+#: src/components/swap/SwapAnimation.vue:197
 msgid "Setting up swap"
 msgstr ""
 
@@ -1311,7 +1316,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:244
+#: src/components/modals/BuyCryptoModal.vue:245
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1407,12 +1412,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:745
+#: src/components/modals/BuyCryptoModal.vue:749
 #: src/components/swap/SwapModal.vue:609
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:750
+#: src/components/modals/BuyCryptoModal.vue:754
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1499,7 +1504,7 @@ msgstr ""
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:39
+#: src/components/swap/SwapAnimation.vue:53
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
@@ -1633,6 +1638,10 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:43
+msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
 msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
@@ -1642,7 +1651,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:196
+#: src/components/swap/SwapAnimation.vue:210
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 

@@ -34,6 +34,20 @@
             <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
         </div>
 
+        <div class="oasis-limit-exceeded-background flex-column nq-orange-bg" :class="{'visible': oasisLimitExceeded}">
+            <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
+            <div class="flex-grow"></div>
+            <OverflowingCup/>
+            <h1 class="title nq-h1">{{ $t('OASIS limit exceeded') }}</h1>
+            <p class="expired-text">
+                {{ $t('You exceeded the 30-day limit of your bank account and will be refunded. '
+                    + 'Please note that network fees may be deducted from your funds.') }}
+            </p>
+            <div class="flex-grow"></div>
+            <span class="swap-id-notice">{{ $t('Please keep your Swap ID for reference.') }}</span>
+            <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
+        </div>
+
         <div class="nq-card-header">
             <h1 class="nq-h1">{{ $t('Performing Swap') }}</h1>
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
@@ -224,6 +238,7 @@ import {
 import { SwapAsset } from '@nimiq/fastspot-api';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import OverflowingCup from '../icons/OverflowingCup.vue';
 import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
@@ -288,6 +303,10 @@ export default defineComponent({
             default: false,
         },
         manualFunding: {
+            type: Boolean,
+            default: false,
+        },
+        oasisLimitExceeded: {
             type: Boolean,
             default: false,
         },
@@ -435,6 +454,7 @@ export default defineComponent({
         Identicon,
         GroundedArrowDownIcon,
         GroundedArrowUpIcon,
+        OverflowingCup,
         Amount,
         Tooltip,
         ShortAddress,
@@ -468,7 +488,8 @@ export default defineComponent({
 }
 
 .success-background,
-.expired-background {
+.expired-background,
+.oasis-limit-exceeded-background {
     position: absolute;
     top: 0;
     right: 0;
@@ -496,7 +517,8 @@ export default defineComponent({
     }
 }
 
-.expired-background {
+.expired-background,
+.oasis-limit-exceeded-background {
     padding: 2rem 2rem 1rem;
 
     .close-button {
@@ -517,12 +539,16 @@ export default defineComponent({
         margin-top: 2.5rem;
     }
 
+    .overflowing-cup-icon {
+        margin-top: 2rem;
+    }
+
     .title {
         margin-bottom: 0;
     }
 
     .expired-text {
-        max-width: 58rem;
+        max-width: 52rem;
         text-align: center;
         font-weight: 600;
         line-height: 1.4;

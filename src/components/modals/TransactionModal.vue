@@ -306,8 +306,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
-import { SwapAsset, getAssets, init as initFastspotApi } from '@nimiq/fastspot-api';
-import Config from 'config';
+import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -594,7 +593,6 @@ export default defineComponent({
 
             // eslint-disable-next-line no-async-promise-executor
             const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
-                initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                 const assets = await getAssets();
                 const { feePerUnit } = assets[SwapAsset.NIM];
                 const fee = feePerUnit * 167; // 167 = NIM HTLC refunding tx size

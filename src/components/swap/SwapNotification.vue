@@ -48,7 +48,7 @@ import { computed, defineComponent, onMounted, ref, watch } from '@vue/compositi
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { Contract, init as initFastspotApi, getSwap, Swap } from '@nimiq/fastspot-api';
+import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
@@ -362,7 +362,6 @@ export default defineComponent({
                     const secret = await Promise.race<Promise<string>>([
                         swapHandler.awaitSecret(),
                         new Promise((resolve, reject) => {
-                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             interval = window.setInterval(async () => {
                                 if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
                                     window.clearInterval(interval);

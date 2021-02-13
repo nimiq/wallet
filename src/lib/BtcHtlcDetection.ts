@@ -1,5 +1,5 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
-import { getContract, init as initFastspotApi, SwapAsset } from '@nimiq/fastspot-api';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import { getElectrumClient } from '../electrum';
@@ -163,7 +163,6 @@ export async function isHtlcFunding(
 
     // Try Fastspot API
     try {
-        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
         const contractWithEstimate = await getContract(SwapAsset.BTC, htlcOutput.address!);
         const { script } = contractWithEstimate.contract.htlc;
         const scriptParts = await decodeBtcHtlcScript(script);

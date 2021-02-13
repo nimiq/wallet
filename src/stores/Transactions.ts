@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { init as initFastspotApi, getContract, SwapAsset } from '@nimiq/fastspot-api';
-import Config from 'config';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -133,7 +132,6 @@ export const useTransactionsStore = createStore({
 
                         if (!useSwapsStore().state.swaps[settlementData.hashRoot].in) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
                                     useSwapsStore().addFundingData(settlementData.hashRoot, {

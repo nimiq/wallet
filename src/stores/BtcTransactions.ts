@@ -2,8 +2,7 @@ import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
-import { init as initFastspotApi, getContract, SwapAsset } from '@nimiq/fastspot-api';
-import Config from 'config';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
@@ -96,7 +95,6 @@ export const useBtcTransactionsStore = createStore({
 
                         if (!useSwapsStore().state.swaps[settlementData.hash].in) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
                             getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
                                     useSwapsStore().addFundingData(settlementData.hash, {

@@ -3,7 +3,9 @@ import VueCompositionApi from '@vue/composition-api';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
+import { init as initFastspotApi } from '@nimiq/fastspot-api';
 
+import Config from 'config';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
@@ -54,6 +56,10 @@ async function start() {
     loadLanguage(language.value);
 
     startSentry();
+
+    if (Config.fastspot.apiKey) {
+        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+    }
 
     const app = new Vue({
         router,

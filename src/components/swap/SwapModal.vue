@@ -208,7 +208,6 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import {
-    init as initFastspotApi,
     cancelSwap,
     createSwap,
     SwapAsset,
@@ -277,8 +276,6 @@ export default defineComponent({
         const { exchangeRates, currency } = useFiatStore();
 
         onMounted(() => {
-            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-
             if (!swap.value) {
                 fetchLimits();
                 fetchAssets();

@@ -308,7 +308,6 @@ import {
 import { useAddressStore } from '@/stores/Address';
 import { CurrencyInfo } from '@nimiq/utils';
 import {
-    init as initFastspotApi,
     Estimate,
     getEstimate,
     RequestAsset,
@@ -471,8 +470,6 @@ export default defineComponent({
         );
 
         onMounted(() => {
-            initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-
             if (!swap.value) {
                 fetchLimits();
                 fetchAssets();

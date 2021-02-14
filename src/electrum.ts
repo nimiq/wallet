@@ -28,9 +28,28 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     // so we need to load it first.
     await loadBitcoinJS();
 
-    const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
-    NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
-    const client = new NimiqElectrumClient.ElectrumClient();
+    const { GenesisConfig, ElectrumClient: Client } = await import(
+        /* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
+
+    GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+
+    const options = Config.environment === ENV_MAIN ? {
+        extraSeedPeers: [{
+            host: 'c0a5duastc849ei53vug.bdnodes.net',
+            ports: { wss: null, ssl: 50002, tcp: null },
+            ip: '',
+            version: '',
+            highPriority: true,
+        }, {
+            host: 'btccore-main.bdnodes.net',
+            ports: { wss: null, ssl: 50002, tcp: null },
+            ip: '',
+            version: '',
+        }],
+    } : {};
+
+    const client = new Client(options);
+
     resolver!(client);
 
     return clientPromise;

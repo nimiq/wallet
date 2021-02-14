@@ -1,11 +1,12 @@
 import { ref, watch } from '@vue/composition-api';
-import { getLimits, SwapAsset } from '@nimiq/fastspot-api';
+import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
 import { useTransactionsStore, Transaction as NimTransaction } from '../stores/Transactions';
 import { useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
+import { useAccountStore } from '../stores/Account';
 
 export function useSwapLimits(options: {
     nimAddress?: string,
@@ -32,6 +33,9 @@ export function useSwapLimits(options: {
     watch(async () => {
         // We are using this statement to trigger a re-evaluation (re-run) of the watcher
         trigger.value; // eslint-disable-line no-unused-expressions
+
+        const uid = useAccountStore().activeAccountInfo.value?.uid;
+        const userLimitsPromise = uid ? getUserLimits(uid) : Promise.resolve(undefined);
 
         const nimAddressLimitsPromise = getLimits(
             SwapAsset.NIM,
@@ -99,6 +103,7 @@ export function useSwapLimits(options: {
             return sum + usdValue;
         }, 0);
 
+        const userLimits = await userLimitsPromise;
         const nimAddressLimits = await nimAddressLimitsPromise;
         const btcAddressLimits = await btcAddressLimitsPromise;
 
@@ -106,6 +111,7 @@ export function useSwapLimits(options: {
         const satRate = (btcAddressLimits.referenceMonthly / 100) / btcAddressLimits.monthly;
 
         const currentUsdLimit = Math.max(0, Math.min(
+            userLimits ? (userLimits.current / 100) : Infinity,
             nimAddressLimits.referenceMonthly / 100 - swappedAmount,
             nimAddress.value ? (nimAddressLimits.referenceCurrent / 100) : Infinity,
             btcAddress.value ? (btcAddressLimits.referenceCurrent / 100) : Infinity,

@@ -955,15 +955,15 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.3.0.tgz#79eebe9a4968de848428f28d8834aacb2eb9a9cc"
-  integrity sha512-pkYlku8fSACZecF4vBPxapXWXMkAf8G4u8WDLZvugnck1xa4G6pDfOM5fR79A6EYMnHRvFPK2aI+RmZlQJp+tA==
+"@nimiq/fastspot-api@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.4.0.tgz#bfcad4eb797a3016d33dbf3d2dabe39b162494c5"
+  integrity sha512-UORkWgg0ZTLrsXCXRC3hfVWYn7EtcSRXMhzCULEc2bE4NJ/YaeCOs0UamCknEXrS8Qlb4RIUTDAVyKVnIqPMUA==
 
-"@nimiq/hub-api@^1.4.2-beta.0":
-  version "1.4.2-beta.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.4.2-beta.0.tgz#e0d843b7140dca01ce2e16496fffeaf94976da06"
-  integrity sha512-WhoGyz73tHBQjL6Ra9RPSFrU2Bjqk/HdXZwE//XfIV3FELtEDuBTnknQJY9OTWWyiyIF+35LMveeo5R2U7ghyw==
+"@nimiq/hub-api@v1.4.2-beta.1":
+  version "1.4.2-beta.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.4.2-beta.1.tgz#f35a4537123affbab56176681db8c4acab63d8b3"
+  integrity sha512-e+6fkaYNN+pdQKKItnGDw4u78Kpm+/dY97Wm9+Qy3RHbDSxNyWVpX89OgiQptXdF9wumP0T3yIvz9wEiIJYgHQ==
   dependencies:
     "@nimiq/core-web" "^1.5.3"
     "@nimiq/rpc" "^0.4.0"

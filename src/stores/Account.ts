@@ -16,10 +16,11 @@ export enum AccountType {
     LEDGER = 3,
 }
 
-export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses'> & {
+export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid'> & {
     id: string,
     type: AccountType,
     addresses: string[],
+    uid?: string,
 }
 
 export const useAccountStore = createStore({

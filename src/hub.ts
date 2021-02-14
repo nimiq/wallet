@@ -144,6 +144,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             wordsExported: account.wordsExported,
             addresses,
             btcAddresses: { ...account.btcAddresses },
+            uid: account.uid || existingAccount?.uid,
         });
     }
 

@@ -1439,6 +1439,10 @@ export default defineComponent({
     }
 }
 
+.animation-overlay {
+    flex-grow: 1;
+}
+
 .address-list-overlay {
     .page-header {
         padding-bottom: 1rem;

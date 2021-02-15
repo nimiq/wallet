@@ -764,7 +764,7 @@ export default defineComponent({
             if (!estimate.value) return 0;
 
             const data = swap.value || estimate.value;
-            return Math.round(data.serviceFeePercentage * 1000) / 10;
+            return Math.round(data.serviceFeePercentage * 10000) / 100;
         });
 
         const serviceSwapFeeFiat = computed(() => {

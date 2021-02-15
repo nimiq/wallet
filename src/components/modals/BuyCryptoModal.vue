@@ -619,7 +619,7 @@ export default defineComponent({
                     * exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!
                 : undefined;
 
-            const serviceSwapFeePercentage = Math.round(data.serviceFeePercentage * 1000) / 10;
+            const serviceSwapFeePercentage = Math.round(data.serviceFeePercentage * 10000) / 100;
             const serviceSwapFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
 
             const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceSwapFeeFiat;

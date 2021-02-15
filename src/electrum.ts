@@ -36,7 +36,8 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     const options = Config.environment === ENV_MAIN ? {
         extraSeedPeers: [{
             host: 'c0a5duastc849ei53vug.bdnodes.net',
-            ports: { wss: null, ssl: 50002, tcp: null },
+            wssPath: 'electrumx',
+            ports: { wss: 443, ssl: 50002, tcp: null },
             ip: '',
             version: '',
             highPriority: true,

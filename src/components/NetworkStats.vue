@@ -63,6 +63,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .stat {
     padding: 0 2.5rem;
+    white-space: nowrap;
 
     &:first-child {
         padding-left: 5rem;

@@ -39,6 +39,7 @@ export default defineComponent({
 .qr-code-overlay .page-body {
     justify-content: space-evenly;
     align-items: center;
+    min-height: 56rem;
 
     .flex-spacer {
         height: 2rem;
@@ -50,8 +51,8 @@ export default defineComponent({
         // 2 x 260px = 560px
         // But now we need to make it behave as half its size as well, that's
         // why we use negative margins on all sides (130px = 260px / 2).
-        transform: scale(0.5);
-        margin: -130px;
+        width: 32.5rem;
+        height: 32.5rem;
     }
 
     .qr-info-text {

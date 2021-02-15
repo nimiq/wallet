@@ -660,9 +660,6 @@ input[type="file"] {
         &.left-column,
         &.right-column {
             flex-shrink: 0;
-        }
-
-        &.right-column {
             max-height: unset;
             overflow-y: unset;
         }

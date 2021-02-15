@@ -1333,7 +1333,6 @@ svg.welcome-euro-logo {
     flex-grow: 1;
     font-size: var(--body-size);
     height: 100%;
-    overflow-y: auto;
 
     .page-header {
         // Reduce side padding to fit all three tooltip pills in one row

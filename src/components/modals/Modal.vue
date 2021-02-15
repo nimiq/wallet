@@ -100,10 +100,13 @@ export default defineComponent({
     max-height: 96%;
 }
 
-.main {
+.small-page.main {
     transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
+
+    height: auto;
+    min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);
@@ -145,9 +148,15 @@ export default defineComponent({
     .small-page,
     .cover {
         border-radius: 1.25rem 1.25rem 0 0;
+
+        overflow-y: auto;
+
+        /deep/ .page-body {
+            overflow-y: unset;
+        }
     }
 
-    .main {
+    .small-page.main {
         transform-origin: center top;
         position: relative;
 

@@ -877,6 +877,7 @@ export default defineComponent({
 
 .amount-block {
     align-items: center;
+    margin: 4rem 0 2rem;
 
     .amount.transaction-value {
         --size: 5rem;

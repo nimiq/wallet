@@ -83,7 +83,7 @@ export default defineComponent({
         pointer-events: all;
 
         .small-page {
-            height: unset;
+            min-height: unset;
             color: white;
             background: #302949; // Determined by Julian
             box-shadow: none;

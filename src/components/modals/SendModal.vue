@@ -669,6 +669,7 @@ export default defineComponent({
         align-items: center;
         flex-grow: 1;
         overflow-y: visible; // needed for ios Safari
+        position: relative;
     }
 
     .page__recipient-input,

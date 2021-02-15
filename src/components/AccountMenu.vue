@@ -291,7 +291,7 @@ export default defineComponent({
     /deep/ .wrapper {
         .small-page {
             padding: 1rem;
-            height: unset;
+            min-height: unset;
         }
     }
 }

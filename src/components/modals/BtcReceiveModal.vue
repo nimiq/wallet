@@ -3,6 +3,26 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlay"
     >
+        <Tooltip class="info-tooltip" preferredPosition="bottom right">
+            <InfoCircleSmallIcon slot="trigger"/>
+            <div class="flex-column">
+                <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
+                    + ' Reuse of addresses does not result in a loss of funds.') }}</p>
+                <div class="flex-column">
+                    <div class="flex-row">
+                        <RefreshIcon />
+                        <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                    </div>
+                    <div class="flex-row">
+                        <BracketsIcon />
+                        <p>{{
+                            $t('Use labels instead of contacts to easily identify transactions in your history.')
+                        }}</p>
+                    </div>
+                </div>
+            </div>
+        </Tooltip>
+
         <PageHeader>
             {{ $t('Receive BTC') }}
             <div slot="more">{{ $t('Share a single-use address with the sender.') }}</div>
@@ -84,26 +104,6 @@
                     <QrCodeIcon/>
                 </button>
             </footer>
-
-            <Tooltip class="info-tooltip" preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger"/>
-                <div class="flex-column">
-                    <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                        + ' Reuse of addresses does not result in a loss of funds.') }}</p>
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <RefreshIcon />
-                            <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
-                        </div>
-                        <div class="flex-row">
-                            <BracketsIcon />
-                            <p>{{
-                                $t('Use labels instead of contacts to easily identify transactions in your history.')
-                            }}</p>
-                        </div>
-                    </div>
-                </div>
-            </Tooltip>
         </PageBody>
 
         <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress"/>
@@ -380,6 +380,7 @@ export default defineComponent({
     padding-top: 0;
     padding-bottom: 3rem;
     overflow: initial;
+    position: relative;
 }
 
 .address {
@@ -521,6 +522,7 @@ export default defineComponent({
     align-self: stretch;
     min-height: 0;
     position: relative;
+    min-height: 16rem;
 }
 
 .no-recently-copied-address {
@@ -589,6 +591,7 @@ footer {
     position: absolute;
     top: 2rem;
     left: 2rem;
+    z-index: 3;
 
     /deep/ .trigger svg {
         opacity: .3;
@@ -606,6 +609,11 @@ footer {
         width: 26.25rem;
         font-size: var(--small-size);
         font-weight: 600;
+        transform: translate(-2rem, 2rem);
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            transform: translate(0.5rem, 2rem);
+        }
 
         p {
             margin: 0;

@@ -3,160 +3,158 @@
         :showOverlay="!!swap || addressListOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
-        <div class="page flex-column main-page">
-            <PageHeader>
-                {{ $t('Swap NIM and BTC') }}
-                <div slot="more" class="flex-column">
-                    <div class="nq-notice font-weight-normal">
-                        {{ $t('Use the slider or edit values to set up a swap.') }}
-                    </div>
-                    <div class="pills flex-row">
-                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
-                            <div slot="trigger" class="pill exchange-rate">
-                                1 NIM = <Amount :amount="Math.round(satsPerNim)" currency="btc"/>
-                            </div>
-                            <span>{{ $t('This rate includes the swap fee.') }}</span>
-                            <p class="explainer">
-                                {{ $t('The rate might change depending on the swap volume.') }}
-                            </p>
-                        </Tooltip>
-                        <SwapFeesTooltip
-                            preferredPosition="bottom left"
-                            :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
-                            :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
-                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
-                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
-                            :currency="currency"
-                            :container="this"
-                        >
-                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
-                                <LightningIcon v-if="isHighRelativeFees"/>
-                                <FiatAmount :amount="myBtcFeeFiat
-                                    + myNimFeeFiat
-                                    + serviceBtcFeeFiat
-                                    + serviceNimFeeFiat
-                                    + serviceSwapFeeFiat"
-                                    :currency="currency"/>
-                                {{ $t('fees') }}
-                            </div>
-                        </SwapFeesTooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
-                            <span class="trigger flex-row" slot="trigger">
-                                <FlameIcon/>
-                                {{ $t('Early Access') }}
+        <PageHeader>
+            {{ $t('Swap NIM and BTC') }}
+            <div slot="more" class="flex-column">
+                <div class="nq-notice font-weight-normal">
+                    {{ $t('Use the slider or edit values to set up a swap.') }}
+                </div>
+                <div class="pills flex-row">
+                    <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                        <div slot="trigger" class="pill exchange-rate">
+                            1 NIM = <Amount :amount="Math.round(satsPerNim)" currency="btc"/>
+                        </div>
+                        <span>{{ $t('This rate includes the swap fee.') }}</span>
+                        <p class="explainer">
+                            {{ $t('The rate might change depending on the swap volume.') }}
+                        </p>
+                    </Tooltip>
+                    <SwapFeesTooltip
+                        preferredPosition="bottom left"
+                        :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
+                        :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
+                        :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                        :serviceSwapFeePercentage="serviceSwapFeePercentage"
+                        :currency="currency"
+                        :container="this"
+                    >
+                        <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
+                            <LightningIcon v-if="isHighRelativeFees"/>
+                            <FiatAmount :amount="myBtcFeeFiat
+                                + myNimFeeFiat
+                                + serviceBtcFeeFiat
+                                + serviceNimFeeFiat
+                                + serviceSwapFeeFiat"
+                                :currency="currency"/>
+                            {{ $t('fees') }}
+                        </div>
+                    </SwapFeesTooltip>
+                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
+                        <span class="trigger flex-row" slot="trigger">
+                            <FlameIcon/>
+                            {{ $t('Early Access') }}
+                        </span>
+                        <p>{{ $t('Early Access means that there are limits in place for swaps.' +
+                            ' They will be increased gradually.') }}</p>
+                        <div class="price-breakdown">
+                            <label>{{ $t('30-day Limit') }}</label>
+                            <FiatConvertedAmount v-if="limits"
+                                :amount="limits.monthly.luna" currency="nim" roundDown/>
+                            <span v-else>{{ $t('loading...') }}</span>
+                        </div>
+                    </Tooltip>
+                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                        ref="$limitsTooltip">
+                        <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
+                            <span v-if="limits">
+                                {{ $t('Max.') }}
+                                <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                             </span>
-                            <p>{{ $t('Early Access means that there are limits in place for swaps.' +
-                                ' They will be increased gradually.') }}</p>
-                            <div class="price-breakdown">
-                                <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
-                                <span v-else>{{ $t('loading...') }}</span>
-                            </div>
-                        </Tooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                            ref="$limitsTooltip">
-                            <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
-                                <span v-if="limits">
-                                    {{ $t('Max.') }}
-                                    <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                                </span>
-                                <template v-else>
-                                    {{ $t('Max.') }}
-                                    <CircleSpinner/>
-                                </template>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
-                                <span v-else>{{ $t('loading...') }}</span>
-                            </div>
-                            <div></div>
-                            <p class="explainer">
-                                {{ $t('During early access, these limits apply.') }}
-                                {{ $t('They will be increased gradually.') }}
-                            </p>
-                        </Tooltip>
-                    </div>
+                            <template v-else>
+                                {{ $t('Max.') }}
+                                <CircleSpinner/>
+                            </template>
+                        </div>
+                        <div class="price-breakdown">
+                            <label>{{ $t('30-day Limit') }}</label>
+                            <FiatConvertedAmount v-if="limits"
+                                :amount="limits.monthly.luna" currency="nim" roundDown/>
+                            <span v-else>{{ $t('loading...') }}</span>
+                        </div>
+                        <div></div>
+                        <p class="explainer">
+                            {{ $t('During early access, these limits apply.') }}
+                            {{ $t('They will be increased gradually.') }}
+                        </p>
+                    </Tooltip>
                 </div>
-            </PageHeader>
-            <PageBody class="flex-column">
-                <SwapBalanceBar
-                    :newNimBalance="newNimBalance"
-                    :newBtcBalance="newBtcBalance"
-                    :satsPerNim="satsPerNim"
-                    :limits="{ fiat: currentLimitFiat }"
-                    @change="onSwapBalanceBarChange"
-                    @onActiveAddressClick="addressListOverlayOpened = true"
-                />
-                <div class="columns swap-amounts flex-row">
-                    <div class="left-column" :class="!wantNim && !getNim
-                        ? 'no-value'
-                        : direction === SwapDirection.NIM_TO_BTC ? 'nq-blue' : 'nq-green'"
-                    >
-                        <AmountInput
-                            :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
-                            @input="onInput(SwapAsset.NIM, $event)"
-                            :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
-                        </AmountInput>
-                        <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
-                    </div>
-                    <div class="right-column" :class="!wantBtc && !getBtc
-                        ? 'no-value'
-                        : direction === SwapDirection.BTC_TO_NIM ? 'nq-blue' : 'nq-green'"
-                    >
-                        <AmountInput
-                            :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
-                            @input="onInput(SwapAsset.BTC, $event)"
-                            :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
-                            <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
-                        </AmountInput>
-                        <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
-                    </div>
+            </div>
+        </PageHeader>
+        <PageBody class="flex-column">
+            <SwapBalanceBar
+                :newNimBalance="newNimBalance"
+                :newBtcBalance="newBtcBalance"
+                :satsPerNim="satsPerNim"
+                :limits="{ fiat: currentLimitFiat }"
+                @change="onSwapBalanceBarChange"
+                @onActiveAddressClick="addressListOverlayOpened = true"
+            />
+            <div class="columns swap-amounts flex-row">
+                <div class="left-column" :class="!wantNim && !getNim
+                    ? 'no-value'
+                    : direction === SwapDirection.NIM_TO_BTC ? 'nq-blue' : 'nq-green'"
+                >
+                    <AmountInput
+                        :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
+                        @input="onInput(SwapAsset.NIM, $event)"
+                        :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
+                    </AmountInput>
+                    <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
                 </div>
+                <div class="right-column" :class="!wantBtc && !getBtc
+                    ? 'no-value'
+                    : direction === SwapDirection.BTC_TO_NIM ? 'nq-blue' : 'nq-green'"
+                >
+                    <AmountInput
+                        :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
+                        @input="onInput(SwapAsset.BTC, $event)"
+                        :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
+                        <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
+                    </AmountInput>
+                    <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
+                </div>
+            </div>
 
-                <div class="columns new-balances flex-row">
-                    <div class="left-column">
-                        <Amount :amount="newNimBalance" currency="nim" value-mask/>
-                        <FiatConvertedAmount :amount="newNimBalance" currency="nim" value-mask/>
-                    </div>
-                    <div class="right-column">
-                        <Amount :amount="newBtcBalance" currency="btc" value-mask/>
-                        <FiatConvertedAmount :amount="newBtcBalance" currency="btc" value-mask/>
-                    </div>
+            <div class="columns new-balances flex-row">
+                <div class="left-column">
+                    <Amount :amount="newNimBalance" currency="nim" value-mask/>
+                    <FiatConvertedAmount :amount="newNimBalance" currency="nim" value-mask/>
                 </div>
-            </PageBody>
+                <div class="right-column">
+                    <Amount :amount="newBtcBalance" currency="btc" value-mask/>
+                    <FiatConvertedAmount :amount="newBtcBalance" currency="btc" value-mask/>
+                </div>
+            </div>
+        </PageBody>
 
-            <SwapModalFooter
-                :disabled="!canSign || currentlySigning"
-                :error="estimateError || swapError"
-                @click="sign"
+        <SwapModalFooter
+            :disabled="!canSign || currentlySigning"
+            :error="estimateError || swapError"
+            @click="sign"
+        >
+            <template v-slot:cta>{{ $t('Confirm') }}</template>
+            <i18n v-if="isMainnet"
+                path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
+                tag="span"
             >
-                <template v-slot:cta>{{ $t('Confirm') }}</template>
-                <i18n v-if="isMainnet"
-                    path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
-                    tag="span"
-                >
-                    <span slot="text">{{ $t('Confirm') }}</span>
-                    <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
-                        target="_blank" rel="noopener"
-                    >Fastspot</a>
-                    <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
-                        target="_blank" rel="noopener"
-                    >Fastspot GO</a>
-                </i18n>
-                <i18n v-else
-                    path="By clicking '{text}', you agree to the ToS of {Fastspot}."
-                    tag="span"
-                >
-                    <span slot="text">{{ $t('Confirm') }}</span>
-                    <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
-                        target="_blank" rel="noopener"
-                    >Fastspot</a>
-                </i18n>
-            </SwapModalFooter>
-        </div>
+                <span slot="text">{{ $t('Confirm') }}</span>
+                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
+                    target="_blank" rel="noopener"
+                >Fastspot</a>
+                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
+                    target="_blank" rel="noopener"
+                >Fastspot GO</a>
+            </i18n>
+            <i18n v-else
+                path="By clicking '{text}', you agree to the ToS of {Fastspot}."
+                tag="span"
+            >
+                <span slot="text">{{ $t('Confirm') }}</span>
+                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
+                    target="_blank" rel="noopener"
+                >Fastspot</a>
+            </i18n>
+        </SwapModalFooter>
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
@@ -1198,13 +1196,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .modal /deep/ .small-page {
     width: 63.5rem;
-    height: 74.5rem;
-}
-
-.page {
-    flex-grow: 1;
+    // height: 74.5rem;
     font-size: var(--body-size);
-    height: 100%;
 }
 
 .page-header {
@@ -1451,11 +1444,11 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .page.main-page {
+    .modal /deep/ .small-page {
         overflow-y: auto;
     }
 
-    .main-page .page-body {
+    .page-body {
         padding-top: 0;
     }
 

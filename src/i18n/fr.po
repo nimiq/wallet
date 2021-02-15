@@ -45,7 +45,8 @@ msgstr "{fee} frais"
 msgid "{perc}% of swap value."
 msgstr "{perc}% de la valeur du swap."
 
-#: src/components/modals/BuyCryptoModal.vue:98
+#: src/components/modals/BuyCryptoModal.vue:101
+#: src/components/swap/SwapModal.vue:84
 msgid "{value} remaining"
 msgstr "{value} restant"
 
@@ -84,8 +85,8 @@ msgstr "Support 24/7 par Chat & Téléphone"
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:94
-#: src/components/swap/SwapModal.vue:51 src/components/swap/SwapModal.vue:69
+#: src/components/modals/BuyCryptoModal.vue:95
+#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
 msgid "30-day Limit"
 msgstr "Limite de 30 jours"
 
@@ -210,7 +211,7 @@ msgstr ""
 "Toutes les traductions sont à titre informatif uniquement. Le texte anglais "
 "est la version de contrôle."
 
-#: src/components/modals/BtcReceiveModal.vue:35
+#: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:34
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
@@ -263,7 +264,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Les swaps atomiques nécessitent 2 transactions BTC."
 
-#: src/components/swap/SwapAnimation.vue:190
+#: src/components/swap/SwapAnimation.vue:204
 msgid "Awaiting swap secret"
 msgstr "En attente du secret du swap"
 
@@ -322,8 +323,8 @@ msgstr "Bloc #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:271
 #: src/components/modals/TransactionModal.vue:283
-#: src/components/swap/SwapAnimation.vue:107
-#: src/components/swap/SwapAnimation.vue:175
+#: src/components/swap/SwapAnimation.vue:121
+#: src/components/swap/SwapAnimation.vue:189
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
@@ -359,9 +360,9 @@ msgstr ""
 msgid "Buy and sell with your wallet."
 msgstr "Achetez et Vendez avec votre wallet."
 
-#: src/components/modals/BuyCryptoModal.vue:180
 #: src/components/modals/BuyCryptoModal.vue:185
-#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:190
+#: src/components/modals/BuyCryptoModal.vue:204
 #: src/components/modals/BuyCryptoModal.vue:44
 msgid "Buy Crypto"
 msgstr "Acheter de la Crypto"
@@ -390,15 +391,15 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité de traitement de votre "
 "transaction."
 
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/swap/SwapModal.vue:136
+#: src/components/modals/BuyCryptoModal.vue:187
+#: src/components/swap/SwapModal.vue:151
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "En cliquant '{text}', vous acceptez les CGU de {Fastspot} et {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/swap/SwapModal.vue:148
+#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/swap/SwapModal.vue:163
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
 
@@ -449,9 +450,9 @@ msgstr "Modifier vos paramètres de langue."
 msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
-#: src/components/modals/BuyCryptoModal.vue:287
+#: src/components/modals/BuyCryptoModal.vue:293
 #: src/components/modals/SendModal.vue:157
-#: src/components/swap/SwapModal.vue:183
+#: src/components/swap/SwapModal.vue:197
 msgid "Choose an Address"
 msgstr "Choisissez une adresse"
 
@@ -483,8 +484,8 @@ msgstr "Bientôt disponible"
 msgid "Coming soon"
 msgstr "Bientôt"
 
-#: src/components/swap/SwapModal.vue:134 src/components/swap/SwapModal.vue:139
-#: src/components/swap/SwapModal.vue:151
+#: src/components/swap/SwapModal.vue:149 src/components/swap/SwapModal.vue:154
+#: src/components/swap/SwapModal.vue:166
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Confirmer"
@@ -563,7 +564,7 @@ msgstr ""
 "Créez un nouveau compte et transférez vos fonds.\n"
 "De nouvelles fonctionnalités vous attendent."
 
-#: src/components/modals/BtcReceiveModal.vue:43
+#: src/components/modals/BtcReceiveModal.vue:63
 msgid "Create a new single-use address."
 msgstr "Créer une nouvelle adresse à usage unique."
 
@@ -571,7 +572,7 @@ msgstr "Créer une nouvelle adresse à usage unique."
 msgid "Create backup"
 msgstr "Créer une Sauvegarde"
 
-#: src/components/modals/BtcReceiveModal.vue:81
+#: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create payment link"
 msgstr "Créer un lien de paiement"
@@ -605,7 +606,7 @@ msgstr "Carte de crédit acceptée"
 msgid "Disclaimer"
 msgstr "Avertissement"
 
-#: src/components/swap/SwapAnimation.vue:199
+#: src/components/swap/SwapAnimation.vue:213
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Ne fermez pas votre wallet tant que le swap n'est pas terminé !"
 
@@ -613,7 +614,7 @@ msgstr "Ne fermez pas votre wallet tant que le swap n'est pas terminé !"
 msgid "Don't close your wallet!"
 msgstr "Ne fermez pas votre wallet !"
 
-#: src/components/modals/BtcReceiveModal.vue:96
+#: src/components/modals/BtcReceiveModal.vue:14
 msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 "Ne réutilisez pas les adresses et créez-en une nouvelle pour chaque "
@@ -627,11 +628,11 @@ msgstr "Terminé"
 msgid "Duration and fees are estimates."
 msgstr "La durée et les frais sont des estimations."
 
-#: src/components/swap/SwapModal.vue:75
+#: src/components/swap/SwapModal.vue:90
 msgid "During early access, these limits apply."
 msgstr "Lors de l'accès anticipé, ces limites s'appliquent."
 
-#: src/components/modals/BuyCryptoModal.vue:106
+#: src/components/modals/BuyCryptoModal.vue:111
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
@@ -639,11 +640,11 @@ msgstr ""
 "progressivement."
 
 #: src/components/modals/BuyCryptoModal.vue:21
-#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:45
 msgid "Early Access"
 msgstr "Accès anticipé"
 
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:47
 msgid ""
 "Early Access means that there are limits in place for swaps. They will be "
 "increased gradually."
@@ -695,7 +696,7 @@ msgstr ""
 "Saisissez le mot de passe du test que vous souhaitez activer, puis appuyez "
 "sur la touche Entrée."
 
-#: src/components/swap/SwapAnimation.vue:204
+#: src/components/swap/SwapAnimation.vue:218
 msgid "Error:"
 msgstr "Erreur :"
 
@@ -754,7 +755,7 @@ msgid "fee"
 msgstr "frais"
 
 #: src/components/modals/BuyCryptoModal.vue:73
-#: src/components/swap/SwapModal.vue:40
+#: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "frais"
 
@@ -777,8 +778,8 @@ msgstr "Le fichier ne contient aucun contact."
 msgid "Finalize the swap by bank transfer."
 msgstr "Finalisez le swap par virement bancaire."
 
-#: src/components/swap/SwapAnimation.vue:191
-#: src/components/swap/SwapAnimation.vue:192
+#: src/components/swap/SwapAnimation.vue:205
+#: src/components/swap/SwapAnimation.vue:206
 msgid "Finalizing swap"
 msgstr "Finalisation du swap"
 
@@ -961,11 +962,11 @@ msgstr "C'est parti !"
 msgid "Light Node"
 msgstr "Light Node"
 
-#: src/components/modals/BtcReceiveModal.vue:46
+#: src/components/modals/BtcReceiveModal.vue:66
 msgid "Limit of copied addresses reached."
 msgstr "Limite d'adresses copiées atteinte."
 
-#: src/components/modals/BuyCryptoModal.vue:103
+#: src/components/modals/BuyCryptoModal.vue:108
 msgid "Limits are tied to accounts and IBANs."
 msgstr "Les limites sont liées aux comptes et aux IBANs."
 
@@ -981,13 +982,13 @@ msgstr "Charger le fichier"
 msgid "Loading Moonpay..."
 msgstr "Chargement de Moonpay..."
 
-#: src/components/modals/BuyCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:53 src/components/swap/SwapModal.vue:71
+#: src/components/modals/BuyCryptoModal.vue:99
+#: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
 msgid "loading..."
 msgstr "chargement..."
 
-#: src/components/swap/SwapAnimation.vue:185
-#: src/components/swap/SwapAnimation.vue:188
+#: src/components/swap/SwapAnimation.vue:199
+#: src/components/swap/SwapAnimation.vue:202
 msgid "Locking up {asset}"
 msgstr "Verrouillage de {asset}"
 
@@ -1009,7 +1010,7 @@ msgstr "perdu"
 
 #: src/components/modals/BuyCryptoModal.vue:79
 #: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:60 src/components/swap/SwapModal.vue:64
+#: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Max."
 
@@ -1105,6 +1106,10 @@ msgstr ""
 msgid "not sent"
 msgstr "non envoyée"
 
+#: src/components/swap/SwapAnimation.vue:41
+msgid "OASIS limit exceeded"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr "frais de service OASIS"
@@ -1148,10 +1153,11 @@ msgid "Pending..."
 msgstr "En attente..."
 
 #: src/components/modals/BuyCryptoModal.vue:89
+#: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
 msgid "Per-Swap Limit"
 msgstr "Limite par swap"
 
-#: src/components/swap/SwapAnimation.vue:38
+#: src/components/swap/SwapAnimation.vue:52
 msgid "Performing Swap"
 msgstr "Exécution du swap"
 
@@ -1168,6 +1174,7 @@ msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Veuillez vous assurer que vous envoyez une transaction instantanée !"
 
 #: src/components/swap/SwapAnimation.vue:33
+#: src/components/swap/SwapAnimation.vue:47
 msgid "Please keep your Swap ID for reference."
 msgstr ""
 
@@ -1196,7 +1203,7 @@ msgstr "Veuillez transférer"
 msgid "Receive"
 msgstr "Recevoir"
 
-#: src/components/modals/BtcReceiveModal.vue:7
+#: src/components/modals/BtcReceiveModal.vue:27
 msgid "Receive BTC"
 msgstr "Recevoir des BTC"
 
@@ -1217,14 +1224,14 @@ msgstr "Recevoir des NIM gratuits pour commencer."
 msgid "received at {dateAndTime}"
 msgstr "reçu à {dateAndTime}"
 
-#: src/components/modals/BtcReceiveModal.vue:54
+#: src/components/modals/BtcReceiveModal.vue:74
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 "Les adresses récentes seront listées ici, jusqu'à ce qu'elles reçoivent une "
 "transaction."
 
-#: src/components/modals/BtcReceiveModal.vue:57
+#: src/components/modals/BtcReceiveModal.vue:77
 msgid "Recently copied"
 msgstr "Copiée récemment"
 
@@ -1280,7 +1287,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Réessayer"
 
-#: src/components/swap/SwapAnimation.vue:206
+#: src/components/swap/SwapAnimation.vue:220
 msgid "Retrying..."
 msgstr "Nouvelle tentative..."
 
@@ -1396,7 +1403,7 @@ msgstr "Définir le montant"
 msgid "Set fee"
 msgstr "Définir les frais"
 
-#: src/components/swap/SwapAnimation.vue:183
+#: src/components/swap/SwapAnimation.vue:197
 msgid "Setting up swap"
 msgstr "Mise en place du swap"
 
@@ -1404,7 +1411,7 @@ msgstr "Mise en place du swap"
 msgid "Settings"
 msgstr "Réglages"
 
-#: src/components/modals/BtcReceiveModal.vue:8
+#: src/components/modals/BtcReceiveModal.vue:28
 msgid "Share a single-use address with the sender."
 msgstr "Partager une adresse à usage unique avec l'expéditeur."
 
@@ -1441,7 +1448,7 @@ msgstr "Afficher le lien"
 msgid "Signup"
 msgstr "S'inscrire"
 
-#: src/components/modals/BuyCryptoModal.vue:242
+#: src/components/modals/BuyCryptoModal.vue:248
 msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en EURO"
 
@@ -1505,7 +1512,7 @@ msgstr "Le swap a expiré"
 msgid "Swap NIM ↔ BTC"
 msgstr "Swap NIM ↔ BTC"
 
-#: src/components/swap/SwapModal.vue:8
+#: src/components/swap/SwapModal.vue:7
 msgid "Swap NIM and BTC"
 msgstr "Swap NIM et BTC"
 
@@ -1540,12 +1547,12 @@ msgstr ""
 "La banque traite votre transaction.\n"
 "Cela peut prendre jusqu'à {min} minutes."
 
-#: src/components/modals/BuyCryptoModal.vue:801
-#: src/components/swap/SwapModal.vue:624
+#: src/components/modals/BuyCryptoModal.vue:750
+#: src/components/swap/SwapModal.vue:621
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
 
-#: src/components/modals/BuyCryptoModal.vue:806
+#: src/components/modals/BuyCryptoModal.vue:755
 msgid "The fees determine the minimum amount."
 msgstr "Les frais déterminent le montant minimum."
 
@@ -1570,7 +1577,7 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Le wallet Nimiq est plus qu'un web-wallet, c'est un nœud du réseau."
 
 #: src/components/modals/BuyCryptoModal.vue:56
-#: src/components/swap/SwapModal.vue:20
+#: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
 
@@ -1598,7 +1605,7 @@ msgstr "Il n'y a pas de \"mot de passe oublié\""
 msgid "There's a problem"
 msgstr "Il y a un problème"
 
-#: src/components/swap/SwapModal.vue:76
+#: src/components/swap/SwapModal.vue:91
 msgid "They will be increased gradually."
 msgstr "Elles seront augmentées progressivement."
 
@@ -1610,7 +1617,7 @@ msgstr "Cette adresse a déjà été utilisée"
 msgid "This is a Legacy Account"
 msgstr "Ceci est un ancien type de compte."
 
-#: src/components/modals/BtcReceiveModal.vue:27
+#: src/components/modals/BtcReceiveModal.vue:47
 msgid "This is a single-use address"
 msgstr "Ceci est une adresse à usage unique"
 
@@ -1626,7 +1633,7 @@ msgid "This month"
 msgstr "Ce mois-ci"
 
 #: src/components/modals/BuyCryptoModal.vue:54
-#: src/components/swap/SwapModal.vue:18
+#: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "Ce taux inclut les frais de swap."
 
@@ -1646,7 +1653,7 @@ msgstr ""
 "Ce service sera bientôt accéléré de manière significative par la mise à jour"
 " de l'infrastructure des banques."
 
-#: src/components/swap/SwapAnimation.vue:39
+#: src/components/swap/SwapAnimation.vue:53
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Ce swap est aussi décentralisé que la blockchain elle-même."
 
@@ -1724,14 +1731,14 @@ msgstr ""
 "Utilisez {NIM}, la monnaie de paiement super performante basée sur les "
 "navigateurs."
 
-#: src/components/modals/BtcReceiveModal.vue:33
+#: src/components/modals/BtcReceiveModal.vue:53
 #: src/components/modals/BtcSendModal.vue:31
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Utilisez une nouvelle adresse Bitcoin pour chaque transaction afin "
 "d'améliorer la confidentialité."
 
-#: src/components/modals/BtcReceiveModal.vue:101
+#: src/components/modals/BtcReceiveModal.vue:19
 msgid ""
 "Use labels instead of contacts to easily identify transactions in your "
 "history."
@@ -1739,7 +1746,7 @@ msgstr ""
 "Utilisez des labels plutôt que des contacts pour identifier facilement les "
 "transactions dans votre historique."
 
-#: src/components/swap/SwapModal.vue:11
+#: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Utilisez le slider ou modifiez les valeurs pour mettre en place un swap."
@@ -1768,7 +1775,7 @@ msgstr ""
 msgid "What else?"
 msgstr "Quoi d'autre ?"
 
-#: src/components/modals/BtcReceiveModal.vue:91
+#: src/components/modals/BtcReceiveModal.vue:9
 msgid ""
 "With Bitcoin, a new address is used for every transaction to improve "
 "privacy. Reuse of addresses does not result in a loss of funds."
@@ -1800,6 +1807,12 @@ msgstr "Vous utilisez un ancien type de compte."
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Vous pourrez recevoir plus de NIM gratuits dans {waitTime} heures."
 
+#: src/components/swap/SwapAnimation.vue:43
+msgid ""
+"You exceeded the 30-day limit of your bank account and will be refunded. "
+"Please note that network fees may be deducted from your funds."
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
 msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
@@ -1811,7 +1824,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr "Vous possédez maintenant de la crypto !"
 
-#: src/components/swap/SwapAnimation.vue:196
+#: src/components/swap/SwapAnimation.vue:210
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Vous finaliserez votre achat par virement bancaire."
 

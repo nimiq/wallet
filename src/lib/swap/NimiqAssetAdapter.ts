@@ -1,4 +1,3 @@
-import { onUpdated } from '@vue/composition-api';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
 export type TransactionDetails = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']>;
@@ -149,24 +148,13 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
         serializedTx: string,
         secret: string,
         hash: string,
-        serializedProxyTx?: string,
     ): Promise<TransactionDetails> {
         serializedTx = serializedTx.replace(
             '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925' // SHA256 hash of dummy secret
             + '0000000000000000000000000000000000000000000000000000000000000000', // Dummy secret
             `${hash}${secret}`,
         );
-        const htlcTx = await this.sendTransaction(serializedTx);
-
-        // Not used anymore as htlc redeeming is not forwarded through the proxy anymore
-        // if (serializedProxyTx) {
-        //     // Wait for htlc transaction to the proxy to be mined and then forward the funds.
-        //     await this.findTransaction(htlcTx.recipient, (tx) => tx.transactionHash === htlcTx.transactionHash
-        //         && (tx.state === 'mined' || tx.state === 'confirmed'));
-        //     await this.sendTransaction(serializedProxyTx);
-        // }
-
-        return htlcTx;
+        return this.sendTransaction(serializedTx);
     }
 
     public async awaitSettlementConfirmation(

@@ -56,7 +56,6 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
         serializedTx: string,
         secret: string,
         hash: string,
-        serializedProxyTx?: string,
     ): Promise<Transaction<TAsset>>;
 
     awaitSettlementConfirmation(

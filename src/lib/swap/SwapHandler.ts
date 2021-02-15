@@ -98,13 +98,11 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
     public async settleIncoming(
         serializedTx: string,
         secret: string,
-        serializedProxyTx?: string,
     ): Promise<Transaction<ToAsset>> {
         return this.toAssetAdapter.settleHtlc(
             serializedTx,
             secret,
             this.swap.hash,
-            serializedProxyTx,
         );
     }
 

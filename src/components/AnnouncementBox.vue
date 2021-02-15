@@ -1,9 +1,9 @@
 <template>
     <div v-if="!wasDismissed && text()" class="announcement-box nq-green-bg">
+        <CrossCloseButton @click="close"/>
         <p>{{ text() }}</p>
         <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank" rel="noopener">{{ cta() }}</BlueLink>
         <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon/></button>
-        <CrossCloseButton class="top-right" @click="close"/>
     </div>
 </template>
 
@@ -70,6 +70,11 @@ p {
     line-height: 1.4;
     margin-top: 0;
     margin-bottom: 1.75rem;
+}
+
+.cross-close-button {
+    float: right;
+    margin: -0.5rem -0.5rem 0 0;
 }
 
 .blue-link {

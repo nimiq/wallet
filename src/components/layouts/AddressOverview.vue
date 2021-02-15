@@ -563,7 +563,7 @@ export default defineComponent({
     &:disabled {
         pointer-events: none;
         background: rgba(131, 131, 131, 0.07);
-        color: var(--text-30);
+        color: #B5B6C1;
     }
 }
 

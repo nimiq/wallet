@@ -53,6 +53,7 @@ export default defineComponent({
     .nq-button-s,
     /deep/ svg {
         margin-left: 1.5rem;
+        white-space: nowrap;
     }
 
     .bottom-overlay /deep/ .close-button {

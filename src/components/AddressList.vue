@@ -307,7 +307,7 @@ export default defineComponent({
     }
 
     .address-button.active {
-        pointer-events: none;
+        cursor: auto;
     }
 
     .address-button:hover,
@@ -371,10 +371,6 @@ export default defineComponent({
             background: none !important;
             color: var(--text-100);
             margin: 0.25rem 0;
-
-            /deep/ .crypto-balance {
-                color: inherit !important;
-            }
         }
 
         .add-address-button {

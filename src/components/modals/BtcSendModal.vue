@@ -928,9 +928,10 @@ export default defineComponent({
             font-weight: 600;
             line-height: 2.5rem;
             color: white;
+            transform: translate(-2rem, 2rem);
 
-            @media (min-width: 701px) {
-                transform: translate(-1rem, 2rem);
+            @media (max-width: 700px) { // Full mobile breakpoint
+                transform: translate(0.5rem, 2rem);
             }
 
             p {

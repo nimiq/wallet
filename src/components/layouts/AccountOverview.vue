@@ -378,7 +378,7 @@ export default defineComponent({
         };
 
         &.active {
-            pointer-events: none;
+            cursor: auto;
             color: var(--text-100);
         }
 
@@ -573,6 +573,7 @@ export default defineComponent({
         height: 11rem;
         padding: 0;
         margin: 0;
+        color: var(--text-100);
 
         .bitcoin-account-item::before {
             display: none;

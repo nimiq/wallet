@@ -835,8 +835,8 @@ export default defineComponent({
                 if (swapSuggestion.from.asset === SwapAsset.EUR) {
                     fund = {
                         type: SwapAsset.EUR,
-                        value: swapSuggestion.from.amount,
-                        fee: swapSuggestion.from.fee,
+                        value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
+                        fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
                         bankLabel: userBank.value!.name,
                     };
                 }
@@ -967,6 +967,27 @@ export default defineComponent({
                 updateEstimate();
                 return;
             }
+
+            // Validate OASIS HTLC details
+            try {
+                // Check hash
+                if (oasisHtlc.hash.value !== confirmedSwap.hash) {
+                    throw new Error('OASIS HTLC hash does not match Fastspot swap hash');
+                }
+                // Check amount (OASIS processing fee is included in Fastspot amount)
+                if (oasisHtlc.amount + oasisHtlc.fee !== confirmedSwap.from.amount) {
+                    throw new Error('OASIS HTLC amount + fee does not match swap amount');
+                }
+            } catch (error) {
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+                swapError.value = 'Invalid OASIS contract, swap aborted!';
+                cancelSwap({ id: swapId } as PreSwap);
+                // currentlySigning.value = false;
+                updateEstimate();
+                return;
+            }
+
             const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing.options
                 .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
 

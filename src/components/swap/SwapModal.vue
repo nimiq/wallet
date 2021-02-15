@@ -47,6 +47,11 @@
                         <p>{{ $t('Early Access means that there are limits in place for swaps.' +
                             ' They will be increased gradually.') }}</p>
                         <div class="price-breakdown">
+                            <label>{{ $t('Per-Swap Limit') }}</label>
+                            <FiatConvertedAmount v-if="limits"
+                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
+                        </div>
+                        <div class="price-breakdown">
                             <label>{{ $t('30-day Limit') }}</label>
                             <FiatConvertedAmount v-if="limits"
                                 :amount="limits.monthly.luna" currency="nim" roundDown/>
@@ -66,11 +71,20 @@
                             </template>
                         </div>
                         <div class="price-breakdown">
+                            <label>{{ $t('Per-Swap Limit') }}</label>
+                            <FiatConvertedAmount v-if="limits"
+                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
+                        </div>
+                        <div class="price-breakdown">
                             <label>{{ $t('30-day Limit') }}</label>
                             <FiatConvertedAmount v-if="limits"
                                 :amount="limits.monthly.luna" currency="nim" roundDown/>
                             <span v-else>{{ $t('loading...') }}</span>
                         </div>
+                        <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                            <FiatConvertedAmount slot="value"
+                                :amount="limits.remaining.luna" currency="nim" roundDown/>
+                        </i18n>
                         <div></div>
                         <p class="explainer">
                             {{ $t('During early access, these limits apply.') }}

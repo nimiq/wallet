@@ -9,10 +9,10 @@
 </template>
 
 <script lang="ts">
-import { FiatAmount } from '@nimiq/vue-components';
 import { defineComponent, computed } from '@vue/composition-api';
+import { FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '../stores/Fiat';
-import { CryptoCurrency } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 
 export default defineComponent({
     name: 'FiatConvertedAmount',
@@ -30,11 +30,15 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        fiat: {
+            type: String as () => FiatCurrency,
+            required: false,
+        },
     },
     setup(props) {
         const fiatStore = useFiatStore();
 
-        const fiatCurrency = fiatStore.currency;
+        const fiatCurrency = computed(() => props.fiat || fiatStore.currency.value);
         const exchangeRate = computed(() => fiatStore.exchangeRates.value[props.currency]?.[fiatCurrency.value]);
         const currencyDecimals = computed(() => {
             switch (props.currency) {

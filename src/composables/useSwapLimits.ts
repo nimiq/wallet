@@ -13,16 +13,10 @@ export function useSwapLimits(options: {
     btcAddress?: string,
 }) {
     const limits = ref<{
-        current: {
-            usd: number,
-            luna: number,
-            sat: number,
-        },
-        monthly: {
-            usd: number,
-            luna: number,
-            sat: number,
-        },
+        current: { usd: number, luna: number, sat: number },
+        perSwap: { usd: number, luna: number, sat: number },
+        monthly: { usd: number, luna: number, sat: number },
+        remaining: { usd: number, luna: number, sat: number },
     } | undefined>(undefined);
 
     const nimAddress = ref(options.nimAddress);
@@ -107,17 +101,26 @@ export function useSwapLimits(options: {
         const nimAddressLimits = await nimAddressLimitsPromise;
         const btcAddressLimits = await btcAddressLimitsPromise;
 
-        const lunaRate = (nimAddressLimits.referenceMonthly / 100) / nimAddressLimits.monthly;
-        const satRate = (btcAddressLimits.referenceMonthly / 100) / btcAddressLimits.monthly;
+        const lunaRate = (nimAddressLimits.reference.monthly / 100) / nimAddressLimits.monthly;
+        const satRate = (btcAddressLimits.reference.monthly / 100) / btcAddressLimits.monthly;
+
+        const monthlyUsdLimit = (userLimits || nimAddressLimits.reference).monthly / 100;
+        const perSwapUsdLimit = (userLimits || nimAddressLimits.reference).perSwap / 100;
 
         const currentUsdLimit = Math.max(0, Math.min(
             userLimits ? (userLimits.current / 100) : Infinity,
-            nimAddressLimits.referenceMonthly / 100 - swappedAmount,
-            nimAddress.value ? (nimAddressLimits.referenceCurrent / 100) : Infinity,
-            btcAddress.value ? (btcAddressLimits.referenceCurrent / 100) : Infinity,
+            perSwapUsdLimit,
+            nimAddressLimits.reference.monthly / 100 - swappedAmount,
+            nimAddress.value ? (nimAddressLimits.reference.current / 100) : Infinity,
+            btcAddress.value ? (btcAddressLimits.reference.current / 100) : Infinity,
         ));
 
-        const monthlyUsdLimit = nimAddressLimits.referenceMonthly / 100;
+        const remainingUsdLimits = Math.max(0, Math.min(
+            userLimits ? (userLimits.monthlyRemaining / 100) : Infinity,
+            nimAddressLimits.reference.monthly / 100 - swappedAmount,
+            nimAddress.value ? (nimAddressLimits.reference.monthlyRemaining / 100) : Infinity,
+            btcAddress.value ? (btcAddressLimits.reference.monthlyRemaining / 100) : Infinity,
+        ));
 
         limits.value = {
             current: {
@@ -125,10 +128,20 @@ export function useSwapLimits(options: {
                 luna: Math.floor(currentUsdLimit / lunaRate),
                 sat: Math.floor(currentUsdLimit / satRate),
             },
+            perSwap: {
+                usd: perSwapUsdLimit,
+                luna: Math.floor(perSwapUsdLimit / lunaRate),
+                sat: Math.floor(perSwapUsdLimit / satRate),
+            },
             monthly: {
                 usd: monthlyUsdLimit,
                 luna: Math.floor(monthlyUsdLimit / lunaRate),
                 sat: Math.floor(monthlyUsdLimit / satRate),
+            },
+            remaining: {
+                usd: remainingUsdLimits,
+                luna: Math.floor(remainingUsdLimits / lunaRate),
+                sat: Math.floor(remainingUsdLimits / satRate),
             },
         };
 

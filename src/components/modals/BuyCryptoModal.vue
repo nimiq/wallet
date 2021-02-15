@@ -87,18 +87,21 @@
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('Per-Swap Limit') }}</label>
-                                <FiatAmount :amount="OASIS_LIMIT_PER_TRANSACTION"
-                                    :currency="selectedFiatCurrency" hideDecimals/>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.perSwap.luna" roundDown
+                                    currency="nim" :fiat="selectedFiatCurrency"/>
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
                                 <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
+                                    :amount="limits.monthly.luna" roundDown
+                                    currency="nim" :fiat="selectedFiatCurrency"/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                 <FiatConvertedAmount slot="value"
-                                    :amount="limits.current.luna" currency="nim" roundDown/>
+                                    :amount="limits.remaining.luna" roundDown
+                                    currency="nim" :fiat="selectedFiatCurrency"/>
                             </i18n>
                             <div></div>
                             <p class="explainer">
@@ -380,8 +383,6 @@ enum Pages {
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
-const OASIS_LIMIT_PER_TRANSACTION = 100; // Euro
-
 export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
@@ -475,7 +476,7 @@ export default defineComponent({
             const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
             if (!nimRate) return null;
 
-            return Math.min(Math.floor((limits.value.current.luna / 1e5) * nimRate), OASIS_LIMIT_PER_TRANSACTION);
+            return Math.floor((limits.value.current.luna / 1e5) * nimRate);
         });
 
         const currentLimitCrypto = computed(() => {
@@ -1142,7 +1143,6 @@ export default defineComponent({
             hasBitcoinAddresses,
             activeCurrency,
             btcUnit,
-            OASIS_LIMIT_PER_TRANSACTION,
             currentLimitFiat,
             currentLimitCrypto,
             estimateError,

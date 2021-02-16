@@ -1,9 +1,12 @@
 <template>
-    <div class="btc-address-input"
-        :class="{ invalid }"
-        :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
-    >
-        <LabelInput v-model="address" :placeholder="placeholder" @input="onInput" @paste="onPaste" ref="$input"/>
+    <div class="btc-address-input" :class="{ invalid }">
+        <LabelInput v-model="address"
+            :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
+            :placeholder="placeholder"
+            @input="onInput"
+            @paste="onPaste"
+            ref="$input"
+        />
         <transition name="fade">
             <button v-if="!address.length" class="reset scan-qr-button" @click="$emit('scan')">
                 <ScanQrCodeIcon/>

@@ -8,16 +8,15 @@
         ><slot name="cta">{{ $t('Confirm') }}</slot></button>
 
         <MessageTransition>
-            <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
-                :key="networkState.message">
+            <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row">
                 <CircleSpinner/>
                 {{ networkState.message }}
             </div>
-            <div v-else-if="error" class="footer-notice nq-orange flex-row" :key="error">
+            <div v-else-if="error" class="footer-notice nq-orange flex-row">
                 <AlertTriangleIcon/>
                 {{ error }}
             </div>
-            <div v-else class="footer-notice nq-gray flex-row" key="content"><slot></slot></div>
+            <div v-else class="footer-notice nq-gray flex-row"><slot></slot></div>
         </MessageTransition>
 
     </PageFooter>

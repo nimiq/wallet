@@ -1,31 +1,46 @@
-<template>
-    <div class="message-transition" :style="messageHeight && { '--message-height': `${messageHeight}px` }">
-        <transition name="fadeY"
-            @enter="(el) => messageHeight = el.offsetHeight"
-            @after-enter="() => messageHeight = undefined"
-        >
-            <div class="message flex-row" :key="messageKey()"><slot></slot></div>
-        </transition>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
+import { CreateElement, VNode } from 'vue';
 
 export default defineComponent({
-    setup(props, context) {
+    render(createElement: CreateElement) {
+        return createElement('div', {
+            class: 'message-transition',
+            style: this.messageHeight ? { '--message-height': `${this.messageHeight}px` } : '',
+        }, [
+            createElement('transition', {
+                props: {
+                    name: 'fadeY',
+                },
+                on: {
+                    enter: this.onEnter,
+                },
+            }, [
+                createElement('div', {
+                    class: ['message', 'flex-row'],
+                    key: this.getKey(this.$slots.default[0]),
+                },
+                this.$slots.default),
+            ]),
+        ]);
+    },
+    setup() {
         const messageHeight = ref<number | null>(null);
 
-        function messageKey() {
-            const vnodes = context.slots.default();
-
-            if (vnodes && vnodes.length > 0) {
-                return JSON.stringify(vnodes[0].data as HTMLElement);
-            }
-            return '';
+        function onEnter(el: HTMLElement) {
+            messageHeight.value = el.offsetHeight;
         }
 
-        return { messageHeight, messageKey };
+        function getKey(el: VNode): string {
+            if (!el.children) return `${el.tag || ''}${el.data?.staticClass || ''}${el.text || ''}`;
+            return el.children.map((child: VNode) => getKey(child)).join();
+        }
+
+        return {
+            messageHeight,
+            onEnter,
+            getKey,
+        };
     },
 });
 </script>

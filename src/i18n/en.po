@@ -193,7 +193,7 @@ msgstr ""
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/UpdateNotification.vue:3
+#: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
 msgstr ""
 
@@ -292,11 +292,11 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:31
 msgid "Buy"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:37
+#: src/components/layouts/Sidebar.vue:40
 msgid "Buy & Sell"
 msgstr ""
 
@@ -454,15 +454,15 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:54
+#: src/components/swap/SwapModalFooter.vue:49
 msgid "Connecting to Bitcoin network"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:50
+#: src/components/swap/SwapModalFooter.vue:45
 msgid "Connecting to Nimiq & Bitcoin networks"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:52
+#: src/components/swap/SwapModalFooter.vue:47
 msgid "Connecting to Nimiq network"
 msgstr ""
 
@@ -545,7 +545,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:213
+#: src/components/swap/SwapAnimation.vue:220
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -620,7 +620,7 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:218
+#: src/components/swap/SwapAnimation.vue:226
 msgid "Error:"
 msgstr ""
 
@@ -785,7 +785,7 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:111
+#: src/components/swap/SwapNotification.vue:180
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -950,7 +950,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:55
 msgid "Network"
 msgstr ""
 
@@ -974,7 +974,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:110
+#: src/components/swap/SwapNotification.vue:179
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1163,7 +1163,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:220
+#: src/components/swap/SwapAnimation.vue:228
 msgid "Retrying..."
 msgstr ""
 
@@ -1202,7 +1202,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:33
+#: src/components/layouts/Sidebar.vue:35
 msgid "Sell"
 msgstr ""
 
@@ -1280,7 +1280,7 @@ msgstr ""
 msgid "Setting up swap"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:60
+#: src/components/layouts/Sidebar.vue:63
 msgid "Settings"
 msgstr ""
 
@@ -1415,12 +1415,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:750
+#: src/components/modals/BuyCryptoModal.vue:757
 #: src/components/swap/SwapModal.vue:629
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:755
+#: src/components/modals/BuyCryptoModal.vue:762
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1511,6 +1511,10 @@ msgstr ""
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:215
+msgid "This usually take 30 seconds, up to a minute."
+msgstr ""
+
 #: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:53
@@ -1573,7 +1577,7 @@ msgid "Update Available"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:13
 msgid "Update now"
 msgstr ""
 
@@ -1602,7 +1606,7 @@ msgstr ""
 msgid "Wait for the swap to be set up."
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:56
+#: src/components/swap/SwapModalFooter.vue:51
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 
@@ -1654,7 +1658,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:210
+#: src/components/swap/SwapAnimation.vue:212
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 

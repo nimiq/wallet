@@ -29,7 +29,7 @@
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
             <button class="nq-button-s inverse"
-                @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
+                @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root'"
             >{{ $t('Sell') }}</button>
         </div>

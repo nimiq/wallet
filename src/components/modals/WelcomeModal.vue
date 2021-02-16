@@ -41,7 +41,7 @@
             </div>
         </PageBody>
 
-        <PageBody v-else-if="page === 2" class="right-aligned">
+        <PageBody v-else-if="page === 2" class="right-aligned network-page">
             <div class="text">
                 <p class="nq-text">
                     {{ $t('The Nimiq wallet is more than a web-wallet, it is a network node.') }}
@@ -162,6 +162,10 @@ export default defineComponent({
         flex-direction: row-reverse;
     }
 
+    .page-body.network-page {
+        max-height: 39.5rem;
+    }
+
     .text,
     .visual {
         flex-shrink: 0;
@@ -172,10 +176,6 @@ export default defineComponent({
         margin-left: 2rem;
         margin-right: 2rem;
         width: 27rem;
-    }
-
-    .page3-text .nq-text {
-        width: 31rem;
     }
 
     .visual img {
@@ -214,19 +214,6 @@ export default defineComponent({
         color: var(--bitcoin-orange);
     }
 
-    .coming-soon {
-        display: inline-block;
-        text-transform: uppercase;
-        font-size: var(--small-label-size);
-        font-weight: bold;
-        letter-spacing: 0.06em;
-        padding: 0.625rem 1.5rem;
-        box-shadow: 0 0 0 1.5px var(--text-10);
-        border-radius: 5rem;
-        margin: 1rem 0 -1rem 2rem;
-        color: var(--text-40);
-    }
-
     .nq-button {
         margin-top: 0 !important;
     }
@@ -256,40 +243,5 @@ export default defineComponent({
     .flag:focus,
     .flag.active {
         opacity: 1;
-    }
-
-    .skip {
-        align-items: center;
-        font-size: var(--small-size);
-        font-weight: 600;
-        line-height: 2;
-        color: inherit;
-        margin: -1.5rem auto 1rem;
-        padding: 0 2rem;
-        opacity: 0.7;
-        transition: opacity .3s var(--nimiq-ease);
-    }
-
-    .skip .nq-icon {
-        height: 1.125rem;
-        width: 1.125rem;
-        transition: transform .3s var(--nimiq-ease);
-    }
-
-    .skip:hover,
-    .skip:focus {
-        opacity: 1;
-        text-decoration: none;
-    }
-
-    .skip:hover .nq-icon,
-    .skip:focus .nq-icon {
-        transform: translateX(0.25rem);
-    }
-
-    @media (max-width: 1160px) { /* Half mobile breakpoint */
-        .page3-text .nq-text {
-            width: 27rem;
-        }
     }
 </style>

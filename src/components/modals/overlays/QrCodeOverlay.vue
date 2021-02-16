@@ -48,11 +48,11 @@ export default defineComponent({
     .qr-code {
         // The QrCode is rendered at 2x size and then scaled to half its size,
         // to be sharp on retina displays:
-        // 2 x 260px = 560px
+        // 2 x 260px = 520px
         // But now we need to make it behave as half its size as well, that's
         // why we use negative margins on all sides (130px = 260px / 2).
-        width: 32.5rem;
-        height: 32.5rem;
+        transform: scale(0.5);
+        margin: -130px;
     }
 
     .qr-info-text {

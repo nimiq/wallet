@@ -4,7 +4,7 @@
             <!-- eslint-disable max-len -->
             <div class="exchange-area flex-column">
                 <header>
-                    <h1 class="nq-h1">{{ $t('Get NIM and BTC') }}</h1>
+                    <h1 class="nq-h1">{{ $t('Trade NIM and BTC') }}</h1>
                     <i18n :path="'There are many options, use a credit card or trade\u00a0crypto. You can find more exchanges on {link}'"
                         tag="p" class="nq-text intro"
                     >
@@ -91,25 +91,6 @@
                     </a>
                 </div>
             </div>
-            <div class="oasis-area nq-blue-bg flex-column">
-                <label>{{ $t('Coming\u00a0soon') }}</label>
-                <h2 class="nq-h2">{{ $t('Buy and sell with your wallet.') }}</h2>
-                <p class="nq-text">
-                    {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling of crypto directly from your '
-                        + 'wallet.') }}
-                </p>
-                <p class="nq-text">
-                    {{ $t('Starting with EU\u00a0bank\u00a0accounts soon.') }}
-                </p>
-                <footer>
-                    <BlueLink href="https://nimiq.com/oasis" target="_blank" rel="noopener">{{ $t('Learn more') }}</BlueLink>
-                    <!-- <div class="flex-grow"></div> -->
-                    <div>
-                        <p class="nq-text">{{ $t('In cooperation with') }}</p>
-                        <img src="../../assets/ten31.svg" alt="TEN31">
-                    </div>
-                </footer>
-            </div>
             <!-- eslint-enable max-len -->
         </PageBody>
     </Modal>
@@ -119,7 +100,6 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
-import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
     name: 'trade-modal',
@@ -127,14 +107,13 @@ export default defineComponent({
         Modal,
         PageBody,
         ArrowRightSmallIcon,
-        BlueLink,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .modal /deep/ .small-page {
-    width: 88.5rem !important;
+    width: 65rem !important;
     min-height: 60rem !important;
     max-width: 100vw;
 }
@@ -146,7 +125,6 @@ export default defineComponent({
 
 .exchange-area {
     flex-grow: 1;
-    margin-left: 1.25rem;
     padding: 3.25rem;
     align-items: center;
     justify-content: space-between;
@@ -274,82 +252,6 @@ export default defineComponent({
     }
 }
 
-.oasis-area {
-    width: 22.75rem;
-    border-radius: 0.625rem;
-    padding: 3rem;
-    flex-shrink: 0;
-    align-items: flex-start;
-    position: relative;
-
-    label {
-        text-transform: uppercase;
-        font-size: var(--small-label-size);
-        font-weight: bold;
-        letter-spacing: 0.06em;
-        padding: 0.625rem 1.5rem;
-        color: rgba(255, 255, 255, 0.6);
-        box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
-        border-radius: 50px;
-    }
-
-    h2 {
-        font-weight: 600;
-        margin-bottom: 2rem;
-    }
-
-    .nq-text,
-    .nq-link {
-        font-size: var(--small-size);
-        font-weight: 600;
-        margin-top: 0;
-        line-height: 1.4;
-    }
-
-    > .nq-text:first-of-type {
-        margin-bottom: 1.5rem;
-    }
-
-    .blue-link {
-        font-weight: bold;
-        color: var(--nimiq-light-blue);
-    }
-
-    footer {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-
-        & > div:last-child {
-            margin-top: auto;
-        }
-
-        .nq-text {
-            margin-bottom: 1rem;
-            opacity: calc(0.5 / 0.7);
-            font-size: 1.5rem;
-        }
-    }
-
-    img {
-        display: block;
-        opacity: 0.5;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: url('../../assets/oasis-bg-desktop.svg') bottom right no-repeat;
-        pointer-events: none;
-        user-select: none;
-    }
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .modal /deep/ .small-page {
         // Regular Modal size (iOS scrolling inside the TradeModal does not work without a fixed height)
@@ -363,13 +265,12 @@ export default defineComponent({
 
     .exchange-area {
         flex-shrink: 0;
-        margin-left: 0;
         padding: 2.25rem 1.25rem;
         align-items: stretch;
 
         .intro {
             max-width: unset;
-            margin-bottom: 5rem;
+            margin-bottom: 4rem;
         }
     }
 
@@ -412,39 +313,6 @@ export default defineComponent({
 
     .exchange-logos {
         display: none;
-    }
-
-    .oasis-area {
-        width: unset;
-
-        footer {
-            align-items: flex-start;
-            flex-direction: row;
-            flex-wrap: wrap;
-            flex-grow: 0;
-
-            .nq-link,
-            & > div:last-child {
-                flex: 0 0 auto;
-            }
-
-            & > div:last-child {
-                display: flex;
-                flex: 0 0 auto;
-                margin-left: auto;
-                margin-top: 0;
-
-                .nq-text {
-                    margin-bottom: 0;
-                    margin-right: 1rem;
-                }
-            }
-
-        }
-
-        &::after {
-            background: url('../../assets/oasis-bg-mobile.svg') bottom right no-repeat;
-        }
     }
 }
 </style>

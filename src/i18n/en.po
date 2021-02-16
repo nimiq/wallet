@@ -306,10 +306,6 @@ msgid ""
 "Coming soon!"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:96
-msgid "Buy and sell with your wallet."
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:185
 #: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/modals/BuyCryptoModal.vue:204
@@ -422,10 +418,6 @@ msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:95
-msgid "Coming soon"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:157
@@ -728,10 +720,6 @@ msgstr ""
 msgid "Get NIM"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:7
-msgid "Get NIM and BTC"
-msgstr ""
-
 #: src/components/modals/BtcActivationModal.vue:21
 msgid "Got it"
 msgstr ""
@@ -805,10 +793,6 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:108
-msgid "In cooperation with"
-msgstr ""
-
 #: src/components/modals/BtcSendModal.vue:108
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
@@ -848,7 +832,6 @@ msgid "Language"
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:19
-#: src/components/modals/TradeModal.vue:105
 msgid "Learn more"
 msgstr ""
 
@@ -964,10 +947,6 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:98
-msgid "Nimiq OASIS enables decentra­lized buying and selling of crypto directly from your wallet."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:128
@@ -1348,10 +1327,6 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:102
-msgid "Starting with EU bank accounts soon."
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr ""
@@ -1527,6 +1502,10 @@ msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:44
 msgid "Total fees"
+msgstr ""
+
+#: src/components/modals/TradeModal.vue:7
+msgid "Trade NIM and BTC"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:40

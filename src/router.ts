@@ -43,6 +43,8 @@ const BtcTransactionModal = () =>
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
+const SellCryptoModal = () =>
+    import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/SellCryptoModal.vue');
 
 const MoonpayModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
@@ -113,6 +115,14 @@ const routes: RouteConfig[] = [{
                 modal: BuyCryptoModal,
             },
             name: 'buy-crypto',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/sell-crypto',
+            components: {
+                modal: SellCryptoModal,
+            },
+            name: 'sell-crypto',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {

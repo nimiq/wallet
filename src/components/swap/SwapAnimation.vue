@@ -205,13 +205,21 @@
             <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
             <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
 
-            <div v-if="manualFunding && state <= SwapState.CREATE_OUTGOING"
-                class="dont-close-wallet-notice nq-light-blue"
-            >{{ $t('You will finalize your purchase by bank transfer.') }}</div>
+            <MessageTransition>
+                <template v-if="manualFunding && state <= SwapState.CREATE_OUTGOING">
+                    <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
+                        class="dont-close-wallet-notice nq-light-blue">{{
+                        $t('You will finalize your purchase by bank transfer.')
+                    }}</div>
+                    <div v-else class="dont-close-wallet-notice nq-gray">{{
+                        $t('This usually take 30 seconds, up to a minute.')
+                    }}</div>
+                </template>
 
-            <div v-else class="dont-close-wallet-notice nq-orange">
-                {{ $t('Don\'t close your wallet until the swap is complete!') }}
-            </div>
+                <div v-else class="dont-close-wallet-notice nq-orange">
+                    {{ $t('Don\'t close your wallet until the swap is complete!') }}
+                </div>
+            </MessageTransition>
         </div>
 
         <div v-if="error" class="error nq-orange-bg">
@@ -225,7 +233,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from '@vue/composition-api';
 import {
     CheckmarkIcon,
     Identicon,
@@ -247,6 +255,7 @@ import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
 import BitcoinSvg from './animation/bitcoin.svg';
 import BankSvg from './animation/bank.svg';
+import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     props: {
@@ -430,6 +439,22 @@ export default defineComponent({
             }
         });
 
+        enum BottomNoticeMessage { FIRST, SECOND }
+        const bottomNoticeInterval = ref<number | null>(null);
+        const bottomNoticeMsg = ref<BottomNoticeMessage>(BottomNoticeMessage.FIRST);
+
+        onMounted(() => {
+            bottomNoticeInterval.value = window.setInterval(() => {
+                bottomNoticeMsg.value = BottomNoticeMessage[bottomNoticeMsg.value + 1]
+                    ? BottomNoticeMessage[BottomNoticeMessage[bottomNoticeMsg.value + 1] as 'FIRST' | 'SECOND']
+                    : BottomNoticeMessage.FIRST;
+            }, 6 * 1000); // 6 seconds
+        });
+
+        onUnmounted(() => {
+            if (bottomNoticeInterval.value) window.clearInterval(bottomNoticeInterval.value);
+        });
+
         return {
             SwapState,
             state,
@@ -447,6 +472,8 @@ export default defineComponent({
             SwapAsset,
             BitcoinSvg,
             BankSvg,
+            BottomNoticeMessage,
+            bottomNoticeMsg,
         };
     },
     components: {
@@ -463,6 +490,7 @@ export default defineComponent({
         StopwatchIcon,
         Copyable,
         CloseButton,
+        MessageTransition,
     },
 });
 </script>
@@ -964,6 +992,11 @@ export default defineComponent({
         margin: 0 auto 2rem;
         font-weight: 600;
         --nimiq-light-blue: var(--nimiq-light-blue-on-dark);
+
+        &.nq-gray {
+            opacity: 0.6;
+            color: white;
+        }
     }
 }
 

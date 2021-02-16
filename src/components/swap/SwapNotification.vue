@@ -85,8 +85,77 @@ export default defineComponent({
             if (activeSwap.value) processSwap();
         });
 
+        let swapHandler: SwapHandler<SwapAsset, SwapAsset> | undefined;
+        let expiryCheckInterval = -1;
+
+        function cleanUp() {
+            window.removeEventListener('beforeunload', onUnload);
+            window.clearInterval(expiryCheckInterval);
+        }
+
+        async function isExpired() {
+            const timestamp = await Time.now(true);
+            const swap = activeSwap.value!;
+
+            const remainingTimes: number[] = [];
+
+            // When we haven't funded our HTLC yet, we need to abort when the quote expires.
+            if (swap.state <= SwapState.AWAIT_INCOMING) {
+                if (swap.expires <= timestamp) return true;
+                remainingTimes.push(swap.expires - timestamp);
+            }
+
+            // Otherwise, the swap expires when the first HTLC expires
+            for (const contract of Object.values(swap.contracts)) {
+                switch (contract!.asset) {
+                    case SwapAsset.NIM: {
+                        const height = useNetworkStore().height.value;
+                        const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
+                        if (timeoutBlock <= height) return true;
+                        remainingTimes.push((timeoutBlock - height) * 60);
+                        break;
+                    }
+                    case SwapAsset.BTC:
+                    case SwapAsset.EUR: {
+                        const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
+                        if (timeout <= timestamp) return true;
+                        remainingTimes.push(timeout - timestamp);
+                        break;
+                    }
+                    default: throw new Error('Invalid swap asset');
+                }
+            }
+
+            // eslint-disable-next-line no-console
+            console.debug('Swap expires in', Math.min(...remainingTimes), 'seconds');
+
+            return false;
+        }
+
+        async function checkExpired() {
+            if (!activeSwap.value) {
+                if (swapHandler) swapHandler.stop(new Error(SwapError.DELETED));
+                cleanUp();
+                return true;
+            }
+
+            if (await isExpired()) {
+                if (swapHandler) swapHandler.stop(new Error(SwapError.EXPIRED));
+                cleanUp();
+                updateSwap({
+                    state: SwapState.EXPIRED,
+                });
+                return true;
+            }
+            return false;
+        }
+
         watch(activeSwap, (newSwap, oldSwap) => {
-            if (!newSwap) return; // Do nothing when swap is deleted
+            if (!newSwap) {
+                if (swapHandler) swapHandler.stop(new Error(SwapError.DELETED));
+                cleanUp();
+                return;
+            }
 
             if (newSwap && !oldSwap) {
                 // A new swap started, start processing it
@@ -170,46 +239,7 @@ export default defineComponent({
                 await electrum.waitForConsensusEstablished();
             }
 
-            async function isExpired() {
-                const timestamp = await Time.now(true);
-                const swap = activeSwap.value!;
-
-                const remainingTimes: number[] = [];
-
-                // When we haven't funded our HTLC yet, we need to abort when the quote expires.
-                if (swap.state <= SwapState.AWAIT_INCOMING) {
-                    if (swap.expires <= timestamp) return true;
-                    remainingTimes.push(swap.expires - timestamp);
-                }
-
-                // Otherwise, the swap expires when the first HTLC expires
-                for (const contract of Object.values(swap.contracts)) {
-                    switch (contract!.asset) {
-                        case SwapAsset.NIM: {
-                            const height = useNetworkStore().height.value;
-                            const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
-                            if (timeoutBlock <= height) return true;
-                            remainingTimes.push((timeoutBlock - height) * 60);
-                            break;
-                        }
-                        case SwapAsset.BTC:
-                        case SwapAsset.EUR: {
-                            const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
-                            if (timeout <= timestamp) return true;
-                            remainingTimes.push(timeout - timestamp);
-                            break;
-                        }
-                        default: throw new Error('Invalid swap asset');
-                    }
-                }
-
-                // eslint-disable-next-line no-console
-                console.debug('Swap expires in', Math.min(...remainingTimes), 'seconds');
-
-                return false;
-            }
-
-            const swapHandler = new SwapHandler(
+            swapHandler = new SwapHandler(
                 activeSwap.value as unknown as GenericSwap<SwapAsset, SwapAsset>,
                 await getClient(activeSwap.value!.from.asset as SwapAsset),
                 await getClient(activeSwap.value!.to.asset as SwapAsset),
@@ -218,36 +248,13 @@ export default defineComponent({
             window.addEventListener('beforeunload', onUnload);
 
             // Set up expiry watchers
-            async function checkExpired() {
-                if (!activeSwap.value) {
-                    swapHandler.stop(new Error(SwapError.DELETED));
-                    cleanUp();
-                    return true;
-                }
-
-                if (await isExpired()) {
-                    swapHandler.stop(new Error(SwapError.EXPIRED));
-                    updateSwap({
-                        state: SwapState.EXPIRED,
-                    });
-                    cleanUp();
-                    return true;
-                }
-                return false;
-            }
             // // Check expiry when quote expires
             // const timeout1 = window.setTimeout(
             //     checkExpired,
             //     (activeSwap.value!.expires * 1000) - await Time.now() + 1000,
             // );
-            let expiryCheckInterval = -1;
             if (!await checkExpired()) {
                 expiryCheckInterval = window.setInterval(checkExpired, 60 * 1000); // Every minute
-            }
-
-            function cleanUp() {
-                window.removeEventListener('beforeunload', onUnload);
-                window.clearInterval(expiryCheckInterval);
             }
 
             switch (activeSwap.value!.state) {

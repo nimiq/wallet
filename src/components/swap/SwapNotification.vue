@@ -301,6 +301,9 @@ export default defineComponent({
                             stateEnteredAt: undefined,
                         });
 
+                        // Open Swap modal to show payment instructions to user if not already open
+                        if (context.root.$route.name !== 'buy-crypto') context.root.$router.push('buy-crypto');
+
                         // Wait for OASIS HTLC to be funded out-of-band
                         const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
                             updateSwap({

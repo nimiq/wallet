@@ -57,7 +57,7 @@ export async function updateServiceWorker() {
         if (isReloading) return;
         isReloading = true;
         // Must wait to reload to give cache enough time to be updated
-        setTimeout(() => window.location.href = window.location.origin, 1000);
+        setTimeout(() => window.location.href = window.location.origin, 1500);
     });
 
     // Sending this message to the waiting service-worker activates it,

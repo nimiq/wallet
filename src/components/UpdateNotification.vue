@@ -1,6 +1,11 @@
 <template>
-    <BottomOverlay v-if="isShown" theme="green" class="update-notification flex-row" @close="isShown = false">
+    <BottomOverlay v-if="isShown"
+        theme="green" class="update-notification flex-row"
+        :class="{'hide-close-button': applyingWalletUpdate}"
+        @close="isShown = false"
+    >
         {{ $t('An update to the Wallet is available.') }}
+        <div class="flex-grow"></div>
         <CircleSpinner v-if="applyingWalletUpdate"/>
         <button v-else
             class="nq-button-s inverse"
@@ -45,19 +50,36 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .update-notification {
-        align-items: center;
-        font-weight: 600;
+.update-notification.bottom-overlay {
+    align-items: center;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    padding: 1.25rem 2rem;
+    min-height: 6rem;
+
+    @media (max-width: 450px) {
+        padding: 1rem 1.5rem;
+        border-radius: 1rem 1rem 0 0;
     }
 
-    .nq-button-s,
-    /deep/ svg {
-        margin-left: 1.5rem;
-        white-space: nowrap;
+    /deep/ .close-button {
+        position: relative;
+        top: 0;
+        right: 0;
     }
 
-    .bottom-overlay /deep/ .close-button {
-        top: 1.75rem;
-        right: 1.75rem;
+    &.hide-close-button /deep/ .close-button {
+        display: none;
     }
+}
+
+.nq-button-s,
+/deep/ svg {
+    margin-left: 1.5rem;
+    white-space: nowrap;
+}
+
+/deep/ svg.circle-spinner path {
+    stroke: white;
+}
 </style>

@@ -98,6 +98,7 @@ export default defineComponent({
 .wrapper {
     position: relative;
     max-height: 96%;
+    will-change: transform, opacity;
 }
 
 .small-page.main {

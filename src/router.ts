@@ -19,6 +19,8 @@ const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './com
 const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
+const BuyOptionsModal = () =>
+    import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
 const WelcomeModal = () =>
     import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
@@ -37,8 +39,8 @@ const BtcReceiveModal = () =>
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
+// Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
-
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 
@@ -95,6 +97,14 @@ const routes: RouteConfig[] = [{
                 modal: TradeModal,
             },
             name: 'trade',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/buy',
+            components: {
+                modal: BuyOptionsModal,
+            },
+            name: 'buy',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {

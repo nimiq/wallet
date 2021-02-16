@@ -26,7 +26,7 @@
         <div class="trade-actions" v-show="!isLegacyAccount">
             <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
                 <button class="nq-button-s inverse"
-                    @click="$router.push('/buy-crypto?sidebar=true')" @mousedown.prevent
+                    @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
                     :disabled="$route.name !== 'root' || hasActiveSwap"
                 >{{ $t('Buy') }}</button>
                 <button class="nq-button-s inverse"

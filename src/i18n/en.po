@@ -42,6 +42,11 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:29
+#: src/components/modals/BuyOptionsModal.vue:57
+msgid "+ network fees"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:117
 #: src/components/modals/BtcTransactionModal.vue:132
 #: src/components/modals/BtcTransactionModal.vue:147
@@ -180,6 +185,10 @@ msgstr ""
 msgid "All translations are for information purposes only. The English text is the controlling version."
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:46
+msgid "Almost everywhere"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:34
 msgid "Although reusing addresses won’t result in a loss of funds, it is highly recommended not to do so."
@@ -242,6 +251,10 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:525
 #: src/components/TransactionListItem.vue:215
 msgid "Bank Account"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:10
+msgid "Bank Transfer"
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
@@ -321,8 +334,16 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:5
+msgid "Buy NIM & BTC"
+msgstr ""
+
 #: src/components/AnnouncementBox.vue:32
 msgid "Buy NIM & BTC with Credit Card!"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:68
+msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
@@ -526,6 +547,10 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:191
 msgid "Created yesterday"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Credit Card"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:48
@@ -797,6 +822,10 @@ msgstr ""
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:34
+msgid "Innovation by Nimiq"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:133
 msgid "Insufficient balance."
@@ -1006,6 +1035,14 @@ msgstr ""
 
 #: src/components/TransactionList.vue:62
 msgid "or visit an exchange and get more."
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:22
+msgid "Pay by bank transfer. No registration – not even email."
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:50
+msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:49
@@ -1244,6 +1281,10 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:78
 #: src/components/modals/TransactionModal.vue:98
 msgid "sent at {dateAndTime}"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:18
+msgid "SEPA Instant only"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:65

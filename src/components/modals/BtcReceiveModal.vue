@@ -520,9 +520,8 @@ export default defineComponent({
 .recently-copied-addresses {
     flex-grow: 1;
     align-self: stretch;
-    min-height: 0;
     position: relative;
-    min-height: 16rem;
+    min-height: 24rem; /* Fits two copied addresses without scrolling */
 }
 
 .no-recently-copied-address {

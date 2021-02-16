@@ -806,7 +806,7 @@ export default defineComponent({
         const canSign = computed(() =>
             !estimateError.value && !swapError.value
             && estimate.value
-            && limits.value
+            && limits.value?.current.usd
             && !fetchingEstimate.value
             && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
         );

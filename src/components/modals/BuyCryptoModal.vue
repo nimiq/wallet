@@ -440,7 +440,7 @@ export default defineComponent({
             && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
-            && limits.value
+            && limits.value?.current.usd
             && !fetchingEstimate.value,
         );
 

@@ -452,7 +452,7 @@ export default defineComponent({
                 fetchAssets();
                 if (width.value > 700) {
                     // @ts-expect-error Property 'focus' does not exist on type 'VueProxy<AmountInput>'
-                    $eurAmountInput.value!.focus();
+                    if ($eurAmountInput.value) $eurAmountInput.value.focus();
                 }
             }
         });

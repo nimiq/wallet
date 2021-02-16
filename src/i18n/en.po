@@ -38,7 +38,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:84
+#: src/components/BankCheckInput.vue:82
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -163,7 +163,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:184
+#: src/components/BankCheckInput.vue:182
 msgid "All countries"
 msgstr ""
 
@@ -474,7 +474,7 @@ msgstr ""
 msgid "Consensus"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:79
+#: src/components/BankCheckInput.vue:77
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -924,7 +924,7 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:38
+#: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -992,7 +992,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:78
+#: src/components/BankCheckInput.vue:76
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1181,7 +1181,7 @@ msgid ""
 "money to this address"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:23
+#: src/components/BankCheckInput.vue:22
 #: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr ""
@@ -1684,7 +1684,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:88
+#: src/components/BankCheckInput.vue:86
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

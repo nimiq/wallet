@@ -6,8 +6,7 @@
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
         <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
             <button class="reset trigger" @click="countryDropdownOpened = true">
-                <FlagIcon v-if="currentCountry && currentCountry.code === 'all'"/>
-                <CountryFlag v-else-if="currentCountry" :code="currentCountry.code" />
+                <CountryFlag v-if="currentCountry" :code="currentCountry.code" />
                 <img src="../assets/arrow-down.svg" />
             </button>
             <div v-if="countryDropdownOpened" class="country-dropdown">
@@ -31,8 +30,7 @@
                         @click="selectCountry(country)"
                         @mouseenter="selectedCountryIndex = index"
                     >
-                        <FlagIcon v-if="country.code === 'all'"/>
-                        <CountryFlag v-else :code="country.code" />
+                        <CountryFlag :code="country.code" />
                         {{ country.name }}
                     </li>
                     <li class="info">{{ $t('More locations will be supported soon.') }}</li>
@@ -104,7 +102,7 @@ import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
-import FlagIcon from './icons/FlagIcon.vue';
+import WorldIcon from './icons/WorldIcon.vue';
 
 type CountryInfo = {
     name: string,
@@ -445,7 +443,7 @@ export default defineComponent({
         ForbiddenIcon,
         Tooltip,
         CountryFlag,
-        FlagIcon,
+        WorldIcon,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -487,15 +485,6 @@ export default defineComponent({
     }
 }
 
-.flag-icon {
-    display: block;
-    width: 2.875rem;
-    height: 2.875rem;
-    background: var(--text-10);
-    border-radius: 50%;
-    padding: 0.5rem;
-}
-
 .country-selector {
     .trigger {
         display: flex;
@@ -508,7 +497,6 @@ export default defineComponent({
         top: 50%;
         transform: translateY(-50%);
 
-        .flag-icon,
         .country-flag {
             margin-right: 0.625rem;
         }

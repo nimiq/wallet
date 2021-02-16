@@ -7,23 +7,19 @@
             @mousedown.prevent
         ><slot name="cta">{{ $t('Confirm') }}</slot></button>
 
-        <div class="footer-notice-wrapper" :style="footerHeight && { '--footer-height': `${footerHeight}px` }">
-            <transition name="fadeY"
-                @enter="(el) => footerHeight = el.offsetHeight"
-                @after-enter="() => footerHeight = undefined"
-            >
-                <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
-                    :key="networkState.message">
-                    <CircleSpinner/>
-                    {{ networkState.message }}
-                </div>
-                <div v-else-if="error" class="footer-notice nq-orange flex-row" :key="error">
-                    <AlertTriangleIcon/>
-                    {{ error }}
-                </div>
-                <div v-else class="footer-notice nq-gray flex-row" key="content"><slot></slot></div>
-            </transition>
-        </div>
+        <MessageTransition>
+            <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row"
+                :key="networkState.message">
+                <CircleSpinner/>
+                {{ networkState.message }}
+            </div>
+            <div v-else-if="error" class="footer-notice nq-orange flex-row" :key="error">
+                <AlertTriangleIcon/>
+                {{ error }}
+            </div>
+            <div v-else class="footer-notice nq-gray flex-row" key="content"><slot></slot></div>
+        </MessageTransition>
+
     </PageFooter>
 </template>
 
@@ -31,7 +27,8 @@
 import { useBtcNetworkStore } from '@/stores/BtcNetwork';
 import { useNetworkStore } from '@/stores/Network';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
+import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     props: {
@@ -39,8 +36,6 @@ export default defineComponent({
         disabled: Boolean,
     },
     setup(props, context) {
-        const footerHeight = ref<number | null>(null);
-
         const networkState = computed(() => {
             const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
             const { consensus: btcConsensus } = useBtcNetworkStore();
@@ -67,7 +62,6 @@ export default defineComponent({
         }
 
         return {
-            footerHeight,
             networkState,
             emitClick,
         };
@@ -76,6 +70,7 @@ export default defineComponent({
         PageFooter,
         AlertTriangleIcon,
         CircleSpinner,
+        MessageTransition,
     },
 });
 </script>
@@ -86,25 +81,13 @@ export default defineComponent({
         margin: 0 4rem 3rem;
     }
 
-    .footer-notice-wrapper {
-        --footer-height: auto;
-
-        position: relative;
+    .message-transition {
         margin: -1.75rem 0 0.75rem;
-        height: var(--footer-height);
-        transition: {
-            property: height;
-            duration: 500ms;
-            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
-        }
     }
 
     .footer-notice {
-        justify-content: center;
-        align-items: center;
         font-weight: 600;
         font-size: var(--small-size);
-        text-align: center;
 
         /deep/ .nq-link {
             color: inherit;
@@ -127,39 +110,6 @@ export default defineComponent({
     svg {
         margin-right: 1rem;
         flex-shrink: 0;
-    }
-
-    .fadeY-enter-active, .fadeY-leave-active {
-        will-change: opacity, transform;
-        transition: {
-            property: opacity, transform;
-            duration: 500ms;
-            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
-        }
-    }
-
-    .fadeY-leave-active {
-        position: absolute;
-        width: 100%;
-    }
-
-    .fadeY-enter-active {
-        transition-delay: 50ms;
-    }
-
-    .fadeY-leave,
-    .fadeY-enter-to {
-        transform: translateY(0);
-    }
-
-    .fadeY-enter {
-        opacity: 0;
-        transform: translateY(.5rem);
-    }
-
-    .fadeY-leave-to {
-        opacity: 0;
-        transform: translateY(-.5rem);
     }
 }
 </style>

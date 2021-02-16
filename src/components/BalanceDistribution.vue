@@ -44,9 +44,9 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <Tooltip preferredPosition="top right" ref="swapTooltip" noFocus>
+            <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
-                    :disabled="!totalFiatAccountBalance"
+                    :disabled="!totalFiatAccountBalance || hasActiveSwap"
                     @focus.stop="$refs.swapTooltip.show()"
                     @blur.stop="$refs.swapTooltip.hide()"
                     class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
@@ -105,6 +105,7 @@ import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useSettingsStore } from '../stores/Settings';
+import { useSwapsStore } from '../stores/Swaps';
 
 export default defineComponent({
     name: 'balance-distribution',
@@ -172,6 +173,9 @@ export default defineComponent({
                     || (rect1.left > rect2.right));
         }
 
+        const { activeSwap } = useSwapsStore();
+        const hasActiveSwap = computed(() => activeSwap.value !== null);
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -186,6 +190,7 @@ export default defineComponent({
             $nimAmount,
             $btcAmount,
             doElsTouch,
+            hasActiveSwap,
         };
     },
     components: {
@@ -241,7 +246,7 @@ export default defineComponent({
                 display: none;
             }
 
-            &:hover,
+            &:hover:not(:disabled),
             &:focus {
                 --box-color: var(--text-12);
                 color: var(--text-70);

@@ -50,7 +50,7 @@ msgstr "{perc}% des Tauschwerts."
 msgid "{value} remaining"
 msgstr "{value} verbleibend"
 
-#: src/components/BankCheckInput.vue:84
+#: src/components/BankCheckInput.vue:82
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} weitere | + {count} weitere"
 
@@ -183,7 +183,7 @@ msgstr "Fortgeschritten"
 msgid "all"
 msgstr "alle"
 
-#: src/components/BankCheckInput.vue:184
+#: src/components/BankCheckInput.vue:182
 msgid "All countries"
 msgstr "Alle Länder"
 
@@ -530,7 +530,7 @@ msgstr "Verbindung verloren"
 msgid "Consensus"
 msgstr "Konsensus"
 
-#: src/components/BankCheckInput.vue:79
+#: src/components/BankCheckInput.vue:77
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Kontaktiere deine Bank, um herauszufinden, ob dein Konto geeignet ist."
@@ -1013,7 +1013,7 @@ msgstr "unterbrochen"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/BankCheckInput.vue:38
+#: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
 msgstr "Weitere Orte werden bald unterstützt."
 
@@ -1094,7 +1094,7 @@ msgstr "Keine Transaktionen gefunden"
 msgid "None"
 msgstr "Keine"
 
-#: src/components/BankCheckInput.vue:78
+#: src/components/BankCheckInput.vue:76
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
@@ -1304,7 +1304,7 @@ msgstr ""
 "Code scannen um Geld\n"
 "an diese Adresse zu senden"
 
-#: src/components/BankCheckInput.vue:23 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:22 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Suchen"
 
@@ -1622,7 +1622,7 @@ msgstr "Dies ist ein Legacy-Konto"
 msgid "This is a single-use address"
 msgstr "Dies ist eine Adresse zum einmaligen Gebrauch"
 
-#: src/components/BtcAddressInput.vue:12
+#: src/components/BtcAddressInput.vue:15
 msgid "This is not a valid address"
 msgstr "Dies Adresse ist ungültige"
 
@@ -1856,7 +1856,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Deine Bank ist nicht geeignet?"
 
-#: src/components/BankCheckInput.vue:88
+#: src/components/BankCheckInput.vue:86
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

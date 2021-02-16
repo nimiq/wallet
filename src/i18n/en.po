@@ -1479,7 +1479,7 @@ msgstr ""
 msgid "This is a single-use address"
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:12
+#: src/components/BtcAddressInput.vue:15
 msgid "This is not a valid address"
 msgstr ""
 

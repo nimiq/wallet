@@ -152,7 +152,7 @@
                             <AmountInput v-model="fiatAmount"
                                 :max="currentLimitFiat ? currentLimitFiat * 1e2 : undefined"
                                 :decimals="fiatCurrencyInfo.decimals"
-                                placeholder="0.00"
+                                placeholder="0.00" ref="$eurAmountInput"
                             >
                                 <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
@@ -373,6 +373,7 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 enum Pages {
     WELCOME,
@@ -444,9 +445,15 @@ export default defineComponent({
             && !fetchingEstimate.value,
         );
 
+        const { width } = useWindowSize();
+
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
+                if (width.value > 700) {
+                    // @ts-expect-error Property 'focus' does not exist on type 'VueProxy<AmountInput>'
+                    $eurAmountInput.value!.focus();
+                }
             }
         });
 
@@ -1134,6 +1141,8 @@ export default defineComponent({
             return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
         });
 
+        const $eurAmountInput = ref<typeof AmountInput>(null);
+
         return {
             addressListOpened,
             onClose,
@@ -1174,6 +1183,7 @@ export default defineComponent({
             trials,
             Trial,
             oasisLimitExceeded,
+            $eurAmountInput,
         };
     },
     components: {

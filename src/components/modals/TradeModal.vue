@@ -135,7 +135,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .modal /deep/ .small-page {
     width: 88.5rem !important;
-    height: 60rem !important;
+    min-height: 60rem !important;
     max-width: 100vw;
 }
 

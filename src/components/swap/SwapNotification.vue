@@ -338,7 +338,7 @@ export default defineComponent({
                             asset: SwapAsset.EUR,
                             bankLabel: userBank.value?.name,
                             // bankLogo?: string,
-                            amount: fundingTx.amount,
+                            amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
                                 id: fundingTx.id,
                                 timeoutTimestamp: fundingTx.expires,

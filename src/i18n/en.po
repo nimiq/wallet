@@ -741,7 +741,7 @@ msgid "General"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:44
+#: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
 msgstr ""
 
@@ -1533,7 +1533,7 @@ msgstr ""
 
 #: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:53
+#: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
 msgstr ""
 

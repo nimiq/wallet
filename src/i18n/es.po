@@ -53,8 +53,8 @@ msgstr "{value} restante"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} más | + {count} más"
 
-#: src/components/modals/BuyOptionsModal.vue:29
-#: src/components/modals/BuyOptionsModal.vue:57
+#: src/components/modals/BuyOptionsModal.vue:37
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 "Todas las traducciones son únicamente de carácter. Ingles es el texto "
 "principal."
 
-#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
 msgstr ""
 
@@ -392,7 +392,7 @@ msgstr ""
 msgid "Buy NIM & BTC with Credit Card!"
 msgstr "¡Comprar NIM & BTC con tarjeta de Credito!"
 
-#: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -613,7 +613,7 @@ msgstr "Recién creada"
 msgid "Created yesterday"
 msgstr "Creado ayer"
 
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:51
 msgid "Credit Card"
 msgstr ""
 
@@ -913,8 +913,10 @@ msgstr ""
 "Incremente la velocidad de sus transacciones al pagar una mayor cuota de "
 "red. Las cuotas van directamente a mineros."
 
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "Innovation by Nimiq"
+#: src/components/modals/BuyOptionsModal.vue:42
+msgid ""
+"Innovation\n"
+"by Nimiq"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90
@@ -1026,6 +1028,11 @@ msgstr "perdida"
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Max."
+
+#: src/components/modals/BuyOptionsModal.vue:33
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "min {amount}"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
@@ -1146,7 +1153,7 @@ msgstr "O visite una casa de cambio y consiga más."
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:50
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
 
@@ -1559,12 +1566,12 @@ msgstr ""
 "El banco esta procesando su transacción \n"
 "Esto puede tomar {min} minutos."
 
-#: src/components/modals/BuyCryptoModal.vue:757
-#: src/components/swap/SwapModal.vue:629
+#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 
-#: src/components/modals/BuyCryptoModal.vue:762
+#: src/components/modals/BuyCryptoModal.vue:763
 msgid "The fees determine the minimum amount."
 msgstr "Las cuotas determinan el monto mínimo."
 

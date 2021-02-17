@@ -823,7 +823,9 @@ msgid "Increase the speed of your transaction by paying a higher network fee. Th
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:42
-msgid "Innovation by Nimiq"
+msgid ""
+"Innovation\n"
+"by Nimiq"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90

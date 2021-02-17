@@ -2,13 +2,13 @@
 # Translators:
 # Daniel, 2020
 # Sebastian Langer <basti@b-compu.de>, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2021
-# Redexe <timo.niehoff@yahoo.de>, 2021
 # Sven <sven@nimiq.com>, 2021
+# Redexe <timo.niehoff@yahoo.de>, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2021\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -54,10 +54,10 @@ msgstr "{value} verbleibend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} weitere | + {count} weitere"
 
-#: src/components/modals/BuyOptionsModal.vue:29
-#: src/components/modals/BuyOptionsModal.vue:57
+#: src/components/modals/BuyOptionsModal.vue:37
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
-msgstr ""
+msgstr "+ Netzwerkgebühren"
 
 #: src/components/modals/BtcTransactionModal.vue:117
 #: src/components/modals/BtcTransactionModal.vue:132
@@ -84,7 +84,7 @@ msgstr "2-4h"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
-msgstr ""
+msgstr "24/7 Support"
 
 #: src/components/modals/BuyCryptoModal.vue:34
 msgid "3"
@@ -213,9 +213,9 @@ msgstr ""
 "Alle Übersetzungen dienen ausschließlich zu Informationszwecken. Die "
 "englische Originalversion ist rechtlich bindend."
 
-#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
-msgstr ""
+msgstr "Fast überall"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:34
@@ -294,7 +294,7 @@ msgstr "Bankkonto"
 
 #: src/components/modals/BuyOptionsModal.vue:10
 msgid "Bank Transfer"
-msgstr ""
+msgstr "Banküberweisung"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
@@ -382,15 +382,15 @@ msgstr "NIM kaufen"
 
 #: src/components/modals/BuyOptionsModal.vue:5
 msgid "Buy NIM & BTC"
-msgstr ""
+msgstr "Kaufe NIM und BTC"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Buy NIM & BTC with Credit Card!"
 msgstr "Kaufe NIM & BTC mit Kreditkarte!"
 
-#: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
-msgstr ""
+msgstr "Kaufe NIM auf einer Kryptobörse:"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
 msgid "Buy with Credit Card"
@@ -610,9 +610,9 @@ msgstr "Gerade eben erstellt"
 msgid "Created yesterday"
 msgstr "Gestern erstellt"
 
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:51
 msgid "Credit Card"
-msgstr ""
+msgstr "Kreditkarte"
 
 #: src/components/layouts/Settings.vue:195
 #: src/components/modals/DisclaimerModal.vue:5
@@ -911,9 +911,13 @@ msgstr ""
 "Du kannst eine höhere Netzwerkgebühr bezahlen, um deine Transaktion zu "
 "beschleunigen. Die Gebühr geht direkt an die Miner."
 
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "Innovation by Nimiq"
+#: src/components/modals/BuyOptionsModal.vue:42
+msgid ""
+"Innovation\n"
+"by Nimiq"
 msgstr ""
+"Innovation\n"
+"von Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:133
@@ -1025,6 +1029,11 @@ msgstr "unterbrochen"
 msgid "Max."
 msgstr "Max."
 
+#: src/components/modals/BuyOptionsModal.vue:33
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "min {amount}"
+msgstr "min {amount}"
+
 #: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
 msgstr "Weitere Länder werden bald unterstützt."
@@ -1090,7 +1099,7 @@ msgstr "Da keine Geldbeträge eingegangen sind, ist der Tausch abgelaufen."
 
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
-msgstr ""
+msgstr "Keine Registrierung"
 
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
@@ -1141,11 +1150,13 @@ msgstr "ein oder gehe zu einer Tauschbörse und hol dir mehr."
 
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
-msgstr ""
+msgstr "Bezahle per Banküberweisung. Keine Anmeldung, nicht einmal E-Mail."
 
-#: src/components/modals/BuyOptionsModal.vue:50
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
+"Bezahle mit Kreditkarte. Vollständiger Identitätsnachweis erfordelich, hohe "
+"Verfügbarkeit."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1406,7 +1417,7 @@ msgstr "gesendet am {dateAndTime}"
 
 #: src/components/modals/BuyOptionsModal.vue:18
 msgid "SEPA Instant only"
-msgstr ""
+msgstr "Nur SEPA Instant"
 
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
@@ -1520,7 +1531,7 @@ msgstr "Tausch ist abgelaufen"
 
 #: src/components/BalanceDistribution.vue:54
 msgid "Swap NIM {arrow} BTC"
-msgstr ""
+msgstr "Tausche NIM {arrow} BTC"
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap NIM and BTC"
@@ -1558,12 +1569,12 @@ msgstr ""
 "Die Bank bearbeitet deine Überweisung. \n"
 "Das kann bis zu {min} Minuten dauern."
 
-#: src/components/modals/BuyCryptoModal.vue:757
-#: src/components/swap/SwapModal.vue:629
+#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindestbetrag."
 
-#: src/components/modals/BuyCryptoModal.vue:762
+#: src/components/modals/BuyCryptoModal.vue:763
 msgid "The fees determine the minimum amount."
 msgstr "Die Gebühren bestimmen den Mindestbetrag."
 
@@ -1672,7 +1683,7 @@ msgstr "Dieser Tausch ist so dezentralisiert, wie die Blockchain selbst."
 
 #: src/components/swap/SwapAnimation.vue:215
 msgid "This usually takes {time} seconds."
-msgstr ""
+msgstr "Dies dauert normalerweise {time} Sekunden."
 
 #: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
@@ -1690,7 +1701,7 @@ msgstr "Gesamtgebühren"
 
 #: src/components/modals/TradeModal.vue:7
 msgid "Trade NIM and BTC"
-msgstr ""
+msgstr "Handle NIM und BTC"
 
 #: src/components/modals/BtcTransactionModal.vue:40
 #: src/components/modals/TransactionModal.vue:59

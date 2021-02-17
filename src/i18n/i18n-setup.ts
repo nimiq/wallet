@@ -29,6 +29,9 @@ export const Languages = [{
 }, {
     code: 'nl',
     name: 'Nederlands',
+}, {
+    code: 'hr',
+    name: 'Croatian',
 // }, {
 //     code: 'tr',
 //     name: 'Türkçe',

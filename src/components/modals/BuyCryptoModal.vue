@@ -120,28 +120,7 @@
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
-                        <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
-                        <!-- TODO move it in a IdenticonStack component, since it's & will be used in multiple places-->
-                            <Identicon class="secondary"
-                                v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-
-                            <BitcoinIcon class="secondary"
-                                v-if="hasBitcoinAddresses && activeCurrency !== CryptoCurrency.BTC" />
-
-                            <Identicon class="secondary"
-                                v-else-if="backgroundAddresses[1]"
-                                :address="backgroundAddresses[1]"/>
-
-                            <Identicon class="primary"
-                                v-if="activeCurrency === CryptoCurrency.NIM"
-                                :address="activeAddressInfo.address"/>
-
-                            <BitcoinIcon class="primary"
-                                v-else-if="activeCurrency === CryptoCurrency.BTC" />
-                            <label>
-                                {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
-                            </label>
-                        </button>
+                        <IdenticonStack @click="addressListOpened = true" />
                     </section>
 
                     <section class="amount-section">
@@ -349,6 +328,7 @@ import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
+import IdenticonStack from '../IdenticonStack.vue';
 
 enum Pages {
     WELCOME,
@@ -362,7 +342,7 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
-        const { addressInfos, activeAddressInfo, activeAddress } = useAddressStore();
+        const { activeAddressInfo, activeAddress } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
 
@@ -491,15 +471,6 @@ export default defineComponent({
             page.value = Pages.SETUP_BUY;
             addressListOpened.value = false;
         }
-
-        const backgroundAddresses = computed(() =>
-            addressInfos.value
-                .slice(0, 3)
-                .filter((addressInfo) => activeCurrency.value !== CryptoCurrency.NIM
-                    || addressInfo.address !== activeAddressInfo.value!.address)
-                .slice(0, 2)
-                .map((addressInfo) => addressInfo.address),
-        );
 
         const fiatCurrencyInfo = computed(() =>
             new CurrencyInfo(selectedFiatCurrency.value),
@@ -1076,10 +1047,6 @@ export default defineComponent({
             fetchingEstimate.value = true;
         }
 
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
-
         function capDecimals(amount: number, asset: SwapAsset) {
             if (!amount) return 0;
 
@@ -1138,7 +1105,6 @@ export default defineComponent({
             onBankSelected,
             Pages,
             page,
-            backgroundAddresses,
             activeAddressInfo,
             canSign,
             fiatAmount,
@@ -1159,7 +1125,6 @@ export default defineComponent({
             eurPerBtc,
             fiatFees,
             limits,
-            hasBitcoinAddresses,
             activeCurrency,
             btcUnit,
             currentLimitFiat,
@@ -1197,6 +1162,7 @@ export default defineComponent({
         CircleSpinner,
         AlertTriangleIcon,
         SwapModalFooter,
+        IdenticonStack,
     },
 });
 </script>
@@ -1481,75 +1447,6 @@ svg.welcome-euro-logo {
         svg {
             width: 9rem;
             height: 9rem;
-        }
-    }
-
-    .identicon-stack {
-        align-items: stretch;
-        border-radius: 0.75rem;
-        padding: 1rem;
-        position: relative;
-        width: 18rem;
-
-        svg.bitcoin {
-            color: var(--bitcoin-orange);
-            background: radial-gradient(circle at center, white 40%, transparent, transparent);
-            border-radius: 50%;
-        }
-
-        .primary {
-            position: relative;
-            width: 9rem;
-            height: 9rem;
-            margin: -0.5rem auto 0;
-        }
-
-        .secondary {
-            width: 7.5rem;
-            position: absolute;
-            top: 1.375rem;
-            opacity: 0.4;
-
-            transition:
-                transform var(--movement-duration) var(--nimiq-ease),
-                opacity var(--movement-duration) var(--nimiq-ease);
-
-            &:first-child {
-                left: 3rem;
-            }
-
-            &:nth-child(2) {
-                right: 3rem;
-
-                &.bitcoin {
-                    right: 3.25rem;
-                }
-            }
-
-            &.bitcoin {
-                height: 7rem;
-                width: 7rem;
-                margin-top: 0.25rem;
-            }
-        }
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-
-            .secondary:first-child {
-                transform: translateX(-0.375rem) scale(1.05);
-                opacity: 0.5;
-            }
-
-            .secondary:nth-child(2) {
-                transform: translateX(0.375rem) scale(1.05);
-                opacity: 0.5;
-            }
-        }
-
-        label {
-            cursor: pointer;
         }
     }
 

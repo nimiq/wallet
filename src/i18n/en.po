@@ -71,7 +71,7 @@ msgid "2-4h"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:29
-msgid "24/7 Chat & Phone Support"
+msgid "24/7 Support"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:34
@@ -467,15 +467,15 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:49
+#: src/components/swap/SwapModalFooter.vue:48
 msgid "Connecting to Bitcoin network"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:45
+#: src/components/swap/SwapModalFooter.vue:44
 msgid "Connecting to Nimiq & Bitcoin networks"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:47
+#: src/components/swap/SwapModalFooter.vue:46
 msgid "Connecting to Nimiq network"
 msgstr ""
 
@@ -551,10 +551,6 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Credit Card"
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:48
-msgid "Credit Card accepted"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:195
@@ -722,6 +718,10 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:205
 #: src/components/swap/SwapAnimation.vue:206
 msgid "Finalizing swap"
+msgstr ""
+
+#: src/components/modals/TradeModal.vue:49
+msgid "For beginners"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:350
@@ -990,6 +990,10 @@ msgstr ""
 msgid "No funds were received so the swap expired."
 msgstr ""
 
+#: src/components/modals/TradeModal.vue:50
+msgid "No registration"
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1043,10 +1047,6 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:50
 msgid "Pay with credit card. Full KYC required, high availability."
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:49
-msgid "Pays out to Nimiq Wallet"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:43
@@ -1626,7 +1626,7 @@ msgstr ""
 msgid "Wait for the swap to be set up."
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:51
+#: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 

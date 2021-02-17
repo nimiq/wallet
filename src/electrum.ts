@@ -262,7 +262,9 @@ export async function launchElectrum() {
 
         return addresses;
     });
-    watch([unusedExternalAddresses, isFetchingTxHistory], ([addresses, isFetching]) => {
+    watch([unusedExternalAddresses, isFetchingTxHistory], (newValues) => {
+        if (!Array.isArray(newValues)) return;
+        const [addresses, isFetching] = newValues as unknown as [string[] | null, boolean];
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!addresses) return;
         subscribeToAddresses(addresses);
@@ -286,7 +288,9 @@ export async function launchElectrum() {
 
         return unusedAddresses[0];
     });
-    watch([nextUnusedChangeAddress, isFetchingTxHistory], ([address, isFetching]) => {
+    watch([nextUnusedChangeAddress, isFetchingTxHistory], (newValues) => {
+        if (!Array.isArray(newValues)) return;
+        const [address, isFetching] = newValues as unknown as [string | undefined, boolean];
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!address) return;
         subscribeToAddresses([address]);

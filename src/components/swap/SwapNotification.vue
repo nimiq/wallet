@@ -318,6 +318,11 @@ export default defineComponent({
                                 fundingTx: htlc,
                             });
 
+                            if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
+                                checkExpired();
+                                return;
+                            }
+
                             if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
                                 // TODO: Handle partial funding
                             }
@@ -402,8 +407,8 @@ export default defineComponent({
                                         resolve(swap.secret);
                                     }
                                 } catch (error) {
-                                    console.error(error); // eslint-disable-line no-console
                                     if (Config.reportToSentry) captureException(error);
+                                    else console.error(error); // eslint-disable-line no-console
                                 }
                             }, 5 * 1000); // Every 5 seconds
                         }),
@@ -428,6 +433,11 @@ export default defineComponent({
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
                             await swapHandler.awaitIncomingConfirmation((htlc) => {
+                                if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
+                                    checkExpired();
+                                    return;
+                                }
+
                                 if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED) {
                                     // TODO: Handle limit excess
                                 }

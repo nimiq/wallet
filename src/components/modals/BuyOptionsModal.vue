@@ -5,7 +5,7 @@
                 <h1 class="nq-h1">{{ $t('Buy NIM & BTC') }}</h1>
             </header>
             <div class="featured-exchanges flex-row">
-                <router-link to="/buy-crypto?sidebar=true" class="option oasis flex-column">
+                <router-link to="/buy-crypto?sidebar=true" replace class="option oasis flex-column">
                     <div class="top flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
 
@@ -25,20 +25,28 @@
 
                     <div class="bottom flex-column">
                         <div class="fees">
-                            <span class="percentage">1.25%</span><br>
+                            <span class="percentage flex-row">
+                                1.25%
+                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                                </svg>
+                                <i18n path="min {amount}" tag="span">
+                                    <FiatAmount slot="amount" :amount="0.10" currency="eur"/>
+                                </i18n>
+                            </span>
                             {{ $t('+ network fees') }}
                         </div>
 
                         <footer class="flex-row">
                             <FlameIcon/>
-                            {{ $t('Innovation by Nimiq') }}
+                            {{ $t('Innovation\nby Nimiq') }}
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
                     </div>
                 </router-link>
 
-                <router-link to="/moonpay?sidebar=true" class="option credit-card flex-column">
+                <router-link to="/moonpay?sidebar=true" replace class="option credit-card flex-column">
                     <div class="top flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
 
@@ -53,7 +61,20 @@
 
                     <div class="bottom flex-column">
                         <div class="fees">
-                            <span class="percentage">4.5%</span><br>
+                            <span class="percentage flex-row">
+                                4.5%
+                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                                </svg>
+                                <i18n path="min {amount}" tag="span">
+                                    <FiatAmount slot="amount"
+                                        :amount="3.99"
+                                        :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                            ? currency
+                                            : FiatCurrency.USD"
+                                    />
+                                </i18n>
+                            </span>
                             {{ $t('+ network fees') }}
                         </div>
 
@@ -113,16 +134,27 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { PageBody } from '@nimiq/vue-components';
+import { PageBody, FiatAmount } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
+import { useFiatStore } from '../../stores/Fiat';
+import { FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'buy-options-modal',
+    setup() {
+        const { currency } = useFiatStore();
+
+        return {
+            currency,
+            FiatCurrency,
+        };
+    },
     components: {
         Modal,
         PageBody,
+        FiatAmount,
         CaretRightIcon,
         FlameIcon,
     },
@@ -260,8 +292,16 @@ export default defineComponent({
         margin-bottom: 3rem;
 
         .percentage {
+            align-items: center;
             font-size: var(--h2-size);
             color: white;
+
+            .dot {
+                width: 0.5rem;
+                height: 0.5rem;
+                opacity: 0.5;
+                margin: 0 0.75rem;
+            }
         }
     }
 
@@ -272,6 +312,7 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.65);
         height: 3.25rem;
         margin-bottom: 0.25rem;
+        white-space: pre-line;
 
         svg:last-child {
             color: rgba(255, 255, 255, 0.6);
@@ -403,6 +444,15 @@ export default defineComponent({
         .nq-text {
             max-width: 30rem;
             margin-bottom: 0;
+        }
+
+        .fees .percentage {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .dot {
+                display: none;
+            }
         }
     }
 

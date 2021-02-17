@@ -42,8 +42,8 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:29
-#: src/components/modals/BuyOptionsModal.vue:57
+#: src/components/modals/BuyOptionsModal.vue:37
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
 msgstr ""
 
@@ -185,7 +185,7 @@ msgstr ""
 msgid "All translations are for information purposes only. The English text is the controlling version."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
 msgstr ""
 
@@ -342,7 +342,7 @@ msgstr ""
 msgid "Buy NIM & BTC with Credit Card!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:51
 msgid "Credit Card"
 msgstr ""
 
@@ -822,8 +822,10 @@ msgstr ""
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "Innovation by Nimiq"
+#: src/components/modals/BuyOptionsModal.vue:42
+msgid ""
+"Innovation\n"
+"by Nimiq"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90
@@ -936,6 +938,11 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:33
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "min {amount}"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
 msgstr ""
@@ -1045,7 +1052,7 @@ msgstr ""
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:50
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
 
@@ -1431,12 +1438,12 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:757
-#: src/components/swap/SwapModal.vue:629
+#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:762
+#: src/components/modals/BuyCryptoModal.vue:763
 msgid "The fees determine the minimum amount."
 msgstr ""
 

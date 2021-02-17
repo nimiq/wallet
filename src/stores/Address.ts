@@ -42,7 +42,9 @@ export const useAddressStore = createStore({
         addressInfos: (state): AddressInfo[] => {
             const accountStore = useAccountStore();
             return accountStore.activeAccountInfo.value
-                ? accountStore.activeAccountInfo.value.addresses.map((addr) => state.addressInfos[addr])
+                ? accountStore.activeAccountInfo.value.addresses
+                    .map((addr) => state.addressInfos[addr])
+                    .filter((addrInfo) => !!addrInfo)
                 : [];
         },
         activeAddress: (state) => state.activeAddress,

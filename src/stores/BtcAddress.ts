@@ -42,8 +42,12 @@ export const useBtcAddressStore = createStore({
             const accountInfo = activeAccountInfo.value;
             return accountInfo && accountInfo.btcAddresses
                 ? {
-                    internal: accountInfo.btcAddresses.internal.map((addr) => state.addressInfos[addr]),
-                    external: accountInfo.btcAddresses.external.map((addr) => state.addressInfos[addr]),
+                    internal: accountInfo.btcAddresses.internal
+                        .map((addr) => state.addressInfos[addr])
+                        .filter((addrInfo) => !!addrInfo),
+                    external: accountInfo.btcAddresses.external
+                        .map((addr) => state.addressInfos[addr])
+                        .filter((addrInfo) => !!addrInfo),
                 }
                 : {
                     internal: [],

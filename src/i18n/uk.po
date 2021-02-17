@@ -53,8 +53,8 @@ msgstr "{value} залишок"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} інший | + {count} інші"
 
-#: src/components/modals/BuyOptionsModal.vue:29
-#: src/components/modals/BuyOptionsModal.vue:57
+#: src/components/modals/BuyOptionsModal.vue:37
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 "Усі переклади носять лише інформаційний характер. Текст англійською мовою є "
 "контрольною версією."
 
-#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
 msgstr ""
 
@@ -387,7 +387,7 @@ msgstr ""
 msgid "Buy NIM & BTC with Credit Card!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -610,7 +610,7 @@ msgstr "Створено щойно"
 msgid "Created yesterday"
 msgstr "Створено вчора"
 
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:51
 msgid "Credit Card"
 msgstr ""
 
@@ -911,8 +911,10 @@ msgstr ""
 "Збільшіть швидкість переказу, вказавши вищу комісію. Уся комісія збирається "
 "майнерами напряму."
 
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "Innovation by Nimiq"
+#: src/components/modals/BuyOptionsModal.vue:42
+msgid ""
+"Innovation\n"
+"by Nimiq"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90
@@ -1024,6 +1026,11 @@ msgstr "Втрачено"
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Макс."
+
+#: src/components/modals/BuyOptionsModal.vue:33
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "min {amount}"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
@@ -1142,7 +1149,7 @@ msgstr "або перейдіть на біржу, щоб отримати бі�
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:50
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
 
@@ -1549,12 +1556,12 @@ msgstr ""
 "Банк обробляє вашу операцію.\n"
 "Це може зайняти до {min} хвилин."
 
-#: src/components/modals/BuyCryptoModal.vue:757
-#: src/components/swap/SwapModal.vue:629
+#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/modals/BuyCryptoModal.vue:762
+#: src/components/modals/BuyCryptoModal.vue:763
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
 

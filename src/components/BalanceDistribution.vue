@@ -51,7 +51,13 @@
                     @blur.stop="$refs.swapTooltip.hide()"
                     class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
                 ><SwapIcon/></button>
-                <span class="nq-text-s">{{ $t('Swap NIM ↔ BTC') }}</span>
+                 <i18n path="Swap NIM {arrow} BTC" tag="span" class="nq-text-s">
+                    <template v-slot:arrow>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8" width="12" height="8" fill="none"
+                            stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+                        ><path d="M3.6 6.6l-3-3 3-3M8.4.6l3 3-3 3M1 3.6h10"/></svg>
+                    </template>
+                </i18n>
             </Tooltip>
         </div>
         <div v-if="hasBitcoinAddresses"

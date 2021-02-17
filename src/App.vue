@@ -16,6 +16,8 @@
 
         <SwapNotification/>
 
+        <UpdateNotification/>
+
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>
         </div>
@@ -28,6 +30,7 @@ import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
+import UpdateNotification from './components/UpdateNotification.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
@@ -82,6 +85,7 @@ export default defineComponent({
     components: {
         Sidebar,
         SwapNotification,
+        UpdateNotification,
         LoadingSpinner,
     },
 });

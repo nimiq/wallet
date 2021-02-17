@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
-import { FiatCurrency } from '../lib/Constants';
+import { Htlc, HtlcStatus, SepaClearingInstruction } from '../lib/OasisApi';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -22,6 +22,7 @@ export type SwapNimData = {
     asset: SwapAsset.NIM,
     transactionHash: string,
     htlc?: {
+        address?: string,
         refundAddress: string,
         redeemAddress: string,
         timeoutBlockHeight: number,
@@ -33,6 +34,7 @@ export type SwapBtcData = {
     transactionHash: string,
     outputIndex: number,
     htlc?: {
+        address?: string,
         script: string,
         refundAddress: string,
         redeemAddress: string,
@@ -40,38 +42,63 @@ export type SwapBtcData = {
     },
 };
 
+export type SwapEurData = {
+    asset: SwapAsset.EUR,
+    bankLabel?: string,
+    bankLogo?: string,
+    amount: number,
+    htlc?: {
+        id: string,
+        timeoutTimestamp: number,
+    },
+};
+
 export type Swap = {
     id?: string,
-    in?: SwapNimData | SwapBtcData,
-    out?: SwapNimData | SwapBtcData,
-    fees?: {
-        myBtcFeeFiat: number,
-        myNimFeeFiat: number,
-        serviceBtcFeeFiat: number,
-        serviceNimFeeFiat: number,
-        serviceExchangeFeeFiat: number,
-        serviceExchangeFeePercentage: number,
-        currency: FiatCurrency,
-    },
+    in?: SwapNimData | SwapBtcData | SwapEurData,
+    out?: SwapNimData | SwapBtcData | SwapEurData,
 };
 
 export type ActiveSwap = SwapObject & {
     state: SwapState,
+    stateEnteredAt: number,
     watchtowerNotified: boolean,
+    fundingInstructions?: SepaClearingInstruction,
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
-    fundingError?: string,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    nimiqProxySerializedTx?: string,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
     secret?: string,
-    settlementError?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    error?: string,
+}
+
+export enum SEPA_INSTANT_SUPPORT {
+    FULL = 'full-support',
+    PARTIAL = 'partial-support',
+    NONE = 'no-support',
+    UNKNOWN = 'unknown-support',
+}
+
+export type BankInfos = {
+    name: string,
+    BIC: string,
+    country: string, // ISO 3166-1 alpha-2 country code
+    support: {
+        sepa: {
+            inbound: SEPA_INSTANT_SUPPORT,
+            outbound: SEPA_INSTANT_SUPPORT,
+        },
+        // swift?
+    },
 }
 
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
     swapByTransaction: { [transactionHash: string]: string },
     activeSwap: ActiveSwap | null,
+    userBank: BankInfos | null,
 };
 
 export const useSwapsStore = createStore({
@@ -80,6 +107,7 @@ export const useSwapsStore = createStore({
         swaps: {},
         swapByTransaction: {},
         activeSwap: null,
+        userBank: null,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
@@ -91,6 +119,7 @@ export const useSwapsStore = createStore({
                 return state.swaps[swapHash] || null;
             },
         activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
+        userBank: (state): Readonly<BankInfos | null> => state.userBank,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
@@ -100,11 +129,11 @@ export const useSwapsStore = createStore({
             };
             this.state.swapByTransaction = {
                 ...this.state.swapByTransaction,
-                ...(swap.in ? { [swap.in.transactionHash]: hash } : {}),
-                ...(swap.out ? { [swap.out.transactionHash]: hash } : {}),
+                ...(swap.in && 'transactionHash' in swap.in ? { [swap.in.transactionHash]: hash } : {}),
+                ...(swap.out && 'transactionHash' in swap.out ? { [swap.out.transactionHash]: hash } : {}),
             };
         },
-        addFundingData(hash: string, data: SwapNimData | SwapBtcData, newSwapData: Swap = {}) {
+        addFundingData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
@@ -112,7 +141,7 @@ export const useSwapsStore = createStore({
                 ...newSwapData,
             });
         },
-        addSettlementData(hash: string, data: SwapNimData | SwapBtcData, newSwapData: Swap = {}) {
+        addSettlementData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
@@ -122,6 +151,9 @@ export const useSwapsStore = createStore({
         },
         setActiveSwap(swap: ActiveSwap | null) {
             this.state.activeSwap = swap;
+        },
+        setUserBank(bank: BankInfos) {
+            this.state.userBank = bank;
         },
     },
 });

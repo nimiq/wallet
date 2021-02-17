@@ -26,6 +26,10 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
     },
 };
 
+export enum Trial {
+    BUY_WITH_EURO = 'buy-with-euro',
+}
+
 export type SettingsState = {
     decimals: 0 | 2 | 5,
     language: string, // locale
@@ -33,6 +37,8 @@ export type SettingsState = {
     amountsHidden: boolean,
     btcDecimals: 0 | 3 | 8,
     btcUnit: BtcUnit,
+    trials: Trial[],
+    updateAvailable: boolean,
 };
 
 export const useSettingsStore = createStore({
@@ -44,6 +50,8 @@ export const useSettingsStore = createStore({
         amountsHidden: false,
         btcDecimals: 0,
         btcUnit: BtcUnits.btc,
+        trials: [],
+        updateAvailable: false,
     }),
     getters: {
         decimals: (state): Readonly<number> => state.decimals,
@@ -52,6 +60,8 @@ export const useSettingsStore = createStore({
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
         btcDecimals: (state): Readonly<number> => state.btcDecimals,
         btcUnit: (state): Readonly<BtcUnit> => state.btcUnit,
+        trials: (state): Readonly<Trial[]> => state.trials,
+        updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
     },
     actions: {
         setDecimals(num: 0 | 2 | 5 = 0) {
@@ -74,6 +84,10 @@ export const useSettingsStore = createStore({
         },
         setBtcUnit(unit: 'btc' | 'mbtc') {
             this.state.btcUnit = BtcUnits[unit];
+        },
+        enableTrial(trial: Trial) {
+            if (this.state.trials.includes(trial)) return;
+            this.state.trials.push(trial);
         },
     },
 });

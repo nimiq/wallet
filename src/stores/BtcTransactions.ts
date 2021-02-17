@@ -2,11 +2,11 @@ import Vue from 'vue';
 import { createStore } from 'pinia';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
-import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement } from '../lib/BtcHtlcDetection';
+import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
@@ -65,6 +65,9 @@ export const useBtcTransactionsStore = createStore({
                             transactionHash: plain.transactionHash,
                             outputIndex: fundingData.outputIndex,
                             htlc: {
+                                address: plain.outputs
+                                    .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+                                    .address || undefined,
                                 script: fundingData.script,
                                 refundAddress: fundingData.refundAddress,
                                 redeemAddress: fundingData.redeemAddress,
@@ -89,6 +92,19 @@ export const useBtcTransactionsStore = createStore({
                             transactionHash: plain.transactionHash,
                             outputIndex: settlementData.outputIndex,
                         });
+
+                        if (!useSwapsStore().state.swaps[settlementData.hash].in) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
+                                if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    useSwapsStore().addFundingData(settlementData.hash, {
+                                        asset: SwapAsset.EUR,
+                                        amount: contractWithEstimate.from.amount,
+                                        // We cannot get bank info or EUR HTLC details from this.
+                                    });
+                                }
+                            }).catch(() => undefined);
+                        }
                     }
                 }
 
@@ -122,9 +138,9 @@ export const useBtcTransactionsStore = createStore({
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
-        async calculateFiatAmounts() {
+        async calculateFiatAmounts(fiat?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = useFiatStore().currency.value;
+            const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && tx.outputs.some((output) => !output.fiatValue || !(fiatCurrency in output.fiatValue)),
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;

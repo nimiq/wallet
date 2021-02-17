@@ -15,7 +15,7 @@
 
         <!-- #NimiqWorldWide -->
         <div class="tweet-note">
-            <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank"
+            <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank" rel="noopener"
                 class="tweet-note--inner"
             >
                 <EventIcon />
@@ -63,6 +63,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .stat {
     padding: 0 2.5rem;
+    white-space: nowrap;
 
     &:first-child {
         padding-left: 5rem;
@@ -105,7 +106,6 @@ export default defineComponent({
         }
     }
 }
-
 
 /* #NimiqWorldWide */
 

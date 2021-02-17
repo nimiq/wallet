@@ -12,10 +12,10 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { useCashlinkStore, Cashlink } from './stores/Cashlink';
+import { useProxyStore, Cashlink } from './stores/Proxy';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
-import { isFundingCashlink, isClaimingCashlink } from './lib/CashlinkDetection';
+import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 
 const hubApi = new HubApi(Config.hubEndpoint);
@@ -23,9 +23,13 @@ const hubApi = new HubApi(Config.hubEndpoint);
 let welcomeRoute = '';
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
-    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
-        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
-        // which also have no exports.
+    // Store the returned account(s). For first-time signups on iOS/Safari, this is the only time
+    // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
+    processAndStoreAccounts(accounts);
+
+    const accountStore = useAccountStore();
+
+    if (Object.keys(accountStore.state.accountInfos).length === 1) {
         welcomeRoute = '/welcome';
     } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         welcomeRoute = '/btc-activation/activated';
@@ -36,7 +40,9 @@ hubApi.on(HubApi.RequestType.MIGRATE, () => {
     welcomeRoute = '/migration-welcome';
 });
 
-hubApi.checkRedirectResponse();
+export async function initHubApi() {
+    return hubApi.checkRedirectResponse();
+}
 
 const APP_NAME = 'Wallet';
 
@@ -103,14 +109,15 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             });
         }
 
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const btcAddress of account.btcAddresses[chain]) {
-                const existingAddressInfo: BtcAddressInfo | {} = btcAddressStore.state.addressInfos[btcAddress] || {};
+                const existingAddressInfo: BtcAddressInfo | Record<string, never> = btcAddressStore
+                    .state.addressInfos[btcAddress] || {};
+
                 btcAddressInfos.push({
                     address: btcAddress,
-                    used: false,
-                    utxos: [],
-                    ...existingAddressInfo,
+                    used: existingAddressInfo.used || false,
+                    utxos: existingAddressInfo.utxos || [],
                 });
             }
         }
@@ -130,13 +137,14 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         accountInfos.push({
             id: account.accountId,
-            // @ts-ignore Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
+            // @ts-expect-error Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
             type: account.type,
             label: account.label,
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
             addresses,
             btcAddresses: { ...account.btcAddresses },
+            uid: account.uid || existingAccount?.uid,
         });
     }
 
@@ -144,7 +152,9 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     // deriving new addresses via the iframe. We therefore cannot simply overwrite all stored
     // Bitcoin address infos in the Wallet, as that would likely delete previously additional
     // derived ones.
-    btcAddressStore.addAddressInfos(btcAddressInfos);
+    if (btcAddressInfos.length) {
+        btcAddressStore.addAddressInfos(btcAddressInfos);
+    }
 
     if (replaceState) {
         addressStore.setAddressInfos(addressInfos);
@@ -191,8 +201,8 @@ export async function syncFromHub() {
     processAndStoreAccounts(listedAccounts, true);
 
     if (listedCashlinks.length) {
-        const cashlinkStore = useCashlinkStore();
-        cashlinkStore.setHubCashlinks(listedCashlinks);
+        const proxyStore = useProxyStore();
+        proxyStore.setHubCashlinks(listedCashlinks);
     }
 
     if (welcomeRoute) {
@@ -203,7 +213,10 @@ export async function syncFromHub() {
 export async function onboard(asRedirect = false) {
     if (asRedirect === true) {
         const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
-        hubApi.onboard({ appName: APP_NAME }, behavior);
+        hubApi.onboard({
+            appName: APP_NAME,
+            disableBack: true,
+        }, behavior);
         return null;
     }
 
@@ -212,11 +225,7 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts);
 
-    if (!accounts[0].wordsExported && !accounts[0].fileExported) {
-        // This was a signup (no export yet). The welcome slides are also shown for Ledger accounts,
-        // which also have no exports.
-        router.push('/welcome');
-    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
+    if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         router.push('/btc-activation/activated');
     }
 
@@ -280,8 +289,8 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
     if (!cashlink) return false;
 
     // Handle cashlink
-    const cashlinkStore = useCashlinkStore();
-    cashlinkStore.addHubCashlink(cashlink);
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
 
     return true;
 }
@@ -304,8 +313,8 @@ export async function manageCashlink(cashlinkAddress: string) {
     if (!cashlink) return false;
 
     // Handle cashlink
-    const cashlinkStore = useCashlinkStore();
-    cashlinkStore.addHubCashlink(cashlink);
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
 
     return true;
 }
@@ -359,7 +368,7 @@ export async function logout(accountId: string) {
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const transactionStore = useTransactionsStore();
-    const cashlinkStore = useCashlinkStore();
+    const proxyStore = useProxyStore();
     const btcAddressStore = useBtcAddressStore();
     const btcTransactionStore = useBtcTransactionsStore();
 
@@ -386,13 +395,15 @@ export async function logout(accountId: string) {
     transactionsToDelete = transactionsToDelete
         .filter((tx) => !remainingTransactionRelatedTransactionHashes.includes(tx.transactionHash));
 
-    const pendingCashlinksToDelete = transactionsToDelete
+    const pendingProxiesToDelete = transactionsToDelete
         .map((tx) => {
-            if (isFundingCashlink(tx.data.raw)) return tx.recipient;
-            if (isClaimingCashlink(tx.data.raw)) return tx.sender;
+            // Note: proxy transactions from or to our addresses always hold the proxy data. Currently only swap proxy
+            // htlc creation transactions hold the htlc data instead
+            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)) return tx.recipient;
+            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.REDEEM)) return tx.sender;
             return '';
         })
-        .filter((address) => Boolean(address));
+        .filter((address) => !!address);
 
     /**
      * Bitcoin
@@ -413,8 +424,8 @@ export async function logout(accountId: string) {
         });
 
     // Delete account, it's addresses, their transactions and cashlinks
-    for (const cashlinkAddress of pendingCashlinksToDelete) {
-        cashlinkStore.removeCashlink(cashlinkAddress);
+    for (const cashlinkAddress of pendingProxiesToDelete) {
+        proxyStore.removeProxy(cashlinkAddress);
     }
     transactionStore.removeTransactions(transactionsToDelete);
     addressStore.removeAddresses(addressesToDelete);

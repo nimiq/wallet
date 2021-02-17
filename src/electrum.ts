@@ -28,9 +28,29 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     // so we need to load it first.
     await loadBitcoinJS();
 
-    const NimiqElectrumClient = await import(/* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
-    NimiqElectrumClient.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
-    const client = new NimiqElectrumClient.ElectrumClient();
+    const { GenesisConfig, ElectrumClient: Client } = await import(
+        /* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
+
+    GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+
+    const options = Config.environment === ENV_MAIN ? {
+        extraSeedPeers: [{
+            host: 'c0a5duastc849ei53vug.bdnodes.net',
+            wssPath: 'electrumx',
+            ports: { wss: 443, ssl: 50002, tcp: null },
+            ip: '',
+            version: '',
+            highPriority: true,
+        }, {
+            host: 'btccore-main.bdnodes.net',
+            ports: { wss: null, ssl: 50002, tcp: null },
+            ip: '',
+            version: '',
+        }],
+    } : {};
+
+    const client = new Client(options);
+
     resolver!(client);
 
     return clientPromise;
@@ -181,8 +201,8 @@ export async function launchElectrum() {
                 && tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress)));
 
         // Check tx history
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
-            const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 1;
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
+            const allowedGap = chain === 'external' ? BTC_ADDRESS_GAP : 5;
 
             let gap = 0;
             let addressInfos = addressSet.value[chain];
@@ -207,7 +227,7 @@ export async function launchElectrum() {
 
         // Subscribe to addresses that now have UTXOs
         const addressesToWatch: string[] = [];
-        for (const chain of ['internal' as 'internal', 'external' as 'external']) {
+        for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const addressInfo of addressSet.value[chain]) {
                 if (addressInfo.utxos.length > 0) {
                     addressesToWatch.push(addressInfo.address);
@@ -222,6 +242,7 @@ export async function launchElectrum() {
 
     // Subscribe to all unused external addresses until the gap limit
     const unusedExternalAddresses = computed(() => {
+        if (isFetchingTxHistory.value) return null;
         if (!addressSet.value.external.length) return null;
 
         let gap = 0;
@@ -251,16 +272,19 @@ export async function launchElectrum() {
     // (This is not really necessary, since an internal address can only receive txs from an external
     // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
     const nextUnusedChangeAddress = computed(() => {
-        if (!addressSet.value.internal.length) return null;
+        if (isFetchingTxHistory.value) return undefined;
+        if (!addressSet.value.internal.length) return undefined;
 
-        const address = addressSet.value.internal
-            .find((addressInfo) => !addressInfo.used)?.address;
+        const unusedAddresses = addressSet.value.internal
+            .filter((addressInfo) => !addressInfo.used)
+            .map((addressInfo) => addressInfo.address);
 
-        if (!address) {
+        // When only 2 unused change addresses are left, get new ones from Hub
+        if (unusedAddresses.length <= 2) {
             addBtcAddresses(useAccountStore().activeAccountId.value!, 'internal');
         }
 
-        return address;
+        return unusedAddresses[0];
     });
     watch([nextUnusedChangeAddress, isFetchingTxHistory], ([address, isFetching]) => {
         if (isFetching) return; // Wait for fetching to finish before subscribing

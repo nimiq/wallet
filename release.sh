@@ -11,6 +11,9 @@ fi
 # Sync language file
 yarn i18n:sync
 
+# Get up-to-date EBA RT1 bank list
+yarn utils:getBankList
+
 if [[ `git status --porcelain` ]]; then
     echo "ERROR: The repository has changes. Commit them first, then run again."
     exit 1

@@ -5,7 +5,7 @@ export type GeoIpResponse = {
     },
     country?: string,
     city?: string,
-    city_names?: { [language: string]: string },
+    city_names?: { [language: string]: string }, // eslint-disable-line camelcase
 }
 
 const CACHE_MAX_SIZE = 1000;

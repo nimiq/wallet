@@ -1,10 +1,15 @@
+/* eslint-disable max-classes-per-file */
+
+import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
+import { captureException } from '@sentry/vue';
+import Config from 'config';
 import { useTransactionsStore, Transaction } from './stores/Transactions';
 import { useAddressStore, AddressState } from './stores/Address';
 import { useAccountStore, AccountState } from './stores/Account';
 import { useSettingsStore, SettingsState } from './stores/Settings';
-import { useContactsStore, ContactsState } from './stores/Contacts';
+import { useContactsStore } from './stores/Contacts';
 import { useFiatStore, FiatState } from './stores/Fiat';
-import { useCashlinkStore, CashlinkState } from './stores/Cashlink';
+import { useProxyStore, ProxyState } from './stores/Proxy';
 import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
@@ -16,7 +21,8 @@ const StorageKeys = {
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
     FIAT: 'wallet_exchange-rates_v01',
-    CASHLINKS: 'wallet_cashlinks_v01',
+    DEPRECATED_CASHLINKS: 'wallet_cashlinks_v01', // TODO deprecated; remove in the future
+    PROXIES: 'wallet_proxies_v01',
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
@@ -29,28 +35,71 @@ const PersistentStorageKeys = {
 
 const unsubscriptions: (() => void)[] = [];
 
-export function initStorage() {
+interface StorageBackend {
+    get<ResultType>(key: string): Promise<ResultType | undefined>;
+    set(key: string, value: any): Promise<void>;
+    del(key: string): Promise<void>;
+}
+
+class IndexedDBStorage {
+    static async get<ResultType>(key: string) {
+        return idbGet<ResultType>(key);
+    }
+
+    static async set(key: string, value: any) {
+        return idbSet(key, value);
+    }
+
+    static async del(key: string) {
+        return idbDel(key);
+    }
+}
+
+class LocalStorageStorage {
+    static async get<ResultType>(key: string) {
+        const stored = localStorage.getItem(key);
+        if (!stored) return undefined;
+        return JSON.parse(stored) as ResultType;
+    }
+
+    static async set(key: string, value: any) {
+        return localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    static async del(key: string) {
+        return localStorage.removeItem(key);
+    }
+}
+
+let Storage: StorageBackend;
+
+export async function initStorage() {
+    try {
+        await migrateToIdb();
+        Storage = IndexedDBStorage;
+    } catch (error) {
+        if (Config.reportToSentry) captureException(error);
+        else console.error(error); // eslint-disable-line no-console
+        Storage = LocalStorageStorage;
+    }
+
     /**
      * TRANSACTIONS
      */
     const transactionsStore = useTransactionsStore();
 
     // Load transactions from storage
-    const storedTxs = localStorage.getItem(StorageKeys.TRANSACTIONS);
+    const storedTxs = await Storage.get<{[hash: string]: Transaction}>(StorageKeys.TRANSACTIONS);
     if (storedTxs) {
-        const txs: Transaction[] = JSON.parse(storedTxs);
         transactionsStore.patch({
-            // @ts-ignore Some weird error about a type missmatch
-            transactions: txs,
+            transactions: storedTxs,
         });
         transactionsStore.calculateFiatAmounts();
     }
 
     unsubscriptions.push(
         // Write transactions to storage when updated
-        transactionsStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.TRANSACTIONS, JSON.stringify(transactionsStore.state.transactions));
-        }),
+        transactionsStore.subscribe(() => Storage.set(StorageKeys.TRANSACTIONS, transactionsStore.state.transactions)),
     );
 
     /**
@@ -59,17 +108,14 @@ export function initStorage() {
     const accountStore = useAccountStore();
 
     // Load accounts from storage
-    const storedAccountState = localStorage.getItem(StorageKeys.ACCOUNTINFOS);
+    const storedAccountState = await Storage.get<AccountState>(StorageKeys.ACCOUNTINFOS);
     if (storedAccountState) {
-        const accountState: AccountState = JSON.parse(storedAccountState);
-        accountStore.patch(accountState);
+        accountStore.patch(storedAccountState);
     }
 
     unsubscriptions.push(
         // Write accounts to storage when updated
-        accountStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.ACCOUNTINFOS, JSON.stringify(accountStore.state));
-        }),
+        accountStore.subscribe(() => Storage.set(StorageKeys.ACCOUNTINFOS, accountStore.state)),
     );
 
     /**
@@ -78,17 +124,14 @@ export function initStorage() {
     const addressStore = useAddressStore();
 
     // Load addresses from storage
-    const storedAddressState = localStorage.getItem(StorageKeys.ADDRESSINFOS);
+    const storedAddressState = await Storage.get<AddressState>(StorageKeys.ADDRESSINFOS);
     if (storedAddressState) {
-        const addressState: AddressState = JSON.parse(storedAddressState);
-        addressStore.patch(addressState);
+        addressStore.patch(storedAddressState);
     }
 
     unsubscriptions.push(
         // Write addresses to storage when updated
-        addressStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.ADDRESSINFOS, JSON.stringify(addressStore.state));
-        }),
+        addressStore.subscribe(() => Storage.set(StorageKeys.ADDRESSINFOS, addressStore.state)),
     );
 
     /**
@@ -96,70 +139,64 @@ export function initStorage() {
      */
     const settingsStore = useSettingsStore();
     // Load user settings from storage
-    const storedSettings = localStorage.getItem(StorageKeys.SETTINGS);
+    const storedSettings = await Storage.get<SettingsState>(StorageKeys.SETTINGS);
     if (storedSettings) {
-        const settingsState: SettingsState = JSON.parse(storedSettings);
-        settingsStore.patch(settingsState);
+        settingsStore.patch({
+            ...storedSettings,
+            updateAvailable: false,
+        });
     }
 
     unsubscriptions.push(
-        settingsStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.SETTINGS, JSON.stringify(settingsStore.state));
-        }),
+        settingsStore.subscribe(() => Storage.set(StorageKeys.SETTINGS, settingsStore.state)),
     );
 
     /**
      * CONTACTS
      */
     const contactsStore = useContactsStore();
-    const storedContacts = localStorage.getItem(PersistentStorageKeys.CONTACTS);
+    const storedContacts = await Storage.get<{[address: string]: string}>(PersistentStorageKeys.CONTACTS);
     if (storedContacts) {
-        const contacts: ContactsState = JSON.parse(storedContacts);
-        // @ts-ignore Some weird error about a type missmatch
-        contactsStore.patch({ contacts });
+        contactsStore.patch({
+            contacts: storedContacts,
+        });
     }
 
     unsubscriptions.push(
-        contactsStore.subscribe(() => {
-            localStorage.setItem(PersistentStorageKeys.CONTACTS, JSON.stringify(contactsStore.state.contacts));
-        }),
+        contactsStore.subscribe(() => Storage.set(PersistentStorageKeys.CONTACTS, contactsStore.state.contacts)),
     );
 
     /**
      * FIAT
      */
     const fiatStore = useFiatStore();
-    const storedRates = localStorage.getItem(StorageKeys.FIAT);
+    const storedRates = await Storage.get<FiatState>(StorageKeys.FIAT);
     if (storedRates) {
-        const fiatState: FiatState = JSON.parse(storedRates);
-        if (fiatState.timestamp > fiatStore.state.timestamp) {
-            fiatStore.patch(fiatState);
+        if (storedRates.timestamp > fiatStore.state.timestamp) {
+            fiatStore.patch(storedRates);
         }
     }
 
     unsubscriptions.push(
-        fiatStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.FIAT, JSON.stringify(fiatStore.state));
-        }),
+        fiatStore.subscribe(() => Storage.set(StorageKeys.FIAT, fiatStore.state)),
     );
 
     /**
-     * CASHLINKS
+     * PROXIES
      */
-    const cashlinkStore = useCashlinkStore();
-    const storedCashlinkState = localStorage.getItem(StorageKeys.CASHLINKS);
-    if (storedCashlinkState) {
-        const cashlinkState: CashlinkState = JSON.parse(storedCashlinkState);
-        cashlinkStore.patch({
-            ...cashlinkState,
+    const proxyStore = useProxyStore();
+    const storedProxyState = await Storage.get<ProxyState>(StorageKeys.PROXIES)
+        || await Storage.get<ProxyState>(StorageKeys.DEPRECATED_CASHLINKS);
+    await Storage.del(StorageKeys.DEPRECATED_CASHLINKS);
+    if (storedProxyState) {
+        proxyStore.patch({
+            ...storedProxyState,
             networkTrigger: 0,
         });
     }
 
     unsubscriptions.push(
-        cashlinkStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.CASHLINKS, JSON.stringify(cashlinkStore.state));
-        }),
+        proxyStore.subscribe(() => Storage.set(StorageKeys.PROXIES, proxyStore.state)),
     );
 
     /**
@@ -168,21 +205,18 @@ export function initStorage() {
     const btcTransactionsStore = useBtcTransactionsStore();
 
     // Load transactions from storage
-    const storedBtcTxs = localStorage.getItem(StorageKeys.BTCTRANSACTIONS);
+    const storedBtcTxs = await Storage.get<{[hash: string]: BtcTransaction}>(StorageKeys.BTCTRANSACTIONS);
     if (storedBtcTxs) {
-        const txs: BtcTransaction[] = JSON.parse(storedBtcTxs);
         btcTransactionsStore.patch({
-            // @ts-ignore Some weird error about a type missmatch
-            transactions: txs,
+            transactions: storedBtcTxs,
         });
         btcTransactionsStore.calculateFiatAmounts();
     }
 
     unsubscriptions.push(
         // Write transactions to storage when updated
-        btcTransactionsStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.BTCTRANSACTIONS, JSON.stringify(btcTransactionsStore.state.transactions));
-        }),
+        btcTransactionsStore.subscribe(() =>
+            Storage.set(StorageKeys.BTCTRANSACTIONS, btcTransactionsStore.state.transactions)),
     );
 
     /**
@@ -191,57 +225,65 @@ export function initStorage() {
     const btcAddressStore = useBtcAddressStore();
 
     // Load addresses from storage
-    const storedBtcAddressState = localStorage.getItem(StorageKeys.BTCADDRESSINFOS);
+    const storedBtcAddressState = await Storage.get<BtcAddressState>(StorageKeys.BTCADDRESSINFOS);
     if (storedBtcAddressState) {
-        const btcAddressState: BtcAddressState = JSON.parse(storedBtcAddressState);
-        btcAddressStore.patch(btcAddressState);
+        btcAddressStore.patch(storedBtcAddressState);
     }
 
     unsubscriptions.push(
         // Write addresses to storage when updated
-        btcAddressStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.BTCADDRESSINFOS, JSON.stringify(btcAddressStore.state));
-        }),
+        btcAddressStore.subscribe(() => Storage.set(StorageKeys.BTCADDRESSINFOS, btcAddressStore.state)),
     );
 
     /**
      * BTC Labels
      */
     const btcLabelsStore = useBtcLabelsStore();
-    const storedBtcLabelsState = localStorage.getItem(PersistentStorageKeys.BTCLABELS);
+    const storedBtcLabelsState = await Storage.get<BtcLabelsState>(PersistentStorageKeys.BTCLABELS);
     if (storedBtcLabelsState) {
-        const btcLablesState: BtcLabelsState = JSON.parse(storedBtcLabelsState);
-        btcLabelsStore.patch(btcLablesState);
+        btcLabelsStore.patch(storedBtcLabelsState);
     }
 
     unsubscriptions.push(
-        btcLabelsStore.subscribe(() => {
-            localStorage.setItem(PersistentStorageKeys.BTCLABELS, JSON.stringify(btcLabelsStore.state));
-        }),
+        btcLabelsStore.subscribe(() => Storage.set(PersistentStorageKeys.BTCLABELS, btcLabelsStore.state)),
     );
 
     /**
      * Swaps
      */
     const swapsStore = useSwapsStore();
-    const storedSwapsState = localStorage.getItem(StorageKeys.SWAPS);
+    const storedSwapsState = await Storage.get<SwapsState>(StorageKeys.SWAPS);
     if (storedSwapsState) {
-        const swapsState: SwapsState = JSON.parse(storedSwapsState);
-        swapsStore.patch(swapsState);
+        swapsStore.patch(storedSwapsState);
     }
 
     unsubscriptions.push(
-        swapsStore.subscribe(() => {
-            localStorage.setItem(StorageKeys.SWAPS, JSON.stringify(swapsStore.state));
-        }),
+        swapsStore.subscribe(() => Storage.set(StorageKeys.SWAPS, swapsStore.state)),
     );
 }
 
-export function clearStorage() {
+export async function clearStorage() {
     for (const unsub of unsubscriptions) {
         unsub();
     }
     for (const key of Object.values(StorageKeys)) {
+        await Storage.del(key); // eslint-disable-line no-await-in-loop
+    }
+}
+
+async function migrateToIdb() {
+    if (!localStorage.getItem(StorageKeys.ACCOUNTINFOS)) return;
+
+    const keys = Object.values(StorageKeys).concat(Object.values(PersistentStorageKeys));
+
+    for (const key of keys) {
+        const localState = localStorage.getItem(key);
+        if (!localState) continue;
+        await idbSet(key, JSON.parse(localState)); // eslint-disable-line no-await-in-loop
+    }
+
+    // Only remove localstorage items when all items have been migrated successfully.
+    for (const key of keys) {
         localStorage.removeItem(key);
     }
 }

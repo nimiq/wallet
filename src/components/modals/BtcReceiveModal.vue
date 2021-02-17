@@ -3,6 +3,26 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlay"
     >
+        <Tooltip class="info-tooltip" preferredPosition="bottom right">
+            <InfoCircleSmallIcon slot="trigger"/>
+            <div class="flex-column">
+                <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
+                    + ' Reuse of addresses does not result in a loss of funds.') }}</p>
+                <div class="flex-column">
+                    <div class="flex-row">
+                        <RefreshIcon />
+                        <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                    </div>
+                    <div class="flex-row">
+                        <BracketsIcon />
+                        <p>{{
+                            $t('Use labels instead of contacts to easily identify transactions in your history.')
+                        }}</p>
+                    </div>
+                </div>
+            </div>
+        </Tooltip>
+
         <PageHeader>
             {{ $t('Receive BTC') }}
             <div slot="more">{{ $t('Share a single-use address with the sender.') }}</div>
@@ -84,26 +104,6 @@
                     <QrCodeIcon/>
                 </button>
             </footer>
-
-            <Tooltip class="info-tooltip" preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger"/>
-                <div class="flex-column">
-                    <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                        + ' Reuse of addresses does not result in a loss of funds.') }}</p>
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <RefreshIcon />
-                            <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
-                        </div>
-                        <div class="flex-row">
-                            <BracketsIcon />
-                            <p>{{
-                                $t('Use labels instead of contacts to easily identify transactions in your history.')
-                            }}</p>
-                        </div>
-                    </div>
-                </div>
-            </Tooltip>
         </PageBody>
 
         <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress"/>
@@ -170,14 +170,8 @@ export default defineComponent({
         function getTimeLabel(timestamp: number): string {
             const difference = now.value - timestamp;
 
-            if (difference < 1 * second) {
-                return context.root.$tc('Created just now');
-            }
             if (difference < 1 * minute) {
-                return context.root.$tc(
-                    'Created {count} second ago | Created {count} seconds ago',
-                    Math.trunc(difference / second),
-                );
+                return context.root.$tc('Created just now');
             }
             if (difference < 1 * hour) {
                 return context.root.$tc(
@@ -191,14 +185,15 @@ export default defineComponent({
                     Math.trunc(difference / hour),
                 );
             }
-            if (difference >= 1 * day) {
-                return context.root.$tc(
-                    'Created {count} day ago | Created {count} days ago',
-                    Math.trunc(difference / day),
-                );
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (timestamp > yesterday.setHours(0, 0, 0, 0)) {
+                return context.root.$t('Created yesterday') as string;
             }
-
-            return context.root.$tc('Created some time ago');
+            return context.root.$tc(
+                'Created {count} day ago | Created {count} days ago',
+                Math.trunc(difference / day),
+            );
         }
 
         // Copied addresses
@@ -385,6 +380,7 @@ export default defineComponent({
     padding-top: 0;
     padding-bottom: 3rem;
     overflow: initial;
+    position: relative;
 }
 
 .address {
@@ -524,8 +520,8 @@ export default defineComponent({
 .recently-copied-addresses {
     flex-grow: 1;
     align-self: stretch;
-    min-height: 0;
     position: relative;
+    min-height: 24rem; /* Fits two copied addresses without scrolling */
 }
 
 .no-recently-copied-address {
@@ -582,10 +578,16 @@ footer {
         right: 3rem;
         bottom: 3rem;
         opacity: .4;
+        transition: opacity 250ms var(--nimiq-ease);
 
         svg {
             width: 4rem;
             height: auto;
+        }
+
+        &:hover,
+        &:focus {
+            opacity: 0.8;
         }
     }
 }
@@ -594,11 +596,13 @@ footer {
     position: absolute;
     top: 2rem;
     left: 2rem;
+    z-index: 3;
 
     /deep/ .trigger svg {
+        height: 2rem;
         opacity: .3;
 
-        transition: color var(--short-transition-duration) var(--nimiq-ease);
+        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }
 
     & /deep/ .trigger:hover svg,
@@ -611,6 +615,11 @@ footer {
         width: 26.25rem;
         font-size: var(--small-size);
         font-weight: 600;
+        transform: translate(-2rem, 2rem);
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            transform: translate(0.5rem, 2rem);
+        }
 
         p {
             margin: 0;

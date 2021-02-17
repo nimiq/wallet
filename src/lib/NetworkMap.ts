@@ -314,7 +314,6 @@ export class NodeHexagon extends Hexagon {
             super.draw(dc, timeDelta);
         }
 
-
         // draw
 
         return this._animation.hexagon !== 1;

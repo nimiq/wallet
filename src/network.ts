@@ -7,7 +7,7 @@ import Config from 'config';
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
-import { useCashlinkStore } from './stores/Cashlink';
+import { useProxyStore } from './stores/Proxy';
 
 let isLaunched = false;
 let clientPromise: Promise<NetworkClient>;
@@ -96,57 +96,68 @@ export async function launchNetwork() {
             .then(() => network$.fetchingTxHistory--);
     });
 
-    // Fetch transactions for cashlinks
-    const cashlinkStore = useCashlinkStore();
-    const fetchedCashlinks = new Set<string>();
-    const subscribedCashlinks = new Set<string>();
-    watch(cashlinkStore.networkTrigger, () => {
-        const newAddresses: string[] = [];
+    // Fetch transactions for proxies
+    const proxyStore = useProxyStore();
+    const seenProxies = new Set<string>();
+    const subscribedProxies = new Set<string>();
+    watch(proxyStore.networkTrigger, () => {
+        const newProxies: string[] = [];
         const addressesToSubscribe: string[] = [];
-        for (const address of cashlinkStore.allCashlinks.value) {
-            if (fetchedCashlinks.has(address)) {
-                // In case a funding cashlink is added, but the cashlink is already known from
-                // a prior claiming cashlink tx, we need to subscribe the cashlink anyway.
-                if (
-                    !subscribedCashlinks.has(address)
-                    && cashlinkStore.state.funded.includes(address)
-                    && cashlinkStore.state.claimed.includes(address)
-                ) {
-                    subscribedCashlinks.add(address);
-                    addressesToSubscribe.push(address);
-                }
+        for (const proxyAddress of proxyStore.allProxies.value) {
+            if (!seenProxies.has(proxyAddress)) {
+                // For new addresses the tx history and if required subscribing is handled below
+                seenProxies.add(proxyAddress);
+                newProxies.push(proxyAddress);
                 continue;
             }
-            fetchedCashlinks.add(address);
-            newAddresses.push(address);
+
+            // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
+            if (
+                !subscribedProxies.has(proxyAddress)
+                && proxyStore.state.funded.includes(proxyAddress)
+                && proxyStore.state.claimed.includes(proxyAddress)
+            ) {
+                subscribedProxies.add(proxyAddress);
+                addressesToSubscribe.push(proxyAddress);
+            }
         }
         if (addressesToSubscribe.length) client.subscribe(addressesToSubscribe);
-        if (!newAddresses.length) return;
+        if (!newProxies.length) return;
 
-        console.debug(`Fetching history for ${newAddresses.length} cashlink(s)`);
+        console.debug(`Fetching history for ${newProxies.length} proxies`);
 
-        for (const address of newAddresses) {
+        for (const proxyAddress of newProxies) {
             const knownTxDetails = Object.values(transactionsStore.state.transactions)
-                .filter((tx) => tx.sender === address || tx.recipient === address);
+                .filter((tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress);
 
             network$.fetchingTxHistory++;
 
-            console.debug('Fetching transaction history for', address, knownTxDetails);
-            client.getTransactionsByAddress(address, 0, knownTxDetails)
+            console.debug('Fetching transaction history for', proxyAddress, knownTxDetails);
+            client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails)
                 .then((txDetails) => {
                     if (
-                        cashlinkStore.state.funded.includes(address)
-                        && !subscribedCashlinks.has(address)
-                        && !txDetails.find((tx) => tx.sender === address && tx.state === TransactionState.CONFIRMED)
+                        proxyStore.state.funded.includes(proxyAddress)
+                        && !subscribedProxies.has(proxyAddress)
+                        && !txDetails.find((tx) => tx.sender === proxyAddress
+                            && tx.state === TransactionState.CONFIRMED)
                     ) {
-                        // No claiming transactions found, or the claiming tx is not yet
-                        // confirmed, so we need to subscribe for updates.
-                        subscribedCashlinks.add(address);
-                        client.subscribe(address);
+                        // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
+                        // subscribe for updates.
+                        // If we were triggered by a funding transaction, we have to subscribe in any case because we
+                        // don't know when and to where the proxy will be claimed. If we were triggered by a claimed
+                        // transaction and don't know the funding transaction yet wait with subscribing until the second
+                        // pass to see whether we actually have to subscribe (which is for example not the case if
+                        // funding and claiming are both from/to addresses that are subscribed anyways; see
+                        // needToSubscribe in ProxyDetection).
+                        // If the funding tx has not been known so far, it will be added to the transaction store below
+                        // which in turn runs the ProxyDetection again and triggers the network and this watcher again
+                        // for the second pass if needed.
+                        subscribedProxies.add(proxyAddress);
+                        client.subscribe(proxyAddress);
                     }
                     transactionsStore.addTransactions(txDetails);
                 })
-                .catch(() => fetchedCashlinks.delete(address))
+                .catch(() => seenProxies.delete(proxyAddress))
                 .then(() => network$.fetchingTxHistory--);
         }
     });

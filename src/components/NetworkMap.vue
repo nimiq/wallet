@@ -41,31 +41,13 @@
 </template>
 
 <script lang="ts">
-import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
+import I18nDisplayNames from '@/lib/I18nDisplayNames';
+import { useSettingsStore } from '@/stores/Settings';
 import { getNetworkClient } from '../network';
 import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR, Node, NodeType } from '../lib/NetworkMap';
-import { useSettingsStore } from '../stores/Settings';
-
-type IntlDisplayNames = import('@formatjs/intl-displaynames').DisplayNames;
-type IntlDisplayNamesOptions = import('@formatjs/intl-displaynames').DisplayNamesOptions;
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Intl {
-    let DisplayNames: undefined | {
-        new (
-            locales?: string | string[],
-            options?: IntlDisplayNamesOptions,
-        ): IntlDisplayNames,
-
-        readonly polyfilled?: true,
-    };
-}
-
-const intlDisplayNamesReadyPromise = !Intl.DisplayNames?.polyfilled && shouldPolyFillIntlDisplayNames()
-    ? import('@formatjs/intl-displaynames/polyfill')
-    : Promise.resolve();
 
 export default defineComponent({
     setup(props, context) {
@@ -135,22 +117,8 @@ export default defineComponent({
         const ownXCoordinate = computed(() => ownNode.value ? ownNode.value.x : null);
         watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * SCALING_FACTOR));
 
+        const i18nCountryName = new I18nDisplayNames('region');
         const { language } = useSettingsStore();
-        let i18nCountryName: IntlDisplayNames | null = null;
-
-        watch(language, async () => {
-            i18nCountryName = null;
-            // TODO polyfill can be removed in the future and i18nCountryName then changed to a non-async computed prop
-            await intlDisplayNamesReadyPromise;
-            if (Intl.DisplayNames!.polyfilled) {
-                // has to be imported after the polyfill is ready
-                await import(
-                    /* webpackChunkName: "country-names-[request]" */
-                    /* webpackInclude: /\/\w{2}\.js$/ */
-                    `@formatjs/intl-displaynames/locale-data/${language.value}`);
-            }
-            i18nCountryName = new Intl.DisplayNames!(language.value, { type: 'region' });
-        });
 
         function getPeerCity(peer: Node) {
             const fallbackCityName = peer.locationData.city;

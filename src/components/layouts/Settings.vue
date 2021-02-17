@@ -9,6 +9,22 @@
         </div>
 
         <div class="column left-column flex-column">
+            <section v-if="updateAvailable">
+                <div class="setting update-available">
+                    <div class="description">
+                        <label class="nq-h2 nq-green">{{ $t('Update Available') }}</label>
+                        <p class="nq-text">
+                            {{ $t('An update to the Wallet is available, update now!') }}
+                        </p>
+                    </div>
+                    <CircleSpinner v-if="applyingWalletUpdate"/>
+                    <button v-else
+                        class="nq-button-pill green"
+                        @click="applyWalletUpdate" @mousedown.prevent
+                    >{{ $t('Update now') }}</button>
+                </div>
+            </section>
+
             <section>
                 <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -78,7 +94,7 @@
                             {{ $t('Go through the product again') }}
                         </p>
                     </div>
-                    <button class="nq-button-pill light-blue disabled" @mousedown.prevent>
+                    <button class="nq-button-pill light-blue" @mousedown.prevent disabled>
                         {{ $t('Start Tour') }}
                     </button>
                 </div> -->
@@ -118,7 +134,7 @@
             </section>
 
             <section>
-                <h2 class="nq-label">{{ $t('Developer') }}</h2>
+                <h2 class="nq-label">{{ $t('Advanced') }}</h2>
 
                 <div v-if="showVestingSetting" class="setting">
                     <div class="description">
@@ -142,6 +158,16 @@
                     <button class="nq-button-pill light-blue" @click="clearCache" @mousedown.prevent>
                         {{ $t('Clear') }}
                     </button>
+                </div>
+
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Trials') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Enter the password of the trial you want to enable, then press enter.') }}
+                        </p>
+                        <input class="nq-input-s" @keypress.enter="onTrialPassword($event.target)"/>
+                    </div>
                 </div>
             </section>
         </div>
@@ -179,18 +205,34 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-// @ts-ignore missing types for this package
+import { CircleSpinner } from '@nimiq/vue-components';
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
-import { useSettingsStore, ColorMode } from '../../stores/Settings';
+import { useSettingsStore, ColorMode, Trial } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract } from '../../hub';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
+import { updateServiceWorker } from '../../registerServiceWorker';
+
+declare global {
+    function digestMessage(message: string): Promise<string>;
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#Converting_a_digest_to_a_hex_string
+// Exposed globally to create passwords for new trials.
+window.digestMessage = async function (message: string): Promise<string> { // eslint-disable-line func-names
+    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
+};
 
 export default defineComponent({
     setup(props, context) {
@@ -198,10 +240,10 @@ export default defineComponent({
 
         const { currency, setCurrency } = useFiatStore();
 
-        function clearCache() {
+        async function clearCache() {
             /* eslint-disable-next-line no-restricted-globals, no-alert */
             if (!confirm('Really clear cache?')) return;
-            clearStorage();
+            await clearStorage();
             window.location.reload();
         }
 
@@ -263,12 +305,37 @@ export default defineComponent({
             reader.readAsText(file);
         }
 
+        async function onTrialPassword(el: HTMLInputElement) {
+            let hash: string;
+            try {
+                hash = await window.digestMessage(el.value);
+            } catch (error) {
+                el.value = error.message;
+                return;
+            }
+
+            switch (hash) {
+                case '301bc5e02f0cf97c5efd61c78c3cfe6ee443cdfd4d17703e7515dccbcc618c3c':
+                    settings.enableTrial(Trial.BUY_WITH_EURO); break;
+                default: el.value = 'Nope, no cookie for you'; return;
+            }
+
+            el.value = 'OK, trial enabled';
+        }
+
+        const applyingWalletUpdate = ref(false);
+
+        async function applyWalletUpdate() {
+            await updateServiceWorker();
+            applyingWalletUpdate.value = true;
+        }
+
         const showVestingSetting = ref(false);
 
         function enableVestingSetting() {
             showVestingSetting.value = true;
         }
-        // @ts-ignore
+        // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
         return {
@@ -283,12 +350,16 @@ export default defineComponent({
             $fileInput,
             loadFile,
             showVestingSetting,
+            onTrialPassword,
+            applyWalletUpdate,
+            applyingWalletUpdate,
         };
     },
     components: {
         MenuIcon,
         Portal,
         CrossCloseButton,
+        CircleSpinner,
     },
 });
 </script>
@@ -357,11 +428,15 @@ section {
     border-radius: 3.75rem;
     font-size: var(--body-size);
 
-    &.disabled {
+    &:disabled {
         filter: grayscale(100%);
         cursor: normal;
         pointer-events: none;
     }
+}
+
+.update-available /deep/ .circle-spinner {
+    margin: 0.375rem;
 }
 
 .setting:last-child .nq-text {
@@ -512,6 +587,10 @@ input[type="file"] {
     }
 }
 
+.nq-input-s {
+    margin-top: 1rem;
+}
+
 @media (max-width: 1160px) { // Half mobile breakpoint
     .settings {
         padding: 5rem 3rem 3rem 4rem;
@@ -581,9 +660,6 @@ input[type="file"] {
         &.left-column,
         &.right-column {
             flex-shrink: 0;
-        }
-
-        &.right-column {
             max-height: unset;
             overflow-y: unset;
         }

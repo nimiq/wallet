@@ -44,12 +44,21 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <button
-                :disabled="!totalFiatAccountBalance"
-                class="nq-button-s" @click="$router.push('/swap').catch(() => {})" @mousedown.prevent
-            >
-                <SwapIcon/>
-            </button>
+            <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
+                <button
+                    :disabled="!totalFiatAccountBalance || hasActiveSwap"
+                    @focus.stop="$refs.swapTooltip.show()"
+                    @blur.stop="$refs.swapTooltip.hide()"
+                    class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
+                ><SwapIcon/></button>
+                 <i18n path="Swap NIM {arrow} BTC" tag="span" class="nq-text-s">
+                    <template v-slot:arrow>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8" width="12" height="8" fill="none"
+                            stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+                        ><path d="M3.6 6.6l-3-3 3-3M8.4.6l3 3-3 3M1 3.6h10"/></svg>
+                    </template>
+                </i18n>
+            </Tooltip>
         </div>
         <div v-if="hasBitcoinAddresses"
             class="currency flex-column btc"
@@ -102,6 +111,7 @@ import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useSettingsStore } from '../stores/Settings';
+import { useSwapsStore } from '../stores/Swaps';
 
 export default defineComponent({
     name: 'balance-distribution',
@@ -169,6 +179,9 @@ export default defineComponent({
                     || (rect1.left > rect2.right));
         }
 
+        const { activeSwap } = useSwapsStore();
+        const hasActiveSwap = computed(() => activeSwap.value !== null);
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -183,6 +196,7 @@ export default defineComponent({
             $nimAmount,
             $btcAmount,
             doElsTouch,
+            hasActiveSwap,
         };
     },
     components: {
@@ -219,16 +233,36 @@ export default defineComponent({
             width: 4rem;
             height: 4rem;
             border-radius: 2rem;
-            background-color: #e4e4e4; // var(--text-6) but without transparency
-            box-shadow: 0 1rem 1rem 0.5rem var(--bg-base);
+            /**
+             * We need to add a background (of the same color as the base color) to the button, as a transparent
+             * background leads to the account balances to leak through the button, when it is close to one side
+             * of the distribution bar.
+             * Box-shadow is applied on top of the background color, so we need to change the box-shadow color,
+             * with a fixed background-color. The transition property is adjusted accordingly, with the same
+             * settings as in @nimiq/style.
+             */
+            background-color: var(--bg-base);
+            color: var(--text-50);
+            --box-color: var(--text-6);
+            box-shadow: 0 1rem 1rem 0.5rem var(--bg-base), inset 0 0 0 3rem var(--box-color);
 
-            svg {
-                opacity: 0.5;
-            }
+            transition: color .3s var(--nimiq-ease), box-shadow .3s var(--nimiq-ease);
 
             &::before {
                 display: none;
             }
+
+            &:hover:not(:disabled),
+            &:focus {
+                --box-color: var(--text-12);
+                color: var(--text-70);
+            }
+        }
+
+        .tooltip /deep/ .tooltip-box {
+            padding: 1rem;
+            transform: translate(calc(26px - 50%), -2rem);
+            white-space: nowrap;
         }
     }
 
@@ -244,8 +278,17 @@ export default defineComponent({
             flex-direction: row;
             width: 100%;
 
-            > div:not(:last-child) {
+            > div {
                 padding-right: 0.5rem;
+                min-width: 1rem;
+
+                &:last-child {
+                    margin-right: -0.5rem;
+                }
+
+                &:only-child {
+                    padding-right: 0rem;
+                }
             }
 
             .tooltip {

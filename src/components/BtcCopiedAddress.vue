@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import { defineComponent } from '@vue/composition-api';
 import { Tooltip, Copyable, LabelInput } from '@nimiq/vue-components';
 import ShortAddress from './ShortAddress.vue';

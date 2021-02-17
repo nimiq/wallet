@@ -1,15 +1,15 @@
 <template>
     <Modal class="trade-modal">
         <PageBody class="flex-column">
+            <!-- eslint-disable max-len -->
             <div class="exchange-area flex-column">
                 <header>
-                    <h1 class="nq-h1">{{ $t('Get NIM and BTC') }}</h1>
-                    <!-- eslint-disable-next-line max-len -->
+                    <h1 class="nq-h1">{{ $t('Trade NIM and BTC') }}</h1>
                     <i18n :path="'There are many options, use a credit card or trade\u00a0crypto. You can find more exchanges on {link}'"
                         tag="p" class="nq-text intro"
                     >
                         <template v-slot:link>
-                            <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank">
+                            <a href="https://nimiq.com/exchanges" class="nq-link" target="_blank" rel="noopener">
                                 nimiq.com/exchanges
                             </a>
                         </template>
@@ -21,19 +21,19 @@
                             <img src="../../assets/exchanges/kucoin.svg">
                             KuCoin
                             <a class="nq-button-pill light-blue flex-row"
-                                href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
+                                href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
                                 @mousedown.prevent
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
                         <ul>
-                            <li>{{ $t('24/7 Chat & Phone\u00a0Support') }}</li>
+                            <li>{{ $t('24/7 Support') }}</li>
                             <li>{{ $t('Android and iOS App') }}</li>
                         </ul>
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
-                            href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank"
+                            href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
                             @mousedown.prevent
-                        >{{ $t('To {exchange}', {exchange: 'KuCoin'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', { exchange: 'KuCoin' }) }}<ArrowRightSmallIcon/></a>
                     </div>
                     <div class="separator"></div>
                     <div class="exchange changehero flex-column">
@@ -41,77 +41,59 @@
                             <img src="../../assets/exchanges/changehero.svg">
                             ChangeHero
                             <a class="nq-button-pill light-blue flex-row"
-                                href="https://changehero.io/?to=nim" target="_blank"
+                                href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
                                 @mousedown.prevent
                             >{{ $t('Get NIM') }}<ArrowRightSmallIcon/></a>
                         </h2>
                         <ul>
                             <li>{{ $t('For beginners') }}</li>
-                            <li>{{ $t('Credit Card accepted') }}</li>
+                            <li>{{ $t('No registration') }}</li>
                         </ul>
                         <div class="flex-grow"></div>
                         <a class="nq-button-pill light-blue flex-row"
-                            href="https://changehero.io/?to=nim" target="_blank"
+                            href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
                             @mousedown.prevent
-                        >{{ $t('To {exchange}', {exchange: 'ChangeHero'}) }}<ArrowRightSmallIcon/></a>
+                        >{{ $t('To {exchange}', { exchange: 'ChangeHero' }) }}<ArrowRightSmallIcon/></a>
                     </div>
                 </div>
                 <div class="exchange-logos flex-row">
-                    <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank">
-                        <img src="../../assets/exchanges/kucoin.svg">
-                    </a>
-                    <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank">
+                    <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/hitbtc.svg">
                     </a>
+                    <a href="https://bitmax.io" title="BitMax" target="_blank" rel="noopener">
+                        <img src="../../assets/exchanges/bitmax.svg">
+                    </a>
                     <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
-                        title="Changelly" target="_blank"
+                        title="Changelly" target="_blank" rel="noopener"
                     ><img src="../../assets/exchanges/changelly.svg">
                     </a>
-                    <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank">
+                    <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/bitladon.svg">
                     </a>
-                    <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank">
+                    <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/changehero.svg">
                     </a>
-                    <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank">
+                    <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/btcalpha.svg">
                     </a>
-                    <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank">
+                    <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coinswitch.svg">
                     </a>
-                    <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank">
+                    <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coindcx.svg">
                     </a>
-                    <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank">
+                    <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/swapzone.svg">
                     </a>
-                    <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank">
+                    <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/swapspace.svg">
                     </a>
-                    <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank">
+                    <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coinspot.svg">
                     </a>
                 </div>
             </div>
-            <div class="oasis-area nq-blue-bg flex-column">
-                <label>{{ $t('Coming\u00a0soon') }}</label>
-                <h2 class="nq-h2">{{ $t('Buy and sell with your wallet.') }}</h2>
-                <p class="nq-text">
-                    {{ $t('Nimiq OASIS enables decentra&shy;lized buying and selling of crypto directly from your '
-                        + 'wallet.') }}
-                </p>
-                <p class="nq-text">
-                    {{ $t('Starting with EU\u00a0bank\u00a0accounts soon.') }}
-                </p>
-                <footer>
-                    <BlueLink href="https://nimiq.com/oasis" target="_blank">{{ $t('Learn more') }}</BlueLink>
-                    <!-- <div class="flex-grow"></div> -->
-                    <div>
-                        <p class="nq-text">{{ $t('In cooperation with') }}</p>
-                        <img src="../../assets/ten31.svg" alt="TEN31">
-                    </div>
-                </footer>
-            </div>
+            <!-- eslint-enable max-len -->
         </PageBody>
     </Modal>
 </template>
@@ -120,7 +102,6 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
-import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
     name: 'trade-modal',
@@ -128,15 +109,14 @@ export default defineComponent({
         Modal,
         PageBody,
         ArrowRightSmallIcon,
-        BlueLink,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .modal /deep/ .small-page {
-    width: 88.5rem !important;
-    height: 60rem !important;
+    width: 65rem !important;
+    min-height: 60rem !important;
     max-width: 100vw;
 }
 
@@ -147,7 +127,6 @@ export default defineComponent({
 
 .exchange-area {
     flex-grow: 1;
-    margin-left: 1.25rem;
     padding: 3.25rem;
     align-items: center;
     justify-content: space-between;
@@ -275,82 +254,6 @@ export default defineComponent({
     }
 }
 
-.oasis-area {
-    width: 22.75rem;
-    border-radius: 0.625rem;
-    padding: 3rem;
-    flex-shrink: 0;
-    align-items: flex-start;
-    position: relative;
-
-    label {
-        text-transform: uppercase;
-        font-size: var(--small-label-size);
-        font-weight: bold;
-        letter-spacing: 0.06em;
-        padding: 0.625rem 1.5rem;
-        color: rgba(255, 255, 255, 0.6);
-        box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
-        border-radius: 50px;
-    }
-
-    h2 {
-        font-weight: 600;
-        margin-bottom: 2rem;
-    }
-
-    .nq-text,
-    .nq-link {
-        font-size: var(--small-size);
-        font-weight: 600;
-        margin-top: 0;
-        line-height: 1.4;
-    }
-
-    > .nq-text:first-of-type {
-        margin-bottom: 1.5rem;
-    }
-
-    .blue-link {
-        font-weight: bold;
-        color: var(--nimiq-light-blue);
-    }
-
-    footer {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-
-        & > div:last-child {
-            margin-top: auto;
-        }
-
-        .nq-text {
-            margin-bottom: 1rem;
-            opacity: calc(0.5 / 0.7);
-            font-size: 1.5rem;
-        }
-    }
-
-    img {
-        display: block;
-        opacity: 0.5;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: url('../../assets/oasis-bg-desktop.svg') bottom right no-repeat;
-        pointer-events: none;
-        user-select: none;
-    }
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .modal /deep/ .small-page {
         // Regular Modal size (iOS scrolling inside the TradeModal does not work without a fixed height)
@@ -364,13 +267,12 @@ export default defineComponent({
 
     .exchange-area {
         flex-shrink: 0;
-        margin-left: 0;
         padding: 2.25rem 1.25rem;
         align-items: stretch;
 
         .intro {
             max-width: unset;
-            margin-bottom: 5rem;
+            margin-bottom: 4rem;
         }
     }
 
@@ -412,39 +314,21 @@ export default defineComponent({
     }
 
     .exchange-logos {
-        display: none;
-    }
+        overflow-x: auto;
+        padding: 0 1rem 2rem;
+        margin-bottom: -1rem;
 
-    .oasis-area {
-        width: unset;
-
-        footer {
-            align-items: flex-start;
-            flex-direction: row;
-            flex-wrap: wrap;
-            flex-grow: 0;
-
-            .nq-link,
-            & > div:last-child {
-                flex: 0 0 auto;
-            }
-
-            & > div:last-child {
-                display: flex;
-                flex: 0 0 auto;
-                margin-left: auto;
-                margin-top: 0;
-
-                .nq-text {
-                    margin-bottom: 0;
-                    margin-right: 1rem;
-                }
-            }
-
+        a {
+            opacity: 1;
+            filter: none;
         }
 
-        &::after {
-            background: url('../../assets/oasis-bg-mobile.svg') bottom right no-repeat;
+        a + a {
+            margin-left: 2rem;
+        }
+
+        a:last-child {
+            padding-right: 1rem;
         }
     }
 }

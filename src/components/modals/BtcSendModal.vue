@@ -82,7 +82,7 @@
                         <span v-else key="btc-amount">
                             {{ $t(
                                 'You will send {amount}',
-                                { amount: `${amount / (btcUnit.unitsToCoins)} ${btcUnit.ticker}` },
+                                { amount: `${amount / btcUnit.unitToCoins} ${btcUnit.ticker}` },
                             ) }}
                         </span>
                     </span>
@@ -97,7 +97,7 @@
                 <div class="flex-grow"></div>
 
                 <section class="fee-section flex-row">
-                    <FeeSelector :fees="feeOptions" @fee="(fee) => feePerByte = fee"/>
+                    <FeeSelector :fees="feeOptions" @fee="updateFee"/>
                     <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
                     <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
                         <InfoCircleSmallIcon slot="trigger"/>
@@ -185,7 +185,7 @@ export enum RecipientType {
 }
 
 export default defineComponent({
-    name: 'send-btc-modal',
+    name: 'btc-send-modal',
     props: {
         requestUri: {
             type: String,
@@ -202,7 +202,7 @@ export default defineComponent({
             setRecipientLabel,
             getRecipientLabel,
         } = useBtcLabelsStore();
-        const { state: network$ } = useBtcNetworkStore();
+        const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
 
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
@@ -341,16 +341,22 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
+        function updateFee(newFeePerByte: number) {
+            const isSendingMax = amount.value === maxSendableAmount.value;
+            feePerByte.value = newFeePerByte;
+            if (isSendingMax) sendMax();
+        }
+
         const hasHeight = computed(() => !!network$.height);
 
         const canSend = computed(() =>
             recipientWithLabel.value
             && recipientWithLabel.value.address
             && hasHeight.value
+            && !isFetchingTxHistory.value
             && amount.value
             && amount.value <= maxSendableAmount.value,
         );
-
 
         const addressInputValue = ref(''); // Used for setting the address from a request URI
 
@@ -438,7 +444,7 @@ export default defineComponent({
                 const { nextChangeAddress } = useBtcAddressStore();
                 if (!nextChangeAddress.value) {
                     // FIXME: If no unused change address is found, need to request new ones from Hub!
-                    throw new Error('No more unused change addresses (not yet implemented)');
+                    throw new Error('No more unused change addresses)');
                 }
                 changeAddress = nextChangeAddress.value;
             }
@@ -529,6 +535,7 @@ export default defineComponent({
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
+            updateFee,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             canSend,
@@ -808,6 +815,13 @@ export default defineComponent({
             max-width: 100%;
             min-height: 5rem;
             z-index: 5;
+
+            .ticker {
+                &:hover,
+                &:focus-within {
+                    color: var(--nimiq-light-blue);
+                }
+            }
         }
 
         .amount-menu /deep/ .button {
@@ -833,11 +847,13 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input {
+            .amount-input /deep/,
+            .amount-input /deep/ .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ input {
+            .amount-input /deep/ .nq-input {
+                color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }
@@ -894,9 +910,10 @@ export default defineComponent({
         left: 2rem;
 
         /deep/ .trigger svg {
+            height: 2rem;
             opacity: .3;
 
-            transition: color var(--short-transition-duration) var(--nimiq-ease);
+            transition: opacity var(--short-transition-duration) var(--nimiq-ease);
         }
 
         & /deep/ .trigger:hover svg,
@@ -911,9 +928,10 @@ export default defineComponent({
             font-weight: 600;
             line-height: 2.5rem;
             color: white;
+            transform: translate(-2rem, 2rem);
 
-            @media (min-width: 701px) {
-                transform: translate(-1rem, 2rem);
+            @media (max-width: 700px) { // Full mobile breakpoint
+                transform: translate(0.5rem, 2rem);
             }
 
             p {

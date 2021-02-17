@@ -42,29 +42,23 @@ module.exports = {
         'no-restricted-syntax': ['error', ...noRestrictedSyntax],
 
         '@typescript-eslint/member-delimiter-style': ['error', memberDelimiterStyleOverrides],
-        '@typescript-eslint/ban-ts-ignore': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-use-before-define': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off', // Do not require explicit function return value typings
 
         'no-useless-constructor': 'off',
         '@typescript-eslint/no-useless-constructor': 'error',
 
-        /*
-        // TODO these rules have been used on previous versions of typescript-eslint and the linter presets and might
-        // not be necessary anymore
-        // Typescript plugin replacements
-        'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': 'error',
-        'no-empty-function': 'off',
-        '@typescript-eslint/no-empty-function': 'error',
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'error',
+
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
 
         // False positives that are checked by TS
-        'no-redeclare': 'off',
-        'no-param-reassign': 'off',
-        'import/no-unresolved': 'off',
-        'no-use-before-define': 'off',
-        */
+        // 'no-redeclare': 'off',
+        // 'no-param-reassign': 'off',
+        // 'import/no-unresolved': 'off',
     },
     overrides: [{
             files: ['src/components/icons/**/*', 'src/components/Avatar.vue'],

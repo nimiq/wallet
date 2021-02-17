@@ -42,7 +42,7 @@ export default defineComponent({
 
         onMounted(() => {
             if ('ResizeObserver' in window && searchBarInput.value) {
-                // @ts-ignore ResizeObserver not supported by Typescript yet
+                // @ts-expect-error ResizeObserver not supported by Typescript yet
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
                     width.value = entry.contentBoxSize

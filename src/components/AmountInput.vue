@@ -1,5 +1,5 @@
 <template>
-    <div class="amount-input" :class="{'has-value': valueInLuna > 0, 'focussed': isFocussed}">
+    <div class="amount-input" :class="{'has-value': liveValue.length > 0, 'focussed': isFocussed}">
         <slot name="prefix"/>
         <form class="label-input" @submit.prevent ref="$fullWidth">
             <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>
@@ -26,6 +26,10 @@ export default defineComponent({
         maxFontSize: {
             type: Number,
             default: 8,
+        },
+        max: {
+            type: Number,
+            required: false,
         },
         placeholder: {
             type: String,
@@ -96,14 +100,23 @@ export default defineComponent({
         }
 
         function updateValue(value: string) {
-            liveValue.value = formatValue(value.replace(/,/, '.'));
-            valueInLuna.value = Number(liveValue.value || 0) * 10 ** props.decimals;
+            let newValue = formatValue(value.replace(/,/, '.'));
+            let newValueInLuna = Math.round(Number(newValue || 0) * 10 ** props.decimals);
+
+            if (props.max && props.max < newValueInLuna) {
+                newValueInLuna = props.max;
+                newValue = String(newValueInLuna / 10 ** props.decimals);
+            }
+
+            liveValue.value = newValue;
+            valueInLuna.value = newValueInLuna;
         }
 
-        function onInput(event: InputEvent) {
-            updateValue((event.target as HTMLInputElement).value);
+        function onInput(event: { target: EventTarget | null }) {
+            const target = event.target as HTMLInputElement;
 
-            (event.target as HTMLInputElement).value = liveValue.value;
+            updateValue(target.value);
+            target.value = liveValue.value;
 
             if (lastEmittedValue.value !== valueInLuna.value) {
                 context.emit('input', valueInLuna.value);
@@ -113,7 +126,16 @@ export default defineComponent({
 
         watch(() => props.value, (newValue: number | undefined) => {
             if (newValue === valueInLuna.value) return;
-            updateValue(newValue ? (newValue / 10 ** props.decimals).toString() : '');
+            lastEmittedValue.value = newValue || 0;
+            updateValue(newValue ? String(newValue / 10 ** props.decimals) : '');
+        });
+
+        watch(() => props.max, (newMax: number | undefined) => {
+            // Disabling a max value, or setting it higher than the current value, has no effect on
+            // the current value, but will take effect only on the next input.
+            if (!newMax || newMax >= valueInLuna.value) return;
+
+            onInput({ target: context.refs.$input as EventTarget });
         });
 
         return {
@@ -159,11 +181,11 @@ input {
     padding: 0 0.25rem;
     max-width: 100%;
     text-align: center;
-    color: inherit !important;
+    transition: box-shadow 0.2s var(--nimiq-ease), width 50ms ease-out, color 0.2s var(--nimiq-ease);
 
-    // Remove color transition (handled by .amount-input parent)
-    // Add width transition
-    transition: box-shadow .2s var(--nimiq-ease), width 50ms ease-out;
+    &:hover {
+        --border-color: rgba(5, 130, 202, 0.2);
+    }
 }
 
 .full-width {
@@ -177,25 +199,34 @@ input {
     width: 100%;
     font-size: 8rem;
     color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
-    transition: color .2s var(--nimiq-ease);
+
+    form {
+        display: flex;
+    }
+
+    .ticker {
+        margin-left: 1rem;
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 4.5rem;
+    }
+
+    &.has-value {
+        color: var(--nimiq-blue);
+    }
+
+    &.has-value .nq-input:hover {
+        color: var(--nimiq-light-blue);
+    }
+
+    &.has-value .nq-input:focus-within {
+        --border-color: rgba(5, 130, 202, 0.4);
+    }
 }
 
-.amount-input.has-value {
-    color: var(--nimiq-blue);
-}
-
-.amount-input.focussed {
+.amount-input.focussed .ticker,
+// .label-input:hover + .ticker,
+.label-input:focus-within + .ticker {
     color: var(--nimiq-light-blue);
-}
-
-.amount-input form {
-    display: flex;
-}
-
-.amount-input .ticker {
-    margin-left: 1rem;
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 4.5rem;
 }
 </style>

@@ -1,14 +1,10 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
-import {
-    isCashlinkData,
-    handleCashlinkTransaction,
-} from '../lib/CashlinkDetection';
-import { useCashlinkStore } from './Cashlink';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 
@@ -39,27 +35,31 @@ export const useTransactionsStore = createStore({
         async addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
-            let foundCashlinks = false;
             const newTxs: { [hash: string]: Transaction } = {};
-            for (const plain of txs) {
-                // Detect cashlinks and observe them for tx-history and new incoming tx
-                if (isCashlinkData(plain.data.raw)) {
-                    foundCashlinks = true;
-                    const cashlinkTxs = handleCashlinkTransaction(plain, [
-                        ...Object.values(this.state.transactions),
-                        // Need to pass processed transactions from this batch in as well,
-                        // as two related txs can be added in the same batch, and the store
-                        // is only updated after this loop.
-                        ...txs,
-                    ]);
-                    for (const tx of cashlinkTxs) {
-                        newTxs[tx.transactionHash] = tx;
-                    }
-                    continue;
-                }
 
+            // re-apply known fiatValue and relatedTransactionHash
+            for (const tx of txs) {
+                const knownTx = this.state.transactions[tx.transactionHash];
+                if (!knownTx) continue;
+                if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
+                    tx.relatedTransactionHash = knownTx.relatedTransactionHash;
+                }
+                if (!tx.fiatValue && knownTx.fiatValue) {
+                    tx.fiatValue = knownTx.fiatValue;
+                }
+            }
+
+            // Detect proxies and observe them for tx-history and new incoming txs.
+            detectProxyTransactions(txs, this.state.transactions);
+
+            for (const plain of txs) {
+                newTxs[plain.transactionHash] = Object.assign(
+                    this.state.transactions[plain.transactionHash] || plain,
+                    plain,
+                );
+
+                // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
-                    // Detect swaps
                     // HTLC Creation
                     if ('hashRoot' in plain.data) {
                         const fundingData = plain.data as {
@@ -74,6 +74,7 @@ export const useTransactionsStore = createStore({
                             asset: SwapAsset.NIM,
                             transactionHash: plain.transactionHash,
                             htlc: {
+                                address: plain.recipient,
                                 refundAddress: fundingData.sender,
                                 redeemAddress: fundingData.recipient,
                                 timeoutBlockHeight: fundingData.timeout,
@@ -128,10 +129,21 @@ export const useTransactionsStore = createStore({
                             asset: SwapAsset.NIM,
                             transactionHash: plain.transactionHash,
                         });
+
+                        if (!useSwapsStore().state.swaps[settlementData.hashRoot].in) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
+                                if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    useSwapsStore().addFundingData(settlementData.hashRoot, {
+                                        asset: SwapAsset.EUR,
+                                        amount: contractWithEstimate.from.amount,
+                                        // We cannot get bank info or EUR HTLC details from this.
+                                    });
+                                }
+                            }).catch(() => undefined);
+                        }
                     }
                 }
-
-                newTxs[plain.transactionHash] = plain;
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection.
@@ -142,15 +154,25 @@ export const useTransactionsStore = createStore({
             };
 
             this.calculateFiatAmounts();
-
-            if (foundCashlinks) {
-                useCashlinkStore().triggerNetwork();
-            }
         },
 
-        async calculateFiatAmounts() {
+        setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction | null) {
+            // Need to re-assign the whole object in Vue 2 for change detection.
+            // TODO: Simply assign transactions in Vue 3.
+            if (relatedTransaction === null) {
+                delete transaction.relatedTransactionHash;
+                this.state.transactions[transaction.transactionHash] = { ...transaction };
+                return;
+            }
+            transaction.relatedTransactionHash = relatedTransaction.transactionHash;
+            relatedTransaction.relatedTransactionHash = transaction.transactionHash;
+            this.state.transactions[transaction.transactionHash] = { ...transaction };
+            this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
+        },
+
+        async calculateFiatAmounts(fiat?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = useFiatStore().currency.value;
+            const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 !!tx.timestamp && (!tx.fiatValue || !(fiatCurrency in tx.fiatValue)),
             ) as Array<Transaction & { timestamp: number }>;
@@ -176,6 +198,8 @@ export const useTransactionsStore = createStore({
             for (const tx of txs) {
                 delete transactions[tx.transactionHash];
             }
+            cleanupKnownProxyTransactions(txs);
+            // TODO cleanup swap store
             this.state.transactions = transactions;
         },
     },

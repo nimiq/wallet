@@ -23,13 +23,24 @@
             <PriceChart currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
-        <div class="trade-actions">
-            <button class="nq-button-s inverse"
-                @click="$router.push('/trade?sidebar=true')"
-                @mousedown.prevent
+        <div class="trade-actions" v-show="!isLegacyAccount">
+            <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
+                <button class="nq-button-s inverse"
+                    @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
+                    :disabled="$route.name !== 'root' || hasActiveSwap"
+                >{{ $t('Buy') }}</button>
+                <button class="nq-button-s inverse"
+                    @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
+                    :disabled="$route.name !== 'root'"
+                >{{ $t('Sell') }}</button>
+            </template>
+            <button v-else class="nq-button-s inverse"
+                @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root'"
             >{{ $t('Buy & Sell') }}</button>
         </div>
+
+        <div class="flex-grow"></div>
 
         <AccountMenu
             :class="{'active': $route.name === 'root'}"
@@ -50,12 +61,13 @@
         >
             <GearIcon/>
             <span class="label">{{ $t('Settings') }}</span>
+            <AttentionDot v-if="updateAvailable"/>
         </button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 
 import Config from 'config';
@@ -65,8 +77,12 @@ import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
+import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
+import { useSettingsStore, Trial } from '../../stores/Settings';
+import { useAccountStore, AccountType } from '../../stores/Account';
+import { useSwapsStore } from '../../stores/Swaps';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
@@ -84,6 +100,7 @@ export default defineComponent({
         }
 
         const isTestnet = Config.environment === ENV_TEST || Config.environment === ENV_DEV;
+        const isDev = Config.environment === ENV_DEV;
 
         const priceChartTimeRange = ref(TimeRange['24h']);
         function switchPriceChartTimeRange() {
@@ -103,12 +120,26 @@ export default defineComponent({
             }
         }
 
+        const { trials, updateAvailable } = useSettingsStore();
+
+        const { activeAccountInfo } = useAccountStore();
+        const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
+
+        const { activeSwap } = useSwapsStore();
+        const hasActiveSwap = computed(() => activeSwap.value !== null);
+
         return {
             navigateTo,
             resetState,
             isTestnet,
+            isDev,
             priceChartTimeRange,
             switchPriceChartTimeRange,
+            isLegacyAccount,
+            trials,
+            Trial,
+            updateAvailable,
+            hasActiveSwap,
         };
     },
     components: {
@@ -120,6 +151,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleIcon,
         StreetconeIcon,
+        AttentionDot,
     },
 });
 </script>
@@ -238,8 +270,8 @@ export default defineComponent({
 }
 
 .trade-actions {
-    flex-grow: 1;
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 .trade-actions .nq-button-s {
@@ -263,6 +295,7 @@ button > :first-child {
     margin: 0 0.5rem;
     align-self: stretch;
     flex-shrink: 0;
+    position: relative;
 }
 
 .settings,
@@ -297,6 +330,16 @@ button > :first-child {
             color: rgba(255, 255, 255, 1);
         }
     }
+
+    &.active {
+        cursor: auto;
+    }
+}
+
+.attention-dot {
+    position: absolute;
+    top: 1.25rem;
+    left: 3.5rem;
 }
 
 .network {

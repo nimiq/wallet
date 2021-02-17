@@ -82,7 +82,9 @@
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
-                    <div class="separator"></div>
+                    <div class="separator-wrapper">
+                            <div class="separator"></div>
+                        </div>
                     <IdenticonButton
                         :address="recipientWithLabel.address"
                         :label="recipientWithLabel.label"
@@ -170,7 +172,7 @@
                 <SelectBar
                     :options="feeOptions"
                     :selectedValue="feePerByte"
-                    @changed="(value) => feePerByte = value"
+                    @changed="updateFee"
                 />
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
             </PageBody>
@@ -408,6 +410,12 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
+        function updateFee(newFeePerByte: number) {
+            const isSendingMax = amount.value === maxSendableAmount.value;
+            feePerByte.value = newFeePerByte;
+            if (isSendingMax) sendMax();
+        }
+
         const hasHeight = computed(() => !!network$.height);
 
         const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
@@ -595,6 +603,7 @@ export default defineComponent({
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
+            updateFee,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             message,
@@ -662,6 +671,7 @@ export default defineComponent({
         align-items: center;
         flex-grow: 1;
         overflow-y: visible; // needed for ios Safari
+        position: relative;
     }
 
     .page__recipient-input,
@@ -679,6 +689,7 @@ export default defineComponent({
     .page__contact-list {
         padding-right: 0;
         padding-left: 0;
+        min-height: 0;
     }
 
     .page__address-list {
@@ -784,6 +795,7 @@ export default defineComponent({
 
     .identicon-section {
         justify-content: center;
+        align-items: center;
         align-self: stretch;
         margin-bottom: 3.5rem;
 
@@ -796,13 +808,34 @@ export default defineComponent({
             }
         }
 
-        .separator {
-            height: 0.25rem;
-            background: var(--text-14);
-            border-radius: 500px;
+        .separator-wrapper {
+            --height: 0.25rem;
+
+            height: var(--height);
+            margin-left: 1rem;
+            margin-right: 1rem;
+            margin-bottom: 5rem;
+
+            position: relative;
             flex-grow: 1;
-            margin: 5rem 2rem 0;
-            max-width: 8rem;
+            overflow: hidden;
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+            .separator {
+                height: 100%;
+                width: 50%;
+                background: var(--text-14);
+                border-radius: calc(var(--height) / 2);
+
+                position: absolute;
+                left: -50%;
+                animation: separatorSliding 2.2s infinite;
+
+                @keyframes separatorSliding {
+                    0% { transform: translateX(0) }
+                    100% { transform: translateX(300%) }
+                }
+            }
         }
     }
 
@@ -891,6 +924,13 @@ export default defineComponent({
             width: auto;
             max-width: 100%;
             min-height: 5rem;
+
+            .ticker {
+                &:hover,
+                &:focus-within {
+                    color: var(--nimiq-light-blue);
+                }
+            }
         }
 
         .amount-menu /deep/ .button {
@@ -926,11 +966,13 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input {
+            .amount-input /deep/,
+            .amount-input /deep/ .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ input {
+            .amount-input /deep/ .nq-input {
+                color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }
@@ -959,6 +1001,13 @@ export default defineComponent({
 
         .amount {
             margin-top: 3rem;
+        }
+    }
+
+    .page-body {
+        @media (min-width: 420px) {
+            padding-left: 5rem;
+            padding-right: 5rem;
         }
     }
 

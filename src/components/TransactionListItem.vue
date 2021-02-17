@@ -23,20 +23,21 @@
         </div>
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <BitcoinIcon v-else-if="swapTransaction"/>
+            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
+            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink"><CashlinkXSmallIcon/></div>
-            <div v-if="swapTransaction" class="cashlink"><SwapSmallIcon/></div>
+            <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
+            <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
             <div v-else class="address">{{ peerAddress }}</div>
             <div class="time-and-message">
-                <span v-if="state === TransactionState.NEW" class="time">{{ $t('not sent') }}</span>
-                <span v-else-if="state === TransactionState.PENDING" class="time">{{ $t('pending') }}</span>
-                <span v-else-if="state === TransactionState.EXPIRED" class="time">{{ $t('expired') }}</span>
-                <span v-else-if="state === TransactionState.INVALIDATED" class="time">{{ $t('invalid') }}</span>
-                <span v-else-if="dateTime" class="time">{{ dateTime }}</span>
+                <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
+                <span v-else-if="state === TransactionState.PENDING">{{ $t('pending') }}</span>
+                <span v-else-if="state === TransactionState.EXPIRED">{{ $t('expired') }}</span>
+                <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
+                <span v-else-if="dateTime">{{ dateTime }}</span>
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
@@ -83,13 +84,13 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../lib/Constants';
-import { isCashlinkData } from '../lib/CashlinkDetection';
-import { useCashlinkStore } from '../stores/Cashlink';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
+import { isProxyData, ProxyType } from '../lib/ProxyDetection';
+import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
-import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 
 export default defineComponent({
     props: {
@@ -99,52 +100,22 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
 
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { getLabel } = useContactsStore();
 
         const state = computed(() => props.transaction.state);
 
-        const isIncoming = computed(() => props.transaction.recipient === activeAddress.value);
+        const isIncoming = computed(() => {
+            const haveSender = !!addresses$.addressInfos[props.transaction.sender];
+            const haveRecipient = !!addresses$.addressInfos[props.transaction.recipient];
 
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapTransaction = computed(() => {
-            const swap = getSwapByTransactionHash.value(props.transaction.transactionHash);
-            if (!swap) return null;
+            if (haveSender && !haveRecipient) return false;
+            if (!haveSender && haveRecipient) return true;
 
-            const swapData = isIncoming.value ? swap.in : swap.out;
-            if (!swapData) return null;
-
-            if (swapData.asset === SwapAsset.BTC) {
-                return useBtcTransactionsStore().state.transactions[swapData.transactionHash] || null;
-            }
-
-            return null;
-        });
-
-        // Data
-        const isCashlink = computed(() => isCashlinkData(props.transaction.data.raw));
-        const data = computed(() => {
-            if (isCashlink.value) {
-                const { state: cashlinks$ } = useCashlinkStore();
-                const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
-                const hubCashlink = cashlinks$.hubCashlinks[cashlinkAddress];
-                return hubCashlink ? hubCashlink.message : '';
-            }
-            if (swapTransaction.value) return ''; // TODO: 'Swapped NIM to BTC'
-
-            if ('hashRoot' in props.transaction.data) {
-                return context.root.$t('HTLC Creation');
-            }
-            if ('creator' in props.transaction.proof) {
-                return context.root.$t('HTLC Refund');
-            }
-            if ('hashRoot' in props.transaction.proof) {
-                return context.root.$t('HTLC Settlement');
-            }
-
-            return parseData(props.transaction.data.raw);
+            // Fall back to comparing with active address
+            return props.transaction.recipient === activeAddress.value;
         });
 
         // Related Transaction
@@ -154,32 +125,104 @@ export default defineComponent({
             return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
         });
 
+        const { getSwapByTransactionHash } = useSwapsStore();
+        const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash)
+            || (props.transaction.relatedTransactionHash
+                ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
+                : null));
+        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
+        // related to our address, always holds the proxy data.
+        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
+        const isCancelledSwap = computed(() =>
+            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
+            // Funded proxy and then refunded without creating an actual htlc?
+            || (isSwapProxy.value && (isIncoming.value
+                ? props.transaction.recipient === relatedTx.value?.sender
+                : props.transaction.sender === relatedTx.value?.recipient)));
+
+        // Data
+        const isCashlink = computed(() => isProxyData(props.transaction.data.raw, ProxyType.CASHLINK));
+        const data = computed(() => {
+            if (isCashlink.value) {
+                const { state: proxies$ } = useProxyStore();
+                const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
+                const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
+                return hubCashlink ? hubCashlink.message : '';
+            }
+
+            if (swapData.value && !isCancelledSwap.value) {
+                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
+                    toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
+                }) as string;
+            }
+
+            if ('hashRoot' in props.transaction.data
+                || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
+                return context.root.$t('HTLC Creation') as string;
+            }
+            if ('hashRoot' in props.transaction.proof
+                || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
+                return context.root.$t('HTLC Settlement') as string;
+            }
+            if ('creator' in props.transaction.proof
+                || (relatedTx.value && 'creator' in relatedTx.value.proof)
+                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
+                // tx are regular transactions and we regard the tx from the proxy as refund
+                || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+                return context.root.$t('HTLC Refund') as string;
+            }
+
+            return parseData(props.transaction.data.raw);
+        });
+
         // Peer
         const peerAddress = computed(() => {
-            if (swapTransaction.value) return 'bitcoin';
-
-            if (isCashlink.value) {
-                if (relatedTx.value) {
-                    return isIncoming.value
-                        ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-                        : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
-                }
-
-                return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.BTC) return 'bitcoin';
+                if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
             }
+
+            // For Cashlinks and swap proxies
+            if (relatedTx.value) {
+                return isIncoming.value
+                    ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
+                    : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
+            }
+
+            if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
+
+            if (isCashlink.value) return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
 
             return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
         });
         const peerLabel = computed(() => {
-            if (swapTransaction.value) {
-                return context.root.$t('Bitcoin');
+            if (isSwapProxy.value && !relatedTx.value) {
+                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
+            }
+
+            if (isCancelledSwap.value) {
+                return context.root.$t('Cancelled Swap');
+            }
+
+            if (swapData.value) {
+                if (swapData.value.asset === SwapAsset.BTC) {
+                    return context.root.$t('Bitcoin') as string;
+                }
+
+                if (swapData.value.asset === SwapAsset.EUR) {
+                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
+                }
+
+                return swapData.value.asset.toUpperCase();
             }
 
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
-                    ? context.root.$t('Cashlink')
-                    : context.root.$t('Unclaimed Cashlink');
+                    ? context.root.$t('Cashlink') as string
+                    : context.root.$t('Unclaimed Cashlink') as string;
             }
 
             // Search other stored addresses
@@ -187,7 +230,7 @@ export default defineComponent({
             if (ownedAddressInfo) return ownedAddressInfo.label;
 
             // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
+            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
 
             // Search global address book
             const globalLabel = AddressBook.getLabel(peerAddress.value);
@@ -225,9 +268,12 @@ export default defineComponent({
             fiatValue,
             isCashlink,
             isIncoming,
+            isSwapProxy,
             peerAddress,
             peerLabel,
-            swapTransaction,
+            SwapAsset,
+            swapInfo,
+            swapData,
         };
     },
     components: {
@@ -242,6 +288,7 @@ export default defineComponent({
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
         BitcoinIcon,
+        BankIcon,
         SwapSmallIcon,
     },
 });
@@ -327,16 +374,16 @@ svg {
         }
 
         > svg {
-            width: 5.25rem;
-            height: 5.25rem;
-            margin: 0.375rem;
+            width: 6rem;
+            height: 6rem;
+            padding: 0.375rem;
 
             &.bitcoin {
                 color: var(--bitcoin-orange);
             }
         }
 
-        .cashlink {
+        .cashlink-or-swap {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -374,13 +421,10 @@ svg {
 
         .time-and-message {
             font-size: var(--small-size);
+            font-weight: 600;
             opacity: .5;
             white-space: nowrap;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-
-            .time {
-                font-weight: 600;
-            }
 
             .dot {
                 margin: 0 0.875rem;
@@ -494,7 +538,7 @@ svg {
                 margin: 0.25rem;
             }
 
-            .cashlink {
+            .cashlink-or-swap {
                 border-width: 0.25rem;
                 height: 2.5rem;
                 width: 2.5rem;

@@ -95,6 +95,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     padding-bottom: 3rem;
+    position: relative;
 
     .qr-button {
         position: absolute;
@@ -107,23 +108,23 @@ export default defineComponent({
         svg {
             display: block;
         }
-    }
 
-    .qr-button:hover,
-    .qr-button:focus {
-        opacity: 0.8;
+        &:hover,
+        &:focus {
+            opacity: 0.8;
+        }
     }
 
     .identicon {
         width: 18rem;
         margin-top: 3rem;
-        margin-bottom: -5rem;
     }
 
     .copyable {
         padding: 0.5rem;
         background: var(--nimiq-highlight-bg);
         border-radius: 0.625rem;
+        margin: 1rem 0 4rem;
 
         transition:
             color .3s var(--nimiq-ease),

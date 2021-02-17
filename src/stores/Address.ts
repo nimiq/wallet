@@ -80,10 +80,9 @@ export const useAddressStore = createStore({
 
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
-        patchAddress(address: string, patch: Partial<AddressInfo>) {
+        patchAddress(address: string, patch: Partial<Omit<AddressInfo, 'type'>>) {
             if (!this.state.addressInfos[address]) return;
 
-            // @ts-ignore
             this.state.addressInfos[address] = {
                 ...this.state.addressInfos[address],
                 ...patch,

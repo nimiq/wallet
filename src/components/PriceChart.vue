@@ -65,7 +65,7 @@ export default defineComponent({
             validator: (range) => Object.values(TimeRange).includes(range),
         },
     },
-    // @ts-ignore (The "validator" for the currency prop throws off the automatic prop typing)
+    // @ts-expect-error (The "validator" for the currency prop throws off the automatic prop typing)
     setup(props) {
         const $svg = ref<SVGElement|null>(null);
         const $path = ref<SVGPathElement|null>(null);

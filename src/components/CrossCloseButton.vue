@@ -23,7 +23,7 @@
         width: 1em;
         display: block;
         opacity: 0.7;
-        transition: opacity .3s var(--nimiq-ease);
+        transition: opacity .2s var(--nimiq-ease);
     }
 
     button:hover svg,

@@ -29,6 +29,7 @@
         <div class="mobile-menu-bar flex-row">
             <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
                 <MenuIcon/>
+                <AttentionDot v-if="updateAvailable"/>
             </button>
             <button class="reset consensus" @click="$router.push('/network').catch(() => {})">
                 <ConsensusIcon/>
@@ -105,7 +106,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
@@ -118,12 +119,14 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
+import AttentionDot from '../AttentionDot.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { useSettingsStore } from '../../stores/Settings';
 
 const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
 
@@ -197,6 +200,8 @@ export default defineComponent({
 
         const { consensus: btcConsensus } = useBtcNetworkStore();
 
+        const { updateAvailable } = useSettingsStore();
+
         return {
             activeAccountInfo,
             AccountType,
@@ -213,6 +218,7 @@ export default defineComponent({
             CryptoCurrency,
             hasBitcoinAddresses,
             btcConsensus,
+            updateAvailable,
         };
     },
     components: {
@@ -230,6 +236,7 @@ export default defineComponent({
         Portal,
         Amount,
         FiatConvertedAmount,
+        AttentionDot,
     },
 });
 </script>
@@ -371,6 +378,7 @@ export default defineComponent({
         };
 
         &.active {
+            cursor: auto;
             color: var(--text-100);
         }
 
@@ -495,17 +503,33 @@ export default defineComponent({
             width: 3.5rem;
             height: 2.75rem;
             box-sizing: content-box;
-            opacity: 0.3;
+            position: relative;
+
+            svg {
+                opacity: 0.3;
+            }
+
+            .attention-dot {
+                position: absolute;
+                top: 0;
+                right: 0;
+                border: 0.375rem solid var(--bg-base);
+            }
         }
 
         .consensus-icon {
             width: 3rem;
             height: 3rem;
 
-            &.syncing, &.established {
+            &.syncing {
                 // Generated with https://codepen.io/sosuke/full/Pjoqqp to make white into ~nimiq-blue
                 filter: brightness(0.1) sepia(27%) saturate(3808%) hue-rotate(216deg) brightness(91%) contrast(89%);
                 opacity: 0.3;
+            }
+
+            &.established {
+                filter: none;
+                color: var(--text-30);
             }
 
             /deep/ svg {
@@ -549,7 +573,7 @@ export default defineComponent({
         height: 11rem;
         padding: 0;
         margin: 0;
-
+        color: var(--text-100);
 
         .bitcoin-account-item::before {
             display: none;

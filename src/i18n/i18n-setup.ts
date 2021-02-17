@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
 import { Cookie } from '@nimiq/utils';
 
 Vue.use(VueI18n);
@@ -8,17 +9,17 @@ export const Languages = [{
     code: 'en',
     name: 'English',
 }, {
+    code: 'es',
+    name: 'Español',
+}, {
+    code: 'zh',
+    name: '简体中文',
+}, {
     code: 'de',
     name: 'Deutsch',
 }, {
     code: 'fr',
     name: 'Français',
-}, {
-    code: 'zh',
-    name: '简体中文',
-}, {
-    code: 'es',
-    name: 'Español',
 }, {
     code: 'ru',
     name: 'Русский',
@@ -55,6 +56,7 @@ function setI18nLanguage(lang: string): string {
 
     Cookie.setCookie('lang', lang, { domain: cookieDomain, samesite: 'lax' });
     i18n.locale = lang;
+    document.querySelector('html')!.setAttribute('lang', lang);
     return lang;
 }
 
@@ -62,6 +64,8 @@ export async function loadLanguage(lang: string): Promise<string> {
     if (!SUPPORTED_LANGUAGES.includes(lang)) {
         lang = DEFAULT_LANGUAGE;
     }
+
+    VueComponentsI18n.setLanguage(lang);
 
     // If the language was already loaded
     if (loadedLanguage.includes(lang)) {

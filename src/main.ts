@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
-// @ts-ignore Could not find a declaration file for module 'vue-virtual-scroller'.
+// @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
+import { init as initFastspotApi } from '@nimiq/fastspot-api';
 
+import Config from 'config';
 import App from './App.vue';
-import './registerServiceWorker';
+import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
-import { syncFromHub } from './hub';
+import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
 import { useFiatStore } from './stores/Fiat';
@@ -31,60 +33,70 @@ Vue.config.productionTip = false;
 Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 
-initStorage();
-syncFromHub();
-const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
+async function start() {
+    await initStorage(); // Must be awaited before starting Vue
+    await initHubApi(); // Must be called after VueCompositionApi has been enabled
+    syncFromHub(); // Can run parallel to Vue initialization
 
-// Update exchange rates every 2 minutes. If the last update was
-// less than 2 minutes ago, wait the remaining time first.
-window.setTimeout(
-    () => {
-        updateExchangeRates();
-        setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
-    },
-    Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
-);
+    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
-// Fetch language file
-const { language } = useSettingsStore();
-loadLanguage(language.value);
+    // Update exchange rates every 2 minutes. If the last update was
+    // less than 2 minutes ago, wait the remaining time first.
+    const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
+    window.setTimeout(
+        () => {
+            updateExchangeRates();
+            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
+        },
+        Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
+    );
 
-startSentry(Vue);
+    // Fetch language file
+    const { language } = useSettingsStore();
+    loadLanguage(language.value);
 
-const app = new Vue({
-    router,
-    i18n,
-    render: (h) => h(App),
-}).$mount('#app');
+    startSentry();
 
-router.afterEach((to, from) => {
-    // console.debug('route-changed', from, to);
-    app.$emit('route-changed', to, from);
-});
+    if (Config.fastspot.apiKey) {
+        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+    }
 
-launchNetwork();
-launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
+    const app = new Vue({
+        router,
+        i18n,
+        render: (h) => h(App),
+    }).$mount('#app');
+
+    router.afterEach((to, from) => {
+        // console.debug('route-changed', from, to);
+        app.$emit('route-changed', to, from);
+    });
+
+    launchNetwork();
+    launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
+
+    router.onReady(() => {
+        // console.debug(router.currentRoute, window.history.state);
+
+        // Vue-Router sets a history.state. If a state exists, this means this was
+        // a page-reload and we don't need to set up the initial routing anymore.
+        if (window.history.state) return;
+
+        if (router.currentRoute.path !== '/') {
+            const startRoute = router.currentRoute.fullPath;
+            app.$once('route-changed', () => Vue.nextTick().then(() => {
+                // Use push, so the user is able to use the OS' back button.
+                // Use fullpath to also capture query params, like used in payment links.
+                router.push(startRoute);
+            }));
+        }
+        router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
+    });
+}
+start();
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {
         readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }
-
-router.onReady(() => {
-    // console.debug(router.currentRoute, window.history.state);
-
-    // Vue-Router sets a history.state. If a state exists, this means this was
-    // a page-reload and we don't need to set up the initial routing anymore.
-    if (window.history.state) return;
-
-    if (router.currentRoute.path !== '/') {
-        const startRoute = router.currentRoute.fullPath;
-        app.$once('route-changed', () => Vue.nextTick().then(() => {
-            // Use push, so the user is able to use the OS' back button.
-            // Use fullpath to also capture query params, like used in payment links.
-            router.push(startRoute);
-        }));
-    }
-    router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
-});

@@ -17,7 +17,6 @@
 
             <div class="flex-grow"></div>
 
-
             <button v-if="isActivated" class="nq-button light-blue" @click="$router.back()" @mousedown.prevent>
                 {{ $t('Got it') }}
             </button>

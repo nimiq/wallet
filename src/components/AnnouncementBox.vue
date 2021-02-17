@@ -1,9 +1,9 @@
 <template>
     <div v-if="!wasDismissed && text()" class="announcement-box nq-green-bg">
+        <CrossCloseButton @click="close"/>
         <p>{{ text() }}</p>
-        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank">{{ cta() }}</BlueLink>
+        <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank" rel="noopener">{{ cta() }}</BlueLink>
         <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon/></button>
-        <CrossCloseButton class="top-right" @click="close"/>
     </div>
 </template>
 
@@ -18,20 +18,21 @@ const STORAGE_KEY = 'announcement-box-dismissed';
 
 export default defineComponent({
     setup(props, context) {
+        // text and cta must be functions for translations to work!
         let text: () => LocaleMessage = () => '';
         let cta: () => LocaleMessage = () => '';
-        let action: string | Function = '';
+        let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
         // // Dark Mode
-        // text = context.root.$t('View your Wallet in Dark Mode!');
-        // cta = context.root.$t('Check it out');
+        // text = () => context.root.$t('View your Wallet in Dark Mode!');
+        // cta = () => context.root.$t('Check it out');
         // action = () => context.root.$router.push('/settings');
 
-        text = () => context.root.$t('Got feedback? Found a bug?');
-        cta = () => context.root.$t('Tell us here');
-        action = 'https://forum.nimiq.community/t/new-wallet-feedback-thread/845';
-        storageKey = 'feedback-and-bugs';
+        text = () => context.root.$t('Buy NIM & BTC with Credit Card!');
+        cta = () => context.root.$t('To {exchange}', { exchange: 'MoonPay' });
+        action = () => context.root.$router.push('moonpay');
+        storageKey = 'buy-with-moonpay';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 
@@ -69,6 +70,11 @@ p {
     line-height: 1.4;
     margin-top: 0;
     margin-bottom: 1.75rem;
+}
+
+.cross-close-button {
+    float: right;
+    margin: -0.5rem -0.5rem 0 0;
 }
 
 .blue-link {

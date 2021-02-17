@@ -149,9 +149,9 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-// @ts-ignore missing types for this package
+// @ts-expect-error missing types for this package
 import { ResponsiveDirective } from 'vue-responsive-components';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -499,6 +499,7 @@ export default defineComponent({
             padding: 1rem 1.5rem 1rem 1rem;
             border-radius: 0.25rem;
             transition: background-color .3s var(--nimiq-ease);
+            white-space: nowrap;
 
             svg {
                 width: 2.75rem;
@@ -544,7 +545,7 @@ export default defineComponent({
 }
 
 .send, .receive {
-    margin: 0 1rem;
+    margin: 0 0.5rem;
     align-items: center;
 
     padding: 1.125rem 2rem;
@@ -560,13 +561,18 @@ export default defineComponent({
     }
 
     &:disabled {
-        opacity: 0.5;
         pointer-events: none;
+        background: rgba(131, 131, 131, 0.07);
+        color: #B5B6C1;
     }
 }
 
-.send .nq-icon {
-    transform: rotateZ(-90deg);
+.send {
+    margin-left: 1rem;
+
+    .nq-icon {
+        transform: rotateZ(-90deg);
+    }
 }
 
 .receive {

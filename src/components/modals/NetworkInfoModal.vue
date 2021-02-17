@@ -15,7 +15,7 @@
                 <p>
                     {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
                 </p>
-                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank">
+                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank" rel="noopener">
                     {{ $t('Learn more') }}
                 </BlueLink>
             </div>
@@ -83,7 +83,7 @@ export default defineComponent({
         pointer-events: all;
 
         .small-page {
-            height: unset;
+            min-height: unset;
             color: white;
             background: #302949; // Determined by Julian
             box-shadow: none;
@@ -123,7 +123,6 @@ export default defineComponent({
             47.61% 68.11%,
             100% 100%
         );
-
 
         img {
             height: 100%;

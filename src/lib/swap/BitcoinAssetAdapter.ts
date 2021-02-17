@@ -1,16 +1,24 @@
-import { TransactionDetails, TransactionState } from '@nimiq/electrum-client';
+import type { TransactionDetails, ConsensusState } from '@nimiq/electrum-client';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
-export { TransactionDetails };
+export { TransactionDetails, ConsensusState };
 
 export interface BitcoinClient {
     addTransactionListener(listener: (tx: TransactionDetails) => any, addresses: string[]): number | Promise<number>;
-    getTransactionsByAddress(address: string): Promise<TransactionDetails[]>;
+    getTransactionsByAddress(
+        address: string,
+        sinceBlockHeight?: number,
+        knownTransactions?: TransactionDetails[],
+    ): Promise<TransactionDetails[]>;
     removeListener(handle: number): void | Promise<void>;
     sendTransaction(tx: TransactionDetails | string): Promise<TransactionDetails>;
+    addConsensusChangedListener(listener: (consensusState: ConsensusState) => any): number | Promise<number>;
 }
 
 export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
+    private cancelCallback: ((reason: Error) => void) | null = null;
+    private stopped = false;
+
     constructor(private client: BitcoinClient) {}
 
     public async findTransaction(
@@ -18,23 +26,51 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
         test: (tx: TransactionDetails) => boolean,
     ): Promise<TransactionDetails> {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             const listener = (tx: TransactionDetails) => {
                 if (!test(tx)) return false;
 
-                this.client.removeListener(handle);
+                cleanup();
                 resolve(tx);
                 return true;
             };
 
             // First subscribe to new transactions
-            const handle = await this.client.addTransactionListener(listener, [address]);
+            const transactionListener = await this.client.addTransactionListener(listener, [address]);
 
-            // Then check history
-            const history = await this.client.getTransactionsByAddress(address);
-            for (const tx of history) {
-                if (listener(tx)) break;
-            }
+            // Setup a transaction history check function
+            let history: TransactionDetails[] = [];
+            const checkHistory = async () => {
+                history = await this.client.getTransactionsByAddress(address, 0, history);
+                for (const tx of history) {
+                    if (listener(tx)) break;
+                }
+            };
+
+            // Then check transaction history
+            checkHistory();
+
+            // Re-check transaction history when consensus is re-established
+            const consensusListener = await this.client.addConsensusChangedListener(
+                (consensusState: ConsensusState) => consensusState === 'established' && checkHistory(),
+            );
+
+            // Also re-check transaction history every minute to catch cases where subscription fails
+            // or a short connection outage happened that didn't register as a consensus event.
+            const historyCheckInterval = window.setInterval(checkHistory, 60 * 1000); // Every minute
+
+            const cleanup = () => {
+                this.client.removeListener(transactionListener);
+                this.client.removeListener(consensusListener);
+                window.clearInterval(historyCheckInterval);
+                this.cancelCallback = null;
+            };
+
+            // Assign global cancel callback
+            this.cancelCallback = (reason: Error) => {
+                cleanup();
+                reject(reason);
+            };
         });
     }
 
@@ -53,7 +89,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
 
                 if (tx.replaceByFee) {
                     // Must wait until mined
-                    if (tx.state === TransactionState.MINED || tx.state === TransactionState.CONFIRMED) return true;
+                    if (tx.state === 'mined' || tx.state === 'confirmed') return true;
 
                     if (typeof onPending === 'function') onPending(tx);
 
@@ -66,6 +102,7 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
     }
 
     public async fundHtlc(address: string, serializedTx: string): Promise<TransactionDetails> {
+        if (this.stopped) throw new Error('BitcoinAssetAdapter called while stopped');
         return this.sendTransaction(serializedTx);
     }
 
@@ -91,6 +128,23 @@ export class BitcoinAssetAdapter implements AssetAdapter<SwapAsset.BTC> {
             `${secret}01`,
         );
         return this.sendTransaction(serializedTx);
+    }
+
+    public async awaitSettlementConfirmation(
+        address: string,
+        onUpdate?: (tx: TransactionDetails) => any,
+    ): Promise<TransactionDetails> {
+        return this.findTransaction(address, (tx) => {
+            if (!tx.inputs.some((input) => input.address === address && input.witness.length === 5)) return false;
+            if (tx.state === 'mined' || tx.state === 'confirmed') return true;
+            if (typeof onUpdate === 'function') onUpdate(tx);
+            return false;
+        });
+    }
+
+    public stop(reason: Error): void {
+        if (this.cancelCallback) this.cancelCallback(reason);
+        this.stopped = true;
     }
 
     private async sendTransaction(serializedTx: string): Promise<TransactionDetails> {

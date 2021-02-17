@@ -221,6 +221,14 @@ export default defineComponent({
         }
 
         async function processSwap() {
+            if (!activeSwap.value || !activeSwap.value.id || !activeSwap.value.from) {
+                // This is a ghost swap that could happen in versions 2.11.0-2.11.5 when an onUpdate handler
+                // updated the activeSwap object after the swap was deleted, thereby recreating the object
+                // with only e.g. the `fundingTx` property
+                setActiveSwap(null);
+                return;
+            }
+
             console.info('Processing swap'); // eslint-disable-line no-console
 
             const swapsNim = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.NIM);

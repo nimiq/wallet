@@ -164,22 +164,53 @@ export default defineComponent({
     padding: 2.5rem 3rem;
     text-decoration: none;
 
+    transition:
+        transform 0.3s var(--nimiq-ease),
+        box-shadow 0.3s var(--nimiq-ease),
+        background-color 0.3s var(--nimiq-ease);
+    will-change: transform, box-shadow;
+
+    &:hover,
+    &:focus {
+        transform: translate3D(0, -0.5rem, 0);
+    }
+
     &.oasis {
         background-color: var(--nimiq-light-blue);
         background-image: var(--nimiq-light-blue-bg);
         color: white;
-        transition: transform 0.3s var(--nimiq-ease);
-        will-change: transform;
+        z-index: 1;
+
+        &::before {
+            position: absolute;
+            content: "";
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border-radius: inherit;
+            background-color: var(--nimiq-light-blue-darkened);
+            background-image: var(--nimiq-light-blue-bg-darkened);
+            z-index: -1;
+            transition: opacity 0.3s var(--nimiq-ease);
+            opacity: 0;
+        }
 
         &:hover,
         &:focus {
-            transform: translate3D(0, -0.5rem, 0);
+            box-shadow:
+                0px 18px 38px rgba(31, 35, 72, 0.07),
+                0px 7px 8.5px rgba(31, 35, 72, 0.04),
+                0px 2px 2.5px rgba(31, 35, 72, 0.02);
+
+            &::before {
+                opacity: 1;
+            }
         }
     }
 
     &.credit-card {
         background-color: var(--nimiq-highlight-bg);
-        transition: background-color 0.3s var(--nimiq-ease);
         color: inherit;
 
         &:hover,
@@ -242,14 +273,20 @@ export default defineComponent({
         height: 3.25rem;
         margin-bottom: 0.25rem;
 
-        img {
-            opacity: 0.5;
-        }
-
         svg:last-child {
-            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.6);
             flex-shrink: 0;
             margin-left: 0.5rem;
+            transition: color 0.3s var(--nimiq-ease), transform 0.3s var(--nimiq-ease);
+            will-change: transform, color;
+        }
+    }
+
+    &:hover,
+    &:focus {
+        footer svg:last-child {
+            color: rgba(255, 255, 255, 0.8);
+            transform: translateX(0.25rem);
         }
     }
 }
@@ -297,10 +334,20 @@ export default defineComponent({
         img {
             width: 10.5rem;
             margin-top: -0.75rem;
+            opacity: 0.55;
+            // Generated with https://codepen.io/sosuke/full/Pjoqqp to make black into ~nimiq-blue
+            filter: invert(13%) sepia(8%) saturate(5326%) hue-rotate(199deg) brightness(99%) contrast(96%);
         }
 
         svg:last-child {
-            opacity: 0.7;
+            color: var(--text-40);
+        }
+    }
+
+    &:hover,
+    &:focus {
+        footer svg:last-child {
+            color: var(--text-80);
         }
     }
 }
@@ -343,14 +390,14 @@ export default defineComponent({
 @media (max-width: 700px) and (min-width: 360px) { // Full mobile breakpoint
     .option {
         flex-direction: row;
-        padding-right: 2rem;
 
         .top {
-            margin-right: 3rem;
+            margin-right: 2rem;
         }
 
         .bottom {
-            width: 17rem;
+            width: 13rem;
+            flex-shrink: 0;
         }
 
         .nq-text {
@@ -378,6 +425,7 @@ export default defineComponent({
     }
 
     .page-body {
+        padding: 1.5rem;
         flex-direction: column;
         mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));
         padding: 2.25rem 1.25rem;

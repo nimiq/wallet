@@ -301,7 +301,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:71
+#: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:104
@@ -613,7 +613,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
-#: src/components/swap/SwapAnimation.vue:220
+#: src/components/swap/SwapAnimation.vue:222
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -701,7 +701,7 @@ msgstr "Введите адрес получателя..."
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:226
+#: src/components/swap/SwapAnimation.vue:228
 msgid "Error:"
 msgstr "Ошибка:"
 
@@ -1278,7 +1278,7 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/components/swap/SwapAnimation.vue:228
+#: src/components/swap/SwapAnimation.vue:230
 msgid "Retrying..."
 msgstr "Повторная попытка...."
 
@@ -1502,7 +1502,7 @@ msgid "Swap has expired"
 msgstr ""
 
 #: src/components/BalanceDistribution.vue:54
-msgid "Swap NIM ↔ BTC"
+msgid "Swap NIM {arrow} BTC"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:7
@@ -1651,7 +1651,7 @@ msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Обмен децентрализован, как и сам блокчейн"
 
 #: src/components/swap/SwapAnimation.vue:215
-msgid "This usually take 30 seconds, up to a minute."
+msgid "This usually takes {time} seconds."
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:33

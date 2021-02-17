@@ -287,7 +287,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "BIC也能用"
 
-#: src/components/BalanceDistribution.vue:71
+#: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:104
@@ -594,7 +594,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr "免责声明"
 
-#: src/components/swap/SwapAnimation.vue:220
+#: src/components/swap/SwapAnimation.vue:222
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "在交换完成之前，请勿关闭钱包！"
 
@@ -674,7 +674,7 @@ msgstr "输入收件人地址..."
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "输入您要启用的试用版的密码，然后按Enter。"
 
-#: src/components/swap/SwapAnimation.vue:226
+#: src/components/swap/SwapAnimation.vue:228
 msgid "Error:"
 msgstr "错误:"
 
@@ -1242,7 +1242,7 @@ msgstr "重置您的钱包设置并从区块链重新加载数据。"
 msgid "Retry"
 msgstr "重试"
 
-#: src/components/swap/SwapAnimation.vue:228
+#: src/components/swap/SwapAnimation.vue:230
 msgid "Retrying..."
 msgstr "重试..."
 
@@ -1462,7 +1462,7 @@ msgid "Swap has expired"
 msgstr "交换已过期"
 
 #: src/components/BalanceDistribution.vue:54
-msgid "Swap NIM ↔ BTC"
+msgid "Swap NIM {arrow} BTC"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:7
@@ -1604,7 +1604,7 @@ msgid "This swap is as decentralized as the blockchain itself."
 msgstr "交换与区块链本身一样是去中心化"
 
 #: src/components/swap/SwapAnimation.vue:215
-msgid "This usually take 30 seconds, up to a minute."
+msgid "This usually takes {time} seconds."
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:33

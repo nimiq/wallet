@@ -303,7 +303,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "BIC werkt ook."
 
-#: src/components/BalanceDistribution.vue:71
+#: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:104
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr "Disclaimer"
 
-#: src/components/swap/SwapAnimation.vue:220
+#: src/components/swap/SwapAnimation.vue:222
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "Sluit je wallet niet voordat de swap is voltooid!"
 
@@ -711,7 +711,7 @@ msgstr ""
 "Voer het wachtwoord in van de proefversie die je wilt inschakelen en druk op"
 " enter."
 
-#: src/components/swap/SwapAnimation.vue:226
+#: src/components/swap/SwapAnimation.vue:228
 msgid "Error:"
 msgstr "Fout:"
 
@@ -1295,7 +1295,7 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
-#: src/components/swap/SwapAnimation.vue:228
+#: src/components/swap/SwapAnimation.vue:230
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
@@ -1518,8 +1518,8 @@ msgid "Swap has expired"
 msgstr "Swap is verlopen"
 
 #: src/components/BalanceDistribution.vue:54
-msgid "Swap NIM ↔ BTC"
-msgstr "Swap NIM ↔ BTC"
+msgid "Swap NIM {arrow} BTC"
+msgstr ""
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap NIM and BTC"
@@ -1667,7 +1667,7 @@ msgid "This swap is as decentralized as the blockchain itself."
 msgstr "Deze swap is net zo gedecentraliseerd als de blockchain zelf."
 
 #: src/components/swap/SwapAnimation.vue:215
-msgid "This usually take 30 seconds, up to a minute."
+msgid "This usually takes {time} seconds."
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:33

@@ -1,33 +1,25 @@
+<template>
+    <div class="message-transition" :style="messageHeight && { '--message-height': `${messageHeight}px` }">
+        <transition name="fadeY"
+            @enter="(el) => $nextTick(() => messageHeight = el.offsetHeight)"
+            @before-leave="(el) => messageHeight = el.offsetHeight"
+            @after-enter="() => messageHeight = undefined"
+        >
+            <div class="message flex-row" :key="this.getKey(this.$slots.default[0])"><slot></slot></div>
+        </transition>
+    </div>
+</template>
+
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { CreateElement, VNode } from 'vue';
+import { VNode } from 'vue';
 
 export default defineComponent({
-    render(createElement: CreateElement) {
-        return createElement('div', {
-            class: 'message-transition',
-            style: this.messageHeight ? { '--message-height': `${this.messageHeight}px` } : '',
-        }, [
-            createElement('transition', {
-                props: {
-                    name: 'fadeY',
-                },
-                on: {
-                    enter: this.onEnter,
-                },
-            }, [
-                createElement('div', {
-                    class: ['message', 'flex-row'],
-                    key: this.getKey(this.$slots.default[0]),
-                },
-                this.$slots.default),
-            ]),
-        ]);
-    },
-    setup() {
+    setup(props, context) {
         const messageHeight = ref<number | null>(null);
 
-        function onEnter(el: HTMLElement) {
+        async function onEnter(el: HTMLElement) {
+            await context.root.$nextTick();
             messageHeight.value = el.offsetHeight;
         }
 

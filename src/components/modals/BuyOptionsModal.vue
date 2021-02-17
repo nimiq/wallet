@@ -248,6 +248,8 @@ export default defineComponent({
 
         svg:last-child {
             opacity: 0.9;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
         }
     }
 }
@@ -294,6 +296,7 @@ export default defineComponent({
 
         img {
             width: 10.5rem;
+            margin-top: -0.75rem;
         }
 
         svg:last-child {
@@ -340,13 +343,14 @@ export default defineComponent({
 @media (max-width: 700px) and (min-width: 360px) { // Full mobile breakpoint
     .option {
         flex-direction: row;
+        padding-right: 2rem;
 
         .top {
             margin-right: 3rem;
         }
 
         .bottom {
-            width: 16rem;
+            width: 17rem;
         }
 
         .nq-text {
@@ -357,8 +361,11 @@ export default defineComponent({
 
     &.credit-card {
         footer {
+            margin-bottom: 0;
+
             img {
                 width: 9.5rem;
+                margin-top: -0.625rem;
             }
         }
     }

@@ -39,7 +39,7 @@
 
                         <footer class="flex-row">
                             <FlameIcon/>
-                            {{ $t('Innovation by Nimiq') }}
+                            {{ $t('Innovation\nby Nimiq') }}
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
@@ -312,6 +312,7 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.65);
         height: 3.25rem;
         margin-bottom: 0.25rem;
+        white-space: pre-line;
 
         svg:last-child {
             color: rgba(255, 255, 255, 0.6);

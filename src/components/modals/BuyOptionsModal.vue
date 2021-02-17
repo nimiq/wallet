@@ -5,7 +5,7 @@
                 <h1 class="nq-h1">{{ $t('Buy NIM & BTC') }}</h1>
             </header>
             <div class="featured-exchanges flex-row">
-                <router-link to="buy-crypto" class="option oasis flex-column">
+                <router-link to="/buy-crypto?sidebar=true" class="option oasis flex-column">
                     <div class="top flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
 
@@ -38,7 +38,7 @@
                     </div>
                 </router-link>
 
-                <router-link to="moonpay" class="option credit-card flex-column">
+                <router-link to="/moonpay?sidebar=true" class="option credit-card flex-column">
                     <div class="top flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
 

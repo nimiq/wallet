@@ -212,7 +212,9 @@
                         $t('You will finalize your purchase by bank transfer.')
                     }}</div>
                     <div v-else class="dont-close-wallet-notice nq-gray">{{
-                        $t('This usually take 30 seconds, up to a minute.')
+                        $t('This usually takes {time} seconds.', {
+                            time: fromAsset === SwapAsset.NIM ? '30-60' : '10',
+                        })
                     }}</div>
                 </template>
 

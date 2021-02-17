@@ -213,7 +213,7 @@
                     }}</div>
                     <div v-else class="dont-close-wallet-notice nq-gray">{{
                         $t('This usually takes {time} seconds.', {
-                            time: fromAsset === SwapAsset.NIM ? '30-60' : '10',
+                            time: toAsset === SwapAsset.NIM ? '30-60' : '10',
                         })
                     }}</div>
                 </template>

@@ -240,6 +240,7 @@ import {
     getAssets,
     RequestAsset,
     getSwap,
+    Swap,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
@@ -1014,9 +1015,15 @@ export default defineComponent({
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
             // Fetch contract from Fastspot and confirm that it's confirmed
-            const confirmedSwap = await getSwap(swapId);
-            if (!('contracts' in confirmedSwap)) {
-                const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+            let confirmedSwap: Swap;
+            try {
+                // TODO: Retry getting the swap if first time fails
+                const swapOrPreSwap = await getSwap(swapId);
+                if (!('contracts' in swapOrPreSwap)) {
+                    throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+                }
+                confirmedSwap = swapOrPreSwap;
+            } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';

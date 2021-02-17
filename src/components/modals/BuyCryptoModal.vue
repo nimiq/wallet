@@ -322,6 +322,7 @@ import {
     createSwap,
     cancelSwap,
     getSwap,
+    Swap,
     AssetList,
     getAssets,
 } from '@nimiq/fastspot-api';
@@ -936,9 +937,15 @@ export default defineComponent({
             console.log('Signed:', signedTransactions); // eslint-disable-line no-console
 
             // Fetch contract from Fastspot and confirm that it's confirmed
-            const confirmedSwap = await getSwap(swapId);
-            if (!('contracts' in confirmedSwap)) {
-                const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+            let confirmedSwap: Swap;
+            try {
+                // TODO: Retry getting the swap if first time fails
+                const swapOrPreSwap = await getSwap(swapId);
+                if (!('contracts' in swapOrPreSwap)) {
+                    throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+                }
+                confirmedSwap = swapOrPreSwap;
+            } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
@@ -963,12 +970,18 @@ export default defineComponent({
 
             // Fetch OASIS HTLC to get clearing instructions
             initOasisApi(Config.oasis.apiEndpoint);
-            const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
-            if (oasisHtlc.status !== HtlcStatus.PENDING) {
-                const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
+            let oasisHtlc: Htlc<HtlcStatus>;
+            try {
+                // TODO: Retry getting the HTLC if first time fails
+                oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+                if (oasisHtlc.status !== HtlcStatus.PENDING) {
+                    throw new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
+                }
+            } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
+                setActiveSwap(null);
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();
@@ -989,6 +1002,7 @@ export default defineComponent({
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract, swap aborted!';
+                setActiveSwap(null);
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
                 updateEstimate();

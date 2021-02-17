@@ -762,7 +762,7 @@ export default defineComponent({
         });
 
         const serviceSwapFeePercentage = computed(() => {
-            if (!estimate.value) return 0;
+            if (!estimate.value) return Config.fastspot.feePercentage * 100;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 10000) / 100;

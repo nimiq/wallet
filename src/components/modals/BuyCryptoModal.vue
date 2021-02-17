@@ -594,7 +594,7 @@ export default defineComponent({
                         * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
                 }
 
-                const serviceSwapFeePercentage = 0.2;
+                const serviceSwapFeePercentage = Config.fastspot.feePercentage * 100;
                 const serviceSwapFeeFiat = 0;
 
                 return {

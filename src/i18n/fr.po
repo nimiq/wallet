@@ -371,7 +371,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:58
 msgid "Buy BTC"
-msgstr ""
+msgstr "Acheter du BTC"
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:187
@@ -386,7 +386,7 @@ msgstr "Acheter de la Crypto avec des Fiats"
 
 #: src/components/BtcTransactionList.vue:56
 msgid "Buy more here in the wallet."
-msgstr ""
+msgstr "Achetez plus ici dans le wallet."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -397,8 +397,8 @@ msgid "Buy NIM & BTC"
 msgstr "Acheter NIM et BTC"
 
 #: src/components/AnnouncementBox.vue:32
-msgid "Buy NIM & BTC with Credit Card!"
-msgstr "Acheter du NIM et du BTC avec une carte de crédit !"
+msgid "Buy NIM & BTC with OASIS!"
+msgstr "Acheter du NIM & BTC avec OASIS !"
 
 #: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
@@ -913,7 +913,7 @@ msgstr "Accessibilité améliorée"
 
 #: src/components/layouts/AddressOverview.vue:150
 msgid "Include #NimiqOASIS"
-msgstr ""
+msgstr "Inclure #NimiqOASIS"
 
 #: src/components/modals/BtcSendModal.vue:108
 msgid ""
@@ -943,7 +943,7 @@ msgstr "invalide"
 
 #: src/components/TransactionList.vue:59
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
-msgstr ""
+msgstr "Invitez un ami avec un {cashlink} ou achetez plus ici dans le wallet."
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -1691,7 +1691,6 @@ msgstr "Ce swap est aussi décentralisé que la blockchain elle-même."
 msgid "This usually takes {time} seconds."
 msgstr "Cette opération prend en général {time} secondes."
 
-#: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
@@ -1738,15 +1737,20 @@ msgstr "Tests"
 msgid "Troubleshooting"
 msgstr "Résolution des problèmes"
 
+#: src/components/AnnouncementBox.vue:33
+msgid "Try it now"
+msgstr "Essayez-le maintenant"
+
 #: src/components/layouts/AddressOverview.vue:161
 msgid "Tweet"
-msgstr ""
+msgstr "Tweet"
 
 #: src/components/layouts/AddressOverview.vue:149
 msgid ""
 "Tweet about your experience with a Twitter account that’s at least 1 month "
 "old."
 msgstr ""
+"Tweeter sur votre expérience avec un compte Twitter âgé d'au moins 1 mois."
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
@@ -1766,7 +1770,7 @@ msgstr "Inconnu "
 
 #: src/components/layouts/AddressOverview.vue:153
 msgid "Until end of March, 10 swaps will get reimbursed."
-msgstr ""
+msgstr "Jusqu'à fin Mars, 10 swaps seront remboursés."
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -1863,6 +1867,8 @@ msgstr "Vous pourrez recevoir plus de NIM gratuits dans {waitTime} heures."
 msgid ""
 "You did it – time to spread the word. Promote Nimiq and win your Euro back! "
 msgstr ""
+"Vous l'avez fait - il est temps de faire passer le message. Faîtes la "
+"promotion de Nimiq et regagnez vos Euros !"
 
 #: src/components/swap/SwapAnimation.vue:43
 msgid ""

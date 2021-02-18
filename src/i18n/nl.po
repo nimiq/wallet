@@ -396,8 +396,8 @@ msgid "Buy NIM & BTC"
 msgstr "Koop NIM & BTC"
 
 #: src/components/AnnouncementBox.vue:32
-msgid "Buy NIM & BTC with Credit Card!"
-msgstr "Koop NIM & BTC met creditcard!"
+msgid "Buy NIM & BTC with OASIS!"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
@@ -1687,7 +1687,6 @@ msgstr "Deze swap is net zo gedecentraliseerd als de blockchain zelf."
 msgid "This usually takes {time} seconds."
 msgstr "Dit duurt gewoonlijk {time} seconden."
 
-#: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
@@ -1732,6 +1731,10 @@ msgstr "Proefversie"
 #: src/components/swap/SwapSepaFundingInstructions.vue:121
 msgid "Troubleshooting"
 msgstr "Probleemoplossing"
+
+#: src/components/AnnouncementBox.vue:33
+msgid "Try it now"
+msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:161
 msgid "Tweet"

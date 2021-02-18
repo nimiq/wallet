@@ -266,14 +266,27 @@ export default defineComponent({
     text-align: center;
 }
 
-.trade-actions .nq-button-s {
-    margin: 0.5rem .625rem 1rem;
-    background: rgba(255, 255, 255, .1);
+.trade-actions {
+    button {
+        margin: 0.5rem .625rem 1rem;
 
-    &:active,
-    &:focus,
-    &:hover {
-        background: rgba(255, 255, 255, .2);
+        &:disabled {
+            pointer-events: none;
+        }
+    }
+
+    .nq-button-s {
+        background: rgba(255, 255, 255, .1);
+
+        &:active,
+        &:focus,
+        &:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+    }
+
+    .nq-button-pill:disabled {
+        opacity: 0.5;
     }
 }
 

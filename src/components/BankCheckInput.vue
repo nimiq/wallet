@@ -38,7 +38,7 @@
             </div>
         </div>
         <ul class="bank-autocomplete" ref="$bankAutocomplete"
-            v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2"
+            v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2 && !countryDropdownOpened"
             :class="{ scroll: isScrollable }"
         >
             <li class="bank"
@@ -53,14 +53,18 @@
                 <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
 
-                <span v-if="shouldHighlightMatch(bank.name)">{{
-                    getMatchPrefix(bank.name)
-                    }}<strong>{{
-                        getMatch(bank.name)
-                    }}</strong>{{
-                    getMatchSuffix(bank.name)
-                }}</span>
-                <span v-else>{{ bank.name }}</span>
+                <div class="flex-column">
+                    <span v-if="shouldHighlightMatch(bank.name)">{{
+                        getMatchPrefix(bank.name)
+                        }}<strong>{{
+                            getMatch(bank.name)
+                        }}</strong>{{
+                        getMatchSuffix(bank.name)
+                    }}</span>
+                    <span v-else>{{ bank.name }}</span>
+
+                    <div class="bic">{{ bank.BIC }}</div>
+                </div>
 
                 <CaretRightSmallIcon class="caret-right-small-icon"
                     v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL"/>
@@ -70,7 +74,7 @@
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
-                    :container="{ $el: $bankAutocomplete }"
+                    :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <CircledQuestionMarkIcon slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
@@ -646,10 +650,12 @@ export default defineComponent({
         flex-direction: row;
         align-items: center;
         flex-shrink: 0;
-        padding: 1.5rem;
+        padding: 1rem 1.5rem;
         border-radius: 0.25rem;
         font-weight: 400;
         cursor: pointer;
+        height: 7rem;
+        overflow: hidden;
 
         background-color: rgba(#FFFFFF, 0);
         transition: background-color 200ms var(--nimiq-ease);
@@ -674,15 +680,43 @@ export default defineComponent({
             }
         }
 
-        span:first-of-type {
+        & > div.flex-column {
             flex-grow: 1;
+            transform: translateY(10px);
             white-space: nowrap;
             overflow: hidden;
+
             mask: linear-gradient(90deg,
                 white,
                 white calc(100% - 5rem),
                 rgba(255,255,255, 0) calc(100% - .5rem),
             );
+
+            transition: transform 200ms cubic-bezier(0.5, 0, 0.15, 1);
+        }
+
+        .bic {
+            opacity: 0;
+            font-weight: 500;
+            font-size: 1.625rem;
+            line-height: 110%;
+            letter-spacing: 0.0625rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+            font-family: 'Fira Mono';
+
+            transition: opacity 200ms cubic-bezier(0.5, 0, 0.15, 1);
+        }
+
+        &:hover,
+        &.selected {
+            & > div.flex-column {
+                transform: translateY(0);
+            }
+
+            .bic {
+                opacity: .5;
+            }
         }
 
         .caret-right-small-icon {
@@ -757,11 +791,33 @@ export default defineComponent({
 
 @media (max-width: 450px) { // Vue-components breakpoint
     .bank-check-input {
-        width: 80%;
+        width: 90%;
     }
 
     .bank-autocomplete {
-        width: 130%;
+        width: 120%;
+
+        li.bank {
+            & > div.flex-column {
+                transform: translateY(0);
+            }
+
+            .bic {
+                opacity: .5;
+            }
+        }
+    }
+}
+
+@media (hover: none) {
+    .bank-autocomplete li.bank {
+        & > div.flex-column {
+            transform: translateY(0);
+        }
+
+        .bic {
+            opacity: .5;
+        }
     }
 }
 

@@ -369,6 +369,10 @@ msgstr ""
 "Achat et vente de BTC par virement bancaire.\n"
 "Bientôt disponible !"
 
+#: src/components/BtcTransactionList.vue:58
+msgid "Buy BTC"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:187
 #: src/components/modals/BuyCryptoModal.vue:201
@@ -379,6 +383,10 @@ msgstr "Acheter de la Crypto"
 #: src/components/modals/BuyCryptoModal.vue:19
 msgid "Buy Crypto with Fiat"
 msgstr "Acheter de la Crypto avec des Fiats"
+
+#: src/components/BtcTransactionList.vue:56
+msgid "Buy more here in the wallet."
+msgstr ""
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -442,7 +450,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
 #: src/components/modals/TransactionModal.vue:534
-#: src/components/TransactionList.vue:61
+#: src/components/TransactionList.vue:62
 #: src/components/TransactionListItem.vue:224
 msgid "Cashlink"
 msgstr "Cashlink"
@@ -933,9 +941,9 @@ msgstr "Solde insuffisant."
 msgid "invalid"
 msgstr "invalide"
 
-#: src/components/TransactionList.vue:60
-msgid "Invite a friend with a"
-msgstr "Inviter un ami avec un"
+#: src/components/TransactionList.vue:59
+msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -1106,7 +1114,7 @@ msgstr "Aucuns fonds reçus donc le Swap a expiré."
 msgid "No registration"
 msgstr "Pas d'enregistrement"
 
-#: src/components/BtcTransactionList.vue:79
+#: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr "Aucune transaction trouvée"
@@ -1150,10 +1158,6 @@ msgstr "Un compte peut supporter plusieurs adresses."
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
 msgstr "Un Compte, plusieurs Adresses"
-
-#: src/components/TransactionList.vue:62
-msgid "or visit an exchange and get more."
-msgstr "ou visitez un échange et procurez-vous en plus."
 
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
@@ -1651,8 +1655,8 @@ msgstr "Ceci est une adresse à usage unique"
 msgid "This is not a valid address"
 msgstr "Ceci n'est pas une adresse valide"
 
-#: src/components/BtcTransactionList.vue:240
-#: src/components/BtcTransactionList.vue:262
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
 #: src/components/TransactionList.vue:252
 #: src/components/TransactionList.vue:274
 msgid "This month"
@@ -1967,7 +1971,7 @@ msgstr ""
 msgid "Your transaction must be SEPA Instant"
 msgstr "Votre transaction doit être SEPA Instant"
 
-#: src/components/BtcTransactionList.vue:64
+#: src/components/BtcTransactionList.vue:65
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr "Vos transactions apparaîtront ici"

@@ -349,6 +349,10 @@ msgstr ""
 "通过银行转账买卖BTC。\n"
 "即将推出！"
 
+#: src/components/BtcTransactionList.vue:58
+msgid "Buy BTC"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:187
 #: src/components/modals/BuyCryptoModal.vue:201
@@ -359,6 +363,10 @@ msgstr "购买加密货币"
 #: src/components/modals/BuyCryptoModal.vue:19
 msgid "Buy Crypto with Fiat"
 msgstr "用法币购买加密货币"
+
+#: src/components/BtcTransactionList.vue:56
+msgid "Buy more here in the wallet."
+msgstr ""
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -419,7 +427,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
 #: src/components/modals/TransactionModal.vue:534
-#: src/components/TransactionList.vue:61
+#: src/components/TransactionList.vue:62
 #: src/components/TransactionListItem.vue:224
 msgid "Cashlink"
 msgstr "现金链接"
@@ -888,9 +896,9 @@ msgstr "余额不足"
 msgid "invalid"
 msgstr "无效"
 
-#: src/components/TransactionList.vue:60
-msgid "Invite a friend with a"
-msgstr "使用...邀请朋友"
+#: src/components/TransactionList.vue:59
+msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -1059,7 +1067,7 @@ msgstr ""
 msgid "No registration"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:79
+#: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr "交易未找到"
@@ -1101,10 +1109,6 @@ msgstr "一个帐户现在可以拥有多个地址"
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
 msgstr "一个帐户，多个地址"
-
-#: src/components/TransactionList.vue:62
-msgid "or visit an exchange and get more."
-msgstr "或访问交易所获取更多"
 
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
@@ -1584,8 +1588,8 @@ msgstr "这是一次性地址"
 msgid "This is not a valid address"
 msgstr "这不是一个有效地址"
 
-#: src/components/BtcTransactionList.vue:240
-#: src/components/BtcTransactionList.vue:262
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
 #: src/components/TransactionList.vue:252
 #: src/components/TransactionList.vue:274
 msgid "This month"
@@ -1868,7 +1872,7 @@ msgstr ""
 msgid "Your transaction must be SEPA Instant"
 msgstr "您的交易必须是SEPA Instant"
 
-#: src/components/BtcTransactionList.vue:64
+#: src/components/BtcTransactionList.vue:65
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr "您的交易将在这里显示"

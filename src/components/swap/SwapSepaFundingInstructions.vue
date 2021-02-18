@@ -43,7 +43,7 @@
                             <label v-if="bic" class="nq-label bic">{{ bic }}</label>
                         </div>
                         <div class="line flex-row">
-                            <strong>{{ iban | formatIntoGroups(4, ' ', 2) }}</strong>
+                            <strong>{{ iban | formatIntoGroups(4, ' ') }}</strong>
                         </div>
                     </Copyable>
                 </div>
@@ -229,7 +229,9 @@ export default defineComponent({
                 text = `${firstGroup}${separator}${text}`;
             }
             // Remove separator behind last group
-            text = text.substr(0, text.length - separator.length);
+            if (text.substring(text.length - separator.length) === separator) {
+                text = text.substr(0, text.length - separator.length);
+            }
             return text;
         },
     },

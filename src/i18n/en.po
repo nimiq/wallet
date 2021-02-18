@@ -801,7 +801,7 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:180
+#: src/components/swap/SwapNotification.vue:186
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -819,6 +819,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:150
+msgid "Include #NimiqOASIS"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:108
@@ -993,7 +997,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:179
+#: src/components/swap/SwapNotification.vue:185
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1587,6 +1591,14 @@ msgstr ""
 msgid "Troubleshooting"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:161
+msgid "Tweet"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:149
+msgid "Tweet about your experience with a Twitter account that’s at least 1 month old."
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr ""
@@ -1601,6 +1613,10 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:167
 #: src/components/modals/BtcTransactionModal.vue:99
 msgid "Unknown"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:153
+msgid "Until end of March, 10 swaps will get reimbursed."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:15
@@ -1674,6 +1690,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:145
+msgid "You did it – time to spread the word. Promote Nimiq and win your Euro back! "
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:43

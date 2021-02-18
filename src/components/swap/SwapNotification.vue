@@ -74,7 +74,6 @@ export default defineComponent({
             addFundingData,
             userBank,
             setPromoBoxVisible,
-            promoBoxVisible,
         } = useSwapsStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);

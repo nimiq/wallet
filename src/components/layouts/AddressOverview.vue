@@ -137,11 +137,12 @@
         </template>
 
         <transition name="fadeY">
-            <div class="promo-box nq-light-blue-bg flex-column" v-if="promoBoxVisible">
+            <div class="promo-box nq-light-blue-bg" v-if="promoBoxVisible">
                 <div class="flex-row">
                     <EventIcon />
                     <h2 class="nq-h2">
-                        {{ $t('You did it – time to spread the word. Promote Nimiq and get your fiat back! ') }}
+                        <CrossCloseButton @click="setPromoBoxVisible(false)"/>
+                        {{ $t('You did it – time to spread the word. Promote Nimiq and win your Euro back! ') }}
                     </h2>
                 </div>
                 <ul>
@@ -149,10 +150,10 @@
                     <li>{{ $t('Include #NimiqOASIS') }}</li>
                     <li class="flex-row">
                         <ArrowRightSmallIcon />
-                        {{ $t('Until end of March, 10 swaps will get their fiat back.') }}
+                        {{ $t('Until end of March, 10 swaps will get reimbursed.') }}
                         <a class="nq-button-s inverse light-blue flex-row"
                             href="https://twitter.com/intent/tweet?hashtags=NimiqOasis"
-                            target="_blank" rel="noopener">
+                            target="_blank" rel="noopener" @mousedown.prevent>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 14">
                                 <!-- eslint-disable-next-line max-len -->
                                 <path fill="#fff" d="M15.8 3.15a.34.34 0 00-.15-.6l-.54-.13a.34.34 0 01-.23-.49l.3-.6a.34.34 0 00-.4-.49l-1.37.39a.34.34 0 01-.3-.06A3.44 3.44 0 007.6 3.92v.25a.17.17 0 01-.16.18c-1.93.22-3.78-.76-5.78-3.06a.35.35 0 00-.35-.1.34.34 0 00-.2.28 5.22 5.22 0 00.33 3.48.17.17 0 01-.2.16l-.76-.15a.34.34 0 00-.4.4 3.55 3.55 0 001.7 2.67.17.17 0 01-.07.25l-.36.14a.34.34 0 00-.18.48 3 3 0 002.2 1.7.17.17 0 01.09.27.17.17 0 01-.09.06c-.93.39-1.94.58-2.95.57a.35.35 0 10-.14.69c1.76.83 3.67 1.28 5.6 1.33 1.72.02 3.4-.45 4.83-1.38a8.6 8.6 0 003.83-7.18v-.6a.35.35 0 01.12-.26l1.13-.95z"/>
@@ -161,7 +162,6 @@
                         </a>
                     </li>
                 </ul>
-                <CrossCloseButton @click="setPromoBoxVisible(false)"/>
             </div>
         </transition>
 
@@ -677,6 +677,10 @@ export default defineComponent({
     border-radius: 0.75rem;
     width: 48rem;
     padding: 2.25rem;
+    box-shadow:
+        0px 4px 16px rgba(0, 0, 0, 0.07),
+        0px 1.5px 3px rgba(0, 0, 0, 0.05),
+        0px 0.337011px 2px rgba(0, 0, 0, 0.0254662);
 
     .flex-row {
         align-items: center;
@@ -745,13 +749,9 @@ export default defineComponent({
     }
 
     .cross-close-button {
-        height: 12px;
-        width: 12px;
+        float: right;
+        margin: -1rem -1rem 0 0;
         opacity: .7;
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        padding: 0;
     }
 
     &.fadeY-enter-active, &.fadeY-leave-active {
@@ -870,7 +870,8 @@ export default defineComponent({
     }
 
     .promo-box {
-        width: 90%;
+        width: calc(100% - 2rem);
+        right: 1rem;
         bottom: 10rem;
     }
 }

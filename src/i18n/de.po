@@ -1958,8 +1958,8 @@ msgid ""
 "Your monthly purchase limit will still\n"
 "be reduced, even if you cancel now."
 msgstr ""
-"Dein monatliches Kauflimit wird trotzdem\n"
-"reduziert, auch wenn du den Tausch jetzt abbrichst."
+"Dein monatliches Kauflimit wird trotzdem reduziert, auch wenn du den Tausch "
+"jetzt abbrichst."
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid ""

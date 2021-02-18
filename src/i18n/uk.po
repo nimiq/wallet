@@ -40,7 +40,7 @@ msgid "{fee} fee"
 msgstr "{fee} комісія"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:38
+#: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
 msgstr "{perc}% вартості обміну."
 
@@ -49,7 +49,7 @@ msgstr "{perc}% вартості обміну."
 msgid "{value} remaining"
 msgstr "{value} залишок"
 
-#: src/components/BankCheckInput.vue:82
+#: src/components/BankCheckInput.vue:86
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} інший | + {count} інші"
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+{n} більше"
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "1"
 msgstr "1"
 
@@ -73,7 +73,7 @@ msgstr "1"
 msgid "15m"
 msgstr "15 хв."
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "2"
 msgstr "2"
 
@@ -85,7 +85,7 @@ msgstr "2-4 год."
 msgid "24/7 Support"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "3"
 msgstr "3"
 
@@ -187,7 +187,7 @@ msgstr "Розширені"
 msgid "all"
 msgstr "Усі"
 
-#: src/components/BankCheckInput.vue:182
+#: src/components/BankCheckInput.vue:186
 msgid "All countries"
 msgstr "Усі країни"
 
@@ -296,6 +296,10 @@ msgstr "Банківський рахунок"
 msgid "Bank Transfer"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:20
+msgid "Beta"
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
 msgstr "BIC працює також."
@@ -367,11 +371,11 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:185
 #: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/modals/BuyCryptoModal.vue:43
 msgid "Buy Crypto"
 msgstr "Купити крипту"
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:22
 msgid "Buy Crypto with Fiat"
 msgstr "Купляйте крипту через традиційні гроші"
 
@@ -541,7 +545,7 @@ msgstr "Зв'язок втрачений"
 msgid "Consensus"
 msgstr "Консенсус"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:81
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Зв’яжіться зі своїм банком, щоб з’ясувати, чи ваш рахунок підходить для "
@@ -646,23 +650,18 @@ msgstr "Ці обмеження застосовуються під час ра�
 
 #: src/components/modals/BuyCryptoModal.vue:111
 msgid ""
-"During early access, these limits apply. They will be increased gradually."
+"During early access, these limits apply. They may be increased gradually."
 msgstr ""
-"Під час раннього доступу застосовуються ці обмеження. Вони будуть зняті "
-"поступово."
 
-#: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/swap/SwapModal.vue:45
 msgid "Early Access"
 msgstr "Ранній доступ"
 
 #: src/components/swap/SwapModal.vue:47
 msgid ""
-"Early Access means that there are limits in place for swaps. They will be "
+"Early Access means that there are limits in place for swaps. They may be "
 "increased gradually."
 msgstr ""
-"Ранній доступ означає те, що існує ліміт на кількість обмінів. Ліміт буде "
-"поступово знято."
 
 #: src/components/modals/BtcActivationModal.vue:11
 msgid ""
@@ -786,7 +785,7 @@ msgstr "Сума у фіаті недоступна"
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "Finalize the swap by bank transfer."
 msgstr "Завершіть обмін банківським переказом."
 
@@ -876,7 +875,7 @@ msgstr "Я заплатив"
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:180
+#: src/components/swap/SwapNotification.vue:186
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -902,6 +901,10 @@ msgstr ""
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
 msgstr "Покращений інтерфейс"
+
+#: src/components/layouts/AddressOverview.vue:150
+msgid "Include #NimiqOASIS"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:108
 msgid ""
@@ -963,7 +966,7 @@ msgstr "Дізнайтеся більше тут"
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
-#: src/components/modals/BuyCryptoModal.vue:38
+#: src/components/modals/BuyCryptoModal.vue:37
 msgid "Let's go"
 msgstr "Вперед!"
 
@@ -1029,6 +1032,7 @@ msgstr "Макс."
 
 #: src/components/modals/BuyOptionsModal.vue:33
 #: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
 
@@ -1068,7 +1072,7 @@ msgstr "Мережа"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Комісія мережі: {sats} сат/вБайт"
 
-#: src/components/swap/SwapFeesTooltip.vue:28
+#: src/components/swap/SwapFeesTooltip.vue:31
 msgid "NIM network fee"
 msgstr "Комісія NIM"
 
@@ -1086,7 +1090,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Гаманець Німік не підтримує повідомлень у переказах."
 
-#: src/components/swap/SwapNotification.vue:179
+#: src/components/swap/SwapNotification.vue:185
 msgid "No connection to {chain} network."
 msgstr "Немає підключення до мережі {chain}."
 
@@ -1108,7 +1112,7 @@ msgstr "Переказів не знайдено"
 msgid "None"
 msgstr "Ні"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:80
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
@@ -1329,7 +1333,7 @@ msgstr "Пошук переказів"
 msgid "Search transactions by contact, address, etc."
 msgstr "Пошук переказів за контактами, адресами, тощо."
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "Select a currency and an amount."
 msgstr "Виберіть валюту та суму."
 
@@ -1505,7 +1509,7 @@ msgstr "Зберігайте, надсилайте і отримуйте NIM."
 msgid "Swap"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:34
+#: src/components/swap/SwapFeesTooltip.vue:37
 msgid "Swap fee"
 msgstr "Комісія за обмін"
 
@@ -1556,12 +1560,12 @@ msgstr ""
 "Банк обробляє вашу операцію.\n"
 "Це може зайняти до {min} хвилин."
 
-#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/modals/BuyCryptoModal.vue:764
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/modals/BuyCryptoModal.vue:763
+#: src/components/modals/BuyCryptoModal.vue:769
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
 
@@ -1584,7 +1588,7 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "Додаток гаманця Німік це більше ніж гаманець - це повноцінний вузол мережі."
 
-#: src/components/modals/BuyCryptoModal.vue:56
+#: src/components/modals/BuyCryptoModal.vue:55
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Курс може змінюватися в залежності від суми обміну."
@@ -1614,8 +1618,8 @@ msgid "There's a problem"
 msgstr "Сталася проблема"
 
 #: src/components/swap/SwapModal.vue:91
-msgid "They will be increased gradually."
-msgstr "Вони будуть поступово зняті."
+msgid "They may be increased gradually."
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
@@ -1640,7 +1644,7 @@ msgstr "Невірна адреса"
 msgid "This month"
 msgstr "Цього місяця"
 
-#: src/components/modals/BuyCryptoModal.vue:54
+#: src/components/modals/BuyCryptoModal.vue:53
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "Дана ставка включає комісію за обмін."
@@ -1679,7 +1683,7 @@ msgstr "До {exchange}"
 msgid "Total Balance"
 msgstr "Баланс"
 
-#: src/components/swap/SwapFeesTooltip.vue:44
+#: src/components/swap/SwapFeesTooltip.vue:47
 msgid "Total fees"
 msgstr "Сумарна комісія"
 
@@ -1716,6 +1720,16 @@ msgstr "Пробні версії"
 msgid "Troubleshooting"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:161
+msgid "Tweet"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:149
+msgid ""
+"Tweet about your experience with a Twitter account that’s at least 1 month "
+"old."
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr "Поширте карту у Твітері!"
@@ -1731,6 +1745,10 @@ msgstr "Активний чек"
 #: src/components/modals/BtcTransactionModal.vue:99
 msgid "Unknown"
 msgstr "Невідомо"
+
+#: src/components/layouts/AddressOverview.vue:153
+msgid "Until end of March, 10 swaps will get reimbursed."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -1768,7 +1786,7 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr "Контракт Наділення Прав"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Wait for the swap to be set up."
 msgstr "Зачекайте, поки буде встановлений обмін."
 
@@ -1776,7 +1794,7 @@ msgstr "Зачекайте, поки буде встановлений обмі�
 msgid "Waiting for Nimiq network informations"
 msgstr "Чекаємо інформації про мережу Німік"
 
-#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/BuyCryptoModal.vue:25
 msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
@@ -1818,6 +1836,11 @@ msgstr "Ви використовуєте рахунок старого зра�
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Ви можете отримати безкоштовні NIM через {waitTime} години."
+
+#: src/components/layouts/AddressOverview.vue:145
+msgid ""
+"You did it – time to spread the word. Promote Nimiq and win your Euro back! "
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:43
 msgid ""
@@ -1870,7 +1893,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Ваш банк не відповідає вимогам?"
 
-#: src/components/BankCheckInput.vue:86
+#: src/components/BankCheckInput.vue:90
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

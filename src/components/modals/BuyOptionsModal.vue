@@ -290,6 +290,7 @@ export default defineComponent({
         font-weight: 600;
         color: rgba(255, 255, 255, 0.8);
         margin-bottom: 3rem;
+        hyphens: manual;
 
         .percentage {
             align-items: center;

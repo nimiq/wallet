@@ -39,7 +39,7 @@ msgid "{fee} fee"
 msgstr "{fee} 费用"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:38
+#: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
 
@@ -48,7 +48,7 @@ msgstr "交换价值的{perc}％"
 msgid "{value} remaining"
 msgstr "剩余 {value}"
 
-#: src/components/BankCheckInput.vue:82
+#: src/components/BankCheckInput.vue:86
 msgid "+ {count} more | + {count} more"
 msgstr "+另外{count}个 | +另外{count}个"
 
@@ -64,7 +64,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+另外{n}个"
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "1"
 msgstr "1"
 
@@ -72,7 +72,7 @@ msgstr "1"
 msgid "15m"
 msgstr "15分钟"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "2"
 msgstr "2"
 
@@ -84,7 +84,7 @@ msgstr "2-4小时"
 msgid "24/7 Support"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "3"
 msgstr "3"
 
@@ -185,7 +185,7 @@ msgstr "进阶的"
 msgid "all"
 msgstr "全部"
 
-#: src/components/BankCheckInput.vue:182
+#: src/components/BankCheckInput.vue:186
 msgid "All countries"
 msgstr "所有国家"
 
@@ -283,6 +283,10 @@ msgstr "银行账户"
 msgid "Bank Transfer"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:20
+msgid "Beta"
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
 msgstr "BIC也能用"
@@ -352,11 +356,11 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:185
 #: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/modals/BuyCryptoModal.vue:43
 msgid "Buy Crypto"
 msgstr "购买加密货币"
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:22
 msgid "Buy Crypto with Fiat"
 msgstr "用法币购买加密货币"
 
@@ -521,7 +525,7 @@ msgstr "连接丢失"
 msgid "Consensus"
 msgstr "共识"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:81
 msgid "Contact your bank to find out if your account is eligible."
 msgstr "请与您的银行联系，以了解您的帐户是否符合条件。"
 
@@ -620,19 +624,18 @@ msgstr "这些限制适用于抢先体验期间。"
 
 #: src/components/modals/BuyCryptoModal.vue:111
 msgid ""
-"During early access, these limits apply. They will be increased gradually."
-msgstr "这些限制适用于抢先体验期间，并将逐步增加。"
+"During early access, these limits apply. They may be increased gradually."
+msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/swap/SwapModal.vue:45
 msgid "Early Access"
 msgstr "抢先体验"
 
 #: src/components/swap/SwapModal.vue:47
 msgid ""
-"Early Access means that there are limits in place for swaps. They will be "
+"Early Access means that there are limits in place for swaps. They may be "
 "increased gradually."
-msgstr "抢先体验意味着交换名额有所限制，但数量将逐渐增加。"
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:11
 msgid ""
@@ -752,7 +755,7 @@ msgstr "法币无法使用"
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "Finalize the swap by bank transfer."
 msgstr "通过银行转帐完成最终交换。"
 
@@ -840,7 +843,7 @@ msgstr "我付了"
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:180
+#: src/components/swap/SwapNotification.vue:186
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -862,6 +865,10 @@ msgstr "导入到任意浏览器中，输入密码即可使用相同的地址。
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
 msgstr "改善的可及性"
+
+#: src/components/layouts/AddressOverview.vue:150
+msgid "Include #NimiqOASIS"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:108
 msgid ""
@@ -921,7 +928,7 @@ msgstr "在这里了解更多"
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建您的Nimiq帐户："
 
-#: src/components/modals/BuyCryptoModal.vue:38
+#: src/components/modals/BuyCryptoModal.vue:37
 msgid "Let's go"
 msgstr "我们走吧"
 
@@ -987,6 +994,7 @@ msgstr "最高"
 
 #: src/components/modals/BuyOptionsModal.vue:33
 #: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
 
@@ -1026,7 +1034,7 @@ msgstr "网络"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
-#: src/components/swap/SwapFeesTooltip.vue:28
+#: src/components/swap/SwapFeesTooltip.vue:31
 msgid "NIM network fee"
 msgstr "NIM网络费用"
 
@@ -1043,7 +1051,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息。"
 
-#: src/components/swap/SwapNotification.vue:179
+#: src/components/swap/SwapNotification.vue:185
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
@@ -1065,7 +1073,7 @@ msgstr "交易未找到"
 msgid "None"
 msgstr "无"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:80
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "该银行提供的帐户并非全部都支持即时交易。"
 
@@ -1281,7 +1289,7 @@ msgstr "搜索交易"
 msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "Select a currency and an amount."
 msgstr "请选择货币和金额。"
 
@@ -1455,7 +1463,7 @@ msgstr "存储、发送和接收NIM"
 msgid "Swap"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:34
+#: src/components/swap/SwapFeesTooltip.vue:37
 msgid "Swap fee"
 msgstr "交换费用"
 
@@ -1506,12 +1514,12 @@ msgstr ""
 "银行正在处理您的交易。\n"
 "这可能需要{min}分钟。"
 
-#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/modals/BuyCryptoModal.vue:764
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额。"
 
-#: src/components/modals/BuyCryptoModal.vue:763
+#: src/components/modals/BuyCryptoModal.vue:769
 msgid "The fees determine the minimum amount."
 msgstr "费用确定最低金额。"
 
@@ -1533,7 +1541,7 @@ msgstr "新的登录文件是个用来访问您的账户及地址简单方便的
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点。"
 
-#: src/components/modals/BuyCryptoModal.vue:56
+#: src/components/modals/BuyCryptoModal.vue:55
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "汇率可能会根据交换量而变化。"
@@ -1561,8 +1569,8 @@ msgid "There's a problem"
 msgstr "有问题"
 
 #: src/components/swap/SwapModal.vue:91
-msgid "They will be increased gradually."
-msgstr "它们将逐渐增加。"
+msgid "They may be increased gradually."
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
@@ -1587,7 +1595,7 @@ msgstr "这不是一个有效地址"
 msgid "This month"
 msgstr "本月份"
 
-#: src/components/modals/BuyCryptoModal.vue:54
+#: src/components/modals/BuyCryptoModal.vue:53
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "此价格包括交换费"
@@ -1624,7 +1632,7 @@ msgstr "返回{exchange}"
 msgid "Total Balance"
 msgstr "总余额"
 
-#: src/components/swap/SwapFeesTooltip.vue:44
+#: src/components/swap/SwapFeesTooltip.vue:47
 msgid "Total fees"
 msgstr "总共费用"
 
@@ -1659,6 +1667,16 @@ msgstr "试用版"
 msgid "Troubleshooting"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:161
+msgid "Tweet"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:149
+msgid ""
+"Tweet about your experience with a Twitter account that’s at least 1 month "
+"old."
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr "推特您的地图！"
@@ -1674,6 +1692,10 @@ msgstr "未认领的现金链接"
 #: src/components/modals/BtcTransactionModal.vue:99
 msgid "Unknown"
 msgstr "未知"
+
+#: src/components/layouts/AddressOverview.vue:153
+msgid "Until end of March, 10 swaps will get reimbursed."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -1707,7 +1729,7 @@ msgstr "使用滑块或编辑值来设置交换。"
 msgid "Vesting Contract"
 msgstr "归属合同"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Wait for the swap to be set up."
 msgstr "等待交换设置。"
 
@@ -1715,7 +1737,7 @@ msgstr "等待交换设置。"
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/BuyCryptoModal.vue:25
 msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
@@ -1753,6 +1775,11 @@ msgstr "您正在使用传统账户"
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "您可以在{waitTime}小时内收到更多的免费NIM"
+
+#: src/components/layouts/AddressOverview.vue:145
+msgid ""
+"You did it – time to spread the word. Promote Nimiq and win your Euro back! "
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:43
 msgid ""
@@ -1803,7 +1830,7 @@ msgstr "您的账户是传统账户，使用新的账户选择器让您轻松切
 msgid "Your bank is not eligible?"
 msgstr "您的银行不符合条件？"
 
-#: src/components/BankCheckInput.vue:86
+#: src/components/BankCheckInput.vue:90
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

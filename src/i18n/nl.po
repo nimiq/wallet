@@ -42,7 +42,7 @@ msgid "{fee} fee"
 msgstr "{fee} heffing"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:38
+#: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
 msgstr "{perc}% van swap waarde."
 
@@ -51,14 +51,14 @@ msgstr "{perc}% van swap waarde."
 msgid "{value} remaining"
 msgstr "{value} resterend"
 
-#: src/components/BankCheckInput.vue:82
+#: src/components/BankCheckInput.vue:86
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
 #: src/components/modals/BuyOptionsModal.vue:37
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
-msgstr ""
+msgstr "+ netwerkkosten"
 
 #: src/components/modals/BtcTransactionModal.vue:117
 #: src/components/modals/BtcTransactionModal.vue:132
@@ -67,7 +67,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+{n} meer"
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "1"
 msgstr "1"
 
@@ -75,7 +75,7 @@ msgstr "1"
 msgid "15m"
 msgstr "15m"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "2"
 msgstr "2"
 
@@ -85,9 +85,9 @@ msgstr "2-4 uur"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
-msgstr ""
+msgstr "24/7 support"
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "3"
 msgstr "3"
 
@@ -191,7 +191,7 @@ msgstr "Geavanceerd"
 msgid "all"
 msgstr "alles"
 
-#: src/components/BankCheckInput.vue:182
+#: src/components/BankCheckInput.vue:186
 msgid "All countries"
 msgstr "Alle landen"
 
@@ -218,7 +218,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
-msgstr ""
+msgstr "Bijna overal"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:34
@@ -297,7 +297,11 @@ msgstr "Bankrekening"
 
 #: src/components/modals/BuyOptionsModal.vue:10
 msgid "Bank Transfer"
-msgstr ""
+msgstr "Bankoverschrijving"
+
+#: src/components/modals/BuyCryptoModal.vue:20
+msgid "Beta"
+msgstr "Beta"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
 msgid "BIC works, too."
@@ -371,11 +375,11 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:185
 #: src/components/modals/BuyCryptoModal.vue:190
 #: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/modals/BuyCryptoModal.vue:43
 msgid "Buy Crypto"
 msgstr "Koop Crypto"
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:22
 msgid "Buy Crypto with Fiat"
 msgstr "Koop Crypto met Fiat"
 
@@ -385,7 +389,7 @@ msgstr "Koop NIM"
 
 #: src/components/modals/BuyOptionsModal.vue:5
 msgid "Buy NIM & BTC"
-msgstr ""
+msgstr "Koop NIM & BTC"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Buy NIM & BTC with Credit Card!"
@@ -393,7 +397,7 @@ msgstr "Koop NIM & BTC met creditcard!"
 
 #: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
-msgstr ""
+msgstr "Koop NIM op een crypto exchange:"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
 msgid "Buy with Credit Card"
@@ -544,7 +548,7 @@ msgstr "Verbinding verbroken"
 msgid "Consensus"
 msgstr "Consensus"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:81
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Neem contact op met je bank om erachter te komen of jouw rekening in "
@@ -615,7 +619,7 @@ msgstr "Gisteren aangemaakt"
 
 #: src/components/modals/BuyOptionsModal.vue:51
 msgid "Credit Card"
-msgstr ""
+msgstr "Creditcard"
 
 #: src/components/layouts/Settings.vue:195
 #: src/components/modals/DisclaimerModal.vue:5
@@ -649,22 +653,21 @@ msgstr "Tijdens de early access zijn deze limieten van toepassing."
 
 #: src/components/modals/BuyCryptoModal.vue:111
 msgid ""
-"During early access, these limits apply. They will be increased gradually."
+"During early access, these limits apply. They may be increased gradually."
 msgstr ""
-"Tijdens vroege toegang zijn deze limieten van toepassing. Ze zullen "
+"Tijdens 'early access' zijn deze limieten van toepassing. Ze kunnen "
 "geleidelijk worden verhoogd."
 
-#: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/swap/SwapModal.vue:45
 msgid "Early Access"
 msgstr "Early Access"
 
 #: src/components/swap/SwapModal.vue:47
 msgid ""
-"Early Access means that there are limits in place for swaps. They will be "
+"Early Access means that there are limits in place for swaps. They may be "
 "increased gradually."
 msgstr ""
-"Early Access betekend dat er limieten gelden voor swaps. Ze zullen "
+"Early Access betekent dat er limieten gelden voor swaps. Ze kunnen "
 "geleidelijk worden verhoogd."
 
 #: src/components/modals/BtcActivationModal.vue:11
@@ -789,7 +792,7 @@ msgstr "Fiat waarde niet beschikbaar"
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:33
 msgid "Finalize the swap by bank transfer."
 msgstr "Rond de swap af via bankoverschrijving."
 
@@ -879,7 +882,7 @@ msgstr "Ik heb betaald"
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:180
+#: src/components/swap/SwapNotification.vue:186
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -906,6 +909,10 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Verbeterde toegankelijkheid"
 
+#: src/components/layouts/AddressOverview.vue:150
+msgid "Include #NimiqOASIS"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:108
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
@@ -919,6 +926,8 @@ msgid ""
 "Innovation\n"
 "by Nimiq"
 msgstr ""
+"Innovatie\n"
+"door Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:133
@@ -966,7 +975,7 @@ msgstr "Leer hier meer"
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
 
-#: src/components/modals/BuyCryptoModal.vue:38
+#: src/components/modals/BuyCryptoModal.vue:37
 msgid "Let's go"
 msgstr "Aan de slag"
 
@@ -1032,8 +1041,9 @@ msgstr "Max."
 
 #: src/components/modals/BuyOptionsModal.vue:33
 #: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
-msgstr ""
+msgstr "min {amount}"
 
 #: src/components/BankCheckInput.vue:36
 msgid "More locations will be supported soon."
@@ -1071,7 +1081,7 @@ msgstr "Netwerk"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netwerk vergoeding: {sats} sat/vByte"
 
-#: src/components/swap/SwapFeesTooltip.vue:28
+#: src/components/swap/SwapFeesTooltip.vue:31
 msgid "NIM network fee"
 msgstr "NIM netwerkkosten"
 
@@ -1089,7 +1099,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "De Nimiq wallet ondersteunt geen transactieberichten voor Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:179
+#: src/components/swap/SwapNotification.vue:185
 msgid "No connection to {chain} network."
 msgstr "Geen verbinding met het {chain} netwerk."
 
@@ -1099,7 +1109,7 @@ msgstr "Er is geen geld ontvangen, dus de swap is verlopen."
 
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
-msgstr ""
+msgstr "Geen registratie"
 
 #: src/components/BtcTransactionList.vue:79
 #: src/components/TransactionList.vue:83
@@ -1111,7 +1121,7 @@ msgstr "Geen transacties gevonden"
 msgid "None"
 msgstr "Geen"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:80
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
@@ -1150,11 +1160,11 @@ msgstr "of bezoek een exchange en ontvang meer."
 
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
-msgstr ""
+msgstr "Betaal via bankoverschrijving. Geen registratie - zelfs geen e-mail."
 
 #: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
-msgstr ""
+msgstr "Betaal met creditcard. Volledige KYC vereist, hoge beschikbaarheid."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1334,7 +1344,7 @@ msgstr "Zoek transacties"
 msgid "Search transactions by contact, address, etc."
 msgstr "Zoek transacties op contact, adres, etc."
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:31
 msgid "Select a currency and an amount."
 msgstr "Selecteer een valuta en een bedrag."
 
@@ -1411,7 +1421,7 @@ msgstr "Stuur op {dateAndTime}"
 
 #: src/components/modals/BuyOptionsModal.vue:18
 msgid "SEPA Instant only"
-msgstr ""
+msgstr "Alleen SEPA Instant"
 
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
@@ -1511,7 +1521,7 @@ msgstr "Opslaan, verstuur en ontvang NIM."
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/swap/SwapFeesTooltip.vue:34
+#: src/components/swap/SwapFeesTooltip.vue:37
 msgid "Swap fee"
 msgstr "Swap vergoeding"
 
@@ -1526,7 +1536,7 @@ msgstr "Swap is verlopen"
 
 #: src/components/BalanceDistribution.vue:54
 msgid "Swap NIM {arrow} BTC"
-msgstr ""
+msgstr "Swap NIM {arrow} BTC"
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap NIM and BTC"
@@ -1562,12 +1572,12 @@ msgstr ""
 "De bank verwerkt je transactie.\n"
 "Dit kan tot {min} minuten duren."
 
-#: src/components/modals/BuyCryptoModal.vue:758
+#: src/components/modals/BuyCryptoModal.vue:764
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
-#: src/components/modals/BuyCryptoModal.vue:763
+#: src/components/modals/BuyCryptoModal.vue:769
 msgid "The fees determine the minimum amount."
 msgstr "De kosten bepalen het minimumbedrag."
 
@@ -1592,7 +1602,7 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "De Nimiq wallet is meer dan alleen een web-wallet, het is een netwerk node."
 
-#: src/components/modals/BuyCryptoModal.vue:56
+#: src/components/modals/BuyCryptoModal.vue:55
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Het tarief kan veranderen afhankelijk van het swap volume."
@@ -1622,8 +1632,8 @@ msgid "There's a problem"
 msgstr "Er is een probleem"
 
 #: src/components/swap/SwapModal.vue:91
-msgid "They will be increased gradually."
-msgstr "Ze zullen geleidelijk worden verhoogd."
+msgid "They may be increased gradually."
+msgstr "Ze kunnen geleidelijk worden verhoogd."
 
 #: src/components/modals/BtcSendModal.vue:27
 msgid "This address has already been used"
@@ -1648,7 +1658,7 @@ msgstr "Dit adres is niet geldig."
 msgid "This month"
 msgstr "Deze maand"
 
-#: src/components/modals/BuyCryptoModal.vue:54
+#: src/components/modals/BuyCryptoModal.vue:53
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "Dit tarief is inclusief de swap vergoeding."
@@ -1675,7 +1685,7 @@ msgstr "Deze swap is net zo gedecentraliseerd als de blockchain zelf."
 
 #: src/components/swap/SwapAnimation.vue:215
 msgid "This usually takes {time} seconds."
-msgstr ""
+msgstr "Dit duurt gewoonlijk {time} seconden."
 
 #: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
@@ -1687,13 +1697,13 @@ msgstr "Naar {exchange}"
 msgid "Total Balance"
 msgstr "Totale saldo"
 
-#: src/components/swap/SwapFeesTooltip.vue:44
+#: src/components/swap/SwapFeesTooltip.vue:47
 msgid "Total fees"
 msgstr "Totale kosten"
 
 #: src/components/modals/TradeModal.vue:7
 msgid "Trade NIM and BTC"
-msgstr ""
+msgstr "Verhandel NIM en BTC"
 
 #: src/components/modals/BtcTransactionModal.vue:40
 #: src/components/modals/TransactionModal.vue:59
@@ -1723,6 +1733,16 @@ msgstr "Proefversie"
 msgid "Troubleshooting"
 msgstr "Probleemoplossing"
 
+#: src/components/layouts/AddressOverview.vue:161
+msgid "Tweet"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:149
+msgid ""
+"Tweet about your experience with a Twitter account that’s at least 1 month "
+"old."
+msgstr ""
+
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr "Tweet je map!"
@@ -1738,6 +1758,10 @@ msgstr "Niet geclaimde Cashlink"
 #: src/components/modals/BtcTransactionModal.vue:99
 msgid "Unknown"
 msgstr "Onbekend"
+
+#: src/components/layouts/AddressOverview.vue:153
+msgid "Until end of March, 10 swaps will get reimbursed."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -1776,7 +1800,7 @@ msgstr "Gebruik de slider of vul de waardes in om een swap in te stellen."
 msgid "Vesting Contract"
 msgstr "Vestingcontract"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Wait for the swap to be set up."
 msgstr "Wacht tot de swap is ingesteld."
 
@@ -1784,7 +1808,7 @@ msgstr "Wacht tot de swap is ingesteld."
 msgid "Waiting for Nimiq network informations"
 msgstr "Wachten op Nimiq-netwerkinformatie"
 
-#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/BuyCryptoModal.vue:25
 msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
@@ -1826,6 +1850,11 @@ msgstr "Je gebruikt een Legacy Account"
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
+
+#: src/components/layouts/AddressOverview.vue:145
+msgid ""
+"You did it – time to spread the word. Promote Nimiq and win your Euro back! "
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:43
 msgid ""
@@ -1881,7 +1910,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Komt je bank niet in aanmerking?"
 
-#: src/components/BankCheckInput.vue:86
+#: src/components/BankCheckInput.vue:90
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."

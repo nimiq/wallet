@@ -45,7 +45,7 @@
                             {{ $t('Early Access') }}
                         </span>
                         <p>{{ $t('Early Access means that there are limits in place for swaps.' +
-                            ' They will be increased gradually.') }}</p>
+                            ' They may be increased gradually.') }}</p>
                         <div class="price-breakdown">
                             <label>{{ $t('Per-Swap Limit') }}</label>
                             <FiatConvertedAmount v-if="limits"
@@ -88,7 +88,7 @@
                         <div></div>
                         <p class="explainer">
                             {{ $t('During early access, these limits apply.') }}
-                            {{ $t('They will be increased gradually.') }}
+                            {{ $t('They may be increased gradually.') }}
                         </p>
                     </Tooltip>
                 </div>

@@ -108,7 +108,7 @@
                                 {{ $t('Limits are tied to accounts and IBANs.') }}
                             </p>
                             <p class="explainer">
-                                {{ $t('During early access, these limits apply. They will be increased gradually.') }}
+                                {{ $t('During early access, these limits apply. They may be increased gradually.') }}
                             </p>
 
                         </Tooltip>

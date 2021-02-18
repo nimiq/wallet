@@ -587,7 +587,7 @@ msgid "During early access, these limits apply."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:111
-msgid "During early access, these limits apply. They will be increased gradually."
+msgid "During early access, these limits apply. They may be increased gradually."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:45
@@ -595,7 +595,7 @@ msgid "Early Access"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:47
-msgid "Early Access means that there are limits in place for swaps. They will be increased gradually."
+msgid "Early Access means that there are limits in place for swaps. They may be increased gradually."
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:11
@@ -1491,7 +1491,7 @@ msgid "There's a problem"
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:91
-msgid "They will be increased gradually."
+msgid "They may be increased gradually."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:27

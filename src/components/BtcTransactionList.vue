@@ -53,9 +53,10 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <!-- <router-link to="trade" class="nq-button light-blue">
+                    <p class="nq-text">{{ $t('Buy more here in the wallet.') }}</p>
+                    <router-link to="buy" class="nq-button light-blue">
                         {{ $t('Buy BTC') }}
-                    </router-link> -->
+                    </router-link>
                 </div>
             </template>
         </RecycleScroller>

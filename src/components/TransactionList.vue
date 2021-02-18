@@ -56,12 +56,12 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <p class="nq-text">
-                        {{ $t('Invite a friend with a') }}
-                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
-                        {{ $t('or visit an exchange and get more.') }}
-                    </p>
-                    <router-link to="trade" class="nq-button light-blue">
+                    <i18n path="Invite a friend with a {cashlink} or buy more here in the wallet."
+                        tag="p" class="nq-text"
+                    >
+                        <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
+                    </i18n>
+                    <router-link to="buy" class="nq-button light-blue">
                         {{ $t('Buy NIM') }}
                     </router-link>
                 </div>

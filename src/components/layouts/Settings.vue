@@ -315,8 +315,8 @@ export default defineComponent({
             }
 
             switch (hash) {
-                case '301bc5e02f0cf97c5efd61c78c3cfe6ee443cdfd4d17703e7515dccbcc618c3c':
-                    settings.enableTrial(Trial.BUY_WITH_EURO); break;
+                case '-impossible-':
+                    settings.enableTrial(Trial.SELL_TO_EURO); break;
                 default: el.value = 'Nope, no cookie for you'; return;
             }
 

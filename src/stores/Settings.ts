@@ -27,7 +27,7 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
 };
 
 export enum Trial {
-    BUY_WITH_EURO = 'buy-with-euro',
+    SELL_TO_EURO = 'sell-to-euro',
 }
 
 export type SettingsState = {

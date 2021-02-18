@@ -24,20 +24,14 @@
         </div>
 
         <div class="trade-actions" v-show="!isLegacyAccount">
-            <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
-                <button class="nq-button-pill light-blue inverse"
-                    @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
-                    :disabled="$route.name !== 'root' || hasActiveSwap"
-                >{{ $t('Buy') }}</button>
-                <button class="nq-button-s inverse"
-                    @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
-                    :disabled="$route.name !== 'root'"
-                >{{ $t('Sell') }}</button>
-            </template>
-            <button v-else class="nq-button-s inverse"
+            <button class="nq-button-pill light-blue inverse"
+                @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
+                :disabled="$route.name !== 'root' || hasActiveSwap"
+            >{{ $t('Buy') }}</button>
+            <button class="nq-button-s inverse"
                 @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root'"
-            >{{ $t('Buy & Sell') }}</button>
+            >{{ $t('Sell') }}</button>
         </div>
 
         <div class="flex-grow"></div>
@@ -80,7 +74,7 @@ import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
-import { useSettingsStore, Trial } from '../../stores/Settings';
+import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -120,7 +114,7 @@ export default defineComponent({
             }
         }
 
-        const { trials, updateAvailable } = useSettingsStore();
+        const { updateAvailable } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -136,8 +130,6 @@ export default defineComponent({
             priceChartTimeRange,
             switchPriceChartTimeRange,
             isLegacyAccount,
-            trials,
-            Trial,
             updateAvailable,
             hasActiveSwap,
         };

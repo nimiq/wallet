@@ -655,7 +655,7 @@ export default defineComponent({
         font-weight: 400;
         cursor: pointer;
         height: 7rem;
-        overflow: hidden;
+        overflow: visible;
 
         background-color: rgba(#FFFFFF, 0);
         transition: background-color 200ms var(--nimiq-ease);

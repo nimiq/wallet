@@ -29,10 +29,10 @@ export default defineComponent({
         // cta = () => context.root.$t('Check it out');
         // action = () => context.root.$router.push('/settings');
 
-        text = () => context.root.$t('Buy NIM & BTC with Credit Card!');
-        cta = () => context.root.$t('To {exchange}', { exchange: 'MoonPay' });
-        action = () => context.root.$router.push('moonpay');
-        storageKey = 'buy-with-moonpay';
+        text = () => context.root.$t('Buy NIM & BTC with OASIS!');
+        cta = () => context.root.$t('Try it now');
+        action = () => context.root.$router.push('buy-crypto');
+        storageKey = 'buy-with-oasis';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 

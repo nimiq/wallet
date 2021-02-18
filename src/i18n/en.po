@@ -347,7 +347,7 @@ msgid "Buy NIM & BTC"
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:32
-msgid "Buy NIM & BTC with Credit Card!"
+msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:89
@@ -1546,7 +1546,6 @@ msgstr ""
 msgid "This usually takes {time} seconds."
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:33
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
@@ -1589,6 +1588,10 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:30
 #: src/components/swap/SwapSepaFundingInstructions.vue:121
 msgid "Troubleshooting"
+msgstr ""
+
+#: src/components/AnnouncementBox.vue:33
+msgid "Try it now"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:161

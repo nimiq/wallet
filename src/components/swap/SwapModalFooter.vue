@@ -100,6 +100,7 @@ export default defineComponent({
 
     .nq-orange {
         text-align: left;
+        align-items: center;
     }
 
     .nq-gray {

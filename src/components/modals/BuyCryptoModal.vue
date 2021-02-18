@@ -61,6 +61,7 @@
                             :btcFeeFiat="fiatFees.btcFeeFiat"
                             :oasisFeeFiat="fiatFees.oasisFeeFiat"
                             :oasisFeePercentage="fiatFees.oasisFeePercentage"
+                            :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
                             :nimFeeFiat="fiatFees.nimFeeFiat"
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
@@ -561,8 +562,9 @@ export default defineComponent({
             if (!data) {
                 // Predict fees
 
-                const oasisFeeFiat = 0;
+                const oasisFeeFiat = Config.oasis.minFee;
                 const oasisFeePercentage = Config.oasis.feePercentage * 100;
+                const oasisMinFeeFiat = Config.oasis.minFee;
 
                 let nimFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.NIM) {
@@ -601,6 +603,7 @@ export default defineComponent({
                     btcFeeFiat,
                     oasisFeeFiat,
                     oasisFeePercentage,
+                    oasisMinFeeFiat,
                     nimFeeFiat,
                     serviceSwapFeePercentage,
                     serviceSwapFeeFiat,
@@ -613,7 +616,10 @@ export default defineComponent({
             const theirEurFee = data.from.serviceEscrowFee + data.from.serviceNetworkFee;
 
             const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
-            const oasisFeePercentage = Math.round((oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
+            const oasisFeePercentage = oasisFeeFiat === Config.oasis.minFee
+                ? Config.oasis.feePercentage * 100
+                : Math.round((oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
+            const oasisMinFeeFiat = oasisFeeFiat === Config.oasis.minFee ? Config.oasis.minFee : undefined;
 
             const myCryptoFee = data.to.fee;
             const theirCryptoFee = data.to.serviceNetworkFee;
@@ -636,6 +642,7 @@ export default defineComponent({
                 btcFeeFiat,
                 oasisFeeFiat,
                 oasisFeePercentage,
+                oasisMinFeeFiat,
                 nimFeeFiat,
                 serviceSwapFeePercentage,
                 serviceSwapFeeFiat,

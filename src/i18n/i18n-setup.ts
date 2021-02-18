@@ -56,7 +56,7 @@ function setI18nLanguage(lang: string): string {
 
     Cookie.setCookie('lang', lang, { domain: cookieDomain, samesite: 'lax' });
     i18n.locale = lang;
-    document.querySelector('html')!.setAttribute('lang', lang);
+    document.documentElement.setAttribute('lang', lang);
     return lang;
 }
 

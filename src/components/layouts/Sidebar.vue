@@ -25,7 +25,7 @@
 
         <div class="trade-actions" v-show="!isLegacyAccount">
             <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
-                <button class="nq-button-s inverse"
+                <button class="nq-button-s inverse highlighted"
                     @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
                     :disabled="$route.name !== 'root' || hasActiveSwap"
                 >{{ $t('Buy') }}</button>
@@ -277,11 +277,24 @@ export default defineComponent({
 .trade-actions .nq-button-s {
     margin: 0.5rem .625rem 1rem;
     background: rgba(255, 255, 255, .1);
+    transition: background-color .1s;
 
     &:active,
     &:focus,
     &:hover {
         background: rgba(255, 255, 255, .2);
+    }
+
+    &.highlighted {
+        background: var(--nimiq-light-blue);
+        background-image: var(--nimiq-light-blue-bg);
+
+        &:active,
+        &:focus,
+        &:hover {
+        background: var(--nimiq-light-blue-darkened);
+        background-image: var(--nimiq-light-blue-bg-darkened);
+        }
     }
 }
 

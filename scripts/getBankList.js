@@ -127,7 +127,14 @@ async function mergeJson() {
     for (const BIC of ebaRt1BanksBicList) ebaRt1Banks[BIC].BIC = BIC;
 
     for (const BIC of customBanksBicList) {
-        if (!ebaRt1Banks[BIC]) ebaRt1Banks[BIC] = { ...customBanks[BIC], BIC };
+        if (!ebaRt1Banks[BIC]) {
+            const bank = { ...customBanks[BIC], BIC };
+            if (!bank.name || !bank.country || !bank.support.sepa.inbound || !bank.support.sepa.outbound) {
+                console.error('Incomplete info for', BIC, bank);
+                continue;
+            }
+            ebaRt1Banks[BIC] = bank;
+        }
         else {
             ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || BIC;
             ebaRt1Banks[BIC].name = customBanks[BIC].name || ebaRt1Banks[BIC].name;

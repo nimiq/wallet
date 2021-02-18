@@ -91,6 +91,7 @@ export default defineComponent({
     }
 
     .bank-check-input {
+        z-index: 2;
         transition: transform 300ms var(--nimiq-ease);
 
         &.writing {

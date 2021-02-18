@@ -136,6 +136,35 @@
             <button class="nq-button" @click="onboard" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
 
+        <transition name="fadeY">
+            <div class="promo-box nq-light-blue-bg flex-column" v-if="promoBoxVisible">
+                <div class="flex-row">
+                    <EventIcon />
+                    <h2 class="nq-h2">
+                        {{ $t('You did it – time to spread the word. Promote Nimiq and get your fiat back! ') }}
+                    </h2>
+                </div>
+                <ul>
+                    <li>{{ $t('Tweet about your experience with a Twitter account that’s at least 1 month old.') }}</li>
+                    <li>{{ $t('Include #NimiqOASIS') }}</li>
+                    <li class="flex-row">
+                        <ArrowRightSmallIcon />
+                        {{ $t('Until end of March, 10 swaps will get their fiat back.') }}
+                        <a class="nq-button-s inverse light-blue flex-row"
+                            href="https://twitter.com/intent/tweet?hashtags=NimiqOasis"
+                            target="_blank" rel="noopener">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 14">
+                                <!-- eslint-disable-next-line max-len -->
+                                <path fill="#fff" d="M15.8 3.15a.34.34 0 00-.15-.6l-.54-.13a.34.34 0 01-.23-.49l.3-.6a.34.34 0 00-.4-.49l-1.37.39a.34.34 0 01-.3-.06A3.44 3.44 0 007.6 3.92v.25a.17.17 0 01-.16.18c-1.93.22-3.78-.76-5.78-3.06a.35.35 0 00-.35-.1.34.34 0 00-.2.28 5.22 5.22 0 00.33 3.48.17.17 0 01-.2.16l-.76-.15a.34.34 0 00-.4.4 3.55 3.55 0 001.7 2.67.17.17 0 01-.07.25l-.36.14a.34.34 0 00-.18.48 3 3 0 002.2 1.7.17.17 0 01.09.27.17.17 0 01-.09.06c-.93.39-1.94.58-2.95.57a.35.35 0 10-.14.69c1.76.83 3.67 1.28 5.6 1.33 1.72.02 3.4-.45 4.83-1.38a8.6 8.6 0 003.83-7.18v-.6a.35.35 0 01.12-.26l1.13-.95z"/>
+                            </svg>
+                            {{ $t('Tweet') }}
+                        </a>
+                    </li>
+                </ul>
+                <CrossCloseButton @click="setPromoBoxVisible(false)"/>
+            </div>
+        </transition>
+
         <MobileActionBar/>
 
         <Portal>
@@ -148,7 +177,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
+import {
+    Identicon,
+    GearIcon,
+    Copyable,
+    ArrowRightSmallIcon,
+    ArrowLeftIcon,
+    MenuDotsIcon,
+    CrossIcon,
+} from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 // @ts-expect-error missing types for this package
@@ -171,6 +208,9 @@ import { onboard, rename } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
+import EventIcon from '../icons/EventIcon.vue';
+import { useSwapsStore } from '../../stores/Swaps';
+import CrossCloseButton from '../CrossCloseButton.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -178,6 +218,7 @@ export default defineComponent({
         const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const searchString = ref('');
 
@@ -237,6 +278,8 @@ export default defineComponent({
             addressMaskedWidth,
             btcAccountBalance,
             CryptoCurrency,
+            promoBoxVisible,
+            setPromoBoxVisible,
         };
     },
     components: {
@@ -256,6 +299,9 @@ export default defineComponent({
         MenuDotsIcon,
         MobileActionBar,
         Portal,
+        EventIcon,
+        CrossIcon,
+        CrossCloseButton,
     },
     directives: {
         responsive: ResponsiveDirective,
@@ -624,6 +670,119 @@ export default defineComponent({
     flex-grow: 1;
 }
 
+.promo-box {
+    position: absolute;
+    bottom: 3rem;
+    right: 3rem;
+    border-radius: 0.75rem;
+    width: 48rem;
+    padding: 2.25rem;
+
+    .flex-row {
+        align-items: center;
+
+        .nq-h2 {
+            font-size: 16px;
+            margin: 0;
+            line-height: 130%;
+        }
+
+        svg {
+            width: 29px;
+            height: 29px;
+            flex-shrink: 0;
+            margin-right: 1.5rem;
+        }
+    }
+
+    ul {
+        padding-left: 2.25rem;
+        margin: 0;
+
+        li {
+            padding-top: 1.5rem;
+            font-size: 14px;
+            color: rgba(white, 0.8);
+            font-weight: 600;
+
+            &.flex-row {
+                margin-left: -2.25rem;
+                list-style-type: none;
+                position: relative;
+                align-items: flex-start;
+
+                .nq-icon {
+                    opacity: .7;
+                    width: 12px;
+                    height: auto;
+                    padding-top: 6px;
+                }
+
+                .nq-button-s {
+                    font-size: 14px;
+                    line-height: 18px;
+                    margin-left: 2rem;
+
+                    &:hover,
+                    &:focus,
+                    &:active {
+                        color: white;
+                    }
+
+                    svg {
+                        width: 15px;
+                        height: auto;
+                    }
+                }
+            }
+
+            &::marker {
+                color: rgba(white, .7);
+                transform: translateX(2px);
+                font-size: 12px;
+            }
+        }
+    }
+
+    .cross-close-button {
+        height: 12px;
+        width: 12px;
+        opacity: .7;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 0;
+    }
+
+    &.fadeY-enter-active, &.fadeY-leave-active {
+        will-change: opacity, transform;
+        transition: {
+            property: opacity, transform;
+            duration: 200ms;
+            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+        }
+    }
+
+    &.fadeY-enter-active {
+        transition-delay: 50ms;
+    }
+
+    &.fadeY-leave,
+    &.fadeY-enter-to {
+        transform: translateY(0);
+    }
+
+    &.fadeY-enter {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+
+    &.fadeY-leave-to {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .address-overview {
         position: relative;
@@ -708,6 +867,11 @@ export default defineComponent({
             0px 0px 12.5187px rgba(31, 35, 72, 0.045),
             0px 0px 32.0004px rgba(31, 35, 72, 0.058643),
             0px 0px 80px rgba(31, 35, 72, 0.07);
+    }
+
+    .promo-box {
+        width: 90%;
+        bottom: 10rem;
     }
 }
 </style>

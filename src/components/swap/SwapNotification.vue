@@ -68,7 +68,14 @@ enum SwapError {
 
 export default defineComponent({
     setup(props, context) {
-        const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
+        const {
+            activeSwap,
+            setActiveSwap,
+            addFundingData,
+            userBank,
+            setPromoBoxVisible,
+            promoBoxVisible,
+        } = useSwapsStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -466,6 +473,9 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
+                    if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                        setPromoBoxVisible(true);
+                    }
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in the SwapModal.
                         if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;

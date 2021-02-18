@@ -16,9 +16,8 @@
                 </svg>
                 <!-- eslint-enable max-len -->
                 <div class="welcome-text">
-                    <span class="early-access flex-row">
-                        <FlameIcon />
-                        {{ $t('Early Access') }}
+                    <span class="beta-access">
+                        {{ $t('Beta') }}
                     </span>
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
@@ -1290,12 +1289,16 @@ svg.welcome-euro-logo {
     .welcome-text {
         text-align: center;
 
-        .early-access {
+        .beta-access {
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
-            color: #EAA617;
+            color: var(--text-60);
+            box-shadow: 0 0 0 1.5px var(--text-20);
+            border-radius: 1.75rem;
+            margin: 0 auto;
+            padding: 0.5rem 1.5rem;
 
             svg {
                 margin-right: 0.75rem;

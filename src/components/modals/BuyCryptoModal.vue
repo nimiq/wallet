@@ -1468,6 +1468,7 @@ svg.welcome-euro-logo {
     }
 
     .bank-infos {
+        z-index: 2;
         align-items: center;
         width: 18rem;
         border-radius: 0.75rem;

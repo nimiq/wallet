@@ -150,7 +150,7 @@ export default defineComponent({
         function getPreferredTooltipPosition(hexagon: NodeHexagon): string {
             let verticalPosition = 'top';
             let horizontalPosition = 'right';
-            // display tooltip below for hexagons near the bottom edge
+            // display tooltip below for hexagons near the top edge
             if (hexagon.position.y < Math.ceil(NETWORK_MAP_HEIGHT / 2)) {
                 verticalPosition = 'bottom';
             }

@@ -53,23 +53,36 @@ export async function launchNetwork() {
     }
     client.on(NetworkClient.Events.TRANSACTION, transactionListener);
 
-    // Subscribe to new addresses (for balance updates and transactions)
     const subscribedAddresses = new Set<string>();
+    const fetchedAddresses = new Set<string>();
+
+    // Subscribe to new addresses (for balance updates and transactions)
+    // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
         const newAddresses: string[] = [];
+        const removedAddresses: Set<string> = new Set<string>(subscribedAddresses);
+
         for (const address of Object.keys(addressStore.state.addressInfos)) {
-            if (subscribedAddresses.has(address)) continue;
+            if (subscribedAddresses.has(address)) {
+                removedAddresses.delete(address);
+                continue;
+            }
+
             subscribedAddresses.add(address);
             newAddresses.push(address);
         }
-        if (!newAddresses.length) return;
 
-        console.debug('Subscribing addresses', newAddresses);
-        client.subscribe(newAddresses);
+        if (newAddresses.length > 0) {
+            console.debug('Subscribing addresses', newAddresses);
+            client.subscribe(newAddresses);
+        }
+
+        removedAddresses.forEach((removedAddress) => {
+            fetchedAddresses.delete(removedAddress);
+        });
     });
 
     // Fetch transactions for active address
-    const fetchedAddresses = new Set<string>();
     watch(addressStore.activeAddress, () => {
         const address = addressStore.activeAddress.value;
 
@@ -86,7 +99,7 @@ export async function launchNetwork() {
         network$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
+        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
         client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => {

@@ -83,15 +83,25 @@
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
                     <div class="separator-wrapper">
-                            <div class="separator"></div>
-                        </div>
+                        <div class="separator"></div>
+                    </div>
                     <IdenticonButton
                         :address="recipientWithLabel.address"
                         :label="recipientWithLabel.label"
                         @click="recipientDetailsOpened = true"/>
                 </section>
 
-                <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
+                <section v-if="!isValidRecipient" class="invalid-recipient-section">
+                    <span class="nq-notice warning" key="invalid-recipient">
+                        {{ $t('Invalid recipient. The sender and recipient must be different.') }}
+                    </span>
+                </section>
+
+                <section
+                    v-if="isValidRecipient"
+                    class="amount-section"
+                    :class="{'insufficient-balance': maxSendableAmount < amount}"
+                >
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
                         <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef">
                             <AmountMenu slot="suffix" class="ticker"
@@ -141,6 +151,7 @@
                     <LabelInput
                         v-model="message"
                         :placeholder="$t('Add a public message...')"
+                        :disabled="!isValidRecipient"
                         :maxBytes="64"
                         vanishing
                         ref="messageInputRef"/>
@@ -304,6 +315,8 @@ export default defineComponent({
                 page.value = Pages.AMOUNT_INPUT;
             }
         }
+
+        const isValidRecipient = computed(() => recipientWithLabel.value?.address !== activeAddressInfo.value?.address);
 
         function resetRecipient() {
             addressInputValue.value = '';
@@ -609,6 +622,7 @@ export default defineComponent({
             message,
             canSend,
             sign,
+            isValidRecipient,
             // onboard,
 
             // DOM refs for autofocus
@@ -976,6 +990,12 @@ export default defineComponent({
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
         }
+    }
+
+    .invalid-recipient-section {
+        align-self: stretch;
+        text-align: center;
+        margin-bottom: 4rem;
     }
 
     .message-section {

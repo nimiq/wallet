@@ -12,9 +12,9 @@ const CURVINESS_FACTOR = .2;
 const CURVINESS_ANGLE = Math.PI / 6;
 
 /** Map width in hexagons */
-const NETWORK_MAP_WIDTH = 129;
+export const NETWORK_MAP_WIDTH = 129;
 /** Map height in hexagons */
-const NETWORK_MAP_HEIGHT = 52;
+export const NETWORK_MAP_HEIGHT = 52;
 
 /**
  * These WIDTH and HEIGHT values are used in Network.vue CSS to calculate the width of the map on mobile!

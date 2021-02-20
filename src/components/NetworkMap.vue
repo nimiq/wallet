@@ -7,6 +7,7 @@
                 class="node"
                 theme="inverse"
                 :container="$container ? { $el: $container } : null"
+                :preferredPosition="getPreferredTooltipPosition(node)"
                 :margin="{ left: 12, top: 12, right: 12, bottom: 12 }"
                 :style="`transform: translate(${Math.floor(node.x * scale)}px, ${Math.floor(node.y * scale)}px);`"
                 :styles="{
@@ -47,7 +48,7 @@ import { NetworkClient } from '@nimiq/network-client';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
 import { getNetworkClient } from '../network';
-import NetworkMap, { NodeHexagon, WIDTH, HEIGHT, SCALING_FACTOR, Node, NodeType } from '../lib/NetworkMap';
+import NetworkMap, { NodeHexagon, NETWORK_MAP_WIDTH, WIDTH, NETWORK_MAP_HEIGHT, HEIGHT, SCALING_FACTOR, Node, NodeType } from '../lib/NetworkMap';
 
 export default defineComponent({
     setup(props, context) {
@@ -137,6 +138,20 @@ export default defineComponent({
                 : peer.locationData.country;
         }
 
+        function getPreferredTooltipPosition(hexagon: NodeHexagon): string {
+            let verticalPosition = 'top';
+            let horizontalPosition = 'right';
+            // display tooltip below for hexagons near the bottom edge
+            if (hexagon.position.y < Math.ceil(NETWORK_MAP_HEIGHT / 2)) {
+                verticalPosition = 'bottom';
+            }
+            // display tooltip to the left for hexagons near the right edge
+            if (hexagon.position.x > Math.ceil(NETWORK_MAP_WIDTH / 2)) {
+                horizontalPosition = 'left';
+            }
+            return `${verticalPosition} ${horizontalPosition}`;
+        }
+
         return {
             $container,
             $network,
@@ -147,6 +162,7 @@ export default defineComponent({
             height,
             getPeerCity,
             getPeerCountry,
+            getPreferredTooltipPosition,
         };
     },
     components: {

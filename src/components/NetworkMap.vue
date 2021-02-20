@@ -48,7 +48,16 @@ import { NetworkClient } from '@nimiq/network-client';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
 import { getNetworkClient } from '../network';
-import NetworkMap, { NodeHexagon, NETWORK_MAP_WIDTH, WIDTH, NETWORK_MAP_HEIGHT, HEIGHT, SCALING_FACTOR, Node, NodeType } from '../lib/NetworkMap';
+import NetworkMap, {
+    NodeHexagon,
+    NETWORK_MAP_WIDTH,
+    WIDTH,
+    NETWORK_MAP_HEIGHT,
+    HEIGHT,
+    SCALING_FACTOR,
+    Node,
+    NodeType,
+} from '../lib/NetworkMap';
 
 export default defineComponent({
     setup(props, context) {

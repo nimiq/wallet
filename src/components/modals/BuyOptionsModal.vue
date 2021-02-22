@@ -268,7 +268,6 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.8);
         border-radius: 5rem;
         padding: 0.25rem 1.25rem;
-        white-space: nowrap;
     }
 
     .nq-text {
@@ -336,6 +335,7 @@ export default defineComponent({
 .oasis {
     .pill svg {
         margin: 0 0.5rem 0 -0.5rem;
+        flex-shrink: 0;
     }
 
     footer {

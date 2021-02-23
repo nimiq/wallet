@@ -261,6 +261,14 @@ export default defineComponent({
                 console.error, // eslint-disable-line no-console
                 true,
             );
+            checkHistory(
+                addressSet.value.internal,
+                [],
+                0,
+                5,
+                console.error, // eslint-disable-line no-console
+                true,
+            );
         }
 
         return {

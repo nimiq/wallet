@@ -415,7 +415,7 @@ export default defineComponent({
         const isDev = Config.environment === ENV_DEV;
 
         const canSign = computed(() =>
-            (isDev || trials.value.includes(Trial.BUY_WITH_EURO))
+            (isDev || trials.value.includes(Trial.SELL_TO_EURO))
             && fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
@@ -742,7 +742,7 @@ export default defineComponent({
         const { trials } = useSettingsStore();
 
         async function sign() {
-            if (!isDev && !trials.value.includes(Trial.BUY_WITH_EURO)) return;
+            if (!isDev && !trials.value.includes(Trial.SELL_TO_EURO)) return;
 
             // currentlySigning.value = true;
 

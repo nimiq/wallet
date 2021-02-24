@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-$inputHeight: 5.875rem;
+$inputHeight: 6rem;
 
 .double-input {
     text-align: center;

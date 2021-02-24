@@ -349,7 +349,7 @@ msgstr "Explorateur de blocs"
 msgid "Block height"
 msgstr "Hauteur de bloc"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr "Navigateur"
 
@@ -811,7 +811,7 @@ msgstr "Pour les débutants"
 msgid "free"
 msgstr "gratuit"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Noeud Complet"
 
@@ -985,7 +985,7 @@ msgstr "Allons-y"
 msgid "Let's go!"
 msgstr "C'est parti !"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr "Light Node"
 
@@ -1934,7 +1934,7 @@ msgstr ""
 "Certaines banques ne le supportent pas encore, mais il est probable qu'elles"
 " le fassent à l'avenir."
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "Votre navigateur"
 

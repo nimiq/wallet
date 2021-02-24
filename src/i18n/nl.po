@@ -348,7 +348,7 @@ msgstr "Block verkenner"
 msgid "Block height"
 msgstr "Block hoogte"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr "Browser"
 
@@ -370,7 +370,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:58
 msgid "Buy BTC"
-msgstr ""
+msgstr "Koop BTC"
 
 #: src/components/modals/BuyCryptoModal.vue:182
 #: src/components/modals/BuyCryptoModal.vue:187
@@ -385,7 +385,7 @@ msgstr "Koop Crypto met Fiat"
 
 #: src/components/BtcTransactionList.vue:56
 msgid "Buy more here in the wallet."
-msgstr ""
+msgstr "Koop meer in de Wallet."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -397,7 +397,7 @@ msgstr "Koop NIM & BTC"
 
 #: src/components/AnnouncementBox.vue:32
 msgid "Buy NIM & BTC with OASIS!"
-msgstr ""
+msgstr "Koop NIM & BTC met OASIS!"
 
 #: src/components/modals/BuyOptionsModal.vue:89
 msgid "Buy NIM on a crypto exchange:"
@@ -813,7 +813,7 @@ msgstr "Voor beginners"
 msgid "free"
 msgstr "gratis"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Full Node"
 
@@ -915,7 +915,7 @@ msgstr "Verbeterde toegankelijkheid"
 
 #: src/components/layouts/AddressOverview.vue:150
 msgid "Include #NimiqOASIS"
-msgstr ""
+msgstr "#NimiqOASIS toevoegen"
 
 #: src/components/modals/BtcSendModal.vue:108
 msgid ""
@@ -945,7 +945,7 @@ msgstr "ongeldig"
 
 #: src/components/TransactionList.vue:59
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
-msgstr ""
+msgstr "Nodig een vriend uit met een {cashlink} of koop meer in de Wallet."
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -987,7 +987,7 @@ msgstr "Aan de slag"
 msgid "Let's go!"
 msgstr "Start!"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr "Light Node"
 
@@ -1734,17 +1734,18 @@ msgstr "Probleemoplossing"
 
 #: src/components/AnnouncementBox.vue:33
 msgid "Try it now"
-msgstr ""
+msgstr "Probeer nu"
 
 #: src/components/layouts/AddressOverview.vue:161
 msgid "Tweet"
-msgstr ""
+msgstr "Tweet"
 
 #: src/components/layouts/AddressOverview.vue:149
 msgid ""
 "Tweet about your experience with a Twitter account that’s at least 1 month "
 "old."
 msgstr ""
+"Tweet over je ervaring met een Twitter-account dat minstens 1 maand oud is."
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
@@ -1764,7 +1765,7 @@ msgstr "Onbekend"
 
 #: src/components/layouts/AddressOverview.vue:153
 msgid "Until end of March, 10 swaps will get reimbursed."
-msgstr ""
+msgstr "Tot eind maart worden 10 swaps vergoed."
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -1858,6 +1859,8 @@ msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 msgid ""
 "You did it – time to spread the word. Promote Nimiq and win your Euro back! "
 msgstr ""
+"Het is gelukt, laat het nu de rest weten. Maak reclame voor Nimiq en win je "
+"aankoopbedrag terug!"
 
 #: src/components/swap/SwapAnimation.vue:43
 msgid ""
@@ -1922,7 +1925,7 @@ msgstr ""
 "ondersteunen het nog niet, maar zullen dit in de toekomst waarschijnlijk wel"
 " doen."
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "Je browser"
 

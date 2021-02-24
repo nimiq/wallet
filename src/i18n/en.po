@@ -301,7 +301,7 @@ msgstr ""
 msgid "Block height"
 msgstr ""
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr ""
 
@@ -735,7 +735,7 @@ msgstr ""
 msgid "free"
 msgstr ""
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr ""
 
@@ -893,7 +893,7 @@ msgstr ""
 msgid "Let's go!"
 msgstr ""
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr ""
 
@@ -1746,7 +1746,7 @@ msgstr ""
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr ""
 

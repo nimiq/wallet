@@ -329,7 +329,7 @@ msgstr "区块链浏览器"
 msgid "Block height"
 msgstr "区块高度"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr "浏览器"
 
@@ -776,7 +776,7 @@ msgstr "初学者友好"
 msgid "free"
 msgstr "免费"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "完整节点"
 
@@ -940,7 +940,7 @@ msgstr "我们走吧"
 msgid "Let's go!"
 msgstr "我们走吧!"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr "轻节点"
 
@@ -1839,7 +1839,7 @@ msgid ""
 "support it yet, but are likely to do so in the future."
 msgstr "您的银行需要支持SEPA Instant Out交易。有些银行尚不支持，但将来可能会支持。"
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "您的浏览器"
 

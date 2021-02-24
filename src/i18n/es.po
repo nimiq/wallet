@@ -1,13 +1,13 @@
 # 
 # Translators:
-# Rhody Lugo, 2020
 # Daniel, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2020
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2021
+# Rhody Lugo, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2021\n"
+"Last-Translator: Rhody Lugo, 2021\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -265,8 +265,8 @@ msgid ""
 "In case of a problem or a time-out, your payment will be returned to your "
 "bank account."
 msgstr ""
-"Tan pronto como su crypto este disponible, su Euro es procesado al vendedor."
-" En case de un problema o un error, su pago será devuelto a su cuenta "
+"Tan pronto como su cripto este disponible, su Euro es procesado al vendedor."
+" En caso de un problema o un error, su pago será devuelto a su cuenta "
 "bancaria."
 
 #: src/components/swap/SwapFeesTooltip.vue:12
@@ -349,7 +349,7 @@ msgstr "Explorador de Bloques"
 msgid "Block height"
 msgstr "Número de Bloque"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr "Navegador"
 
@@ -378,11 +378,11 @@ msgstr "Comprar BTC"
 #: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/modals/BuyCryptoModal.vue:40
 msgid "Buy Crypto"
-msgstr "Comprar Crypto"
+msgstr "Comprar Cripto"
 
 #: src/components/modals/BuyCryptoModal.vue:19
 msgid "Buy Crypto with Fiat"
-msgstr "Comprar Crypto con Fiat"
+msgstr "Comprar Cripto con Fiat"
 
 #: src/components/BtcTransactionList.vue:56
 msgid "Buy more here in the wallet."
@@ -812,7 +812,7 @@ msgstr "Para novatos"
 msgid "free"
 msgstr "gratis"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Nodo Completo"
 
@@ -987,7 +987,7 @@ msgstr "Adelante"
 msgid "Let's go!"
 msgstr "¡Vamos!"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr "Nodo Ligero"
 
@@ -1826,7 +1826,7 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
-"Bienvenido al primer intercambio atómico fiat-crypto.\n"
+"Bienvenido al primer intercambio atómico fiat-cripto.\n"
 "Es simple, rápido y decentralizado."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
@@ -1934,7 +1934,7 @@ msgstr ""
 "Su banco necesita soportar transacciones SEPA instantáneas. Algunos bancos "
 "aún no las soporta, pero probablemente lo hagan en el futuro"
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "Su navegador"
 

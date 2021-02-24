@@ -344,7 +344,7 @@ msgstr "Оглядач блоків"
 msgid "Block height"
 msgstr "Висота блоку"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Browser"
 msgstr "Веб-оглядач"
 
@@ -806,7 +806,7 @@ msgstr "Для початківців"
 msgid "free"
 msgstr "комісія"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Повноцінний вузол"
 
@@ -978,7 +978,7 @@ msgstr "Вперед!"
 msgid "Let's go!"
 msgstr ""
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMap.vue:30
 msgid "Light Node"
 msgstr "Денний режим"
 
@@ -1904,7 +1904,7 @@ msgstr ""
 "Ваш банк повинен підтримувати операції SEPA Instant out. Деякі банки його "
 "поки не підтримують, але, ймовірно, підтримають у майбутньому."
 
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "Ваш веб-оглядач"
 

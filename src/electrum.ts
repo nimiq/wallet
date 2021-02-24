@@ -115,8 +115,10 @@ export async function checkHistory(
             }
         }
 
-        const knownTxDetails = Object.values(btcTransactionsStore.state.transactions)
-            .filter((tx) => tx.addresses.includes(address));
+        const knownTxDetails = addressInfo.used
+            ? Object.values(btcTransactionsStore.state.transactions)
+                .filter((tx) => tx.addresses.includes(address))
+            : [];
 
         // const lastConfirmedHeight = knownTxDetails
         //     .filter((tx) => tx.state === TransactionState.CONFIRMED)

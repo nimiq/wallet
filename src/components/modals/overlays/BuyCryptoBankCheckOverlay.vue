@@ -96,10 +96,16 @@ export default defineComponent({
 
         &.writing {
             transform: translateY(-100%);
+
             & + span {
                 opacity: 0;
                 visibility: hidden;
                 user-select: none;
+            }
+
+            .bic-too {
+                opacity: 0;
+                visibility: hidden;
             }
         }
     }

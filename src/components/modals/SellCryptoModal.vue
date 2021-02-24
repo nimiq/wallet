@@ -263,7 +263,7 @@
             </PageBody>
         </div>
 
-        <BuyCryptoBankCheckOverlay slot="overlay"
+        <SellCryptoBankCheckOverlay slot="overlay"
             v-else-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
         />
@@ -338,7 +338,7 @@ import { getElectrumClient } from '@/electrum';
 import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import Modal from './Modal.vue';
-import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
+import SellCryptoBankCheckOverlay from './overlays/SellCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -487,8 +487,12 @@ export default defineComponent({
 
         function onBankSelected(bank: BankInfos) {
             setUserBank(bank);
-            page.value = Pages.SETUP_BUY;
             addressListOpened.value = false;
+        }
+
+        function onIbanEntered(recipientBankInfo: any) {
+            // TODO store recipientBankInfo
+            page.value = Pages.SETUP_BUY;
         }
 
         const fiatCurrencyInfo = computed(() =>
@@ -1139,6 +1143,7 @@ export default defineComponent({
             trials,
             Trial,
             oasisLimitExceeded,
+            onIbanEntered,
         };
     },
     components: {
@@ -1147,7 +1152,7 @@ export default defineComponent({
         PageBody,
         PageFooter,
         Tooltip,
-        BuyCryptoBankCheckOverlay,
+        SellCryptoBankCheckOverlay,
         AmountInput,
         Identicon,
         AddressList,

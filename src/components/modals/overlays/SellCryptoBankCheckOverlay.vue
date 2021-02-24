@@ -1,0 +1,239 @@
+<template>
+    <div class="sell-crypto-bank-check-overlay flex-column">
+        <PageHeader :backArrow="currentStep === Step.IBAN_CHECK" @back="goBack">
+            <MessageTransition :reverse="currentStep === Step.BANK_CHECK">
+                <template v-if="currentStep === Step.BANK_CHECK">
+                    {{ $t('Is your bank eligible?') }}
+                </template>
+                <template v-else>
+                    {{ $t('...now your details') }}
+                </template>
+            </MessageTransition>
+            <div slot="more" class="header-notice">
+                {{ $t('Without a SEPA instant bank account your money will take 1-3 business days to arrive.') }}
+            </div>
+        </PageHeader>
+        <PageBody class="flex-column">
+            <MessageTransition :reverse="currentStep === Step.BANK_CHECK">
+                <template v-if="currentStep === Step.BANK_CHECK">
+                    <BankCheckInput v-model="bankName"
+                        @bank-selected="onBankSelected"
+                        :placeholder="$t('Enter bank name')"
+                        :title="$t('Enter bank name')"
+                        :class="{ writing }"
+                        ref="$bankCheckInput"
+                    />
+                    <span class="bic-too">{{ $t('BIC works, too.') }}</span>
+                </template>
+                <template v-else>
+                    <DoubleInput :extended="true">
+                        <template #second>
+                            <LabelInput :placeholder="$t('Enter account holder name')"/>
+                        </template>
+
+                        <template #main>
+                            <LabelInput :placeholder="$t('Enter IBAN')" />
+                        </template>
+
+                        <template #message v-if="isIbanInvalid">
+                            <span class="nq-orange reused-address flex-row">
+                                <AlertTriangleIcon/>{{ $t('This is not a valid IBAN') }}
+                            </span>
+                        </template>
+                    </DoubleInput>
+                    <div class="bank flex-row">
+                        <BankIcon/> {{ userBank.name }}
+                    </div>
+                </template>
+            </MessageTransition>
+        </PageBody>
+        <PageFooter>
+            <transition name="fade">
+                <button v-if="currentStep === Step.IBAN_CHECK"
+                    class="nq-button light-blue"
+                    :disabled="false"
+                    @mousedown.prevent
+                >{{ $t('Confirm account') }}</button>
+            </transition>
+        </PageFooter>
+    </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
+import { BankInfos, useSwapsStore } from '../../../stores/Swaps';
+import BankCheckInput from '../../BankCheckInput.vue';
+import MessageTransition from '../../MessageTransition.vue';
+import DoubleInput from '../../DoubleInput.vue';
+import BankIcon from '../../icons/BankIcon.vue';
+
+enum Step {
+    BANK_CHECK = 'bank-check-step',
+    IBAN_CHECK = 'iban-check-step',
+}
+
+export default defineComponent({
+    setup(props, context) {
+        const { userBank } = useSwapsStore();
+
+        const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
+
+        const currentStep = ref<Step>(Step.BANK_CHECK);
+        const bankName = ref(userBank.value?.name || '');
+
+        const writing = computed(() => bankName.value.length !== 0);
+        const isIbanInvalid = ref(false);
+
+        function onBankSelected(bank: BankInfos) {
+            context.emit('bank-selected', bank);
+            currentStep.value = Step.IBAN_CHECK;
+        }
+
+        onMounted(async () => {
+            await context.root.$nextTick();
+            if ($bankCheckInput.value) $bankCheckInput.value.focus();
+        });
+
+        function goBack() {
+            currentStep.value = Step.BANK_CHECK;
+        }
+
+        return {
+            Step,
+
+            $bankCheckInput,
+
+            userBank,
+            bankName,
+            writing,
+            currentStep,
+            isIbanInvalid,
+
+            onBankSelected,
+            goBack,
+        };
+    },
+    components: {
+        PageHeader,
+        PageBody,
+        PageFooter,
+        BankCheckInput,
+        MessageTransition,
+        DoubleInput,
+        LabelInput,
+        BankIcon,
+    },
+});
+</script>
+
+<style lang="scss" scoped>
+.sell-crypto-bank-check-overlay {
+    height: 100%;
+    text-align: center;
+}
+
+.page-header {
+    /deep/ h1 {
+        margin-bottom: 1rem;
+    }
+
+    .header-notice {
+        font-size: var(--body-size);
+        max-width: 42rem;
+        margin: 1.25rem auto 0;
+    }
+
+    /deep/ .page-header-back-button {
+        z-index: 3;
+    }
+}
+
+.page-body {
+    overflow: visible;
+    justify-content: center;
+
+    .bank-check-input {
+        z-index: 2;
+        transition: transform 300ms var(--nimiq-ease);
+
+        &.writing {
+            transform: translateY(-100%);
+
+            & + span {
+                opacity: 0;
+                visibility: hidden;
+                user-select: none;
+            }
+
+            .bic-too {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+    }
+
+    .bic-too {
+        font-size: var(--small-size);
+        font-weight: 600;
+        color: var(--text-40);
+        margin-top: 1rem;
+
+        transition-property: opacity, visibility;
+        transition-duration: 300ms;
+        transition-timing-function: var(--nimiq-ease);
+    }
+
+    .double-input {
+        flex-grow: 1;
+    }
+
+    .label-input /deep/ input {
+        width: 100% !important;
+        line-height: 2rem;
+        font-size: 2rem;
+        padding: 14px;
+    }
+
+    .bank {
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 2rem;
+        margin-top: 3rem;
+
+        .bank-icon {
+            height: 24px;
+            width: auto;
+            margin-right: 1rem;
+        }
+    }
+}
+
+.page-footer {
+    height: 13.5rem;
+}
+
+.fade-enter-active, .fade-leave-active {
+    will-change: opacity;
+    transition: {
+        property: opacity;
+        duration: 500ms;
+        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+    }
+}
+
+.fade-enter-active {
+    transition-delay: 50ms;
+}
+
+.fade-leave,
+.fade-enter-to {
+    opacity: 1;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

@@ -1,37 +1,65 @@
 <template>
-    <div class="message-transition" :style="messageHeight && { '--message-height': `${messageHeight}px` }">
-        <transition name="fadeY"
-            @enter="(el) => $nextTick(() => messageHeight = el.offsetHeight)"
-            @before-leave="(el) => messageHeight = el.offsetHeight"
-            @after-enter="() => messageHeight = undefined"
-        >
-            <div class="message flex-row" :key="this.getKey(this.$slots.default[0])"><slot></slot></div>
+    <div class="message-transition"
+        :style="messageHeight && { '--message-height': `${messageHeight}px` }"
+    ><transition name="fadeY"
+            @enter="onEnter"
+            @before-leave="onBeforeLeave"
+            @after-enter="onAfterLeave"
+        ><div class="message" :key="getKey($slots.default[0])" :class="{ 'reverse': isReverse }">
+                <slot></slot>
+            </div>
         </transition>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { VNode } from 'vue';
 
 export default defineComponent({
+    props: {
+        reverse: {
+            type: Boolean,
+            default: false,
+        },
+    },
     setup(props, context) {
+        const isReverse = ref(false);
         const messageHeight = ref<number | null>(null);
+
+        onMounted(() => {
+            isReverse.value = props.reverse;
+        });
+
+        function getKey(el?: VNode): string {
+            if (!el) return '';
+            if (!el.children) return `${el.tag || ''}${el.data?.staticClass || ''}${el.text || ''}`;
+            return el.children.map((child: VNode) => getKey(child)).join();
+        }
+
+        function onBeforeLeave(el: HTMLElement) {
+            messageHeight.value = el.offsetHeight;
+        }
 
         async function onEnter(el: HTMLElement) {
             await context.root.$nextTick();
             messageHeight.value = el.offsetHeight;
         }
 
-        function getKey(el: VNode): string {
-            if (!el.children) return `${el.tag || ''}${el.data?.staticClass || ''}${el.text || ''}`;
-            return el.children.map((child: VNode) => getKey(child)).join();
+        async function onAfterLeave() {
+            await context.root.$nextTick();
+            messageHeight.value = null;
+            isReverse.value = props.reverse;
         }
 
         return {
+            isReverse,
             messageHeight,
-            onEnter,
+
             getKey,
+            onEnter,
+            onBeforeLeave,
+            onAfterLeave,
         };
     },
 });
@@ -43,6 +71,10 @@ export default defineComponent({
 
     position: relative;
     height: var(--message-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     transition: {
         property: height;
         duration: 500ms;
@@ -50,13 +82,8 @@ export default defineComponent({
     }
 }
 
-.message {
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.fadeY-enter-active, .fadeY-leave-active {
+.fadeY-enter-active,
+.fadeY-leave-active {
     will-change: opacity, transform;
     transition: {
         property: opacity, transform;
@@ -67,6 +94,7 @@ export default defineComponent({
 
 .fadeY-leave-active {
     position: absolute;
+    z-index: 2;
     width: 100%;
 }
 
@@ -87,5 +115,10 @@ export default defineComponent({
 .fadeY-leave-to {
     opacity: 0;
     transform: translateY(-.5rem);
+}
+
+.message.reverse {
+    &.fadeY-enter { transform: translateY(-.5rem) }
+    &.fadeY-leave-to { transform: translateY(.5rem) }
 }
 </style>

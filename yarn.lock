@@ -960,14 +960,9 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.0.tgz#9a342660e217cc2f14892613b7353e5894d7b5ff"
   integrity sha512-7+lYYu1EQqHUjH2Z7u3jsACZi9vIyKMOTdweqvv66JD9l6S3B1fffl7ha95S5NoTTZ17+QZXbSJnSXXZOsUbpg==
 
-"@nimiq/hub-api@v1.4.2-beta.1":
-  version "1.4.2-beta.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.4.2-beta.1.tgz#f35a4537123affbab56176681db8c4acab63d8b3"
-  integrity sha512-e+6fkaYNN+pdQKKItnGDw4u78Kpm+/dY97Wm9+Qy3RHbDSxNyWVpX89OgiQptXdF9wumP0T3yIvz9wEiIJYgHQ==
-  dependencies:
-    "@nimiq/core-web" "^1.5.3"
-    "@nimiq/rpc" "^0.4.0"
-    big-integer "^1.6.48"
+"@nimiq/hub-api@link:../hub/client":
+  version "0.0.0"
+  uid ""
 
 "@nimiq/iqons@^1.5.2":
   version "1.6.0"

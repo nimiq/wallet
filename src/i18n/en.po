@@ -469,7 +469,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:56
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:65
 msgid "Confirm account"
 msgstr ""
 
@@ -645,7 +645,7 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:31
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:34
 msgid "Enter account holder name"
 msgstr ""
 
@@ -660,7 +660,7 @@ msgstr ""
 msgid "Enter bank name"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:42
 msgid "Enter IBAN"
 msgstr ""
 
@@ -1501,13 +1501,13 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:708
-#: src/components/modals/SellCryptoModal.vue:725
+#: src/components/modals/SellCryptoModal.vue:729
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:713
-#: src/components/modals/SellCryptoModal.vue:730
+#: src/components/modals/SellCryptoModal.vue:734
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1575,7 +1575,7 @@ msgstr ""
 msgid "This is not a valid address"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:40
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:48
 msgid "This is not a valid IBAN"
 msgstr ""
 

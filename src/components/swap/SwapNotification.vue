@@ -476,8 +476,8 @@ export default defineComponent({
                         setPromoBoxVisible(true);
                     }
                     setTimeout(() => {
-                        // Hide notification after a timeout, if not in the SwapModal.
-                        if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;
+                        // Hide notification after a timeout, if not in a swap modal
+                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(context.root.$route.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }
@@ -497,6 +497,8 @@ export default defineComponent({
                 context.root.$router.push('/swap');
             } else if (activeSwap.value.from.asset === SwapAsset.EUR) {
                 context.root.$router.push('/buy-crypto');
+            } else if (activeSwap.value.to.asset === SwapAsset.EUR) {
+                context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
             }

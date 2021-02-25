@@ -87,6 +87,8 @@ export default defineComponent({
     .footer-notice {
         font-weight: 600;
         font-size: var(--small-size);
+        justify-content: center;
+        text-align: center;
 
         /deep/ .nq-link {
             color: inherit;

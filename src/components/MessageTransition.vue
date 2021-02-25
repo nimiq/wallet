@@ -68,6 +68,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .message-transition {
     --message-height: auto;
+    --message-transition-duration: 500ms;
 
     position: relative;
     height: var(--message-height);
@@ -77,7 +78,7 @@ export default defineComponent({
 
     transition: {
         property: height;
-        duration: 500ms;
+        duration: var(--message-transition-duration);
         timing-function: cubic-bezier(0.5, 0, 0.15, 1);
     }
 }
@@ -87,7 +88,7 @@ export default defineComponent({
     will-change: opacity, transform;
     transition: {
         property: opacity, transform;
-        duration: 500ms;
+        duration: var(--message-transition-duration);
         timing-function: cubic-bezier(0.5, 0, 0.15, 1);
     }
 }
@@ -99,6 +100,7 @@ export default defineComponent({
 }
 
 .fadeY-enter-active {
+    z-index: 2;
     transition-delay: 50ms;
 }
 

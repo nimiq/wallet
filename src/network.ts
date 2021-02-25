@@ -104,6 +104,12 @@ export async function launchNetwork() {
         client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => {
                 transactionsStore.addTransactions(txDetails);
+                // update address balance because balanceListeners are not triggered
+                const { state: { transactions } } = transactionsStore;
+                const balance = Object.values(transactions)
+                    .filter((tx) => tx.sender === address || tx.recipient === address)
+                    .reduce((sum, tx) => tx.recipient === address ? sum + tx.value : sum - tx.value, 0);
+                addressStore.patchAddress(address, { balance });
             })
             .catch(() => fetchedAddresses.delete(address))
             .then(() => network$.fetchingTxHistory--);

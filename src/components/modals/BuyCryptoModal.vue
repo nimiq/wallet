@@ -991,6 +991,7 @@ export default defineComponent({
                         endpoint: new URL(Config.fastspot.apiEndpoint).host,
                         apikey: Config.fastspot.apiKey,
                         redeem: settlementSerializedTx,
+                        // ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
                 }).then(async (response) => {
                     if (!response.ok) {

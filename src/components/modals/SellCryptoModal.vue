@@ -839,7 +839,7 @@ export default defineComponent({
                 if (swapSuggestion.to.asset === SwapAsset.EUR) {
                     redeem = {
                         type: SwapAsset.EUR,
-                        value: swapSuggestion.to.amount - swapSuggestion.to.serviceEscrowFee,
+                        value: swapSuggestion.to.amount /* - swapSuggestion.to.serviceEscrowFee */,
                         fee: swapSuggestion.to.fee + swapSuggestion.to.serviceEscrowFee,
                         bankLabel: userBank.value!.name,
                         settlement: {
@@ -958,9 +958,9 @@ export default defineComponent({
                 if (oasisHtlc.hash.value !== confirmedSwap.hash) {
                     throw new Error('OASIS HTLC hash does not match Fastspot swap hash');
                 }
-                // Check amount (OASIS processing fee is included in Fastspot amount)
-                if (oasisHtlc.amount + oasisHtlc.fee !== confirmedSwap.from.amount) {
-                    throw new Error('OASIS HTLC amount + fee does not match swap amount');
+                // Check amount (OASIS processing fee is not included in Fastspot amount)
+                if (oasisHtlc.amount /* + oasisHtlc.fee */ !== confirmedSwap.to.amount) {
+                    throw new Error('OASIS HTLC amount does not match swap amount');
                 }
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);

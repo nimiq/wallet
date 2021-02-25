@@ -10,6 +10,7 @@
             <div class="flex-grow"></div>
             <BankCheckInput v-model="bankName"
                 @bank-selected="onBankSelected"
+                direction="outbound"
                 :placeholder="$t('Enter bank name')"
                 :title="$t('Enter bank name')"
                 :class="{ writing }"

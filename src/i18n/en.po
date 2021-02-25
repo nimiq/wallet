@@ -124,7 +124,7 @@ msgstr ""
 msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:143
+#: src/components/modals/SendModal.vue:153
 msgid "Add a public message..."
 msgstr ""
 
@@ -358,7 +358,7 @@ msgstr ""
 msgid "Buy with Credit Card"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:179
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
@@ -420,7 +420,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:267
-#: src/components/modals/SendModal.vue:159
+#: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
 msgstr ""
@@ -619,7 +619,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:504
+#: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr ""
 
@@ -665,7 +665,7 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:360
+#: src/components/modals/SendModal.vue:372
 msgid "express"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:125
+#: src/components/modals/SendModal.vue:135
 msgid "fee"
 msgstr ""
 
@@ -731,7 +731,7 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:350
+#: src/components/modals/SendModal.vue:362
 msgid "free"
 msgstr ""
 
@@ -840,7 +840,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90
-#: src/components/modals/SendModal.vue:133
+#: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1190,7 +1190,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:503
+#: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr ""
 
@@ -1244,7 +1244,7 @@ msgstr ""
 
 #: src/components/AmountMenu.vue:13
 #: src/components/modals/BtcSendModal.vue:92
-#: src/components/modals/SendModal.vue:135
+#: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr ""
 
@@ -1259,7 +1259,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:154
+#: src/components/modals/SendModal.vue:164
 msgid "Send Transaction"
 msgstr ""
 
@@ -1268,7 +1268,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:431
-#: src/components/modals/SendModal.vue:500
+#: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1285,11 +1285,11 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:535
+#: src/components/modals/SendModal.vue:547
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:531
+#: src/components/modals/SendModal.vue:543
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -1363,11 +1363,11 @@ msgid "Skip for now"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:500
-#: src/components/modals/SendModal.vue:546
+#: src/components/modals/SendModal.vue:558
 msgid "Something went wrong"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:167
+#: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
 msgstr ""
 
@@ -1379,7 +1379,7 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:355
+#: src/components/modals/SendModal.vue:367
 msgid "standard"
 msgstr ""
 
@@ -1472,6 +1472,10 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:52
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
+msgstr ""
+
+#: src/components/modals/SendModal.vue:96
+msgid "The sender and recipient cannot be identical."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:14
@@ -1720,7 +1724,7 @@ msgstr ""
 msgid "You will send {amount}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:129
+#: src/components/modals/SendModal.vue:139
 msgid "You will send {amount} NIM"
 msgstr ""
 

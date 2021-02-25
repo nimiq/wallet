@@ -93,7 +93,7 @@
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
                     <span class="nq-notice warning" key="invalid-recipient">
-                        {{ $t('Invalid recipient. The sender and recipient must be different.') }}
+                        {{ $t('The sender and recipient cannot be identical.') }}
                     </span>
                 </section>
 
@@ -147,11 +147,10 @@
                     </span>
                 </section>
 
-                <section class="message-section">
+                <section v-if="isValidRecipient" class="message-section">
                     <LabelInput
                         v-model="message"
                         :placeholder="$t('Add a public message...')"
-                        :disabled="!isValidRecipient"
                         :maxBytes="64"
                         vanishing
                         ref="messageInputRef"/>

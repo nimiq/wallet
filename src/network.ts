@@ -60,7 +60,7 @@ export async function launchNetwork() {
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
         const newAddresses: string[] = [];
-        const removedAddresses: Set<string> = new Set<string>(subscribedAddresses);
+        const removedAddresses = new Set(subscribedAddresses);
 
         for (const address of Object.keys(addressStore.state.addressInfos)) {
             if (subscribedAddresses.has(address)) {
@@ -72,14 +72,14 @@ export async function launchNetwork() {
             newAddresses.push(address);
         }
 
-        if (newAddresses.length > 0) {
-            console.debug('Subscribing addresses', newAddresses);
-            client.subscribe(newAddresses);
-        }
-
         removedAddresses.forEach((removedAddress) => {
             fetchedAddresses.delete(removedAddress);
         });
+
+        if (!newAddresses.length) return;
+
+        console.debug('Subscribing addresses', newAddresses);
+        client.subscribe(newAddresses);
     });
 
     // Fetch transactions for active address

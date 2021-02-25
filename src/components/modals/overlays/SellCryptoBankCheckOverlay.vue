@@ -28,11 +28,19 @@
                 <template v-else>
                     <DoubleInput :extended="true">
                         <template #second>
-                            <LabelInput :placeholder="$t('Enter account holder name')"/>
+                            <LabelInput
+                                v-model="accountName"
+                                ref="$accountNameInput"
+                                :placeholder="$t('Enter account holder name')"
+                            />
                         </template>
 
                         <template #main>
-                            <LabelInput :placeholder="$t('Enter IBAN')" />
+                            <LabelInput
+                                v-model="iban"
+                                ref="$ibanInput"
+                                :placeholder="$t('Enter IBAN')"
+                            />
                         </template>
 
                         <template #message v-if="isIbanInvalid">
@@ -41,8 +49,8 @@
                             </span>
                         </template>
                     </DoubleInput>
-                    <div class="bank flex-row">
-                        <BankIcon/> {{ userBank.name }}
+                    <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
+                        <BankIcon/><a class="nq-link nq-blue">{{ userBank.name }}</a>
                     </div>
                 </template>
             </MessageTransition>
@@ -51,7 +59,8 @@
             <transition name="fade">
                 <button v-if="currentStep === Step.IBAN_CHECK"
                     class="nq-button light-blue"
-                    :disabled="false"
+                    :disabled="!canConfirm"
+                    @click="confirm"
                     @mousedown.prevent
                 >{{ $t('Confirm account') }}</button>
             </transition>
@@ -60,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { BankInfos, useSwapsStore } from '../../../stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
@@ -78,40 +87,74 @@ export default defineComponent({
         const { userBank } = useSwapsStore();
 
         const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
+        const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
+        const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(userBank.value?.name || '');
+        const accountName = ref('');
+        const iban = ref('');
+
+        const isIbanInvalid = ref(false);
 
         const writing = computed(() => bankName.value.length !== 0);
-        const isIbanInvalid = ref(false);
+        const canConfirm = computed(() =>
+            accountName.value.length > 0
+                && iban.value.length > 0,
+        );
+
+        onMounted(async () => {
+            await context.root.$nextTick();
+            if (userBank.value) {
+                currentStep.value = Step.IBAN_CHECK;
+            }
+        });
+
+        watch(currentStep, async () => {
+            if (currentStep.value === Step.BANK_CHECK) {
+                if ($bankCheckInput.value) $bankCheckInput.value.focus();
+            } else if (currentStep.value === Step.IBAN_CHECK) {
+                await context.root.$nextTick();
+                if ($accountNameInput.value) $accountNameInput.value.focus();
+            }
+        });
 
         function onBankSelected(bank: BankInfos) {
             context.emit('bank-selected', bank);
             currentStep.value = Step.IBAN_CHECK;
         }
 
-        onMounted(async () => {
-            await context.root.$nextTick();
-            if ($bankCheckInput.value) $bankCheckInput.value.focus();
-        });
-
         function goBack() {
             currentStep.value = Step.BANK_CHECK;
+        }
+
+        function confirm() {
+            context.emit('details-entered', {
+                name: accountName.value,
+                iban: iban.value,
+            });
         }
 
         return {
             Step,
 
             $bankCheckInput,
+            $accountNameInput,
+            $ibanInput,
 
             userBank,
             bankName,
             writing,
             currentStep,
+            accountName,
+            iban,
+
             isIbanInvalid,
+            canConfirm,
 
             onBankSelected,
             goBack,
+            confirm,
         };
     },
     components: {
@@ -201,6 +244,10 @@ export default defineComponent({
         font-weight: 600;
         font-size: 2rem;
         margin-top: 3rem;
+
+        &:hover {
+            cursor: pointer;
+        }
 
         .bank-icon {
             height: 24px;

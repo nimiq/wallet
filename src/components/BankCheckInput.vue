@@ -1,8 +1,5 @@
 <template>
-    <div class="bank-check-input"
-        :class="{ disabled }"
-        @keydown="onKeyDown"
-    >
+    <div class="bank-check-input" :class="{ disabled }" @keydown="onKeyDown">
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
         <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
             <button class="reset trigger" @click="countryDropdownOpened = true">
@@ -44,13 +41,13 @@
             <li class="bank"
                 v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: selectedBankIndex === index }"
-                :disabled="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE"
+                :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
                 @mouseenter="selectedBankIndex = index"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
-                <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <BankIcon v-if="bank.support.sepa[direction] !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
 
                 <div class="flex-column">
@@ -67,10 +64,10 @@
                 </div>
 
                 <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL"/>
+                    v-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
                 <Tooltip
-                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.PARTIAL
-                        || bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.UNKNOWN"
+                    v-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.PARTIAL
+                        || bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.UNKNOWN"
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
@@ -126,6 +123,10 @@ export default defineComponent({
         disabled: {
             type: Boolean,
             default: false,
+        },
+        direction: {
+            type: String as () => 'inbound' | 'outbound',
+            required: true,
         },
     },
     setup(props, context) {
@@ -315,9 +316,9 @@ export default defineComponent({
             }
         }
 
-        /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound support */
+        /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
         function selectBank(bank: BankInfos) {
-            if (bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE) {
+            if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
@@ -327,7 +328,8 @@ export default defineComponent({
 
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
-            matchingBanks.value.some((bank: BankInfos) => bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.FULL),
+            matchingBanks.value.some(
+                (bank: BankInfos) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
         );
 
         /* Those 3 functions are used to highlight the matched string in the bank autocomplete list */

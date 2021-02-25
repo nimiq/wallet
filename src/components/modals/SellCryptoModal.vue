@@ -266,6 +266,7 @@
         <SellCryptoBankCheckOverlay slot="overlay"
             v-else-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
+            @details-entered="onBankDetailsEntered"
         />
 
         <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
@@ -490,7 +491,7 @@ export default defineComponent({
             addressListOpened.value = false;
         }
 
-        function onIbanEntered(recipientBankInfo: any) {
+        function onBankDetailsEntered(recipientBankInfo: { name: string, iban: string }) {
             // TODO store recipientBankInfo
             page.value = Pages.SETUP_BUY;
         }
@@ -1143,7 +1144,7 @@ export default defineComponent({
             trials,
             Trial,
             oasisLimitExceeded,
-            onIbanEntered,
+            onBankDetailsEntered,
         };
     },
     components: {

@@ -202,30 +202,10 @@
                     :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
-                    :manualFunding="true"
                     :oasisLimitExceeded="oasisLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
-                >
-                    <SwapSepaFundingInstructions
-                        v-if="swap.fundingInstructions && swap.fundingInstructions.type === 'sepa'"
-                        slot="manual-funding-instructions"
-                        :amount="swap.fundingInstructions.amount"
-                        :name="swap.fundingInstructions.recipient.name"
-                        :iban="swap.fundingInstructions.recipient.iban"
-                        :bic="swap.fundingInstructions.recipient.bic"
-                        :reference="swap.fundingInstructions.purpose"
-                        :stateEnteredAt="swap.stateEnteredAt"
-                        @cancel="finishSwap"
-                        @paid="onPaid"
-                    />
-                    <button v-else
-                        slot="manual-funding-instructions"
-                        class="nq-button light-blue"
-                        @click="onPaid"
-                        @mousedown.prevent
-                    >{{ $t('Simulate EUR payment') }}</button>
-                </SwapAnimation>
+                />
             </PageBody>
             <button v-if="swap.state !== SwapState.CREATE_OUTGOING"
                 class="nq-button-s minimize-button top-right"
@@ -327,11 +307,8 @@ import {
     getHtlc,
     Htlc,
     HtlcStatus,
-    sandboxMockClearHtlc,
-    TransactionType,
-    SepaClearingInstruction,
-    ClearingStatus,
-    ClearingInfo,
+    SettlementStatus,
+    SettlementInfo,
     DeniedReason,
 } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
@@ -350,7 +327,6 @@ import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
@@ -503,8 +479,8 @@ export default defineComponent({
         const eurPerNim = computed(() => {
             const data = estimate.value;
             if (data && data.from.asset === SwapAsset.NIM) {
-                const eur = data.to.amount - data.to.serviceEscrowFee - data.to.serviceNetworkFee;
-                const nim = data.from.amount + data.from.serviceNetworkFee;
+                const eur = data.to.amount + data.to.serviceEscrowFee + data.to.serviceNetworkFee;
+                const nim = data.from.amount - data.from.serviceNetworkFee;
 
                 return (eur / 100) / (nim / 1e5);
             }
@@ -515,8 +491,8 @@ export default defineComponent({
         const eurPerBtc = computed(() => {
             const data = estimate.value;
             if (data && data.from.asset === SwapAsset.BTC) {
-                const eur = data.to.amount - data.to.serviceEscrowFee - data.to.serviceNetworkFee;
-                const btc = data.from.amount + data.from.serviceNetworkFee;
+                const eur = data.to.amount + data.to.serviceEscrowFee + data.to.serviceNetworkFee;
+                const btc = data.from.amount - data.from.serviceNetworkFee;
 
                 return (eur / 100) / (btc / 1e8);
             }
@@ -965,8 +941,8 @@ export default defineComponent({
             // Fetch OASIS HTLC to get clearing instructions
             initOasisApi(Config.oasis.apiEndpoint);
             const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
-            if (oasisHtlc.status !== HtlcStatus.PENDING) {
-                const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
+            if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
+                const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
@@ -996,9 +972,6 @@ export default defineComponent({
                 return;
             }
 
-            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing.options
-                .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
-
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
@@ -1009,7 +982,6 @@ export default defineComponent({
                 ...swap.value!,
                 state: SwapState.AWAIT_INCOMING,
                 stateEnteredAt: Date.now(),
-                fundingInstructions,
             });
 
             if (Config.fastspot.watchtowerEndpoint) {
@@ -1113,30 +1085,18 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
-        function onPaid() {
-            if (!isMainnet) sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
-
-            if (!swap.value!.stateEnteredAt) {
-                const { setActiveSwap } = useSwapsStore();
-                setActiveSwap({
-                    ...swap.value!,
-                    stateEnteredAt: Date.now(),
-                });
-            }
-        }
-
         const oasisLimitExceeded = computed(() => {
             if (!swap.value) return false;
-            if (!swap.value.fundingTx) return false;
-            const htlc = swap.value.fundingTx as Htlc<HtlcStatus>;
+            if (!swap.value.settlementTx) return false;
+            const htlc = swap.value.settlementTx as Htlc<HtlcStatus>;
 
-            if (htlc.status !== HtlcStatus.PENDING) return false;
-            const pendingHtlc = htlc as Htlc<HtlcStatus.PENDING>;
+            if (htlc.status !== HtlcStatus.SETTLED) return false;
+            const settledHtlc = htlc as Htlc<HtlcStatus.SETTLED>;
 
-            if (pendingHtlc.clearing.status !== ClearingStatus.DENIED) return false;
-            const deniedClearingInfo = pendingHtlc.clearing as ClearingInfo<ClearingStatus.DENIED>;
+            if (settledHtlc.settlement.status !== SettlementStatus.DENIED) return false;
+            const deniedSettlementInfo = settledHtlc.settlement as SettlementInfo<SettlementStatus.DENIED>;
 
-            return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
+            return deniedSettlementInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
         });
 
         return {
@@ -1172,7 +1132,6 @@ export default defineComponent({
             estimateError,
             swapError,
             isMainnet,
-            onPaid,
             isDev,
             trials,
             Trial,
@@ -1200,7 +1159,6 @@ export default defineComponent({
         Timer,
         MinimizeIcon,
         BitcoinIcon,
-        SwapSepaFundingInstructions,
         CircleSpinner,
         AlertTriangleIcon,
         SwapModalFooter,

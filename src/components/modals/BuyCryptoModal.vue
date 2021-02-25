@@ -555,8 +555,8 @@ export default defineComponent({
                 };
             }
 
-            const myEurFee = data.from.fee;
-            const theirEurFee = data.from.serviceEscrowFee + data.from.serviceNetworkFee;
+            const myEurFee = data.from.fee + data.from.serviceEscrowFee;
+            const theirEurFee = data.from.serviceNetworkFee;
 
             const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
             const oasisFeePercentage = oasisFeeFiat === Config.oasis.minFee

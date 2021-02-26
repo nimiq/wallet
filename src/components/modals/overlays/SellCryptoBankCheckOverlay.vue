@@ -18,7 +18,7 @@
                 <template v-if="currentStep === Step.BANK_CHECK">
                     <BankCheckInput v-model="bankName"
                         @bank-selected="onBankSelected"
-                        direction="outbound"
+                        direction="inbound"
                         :placeholder="$t('Enter bank name')"
                         :title="$t('Enter bank name')"
                         :class="{ writing }"

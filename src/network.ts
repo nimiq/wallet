@@ -74,6 +74,7 @@ export async function launchNetwork() {
 
         if (removedAddresses.size) {
             for (const removedAddress of removedAddresses) {
+                subscribedAddresses.delete(removedAddress);
                 fetchedAddresses.delete(removedAddress);
             }
             // Let the network forget the balances of the removed addresses,
@@ -88,9 +89,7 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    watch(addressStore.activeAddress, () => {
-        const address = addressStore.activeAddress.value;
-
+    watch(addressStore.activeAddress, (address) => {
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
 

@@ -53,15 +53,35 @@ export async function launchNetwork() {
     }
     client.on(NetworkClient.Events.TRANSACTION, transactionListener);
 
-    // Subscribe to new addresses (for balance updates and transactions)
     const subscribedAddresses = new Set<string>();
+    const fetchedAddresses = new Set<string>();
+
+    // Subscribe to new addresses (for balance updates and transactions)
+    // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
         const newAddresses: string[] = [];
+        const removedAddresses = new Set(subscribedAddresses);
+
         for (const address of Object.keys(addressStore.state.addressInfos)) {
-            if (subscribedAddresses.has(address)) continue;
+            if (subscribedAddresses.has(address)) {
+                removedAddresses.delete(address);
+                continue;
+            }
+
             subscribedAddresses.add(address);
             newAddresses.push(address);
         }
+
+        if (removedAddresses.size) {
+            for (const removedAddress of removedAddresses) {
+                subscribedAddresses.delete(removedAddress);
+                fetchedAddresses.delete(removedAddress);
+            }
+            // Let the network forget the balances of the removed addresses,
+            // so that they are reported as new again at re-login.
+            client.forgetBalances([...removedAddresses]);
+        }
+
         if (!newAddresses.length) return;
 
         console.debug('Subscribing addresses', newAddresses);
@@ -69,10 +89,7 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    const fetchedAddresses = new Set<string>();
-    watch(addressStore.activeAddress, () => {
-        const address = addressStore.activeAddress.value;
-
+    watch(addressStore.activeAddress, (address) => {
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
 
@@ -86,7 +103,7 @@ export async function launchNetwork() {
         network$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
+        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
         client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => {

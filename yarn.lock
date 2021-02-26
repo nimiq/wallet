@@ -976,10 +976,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/network-client@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.6.3.tgz#112c764f1daa429dde243b76b730cbb2afe942bc"
-  integrity sha512-867OsnurWT717qKxYGea8SNmWJoM5nzhbPF2a7RVbnJyYj9i006kIdxlUwEEPrIRmFMn0XVhDgte2oe+4MxllQ==
+"@nimiq/network-client@^0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.6.5.tgz#b2cf024ac33d947691c39835983a528fdb141085"
+  integrity sha512-nan6SWRbczzHkkVRTZ1ByDuaUokLWq+DobHZa9ODpqGFd6hvpW8iv8i4B5nIr+/7bO6arIMF2Hhz/qVYel/7Xg==
   dependencies:
     "@nimiq/core-web" "1.5.3"
     "@nimiq/rpc-events" "^0.0.8"

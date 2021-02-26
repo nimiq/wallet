@@ -72,9 +72,14 @@ export async function launchNetwork() {
             newAddresses.push(address);
         }
 
-        removedAddresses.forEach((removedAddress) => {
-            fetchedAddresses.delete(removedAddress);
-        });
+        if (removedAddresses.size) {
+            for (const removedAddress of removedAddresses) {
+                fetchedAddresses.delete(removedAddress);
+            }
+            // Let the network forget the balances of the removed addresses,
+            // so that they are reported as new again at re-login.
+            client.forgetBalances([...removedAddresses]);
+        }
 
         if (!newAddresses.length) return;
 

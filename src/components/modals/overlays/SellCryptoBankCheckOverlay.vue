@@ -44,9 +44,9 @@
                             />
                         </template>
 
-                        <template #message v-if="isIbanInvalid">
-                            <span class="nq-orange reused-address flex-row">
-                                <AlertTriangleIcon/>{{ $t('This is not a valid IBAN') }}
+                        <template #message>
+                            <span v-if="isIbanInvalid" class="nq-orange invalid-iban flex-row">
+                                {{ $t('This is not a valid IBAN') }}
                             </span>
                         </template>
                     </DoubleInput>
@@ -71,7 +71,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, LabelInput, AlertTriangleIcon } from '@nimiq/vue-components';
+import IBAN from 'iban';
 import { BankInfos, useSwapsStore } from '../../../stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
@@ -96,12 +97,13 @@ export default defineComponent({
         const accountName = ref('');
         const iban = ref('');
 
-        const isIbanInvalid = ref(false);
+        const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
 
         const writing = computed(() => bankName.value.length !== 0);
         const canConfirm = computed(() =>
             accountName.value.length > 0
-                && iban.value.length > 0,
+                && iban.value.length > 0
+                && !isIbanInvalid.value,
         );
 
         onMounted(async () => {
@@ -167,6 +169,7 @@ export default defineComponent({
         DoubleInput,
         LabelInput,
         BankIcon,
+        AlertTriangleIcon,
     },
 });
 </script>
@@ -230,6 +233,16 @@ export default defineComponent({
 
     .double-input {
         flex-grow: 1;
+
+        /deep/ .message {
+            font-weight: 600;
+            margin-top: .5rem;
+            font-size: 1.75rem;
+
+            > .nq-icon {
+                margin-right: 0.5rem;
+            }
+        }
     }
 
     .label-input /deep/ input {

@@ -11,9 +11,11 @@
             <slot name="main"></slot>
         </div>
 
-        <div v-if="$slots.message" class="message flex-row">
-            <slot name="message"></slot>
-        </div>
+        <MessageTransition>
+            <div v-if="$slots.message" class="message flex-row">
+                <slot name="message"></slot>
+            </div>
+        </MessageTransition>
 
         <transition name="slide">
             <div class="fake-border" v-if="extended"
@@ -26,6 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
+import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
     props: {
@@ -51,6 +54,9 @@ export default defineComponent({
             $secondInput,
             labelInputHeight,
         };
+    },
+    components: {
+        MessageTransition,
     },
 });
 </script>
@@ -112,7 +118,6 @@ $inputHeight: 6rem;
     .message {
         justify-content: center;
         align-items: center;
-        margin-top: -2.5rem;
     }
 
     &.extended {

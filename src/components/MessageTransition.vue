@@ -1,13 +1,16 @@
 <template>
     <div class="message-transition"
-        :style="messageHeight && { '--message-height': `${messageHeight}px` }"
+        :style="isTransitioning && { '--message-height': `${messageHeight || 0}px` }"
     ><transition name="fadeY"
-            @enter="onEnter"
+            @before-enter="() => isTransitioning = true"
             @before-leave="onBeforeLeave"
+            @enter="onEnter"
             @after-enter="onAfterLeave"
-        ><div class="message" :key="getKey($slots.default[0])" :class="{ 'reverse': isReverse }">
-                <slot></slot>
-            </div>
+            @after-leave="() => isTransitioning = false"
+        ><div
+            :key="getKey($slots.default && $slots.default.length > 0 && $slots.default[0])"
+            :class="{ 'reverse': isReverse }"
+        ><slot></slot></div>
         </transition>
     </div>
 </template>
@@ -24,8 +27,10 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const $currentEl = ref<HTMLElement | null>(null);
         const isReverse = ref(false);
         const messageHeight = ref<number | null>(null);
+        const isTransitioning = ref(false);
 
         onMounted(() => {
             isReverse.value = props.reverse;
@@ -39,6 +44,7 @@ export default defineComponent({
 
         function onBeforeLeave(el: HTMLElement) {
             messageHeight.value = el.offsetHeight;
+            isTransitioning.value = true;
         }
 
         async function onEnter(el: HTMLElement) {
@@ -50,10 +56,14 @@ export default defineComponent({
             await context.root.$nextTick();
             messageHeight.value = null;
             isReverse.value = props.reverse;
+            isTransitioning.value = false;
         }
 
         return {
+            $currentEl,
+
             isReverse,
+            isTransitioning,
             messageHeight,
 
             getKey,
@@ -119,7 +129,7 @@ export default defineComponent({
     transform: translateY(-.5rem);
 }
 
-.message.reverse {
+.reverse {
     &.fadeY-enter { transform: translateY(-.5rem) }
     &.fadeY-leave-to { transform: translateY(.5rem) }
 }

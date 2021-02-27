@@ -91,6 +91,13 @@ export default defineComponent({
         duration: var(--message-transition-duration);
         timing-function: cubic-bezier(0.5, 0, 0.15, 1);
     }
+
+    & > .fadeY-enter-active ~ .fadeY-enter-active {
+        display: none;
+    }
+    & > .fadeY-leave-active ~ .fadeY-leave-active {
+        display: none;
+    }
 }
 
 .fadeY-enter-active,

@@ -43,7 +43,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:86
+#: src/components/BankCheckInput.vue:83
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -177,7 +177,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:186
+#: src/components/BankCheckInput.vue:187
 msgid "All countries"
 msgstr ""
 
@@ -270,8 +270,8 @@ msgstr ""
 msgid "Beta"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:26
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:19
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:27
 msgid "BIC works, too."
 msgstr ""
 
@@ -364,7 +364,7 @@ msgstr ""
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
 msgstr ""
 
@@ -431,8 +431,8 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:267
-#: src/components/modals/SellCryptoModal.vue:272
+#: src/components/modals/BuyCryptoModal.vue:246
+#: src/components/modals/SellCryptoModal.vue:253
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -469,7 +469,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:65
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:66
 msgid "Confirm account"
 msgstr ""
 
@@ -512,7 +512,7 @@ msgstr ""
 msgid "Consensus"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:81
+#: src/components/BankCheckInput.vue:78
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 
@@ -640,12 +640,12 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:435
+#: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:34
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
 msgid "Enter account holder name"
 msgstr ""
 
@@ -653,14 +653,14 @@ msgstr ""
 msgid "Enter address"
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:13
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:14
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:21
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:15
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:22
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:23
 msgid "Enter bank name"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:42
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:43
 msgid "Enter IBAN"
 msgstr ""
 
@@ -873,7 +873,7 @@ msgid ""
 "by Nimiq"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:90
+#: src/components/modals/BtcSendModal.vue:86
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr ""
@@ -995,7 +995,7 @@ msgstr ""
 msgid "min {amount}"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:36
+#: src/components/BankCheckInput.vue:33
 msgid "More locations will be supported soon."
 msgstr ""
 
@@ -1063,7 +1063,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:80
+#: src/components/BankCheckInput.vue:77
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:429
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr ""
@@ -1253,7 +1253,7 @@ msgid ""
 "money to this address"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:22
+#: src/components/BankCheckInput.vue:19
 #: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr ""
@@ -1296,7 +1296,7 @@ msgid "Send"
 msgstr ""
 
 #: src/components/AmountMenu.vue:13
-#: src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/BtcSendModal.vue:88
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr ""
@@ -1320,7 +1320,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:426
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr ""
@@ -1408,7 +1408,6 @@ msgid "Signup"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:224
-#: src/components/modals/SellCryptoModal.vue:227
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1416,7 +1415,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:500
+#: src/components/modals/BtcSendModal.vue:495
 #: src/components/modals/SendModal.vue:558
 msgid "Something went wrong"
 msgstr ""
@@ -1501,13 +1500,13 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:708
-#: src/components/modals/SellCryptoModal.vue:729
+#: src/components/modals/SellCryptoModal.vue:705
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:713
-#: src/components/modals/SellCryptoModal.vue:734
+#: src/components/modals/SellCryptoModal.vue:710
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -1575,7 +1574,7 @@ msgstr ""
 msgid "This is not a valid address"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:48
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:49
 msgid "This is not a valid IBAN"
 msgstr ""
 
@@ -1815,11 +1814,11 @@ msgstr ""
 msgid "Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new account picker."
 msgstr ""
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:23
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:90
+#: src/components/BankCheckInput.vue:87
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

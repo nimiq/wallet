@@ -1196,6 +1196,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/iban@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@types/iban/-/iban-0.0.32.tgz#0308cc330fe534d5b7015299feb32ab216e124d5"
+  integrity sha512-GhyJ+IVOC/eFfARnYd8wjL9dKvlQU+amhml0UxgSzTr/13V11op+nVVdkyqEipHYoqJZv4RHWLfkMmZrCgjjCA==
+
 "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
@@ -5851,6 +5856,11 @@ human-signals@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
+
+iban@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/iban/-/iban-0.0.14.tgz#fd8a65ac50c8b770682634b20dc5c5c9feba5c24"
+  integrity sha512-+rocNKk+Ga9m8Lr9fTMWd+87JnsBrucm0ZsIx5ROOarZlaDLmd+FKdbtvb0XyoBw9GAFOYG2GuLqoNB16d+p3w==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"

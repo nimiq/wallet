@@ -596,6 +596,7 @@ export default defineComponent({
     .reused-address {
         align-items: center;
         font-weight: 600;
+        margin-top: -2.5rem; // TODO: check others
 
         > .nq-icon {
             margin-right: 0.5rem;

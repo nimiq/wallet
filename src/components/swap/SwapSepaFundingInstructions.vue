@@ -50,7 +50,7 @@
                 <div class="row flex-row">
                     <Copyable :text="reference" class="glass flex-column flex-grow">
                         <div class="line flex-row">
-                            <label class="nq-label">{{ $t('Reference') }}</label>
+                            <label class="nq-label">{{ $t('Purpose') }}</label>
                         </div>
                         <div class="line flex-row">
                             <strong class="reference">{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>

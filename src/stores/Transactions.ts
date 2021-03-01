@@ -79,6 +79,21 @@ export const useTransactionsStore = createStore({
                                 timeoutBlockHeight: fundingData.timeout,
                             },
                         });
+
+                        if (!useSwapsStore().state.swaps[fundingData.hashRoot].out) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            getContract(SwapAsset.NIM, plain.recipient).then((contractWithEstimate) => {
+                                if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+                                    useSwapsStore().addSettlementData(fundingData.hashRoot, {
+                                        asset: SwapAsset.EUR,
+                                        // TODO: Adapt to Fastspot API changes
+                                        amount: contractWithEstimate.to.amount,
+                                            // - contractWithEstimate.to.serviceEscrowFee,
+                                        // We cannot get bank info or EUR HTLC details from this.
+                                    });
+                                }
+                            }).catch(() => undefined);
+                        }
                     }
                     // HTLC Refunding
                     if ('creator' in plain.proof) {

@@ -2,8 +2,8 @@
 # Translators:
 # Talleyrand, 2020
 # Daniel, 2020
-# Robinson BARAIS, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Robinson BARAIS, 2021
 # Matheo <matheo@nimiq.com>, 2021
 # 
 msgid ""
@@ -145,7 +145,7 @@ msgstr ""
 "Ajouter un label pour retrouver rapidement la transaction dans votre "
 "historique."
 
-#: src/components/modals/SendModal.vue:143
+#: src/components/modals/SendModal.vue:153
 msgid "Add a public message..."
 msgstr "Ajouter un message public..."
 
@@ -159,7 +159,7 @@ msgstr "Ajouter une adresse"
 
 #: src/components/layouts/Settings.vue:143
 msgid "Add an existing vesting contract to your wallet."
-msgstr "Ajouter un contrat d'acquisition existant à votre wallet."
+msgstr "Ajouter un contrat d'acquisition existant à votre Wallet."
 
 #: src/components/modals/BtcActivationModal.vue:8
 msgid ""
@@ -271,11 +271,11 @@ msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
-msgstr "Les swaps atomiques nécessitent 2 transactions BTC."
+msgstr "Les Swaps atomiques nécessitent 2 transactions BTC."
 
 #: src/components/swap/SwapAnimation.vue:204
 msgid "Awaiting swap secret"
-msgstr "En attente du secret du swap"
+msgstr "En attente du secret du Swap"
 
 #: src/components/layouts/Network.vue:15
 msgid "Back to addresses"
@@ -386,7 +386,7 @@ msgstr "Acheter de la Crypto avec des Fiats"
 
 #: src/components/BtcTransactionList.vue:56
 msgid "Buy more here in the wallet."
-msgstr "Achetez plus ici dans le wallet."
+msgstr "Achetez plus ici dans le Wallet."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -408,12 +408,12 @@ msgstr "Acheter du NIM sur une plateforme d'échange :"
 msgid "Buy with Credit Card"
 msgstr "Acheter avec une carte de crédit"
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:179
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
 msgstr ""
-"Ajouter des frais peut augmenter la rapidité de traitement de votre "
+"Ajouter des frais peut augmenter la rapidité d'exécution de votre "
 "transaction."
 
 #: src/components/modals/BuyCryptoModal.vue:184
@@ -476,7 +476,7 @@ msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
 #: src/components/modals/BuyCryptoModal.vue:267
-#: src/components/modals/SendModal.vue:159
+#: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
 msgstr "Choisissez une adresse"
@@ -591,7 +591,7 @@ msgstr "Créer une nouvelle adresse à usage unique."
 
 #: src/components/AccountMenu.vue:39
 msgid "Create backup"
-msgstr "Créer une Sauvegarde"
+msgstr "Créer une sauvegarde"
 
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
@@ -629,11 +629,11 @@ msgstr "Avertissement"
 
 #: src/components/swap/SwapAnimation.vue:222
 msgid "Don't close your wallet until the swap is complete!"
-msgstr "Ne fermez pas votre wallet tant que le swap n'est pas terminé !"
+msgstr "Ne fermez pas votre Wallet tant que le Swap n'est pas terminé !"
 
 #: src/components/swap/SwapNotification.vue:38
 msgid "Don't close your wallet!"
-msgstr "Ne fermez pas votre wallet !"
+msgstr "Ne fermez pas votre Wallet !"
 
 #: src/components/modals/BtcReceiveModal.vue:14
 msgid "Don’t reuse addresses and create a new one for every transaction."
@@ -669,7 +669,7 @@ msgid ""
 "Early Access means that there are limits in place for swaps. They may be "
 "increased gradually."
 msgstr ""
-"L'accès anticipé signifie qu'il y a des limites en place pour les swaps. Ces"
+"L'accès anticipé signifie qu'il y a des limites en place pour les Swaps. Ces"
 " dernières pourraient être augmentés progressivement."
 
 #: src/components/modals/BtcActivationModal.vue:11
@@ -693,7 +693,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:504
+#: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -741,7 +741,7 @@ msgstr "expiré"
 msgid "Expired"
 msgstr "Expiré"
 
-#: src/components/modals/SendModal.vue:360
+#: src/components/modals/SendModal.vue:372
 msgid "express"
 msgstr "express"
 
@@ -770,7 +770,7 @@ msgstr "Faucet indisponible"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet indisponible (mauvais réseau)"
 
-#: src/components/modals/SendModal.vue:125
+#: src/components/modals/SendModal.vue:135
 msgid "fee"
 msgstr "frais"
 
@@ -788,7 +788,7 @@ msgstr "Récupération"
 #: src/components/modals/TransactionModal.vue:210
 #: src/components/TransactionListItem.vue:53
 msgid "Fiat value unavailable"
-msgstr "Fiat value unavailable"
+msgstr "Valeur du FIAT indisponible"
 
 #: src/components/layouts/Settings.vue:271
 msgid "File contains no contacts."
@@ -796,18 +796,18 @@ msgstr "Le fichier ne contient aucun contact."
 
 #: src/components/modals/BuyCryptoModal.vue:30
 msgid "Finalize the swap by bank transfer."
-msgstr "Finalisez le swap par virement bancaire."
+msgstr "Finalisez le Swap par virement bancaire."
 
 #: src/components/swap/SwapAnimation.vue:205
 #: src/components/swap/SwapAnimation.vue:206
 msgid "Finalizing swap"
-msgstr "Finalisation du swap"
+msgstr "Finalisation du Swap"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
 msgstr "Pour les débutants"
 
-#: src/components/modals/SendModal.vue:350
+#: src/components/modals/SendModal.vue:362
 msgid "free"
 msgstr "gratuit"
 
@@ -932,7 +932,7 @@ msgstr ""
 "par Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:90
-#: src/components/modals/SendModal.vue:133
+#: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
 
@@ -1085,7 +1085,7 @@ msgstr "Frais de réseau: {sats} sat/vByte"
 
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "NIM network fee"
-msgstr "frais de réseau NIM"
+msgstr "Frais de réseau NIM"
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid ""
@@ -1228,6 +1228,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Veuillez transférer"
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
+msgid "Purpose"
+msgstr "Motif"
+
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
@@ -1269,10 +1273,6 @@ msgstr "Copiée récemment"
 msgid "Recipient"
 msgstr "Destinataire"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:53
-msgid "Reference"
-msgstr "Référence"
-
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Devise de référence"
@@ -1313,7 +1313,7 @@ msgstr ""
 " la blockchain."
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:503
+#: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -1367,7 +1367,7 @@ msgid "Send"
 msgstr "Envoyer"
 
 #: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
-#: src/components/modals/SendModal.vue:135
+#: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Tout envoyer"
 
@@ -1385,7 +1385,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:154
+#: src/components/modals/SendModal.vue:164
 msgid "Send Transaction"
 msgstr "Envoyer la Transaction"
 
@@ -1394,7 +1394,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
 
 #: src/components/modals/BtcSendModal.vue:431
-#: src/components/modals/SendModal.vue:500
+#: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Transaction en cours."
 
@@ -1411,11 +1411,11 @@ msgstr "{btc} BTC envoyé à {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Envoyé {fromAsset} – Recu {toAsset}"
 
-#: src/components/modals/SendModal.vue:535
+#: src/components/modals/SendModal.vue:547
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM envoyés"
 
-#: src/components/modals/SendModal.vue:531
+#: src/components/modals/SendModal.vue:543
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
@@ -1439,7 +1439,7 @@ msgstr "Définir les frais"
 
 #: src/components/swap/SwapAnimation.vue:197
 msgid "Setting up swap"
-msgstr "Mise en place du swap"
+msgstr "Mise en place du Swap"
 
 #: src/components/layouts/Sidebar.vue:57
 msgid "Settings"
@@ -1484,18 +1484,18 @@ msgstr "S'inscrire"
 
 #: src/components/modals/BuyCryptoModal.vue:245
 msgid "Simulate EUR payment"
-msgstr "Simuler le paiement en EURO"
+msgstr "Simuler le paiement en Euro"
 
 #: src/components/modals/BtcActivationModal.vue:27
 msgid "Skip for now"
 msgstr "Ignorer pour l'instant"
 
 #: src/components/modals/BtcSendModal.vue:500
-#: src/components/modals/SendModal.vue:546
+#: src/components/modals/SendModal.vue:558
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/components/modals/SendModal.vue:167
+#: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
 msgstr "Accélérer votre Transaction"
 
@@ -1507,7 +1507,7 @@ msgstr "Utilisez vos fonds pour sécuriser le réseau et gagner du NIM."
 msgid "Staking"
 msgstr "Staking"
 
-#: src/components/modals/SendModal.vue:355
+#: src/components/modals/SendModal.vue:367
 msgid "standard"
 msgstr "standard"
 
@@ -1527,7 +1527,7 @@ msgstr "Swap"
 
 #: src/components/swap/SwapFeesTooltip.vue:37
 msgid "Swap fee"
-msgstr "Frais de swap"
+msgstr "Frais de Swap"
 
 #: src/components/modals/BtcTransactionModal.vue:12
 #: src/components/modals/TransactionModal.vue:9
@@ -1536,7 +1536,7 @@ msgstr "Swap depuis {address}"
 
 #: src/components/swap/SwapNotification.vue:19
 msgid "Swap has expired"
-msgstr "Le swap a expiré"
+msgstr "Le Swap a expiré"
 
 #: src/components/BalanceDistribution.vue:54
 msgid "Swap NIM {arrow} BTC"
@@ -1604,12 +1604,16 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:47
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
-msgstr "Le wallet Nimiq est plus qu'un web-wallet, c'est un nœud du réseau."
+msgstr "Le Wallet Nimiq est plus qu'un web-wallet, c'est un nœud du réseau."
 
 #: src/components/modals/BuyCryptoModal.vue:52
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
+
+#: src/components/modals/SendModal.vue:96
+msgid "The sender and recipient cannot be identical."
+msgstr "L'expéditeur et le bénéficiaire ne peuvent pas être identiques."
 
 #: src/components/swap/SwapAnimation.vue:14
 msgid "The Swap expired"
@@ -1665,7 +1669,7 @@ msgstr "Ce mois-ci"
 #: src/components/modals/BuyCryptoModal.vue:50
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
-msgstr "Ce taux inclut les frais de swap."
+msgstr "Ce taux inclut les frais de Swap."
 
 #: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
@@ -1685,11 +1689,11 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:53
 msgid "This swap is as decentralized as the blockchain itself."
-msgstr "Ce swap est aussi décentralisé que la blockchain elle-même."
+msgstr "Ce Swap est aussi décentralisé que la blockchain elle-même."
 
 #: src/components/swap/SwapAnimation.vue:215
 msgid "This usually takes {time} seconds."
-msgstr "Cette opération prend en général {time} secondes."
+msgstr "Cette opération prend généralement {time} secondes."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -1805,7 +1809,7 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
-"Utilisez le slider ou modifiez les valeurs pour mettre en place un swap."
+"Utilisez le slider ou modifiez les valeurs pour mettre en place un Swap."
 
 #: src/components/layouts/Settings.vue:141
 msgid "Vesting Contract"
@@ -1813,7 +1817,7 @@ msgstr "Contrat d'acquisition"
 
 #: src/components/modals/BuyCryptoModal.vue:29
 msgid "Wait for the swap to be set up."
-msgstr "Attendez que le swap soit mis en place."
+msgstr "Attendez que le Swap soit mis en place."
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
@@ -1824,7 +1828,7 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
-"Bienvenue dans le premier swap atomique de fiat à crypto.\n"
+"Bienvenue dans le premier Swap atomique de fiat à crypto.\n"
 "C'est simple, rapide et décentralisé."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
@@ -1897,7 +1901,7 @@ msgstr "Vous finaliserez votre achat par virement bancaire."
 msgid "You will send {amount}"
 msgstr "Vous allez envoyer {amount}"
 
-#: src/components/modals/SendModal.vue:129
+#: src/components/modals/SendModal.vue:139
 msgid "You will send {amount} NIM"
 msgstr "Vous enverrez {amount} NIM"
 
@@ -1966,7 +1970,7 @@ msgid ""
 "to profit from new features."
 msgstr ""
 "Vos NIM sont hébergés sur un ancien type de compte. Transférez-les sur un "
-"nouveau compte pour profiter de nouvelles fonctionnalités."
+"nouveau compte pour profiter des nouvelles fonctionnalités."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:113
 msgid "Your payment has not been received yet. There might be an issue."

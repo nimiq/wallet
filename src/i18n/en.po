@@ -1113,6 +1113,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
+msgid "Purpose"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
@@ -1150,10 +1154,6 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:17
 msgid "Recipient"
-msgstr ""
-
-#: src/components/swap/SwapSepaFundingInstructions.vue:53
-msgid "Reference"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:176

@@ -56,7 +56,7 @@ msgstr "+ {count} інший | + {count} інші"
 #: src/components/modals/BuyOptionsModal.vue:37
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees"
-msgstr ""
+msgstr "+ комісія мережі"
 
 #: src/components/modals/BtcTransactionModal.vue:117
 #: src/components/modals/BtcTransactionModal.vue:132
@@ -83,7 +83,7 @@ msgstr "2-4 год."
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
-msgstr ""
+msgstr "Підтримка 24/7"
 
 #: src/components/modals/BuyCryptoModal.vue:30
 msgid "3"
@@ -141,7 +141,7 @@ msgstr ""
 msgid "Add a label to quickly find the transaction in your history."
 msgstr "Додайте назву, щоб швидко знайти переказ у вашій історії."
 
-#: src/components/modals/SendModal.vue:143
+#: src/components/modals/SendModal.vue:153
 msgid "Add a public message..."
 msgstr "Додати публічне повідомлення..."
 
@@ -214,7 +214,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "Almost everywhere"
-msgstr ""
+msgstr "Майже усюди"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:34
@@ -237,7 +237,7 @@ msgstr "Доступне оновлення до кошилька!"
 
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
-msgstr ""
+msgstr "Доступне оновлення додатку гаманця."
 
 #: src/components/modals/WelcomeModal.vue:27
 msgid "And {BTC}, the gold standard of crypto and a sound store of value."
@@ -249,7 +249,7 @@ msgstr "Android і iOS додаток"
 
 #: src/components/swap/SwapAnimation.vue:18
 msgid "Any funds sent will be refunded within 1-3 days."
-msgstr ""
+msgstr "Будь-які надіслані кошти будуть повернуті протягом 1-3 днів."
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "Any funds sent will be refunded."
@@ -403,7 +403,7 @@ msgstr ""
 msgid "Buy with Credit Card"
 msgstr "Купити за допомогою банківської карти."
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:179
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -473,7 +473,7 @@ msgid "Choose a Recipient"
 msgstr "Виберіть одержувача"
 
 #: src/components/modals/BuyCryptoModal.vue:267
-#: src/components/modals/SendModal.vue:159
+#: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
 msgstr "Виберіть адресу"
@@ -688,7 +688,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Змінити кількість знаків після коми для NIM."
 
 #: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:504
+#: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
@@ -736,7 +736,7 @@ msgstr "прострочений"
 msgid "Expired"
 msgstr "Прострочений"
 
-#: src/components/modals/SendModal.vue:360
+#: src/components/modals/SendModal.vue:372
 msgid "express"
 msgstr "швидкий"
 
@@ -765,7 +765,7 @@ msgstr "Фонд недоступний"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Фонд недоступний (невірна мережа)"
 
-#: src/components/modals/SendModal.vue:125
+#: src/components/modals/SendModal.vue:135
 msgid "fee"
 msgstr "комісія"
 
@@ -783,7 +783,7 @@ msgstr "Завантаження"
 #: src/components/modals/TransactionModal.vue:210
 #: src/components/TransactionListItem.vue:53
 msgid "Fiat value unavailable"
-msgstr "Сума у фіаті недоступна"
+msgstr "Сума у валюті недоступна"
 
 #: src/components/layouts/Settings.vue:271
 msgid "File contains no contacts."
@@ -802,7 +802,7 @@ msgstr "Завершення обміну"
 msgid "For beginners"
 msgstr "Для початківців"
 
-#: src/components/modals/SendModal.vue:350
+#: src/components/modals/SendModal.vue:362
 msgid "free"
 msgstr "комісія"
 
@@ -925,7 +925,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:90
-#: src/components/modals/SendModal.vue:133
+#: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Недостатньо коштів."
 
@@ -1216,6 +1216,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Будь ласка, перекажіть"
 
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
+msgid "Purpose"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
@@ -1256,10 +1260,6 @@ msgstr "Скопійовано"
 msgid "Recipient"
 msgstr "Одержувач"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:53
-msgid "Reference"
-msgstr "Довідка"
-
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Основна валюта"
@@ -1297,7 +1297,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Скинути налаштування веб-оглядача і перезавантажити дані з блокчейну."
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:503
+#: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Спробувати знову"
 
@@ -1351,7 +1351,7 @@ msgid "Send"
 msgstr "Відправити"
 
 #: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
-#: src/components/modals/SendModal.vue:135
+#: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Переказати все"
 
@@ -1369,7 +1369,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:122
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:154
+#: src/components/modals/SendModal.vue:164
 msgid "Send Transaction"
 msgstr "Відправити переказ"
 
@@ -1378,7 +1378,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Переказуйте, отримуйте і зберігайте BTC у гаманці."
 
 #: src/components/modals/BtcSendModal.vue:431
-#: src/components/modals/SendModal.vue:500
+#: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Відправляється"
 
@@ -1395,11 +1395,11 @@ msgstr "Надіслано {btc} BTC до {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Надіслано {fromAsset} – Отримано {toAsset}"
 
-#: src/components/modals/SendModal.vue:535
+#: src/components/modals/SendModal.vue:547
 msgid "Sent {nim} NIM"
 msgstr "Надіслано {nim} NIM"
 
-#: src/components/modals/SendModal.vue:531
+#: src/components/modals/SendModal.vue:543
 msgid "Sent {nim} NIM to {name}"
 msgstr "Надіслано {nim} NIM до {name}"
 
@@ -1475,11 +1475,11 @@ msgid "Skip for now"
 msgstr "Попустити"
 
 #: src/components/modals/BtcSendModal.vue:500
-#: src/components/modals/SendModal.vue:546
+#: src/components/modals/SendModal.vue:558
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/components/modals/SendModal.vue:167
+#: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
 msgstr "Пришвидшити переказ"
 
@@ -1491,7 +1491,7 @@ msgstr "Стекайте NIM щоб отримати винагороду за �
 msgid "Staking"
 msgstr "Стекінг"
 
-#: src/components/modals/SendModal.vue:355
+#: src/components/modals/SendModal.vue:367
 msgid "standard"
 msgstr "звично"
 
@@ -1592,6 +1592,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Курс може змінюватися в залежності від суми обміну."
+
+#: src/components/modals/SendModal.vue:96
+msgid "The sender and recipient cannot be identical."
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:14
 msgid "The Swap expired"
@@ -1802,7 +1806,7 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap.\n"
 "It’s simple, fast and decentralized."
 msgstr ""
-"Вітаємо на першому у світі атоманому обміні фіату на крипту.\n"
+"Вітаємо на першому у світі атомарному обміні фіатних гошей на криптовалюту.\n"
 "Це просто, швидко і децентралізовано."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
@@ -1868,7 +1872,7 @@ msgstr "Ви завершите свою покупку банківським �
 msgid "You will send {amount}"
 msgstr "Ви надішлете {amount}"
 
-#: src/components/modals/SendModal.vue:129
+#: src/components/modals/SendModal.vue:139
 msgid "You will send {amount} NIM"
 msgstr "Ви надішлете {amount} NIM"
 

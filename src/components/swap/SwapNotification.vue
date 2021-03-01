@@ -72,6 +72,7 @@ export default defineComponent({
             activeSwap,
             setActiveSwap,
             addFundingData,
+            addSettlementData,
             userBank,
             setPromoBoxVisible,
         } = useSwapsStore();
@@ -428,6 +429,7 @@ export default defineComponent({
                 }
                 case SwapState.SETTLE_INCOMING: {
                     try {
+                        // TODO: Catch double settlement (e.g. after page-reload)
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
@@ -438,7 +440,7 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
-                            await swapHandler.awaitIncomingConfirmation((htlc) => {
+                            const htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
                                 if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
                                     checkExpired();
                                     return;
@@ -451,6 +453,19 @@ export default defineComponent({
                                 if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
                                     // TODO: Handle failed payout
                                 }
+                            }) as Htlc<HtlcStatus.SETTLED>;
+
+                            // As EUR payments are not otherwise detected by the Wallet, we use this
+                            // place to persist the relevant information in our store.
+                            addSettlementData(htlc.hash.value, {
+                                asset: SwapAsset.EUR,
+                                bankLabel: userBank.value?.name,
+                                // bankLogo?: string,
+                                amount: htlc.amount,
+                                htlc: {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                },
                             });
                         }
 

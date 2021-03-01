@@ -2,17 +2,16 @@
     <div class="message-transition"
         :style="isTransitioning && { '--message-height': `${messageHeight || 0}px` }"
     ><transition name="fadeY"
-            @before-enter="() => isTransitioning = true"
+            @before-enter="onBeforeEnter"
             @before-leave="onBeforeLeave"
             @enter="onEnter"
-            @after-enter="onAfterLeave"
-            @after-leave="() => isTransitioning = false"
+            @after-enter="onAfterEnter"
+            @after-leave="onAfterLeave"
         ><div
             :key="getKey($slots.default && $slots.default.length > 0 && $slots.default[0])"
             :class="{ 'reverse': isReverse }"
         ><slot></slot></div>
-        </transition>
-    </div>
+    </transition></div>
 </template>
 
 <script lang="ts">
@@ -42,6 +41,10 @@ export default defineComponent({
             return el.children.map((child: VNode) => getKey(child)).join();
         }
 
+        function onBeforeEnter() {
+            isTransitioning.value = true;
+        }
+
         function onBeforeLeave(el: HTMLElement) {
             messageHeight.value = el.offsetHeight;
             isTransitioning.value = true;
@@ -59,6 +62,10 @@ export default defineComponent({
             isTransitioning.value = false;
         }
 
+        function onAfterEnter() {
+            isTransitioning.value = false;
+        }
+
         return {
             $currentEl,
 
@@ -67,9 +74,11 @@ export default defineComponent({
             messageHeight,
 
             getKey,
-            onEnter,
+            onBeforeEnter,
             onBeforeLeave,
+            onEnter,
             onAfterLeave,
+            onAfterEnter,
         };
     },
 });

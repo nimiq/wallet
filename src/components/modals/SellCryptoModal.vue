@@ -61,6 +61,7 @@
                             :btcFeeFiat="fiatFees.btcFeeFiat"
                             :oasisFeeFiat="fiatFees.oasisFeeFiat"
                             :oasisFeePercentage="fiatFees.oasisFeePercentage"
+                            :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
                             :nimFeeFiat="fiatFees.nimFeeFiat"
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
@@ -367,7 +368,7 @@ export default defineComponent({
                 if (!estimate.value) return 0;
 
                 if (estimate.value.to.asset !== SwapAsset.EUR) return 0;
-                return estimate.value.to.amount + estimate.value.to.fee;
+                return estimate.value.to.amount - estimate.value.to.fee;
             },
             set: (value: number) => {
                 _cryptoAmount.value = 0;
@@ -383,7 +384,7 @@ export default defineComponent({
                 if (!estimate.value) return 0;
 
                 if (estimate.value.from.asset !== activeCurrency.value.toUpperCase()) return 0;
-                return capDecimals(estimate.value.from.amount - estimate.value.from.fee, estimate.value.from.asset);
+                return capDecimals(estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
             },
             set: (value: number) => {
                 _fiatAmount.value = 0;
@@ -507,25 +508,38 @@ export default defineComponent({
             return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
         });
 
+        const nimFeePerUnit = computed(() =>
+            (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
+            || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
+            || 0, // Default zero fees for NIM
+        );
+
+        const btcFeePerUnit = computed(() =>
+            (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
+            || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
+            || 1,
+        );
+
+        const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
+
+        // 48 extra weight units for BTC HTLC funding tx
+        const btcFeeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
+        const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
+
         const fiatFees = computed(() => {
             const data = estimate.value;
             if (!data) {
                 // Predict fees
 
-                const oasisFeeFiat = 0;
+                const oasisFeeFiat = Config.oasis.minFee;
                 const oasisFeePercentage = Config.oasis.feePercentage * 100;
+                const oasisMinFeeFiat = Config.oasis.minFee;
 
                 let nimFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.NIM) {
-                    // Settlement
-                    const perFee = 0
-                        || (estimate.value && estimate.value.from.asset === SwapAsset.NIM
-                            && estimate.value.from.feePerUnit)
-                        || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-                        || 0;
-                    // 135 extra weight units for BTC HTLC settlement tx
-                    const myFee = perFee * 233; // 233 = NIM HTLC settlement tx size);
-                    const serviceFee = perFee * 244; // 244 = NIM HTLC funding tx size
+                    // Funding
+                    const myFee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+                    const serviceFee = nimFeePerUnit.value * 233; // 233 = NIM HTLC settlement tx size)
 
                     nimFeeFiat = ((myFee + serviceFee) / 1e5)
                         * (exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value] || 0);
@@ -533,15 +547,10 @@ export default defineComponent({
 
                 let btcFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.BTC) {
-                    // Settlement
-                    const perFee = 0
-                        || (estimate.value && estimate.value.from.asset === SwapAsset.BTC
-                            && estimate.value.from.feePerUnit)
-                        || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-                        || 1;
-                    // 135 extra weight units for BTC HTLC settlement tx
-                    const myFee = estimateFees(1, 1, perFee, 135);
-                    const serviceFee = perFee * 154; // The vsize Fastspot charges for a funding tx
+                    // Funding
+                    // 48 extra weight units for BTC HTLC funding tx
+                    const myFee = estimateFees(1, 2, btcFeePerUnit.value, 48);
+                    const serviceFee = btcFeePerUnit.value * 144; // The vsize Fastspot charges for a settlement tx
 
                     btcFeeFiat = ((myFee + serviceFee) / 1e8)
                         * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
@@ -554,6 +563,7 @@ export default defineComponent({
                     btcFeeFiat,
                     oasisFeeFiat,
                     oasisFeePercentage,
+                    oasisMinFeeFiat,
                     nimFeeFiat,
                     serviceSwapFeePercentage,
                     serviceSwapFeeFiat,
@@ -566,7 +576,10 @@ export default defineComponent({
             const theirEurFee = data.to.serviceEscrowFee + data.to.serviceNetworkFee;
 
             const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
-            const oasisFeePercentage = Math.round((oasisFeeFiat / (data.to.amount / 100)) * 1000) / 10;
+            const oasisFeePercentage = oasisFeeFiat === Config.oasis.minFee
+                ? Config.oasis.feePercentage * 100
+                : Math.round((oasisFeeFiat / (data.to.amount / 100)) * 1000) / 10;
+            const oasisMinFeeFiat = oasisFeeFiat === Config.oasis.minFee ? Config.oasis.minFee : undefined;
 
             const myCryptoFee = data.from.fee;
             const theirCryptoFee = data.from.serviceNetworkFee;
@@ -592,6 +605,7 @@ export default defineComponent({
                 btcFeeFiat,
                 oasisFeeFiat,
                 oasisFeePercentage,
+                oasisMinFeeFiat,
                 nimFeeFiat,
                 serviceSwapFeePercentage,
                 serviceSwapFeeFiat,
@@ -600,7 +614,7 @@ export default defineComponent({
             };
         });
 
-        function calculateFees(feesPerUnit = { eur: 0, nim: 0, btc: 0 }): {
+        function calculateFees(feesPerUnit = { eur: 0, nim: 0, btc: 0 }, amount?: number): {
             fundingFee: number,
             settlementFee: number,
         } {
@@ -608,21 +622,21 @@ export default defineComponent({
             let settlementFee: number | null = null;
 
             if (activeCurrency.value === CryptoCurrency.NIM) {
-                const perFee = feesPerUnit.nim
-                    || (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-                    || 0;
-                // 233 = NIM HTLC settlement tx size
-                fundingFee = perFee * 233;
+                fundingFee = (feesPerUnit.nim || nimFeePerUnit.value) * 244; // 244 = NIM HTLC funding tx size
             }
 
             if (activeCurrency.value === CryptoCurrency.BTC) {
-                const perFee = feesPerUnit.btc
-                    || (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-                    || 1;
-                // 135 extra weight units for BTC HTLC settlement tx
-                fundingFee = estimateFees(1, 1, perFee, 135);
+                const btcAmount = Math.min(amount || 1, btcMaxSendableAmount.value);
+                const selected = selectOutputs(
+                    accountUtxos.value,
+                    btcAmount,
+                    (feesPerUnit.btc || btcFeePerUnit.value),
+                    48, // 48 extra weight units for BTC HTLC funding tx
+                );
+                fundingFee = selected.utxos
+                    .reduce((sum, utxo) => sum + utxo.witness.value, 0)
+                    - btcAmount
+                    - selected.changeAmount;
             }
 
             // EUR
@@ -643,12 +657,12 @@ export default defineComponent({
                 ? SwapAsset.BTC
                 : SwapAsset.NIM;
 
-            const fees = calculateFees();
+            const fees = calculateFees(undefined, _cryptoAmount.value);
 
             if (_fiatAmount.value) {
                 return {
                     from: fromSwapAsset,
-                    to: { [SwapAsset.EUR]: (fiatAmount.value + fees.settlementFee) / 100 },
+                    to: { [SwapAsset.EUR]: (_fiatAmount.value + fees.settlementFee) / 100 },
                 } as {
                     from: SwapAsset.NIM | SwapAsset.BTC,
                     to: RequestAsset<SwapAsset.EUR>,
@@ -657,7 +671,7 @@ export default defineComponent({
 
             if (fromSwapAsset === SwapAsset.BTC) {
                 return {
-                    from: { [fromSwapAsset]: (cryptoAmount.value - fees.settlementFee) / 1e8 },
+                    from: { [fromSwapAsset]: (_cryptoAmount.value - fees.fundingFee) / 1e8 },
                     to: SwapAsset.EUR,
                 } as {
                     from: RequestAsset<SwapAsset.BTC>,
@@ -666,7 +680,7 @@ export default defineComponent({
             }
 
             return {
-                from: { [fromSwapAsset]: (cryptoAmount.value - fees.settlementFee) / 1e5 },
+                from: { [fromSwapAsset]: (_cryptoAmount.value - fees.fundingFee) / 1e5 },
                 to: SwapAsset.EUR,
             } as {
                 from: RequestAsset<SwapAsset.NIM>,
@@ -697,7 +711,7 @@ export default defineComponent({
                     eur: newEstimate.to.fee || 0,
                     nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.from.feePerUnit! : 0,
                     btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.from.feePerUnit! : 0,
-                });
+                }, newEstimate.from.amount);
 
                 newEstimate.from.fee = fundingFee;
                 newEstimate.to.fee = settlementFee;
@@ -743,7 +757,7 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion!: PreSwap;
 
-                const { availableExternalAddresses, accountUtxos } = useBtcAddressStore();
+                const { availableExternalAddresses } = useBtcAddressStore();
                 const nimAddress = activeAddress.value!;
                 const btcAddress = availableExternalAddresses.value[0];
 
@@ -758,10 +772,10 @@ export default defineComponent({
 
                     // Update local fees with latest feePerUnit values
                     const { fundingFee, settlementFee } = calculateFees({
-                        eur: swapSuggestion.from.fee || 0,
+                        eur: swapSuggestion.to.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.from.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.from.feePerUnit! : 0,
-                    });
+                    }, swapSuggestion.from.amount);
 
                     swapSuggestion.from.fee = fundingFee;
                     swapSuggestion.to.fee = settlementFee;
@@ -810,7 +824,7 @@ export default defineComponent({
 
                 if (swapSuggestion.from.asset === SwapAsset.BTC) {
                     // Assemble BTC inputs
-                    // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
+                    // Transactions to an HTLC are 48 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
                         accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
                     let changeAddress: string;
@@ -848,8 +862,8 @@ export default defineComponent({
                 if (swapSuggestion.to.asset === SwapAsset.EUR) {
                     redeem = {
                         type: SwapAsset.EUR,
-                        value: swapSuggestion.to.amount /* - swapSuggestion.to.serviceEscrowFee */,
-                        fee: swapSuggestion.to.fee + swapSuggestion.to.serviceEscrowFee,
+                        value: swapSuggestion.to.amount,
+                        fee: swapSuggestion.to.fee,
                         bankLabel: userBank.value!.name,
                         settlement: {
                             type: 'mock',
@@ -878,7 +892,7 @@ export default defineComponent({
                         exchangeRates.value[swapSuggestion.from.asset.toLowerCase()][selectedFiatCurrency.value]!,
                     redeemingFiatRate: 1, // 1 EUR = 1 EUR
                     serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee + swapSuggestion.to.serviceEscrowFee,
                     serviceSwapFee,
                 };
 
@@ -968,7 +982,7 @@ export default defineComponent({
                     throw new Error('OASIS HTLC hash does not match Fastspot swap hash');
                 }
                 // Check amount (OASIS processing fee is not included in Fastspot amount)
-                if (oasisHtlc.amount /* + oasisHtlc.fee */ !== confirmedSwap.to.amount) {
+                if (oasisHtlc.amount !== confirmedSwap.to.amount) {
                     throw new Error('OASIS HTLC amount does not match swap amount');
                 }
             } catch (error) {

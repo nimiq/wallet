@@ -120,7 +120,10 @@
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
-                        <IdenticonStack @click="addressListOpened = true" />
+                        <div class="flex-column">
+                            <IdenticonStack @click="addressListOpened = true" />
+                            <InteractiveShortAddress :address="activeAddressInfo.address" tooltipPosition="left"/>
+                        </div>
                     </section>
 
                     <section class="amount-section">
@@ -329,6 +332,7 @@ import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 
 enum Pages {
     WELCOME,
@@ -345,6 +349,8 @@ export default defineComponent({
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
+
+        const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
@@ -405,7 +411,6 @@ export default defineComponent({
             if (!swap.value) {
                 fetchAssets();
                 if (width.value > 700) {
-                    // @ts-expect-error Property 'focus' does not exist on type 'VueProxy<AmountInput>'
                     if ($eurAmountInput.value) $eurAmountInput.value.focus();
                 }
             }
@@ -1098,8 +1103,6 @@ export default defineComponent({
             return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
         });
 
-        const $eurAmountInput = ref<typeof AmountInput>(null);
-
         return {
             addressListOpened,
             onClose,
@@ -1164,6 +1167,7 @@ export default defineComponent({
         AlertTriangleIcon,
         SwapModalFooter,
         IdenticonStack,
+        InteractiveShortAddress,
     },
 });
 </script>
@@ -1391,6 +1395,18 @@ svg.welcome-euro-logo {
         align-items: center;
         align-self: stretch;
         margin-bottom: 3.5rem;
+
+        & > .flex-column {
+            align-items: center;
+
+            .identicon-stack {
+                padding-bottom: 4rem;
+            }
+
+            .interactive-short-address {
+                margin-top: -3.5rem;
+            }
+        }
 
         label {
             margin-top: 1.875rem;

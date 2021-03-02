@@ -117,7 +117,10 @@
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
-                        <IdenticonStack @click="addressListOpened = true" />
+                        <div class="flex-column">
+                            <IdenticonStack @click="addressListOpened = true" />
+                            <InteractiveShortAddress :address="activeAddressInfo.address" tooltipPosition="right"/>
+                        </div>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
@@ -332,6 +335,8 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 enum Pages {
     WELCOME,
@@ -405,12 +410,15 @@ export default defineComponent({
             && !fetchingEstimate.value,
         );
 
+        const { width } = useWindowSize();
+
         onMounted(async () => {
             if (!swap.value) {
                 fetchAssets();
+                if (width.value > 700) {
+                    if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
+                }
             }
-            await context.root.$nextTick();
-            if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
         });
 
         const { exchangeRates } = useFiatStore();
@@ -1187,6 +1195,7 @@ export default defineComponent({
         AlertTriangleIcon,
         SwapModalFooter,
         IdenticonStack,
+        InteractiveShortAddress,
     },
 });
 </script>
@@ -1409,7 +1418,18 @@ svg.welcome-euro-logo {
         justify-content: space-around;
         align-items: center;
         align-self: stretch;
-        margin-bottom: 3.5rem;
+
+        & > .flex-column {
+            align-items: center;
+
+            .identicon-stack {
+                padding-bottom: 4rem;
+            }
+
+            .interactive-short-address {
+                margin-top: -3.5rem;
+            }
+        }
 
         label {
             margin-top: 1.875rem;

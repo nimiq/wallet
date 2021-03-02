@@ -85,9 +85,7 @@ export const useBtcTransactionsStore = createStore({
                                     if (contractWithEstimate.to.asset === SwapAsset.EUR) {
                                         useSwapsStore().addSettlementData(fundingData.hash, {
                                             asset: SwapAsset.EUR,
-                                            // TODO: Adapt to Fastspot API changes
                                             amount: contractWithEstimate.to.amount,
-                                                // - contractWithEstimate.to.serviceEscrowFee,
                                             // We cannot get bank info or EUR HTLC details from this.
                                         });
                                     }

@@ -11,7 +11,7 @@
             <slot name="main"></slot>
         </div>
 
-        <MessageTransition>
+        <MessageTransition reverse>
             <div v-if="$slots.message" class="message flex-row">
                 <slot name="message"></slot>
             </div>

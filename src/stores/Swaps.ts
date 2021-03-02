@@ -94,12 +94,18 @@ export type BankInfos = {
     },
 }
 
+export type BankAccountDetailsInfos = {
+    accountName: string,
+    IBAN: string,
+}
+
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
     swapByTransaction: { [transactionHash: string]: string },
     activeSwap: ActiveSwap | null,
     userBank: BankInfos | null,
     promoBoxVisible: boolean,
+    userBankAccountDetails: BankAccountDetailsInfos | null,
 };
 
 export const useSwapsStore = createStore({
@@ -110,6 +116,7 @@ export const useSwapsStore = createStore({
         activeSwap: null,
         userBank: null,
         promoBoxVisible: false,
+        userBankAccountDetails: null,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
@@ -122,6 +129,7 @@ export const useSwapsStore = createStore({
             },
         activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
         userBank: (state): Readonly<BankInfos | null> => state.userBank,
+        userBankAccountDetails: (state): Readonly<BankAccountDetailsInfos | null> => state.userBankAccountDetails,
         promoBoxVisible: (state): Readonly<boolean> => state.promoBoxVisible,
     },
     actions: {
@@ -160,6 +168,9 @@ export const useSwapsStore = createStore({
         },
         setPromoBoxVisible(visible: boolean) {
             this.state.promoBoxVisible = visible;
+        },
+        setUserBankAccountDetails(bankAccountDetails: BankAccountDetailsInfos) {
+            this.state.userBankAccountDetails = bankAccountDetails;
         },
     },
 });

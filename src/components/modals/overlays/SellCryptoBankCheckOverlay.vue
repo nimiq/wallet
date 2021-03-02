@@ -33,6 +33,7 @@
                                 v-model="accountName"
                                 ref="$accountNameInput"
                                 :placeholder="$t('Enter account holder name')"
+                                @keydown.native="onIbanInputKeyDown"
                             />
                         </template>
 
@@ -41,6 +42,7 @@
                                 v-model="iban"
                                 ref="$ibanInput"
                                 :placeholder="$t('Enter IBAN')"
+                                @keydown.native="onIbanInputKeyDown"
                             />
                         </template>
 
@@ -107,17 +109,16 @@ export default defineComponent({
         );
 
         onMounted(async () => {
-            await context.root.$nextTick();
             if (userBank.value) {
                 currentStep.value = Step.IBAN_CHECK;
             }
         });
 
         watch(currentStep, async () => {
+            await context.root.$nextTick();
             if (currentStep.value === Step.BANK_CHECK) {
                 if ($bankCheckInput.value) $bankCheckInput.value.focus();
             } else if (currentStep.value === Step.IBAN_CHECK) {
-                await context.root.$nextTick();
                 if ($accountNameInput.value) $accountNameInput.value.focus();
             }
         });
@@ -125,6 +126,12 @@ export default defineComponent({
         function onBankSelected(bank: BankInfos) {
             context.emit('bank-selected', bank);
             currentStep.value = Step.IBAN_CHECK;
+        }
+
+        function onIbanInputKeyDown(event: KeyboardEvent) {
+            if (event.key === 'Enter' && canConfirm.value) {
+                confirm();
+            }
         }
 
         function goBack() {
@@ -156,6 +163,7 @@ export default defineComponent({
             canConfirm,
 
             onBankSelected,
+            onIbanInputKeyDown,
             goBack,
             confirm,
         };

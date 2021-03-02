@@ -119,10 +119,8 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <Tooltip v-if="swapTransaction" preferredPosition="bottom right" class="left-aligned">
-                        <ShortAddress :address="peerAddress" slot="trigger"/>
-                        {{ peerAddress }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-if="swapTransaction"
+                        :address="peerAddress" tooltipPosition="right"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS
                         && peerAddress !== constants.BANK_ADDRESS" :text="peerAddress"
                     >
@@ -133,10 +131,8 @@
                 <div class="address-info flex-column">
                     <Identicon :address="transaction.recipient"/>
                     <span class="label">{{ myLabel }}</span>
-                    <Tooltip v-if="swapData" preferredPosition="bottom left" class="right-aligned">
-                        <ShortAddress :address="transaction.recipient" slot="trigger"/>
-                        {{ transaction.recipient }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-if="swapData"
+                        :address="transaction.recipient" tooltipPosition="left"/>
                     <Copyable v-else :text="transaction.recipient">
                         <AddressDisplay :address="transaction.recipient"/>
                     </Copyable>
@@ -146,10 +142,8 @@
                 <div class="address-info flex-column">
                     <Identicon :address="transaction.sender"/>
                     <span class="label">{{ myLabel }}</span>
-                    <Tooltip v-if="swapData" preferredPosition="bottom right" class="left-aligned">
-                        <ShortAddress :address="transaction.sender" slot="trigger"/>
-                        {{ transaction.sender }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-if="swapData"
+                        :address="transaction.sender" tooltipPosition="right"/>
                     <Copyable v-else :text="transaction.sender">
                         <AddressDisplay :address="transaction.sender"/>
                     </Copyable>
@@ -171,10 +165,8 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <Tooltip v-if="swapTransaction" preferredPosition="bottom left" class="right-aligned">
-                        <ShortAddress :address="peerAddress" slot="trigger"/>
-                        {{ peerAddress }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-if="swapTransaction"
+                        :address="peerAddress" tooltipPosition="left"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS
                         && peerAddress !== constants.BANK_ADDRESS" :text="peerAddress"
                     >
@@ -338,6 +330,7 @@ import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { sendTransaction } from '../../network';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -681,6 +674,7 @@ export default defineComponent({
         SwapMediumIcon,
         ShortAddress,
         SwapFeesTooltip,
+        InteractiveShortAddress,
     },
 });
 </script>

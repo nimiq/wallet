@@ -129,6 +129,7 @@
                     <section class="amount-section">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="cryptoAmount"
+                                ref="$cryptoAmountInput"
                                 :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <span class="ticker" slot="suffix">
@@ -294,14 +295,14 @@ import {
 } from '@nimiq/hub-api';
 import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/vue';
-import { getNetworkClient } from '@/network';
-import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
-import { useNetworkStore } from '@/stores/Network';
-import { useFiatStore } from '@/stores/Fiat';
-import { useAccountStore } from '@/stores/Account';
-import { useSettingsStore, Trial } from '@/stores/Settings';
-import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
+import { getNetworkClient } from '../../network';
+import { BankAccountDetailsInfos, BankInfos, SwapState, useSwapsStore } from '../../stores/Swaps';
+import { useNetworkStore } from '../../stores/Network';
+import { useFiatStore } from '../../stores/Fiat';
+import { useAccountStore } from '../../stores/Account';
+import { useSettingsStore, Trial } from '../../stores/Settings';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
 import {
     init as initOasisApi,
     getHtlc,
@@ -310,11 +311,11 @@ import {
     SettlementStatus,
     SettlementInfo,
     DeniedReason,
-} from '@/lib/OasisApi';
-import { setupSwap } from '@/hub';
-import { getElectrumClient } from '@/electrum';
-import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
-import { estimateFees, selectOutputs } from '@/lib/BitcoinTransactionUtils';
+} from '../../lib/OasisApi';
+import { setupSwap } from '../../hub';
+import { getElectrumClient } from '../../electrum';
+import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { estimateFees, selectOutputs } from '../../lib/BitcoinTransactionUtils';
 import Modal from './Modal.vue';
 import SellCryptoBankCheckOverlay from './overlays/SellCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
@@ -344,8 +345,10 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
+        const { activeSwap: swap, userBank, setUserBank, setUserBankAccountDetails } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
+
+        const $cryptoAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
@@ -401,10 +404,12 @@ export default defineComponent({
             && !fetchingEstimate.value,
         );
 
-        onMounted(() => {
+        onMounted(async () => {
             if (!swap.value) {
                 fetchAssets();
             }
+            await context.root.$nextTick();
+            if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
         });
 
         const { exchangeRates } = useFiatStore();
@@ -467,9 +472,11 @@ export default defineComponent({
             addressListOpened.value = false;
         }
 
-        function onBankDetailsEntered(recipientBankInfo: { name: string, iban: string }) {
-            // TODO store recipientBankInfo
+        async function onBankDetailsEntered(bankAccountDetails: BankAccountDetailsInfos) {
+            setUserBankAccountDetails(bankAccountDetails);
             page.value = Pages.SETUP_BUY;
+            await context.root.$nextTick();
+            if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
         }
 
         const fiatCurrencyInfo = computed(() =>
@@ -512,7 +519,8 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     // Settlement
                     const perFee = 0
-                        || (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
+                        || (estimate.value && estimate.value.from.asset === SwapAsset.NIM
+                            && estimate.value.from.feePerUnit)
                         || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
                         || 0;
                     // 135 extra weight units for BTC HTLC settlement tx
@@ -527,7 +535,8 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.BTC) {
                     // Settlement
                     const perFee = 0
-                        || (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
+                        || (estimate.value && estimate.value.from.asset === SwapAsset.BTC
+                            && estimate.value.from.feePerUnit)
                         || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
                         || 1;
                     // 135 extra weight units for BTC HTLC settlement tx
@@ -1100,6 +1109,7 @@ export default defineComponent({
         });
 
         return {
+            $cryptoAmountInput,
             addressListOpened,
             onClose,
             onBankSelected,

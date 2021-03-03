@@ -97,7 +97,7 @@ export type BankInfos = {
 
 export type BankAccountDetailsInfos = {
     accountName: string,
-    IBAN: string,
+    iban: string,
 }
 
 export type SwapsState = {

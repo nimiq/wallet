@@ -97,7 +97,7 @@ export default defineComponent({
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(userBank.value?.name || '');
         const accountName = ref(userBankAccountDetails.value?.accountName || '');
-        const iban = ref(userBankAccountDetails.value?.IBAN || '');
+        const iban = ref(userBankAccountDetails.value?.iban || '');
 
         const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
 
@@ -119,7 +119,7 @@ export default defineComponent({
 
         watch(userBank, () => {
             accountName.value = userBankAccountDetails.value?.accountName || '';
-            iban.value = userBankAccountDetails.value?.IBAN || '';
+            iban.value = userBankAccountDetails.value?.iban || '';
         });
 
         function onBankSelected(bank: BankInfos) {
@@ -140,7 +140,7 @@ export default defineComponent({
         function confirm() {
             context.emit('details-entered', {
                 accountName: accountName.value,
-                IBAN: iban.value,
+                iban: iban.value,
             });
         }
 

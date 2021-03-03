@@ -128,7 +128,7 @@
                             <BankIconButton
                                 :bankName="userBank ? userBank.name : ''"
                                 @click="page = Pages.BANK_CHECK"/>
-                            <InteractiveShortAddress :address="userBankAccountDetails.IBAN" tooltipPosition="left"/>
+                            <InteractiveShortAddress :address="userBankAccountDetails.iban" tooltipPosition="left"/>
                         </div>
                     </section>
 

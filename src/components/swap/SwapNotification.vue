@@ -74,6 +74,7 @@ export default defineComponent({
             addFundingData,
             addSettlementData,
             userBank,
+            userBankAccountDetails,
             setPromoBoxVisible,
         } = useSwapsStore();
 
@@ -462,6 +463,7 @@ export default defineComponent({
                                 asset: SwapAsset.EUR,
                                 bankLabel: userBank.value?.name,
                                 // bankLogo?: string,
+                                iban: userBankAccountDetails.value?.iban,
                                 amount: htlc.amount,
                                 htlc: {
                                     id: htlc.id,

@@ -113,10 +113,9 @@
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
-                        <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
-                            <BankIcon/>
-                            <label>{{ userBank ? userBank.name : '' }}</label>
-                        </button>
+                        <BankIconButton
+                            :bankName="userBank ? userBank.name : ''"
+                            @click="page = Pages.BANK_CHECK"/>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
@@ -320,7 +319,6 @@ import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue'
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
-import BankIcon from '../icons/BankIcon.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
@@ -333,6 +331,7 @@ import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import BankIconButton from '../BankIconButton.vue';
 
 enum Pages {
     WELCOME,
@@ -347,7 +346,7 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
+        const { activeSwap: swap, userBank, setUserBank, userBankAccountDetails } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
 
         const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
@@ -1104,6 +1103,7 @@ export default defineComponent({
         });
 
         return {
+            $eurAmountInput,
             addressListOpened,
             onClose,
             onBankSelected,
@@ -1139,7 +1139,7 @@ export default defineComponent({
             onPaid,
             isDev,
             oasisLimitExceeded,
-            $eurAmountInput,
+            userBankAccountDetails,
         };
     },
     components: {
@@ -1153,7 +1153,6 @@ export default defineComponent({
         Identicon,
         AddressList,
         FiatConvertedAmount,
-        BankIcon,
         SwapAnimation,
         Amount,
         FlameIcon,
@@ -1168,6 +1167,7 @@ export default defineComponent({
         SwapModalFooter,
         IdenticonStack,
         InteractiveShortAddress,
+        BankIconButton,
     },
 });
 </script>
@@ -1392,7 +1392,7 @@ svg.welcome-euro-logo {
 
     .identicon-section {
         justify-content: space-around;
-        align-items: center;
+        align-items: stretch;
         align-self: stretch;
         margin-bottom: 3.5rem;
 
@@ -1408,17 +1408,6 @@ svg.welcome-euro-logo {
             }
         }
 
-        label {
-            margin-top: 1.875rem;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            cursor: inherit;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-        }
-
         .separator-wrapper {
             --height: 0.25rem;
 
@@ -1429,6 +1418,7 @@ svg.welcome-euro-logo {
 
             position: relative;
             flex-grow: 1;
+            align-self: center;
             overflow: hidden;
             mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
@@ -1447,23 +1437,6 @@ svg.welcome-euro-logo {
                     100% { transform: translateX(300%) }
                 }
             }
-        }
-    }
-
-    .bank-infos {
-        align-items: center;
-        width: 18rem;
-        border-radius: 0.75rem;
-        padding: 1rem;
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-        }
-
-        svg {
-            width: 9rem;
-            height: 9rem;
         }
     }
 

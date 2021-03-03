@@ -125,10 +125,9 @@
                             <div class="separator"></div>
                         </div>
                         <div class="flex-column">
-                            <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
-                                <BankIcon/>
-                                <label>{{ userBank ? userBank.name : '' }}</label>
-                            </button>
+                            <BankIconButton
+                                :bankName="userBank ? userBank.name : ''"
+                                @click="page = Pages.BANK_CHECK"/>
                             <InteractiveShortAddress :address="userBankAccountDetails.IBAN" tooltipPosition="left"/>
                         </div>
                     </section>
@@ -328,7 +327,7 @@ import SellCryptoBankCheckOverlay from './overlays/SellCryptoBankCheckOverlay.vu
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
-import BankIcon from '../icons/BankIcon.vue';
+import BankIconButton from '../BankIconButton.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Amount from '../Amount.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
@@ -1192,7 +1191,6 @@ export default defineComponent({
         Identicon,
         AddressList,
         FiatConvertedAmount,
-        BankIcon,
         SwapAnimation,
         Amount,
         FlameIcon,
@@ -1206,6 +1204,7 @@ export default defineComponent({
         SwapModalFooter,
         IdenticonStack,
         InteractiveShortAddress,
+        BankIconButton,
     },
 });
 </script>
@@ -1433,24 +1432,13 @@ svg.welcome-euro-logo {
             align-items: center;
 
             .identicon-stack,
-            .bank-infos {
+            .bank-icon-button {
                 padding-bottom: 4rem;
             }
 
             .interactive-short-address {
                 margin-top: -3.5rem;
             }
-        }
-
-        label {
-            margin-top: 1.875rem;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            cursor: inherit;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
 
         .separator-wrapper {
@@ -1482,28 +1470,6 @@ svg.welcome-euro-logo {
                     100% { transform: translateX(300%) }
                 }
             }
-        }
-    }
-
-    .bank-infos {
-        align-items: center;
-        width: 18rem;
-        border-radius: 0.75rem;
-        padding: 1rem;
-
-        & + .tooltip /deep/ .tooltip-box {
-            transform: translate(4rem, 2rem);
-        }
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-        }
-
-        svg {
-            height: 9rem;
-            width: auto;
-            margin-top: -.5rem;
         }
     }
 

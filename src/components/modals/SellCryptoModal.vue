@@ -406,6 +406,15 @@ export default defineComponent({
             },
         });
 
+        watch(() => {
+            const availableBalance = activeCurrency.value === CryptoCurrency.NIM
+                ? activeAddressInfo.value?.balance || 0
+                : accountBtcBalance.value;
+            if (cryptoAmount.value > availableBalance) {
+                cryptoAmount.value = availableBalance;
+            }
+        });
+
         const isDev = Config.environment === ENV_DEV;
 
         const canSign = computed(() =>

@@ -46,6 +46,7 @@ export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
     bankLogo?: string,
+    // TODO: store user IBAN?
     amount: number,
     htlc?: {
         id: string,
@@ -164,6 +165,9 @@ export const useSwapsStore = createStore({
             this.state.activeSwap = swap;
         },
         setUserBank(bank: BankInfos) {
+            if (bank.BIC !== this.state.userBank?.BIC) {
+                this.state.userBankAccountDetails = null;
+            }
             this.state.userBank = bank;
         },
         setPromoBoxVisible(visible: boolean) {

@@ -119,7 +119,9 @@
                     <section class="identicon-section flex-row">
                         <div class="flex-column">
                             <IdenticonStack @click="addressListOpened = true" />
-                            <InteractiveShortAddress :address="activeAddressInfo.address" tooltipPosition="right"/>
+                            <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
+                                :address="activeAddressInfo.address"
+                                tooltipPosition="right"/>
                         </div>
                         <div class="separator-wrapper">
                             <div class="separator"></div>

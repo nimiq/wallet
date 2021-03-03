@@ -255,11 +255,6 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ .small-page {
-        // Regular Modal size (iOS scrolling inside the TradeModal does not work without a fixed height)
-        height: unset !important;
-    }
-
     .page-body {
         flex-direction: column;
         mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));

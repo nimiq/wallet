@@ -48,7 +48,7 @@ export default defineComponent({
     position: absolute;
 
     /deep/ .small-page {
-        height: unset;
+        min-height: unset;
     }
 }
 

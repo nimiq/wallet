@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, LabelInput, AlertTriangleIcon } from '@nimiq/vue-components';
 import IBAN from 'iban';
 import { BankInfos, useSwapsStore } from '../../../stores/Swaps';
@@ -108,12 +108,6 @@ export default defineComponent({
                 && !isIbanInvalid.value,
         );
 
-        onMounted(async () => {
-            if (userBank.value) {
-                currentStep.value = Step.IBAN_CHECK;
-            }
-        });
-
         watch(currentStep, async () => {
             await context.root.$nextTick();
             if (currentStep.value === Step.BANK_CHECK) {
@@ -121,6 +115,11 @@ export default defineComponent({
             } else if (currentStep.value === Step.IBAN_CHECK) {
                 if ($accountNameInput.value) $accountNameInput.value.focus();
             }
+        });
+
+        watch(userBank, () => {
+            accountName.value = userBankAccountDetails.value?.accountName || '';
+            iban.value = userBankAccountDetails.value?.IBAN || '';
         });
 
         function onBankSelected(bank: BankInfos) {

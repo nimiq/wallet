@@ -64,11 +64,11 @@ export default defineComponent({
 }
 
 .tooltip.right /deep/ .tooltip-box {
-    transform: translate(-9.25rem, 2rem);
+    transform: translate(-20%, 2rem);
 }
 
 .tooltip.left /deep/ .tooltip-box {
-    transform: translate(9.25rem, 2rem);
+    transform: translate(20%, 2rem);
 }
 
 .short-address {

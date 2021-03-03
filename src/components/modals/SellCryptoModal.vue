@@ -367,7 +367,7 @@ export default defineComponent({
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const estimate = ref<Estimate>(null);
-        const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref(userBank.value && userBankAccountDetails.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const assets = ref<AssetList>(null);
 

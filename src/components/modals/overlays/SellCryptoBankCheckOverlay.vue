@@ -88,16 +88,16 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { userBank } = useSwapsStore();
+        const { userBank, userBankAccountDetails } = useSwapsStore();
 
         const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
         const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
         const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
-        const bankName = ref('');
-        const accountName = ref('');
-        const iban = ref('');
+        const bankName = ref(userBank.value?.name || '');
+        const accountName = ref(userBankAccountDetails.value?.accountName || '');
+        const iban = ref(userBankAccountDetails.value?.IBAN || '');
 
         const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
 

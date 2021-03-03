@@ -46,7 +46,7 @@ export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
     bankLogo?: string,
-    // TODO: store user IBAN?
+    iban?: string,
     amount: number,
     htlc?: {
         id: string,
@@ -116,8 +116,8 @@ export const useSwapsStore = createStore({
         swapByTransaction: {},
         activeSwap: null,
         userBank: null,
-        promoBoxVisible: false,
         userBankAccountDetails: null,
+        promoBoxVisible: false,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
@@ -170,11 +170,11 @@ export const useSwapsStore = createStore({
             }
             this.state.userBank = bank;
         },
-        setPromoBoxVisible(visible: boolean) {
-            this.state.promoBoxVisible = visible;
-        },
         setUserBankAccountDetails(bankAccountDetails: BankAccountDetailsInfos) {
             this.state.userBankAccountDetails = bankAccountDetails;
+        },
+        setPromoBoxVisible(visible: boolean) {
+            this.state.promoBoxVisible = visible;
         },
     },
 });

@@ -1469,6 +1469,7 @@ svg.welcome-euro-logo {
 
     .amount-section {
         text-align: center;
+        margin: 3rem 0;
 
         .primary-amount {
             align-items: flex-end;

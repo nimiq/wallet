@@ -124,10 +124,13 @@
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
-                        <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
-                            <BankIcon/>
-                            <label>{{ userBank ? userBank.name : '' }}</label>
-                        </button>
+                        <div class="flex-column">
+                            <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
+                                <BankIcon/>
+                                <label>{{ userBank ? userBank.name : '' }}</label>
+                            </button>
+                            <InteractiveShortAddress :address="userBankAccountDetails.IBAN" tooltipPosition="left"/>
+                        </div>
                     </section>
 
                     <section class="amount-section">
@@ -351,8 +354,14 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { activeSwap: swap, userBank, setUserBank, setUserBankAccountDetails } = useSwapsStore();
         const { btcUnit } = useSettingsStore();
+        const {
+            activeSwap: swap,
+            userBank,
+            setUserBank,
+            setUserBankAccountDetails,
+            userBankAccountDetails,
+        } = useSwapsStore();
 
         const $cryptoAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
@@ -1169,6 +1178,7 @@ export default defineComponent({
             Trial,
             oasisLimitExceeded,
             onBankDetailsEntered,
+            userBankAccountDetails,
         };
     },
     components: {
@@ -1416,13 +1426,14 @@ svg.welcome-euro-logo {
 
     .identicon-section {
         justify-content: space-around;
-        align-items: center;
+        align-items: stretch;
         align-self: stretch;
 
         & > .flex-column {
             align-items: center;
 
-            .identicon-stack {
+            .identicon-stack,
+            .bank-infos {
                 padding-bottom: 4rem;
             }
 
@@ -1452,6 +1463,7 @@ svg.welcome-euro-logo {
 
             position: relative;
             flex-grow: 1;
+            align-self: center;
             overflow: hidden;
             mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
@@ -1479,14 +1491,19 @@ svg.welcome-euro-logo {
         border-radius: 0.75rem;
         padding: 1rem;
 
+        & + .tooltip /deep/ .tooltip-box {
+            transform: translate(4rem, 2rem);
+        }
+
         &:hover,
         &:focus {
             background: var(--nimiq-highlight-bg);
         }
 
         svg {
-            width: 9rem;
             height: 9rem;
+            width: auto;
+            margin-top: -.5rem;
         }
     }
 

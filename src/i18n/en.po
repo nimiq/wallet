@@ -373,13 +373,13 @@ msgid "By adding a transaction fee, you can influence how fast your transaction 
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:165
-#: src/components/modals/SellCryptoModal.vue:173
+#: src/components/modals/SellCryptoModal.vue:188
 #: src/components/swap/SwapModal.vue:159
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:187
+#: src/components/modals/SellCryptoModal.vue:202
 #: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -432,7 +432,7 @@ msgid "Choose a Recipient"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:248
-#: src/components/modals/SellCryptoModal.vue:260
+#: src/components/modals/SellCryptoModal.vue:275
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -839,7 +839,7 @@ msgstr ""
 msgid "IBAN"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:187
+#: src/components/swap/SwapNotification.vue:188
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1041,7 +1041,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:186
+#: src/components/swap/SwapNotification.vue:187
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1279,9 +1279,9 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:171
-#: src/components/modals/SellCryptoModal.vue:176
-#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/SellCryptoModal.vue:186
+#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/SellCryptoModal.vue:205
 #: src/components/modals/SellCryptoModal.vue:44
 msgid "Sell Crypto"
 msgstr ""
@@ -1297,6 +1297,7 @@ msgstr ""
 
 #: src/components/AmountMenu.vue:13
 #: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/SellCryptoModal.vue:156
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr ""
@@ -1500,13 +1501,13 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:712
-#: src/components/modals/SellCryptoModal.vue:753
+#: src/components/modals/SellCryptoModal.vue:768
 #: src/components/swap/SwapModal.vue:630
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:717
-#: src/components/modals/SellCryptoModal.vue:758
+#: src/components/modals/SellCryptoModal.vue:773
 msgid "The fees determine the minimum amount."
 msgstr ""
 

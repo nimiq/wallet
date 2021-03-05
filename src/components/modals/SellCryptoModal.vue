@@ -39,7 +39,7 @@
                 </button>
             </PageBody>
 
-            <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
+            <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column" @click="amountMenuOpened = false">
                 <PageHeader :backArrow="userBank ? false : true" @back="goBack">
                     {{ $t('Sell Crypto') }}
                     <div slot="more" class="pills flex-row">
@@ -140,11 +140,22 @@
                                 ref="$cryptoAmountInput"
                                 :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
-                                <span class="ticker" slot="suffix">
-                                    {{ activeCurrency === CryptoCurrency.BTC
-                                        ? btcUnit.ticker
-                                        : activeCurrency.toUpperCase() }}
-                                </span>
+                                <div class="amount-menu ticker" slot="suffix">
+                                    <button class="reset button flex-row"
+                                        @click.stop="amountMenuOpened = !amountMenuOpened"
+                                    >{{
+                                        activeCurrency === CryptoCurrency.BTC
+                                            ? btcUnit.ticker
+                                            : activeCurrency.toUpperCase()
+                                    }}</button>
+                                    <div v-if="amountMenuOpened" class="menu flex-column">
+                                        <button class="reset flex-row" @click="sendMax">
+                                            <!-- eslint-disable-next-line max-len -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25"/><path class="cls-1" d="M12.25,9.3l-4-4-4,4"/><line class="cls-1" x1="3.25" y1="1.25" x2="13.25" y2="1.25"/></g></svg>
+                                            {{ $t('Send all') }}
+                                        </button>
+                                    </div>
+                                </div>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount flex-row">
@@ -1149,6 +1160,28 @@ export default defineComponent({
             return deniedSettlementInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
         });
 
+        const amountMenuOpened = ref(false);
+
+        function sendMax() {
+            if (activeCurrency.value === CryptoCurrency.NIM) {
+                if (!currentLimitCrypto.value) {
+                    cryptoAmount.value = activeAddressInfo.value?.balance || 0;
+                } else if (currentLimitCrypto.value < (activeAddressInfo.value?.balance || 0)) {
+                    cryptoAmount.value = currentLimitCrypto.value;
+                } else {
+                    cryptoAmount.value = activeAddressInfo.value?.balance || 0;
+                }
+            } else if (activeCurrency.value === CryptoCurrency.BTC) {
+                if (!currentLimitCrypto.value) {
+                    cryptoAmount.value = accountBtcBalance.value;
+                } else if (currentLimitCrypto.value < accountBtcBalance.value) {
+                    cryptoAmount.value = currentLimitCrypto.value;
+                } else {
+                    cryptoAmount.value = accountBtcBalance.value;
+                }
+            }
+        }
+
         return {
             $cryptoAmountInput,
             addressListOpened,
@@ -1189,6 +1222,8 @@ export default defineComponent({
             oasisLimitExceeded,
             onBankDetailsEntered,
             userBankAccountDetails,
+            amountMenuOpened,
+            sendMax,
         };
     },
     components: {
@@ -1221,6 +1256,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/mixins.scss';
+
 .modal {
     &.wider-overlay /deep/ .overlay {
         width: 63.5rem;
@@ -1507,6 +1544,68 @@ svg.welcome-euro-logo {
                     font-weight: 600;
                     font-size: 4rem !important;
                     padding: .5rem 1rem;
+                }
+            }
+
+            .amount-menu {
+                .button {
+                    align-items: center;
+                    cursor: pointer;
+                    transition: color var(--attr-duration) var(--nimiq-ease);
+
+                    &::after {
+                        content: '';
+                        display: block;
+                        width: 0;
+                        height: 0;
+                        border: 1rem solid transparent;
+                        border-width: 1rem 0.625rem;
+                        border-top-color: inherit;
+                        margin-left: 0.75rem;
+                        margin-bottom: -1.5rem;
+                        opacity: 0.4;
+
+                        transition: opacity var(--attr-duration) var(--nimiq-ease);
+                    }
+
+                    &:hover,
+                    &:active,
+                    &:focus-within {
+                        &::after {
+                            opacity: 0.7;
+                        }
+                    }
+                }
+
+                .menu {
+                    position: absolute;
+                    z-index: 1;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    background: var(--nimiq-blue-bg);
+                    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
+
+                    button {
+                        color: white;
+                        opacity: 0.7;
+                        font-size: var(--body-size);
+                        line-height: 1.5;
+                        font-weight: 600;
+                        padding: 0.5rem;
+                        align-items: center;
+
+                        transition: opacity var(--attr-duration) var(--nimiq-ease);
+
+                        svg {
+                            width: 2rem;
+                            margin-right: 1rem;
+                        }
+
+                        &:hover,
+                        &:focus {
+                            opacity: 1 !important;
+                        }
+                    }
                 }
             }
         }

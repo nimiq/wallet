@@ -1154,6 +1154,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:211
+msgid "Processing payout"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
 msgid "Purpose"
 msgstr ""

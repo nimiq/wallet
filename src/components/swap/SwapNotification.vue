@@ -1,6 +1,7 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
-        <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
+        <button
+            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,

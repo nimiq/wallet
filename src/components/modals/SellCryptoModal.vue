@@ -988,8 +988,24 @@ export default defineComponent({
 
             const { setActiveSwap, setSwap } = useSwapsStore();
 
+            let nimHtlcAddress: string | undefined;
+            if (signedTransactions.nim) {
+                nimHtlcAddress = signedTransactions.nim.raw.recipient;
+            }
+
             setActiveSwap({
                 ...confirmedSwap,
+                // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-EUR swaps
+                ...(nimHtlcAddress ? { contracts: {
+                    ...confirmedSwap.contracts,
+                    [SwapAsset.NIM]: {
+                        ...confirmedSwap.contracts[SwapAsset.NIM]!,
+                        htlc: {
+                            ...confirmedSwap.contracts[SwapAsset.NIM]!.htlc,
+                            address: nimHtlcAddress,
+                        },
+                    },
+                } } : {}),
                 state: SwapState.SIGN_SWAP,
                 stateEnteredAt: Date.now(),
                 watchtowerNotified: false,

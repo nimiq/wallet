@@ -865,7 +865,7 @@ export default defineComponent({
                     // Transactions to an HTLC are 48 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
                         accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
-                    let changeAddress: string;
+                    let changeAddress: string | undefined;
                     if (requiredInputs.changeAmount > 0) {
                         const { nextChangeAddress } = useBtcAddressStore();
                         if (!nextChangeAddress.value) {
@@ -1046,15 +1046,15 @@ export default defineComponent({
             });
 
             if (Config.fastspot.watchtowerEndpoint) {
-                const settlementSerializedTx = swap.value!.settlementSerializedTx!;
+                let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
-                // // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
-                // if (swap.value!.to.asset === 'NIM') {
-                //     settlementSerializedTx = settlementSerializedTx.replace(
-                //         '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
-                //         `${swap.value!.hash}`,
-                //     );
-                // }
+                // In case of a OASIS settlement instruction, we need to wrap it into a JSON object
+                if (swap.value!.to.asset === 'EUR') {
+                    settlementSerializedTx = JSON.stringify({
+                        preimage: '0000000000000000000000000000000000000000000000000000000000000000',
+                        settlement: settlementSerializedTx,
+                    });
+                }
 
                 // Send redeem transaction to watchtower
                 fetch(`${Config.fastspot.watchtowerEndpoint}/`, {

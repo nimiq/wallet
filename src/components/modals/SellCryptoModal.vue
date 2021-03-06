@@ -4,7 +4,7 @@
         :showOverlay="page === Pages.BANK_CHECK
             || addressListOpened
             || !!swap
-            || (!isDev && !trials.includes(Trial.BUY_WITH_EURO))"
+            || (!isDev && !trials.includes(Trial.SELL_TO_EURO))"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <transition duration="650">
@@ -240,7 +240,7 @@
             />
         </div>
 
-        <div v-else-if="!isDev && !trials.includes(Trial.BUY_WITH_EURO)"
+        <div v-else-if="!isDev && !trials.includes(Trial.SELL_TO_EURO)"
             slot="overlay" class="page flex-column closed-beta"
         >
             <!-- eslint-disable max-len -->

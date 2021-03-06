@@ -449,7 +449,7 @@ export default defineComponent({
                     }
                     return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
                 }
-                if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
+                if (swapData.value.asset === SwapAsset.EUR) return [swapData.value.iban || ''];
             }
 
             return (isIncoming.value

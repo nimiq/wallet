@@ -119,11 +119,9 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <InteractiveShortAddress v-if="swapTransaction"
+                    <InteractiveShortAddress v-if="swapData && peerAddress"
                         :address="peerAddress" tooltipPosition="right"/>
-                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS
-                        && peerAddress !== constants.BANK_ADDRESS" :text="peerAddress"
-                    >
+                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
                 </div>
@@ -138,6 +136,7 @@
                     </Copyable>
                 </div>
             </div>
+
             <div v-else class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <Identicon :address="transaction.sender"/>
@@ -165,11 +164,9 @@
                         @input="setContact(peerAddress, $event.target.value)"
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
-                    <InteractiveShortAddress v-if="swapTransaction"
+                    <InteractiveShortAddress v-if="swapData && peerAddress"
                         :address="peerAddress" tooltipPosition="left"/>
-                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS
-                        && peerAddress !== constants.BANK_ADDRESS" :text="peerAddress"
-                    >
+                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
                     <button
@@ -321,7 +318,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
@@ -341,7 +338,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
+        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
         const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
 
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
@@ -483,7 +480,7 @@ export default defineComponent({
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
-                    return constants.BANK_ADDRESS;
+                    return swapData.value.iban || '';
                 }
             }
 

@@ -30,7 +30,7 @@
             >{{ $t('Buy') }}</button>
 
             <button class="nq-button-s inverse"
-                @click="$router.push(isDev || trials.includes(Trial.SELL_TO_EUR)
+                @click="$router.push(isDev || trials.includes(Trial.SELL_TO_EURO)
                     ? '/sell-crypto?sidebar=true' : '/trade?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Sell') }}</button>

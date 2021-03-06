@@ -194,19 +194,29 @@
         </div>
 
         <div class="nq-card-footer">
-            <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">1/5 {{ $t('Setting up swap') }}</div>
+            <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">
+                1/5 {{ $t('Setting up swap') }}
+            </div>
             <div v-if="state === SwapState.AWAIT_INCOMING" class="nq-h2">
                 2/5 {{ $t('Locking up {asset}', {asset: toAsset}) }}
             </div>
             <div v-if="state === SwapState.CREATE_OUTGOING" class="nq-h2">
                 3/5 {{ $t('Locking up {asset}', {asset: fromAsset}) }}
             </div>
-            <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">4/5 {{ $t('Awaiting swap secret') }}</div>
-            <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
-            <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
+            <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">
+                4/5 {{ $t('Awaiting swap secret') }}
+            </div>
+            <div v-if="state === SwapState.SETTLE_INCOMING || state === SwapState.COMPLETE" class="nq-h2">
+                <template v-if="toAsset === SwapAsset.EUR">
+                    5/5 {{ $t('Processing payout') }}
+                </template>
+                <template v-else>
+                    5/5 {{ $t('Finalizing swap') }}
+                </template>
+            </div>
 
             <MessageTransition>
-                <template v-if="manualFunding && state <= SwapState.CREATE_OUTGOING">
+                <template v-if="fromAsset === SwapAsset.EUR && state <= SwapState.CREATE_OUTGOING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-light-blue">{{
                         $t('You will finalize your purchase by bank transfer.')
@@ -215,6 +225,16 @@
                         $t('This usually takes {time} seconds.', {
                             time: toAsset === SwapAsset.NIM ? '30-60' : '10',
                         })
+                    }}</div>
+                </template>
+
+                <template v-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
+                    <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
+                        class="dont-close-wallet-notice nq-orange">{{
+                        $t('Don\'t close your wallet until the swap is complete!')
+                    }}</div>
+                    <div v-else class="dont-close-wallet-notice nq-gray">{{
+                        $t('This usually takes {time} seconds.', { time: '30-60' })
                     }}</div>
                 </template>
 
@@ -869,6 +889,16 @@ export default defineComponent({
         .spinner {
             transform: rotate(-32deg); // Position of the puzzle piece holes
         }
+
+        .right.eur {
+            .lines {
+                opacity: 0;
+            }
+
+            .fill {
+                animation: pulsate-opaque 1.5s ease-out infinite;
+            }
+        }
     }
 
     &.settle-incoming,
@@ -932,6 +962,12 @@ export default defineComponent({
     0% { opacity: .25; }
     50% { opacity: .5; }
     100% { opacity: .25; }
+}
+
+@keyframes pulsate-opaque {
+    0% { opacity: 1; }
+    50% { opacity: .5; }
+    100% { opacity: 1; }
 }
 
 @keyframes strokeColorChange {

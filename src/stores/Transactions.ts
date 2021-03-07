@@ -32,10 +32,10 @@ export const useTransactionsStore = createStore({
         // activeAccount: state => state.accounts[state.activeAccountId],
     },
     actions: {
-        async addTransactions(txs: Transaction[]) {
+        // Note: this method should not be async to avoid race conditions between parallel calls. Otherwise an older
+        // transaction can overwrite its updated version.
+        addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
-
-            const newTxs: { [hash: string]: Transaction } = {};
 
             // re-apply known fiatValue and relatedTransactionHash
             for (const tx of txs) {
@@ -53,11 +53,6 @@ export const useTransactionsStore = createStore({
             detectProxyTransactions(txs, this.state.transactions);
 
             for (const plain of txs) {
-                newTxs[plain.transactionHash] = Object.assign(
-                    this.state.transactions[plain.transactionHash] || plain,
-                    plain,
-                );
-
                 // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
                     // HTLC Creation
@@ -83,34 +78,38 @@ export const useTransactionsStore = createStore({
                     }
                     // HTLC Refunding
                     if ('creator' in plain.proof) {
-                        // Find funding transaction
-                        const selector = (tx: Transaction) => tx.recipient === plain.sender && 'hashRoot' in tx.data;
+                        // async sub call to keep the main method synchronous to avoid race conditions and to avoid
+                        // await in loop (slow sequential processing).
+                        (async () => {
+                            // Find funding transaction
+                            const selector = (tx: Transaction) => tx.recipient === plain.sender
+                                && 'hashRoot' in tx.data;
 
-                        // First search known transactions
-                        let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
+                            // First search known transactions
+                            let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
 
-                        // Then get funding tx from the blockchain
-                        if (!fundingTx) {
-                            const client = await getNetworkClient(); // eslint-disable-line no-await-in-loop
-                            // eslint-disable-next-line no-await-in-loop
-                            const chainTxs = await client.getTransactionsByAddress(plain.sender);
-                            fundingTx = chainTxs.find(selector);
-                        }
+                            // Then get funding tx from the blockchain
+                            if (!fundingTx) {
+                                const client = await getNetworkClient();
+                                const chainTxs = await client.getTransactionsByAddress(plain.sender);
+                                fundingTx = chainTxs.find(selector);
+                            }
 
-                        if (fundingTx) {
-                            const fundingData = fundingTx.data as any as {
-                                sender: string,
-                                recipient: string,
-                                hashAlgorithm: string,
-                                hashRoot: string,
-                                hashCount: number,
-                                timeout: number,
-                            };
-                            useSwapsStore().addSettlementData(fundingData.hashRoot, {
-                                asset: SwapAsset.NIM,
-                                transactionHash: plain.transactionHash,
-                            });
-                        }
+                            if (fundingTx) {
+                                const fundingData = fundingTx.data as any as {
+                                    sender: string,
+                                    recipient: string,
+                                    hashAlgorithm: string,
+                                    hashRoot: string,
+                                    hashCount: number,
+                                    timeout: number,
+                                };
+                                useSwapsStore().addSettlementData(fundingData.hashRoot, {
+                                    asset: SwapAsset.NIM,
+                                    transactionHash: plain.transactionHash,
+                                });
+                            }
+                        })();
                     }
                     // HTLC Settlement
                     if ('hashRoot' in plain.proof) {
@@ -146,11 +145,18 @@ export const useTransactionsStore = createStore({
                 }
             }
 
-            // Need to re-assign the whole object in Vue 2 for change detection.
+            // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.
             this.state.transactions = {
                 ...this.state.transactions,
-                ...newTxs,
+                ...txs.reduce((newOrUpdatedTxs, tx) => {
+                    newOrUpdatedTxs[tx.transactionHash] = Object.assign(
+                        // Get the newest transaction from the store in case it was updated via setRelatedTransaction
+                        this.state.transactions[tx.transactionHash] || tx,
+                        tx,
+                    );
+                    return newOrUpdatedTxs;
+                }, {} as { [hash: string]: Transaction }),
             };
 
             this.calculateFiatAmounts();

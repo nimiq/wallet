@@ -1228,7 +1228,7 @@ msgstr "Gelieve over te maken"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
 msgid "Purpose"
-msgstr ""
+msgstr "Doel"
 
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
@@ -1609,7 +1609,7 @@ msgstr "Het tarief kan veranderen afhankelijk van het swap volume."
 
 #: src/components/modals/SendModal.vue:96
 msgid "The sender and recipient cannot be identical."
-msgstr ""
+msgstr "De afzender en ontvanger kunnen niet identiek zijn."
 
 #: src/components/swap/SwapAnimation.vue:14
 msgid "The Swap expired"

@@ -461,7 +461,7 @@ msgstr "Cashlink en provenance de {address}"
 
 #: src/components/modals/TransactionModal.vue:51
 msgid "Cashlink to {address}"
-msgstr "Cashlink à destination de {address}"
+msgstr "Cashlink vers {address}"
 
 #: src/components/AccountMenu.vue:50
 msgid "Change password"
@@ -1720,7 +1720,7 @@ msgstr "Transaction depuis {address}"
 #: src/components/modals/BtcTransactionModal.vue:48
 #: src/components/modals/TransactionModal.vue:67
 msgid "Transaction to {address}"
-msgstr "Transaction à destination de {address}"
+msgstr "Transaction vers {address}"
 
 #: src/components/modals/BtcSendModal.vue:129
 msgid "Transactions take >10 min. due to Bitcoin’s block time."

@@ -2,10 +2,6 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
-msgid "...now your details"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -673,6 +669,10 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
+msgid "Enter your bank details"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:248
 msgid "Error:"
 msgstr ""
@@ -888,7 +888,6 @@ msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
 msgid "Is your bank eligible?"
 msgstr ""
 
@@ -1746,6 +1745,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
+msgstr ""
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
+msgid "What is your bank called?"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:9

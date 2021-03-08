@@ -3,10 +3,10 @@
         <PageHeader :backArrow="currentStep === Step.IBAN_CHECK" @back="goBack">
             <MessageTransition :reverse="currentStep === Step.BANK_CHECK">
                 <template v-if="currentStep === Step.BANK_CHECK">
-                    {{ $t('Is your bank eligible?') }}
+                    {{ $t('What is your bank called?') }}
                 </template>
                 <template v-else>
-                    {{ $t('...now your details') }}
+                    {{ $t('Enter your bank details') }}
                 </template>
             </MessageTransition>
             <div slot="more" class="header-notice">

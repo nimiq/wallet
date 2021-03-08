@@ -2,7 +2,7 @@
     <Modal class="release-notes-modal">
         <PageHeader>Release Notes</PageHeader>
         <PageBody>
-            <span v-if="!releases">Loading...</span>
+            <div v-if="!releases" class="nq-label flex-column">{{ $t('Loading...') }}</div>
 
             <details
                 v-for="(release, index) of releases" :key="`${release.app}-${release.version}`"
@@ -56,11 +56,59 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/mixins.scss';
+
 .modal /deep/ .small-page {
     width: 65rem !important;
+    padding-bottom: 1rem;
+}
+
+.page-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0;
+    max-height: 58rem;
+
+    @extend %custom-scrollbar;
+}
+
+.nq-label {
+    text-align: center;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+details {
+    margin-bottom: 1rem;
+}
+
+details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1rem 2rem 1rem 1.75rem;
+    border-radius: 0.5rem;
+    color: var(--text-70);
+}
+
+details[open] summary,
+details summary:hover,
+details summary:focus-visible {
+    background: var(--nimiq-highlight-bg);
+    color: var(--text-100);
+}
+
+details[open] summary {
+    border-radius: 0.5rem 0.5rem 0 0;
 }
 
 details p {
     white-space: pre-line;
+    padding: 2rem;
+    margin: 0;
+    background: var(--nimiq-highlight-bg);
+    border-radius: 0 0 0.5rem 0.5rem;
+    color: var(--text-80);
+    line-height: 1.5;
 }
 </style>

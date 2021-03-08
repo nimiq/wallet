@@ -923,6 +923,10 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
+#: src/components/modals/ReleaseNotesModal.vue:5
+msgid "Loading..."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:199
 #: src/components/swap/SwapAnimation.vue:202
 msgid "Locking up {asset}"

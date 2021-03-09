@@ -37,10 +37,14 @@ export const useTransactionsStore = createStore({
         addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
-            // re-apply known fiatValue and relatedTransactionHash
+            // re-apply original timestamp and known fiatValue and relatedTransactionHash
             for (const tx of txs) {
                 const knownTx = this.state.transactions[tx.transactionHash];
                 if (!knownTx) continue;
+                if (knownTx.timestamp) {
+                    // Keep original timestamp instead of timestamp at confirmation after 10 blocks.
+                    tx.timestamp = knownTx.timestamp;
+                }
                 if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
                     tx.relatedTransactionHash = knownTx.relatedTransactionHash;
                 }

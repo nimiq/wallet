@@ -458,39 +458,13 @@ export default defineComponent({
             nimAddress: activeAddress.value!,
         });
 
-        // Re-run limit calculation when address changes
-        watch([activeCurrency, activeAddress], ([currency, address]) => {
-            if (currency === CryptoCurrency.NIM) {
-                limitsNimAddress.value = address || undefined;
-            } else {
-                limitsNimAddress.value = undefined;
+        watch(() => {
+            const availableBalance = activeCurrency.value === CryptoCurrency.NIM
+                ? activeAddressInfo.value?.balance || 0
+                : accountBtcBalance.value;
+            if (cryptoAmount.value > availableBalance) {
+                cryptoAmount.value = availableBalance;
             }
-        }, { lazy: true });
-
-        // Re-run limit calculation when exchange rates change
-        watch(exchangeRates, () => {
-            if (limits.value) recalculateLimits();
-        }, { lazy: true, deep: true });
-
-        const currentLimitFiat = computed(() => {
-            if (!limits.value) return null;
-
-            const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-            if (!nimRate) return null;
-
-            return Math.floor((limits.value.current.luna / 1e5) * nimRate);
-        });
-
-        const currentLimitCrypto = computed(() => {
-            if (!currentLimitFiat.value) return null;
-
-            const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
-            if (!rate) return null;
-
-            return capDecimals(
-                (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
-                activeCurrency.value.toUpperCase() as SwapAsset,
-            );
         });
 
         async function fetchAssets() {

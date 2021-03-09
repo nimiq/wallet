@@ -422,28 +422,6 @@ export default defineComponent({
             nimAddress: activeAddress.value!,
         });
 
-        // Re-run limit calculation when address changes
-        watch([activeCurrency, activeAddress], ([currency, address]) => {
-            if (currency === CryptoCurrency.NIM) {
-                limitsNimAddress.value = address || undefined;
-            } else {
-                limitsNimAddress.value = undefined;
-            }
-        }, { lazy: true });
-
-        // Re-run limit calculation when exchange rates change
-        watch(exchangeRates, () => {
-            if (limits.value) recalculateLimits();
-        }, { lazy: true, deep: true });
-
-        const currentLimitFiat = computed(() => {
-            if (!limits.value) return null;
-
-            const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-            if (!nimRate) return null;
-
-            return Math.floor((limits.value.current.luna / 1e5) * nimRate);
-        });
 
         const currentLimitCrypto = computed(() => {
             if (!currentLimitFiat.value) return null;

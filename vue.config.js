@@ -5,6 +5,8 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
+const { ESBuildPlugin } = require('esbuild-loader')
+
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
 if (!buildName) {
     throw new Error('Please specify the build config with the `build` environment variable');
@@ -28,6 +30,7 @@ console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 module.exports = {
     configureWebpack: {
         plugins: [
+            new ESBuildPlugin(),
             new PoLoaderOptimizer(),
             new webpack.DefinePlugin({
                 'process.env': {
@@ -96,26 +99,33 @@ module.exports = {
             .use('eslint-loader')
                 .loader('eslint-loader')
                 .tap(options => {
-                    options.emitWarning = process.env.NODE_ENV === 'production' ? false : true;
+                    options.emitWarning = process.env.NODE_ENV !== 'production';
                     return options;
                 });
 
         config.module
             .rule('po')
-                .test(/\.pot?$/)
-                    .use('po-loader')
-                        .loader('webpack-i18n-tools')
-                        .end()
-                .end();
+            .test(/\.pot?$/)
+            .use('po-loader')
+                .loader('webpack-i18n-tools')
+
+        // const tsRule = config.module.rule('ts');
+        // tsRule.uses.clear();
 
         config.module
             .rule('ts')
-            .use('ts-loader')
-                .loader('ts-loader')
-                .tap(options => {
-                    options.configFile = `tsconfig.${buildName}.json`
+            .uses
+                .clear()
+                .end()
+            .use('esbuild-loader')
+                .loader('esbuild-loader')
+                .tap((options = {}) => {
+                    options.loader = 'ts'
+                    options.target = 'es2015'
+                    options.tsconfigRaw = require(`./tsconfig.${buildName}.json`)
+                    options.minify = process.env.NODE_ENV === 'production'
                     return options
-                });
+                })
     },
     pwa: {
         name: 'Nimiq Wallet',

@@ -65,6 +65,7 @@
     "buffer": "5.6.0",
     "common-shakeify": "^0.6.2",
     "copy-webpack-plugin": "^5.1.1",
+    "esbuild-loader": "^2.9.2",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-vue": "^6.2.2",

@@ -24,11 +24,6 @@ export default defineComponent({
         let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
-        // // Dark Mode
-        // text = () => context.root.$t('View your Wallet in Dark Mode!');
-        // cta = () => context.root.$t('Check it out');
-        // action = () => context.root.$router.push('/settings');
-
         text = () => context.root.$t('Buy NIM & BTC with OASIS!');
         cta = () => context.root.$t('Try it now');
         action = () => context.root.$router.push('buy-crypto');

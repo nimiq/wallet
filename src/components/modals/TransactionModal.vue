@@ -687,7 +687,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .page-header {
-    /deep/ .nq-h1 {
+    ::v-deep .nq-h1 {
         margin-left: 2rem;
         margin-right: 2rem;
         max-width: calc(100% - 4rem);
@@ -707,7 +707,7 @@ export default defineComponent({
             display: block;
         }
 
-        /deep/ .circle-spinner,
+        ::v-deep .circle-spinner,
         &.failed svg {
             margin-right: 1rem;
         }
@@ -717,7 +717,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
 
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             align-self: center;
         }
     }
@@ -874,7 +874,7 @@ export default defineComponent({
     transition: opacity .3s var(--nimiq-ease);
 }
 
-.address-display /deep/ .chunk {
+.address-display ::v-deep .chunk {
     margin: 0.5rem 0;
 }
 
@@ -901,7 +901,7 @@ export default defineComponent({
         line-height: 1;
         margin-bottom: 0.5rem;
 
-        /deep/ .currency {
+        ::v-deep .currency {
             font-size: 0.5em;
             font-weight: bold;
             margin-right: -1.9em;
@@ -936,7 +936,7 @@ export default defineComponent({
         line-height: 1;
 
         .tooltip {
-            /deep/ .trigger {
+            ::v-deep .trigger {
                 .fiat-amount {
                     transition: color 0.2s var(--nimiq-ease);
                 }
@@ -952,14 +952,14 @@ export default defineComponent({
                 }
             }
 
-            /deep/ .tooltip-box {
+            ::v-deep .tooltip-box {
                 white-space: nowrap;
                 line-height: 1;
                 padding: 1rem;
                 transform: translateY(-1.5rem);
             }
 
-            /deep/ [value-mask]::after{
+            ::v-deep [value-mask]::after{
                 margin-right: 0;
             }
         }
@@ -1010,7 +1010,7 @@ export default defineComponent({
     left: 2rem;
     top: 2rem;
 
-    /deep/ .trigger {
+    ::v-deep .trigger {
         color: rgba(31, 35, 72, 0.25);
 
         transition: color 0.3s var(--nimiq-ease);
@@ -1032,7 +1032,7 @@ export default defineComponent({
         }
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         font-size: var(--small-size);
         white-space: nowrap;
         line-height: 1.3;
@@ -1057,7 +1057,7 @@ export default defineComponent({
     }
 }
 
-.address-info .tooltip /deep/ {
+.address-info .tooltip ::v-deep {
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -1087,11 +1087,11 @@ export default defineComponent({
     }
 }
 
-.tooltip.left-aligned /deep/ .tooltip-box {
+.tooltip.left-aligned ::v-deep .tooltip-box {
     transform: translate(-9.25rem, 2rem);
 }
 
-.tooltip.right-aligned /deep/ .tooltip-box {
+.tooltip.right-aligned ::v-deep .tooltip-box {
     transform: translate(9.25rem, 2rem);
 }
 
@@ -1103,16 +1103,16 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
 
-        &.inline-header /deep/ .nq-h1 {
+        &.inline-header ::v-deep .nq-h1 {
             align-self: unset;
         }
 
         &:not(.inline-header) {
-            /deep/ .nq-h1 {
+            ::v-deep .nq-h1 {
                 white-space: normal;
             }
 
@@ -1126,16 +1126,16 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
-    .tooltip.left-aligned /deep/ .tooltip-box {
+    .tooltip.left-aligned ::v-deep .tooltip-box {
         transform: translate(-7.75rem, 2rem);
     }
 
-    .tooltip.right-aligned /deep/ .tooltip-box {
+    .tooltip.right-aligned ::v-deep .tooltip-box {
         transform: translate(7.75rem, 2rem);
     }
 
     .tooltip {
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             transform: translate(1rem, 2rem);
         }
     }
@@ -1143,7 +1143,7 @@ export default defineComponent({
 
 @media (max-width: 450px) { // Nimiq Style breakpoint for smaller .nq-card-header padding
     .page-header {
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             margin-left: 3rem;
             margin-right: 3rem;
             // max-width: calc(100% - 6rem);

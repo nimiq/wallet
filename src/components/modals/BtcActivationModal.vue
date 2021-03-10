@@ -81,7 +81,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    /deep/ .small-page {
+    ::v-deep .small-page {
         // height: auto;
         text-align: center;
         background-image: url('../../assets/bitcoin-activation-background.png');
@@ -91,7 +91,7 @@ export default defineComponent({
         width: 91rem; // 728px
     }
 
-    /deep/ .close-button {
+    ::v-deep .close-button {
         display: none;
     }
 }
@@ -141,7 +141,7 @@ svg {
 
 @media (max-width: 730px) {
     .modal {
-        /deep/ .small-page {
+        ::v-deep .small-page {
             width: 52.5rem; // reset
             background-image: none;
         }

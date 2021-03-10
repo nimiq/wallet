@@ -114,7 +114,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     width: 65rem !important;
     min-height: 60rem !important;
     max-width: 100vw;

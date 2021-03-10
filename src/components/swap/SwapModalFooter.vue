@@ -88,12 +88,12 @@ export default defineComponent({
         font-weight: 600;
         font-size: var(--small-size);
 
-        /deep/ .nq-link {
+        ::v-deep .nq-link {
             color: inherit;
             text-decoration: underline;
         }
 
-        /deep/ .circle-spinner {
+        ::v-deep .circle-spinner {
             margin-right: 1rem;
         }
     }

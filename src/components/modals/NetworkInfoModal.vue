@@ -79,7 +79,7 @@ export default defineComponent({
     background: transparent;
     pointer-events: none;
 
-    /deep/ .wrapper {
+    ::v-deep .wrapper {
         pointer-events: all;
 
         .small-page {
@@ -149,7 +149,7 @@ a {
     .modal {
         display: block;
 
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             position: absolute;
             right: 2.25rem;
             top: 2.25rem;

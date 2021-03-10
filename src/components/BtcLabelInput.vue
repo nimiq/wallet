@@ -133,16 +133,16 @@ export default defineComponent({
             letter-spacing: -0.05em;
         }
 
-        & >.avatar /deep/ svg path {
+        & >.avatar ::v-deep svg path {
             transition: fill 200ms var(--nimiq-ease);
         }
 
-        &:hover > .avatar /deep/ svg path,
-        &:focus-within > .avatar /deep/ svg path {
+        &:hover > .avatar ::v-deep svg path,
+        &:focus-within > .avatar ::v-deep svg path {
             fill: var(--nimiq-light-blue);
         }
 
-        /deep/ input {
+        ::v-deep input {
             width: 100% !important;
             padding: 1.75rem 2rem 1.75rem 5.75rem;
 
@@ -157,7 +157,7 @@ export default defineComponent({
                 opacity: 0.5;
             }
 
-            /deep/ input {
+            ::v-deep input {
                 color: var(--text-50);
             }
         }

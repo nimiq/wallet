@@ -195,11 +195,11 @@ export default defineComponent({
     }
 
     .tooltip {
-        /deep/ .trigger {
+        ::v-deep .trigger {
             display: block;
         }
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             width: 20.5rem;
             padding: 1.25rem 1.5rem;
         }
@@ -255,7 +255,7 @@ export default defineComponent({
     width: 100%;
     padding: 1.5rem;
 
-    /deep/ .timespan {
+    ::v-deep .timespan {
         left: 1.5rem;
         top: 1.5rem;
     }

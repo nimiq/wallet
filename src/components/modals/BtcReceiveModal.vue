@@ -414,11 +414,11 @@ export default defineComponent({
         background-color: transparent;
     }
 
-    &:hover /deep/ .background {
+    &:hover ::v-deep .background {
         opacity: 0.1;
     }
 
-    & /deep/ > span {
+    & ::v-deep > span {
         position: relative;
         overflow: hidden;
         display: flex;
@@ -507,7 +507,7 @@ export default defineComponent({
     .tooltip {
         z-index: 3;
 
-        /deep/ .trigger .nq-icon {
+        ::v-deep .trigger .nq-icon {
             margin-left: 0.75rem;
         }
 
@@ -598,20 +598,20 @@ footer {
     left: 2rem;
     z-index: 3;
 
-    /deep/ .trigger svg {
+    ::v-deep .trigger svg {
         height: 2rem;
         opacity: .3;
 
         transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }
 
-    & /deep/ .trigger:hover svg,
-    & /deep/ .trigger:focus svg,
-    &.shown /deep/ .trigger svg {
+    & ::v-deep .trigger:hover svg,
+    & ::v-deep .trigger:focus svg,
+    &.shown ::v-deep .trigger svg {
         opacity: .6;
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         width: 26.25rem;
         font-size: var(--small-size);
         font-weight: 600;

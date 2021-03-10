@@ -286,7 +286,7 @@ export default defineComponent({
         color: white !important;
     }
 
-    /deep/ .background {
+    ::v-deep .background {
         pointer-events: none;
         background: white;
     }

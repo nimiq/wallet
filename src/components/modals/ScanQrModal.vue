@@ -107,7 +107,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .close-button {
+.modal ::v-deep .close-button {
     display: none;
 }
 
@@ -124,7 +124,7 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ {
+    .modal ::v-deep {
         .wrapper,
         .small-page {
             height: 100%;
@@ -140,7 +140,7 @@ export default defineComponent({
     .qr-scanner {
         border-radius: 0;
 
-        /deep/ .cancel-button {
+        ::v-deep .cancel-button {
             bottom: 6rem;
         }
     }

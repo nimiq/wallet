@@ -72,7 +72,7 @@ export default defineComponent({
 }
 
 .page-header {
-    /deep/ h1 {
+    ::v-deep h1 {
         margin-bottom: 1rem;
     }
 

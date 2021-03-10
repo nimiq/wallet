@@ -387,12 +387,12 @@ svg {
     .pending,
     .new,
     .invalid {
-        /deep/ svg {
+        ::v-deep svg {
             margin: 0 auto;
         }
     }
 
-    /deep/ .circle-spinner {
+    ::v-deep .circle-spinner {
         display: block;
     }
 

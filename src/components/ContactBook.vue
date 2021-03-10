@@ -188,11 +188,11 @@ export default defineComponent({
     .label-input {
         margin-left: 1.25rem;
 
-        /deep/ .width-finder {
+        ::v-deep .width-finder {
             padding: 0 0.75rem;
         }
 
-        /deep/ input {
+        ::v-deep input {
             padding: 0.625rem 0.75rem;
             padding-right: 0;
         }

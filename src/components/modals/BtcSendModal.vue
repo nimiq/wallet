@@ -608,7 +608,7 @@ export default defineComponent({
             $inputHeight: 5.875rem;
             margin-bottom: -0.25rem;
 
-            & /deep/ form {
+            & ::v-deep form {
                 background-color: white;
             }
 
@@ -643,11 +643,11 @@ export default defineComponent({
             font-size: 15px;
             position: relative; // For correct z-index positioning
 
-            & /deep/ input {
+            & ::v-deep input {
                 transition: all 200ms, width 50ms;
             }
 
-            & /deep/ form {
+            & ::v-deep form {
                 background-color: white;
             }
         }
@@ -670,31 +670,31 @@ export default defineComponent({
 
         &.extended {
             .btc-label-input {
-                /deep/ input {
+                ::v-deep input {
                     border-bottom-left-radius: 0;
                     border-bottom-right-radius: 0;
                 }
 
                 &:hover,
                 &:focus-within {
-                    /deep/ .label-input,
-                    /deep/ .avatar {
+                    ::v-deep .label-input,
+                    ::v-deep .avatar {
                         z-index: 2;
                     }
 
-                    /deep/ .label-autocomplete {
+                    ::v-deep .label-autocomplete {
                         z-index: 4;
                     }
                 }
 
-                &:focus-within /deep/ input {
+                &:focus-within ::v-deep input {
                     border-bottom-left-radius: .5rem;
                     border-bottom-right-radius: .5rem;
                 }
             }
 
             .btc-address-input {
-                /deep/ input {
+                ::v-deep input {
                     border-top-left-radius: 0;
                     border-top-right-radius: 0;
                 }
@@ -702,7 +702,7 @@ export default defineComponent({
                 &:focus-within {
                     z-index: 2;
 
-                    /deep/ input {
+                    ::v-deep input {
                         border-top-left-radius: .5rem;
                         border-top-right-radius: .5rem;
                     }
@@ -824,12 +824,12 @@ export default defineComponent({
             }
         }
 
-        .amount-menu /deep/ .button {
+        .amount-menu ::v-deep .button {
             margin-left: 1rem;
             margin-bottom: 1rem;
         }
 
-        .amount-menu /deep/ .menu {
+        .amount-menu ::v-deep .menu {
             position: absolute;
             right: 3rem;
             bottom: 3rem;
@@ -847,12 +847,12 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input /deep/,
-            .amount-input /deep/ .ticker {
+            .amount-input ::v-deep,
+            .amount-input ::v-deep .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ .nq-input {
+            .amount-input ::v-deep .nq-input {
                 color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
@@ -882,11 +882,11 @@ export default defineComponent({
             margin-right: 1rem;
         }
 
-        /deep/ .trigger .nq-icon {
+        ::v-deep .trigger .nq-icon {
             opacity: 0.4;
         }
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             transform: translate(4rem, -2rem);
         }
     }
@@ -909,20 +909,20 @@ export default defineComponent({
         top: 2rem;
         left: 2rem;
 
-        /deep/ .trigger svg {
+        ::v-deep .trigger svg {
             height: 2rem;
             opacity: .3;
 
             transition: opacity var(--short-transition-duration) var(--nimiq-ease);
         }
 
-        & /deep/ .trigger:hover svg,
-        & /deep/ .trigger:focus svg,
-        &.shown /deep/ .trigger svg {
+        & ::v-deep .trigger:hover svg,
+        & ::v-deep .trigger:focus svg,
+        &.shown ::v-deep .trigger svg {
             opacity: .6;
         }
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             width: 25.875rem;
             font-size: var(--small-size);
             font-weight: 600;

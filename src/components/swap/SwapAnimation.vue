@@ -552,13 +552,13 @@ export default defineComponent({
     padding: 2rem 2rem 1rem;
 
     .close-button {
-        /deep/ svg {
+        ::v-deep svg {
             opacity: 0.6;
         }
 
         &:hover,
         &:focus {
-            /deep/ svg {
+            ::v-deep svg {
                 opacity: 0.8;
             }
         }
@@ -603,7 +603,7 @@ export default defineComponent({
         text-align: center;
         margin: 0.5rem 0.5rem 0;
 
-        /deep/ .background {
+        ::v-deep .background {
             border-radius: inherit;
             background: white;
         }
@@ -633,16 +633,16 @@ export default defineComponent({
 }
 
 .tooltip {
-    /deep/ .trigger::after {
+    ::v-deep .trigger::after {
         background: white;
         left: 6.5rem;
     }
 
-    &.right /deep/ .trigger::after {
+    &.right ::v-deep .trigger::after {
         left: 13.5rem;
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         background: white;
         color: var(--nimiq-blue);
         left: 0 !important;
@@ -650,7 +650,7 @@ export default defineComponent({
         transform-origin: 50% calc(100% + 7rem);
     }
 
-    &.right /deep/ .tooltip-box {
+    &.right ::v-deep .tooltip-box {
         left: auto !important;
         right: 0 !important;
     }
@@ -671,7 +671,7 @@ export default defineComponent({
         font-size: var(--small-size);
         margin-top: 1rem;
 
-        /deep/ .nq-icon {
+        ::v-deep .nq-icon {
             margin-left: 0.25rem;
         }
     }
@@ -890,13 +890,13 @@ export default defineComponent({
         //     transform-origin: 33.33% 50%;
         // }
 
-        // .tooltip /deep/ .tooltip-box {
+        // .tooltip ::v-deep .tooltip-box {
         //     // animation: tooltip-box-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: rotate(180deg);
         //     transition: opacity .3s var(--nimiq-ease), transform 1.2s ease 1s;
         // }
 
-        // .tooltip /deep/ .trigger::after {
+        // .tooltip ::v-deep .trigger::after {
         //     // animation: tooltip-arrow-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: scale(-1) /* rotate(-180deg) */ translateY(14rem);
         //     transition: opacity .3s var(--nimiq-ease) 16ms, visibility .3s, transform 1.2s ease 1s;
@@ -1038,7 +1038,7 @@ export default defineComponent({
         &.left-to-right {
             transform: translate(28.75rem, -19.5rem) scale(var(--upscale));
 
-            .tooltip /deep/ .tooltip-box {
+            .tooltip ::v-deep .tooltip-box {
                 transform-origin: 5rem 4.25rem;
             }
         }
@@ -1046,12 +1046,12 @@ export default defineComponent({
         &.right-to-left {
             transform: translate(-28.75rem, -19.5rem) scale(var(--upscale));
 
-            .tooltip /deep/ .tooltip-box {
+            .tooltip ::v-deep .tooltip-box {
                 transform-origin: 13rem 4.25rem;
             }
         }
 
-        .tooltip /deep/ {
+        .tooltip ::v-deep {
             .trigger::after,
             .tooltip-box {
                 transform: scale(calc(1 / var(--upscale)));

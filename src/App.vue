@@ -153,19 +153,19 @@ export default defineComponent({
             position: relative;
         }
 
-        /deep/ .account-overview {
+        ::v-deep .account-overview {
             width: var(--account-column-width);
             flex-shrink: 0;
             z-index: 2;
         }
 
-        /deep/ .address-overview {
+        ::v-deep .address-overview {
             width: var(--address-column-width);
             min-width: 0;
             z-index: 3;
         }
 
-        /deep/ .mobile-tap-area {
+        ::v-deep .mobile-tap-area {
             z-index: 4;
         }
 
@@ -202,7 +202,7 @@ export default defineComponent({
             }
 
             &.column-sidebar {
-                /deep/ .mobile-tap-area {
+                ::v-deep .mobile-tap-area {
                     opacity: 1;
                     pointer-events: all;
                 }
@@ -224,7 +224,7 @@ export default defineComponent({
                 width: 100%;
             }
 
-            /deep/ .address-overview {
+            ::v-deep .address-overview {
                 min-width: unset;
             }
 

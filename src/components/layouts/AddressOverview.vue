@@ -815,7 +815,7 @@ export default defineComponent({
             opacity: 0.3;
             font-size: 2.5rem;
 
-            /deep/ svg {
+            ::v-deep svg {
                 display: block;
             }
         }

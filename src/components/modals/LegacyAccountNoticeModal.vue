@@ -47,7 +47,7 @@ export default defineComponent({
 .modal {
     position: absolute;
 
-    /deep/ .small-page {
+    ::v-deep .small-page {
         min-height: unset;
     }
 }
@@ -57,16 +57,16 @@ export default defineComponent({
 }
 
 .legacy-account-notice {
-    /deep/ h1 {
+    ::v-deep h1 {
         margin-top: 1rem;
     }
 
-    /deep/ section {
+    ::v-deep section {
         margin-top: 2rem;
         margin-bottom: 2rem;
     }
 
-    /deep/ .future-notice {
+    ::v-deep .future-notice {
         display: none;
     }
 }

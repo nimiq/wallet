@@ -1223,7 +1223,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     width: 63.5rem;
     // height: 74.5rem;
     font-size: var(--body-size);
@@ -1288,7 +1288,7 @@ export default defineComponent({
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-        /deep/ svg {
+        ::v-deep svg {
             margin-left: 0.75rem;
             height: 1.75rem;
             width: 1.75rem;
@@ -1320,11 +1320,11 @@ export default defineComponent({
         }
     }
 
-    /deep/ > .trigger {
+    ::v-deep > .trigger {
         display: block;
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         text-align: left;
         transform: translate(-5rem, 2rem);
     }
@@ -1357,12 +1357,12 @@ export default defineComponent({
     margin-top: 1.5rem;
 }
 
-.amount-input /deep/ form input.nq-input {
+.amount-input ::v-deep form input.nq-input {
     padding: 0.25rem;
 }
 
 .amount-input.has-value {
-    &.positive-value /deep/ form{
+    &.positive-value ::v-deep form{
         .nq-input {
             color: var(--nimiq-green);
             --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
@@ -1374,7 +1374,7 @@ export default defineComponent({
         }
     }
 
-    &.negative-value /deep/ form{
+    &.negative-value ::v-deep form{
         .nq-input {
             color: var(--nimiq-blue);
         }
@@ -1387,7 +1387,7 @@ export default defineComponent({
     }
 
     &.focussed {
-        &.positive-value /deep/ {
+        &.positive-value ::v-deep {
             .ticker {
                 color: var(--nimiq-green);
             }
@@ -1398,7 +1398,7 @@ export default defineComponent({
             }
         }
 
-        &.negative-value /deep/ {
+        &.negative-value ::v-deep {
             .ticker {
                 color: var(--nimiq-light-blue);
             }
@@ -1423,7 +1423,7 @@ export default defineComponent({
     font-size: var(--size);
     font-weight: bold;
 
-    /deep/ .ticker {
+    ::v-deep .ticker {
         // Sometimes this class gets lower priority than the ticker's native class, so we need to force these styles
         font-size: inherit !important;
         line-height: 1 !important;
@@ -1472,7 +1472,7 @@ export default defineComponent({
     .tooltip {
         text-align: left;
 
-        /deep/ .trigger {
+        ::v-deep .trigger {
             display: block;
             font-size: 1.75rem;
             margin-left: 0.5rem;
@@ -1484,7 +1484,7 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay .animation-overlay + .close-button {
+.modal ::v-deep .overlay .animation-overlay + .close-button {
     display: none;
 }
 
@@ -1537,7 +1537,7 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ .small-page {
+    .modal ::v-deep .small-page {
         overflow-y: auto;
     }
 
@@ -1549,7 +1549,7 @@ export default defineComponent({
         top: 1.25rem;
         left: 1.25rem;
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             transform: translate(-3rem, 2rem);
         }
     }

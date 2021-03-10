@@ -1,4 +1,5 @@
-import { AssetAdapter, SwapAsset, Transaction, Client } from './IAssetAdapter';
+import { AssetAdapter, SwapAsset } from './IAssetAdapter';
+import type { Transaction, Client } from './IAssetAdapter';
 import { NimiqAssetAdapter } from './NimiqAssetAdapter';
 import { BitcoinAssetAdapter } from './BitcoinAssetAdapter';
 import { EuroAssetAdapter } from './EuroAssetAdapter';

@@ -203,7 +203,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
                     :manualFunding="true"
-                    :oasisLimitExceeded="oasisLimitExceeded"
+                    :oasisBuyLimitExceeded="oasisBuyLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 >
@@ -268,10 +268,7 @@ import {
     AlertTriangleIcon,
 } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
-import { CurrencyInfo } from '@nimiq/utils';
 import {
-    Estimate,
-    getEstimate,
     RequestAsset,
     SwapAsset,
     PreSwap,
@@ -280,7 +277,6 @@ import {
     getSwap,
     Swap,
     AssetList,
-    getAssets,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
@@ -307,13 +303,9 @@ import {
     sandboxMockClearHtlc,
     TransactionType,
     SepaClearingInstruction,
-    ClearingStatus,
-    ClearingInfo,
-    DeniedReason,
 } from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
-import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
@@ -333,6 +325,19 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import BankIconButton from '../BankIconButton.vue';
+import {
+    calculateFees,
+    capDecimals,
+    currentLimitCrypto,
+    currentLimitFiat,
+    estimate,
+    eurPerBtc,
+    eurPerNim,
+    fetchAssets,
+    fiatCurrencyInfo,
+    getFiatSwapParameters,
+} from '../../lib/swap/utils/CommonUtils';
+import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
 
 enum Pages {
     WELCOME,
@@ -347,14 +352,21 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { activeSwap: swap, userBank, setUserBank, userBankAccountDetails } = useSwapsStore();
+        const { exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
+        const {
+            activeSwap: swap,
+            userBank,
+            setUserBank,
+        } = useSwapsStore();
+
+        const { width } = useWindowSize();
+        const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
 
         const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const estimate = ref<Estimate>(null);
         const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const assets = ref<AssetList>(null);
@@ -394,6 +406,8 @@ export default defineComponent({
             },
         });
 
+        // Does not need to be reactive, as the config doesn't change during runtime.
+        const isMainnet = Config.environment === ENV_MAIN;
         const isDev = Config.environment === ENV_DEV;
 
         const canSign = computed(() =>
@@ -405,8 +419,6 @@ export default defineComponent({
             && !fetchingEstimate.value,
         );
 
-        const { width } = useWindowSize();
-
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
@@ -415,29 +427,6 @@ export default defineComponent({
                 }
             }
         });
-
-        const { exchangeRates } = useFiatStore();
-
-        const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
-            nimAddress: activeAddress.value!,
-        });
-
-
-        const currentLimitCrypto = computed(() => {
-            if (!currentLimitFiat.value) return null;
-
-            const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
-            if (!rate) return null;
-
-            return capDecimals(
-                (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
-                activeCurrency.value.toUpperCase() as SwapAsset,
-            );
-        });
-
-        async function fetchAssets() {
-            assets.value = await getAssets();
-        }
 
         function onClose() {
             if (addressListOpened.value === true) {
@@ -455,34 +444,6 @@ export default defineComponent({
             addressListOpened.value = false;
         }
 
-        const fiatCurrencyInfo = computed(() =>
-            new CurrencyInfo(selectedFiatCurrency.value),
-        );
-
-        const eurPerNim = computed(() => {
-            const data = estimate.value;
-            if (data && data.to.asset === SwapAsset.NIM) {
-                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
-                const nim = data.to.amount + data.to.serviceNetworkFee;
-
-                return (eur / 100) / (nim / 1e5);
-            }
-
-            return exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-        });
-
-        const eurPerBtc = computed(() => {
-            const data = estimate.value;
-            if (data && data.to.asset === SwapAsset.BTC) {
-                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
-                const btc = data.to.amount + data.to.serviceNetworkFee;
-
-                return (eur / 100) / (btc / 1e8);
-            }
-
-            return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
-        });
-
         const fiatFees = computed(() => {
             const data = estimate.value;
             if (!data) {
@@ -496,7 +457,8 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     // Settlement
                     const perFee = 0
-                        || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
+                        || (estimate.value && estimate.value.to.asset === SwapAsset.NIM
+                            && estimate.value.to.feePerUnit)
                         || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
                         || 0;
                     // 135 extra weight units for BTC HTLC settlement tx
@@ -511,7 +473,8 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.BTC) {
                     // Settlement
                     const perFee = 0
-                        || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
+                        || (estimate.value && estimate.value.to.asset === SwapAsset.BTC
+                            && estimate.value.to.feePerUnit)
                         || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
                         || 1;
                     // 135 extra weight units for BTC HTLC settlement tx
@@ -577,135 +540,21 @@ export default defineComponent({
             };
         });
 
-        function calculateFees(feesPerUnit = { eur: 0, nim: 0, btc: 0 }): {
-            fundingFee: number,
-            settlementFee: number,
-        } {
-            let fundingFee: number | null = null;
-            let settlementFee: number | null = null;
-
-            // EUR
-            fundingFee = feesPerUnit.eur
-                || (estimate.value && estimate.value.from.asset === SwapAsset.EUR && estimate.value.from.fee)
-                || 0;
-
-            if (activeCurrency.value === CryptoCurrency.NIM) {
-                const perFee = feesPerUnit.nim
-                    || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-                    || 0;
-                // 233 = NIM HTLC settlement tx size
-                settlementFee = perFee * 233;
-            }
-
-            if (activeCurrency.value === CryptoCurrency.BTC) {
-                const perFee = feesPerUnit.btc
-                    || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-                    || 1;
-                // 135 extra weight units for BTC HTLC settlement tx
-                settlementFee = estimateFees(1, 1, perFee, 135);
-            }
-
-            if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
-
-            return {
-                fundingFee,
-                settlementFee,
-            };
-        }
-
-        function getSwapParameters() {
-            const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
-                ? SwapAsset.BTC
-                : SwapAsset.NIM;
-
-            const fees = calculateFees();
-
-            if (_fiatAmount.value) {
-                return {
-                    from: { [SwapAsset.EUR]: (fiatAmount.value - fees.fundingFee) / 100 },
-                    to: toSwapAsset,
-                } as {
-                    from: RequestAsset<SwapAsset.EUR>,
-                    to: SwapAsset.NIM | SwapAsset.BTC,
-                };
-            }
-
-            if (toSwapAsset === SwapAsset.BTC) {
-                return {
-                    from: SwapAsset.EUR,
-                    to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e8 },
-                } as {
-                    from: SwapAsset.EUR,
-                    to: RequestAsset<SwapAsset.BTC>,
-                };
-            }
-
-            return {
-                from: SwapAsset.EUR,
-                to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e5 },
-            } as {
-                from: SwapAsset.EUR,
-                to: RequestAsset<SwapAsset.NIM>,
-            };
-        }
-
         async function updateEstimate() {
             clearTimeout(timeoutId);
 
             fetchingEstimate.value = true;
 
-            try {
-                const { from, to } = getSwapParameters();
-
-                const newEstimate = await getEstimate(
-                    // Need to force one of the function signatures
-                    from as RequestAsset<SwapAsset>,
-                    to as SwapAsset,
-                );
-
-                if (!newEstimate.from || !newEstimate.to) {
-                    throw new Error('UNEXPECTED: EUR or crypto price not present in estimate');
-                }
-
-                // Update local fees with latest feePerUnit values
-                const { fundingFee, settlementFee } = calculateFees({
-                    eur: newEstimate.from.fee || 0,
-                    nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
-                    btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,
-                });
-
-                newEstimate.from.fee = fundingFee;
-                newEstimate.to.fee = settlementFee;
-
-                // Check against minimums
-                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
-                    // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
-                    if (newEstimate.to.asset === SwapAsset.BTC) {
-                        // Note: This currently only checks BTC fees!
-                        const btcPrice = newEstimate.to;
-                        const toCoinsFactor = 1e8;
-                        const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
-                            * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!;
-                        estimateError.value = context.root.$t(
-                            'The fees (currently {amount}) determine the minimum amount.',
-                            { amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
-                        ) as string;
-                    } else {
-                        estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
-                    }
-                } // eslint-disable-line brace-style
-
-                else {
-                    estimateError.value = null;
-                }
-
-                estimate.value = newEstimate;
-            } catch (error) {
-                console.error(error); // eslint-disable-line no-console
+            await updateBuyEstimate(_fiatAmount.value
+                ? { fiatAmount: fiatAmount.value }
+                : { cryptoAmount: cryptoAmount.value },
+            ).then(() => {
+                estimateError.value = null;
+            }).catch((error) => {
+                console.warn(error); // eslint-disable-line no-console
                 estimateError.value = error.message;
-            }
+            });
+
             fetchingEstimate.value = false;
         }
 
@@ -721,7 +570,10 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getSwapParameters();
+                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
+                        ? { from: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
+                        : { to: { amount: cryptoAmount.value } },
+                    );
 
                     swapSuggestion = await createSwap(
                         // Need to force one of the function signatures
@@ -730,7 +582,7 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateFees({
+                    const { fundingFee, settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
                         eur: swapSuggestion.from.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
@@ -1031,29 +883,12 @@ export default defineComponent({
             fetchingEstimate.value = true;
         }
 
-        function capDecimals(amount: number, asset: SwapAsset) {
-            if (!amount) return 0;
-
-            const numberSign = amount / Math.abs(amount); // 1 or -1
-
-            amount = Math.abs(amount);
-
-            const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
-            const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
-            const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
-
-            return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
-        }
-
         // Update estimate on currency switch
         watch(activeCurrency, () => {
             if (_fiatAmount.value || _cryptoAmount.value) {
                 updateEstimate();
             }
         }, { lazy: true });
-
-        // Does not need to be reactive, as the config doesn't change during runtime.
-        const isMainnet = Config.environment === ENV_MAIN;
 
         function onPaid() {
             if (!isMainnet) sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
@@ -1066,20 +901,6 @@ export default defineComponent({
                 });
             }
         }
-
-        const oasisLimitExceeded = computed(() => {
-            if (!swap.value) return false;
-            if (!swap.value.fundingTx) return false;
-            const htlc = swap.value.fundingTx as Htlc<HtlcStatus>;
-
-            if (htlc.status !== HtlcStatus.PENDING) return false;
-            const pendingHtlc = htlc as Htlc<HtlcStatus.PENDING>;
-
-            if (pendingHtlc.clearing.status !== ClearingStatus.DENIED) return false;
-            const deniedClearingInfo = pendingHtlc.clearing as ClearingInfo<ClearingStatus.DENIED>;
-
-            return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
-        });
 
         return {
             $eurAmountInput,
@@ -1097,7 +918,6 @@ export default defineComponent({
             SwapState,
             finishSwap,
             updateEstimate,
-            estimate,
             cryptoAmount,
             swap,
             sign,
@@ -1117,8 +937,7 @@ export default defineComponent({
             isMainnet,
             onPaid,
             isDev,
-            oasisLimitExceeded,
-            userBankAccountDetails,
+            oasisBuyLimitExceeded,
         };
     },
     components: {

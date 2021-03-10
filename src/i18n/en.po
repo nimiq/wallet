@@ -1532,14 +1532,14 @@ msgid ""
 "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:713
-#: src/components/modals/SellCryptoModal.vue:767
 #: src/components/swap/SwapModal.vue:630
+#: src/lib/swap/utils/BuyUtils.ts:89
+#: src/lib/swap/utils/SellUtils.ts:111
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:718
-#: src/components/modals/SellCryptoModal.vue:772
+#: src/lib/swap/utils/BuyUtils.ts:94
+#: src/lib/swap/utils/SellUtils.ts:116
 msgid "The fees determine the minimum amount."
 msgstr ""
 

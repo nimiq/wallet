@@ -455,15 +455,15 @@ export default defineComponent({
                 display: none;
             }
         }
-    }
 
-    &.credit-card {
-        footer {
-            margin-bottom: 0;
+        &.credit-card {
+            footer {
+                margin-bottom: 0;
 
-            img {
-                width: 9.5rem;
-                margin-top: -0.625rem;
+                img {
+                    width: 9.5rem;
+                    margin-top: -0.625rem;
+                }
             }
         }
     }

@@ -175,13 +175,13 @@ export default defineComponent({
             }
             if (difference < 1 * hour) {
                 return context.root.$tc(
-                    'Created {count} minute ago | Created {count} minutes ago',
+                    'Created {count} minute ago | Created {count} minutes ago',
                     Math.trunc(difference / minute),
                 );
             }
             if (difference < 1 * day) {
                 return context.root.$tc(
-                    'Created {count} hour ago | Created {count} hours ago',
+                    'Created {count} hour ago | Created {count} hours ago',
                     Math.trunc(difference / hour),
                 );
             }
@@ -191,7 +191,7 @@ export default defineComponent({
                 return context.root.$t('Created yesterday') as string;
             }
             return context.root.$tc(
-                'Created {count} day ago | Created {count} days ago',
+                'Created {count} day ago | Created {count} days ago',
                 Math.trunc(difference / day),
             );
         }

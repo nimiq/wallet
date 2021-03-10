@@ -538,15 +538,15 @@ msgid "Create payment link"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:193
-msgid "Created {count} day ago | Created {count} days ago"
+msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:183
-msgid "Created {count} hour ago | Created {count} hours ago"
+msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} minute ago | Created {count} minutes ago"
+msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:174

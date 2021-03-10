@@ -5,6 +5,8 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
+const builtins = require('rollup-plugin-node-builtins');
+
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
 if (!buildName) {
     throw new Error('Please specify the build config with the `build` environment variable');
@@ -26,6 +28,9 @@ if (!release) {
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
+    devServer: {
+        port: 8081,
+    },
     configureWebpack: {
         plugins: [
             new PoLoaderOptimizer(),
@@ -73,32 +78,32 @@ module.exports = {
                 },
             ]]);
 
-        config
-            .plugin('prefetch')
-            .tap(options => {
-                // Ignore rarely used files.
-                // Note that for production build, also the hash in the filename needs to be matched by the regexes.
-                const blacklist = options[0].fileBlacklist || [];
-                options[0].fileBlacklist = [
-                    ...blacklist,
-                    /\.map$/,
-                    /settings.*?\.(js|css)$/,
-                    /(migration-)?welcome-modal.*?\.(js|css)$/,
-                    /disclaimer-modal.*?\.(js|css)$/,
-                    /country-names-.+?\.js$/, // only needed for Intl.DisplayNames polyfill and only one of them needed
-                    /lang-[^-]+-po.*?\.js$/, // only one of them needed
-                ];
-                return options
-            });
+        // config
+        //     .plugin('prefetch')
+        //     .tap(options => {
+        //         // Ignore rarely used files.
+        //         // Note that for production build, also the hash in the filename needs to be matched by the regexes.
+        //         const blacklist = options[0].fileBlacklist || [];
+        //         options[0].fileBlacklist = [
+        //             ...blacklist,
+        //             /\.map$/,
+        //             /settings.*?\.(js|css)$/,
+        //             /(migration-)?welcome-modal.*?\.(js|css)$/,
+        //             /disclaimer-modal.*?\.(js|css)$/,
+        //             /country-names-.+?\.js$/, // only needed for Intl.DisplayNames polyfill and only one of them needed
+        //             /lang-[^-]+-po.*?\.js$/, // only one of them needed
+        //         ];
+        //         return options
+        //     });
 
-        config.module
-            .rule('eslint')
-            .use('eslint-loader')
-                .loader('eslint-loader')
-                .tap(options => {
-                    options.emitWarning = process.env.NODE_ENV === 'production' ? false : true;
-                    return options;
-                });
+        // config.module
+        //     .rule('eslint')
+        //     .use('eslint-loader')
+        //         .loader('eslint-loader')
+        //         .tap(options => {
+        //             options.emitWarning = process.env.NODE_ENV === 'production' ? false : true;
+        //             return options;
+        //         });
 
         config.module
             .rule('po')
@@ -108,14 +113,14 @@ module.exports = {
                         .end()
                 .end();
 
-        config.module
-            .rule('ts')
-            .use('ts-loader')
-                .loader('ts-loader')
-                .tap(options => {
-                    options.configFile = `tsconfig.${buildName}.json`
-                    return options
-                });
+        // config.module
+        //     .rule('ts')
+        //     .use('ts-loader')
+        //         .loader('ts-loader')
+        //         .tap(options => {
+        //             options.configFile = `tsconfig.${buildName}.json`
+        //             return options
+        //         });
     },
     pwa: {
         name: 'Nimiq Wallet',
@@ -142,6 +147,15 @@ module.exports = {
                     type: "image/png"
                 },
             ],
+        },
+    },
+    pluginOptions: {
+        vite: {
+            plugins: [builtins],
+            // vitePluginVue2Options: {},
+            optimizeDeps: {
+                allowNodeBuiltins: ['util'],
+            },
         },
     },
 };

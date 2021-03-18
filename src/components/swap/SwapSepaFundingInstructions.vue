@@ -103,7 +103,7 @@
                 <h2 class="nq-h2">
                     {{ $t(
                         'The bank is processing your transaction.\nThis might take up to {min} minutes.',
-                        { min: EXPECTED_DETECTION_DURATION},
+                        { min: OASIS_EUR_DETECTION_DELAY },
                     ) }}
                 </h2>
                 <p v-if="!takesLongerThanUsual" class="nq-gray">
@@ -131,6 +131,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 
 enum Pages {
     PAYMENT_DETAILS = 'payment-details',
@@ -141,8 +142,6 @@ export enum Events {
     CANCEL = 'cancel',
     PAID = 'paid',
 }
-
-const EXPECTED_DETECTION_DURATION = 4; // minutes
 
 export default defineComponent({
     props: {
@@ -197,7 +196,7 @@ export default defineComponent({
                 seconds.toString().padStart(2, '0'),
             ].join(':');
 
-            takesLongerThanUsual.value = hours > 0 || minutes >= EXPECTED_DETECTION_DURATION;
+            takesLongerThanUsual.value = hours > 0 || minutes >= OASIS_EUR_DETECTION_DELAY;
         }
 
         onUnmounted(() => {
@@ -213,7 +212,7 @@ export default defineComponent({
             onPaid,
             timer,
             showCancelConfirmation,
-            EXPECTED_DETECTION_DURATION,
+            OASIS_EUR_DETECTION_DELAY,
             takesLongerThanUsual,
         };
     },

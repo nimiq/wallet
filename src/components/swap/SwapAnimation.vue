@@ -462,11 +462,11 @@ export default defineComponent({
         });
 
         enum BottomNoticeMessage { FIRST, SECOND }
-        const bottomNoticeInterval = ref<number | null>(null);
+        let bottomNoticeInterval = 0;
         const bottomNoticeMsg = ref<BottomNoticeMessage>(BottomNoticeMessage.FIRST);
 
         onMounted(() => {
-            bottomNoticeInterval.value = window.setInterval(() => {
+            bottomNoticeInterval = window.setInterval(() => {
                 bottomNoticeMsg.value = BottomNoticeMessage[bottomNoticeMsg.value + 1]
                     ? BottomNoticeMessage[BottomNoticeMessage[bottomNoticeMsg.value + 1] as 'FIRST' | 'SECOND']
                     : BottomNoticeMessage.FIRST;
@@ -474,7 +474,7 @@ export default defineComponent({
         });
 
         onUnmounted(() => {
-            if (bottomNoticeInterval.value) window.clearInterval(bottomNoticeInterval.value);
+            window.clearInterval(bottomNoticeInterval);
         });
 
         return {
@@ -1072,7 +1072,7 @@ export default defineComponent({
         --upscale: 1.58;
 
         &.left-to-right {
-            transform: translate(28.75rem, -19.5rem) scale(var(--upscale));
+            transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
             .tooltip /deep/ .tooltip-box {
                 transform-origin: 5rem 4.25rem;
@@ -1080,7 +1080,7 @@ export default defineComponent({
         }
 
         &.right-to-left {
-            transform: translate(-28.75rem, -19.5rem) scale(var(--upscale));
+            transform: translate(-28.75rem, -18rem) scale(var(--upscale));
 
             .tooltip /deep/ .tooltip-box {
                 transform-origin: 13rem 4.25rem;

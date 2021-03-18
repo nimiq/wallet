@@ -244,7 +244,7 @@ export default defineComponent({
             const transactionsWithMonths: any[] = [];
             let isLatestMonth = true;
 
-            let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
+            const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
             let hasThisMonthLabel = false;
 
@@ -270,10 +270,12 @@ export default defineComponent({
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 
-            if (!hasThisMonthLabel && txMonth === currentTxMonth && txYear === currentYear) {
+            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
+
+            let displayedMonthYear = `${currentMonth}.${currentYear}`;
 
             while (n < txs.length) {
                 // Skip expired & invalidated txs
@@ -284,30 +286,25 @@ export default defineComponent({
                 }
 
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
+                const txMonthYear = `${txMonth}.${txYear}`;
 
-                if (txYear !== currentYear && (isLatestMonth || txMonth !== currentTxMonth)) {
+                if (txMonthYear !== displayedMonthYear) {
+                    // Inject a month label
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
                             context.root.$i18n.locale,
-                            { month: 'long', year: 'numeric' },
+                            {
+                                month: 'long',
+                                year: txYear !== currentYear ? 'numeric' : undefined,
+                            },
                         ),
                         isLatestMonth,
                     });
                     isLatestMonth = false;
-                } else if (txMonth !== currentTxMonth) {
-                    transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            context.root.$i18n.locale,
-                            { month: 'long' },
-                        ),
-                        isLatestMonth,
-                    });
-                    isLatestMonth = false;
+                    displayedMonthYear = txMonthYear;
                 }
 
-                currentTxMonth = txMonth;
                 transactionsWithMonths.push(txs[n]);
                 n++;
             }

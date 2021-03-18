@@ -234,7 +234,7 @@
             >
                 <MinimizeIcon/>
             </button>
-            <Timer v-else :startTime="Date.now()" :endTime="swap.expires * 1000"
+            <Timer v-else-if="!oasisLimitExceeded" :startTime="Date.now()" :endTime="swap.expires * 1000"
                 theme="white" maxUnit="minute" :tooltipProps="{
                     preferredPosition: 'bottom left',
                 }"

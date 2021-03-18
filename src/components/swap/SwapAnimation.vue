@@ -3,6 +3,7 @@
         :class="{
             'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
             'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
+            'to-limit-exceeded': oasisLimitExceeded && toAsset === SwapAsset.EUR,
         }"
     >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
@@ -14,7 +15,7 @@
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
             <StopwatchIcon/>
-            <h1 class="title nq-h1">{{ $t('The Swap expired') }}</h1>
+            <h1 class="title nq-h1">{{ $t('The swap expired') }}</h1>
             <p class="expired-text">
                 {{ $t('No funds were received so the swap expired.') }}<br>
                 <template v-if="fromAsset === SwapAsset.EUR">
@@ -37,7 +38,9 @@
             <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
         </div>
 
-        <div class="oasis-limit-exceeded-background flex-column nq-orange-bg" :class="{'visible': oasisLimitExceeded}">
+        <div class="oasis-limit-exceeded-background flex-column nq-orange-bg"
+            :class="{'visible': oasisLimitExceeded && fromAsset === SwapAsset.EUR}"
+        >
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
             <OverflowingCup/>
@@ -76,12 +79,37 @@
             </div>
         </transition>
 
+        <transition name="fade">
+            <div v-if="oasisLimitExceeded && toAsset === SwapAsset.EUR"
+                class="to-limit-exceeded-container flex-column"
+            >
+                <div class="header flex-row">
+                    <strong class="nq-green flex-row">
+                        <CheckmarkIcon/>
+                        {{ $t('Swap complete') }}
+                    </strong>
+                    <button class="nq-button-s inverse lighter" @click="$emit('cancel')" @mousedown.prevent>
+                        {{ $t('Close') }}
+                    </button>
+                </div>
+                <div>
+                    <h2 class="nq-h2">
+                        {{ $t('You have exceeded your OASIS limit.') }}
+                    </h2>
+                    <p class="nq-gray">
+                        {{ $t('Your EUR will be transferred to your bank account as soon as new limit is available.') }}
+                    </p>
+                </div>
+            </div>
+        </transition>
+
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
             <Tooltip class="left" :class="leftAsset.toLowerCase()"
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
-                        || toFundingDurationMins && state === SwapState.AWAIT_INCOMING
+                        || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
                     ? 'bottom'
                     : 'top'
                 } right`"
@@ -156,7 +184,8 @@
             <Tooltip class="right" :class="rightAsset.toLowerCase()"
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
-                        || toFundingDurationMins && state === SwapState.AWAIT_INCOMING
+                        || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
                     ? 'bottom'
                     : 'top'
                 } right`"
@@ -180,7 +209,7 @@
                             <path d="M161.99 81l0 2" stroke-width="1.5"/>
                         </g>
                         <g class="logo" fill="none" opacity="1">
-                            <path fill="currentColor" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
+                            <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                             <image :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="92" y="22" width="52" height="52" />
                         </g>
                     </svg>
@@ -410,6 +439,8 @@ export default defineComponent({
         });
 
         const rightColor = computed(() => {
+            if (props.oasisLimitExceeded && rightAsset.value === SwapAsset.EUR) return 'white';
+
             switch (rightAsset.value) {
                 case SwapAsset.NIM: {
                     if (!props.nimAddress) return '';
@@ -810,7 +841,7 @@ export default defineComponent({
             align-items: center;
             font-weight: 600;
             opacity: 0.3;
-            // Negative bottom margin is to reduce gap to bottom-positioned tooltip (during manual-funding)
+            // Negative bottom margin is to reduce gap to bottom-positioned tooltip (when puzzle piece is zoomed into)
             margin: 1rem 1rem -3rem;
             transition: opacity 0.5s var(--nimiq-ease);
 
@@ -1092,6 +1123,16 @@ export default defineComponent({
 //     100%   { transform: translate3d(+15rem, 0, 0); }
 // }
 
+@keyframes piece-right-oasis-limit-exceeded {
+    0%     { transform: translate3d(-7.25rem, 0, 0); }
+    to     { transform: translate3d(+2.5rem, 5rem, 0); }
+}
+
+@keyframes piece-right-oasis-limit-exceeded-fill {
+    0%     { opacity: 1; }
+    to     { opacity: 0.1; }
+}
+
 .nq-card-footer {
     margin-top: 3rem;
     text-align: center;
@@ -1133,7 +1174,8 @@ export default defineComponent({
 }
 
 .manual-funding,
-.to-funding-delay {
+.to-funding-delay,
+.to-limit-exceeded {
     .animation {
         --upscale: 1.58;
 
@@ -1178,7 +1220,8 @@ export default defineComponent({
     }
 }
 
-.to-funding-delay {
+.to-funding-delay,
+.to-limit-exceeded {
     .nq-card-header,
     .animation .spinner,
     .animation.left-to-right .left,
@@ -1209,9 +1252,40 @@ export default defineComponent({
     }
 }
 
-.to-funding-delay-notice {
+.to-limit-exceeded {
+    .nq-card-footer {
+        opacity: 0;
+        pointer-events: none;
+        animation: none;
+    }
+
+    .animation.settle-incoming {
+        transition-delay: 0s;
+
+        .right { // Move puzzle piece to center position
+            animation: piece-right-oasis-limit-exceeded 1.2s 1 var(--nimiq-ease) forwards !important;
+
+            .piece {
+                transition: color 1.2s var(--nimiq-ease);
+            }
+
+            .fill {
+                animation: piece-right-oasis-limit-exceeded-fill 1.2s 1 var(--nimiq-ease) forwards !important;
+            }
+
+            .logo {
+                transition: opacity 1.2s var(--nimiq-ease);
+                opacity: 0.6;
+            }
+        }
+    }
+}
+
+.to-funding-delay-notice,
+.to-limit-exceeded-container {
     text-align: center;
-    height: 19rem;
+    justify-content: space-between;
+    align-items: center;
 
     .nq-h2 {
         font-weight: normal;
@@ -1227,6 +1301,27 @@ export default defineComponent({
         opacity: 0.5;
     }
 
+    .header {
+        align-self: stretch;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2.25rem;
+
+        strong {
+            align-items: center;
+            margin-top: -1rem;
+
+            svg {
+                font-size: 1.5rem;
+                margin-right: 1.25rem;
+
+                path {
+                    stroke-width: 3.2;
+                }
+            }
+        }
+    }
+
     .action-row {
         justify-content: center;
         align-items: center;
@@ -1239,7 +1334,8 @@ export default defineComponent({
 }
 
 .manual-funding-instructions,
-.to-funding-delay-notice {
+.to-funding-delay-notice,
+.to-limit-exceeded-container {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -1248,6 +1344,21 @@ export default defineComponent({
 
 .to-funding-delay-notice {
     bottom: 15rem;
+    height: 19rem;
+}
+
+.to-limit-exceeded-container {
+    top: 0;
+    padding-bottom: 12rem;
+}
+
+.nq-button-s.inverse.lighter {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:hover,
+    &:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
 }
 
 /* mobile - animation downscale - starting at 500px width */

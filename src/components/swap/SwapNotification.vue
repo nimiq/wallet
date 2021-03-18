@@ -336,9 +336,8 @@ export default defineComponent({
                                 // TODO: Handle partial funding
                             }
 
-                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
-                                // TODO: Handle limit excess
-                            }
+                            // Limit excess is detected in BuyCryptoModal (`oasisLimitExceeded`)
+                            // if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED)
                         }) as Transaction<SwapAsset.EUR>;
 
                         // As EUR payments are not otherwise detected by the Wallet, we use this
@@ -444,14 +443,17 @@ export default defineComponent({
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
                             // eslint-disable-next-line @typescript-eslint/no-shadow
                             const htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
+                                updateSwap({
+                                    settlementTx: htlc,
+                                });
+
                                 if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
                                     checkExpired();
                                     return;
                                 }
 
-                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED) {
-                                    // TODO: Handle limit excess
-                                }
+                                // Limit excess is detected in SellCryptoModal (`oasisLimitExceeded`)
+                                // if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED)
 
                                 if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
                                     // TODO: Handle failed payout

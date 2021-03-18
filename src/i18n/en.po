@@ -454,6 +454,10 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:92
+msgid "Close"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr ""
@@ -1372,6 +1376,12 @@ msgstr ""
 msgid "Setting up swap"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:71
+msgid ""
+"Setting up the {currency} side of the swap.\n"
+"This might take up to {min} minutes."
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:59
 msgid "Settings"
 msgstr ""
@@ -1452,6 +1462,10 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/TransactionListItem.vue:202
 msgid "Swap"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:89
+msgid "Swap complete"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:37
@@ -1538,8 +1552,8 @@ msgstr ""
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:14
-msgid "The Swap expired"
+#: src/components/swap/SwapAnimation.vue:18
+msgid "The swap expired"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:133
@@ -1788,6 +1802,10 @@ msgstr ""
 msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:97
+msgid "You have exceeded your OASIS limit."
+msgstr ""
+
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
 msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
@@ -1841,6 +1859,10 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:100
+msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88

@@ -1,6 +1,9 @@
 <template>
     <div class="swap-animation flex-column"
-        :class="{'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING}"
+        :class="{
+            'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
+            'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
+        }"
     >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
             <CheckmarkIcon/>
@@ -59,9 +62,30 @@
             </div>
         </transition>
 
+        <transition name="fade">
+            <div v-if="toFundingDurationMins && state === SwapState.AWAIT_INCOMING" class="to-funding-delay-notice">
+                <h2 class="nq-h2">
+                    {{ $t(
+                        'Setting up the {currency} side of the swap.\nThis might take up to {min} minutes.',
+                        { currency: toAsset, min: toFundingDurationMins },
+                    ) }}
+                </h2>
+                <p class="nq-gray flex-row action-row">
+                    <span class="timer">{{ timer }}</span>
+                </p>
+            </div>
+        </transition>
+
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="left" :class="leftAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
+            <Tooltip class="left" :class="leftAsset.toLowerCase()"
+                :preferredPosition="`${
+                    (manualFunding && state === SwapState.CREATE_OUTGOING)
+                        || toFundingDurationMins && state === SwapState.AWAIT_INCOMING
+                    ? 'bottom'
+                    : 'top'
+                } right`"
+            >
                 <div slot="trigger" class="piece-container">
                     <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -129,7 +153,14 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="right" :class="rightAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
+            <Tooltip class="right" :class="rightAsset.toLowerCase()"
+                :preferredPosition="`${
+                    (manualFunding && state === SwapState.CREATE_OUTGOING)
+                        || toFundingDurationMins && state === SwapState.AWAIT_INCOMING
+                    ? 'bottom'
+                    : 'top'
+                } right`"
+            >
                 <div slot="trigger" class="piece-container">
                     <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -333,6 +364,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        toFundingDurationMins: {
+            type: Number,
+            default: 0,
+        },
         manualFunding: {
             type: Boolean,
             default: false,
@@ -416,6 +451,12 @@ export default defineComponent({
 
             state.value = stateChanges.shift()!;
 
+            if (state.value === SwapState.AWAIT_INCOMING && props.toFundingDurationMins) {
+                startTimer();
+            } else {
+                stopTimer();
+            }
+
             // Wait for the animation of this step to finish
             let delay: number; // Seconds
             switch (state.value) {
@@ -465,6 +506,39 @@ export default defineComponent({
         let bottomNoticeInterval = 0;
         const bottomNoticeMsg = ref<BottomNoticeMessage>(BottomNoticeMessage.FIRST);
 
+        // To-side funding timer
+        const timer = ref('00:00');
+        let timerInterval = 0;
+        let timerStartedAt = 0;
+
+        function startTimer() {
+            timerStartedAt = Date.now();
+            if (timerInterval) return;
+            timerInterval = window.setInterval(timerTick, 1000);
+        }
+
+        function stopTimer() {
+            window.clearInterval(timerInterval);
+            timerInterval = 0;
+        }
+
+        function timerTick() {
+            if (!timerStartedAt) {
+                timer.value = '';
+                return;
+            }
+
+            const diff = new Date(Date.now() - timerStartedAt);
+            const hours = diff.getUTCHours();
+            const minutes = diff.getUTCMinutes();
+            const seconds = diff.getUTCSeconds();
+            timer.value = [
+                ...(hours ? [hours.toString().padStart(2, '0')] : []),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0'),
+            ].join(':');
+        }
+
         onMounted(() => {
             bottomNoticeInterval = window.setInterval(() => {
                 bottomNoticeMsg.value = BottomNoticeMessage[bottomNoticeMsg.value + 1]
@@ -475,6 +549,7 @@ export default defineComponent({
 
         onUnmounted(() => {
             window.clearInterval(bottomNoticeInterval);
+            stopTimer();
         });
 
         return {
@@ -496,6 +571,7 @@ export default defineComponent({
             BankSvg,
             BottomNoticeMessage,
             bottomNoticeMsg,
+            timer,
         };
     },
     components: {
@@ -890,7 +966,8 @@ export default defineComponent({
             transform: rotate(-32deg); // Position of the puzzle piece holes
         }
 
-        .right.eur {
+        &.left-to-right .right.eur,
+        &.right-to-left .left.eur {
             .lines {
                 opacity: 0;
             }
@@ -1055,6 +1132,20 @@ export default defineComponent({
     }
 }
 
+.manual-funding,
+.to-funding-delay {
+    .animation {
+        --upscale: 1.58;
+
+        .tooltip /deep/ {
+            .trigger::after,
+            .tooltip-box {
+                transform: scale(calc(1 / var(--upscale)));
+            }
+        }
+    }
+}
+
 .manual-funding {
     .nq-card-header,
     .nq-card-footer,
@@ -1069,8 +1160,6 @@ export default defineComponent({
     }
 
     .animation {
-        --upscale: 1.58;
-
         &.left-to-right {
             transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
@@ -1086,21 +1175,79 @@ export default defineComponent({
                 transform-origin: 13rem 4.25rem;
             }
         }
+    }
+}
 
-        .tooltip /deep/ {
-            .trigger::after,
-            .tooltip-box {
-                transform: scale(calc(1 / var(--upscale)));
+.to-funding-delay {
+    .nq-card-header,
+    .animation .spinner,
+    .animation.left-to-right .left,
+    .animation.right-to-left .right,
+    .animation.left-to-right .right .swap-amount,
+    .animation.right-to-left .left .swap-amount {
+        opacity: 0;
+        pointer-events: none;
+        animation: none;
+    }
+
+    .animation {
+        &.left-to-right {
+            transform: translate(-28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip /deep/ .tooltip-box {
+                transform-origin: 13rem 4.25rem;
+            }
+        }
+
+        &.right-to-left {
+            transform: translate(28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip /deep/ .tooltip-box {
+                transform-origin: 5rem 4.25rem;
             }
         }
     }
 }
 
-.manual-funding-instructions {
+.to-funding-delay-notice {
+    text-align: center;
+    height: 19rem;
+
+    .nq-h2 {
+        font-weight: normal;
+        white-space: pre-line;
+    }
+
+    .nq-gray {
+        font-size: var(--body-size);
+        font-weight: 600;
+        max-width: 46rem;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.5;
+    }
+
+    .action-row {
+        justify-content: center;
+        align-items: center;
+
+        .timer {
+            font-variant-numeric: tabular-nums;
+            line-height: 1.7;
+        }
+    }
+}
+
+.manual-funding-instructions,
+.to-funding-delay-notice {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.to-funding-delay-notice {
+    bottom: 15rem;
 }
 
 /* mobile - animation downscale - starting at 500px width */

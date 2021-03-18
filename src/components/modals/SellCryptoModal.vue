@@ -222,6 +222,7 @@
                     :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
+                    :toFundingDurationMins="isMainnet ? OASIS_EUR_DETECTION_DELAY : 0"
                     :oasisLimitExceeded="oasisLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
@@ -321,7 +322,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore, Trial } from '../../stores/Settings';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
+import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 import {
     init as initOasisApi,
     getHtlc,
@@ -1240,6 +1241,7 @@ export default defineComponent({
             userBankAccountDetails,
             amountMenuOpened,
             sendMax,
+            OASIS_EUR_DETECTION_DELAY,
         };
     },
     components: {

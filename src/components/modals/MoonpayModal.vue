@@ -7,7 +7,7 @@
                     <a slot="link" href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
                 </i18n>
             </Tooltip>
-            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
+            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay Logo">
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>

@@ -50,6 +50,8 @@ const SellCryptoModal = () =>
 
 const MoonpayModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
+const SimplexModal = () =>
+    import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
 Vue.use(VueRouter);
 
@@ -213,6 +215,14 @@ const routes: RouteConfig[] = [{
             },
             name: 'moonpay',
             props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/simplex',
+            components: {
+                'persistent-modal': SimplexModal,
+            },
+            name: 'simplex',
+            // props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }],
     }, {

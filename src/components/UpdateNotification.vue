@@ -23,7 +23,7 @@ import { updateServiceWorker } from '../registerServiceWorker';
 
 export default defineComponent({
     setup() {
-        const isShown = ref(true);
+        const isShown = ref(false);
 
         const { updateAvailable } = useSettingsStore();
         watch(updateAvailable, (isAvailable) => {

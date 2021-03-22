@@ -42,12 +42,22 @@ interface StorageBackend {
 }
 
 class IndexedDBStorage {
+    static lastError = '';
+
     static async get<ResultType>(key: string) {
         return idbGet<ResultType>(key);
     }
 
     static async set(key: string, value: any) {
-        return idbSet(key, value);
+        try {
+            return idbSet(key, value);
+        } catch (error) {
+            if (this.lastError !== error.message) {
+                this.lastError = error.message;
+                throw error;
+            }
+            return undefined;
+        }
     }
 
     static async del(key: string) {

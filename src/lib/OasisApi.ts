@@ -80,7 +80,7 @@ export type ClearingInfo<CStatus extends ClearingStatus> = {
     detail: CStatus extends ClearingStatus.PARTIAL ? {
         amount: number,
     } : CStatus extends ClearingStatus.DENIED ? {
-        reason: string,
+        reason: DeniedReason,
     } : never,
 }
 
@@ -90,7 +90,7 @@ export type SettlementInfo<SStatus extends SettlementStatus> = {
     options: SStatus extends SettlementStatus.PENDING | SettlementStatus.DENIED | SettlementStatus.FAILED
         ? SettlementDescriptor[] : never,
     detail: SStatus extends SettlementStatus.DENIED | SettlementStatus.FAILED ? {
-        reason: string,
+        reason: SStatus extends SettlementStatus.DENIED ? DeniedReason : string,
     } : never,
 }
 

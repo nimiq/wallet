@@ -11,7 +11,8 @@
                 <summary>
                     {{ new Date(release.date).toLocaleDateString() }} - {{ release.app }} {{ release.version }}
                 </summary>
-                <p class="nq-text">{{ release.message }}</p>
+                <!-- <p class="nq-text">{{ release.message }}</p> -->
+                <SimpleMarkdown class="nq-text" :source="release.message"/>
             </details>
         </PageBody>
     </Modal>
@@ -20,6 +21,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
+// @ts-expect-error Missing types
+import { VueSimpleMarkdown as SimpleMarkdown } from 'vue-simple-markdown';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { ENV_MAIN } from '../../lib/Constants';
@@ -51,6 +54,7 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
+        SimpleMarkdown,
     },
 });
 </script>
@@ -102,13 +106,21 @@ details[open] summary {
     border-radius: 0.5rem 0.5rem 0 0;
 }
 
-details p {
-    white-space: pre-line;
-    padding: 2rem;
+details .nq-text {
+    padding: 2rem 2rem 0 2rem;
     margin: 0;
     background: var(--nimiq-highlight-bg);
     border-radius: 0 0 0.5rem 0.5rem;
     color: var(--text-80);
     line-height: 1.5;
+
+    /deep/ ul {
+        padding: 2rem 0 2rem 3rem;
+        margin: 0;
+
+        &:first-child {
+            margin-top: -2rem;
+        }
+    }
 }
 </style>

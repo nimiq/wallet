@@ -60,8 +60,8 @@
                     <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/hitbtc.svg">
                     </a>
-                    <a href="https://bitmax.io" title="BitMax" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/bitmax.svg">
+                    <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
+                        <img src="../../assets/exchanges/ascendex.png">
                     </a>
                     <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
                         title="Changelly" target="_blank" rel="noopener"

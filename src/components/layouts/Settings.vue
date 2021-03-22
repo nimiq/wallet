@@ -192,6 +192,8 @@
         <div class="copyright">
             &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
             <strong>&middot;</strong>
+            <router-link to="release-notes">{{ $t('Release Notes') }}</router-link>
+            <strong>&middot;</strong>
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
 

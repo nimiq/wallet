@@ -204,14 +204,6 @@ const routes: RouteConfig[] = [{
             name: 'moonpay',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/release-notes',
-            components: {
-                modal: ReleaseNotesModal,
-            },
-            name: 'release-notes',
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
         }],
     }, {
         path: '/settings',
@@ -227,6 +219,14 @@ const routes: RouteConfig[] = [{
             },
             name: 'disclaimer',
             meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/release-notes',
+            components: {
+                modal: ReleaseNotesModal,
+            },
+            name: 'release-notes',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
         }],
     }],
 }, {

@@ -5,6 +5,7 @@
         @close="isShown = false"
     >
         {{ $t('An update to the Wallet is available.') }}
+        <router-link to="release-notes" class="nq-link">{{ $t('Release Notes') }}</router-link>
         <div class="flex-grow"></div>
         <CircleSpinner v-if="applyingWalletUpdate"/>
         <button v-else
@@ -22,7 +23,7 @@ import { updateServiceWorker } from '../registerServiceWorker';
 
 export default defineComponent({
     setup() {
-        const isShown = ref(false);
+        const isShown = ref(true);
 
         const { updateAvailable } = useSettingsStore();
         watch(updateAvailable, (isAvailable) => {
@@ -71,6 +72,12 @@ export default defineComponent({
     &.hide-close-button /deep/ .close-button {
         display: none;
     }
+}
+
+.nq-link {
+    margin-left: 1rem;
+    color: inherit;
+    text-decoration: underline;
 }
 
 .nq-button-s,

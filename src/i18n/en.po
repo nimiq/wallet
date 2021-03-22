@@ -202,7 +202,7 @@ msgstr ""
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
 
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
 msgstr ""
 
@@ -1174,6 +1174,7 @@ msgid "Regular transactions are too slow and will not process. Your bank might u
 msgstr ""
 
 #: src/components/layouts/Settings.vue:195
+#: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr ""
 
@@ -1639,7 +1640,7 @@ msgid "Update Available"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:15
+#: src/components/UpdateNotification.vue:14
 msgid "Update now"
 msgstr ""
 

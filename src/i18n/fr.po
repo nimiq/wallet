@@ -2,13 +2,13 @@
 # Translators:
 # Talleyrand, 2020
 # Daniel, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2021
 # Robinson BARAIS, 2021
 # Matheo <matheo@nimiq.com>, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2021\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -54,8 +54,8 @@ msgstr "{value} restant"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} de plus | + {count} de plus"
 
-#: src/components/modals/BuyOptionsModal.vue:37
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:39
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid "+ network fees"
 msgstr "+ frais de réseau"
 
@@ -99,7 +99,7 @@ msgstr "Limite de 30 jours"
 msgid "6h+"
 msgstr "6h+"
 
-#: src/components/layouts/Settings.vue:285
+#: src/components/layouts/Settings.vue:287
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -216,7 +216,7 @@ msgstr ""
 "Toutes les traductions sont à titre informatif uniquement. Le texte anglais "
 "est la version de contrôle."
 
-#: src/components/modals/BuyOptionsModal.vue:54
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Almost everywhere"
 msgstr "Presque partout"
 
@@ -296,7 +296,7 @@ msgstr "Sauvegarder"
 msgid "Bank Account"
 msgstr "Compte bancaire"
 
-#: src/components/modals/BuyOptionsModal.vue:10
+#: src/components/modals/BuyOptionsModal.vue:12
 msgid "Bank Transfer"
 msgstr "Virement bancaire"
 
@@ -396,11 +396,11 @@ msgstr "Acheter des NIM"
 msgid "Buy NIM & BTC"
 msgstr "Acheter NIM et BTC"
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:27
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Acheter du NIM & BTC avec OASIS !"
 
-#: src/components/modals/BuyOptionsModal.vue:89
+#: src/components/modals/BuyOptionsModal.vue:93
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -445,7 +445,7 @@ msgstr "Annuler le Swap"
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
-#: src/components/layouts/Settings.vue:265
+#: src/components/layouts/Settings.vue:267
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -599,16 +599,16 @@ msgid "Create payment link"
 msgstr "Créer un lien de paiement"
 
 #: src/components/modals/BtcReceiveModal.vue:193
-msgid "Created {count} day ago | Created {count} days ago"
-msgstr "Créé il y a {count} jour  | Créé il y a {count} jours"
+msgid "Created {count} day ago | Created {count} days ago"
+msgstr "Créé il y a {count} jour | Créé il y a {count} jours"
 
 #: src/components/modals/BtcReceiveModal.vue:183
-msgid "Created {count} hour ago | Created {count} hours ago"
-msgstr "Créé il y a {count} heure  | Créé il y a {count} heures"
+msgid "Created {count} hour ago | Created {count} hours ago"
+msgstr "Créé il y a {count} heure | Créé il y a {count} heures"
 
 #: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} minute ago | Created {count} minutes ago"
-msgstr "Créé il y a {count} minute  | Créé il y a {count} minutes"
+msgid "Created {count} minute ago | Created {count} minutes ago"
+msgstr "Créé il y a {count} minute | Créé il y a {count} minutes"
 
 #: src/components/modals/BtcReceiveModal.vue:174
 msgid "Created just now"
@@ -618,11 +618,11 @@ msgstr "Créé à l'instant"
 msgid "Created yesterday"
 msgstr "Créé hier"
 
-#: src/components/modals/BuyOptionsModal.vue:51
+#: src/components/modals/BuyOptionsModal.vue:55
 msgid "Credit Card"
 msgstr "Carte de crédit"
 
-#: src/components/layouts/Settings.vue:195
+#: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -790,7 +790,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Valeur du FIAT indisponible"
 
-#: src/components/layouts/Settings.vue:271
+#: src/components/layouts/Settings.vue:273
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -923,7 +923,7 @@ msgstr ""
 "Augmentez la vitesse de votre transaction en payant des frais de réseau plus"
 " élevés. Ces frais vont directement aux mineurs."
 
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyOptionsModal.vue:44
 msgid ""
 "Innovation\n"
 "by Nimiq"
@@ -1014,6 +1014,10 @@ msgstr "Chargement de Moonpay..."
 msgid "loading..."
 msgstr "chargement..."
 
+#: src/components/modals/ReleaseNotesModal.vue:5
+msgid "Loading..."
+msgstr "Chargement..."
+
 #: src/components/swap/SwapAnimation.vue:199
 #: src/components/swap/SwapAnimation.vue:202
 msgid "Locking up {asset}"
@@ -1041,8 +1045,8 @@ msgstr "perdu"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/modals/BuyOptionsModal.vue:33
-#: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/modals/BuyOptionsModal.vue:35
+#: src/components/modals/BuyOptionsModal.vue:73
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
@@ -1143,7 +1147,7 @@ msgstr "Limite d'utilisation d'OASIS dépassée "
 msgid "OASIS service fee"
 msgstr "frais de service OASIS"
 
-#: src/components/layouts/Settings.vue:294
+#: src/components/layouts/Settings.vue:296
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -1159,12 +1163,12 @@ msgstr "Un compte peut supporter plusieurs adresses."
 msgid "One Account, many Addresses"
 msgstr "Un Compte, plusieurs Adresses"
 
-#: src/components/modals/BuyOptionsModal.vue:22
+#: src/components/modals/BuyOptionsModal.vue:24
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 "Payer avec un virement bancaire. Aucune inscription et aucun mail requis."
 
-#: src/components/modals/BuyOptionsModal.vue:58
+#: src/components/modals/BuyOptionsModal.vue:62
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr "Payer avec une carte de crédit. KYC requis pour les grands montants."
 
@@ -1290,6 +1294,11 @@ msgstr ""
 "Les transactions ordinaires sont trop lentes et ne seront pas traitées. "
 "Votre banque utilise peut-être un autre nom, comme \"transactions en temps "
 "réel\", par exemple."
+
+#: src/components/layouts/Settings.vue:195
+#: src/components/UpdateNotification.vue:8
+msgid "Release Notes"
+msgstr ""
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
@@ -1424,7 +1433,7 @@ msgstr "{nim} NIM envoyés à {name}"
 msgid "sent at {dateAndTime}"
 msgstr "envoyé le {dateAndTime}"
 
-#: src/components/modals/BuyOptionsModal.vue:18
+#: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
 msgstr "Virement SEPA instantané uniquement"
 
@@ -1741,7 +1750,7 @@ msgstr "Tests"
 msgid "Troubleshooting"
 msgstr "Résolution des problèmes"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:28
 msgid "Try it now"
 msgstr "Essayez-le maintenant"
 
@@ -1781,7 +1790,7 @@ msgid "Update Available"
 msgstr "Mise à jour disponible"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:13
+#: src/components/UpdateNotification.vue:14
 msgid "Update now"
 msgstr "Mettre à jour"
 

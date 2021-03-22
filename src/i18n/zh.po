@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Daniel, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2021
 # Sven <sven@nimiq.com>, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2021\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
 "Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -52,8 +52,8 @@ msgstr "剩余 {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+另外{count}个 | +另外{count}个"
 
-#: src/components/modals/BuyOptionsModal.vue:37
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:39
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid "+ network fees"
 msgstr ""
 
@@ -97,7 +97,7 @@ msgstr "30天限制"
 msgid "6h+"
 msgstr "6小时以上"
 
-#: src/components/layouts/Settings.vue:285
+#: src/components/layouts/Settings.vue:287
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -206,7 +206,7 @@ msgid ""
 "controlling version."
 msgstr "所有翻译仅供参考，以英文版本为主。"
 
-#: src/components/modals/BuyOptionsModal.vue:54
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid "Almost everywhere"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgstr "备份"
 msgid "Bank Account"
 msgstr "银行账户"
 
-#: src/components/modals/BuyOptionsModal.vue:10
+#: src/components/modals/BuyOptionsModal.vue:12
 msgid "Bank Transfer"
 msgstr ""
 
@@ -376,11 +376,11 @@ msgstr "购买 NIM"
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:27
 msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:89
+#: src/components/modals/BuyOptionsModal.vue:93
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr "取消交换"
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:265
+#: src/components/layouts/Settings.vue:267
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人。"
 
@@ -574,15 +574,15 @@ msgid "Create payment link"
 msgstr "建立付款链接"
 
 #: src/components/modals/BtcReceiveModal.vue:193
-msgid "Created {count} day ago | Created {count} days ago"
+msgid "Created {count} day ago | Created {count} days ago"
 msgstr "在{count}天前创建 | 在{count}天前创建"
 
 #: src/components/modals/BtcReceiveModal.vue:183
-msgid "Created {count} hour ago | Created {count} hours ago"
+msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr "在{count}小时前创建 | 在{count}小时前创建"
 
 #: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} minute ago | Created {count} minutes ago"
+msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr "在{count}分钟前创建 | 在{count}分钟前创建"
 
 #: src/components/modals/BtcReceiveModal.vue:174
@@ -593,11 +593,11 @@ msgstr "刚创建"
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:51
+#: src/components/modals/BuyOptionsModal.vue:55
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:195
+#: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -755,7 +755,7 @@ msgstr "正在取得"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:271
+#: src/components/layouts/Settings.vue:273
 msgid "File contains no contacts."
 msgstr "文件不包含任何联系人。"
 
@@ -880,7 +880,7 @@ msgid ""
 "fees go directly to the miners."
 msgstr "通过支付更高的网络费用来提高交易速度。费用将直接支付给矿工。"
 
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyOptionsModal.vue:44
 msgid ""
 "Innovation\n"
 "by Nimiq"
@@ -969,6 +969,10 @@ msgstr "正在加载Moonpay..."
 msgid "loading..."
 msgstr "载入中..."
 
+#: src/components/modals/ReleaseNotesModal.vue:5
+msgid "Loading..."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:199
 #: src/components/swap/SwapAnimation.vue:202
 msgid "Locking up {asset}"
@@ -996,8 +1000,8 @@ msgstr "遗失"
 msgid "Max."
 msgstr "最高"
 
-#: src/components/modals/BuyOptionsModal.vue:33
-#: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/modals/BuyOptionsModal.vue:35
+#: src/components/modals/BuyOptionsModal.vue:73
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
@@ -1094,7 +1098,7 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr "OASIS服务费"
 
-#: src/components/layouts/Settings.vue:294
+#: src/components/layouts/Settings.vue:296
 msgid "OK! Contacts imported successfully."
 msgstr "OK！ 联系人已成功导入。"
 
@@ -1110,11 +1114,11 @@ msgstr "一个帐户现在可以拥有多个地址"
 msgid "One Account, many Addresses"
 msgstr "一个帐户，多个地址"
 
-#: src/components/modals/BuyOptionsModal.vue:22
+#: src/components/modals/BuyOptionsModal.vue:24
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:58
+#: src/components/modals/BuyOptionsModal.vue:62
 msgid "Pay with credit card. Full KYC required, high availability."
 msgstr ""
 
@@ -1232,6 +1236,11 @@ msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
 "another name, like ‘real-time transactions’ i.a."
 msgstr "常规交易太慢，将无法处理。您的银行可能会使用其他名称，例如“实时交易”"
+
+#: src/components/layouts/Settings.vue:195
+#: src/components/UpdateNotification.vue:8
+msgid "Release Notes"
+msgstr ""
 
 #: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
@@ -1362,7 +1371,7 @@ msgstr "发送{nim}NIM至{name}"
 msgid "sent at {dateAndTime}"
 msgstr "在{dateAndTime}发送"
 
-#: src/components/modals/BuyOptionsModal.vue:18
+#: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
 msgstr ""
 
@@ -1670,7 +1679,7 @@ msgstr "试用版"
 msgid "Troubleshooting"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:28
 msgid "Try it now"
 msgstr ""
 
@@ -1709,7 +1718,7 @@ msgid "Update Available"
 msgstr "有可用更新"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:13
+#: src/components/UpdateNotification.vue:14
 msgid "Update now"
 msgstr "现在更新"
 

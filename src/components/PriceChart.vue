@@ -177,6 +177,8 @@ export default defineComponent({
             }).join(' ')}`;
         });
 
+        let switchingTimeRange = false;
+
         watch(() => [
             props.currency,
             props.timeRange,
@@ -199,6 +201,7 @@ export default defineComponent({
 
             if (oldTimeRange !== timeRange) {
                 // Clear chart when switching time range
+                switchingTimeRange = true;
                 history.value = [];
             }
 
@@ -217,8 +220,9 @@ export default defineComponent({
             );
         });
 
-        watch(async () => {
+        watch(history, async () => {
             if (!$path.value) return;
+            if (!switchingTimeRange) return;
             // animate the chart line
             if (history.value.length) {
                 const pathLength = $path.value.getTotalLength();
@@ -226,6 +230,7 @@ export default defineComponent({
                 await new Promise((resolve) => requestAnimationFrame(resolve)); // strokeDasharray gets applied
                 await new Promise((resolve) => requestAnimationFrame(resolve)); // ready to update strokeDasharray again
                 $path.value.style.strokeDasharray = `${pathLength} 0`;
+                switchingTimeRange = false;
             } else {
                 $path.value.style.strokeDasharray = '';
             }
@@ -261,7 +266,7 @@ svg {
 }
 
 svg path {
-    transition: stroke-dasharray 1.5s linear;
+    transition: stroke-dasharray 1.2s linear;
 }
 
 .timespan {
@@ -303,9 +308,5 @@ svg path {
 
 .change.positive::before {
     content: '+';
-}
-
-.change.negative {
-    color: var(--nimiq-red);
 }
 </style>

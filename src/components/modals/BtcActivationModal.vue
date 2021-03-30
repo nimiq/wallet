@@ -11,8 +11,8 @@
                 {{ $t('Easily swap between NIM, the super performant payment coin '
                     + 'and BTC, the gold standard of crypto.') }}
             </p>
-            <p class="nq-text nq-gray">
-                {{ $t('Buy and sell BTC by bank transfer.\nComing soon!') }}
+            <p class="nq-text">
+                {{ $t('Or buy BTC directly in the wallet.') }}
             </p>
 
             <div class="flex-grow"></div>
@@ -120,10 +120,6 @@ svg {
     margin: 0 0 2rem;
     max-width: 34.5rem;
     white-space: pre-line;
-}
-
-.nq-gray {
-    opacity: 0.6;
 }
 
 .nq-link {

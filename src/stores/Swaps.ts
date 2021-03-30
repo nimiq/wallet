@@ -75,10 +75,12 @@ export type ActiveSwap = SwapObject & {
 }
 
 export enum SEPA_INSTANT_SUPPORT {
-    FULL = 'full-support',
-    PARTIAL = 'partial-support',
-    NONE = 'no-support',
-    UNKNOWN = 'unknown-support',
+    FULL = 'full',
+    PARTIAL = 'partial', // some accounts support it, some don't, in the same bank
+    NONE = 'no',
+    UNKNOWN = 'unknown',
+
+    FULL_OR_SHARED = 'full-or-shared', // all accounts support it, but some are using generic iban, some individual ones
 }
 
 export type BankInfos = {

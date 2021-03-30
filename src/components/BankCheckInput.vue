@@ -69,7 +69,7 @@
                 <CaretRightSmallIcon class="caret-right-small-icon"
                     v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL"/>
                 <Tooltip
-                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.PARTIAL
+                    v-else-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.PARTIAL
                         || bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.UNKNOWN"
                     class="circled-question-mark"
                     preferredPosition="bottom left"
@@ -79,6 +79,19 @@
                     <CircledQuestionMarkIcon slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
+                </Tooltip>
+                <Tooltip
+                    v-else-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED"
+                    class="alert-triangle-icon"
+                    preferredPosition="bottom left"
+                    theme="inverse"
+                    :container="$bankAutocomplete && { $el: $bankAutocomplete }"
+                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
+                    <AlertTriangleIcon slot="trigger"/>
+                    <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
+                    <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
+                    <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
+                        + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
                 </Tooltip>
             </li>
             <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
@@ -96,7 +109,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
-import { LabelInput, CaretRightSmallIcon, Tooltip } from '@nimiq/vue-components';
+import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon } from '@nimiq/vue-components';
 import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
@@ -448,6 +461,7 @@ export default defineComponent({
         Tooltip,
         CountryFlag,
         WorldIcon,
+        AlertTriangleIcon,
     },
     directives: {
         ClickOutside: vClickOutside.directive,
@@ -724,7 +738,8 @@ export default defineComponent({
             transition: opacity 200ms var(--nimiq-ease);
         }
 
-        .circled-question-mark {
+        .circled-question-mark,
+        .alert-triangle-icon {
             flex-shrink: 0;
             flex-grow: 0;
 
@@ -736,8 +751,12 @@ export default defineComponent({
                     0px 2px 2.5px rgba(31, 35, 72, 0.04);
             }
 
-            .circled-question-mark-icon {
+            svg {
                 color: var(--nimiq-orange);
+            }
+
+            p {
+                line-height: 130%;
             }
 
             p:first-child {
@@ -745,10 +764,15 @@ export default defineComponent({
                 margin-bottom: 1rem;
             }
 
-            p:last-child {
+            p:not(:first-child) {
                 color: var(--text-60);
-                margin: 0;
+                margin-top: 0;
+                margin-bottom: .5rem;
                 font-size: var(--small-size);
+            }
+
+            p:last-child {
+                margin-bottom: 0;
             }
         }
     }

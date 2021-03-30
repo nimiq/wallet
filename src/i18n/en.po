@@ -10,6 +10,10 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:92
+msgid "{bankName} offers generic and individual IBANs."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:264
 #: src/components/modals/TransactionModal.vue:274
 msgid "{count} Confirmation | {count} Confirmations"
@@ -38,7 +42,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:86
+#: src/components/BankCheckInput.vue:99
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -168,7 +172,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:186
+#: src/components/BankCheckInput.vue:199
 msgid "All countries"
 msgstr ""
 
@@ -823,6 +827,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:93
+msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:150
@@ -1692,6 +1700,10 @@ msgstr ""
 msgid "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:91
+msgid "Without an individual IBAN, refunds are impossible!"
+msgstr ""
+
 #: src/components/modals/NetworkInfoModal.vue:10
 msgid "You are a part of the Nimiq Blockchain."
 msgstr ""
@@ -1755,7 +1767,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:90
+#: src/components/BankCheckInput.vue:103
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

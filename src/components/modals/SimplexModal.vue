@@ -11,7 +11,9 @@
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
-        <div id="simplex-form"></div>
+        <form id="simplex-form">
+            <div id="checkout-element"></div>
+        </form>
     </Modal>
 </template>
 
@@ -40,8 +42,25 @@ declare global {
             }>): Promise<{
                 supportedCryptoCurrencies: string[],
             }>,
+            updateCryptoCurrency: (currency: string) => void,
             on(event: string, handler: (...args: any[]) => any): void,
         };
+        Simplex: {
+            init: (options: { public_key: string}) => void, // eslint-disable-line camelcase
+            subscribe: (
+                event: 'onlineFlowFinished',
+                handler: (event: {
+                    payload: {
+                        result: 'success' | 'failure',
+                    },
+                }) => void,
+            ) => void,
+            getSDKVersion: () => string,
+            // load: (...) => ...
+            // unload: (...) => ...
+            // unsubscribe: (...) => ...
+        };
+        simplexAsyncFunction: () => void;
     }
 }
 
@@ -61,20 +80,31 @@ export default defineComponent({
             ...(btcAddress ? { btc: btcAddress } : {}),
         };
 
-        async function loadScript(): Promise<void> {
+        async function loadScript(src: string, id: string): Promise<void> {
+            return new Promise<void>((resolve) => {
+                const $script = document.createElement('script');
+                $script.type = 'text/javascript';
+                $script.id = id;
+                $script.addEventListener('load', () => resolve());
+                $script.src = src;
+                window.document.body.appendChild($script);
+            });
+        }
+
+        async function loadScripts(): Promise<any> {
             // Check if script already exists
             if (document.querySelector('script#simplex-form-script')) {
                 return Promise.resolve();
             }
 
-            return new Promise<void>((resolve) => {
-                const $script = document.createElement('script');
-                $script.type = 'text/javascript';
-                $script.id = 'simplex-form-script';
-                $script.addEventListener('load', () => resolve());
-                $script.src = 'https://iframe.sandbox.test-simplexcc.com/form.js';
-                window.document.body.appendChild($script);
+            window.simplexAsyncFunction = () => window.Simplex.init({
+                public_key: 'pk_test_4cc61433-31dc-4020-b442-ba7b77cc9fa7',
             });
+
+            return Promise.all([
+                loadScript('https://iframe.sandbox.test-simplexcc.com/form-sdk.js', 'simplex-form-script'),
+                loadScript('https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js', 'simplex-sdk-script'),
+            ]);
         }
 
         function loadStyles() {
@@ -84,15 +114,19 @@ export default defineComponent({
             $style.type = 'text/css';
             $style.id = 'simplex-css';
             $style.innerHTML = `
+    .simplex-form {
+        padding-right: 1rem;
+    }
+
     .simplex-continue-button {
-        background-color: green !important;
+        background-color: lightblue !important;
     }
 `;
             window.document.body.appendChild($style);
         }
 
         onMounted(async () => {
-            await loadScript();
+            await loadScripts();
 
             if (Config.environment !== ENV_MAIN) {
                 loadStyles();
@@ -123,6 +157,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.modal /deep/ .small-page {
+    height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
+}
+
 header {
     justify-content: space-between;
     align-items: center;
@@ -167,9 +205,10 @@ header {
 }
 
 #simplex-form {
-    padding: 2rem;
+    padding: 1rem 0 1rem 1rem;
     flex-grow: 1;
 
+    #checkout-element,
     /deep/ iframe {
         height: 100%;
     }

@@ -1,0 +1,115 @@
+<template>
+    <div class="validator-filter">
+        <div class="validator-filter-wrapper">
+            <button class="validator-switch" :class="state === FilterState.TRUST?'selected':''"
+                @click="ctrl.stateChange(FilterState.TRUST)">
+                {{ $t('TrustScore') }}
+            </button>
+            <button class="validator-switch" :class="state === FilterState.PAYOUT?'selected':''"
+                @click="ctrl.stateChange(FilterState.PAYOUT)">
+                {{ $t('Payout Time') }}
+            </button>
+            <button class="validator-switch" :class="state === FilterState.REWARD?'selected':''"
+                @click="ctrl.stateChange(FilterState.REWARD)">
+                {{ $t('Reward') }}
+            </button>
+            <span class="validator-search" @click="ctrl.stateChange(FilterState.SEARCH)">
+                <SearchIcon/>
+            </span>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from "@vue/composition-api";
+import SearchIcon from "../icons/Staking/SearchIcon.vue";
+
+enum FilterState {
+    TRUST,
+    PAYOUT,
+    REWARD,
+    SEARCH,
+};
+
+export default defineComponent({
+    setup(props, context) {
+        const state = ref(FilterState.TRUST);
+
+        return {
+            state,
+            FilterState,
+            ctrl: {
+                stateChange: (newState) => {
+                    state.value = newState;
+                }
+            }
+        }
+    },
+    props: {
+    },
+    components: {
+        SearchIcon,
+    },
+});
+</script>
+
+<style lang="scss" scoped>
+.validator-filter {
+    position: relative;
+    top: -0.5rem;
+    left: -0.25rem;
+    width: 38rem;
+    height: 3.75rem;
+    margin: auto;
+    margin-bottom: 1.5rem;
+    .validator-filter-wrapper {
+        background-color: #f2f2f4;
+        height: 3.75rem;
+        border-radius: 2rem;
+        padding: 0;
+        padding-top: .25rem;
+
+        .validator-switch {
+            padding: .75rem 1.25rem;
+            height: 3.25rem;
+
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            border-radius: 2rem;
+
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: bold;
+            font-kerning: 0.5rem;
+
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            text-align: center;
+
+            color: #9c9eae;
+            cursor: pointer;
+            * {
+                select: none;
+            }
+
+            &.selected {
+                // box-shadow: 1px #555;
+                color: var(--nimiq-blue);
+                background: white;
+                box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07), 0px 1.875px 3.75px rgba(0, 0, 0, 0.05), 0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
+                border-radius: 182.5px;              
+            }
+        }
+
+        .validator-search {
+            cursor: pointer;
+            background: transparent;
+            svg {
+                margin-top: .25rem;
+                margin-left: 1.25rem;
+            }
+        }
+    }
+}
+</style>

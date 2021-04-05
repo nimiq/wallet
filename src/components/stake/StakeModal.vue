@@ -5,14 +5,7 @@
             <StakeInfoPage @next="page += 1"/>
         </template>
         <template v-if="page === 2">
-            <!--
-            <PageHeader :backArrow="page > 1" @back="page -= 1">
-                {{ $t('Choose a Validator') }}
-            </PageHeader>
-            <PageBody>
-                
-            </PageBody>
-            -->
+            <StakeValidatorPage @back="page -= 1" @next="page += 1"/>
         </template>
     </Modal>
 </template>
@@ -21,6 +14,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import Modal from '../modals/Modal.vue';
 import StakeInfoPage from './StakeInfoPage.vue';
+import StakeValidatorPage from './StakeValidatorPage.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -33,6 +27,7 @@ export default defineComponent({
     components: {
         Modal,
         StakeInfoPage,
+        StakeValidatorPage,
     },
 });
 </script>
@@ -42,4 +37,9 @@ export default defineComponent({
     //     height: auto;
     //     overflow-y: auto;
     // }
+    
+    .modal /deep/ .page-header-back-button {
+        margin-top: 3.25rem;
+        margin-left: 1rem;
+    }
 </style>

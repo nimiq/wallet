@@ -1,0 +1,42 @@
+[
+  {
+    "name": "overstake",
+    "icon": "overstake",
+    "label": "Overstake",
+    "trust": 5.0,
+    "payout": [0, 0, 0, 0, 12],
+    "reward": 4.9
+  },
+  {
+    "name": "nimiq-watch",
+    "icon": "nimiqWatch",
+    "label": "Nimiq Watch",
+    "trust": 4.99,
+    "payout": [0, 0, 0, 0, 12],
+    "reward": 5.1
+  },
+  {
+    "name": "nimpool",
+    "icon": "nimpool",
+    "label": "NimPool",
+    "trust": 4.98,
+    "payout": [0, 0, 1, 0, 0],
+    "reward": 2.4
+  },
+  {
+    "name": "icestaking",
+    "icon": "iceStaking",
+    "label": "Icestaking",
+    "trust": 1.28,
+    "payout": [0, 0, 0, 1, 0],
+    "reward": 8.3
+  },
+  {
+    "name": "acestaking",
+    "icon": "aceStaking",
+    "label": "Ace Staking",
+    "trust": 1.28,
+    "payout": [0, 0, 0, 0, 6],
+    "reward": 7.1
+  }
+]

@@ -419,10 +419,18 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
+#: src/components/stake/StakeValidatorPage.vue:6
+msgid "Choose a Validator"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:267
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
+msgstr ""
+
+#: src/components/stake/StakeInfoPage.vue:23
+msgid "Choose an amount"
 msgstr ""
 
 #: src/lib/DataFormatting.ts:18
@@ -600,6 +608,10 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:47
 msgid "Early Access means that there are limits in place for swaps. They may be increased gradually."
+msgstr ""
+
+#: src/components/stake/StakeValidatorPage.vue:10
+msgid "Earn rewards by locking NIM in a validator. Locked NIM stay in your wallet."
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:11
@@ -885,7 +897,7 @@ msgstr ""
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:21
+#: src/components/stake/StakeInfoPage.vue:30
 msgid "let's go"
 msgstr ""
 
@@ -1233,6 +1245,10 @@ msgstr ""
 msgid "Select a currency and an amount."
 msgstr ""
 
+#: src/components/stake/StakeInfoPage.vue:19
+msgid "Select a validator"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:125
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
@@ -1389,6 +1405,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:367
 msgid "standard"
+msgstr ""
+
+#: src/components/stake/StakeInfoPage.vue:27
+msgid "Start earning NIM"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:7

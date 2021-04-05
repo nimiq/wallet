@@ -35,7 +35,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import StakingIcon from '../icons/StakingIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     components: {

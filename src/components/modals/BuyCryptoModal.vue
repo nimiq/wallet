@@ -6,12 +6,6 @@
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
-                <!-- eslint-disable max-len -->
-                <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
-                    <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
-                    <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
-                </svg>
-                <!-- eslint-enable max-len -->
                 <div class="welcome-text">
                     <span class="beta-access">
                         {{ $t('Beta') }}
@@ -19,7 +13,7 @@
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
-                        {{ $t('Welcome to the first fiat-to-crypto atomic swap.\n'
+                        {{ $t('Welcome to the first fiat-to-crypto atomic swap. '
                             + 'It’s simple, fast and decentralized.') }}
                     </p>
                 </div>
@@ -995,32 +989,27 @@ export default defineComponent({
     font-size: var(--body-size);
 }
 
-.page.closed-beta {
-    text-align: center;
-    align-items: center;
-
-    svg.welcome-euro-logo {
-        margin-top: 8rem;
-        margin-bottom: 2rem;
-    }
-}
-
 .page-body {
     justify-content: space-between;
     align-items: center;
     flex-grow: 1;
 }
 
-svg.welcome-euro-logo {
-    width: 10.5rem;
-    height: 10.5rem;
-    margin-bottom: 3rem;
-}
-
 .welcome.page-body {
-    padding-top: 6.25rem;
     width: 52.5rem;
     max-width: 100%;
+    border-radius: 1.25rem;
+    padding: {
+        top: 23.5rem; // 26rem without .beta-access
+        bottom: 4rem;
+        left: 5rem;
+        right: 6rem;
+    };
+    background: {
+        image: url('../../assets/buy-welcome-background.png');
+        repeat: no-repeat;
+        position: top center;
+    };
 
     .welcome-text {
         text-align: center;

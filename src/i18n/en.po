@@ -346,7 +346,7 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:32
+#: src/components/AnnouncementBox.vue:27
 msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
@@ -885,6 +885,10 @@ msgstr ""
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
+#: src/components/stake/StakeInfoPage.vue:21
+msgid "let's go"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:34
 msgid "Let's go"
 msgstr ""
@@ -1371,6 +1375,10 @@ msgstr ""
 msgid "Speed up your Transaction"
 msgstr ""
 
+#: src/components/stake/StakeInfoPage.vue:7
+msgid "Stake NIM to earn NIM"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
@@ -1594,7 +1602,7 @@ msgstr ""
 msgid "Troubleshooting"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:28
 msgid "Try it now"
 msgstr ""
 
@@ -1662,6 +1670,10 @@ msgstr ""
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
+msgstr ""
+
+#: src/components/stake/StakeInfoPage.vue:11
+msgid "Welcome to staking. Lock up funds with a validator and earn NIM free of risk."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:22

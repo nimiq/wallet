@@ -1326,7 +1326,6 @@ msgstr ""
 
 #: src/components/AmountMenu.vue:13
 #: src/components/modals/BtcSendModal.vue:88
-#: src/components/modals/SellCryptoModal.vue:148
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr ""
@@ -1341,6 +1340,10 @@ msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:26
 msgid "Send crypto to a smart contract."
+msgstr ""
+
+#: src/components/modals/SellCryptoModal.vue:148
+msgid "Send max"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:118

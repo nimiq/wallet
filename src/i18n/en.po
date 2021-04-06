@@ -1072,12 +1072,20 @@ msgstr ""
 msgid "One Account, many Addresses"
 msgstr ""
 
+#: src/components/stake/StakeValidatorListItem.vue:24
+msgid "p.a."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:58
 msgid "Pay with credit card. Full KYC required, high availability."
+msgstr ""
+
+#: src/components/stake/StakeValidatorFilter.vue:10
+msgid "Payout Time"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:43
@@ -1212,6 +1220,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:230
 msgid "Retrying..."
+msgstr ""
+
+#: src/components/stake/StakeValidatorFilter.vue:14
+msgid "Reward"
 msgstr ""
 
 #: src/components/AccountMenu.vue:34
@@ -1620,6 +1632,10 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:30
 #: src/components/swap/SwapSepaFundingInstructions.vue:121
 msgid "Troubleshooting"
+msgstr ""
+
+#: src/components/stake/StakeValidatorFilter.vue:6
+msgid "TrustScore"
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:28

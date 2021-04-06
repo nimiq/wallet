@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 
@@ -34,15 +33,11 @@ import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import validatorsList from './assets/validators.mock.json';// mock data
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         return {
             validatorsList: Array(3).fill(null)
-                .reduce((o, i) => o.concat(validatorsList), [])
-                .map((x) => {
-
-                    return x;
-                }) // for mock data only
-        }
+                .reduce((o) => o.concat(validatorsList), []), // for mock data only
+        };
     },
     components: {
         PageHeader,
@@ -67,6 +62,8 @@ export default defineComponent({
         padding-left: 1rem;
         padding-right: 0;
         max-height: 51.25rem;
+        overflow-x: hidden;
+        overflow-y: hidden;
 
         .validator-list {
             display: flex;
@@ -76,15 +73,15 @@ export default defineComponent({
             max-height: 45.75rem;
             width: 100%;
             padding-top: 0.25rem;
-            
+
             @extend %custom-scrollbar;
             scrollbar-color: #bcbec9 rgba(0, 0, 0, 0);
-            //scrollbar-width: 0.2rem;
+            scrollbar-width: 1rem;
 
             &::-webkit-scrollbar {
-                width: 0.5rem;
+                width: 1rem;
             }
-            
+
             &::-webkit-scrollbar-track {
                 background: rgba(0, 0, 0, 0);
             }

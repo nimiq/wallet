@@ -41,10 +41,10 @@ import IceStakingIcon from '../icons/Staking/IceStakingIcon.vue';
 
 import StarIcon from '../icons/Staking/StarIcon.vue';
 
-const getPayoutText = (payout) => {
+const getPayoutText = (payout: Array<number>) => {
     const periods = ['year', 'month', 'week', 'day', 'h'];
-    let index;
-    let value;
+    let index = 0;
+    let value = 0;
 
     for (let i = 0; i < payout.length; i++) {
         if (payout[i] > 0) {
@@ -65,7 +65,7 @@ export default defineComponent({
         return {
             payoutText: getPayoutText(props.validatorData.payout),
             Helpers: {
-                capitalise: (string) => string.charAt(0).toUpperCase() + string.slice(1),
+                capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
             },
             Icons: {
                 OverstakeIcon,

@@ -39,7 +39,7 @@ export default defineComponent({
             state,
             FilterState,
             ctrl: {
-                stateChange: (newState) => {
+                stateChange: (newState: FilterState) => {
                     state.value = newState;
                 },
             },

@@ -21,18 +21,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
-import SearchIcon from "../icons/Staking/SearchIcon.vue";
+import { defineComponent, ref } from '@vue/composition-api';
+import SearchIcon from '../icons/Staking/SearchIcon.vue';
 
 enum FilterState {
     TRUST,
     PAYOUT,
     REWARD,
     SEARCH,
-};
+}
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const state = ref(FilterState.TRUST);
 
         return {
@@ -41,9 +41,9 @@ export default defineComponent({
             ctrl: {
                 stateChange: (newState) => {
                     state.value = newState;
-                }
-            }
-        }
+                },
+            },
+        };
     },
     props: {
     },
@@ -78,13 +78,11 @@ export default defineComponent({
             box-shadow: none;
             border-radius: 2rem;
 
-            font-family: Mulish;
             font-style: normal;
             font-weight: bold;
-            font-kerning: 0.5rem;
 
-            font-size: 1.5rem;
-            line-height: 1.5rem;
+            font-size: 1.75rem;
+            line-height: 1.75rem;
             text-align: center;
 
             color: #9c9eae;
@@ -97,8 +95,10 @@ export default defineComponent({
                 // box-shadow: 1px #555;
                 color: var(--nimiq-blue);
                 background: white;
-                box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07), 0px 1.875px 3.75px rgba(0, 0, 0, 0.05), 0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
-                border-radius: 182.5px;              
+                box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07),
+                            0px 1.875px 3.75px rgba(0, 0, 0, 0.05),
+                            0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
+                border-radius: 182.5px;
             }
         }
 
@@ -106,7 +106,8 @@ export default defineComponent({
             cursor: pointer;
             background: transparent;
             svg {
-                margin-top: .25rem;
+                position: relative;
+                top: .25rem;
                 margin-left: 1.25rem;
             }
         }

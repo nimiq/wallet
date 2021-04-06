@@ -17,9 +17,9 @@ import StakeInfoPage from './StakeInfoPage.vue';
 import StakeValidatorPage from './StakeValidatorPage.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const page = ref(1);
-        
+
         return {
             page,
         };
@@ -37,7 +37,7 @@ export default defineComponent({
     //     height: auto;
     //     overflow-y: auto;
     // }
-    
+
     .modal /deep/ .page-header-back-button {
         margin-top: 3.25rem;
         margin-left: 1rem;

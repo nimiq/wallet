@@ -28,24 +28,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "@vue/composition-api";
-import { numberToLiteralTimes } from "../../lib/NumberFormatting.ts";
+import { defineComponent } from '@vue/composition-api';
+import { numberToLiteralTimes } from '../../lib/NumberFormatting';
 
 /* mock data icons */
-import OverstakeIcon from "../icons/Staking/OverstakeIcon.vue";
-import NimiqWatchIcon from "../icons/Staking/NimiqWatchIcon.vue";
-import NimpoolIcon from "../icons/Staking/NimpoolIcon.vue";
-import AceStakingIcon from "../icons/Staking/AceStakingIcon.vue";
-import IceStakingIcon from "../icons/Staking/IceStakingIcon.vue";
+import OverstakeIcon from '../icons/Staking/OverstakeIcon.vue';
+import NimiqWatchIcon from '../icons/Staking/NimiqWatchIcon.vue';
+import NimpoolIcon from '../icons/Staking/NimpoolIcon.vue';
+import AceStakingIcon from '../icons/Staking/AceStakingIcon.vue';
+import IceStakingIcon from '../icons/Staking/IceStakingIcon.vue';
 /* mock data icons */
 
-import StarIcon from "../icons/Staking/StarIcon.vue";
+import StarIcon from '../icons/Staking/StarIcon.vue';
 
 const getPayoutText = (payout) => {
-    const periods = ["year", "month", "week", "day", "h"];
-    let index, value;
+    const periods = ['year', 'month', 'week', 'day', 'h'];
+    let index;
+    let value;
 
-    for (const i in payout) {
+    for (let i = 0; i < payout.length; i++) {
         if (payout[i] > 0) {
             index = i;
             value = payout[i];
@@ -53,17 +54,18 @@ const getPayoutText = (payout) => {
         }
     }
 
-    if (index == periods.length - 1)
-        return "pays out every " + value + periods[index];
-    return "pays out " + numberToLiteralTimes(value) + " a " + periods[index];
-}
+    if (index === periods.length - 1) {
+        return `pays out every ${value}${periods[index]}`;
+    }
+    return `pays out ${numberToLiteralTimes(value)} a ${periods[index]}`;
+};
 
 export default defineComponent({
-    setup(props, context) {
+    setup(props) {
         return {
             payoutText: getPayoutText(props.validatorData.payout),
             Helpers: {
-                capitalise: (string) => string.charAt(0).toUpperCase() + string.slice(1)
+                capitalise: (string) => string.charAt(0).toUpperCase() + string.slice(1),
             },
             Icons: {
                 OverstakeIcon,
@@ -71,8 +73,8 @@ export default defineComponent({
                 NimpoolIcon,
                 AceStakingIcon,
                 IceStakingIcon,
-            }
-        }
+            },
+        };
     },
     props: {
         validatorData: {
@@ -99,12 +101,12 @@ export default defineComponent({
     margin: auto;
     margin-bottom: -.25rem;
     background-color: transparent;
-   
+
     border: 0;
     border-radius: 0.75rem;
     color: var(--text-70);
     outline: none;
-    
+
     &:focus {
         width: 49.5rem;
         border: 4px solid #f2f2f4;
@@ -154,9 +156,7 @@ export default defineComponent({
             line-height: 3rem;
             &.validator-label {
                 padding-top: 0.75rem;
-                font-family: Mulish;
-                font-weight: 500;
-                //font-weight: bolder;
+                font-weight: 600;
                 font-size: 2rem;
                 line-height: 100%;
                 color: var(--nimiq-blue);
@@ -177,9 +177,8 @@ export default defineComponent({
             white-space: nowrap;
             text-align: center;
             color: var(--nimiq-green);
-            font-style: Mulish;
             font-size: 2rem;
-            font-weight: bold;            
+            font-weight: bold;
 
             &.validator-warning {
                 border: 2px solid var(--nimiq-orange);
@@ -196,7 +195,7 @@ export default defineComponent({
         .validator-payout {
             white-space: nowrap;
             padding-left: 1rem;
-            padding-top: 0.5rem;            
+            padding-top: 0.5rem;
             // font-family: Mulish;
             font-style: normal;
             font-weight: 400;

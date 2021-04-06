@@ -41,7 +41,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        StakingIcon,        
+        StakingIcon,
     },
 });
 </script>

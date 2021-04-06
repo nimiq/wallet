@@ -88,6 +88,7 @@ export default defineComponent({
 .message-transition {
     --message-height: auto;
     --message-transition-duration: 500ms;
+    --message-transition-timing-function: cubic-bezier(0.5, 0, 0.15, 1);
 
     position: relative;
     height: var(--message-height);
@@ -98,7 +99,7 @@ export default defineComponent({
     transition: {
         property: height;
         duration: var(--message-transition-duration);
-        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+        timing-function: var(--message-transition-timing-function);
     }
 
     & > .fadeY-enter-active ~ .fadeY-enter-active {
@@ -115,7 +116,7 @@ export default defineComponent({
     transition: {
         property: opacity, transform;
         duration: var(--message-transition-duration);
-        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+        timing-function: var(--message-transition-timing-function);
     }
 }
 

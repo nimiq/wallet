@@ -127,11 +127,10 @@
                         </div>
                     </section>
 
-                    <section class="amount-section">
+                    <section class="amount-section" :class="{ orange: insufficientLimit || insufficientBalance }">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="cryptoAmount"
                                 ref="$cryptoAmountInput"
-                                :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <div class="amount-menu ticker" slot="suffix">
                                     <button class="reset button flex-row"
@@ -158,15 +157,26 @@
                                     <path d="M23.75 15.25l6.5 6.5-6.5 6.5" stroke-linejoin="round"/>
                                 </g>
                             </svg>
-                            <AmountInput v-model="fiatAmount"
-                                :max="currentLimitFiat ? currentLimitFiat * 1e2 : undefined"
-                                :decimals="fiatCurrencyInfo.decimals"
-                                placeholder="0.00"
-                            >
+                            <AmountInput v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" placeholder="0.00">
                                 <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
                         </span>
                     </section>
+
+                    <MessageTransition class="message-section">
+                        <template v-if="insufficientLimit">
+                            <!-- TEMP: wording TBD -->
+                            {{ $t('Max swappable amount is {amount} {ticker}', {
+                                amount: currentLimitCrypto / (activeCurrency === CryptoCurrency.BTC ? 1e8 : 1e5),
+                                ticker: activeCurrency === CryptoCurrency.BTC
+                                    ? btcUnit.ticker
+                                    : activeCurrency.toUpperCase(),
+                            }) }}<br /><a @click="sendMax">{{ $t('Send max') }}</a>
+                        </template>
+                        <template v-else-if="insufficientBalance">
+                            {{ $t('Insufficient balance.') }} <a @click="sendMax">{{ $t('Send max') }}</a>
+                        </template>
+                    </MessageTransition>
                 </PageBody>
 
                 <SwapModalFooter
@@ -336,6 +346,7 @@ import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import { useWindowSize } from '../../composables/useWindowSize';
+import MessageTransition from '../MessageTransition.vue';
 import {
     calculateFees,
     capDecimals,
@@ -427,6 +438,18 @@ export default defineComponent({
         const isMainnet = Config.environment === ENV_MAIN;
         const isDev = Config.environment === ENV_DEV;
 
+        const insufficientBalance = computed(() => (
+            (activeCurrency.value === CryptoCurrency.NIM
+                && cryptoAmount.value > (activeAddressInfo.value?.balance || 0))
+            || (activeCurrency.value === CryptoCurrency.BTC
+                && cryptoAmount.value > accountBtcBalance.value)
+        ));
+
+        const insufficientLimit = computed(() => (
+            (_cryptoAmount.value > (currentLimitCrypto.value || 0))
+            || (_fiatAmount.value > (currentLimitFiat.value || 0) * 1e2)
+        ));
+
         const canSign = computed(() =>
             (isDev || trials.value.includes(Trial.SELL_TO_EURO))
             && fiatAmount.value
@@ -434,7 +457,9 @@ export default defineComponent({
             && estimate.value
             && userBank.value
             && limits.value?.current.usd
-            && !fetchingEstimate.value,
+            && !fetchingEstimate.value
+            && !insufficientBalance.value
+            && !insufficientLimit.value,
         );
 
         onMounted(() => {
@@ -443,15 +468,6 @@ export default defineComponent({
                 if (width.value > 700) {
                     if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
                 }
-            }
-        });
-
-        watch(() => {
-            const availableBalance = activeCurrency.value === CryptoCurrency.NIM
-                ? activeAddressInfo.value?.balance || 0
-                : accountBtcBalance.value;
-            if (cryptoAmount.value > availableBalance) {
-                cryptoAmount.value = availableBalance;
             }
         });
 
@@ -1012,6 +1028,8 @@ export default defineComponent({
             amountMenuOpened,
             sendMax,
             OASIS_EUR_DETECTION_DELAY,
+            insufficientBalance,
+            insufficientLimit,
         };
     },
     components: {
@@ -1039,6 +1057,7 @@ export default defineComponent({
         IdenticonStack,
         InteractiveShortAddress,
         BankIconButton,
+        MessageTransition,
     },
 });
 </script>
@@ -1322,7 +1341,34 @@ export default defineComponent({
 
     .amount-section {
         text-align: center;
-        margin: 3rem 0;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+
+        &.orange {
+            color: var(--nimiq-orange);
+            transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+            .amount-input {
+                &, &:hover, &:focus {
+                    color: var(--nimiq-orange);
+                    transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+                    /deep/ .nq-input,
+                    /deep/ .label-input + span,
+                    /deep/ .label-input + .ticker,
+                    /deep/ .label-input:focus-within + .ticker {
+                        --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
+                        color: var(--nimiq-orange);
+
+                        transition: {
+                            property: border, color;
+                            duration: 200ms;
+                            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+                        }
+                    }
+                }
+            }
+        }
 
         .primary-amount {
             align-items: flex-end;
@@ -1436,6 +1482,28 @@ export default defineComponent({
                     padding: 0.375rem 0.75rem;
                 }
             }
+        }
+    }
+
+    .message-section.message-transition {
+        width: 100%;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        text-align: center;
+        color: var(--nimiq-orange);
+
+        transition-delay: 0ms ;
+        --message-transition-duration: 200ms;
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        & /deep/ .fadeY-enter,
+        & /deep/ .fadeY-leave-to {
+            transform: translateY(-25%) !important;
         }
     }
 }

@@ -120,10 +120,9 @@
                         </div>
                     </section>
 
-                    <section class="amount-section">
+                    <section class="amount-section" :class="{ orange: insufficientLimit }">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="fiatAmount"
-                                :max="currentLimitFiat ? currentLimitFiat * 1e2 : undefined"
                                 :decimals="fiatCurrencyInfo.decimals"
                                 placeholder="0.00" ref="$eurAmountInput"
                             >
@@ -138,7 +137,6 @@
                                 </g>
                             </svg>
                             <AmountInput v-model="cryptoAmount"
-                                :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <span class="ticker" slot="suffix">
                                     {{ activeCurrency === CryptoCurrency.BTC
@@ -148,6 +146,14 @@
                             </AmountInput>
                         </span>
                     </section>
+
+                    <MessageTransition class="message-section">
+                        <template v-if="insufficientLimit">
+                            <!-- TEMP: wording TBD -->
+                            {{ $t('Max swappable amount is {amount} EUR', { amount: currentLimitFiat }) }}<br />
+                            <a @click="buyMax">{{ $t('Buy max') }}</a>
+                        </template>
+                    </MessageTransition>
                 </PageBody>
 
                 <SwapModalFooter
@@ -319,6 +325,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import BankIconButton from '../BankIconButton.vue';
+import MessageTransition from '../MessageTransition.vue';
 import {
     calculateFees,
     capDecimals,
@@ -404,13 +411,19 @@ export default defineComponent({
         const isMainnet = Config.environment === ENV_MAIN;
         const isDev = Config.environment === ENV_DEV;
 
+        const insufficientLimit = computed(() => (
+            (_cryptoAmount.value > (currentLimitCrypto.value || 0))
+            || (_fiatAmount.value > (currentLimitFiat.value || 0) * 1e2)
+        ));
+
         const canSign = computed(() =>
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
             && limits.value?.current.usd
-            && !fetchingEstimate.value,
+            && !fetchingEstimate.value
+            && !insufficientLimit.value,
         );
 
         onMounted(() => {
@@ -896,6 +909,10 @@ export default defineComponent({
             }
         }
 
+        function buyMax() {
+            fiatAmount.value = (currentLimitFiat.value || 0) * 1e2;
+        }
+
         return {
             $eurAmountInput,
             addressListOpened,
@@ -932,6 +949,8 @@ export default defineComponent({
             onPaid,
             isDev,
             oasisBuyLimitExceeded,
+            insufficientLimit,
+            buyMax,
         };
     },
     components: {
@@ -960,6 +979,7 @@ export default defineComponent({
         IdenticonStack,
         InteractiveShortAddress,
         BankIconButton,
+        MessageTransition,
     },
 });
 </script>
@@ -1229,7 +1249,33 @@ export default defineComponent({
 
     .amount-section {
         text-align: center;
-        margin: 3rem 0;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+
+        &.orange {
+            color: var(--nimiq-orange);
+            transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+            .amount-input {
+                &, &:hover, &:focus {
+                    color: var(--nimiq-orange);
+                    transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+                    /deep/ .nq-input,
+                    /deep/ .label-input + span,
+                    /deep/ .label-input:focus-within + span {
+                        --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
+                        color: var(--nimiq-orange);
+
+                        transition: {
+                            property: border, color;
+                            duration: 200ms;
+                            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+                        }
+                    }
+                }
+            }
+        }
 
         .primary-amount {
             align-items: flex-end;
@@ -1280,6 +1326,31 @@ export default defineComponent({
                     font-size: 2.5rem !important;
                     padding: 0.375rem 0.75rem;
                 }
+            }
+        }
+    }
+
+    .message-section.message-transition {
+        width: 100%;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        text-align: center;
+        color: var(--nimiq-orange);
+        --message-transition-duration: 200ms;
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        & /deep/ {
+            .fadeY-enter {
+                transform: translateY(calc(21px / 4)) !important;
+            }
+
+            .fadeY-leave-to {
+                transform: translateY(calc(-21px / 4)) !important;
             }
         }
     }

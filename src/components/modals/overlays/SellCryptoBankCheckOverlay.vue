@@ -257,6 +257,7 @@ export default defineComponent({
         line-height: 2rem;
         font-size: 2rem;
         padding: 14px;
+        margin: 0; // for ios safari
     }
 
     .bank {

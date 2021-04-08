@@ -73,7 +73,7 @@
                     theme="inverse"
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <CircledQuestionMarkIcon slot="trigger"/>
+                    <CircledQuestionMarkIcon @click.stop slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
@@ -84,7 +84,7 @@
                     theme="inverse"
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <AlertTriangleIcon slot="trigger"/>
+                    <AlertTriangleIcon @click.stop slot="trigger"/>
                     <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
                     <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
                     <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '

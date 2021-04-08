@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
 import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
@@ -40,14 +40,17 @@ export default defineComponent({
 
         const labelInputHeight = ref(0);
 
-        watch(() => props.extended, async () => {
+        async function updateLabelInputHeight() {
             if (props.extended && $secondInput.value) {
                 await context.root.$nextTick();
                 const input = $secondInput.value.querySelector('input');
                 if (input) labelInputHeight.value = input.clientHeight;
                 else labelInputHeight.value = 0;
             }
-        });
+        }
+
+        onMounted(updateLabelInputHeight);
+        watch(() => props.extended, updateLabelInputHeight);
 
         return {
             $mainInput,

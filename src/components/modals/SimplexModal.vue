@@ -11,14 +11,17 @@
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
-        <form id="simplex-form">
+        <form id="simplex-form" ref="simplex">
             <div id="checkout-element"></div>
         </form>
+        <div v-if="mustReload" class="reload-notice flex-column">
+            {{ $t('Refresh the page to continue.') }}
+        </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onActivated } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon, PageFooter } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
@@ -97,9 +100,15 @@ export default defineComponent({
                 return Promise.resolve();
             }
 
-            window.simplexAsyncFunction = () => window.Simplex.init({
-                public_key: 'pk_test_4cc61433-31dc-4020-b442-ba7b77cc9fa7',
-            });
+            window.simplexAsyncFunction = () => {
+                window.Simplex.init({
+                    public_key: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
+                });
+
+                window.Simplex.subscribe('onlineFlowFinished', event => {
+                    context.root.$router.push('/');
+                });
+            };
 
             return Promise.all([
                 loadScript('https://iframe.sandbox.test-simplexcc.com/form-sdk.js', 'simplex-form-script'),
@@ -145,7 +154,16 @@ export default defineComponent({
             window.simplex.on('crypto-changed', (crypto) => console.log(crypto)); // eslint-disable-line no-console
         });
 
-        return {};
+        const mustReload = ref(false);
+
+        onActivated(async () => {
+            const $iframe = (context.refs['simplex'] as HTMLFormElement).querySelector('iframe');
+            mustReload.value = window.simplex && (!!$iframe && !$iframe.src);
+        });
+
+        return {
+            mustReload,
+        };
     },
     components: {
         PageFooter,
@@ -212,5 +230,17 @@ header {
     /deep/ iframe {
         height: 100%;
     }
+}
+
+.reload-notice {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 2rem;
 }
 </style>

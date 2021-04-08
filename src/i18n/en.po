@@ -1254,6 +1254,10 @@ msgstr ""
 msgid "Reference currency"
 msgstr ""
 
+#: src/components/modals/SimplexModal.vue:18
+msgid "Refresh the page to continue."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
 msgid "Refund"
@@ -1696,6 +1700,7 @@ msgid "This service is currently not available in your region."
 msgstr ""
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr ""
 

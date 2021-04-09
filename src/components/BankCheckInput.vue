@@ -43,7 +43,8 @@
                 :class="{ selected: selectedBankIndex === index }"
                 :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
-                @mouseenter="selectedBankIndex = index"
+                @mouseenter="selectedBankIndex = index; bank.tooltip && bank.tooltip.show()"
+                @mouseleave="bank.tooltip && bank.tooltip.hide()"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
@@ -82,6 +83,7 @@
                     class="alert-triangle-icon"
                     preferredPosition="bottom left"
                     theme="inverse"
+                    ref="$tooltips"
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <AlertTriangleIcon @click.stop slot="trigger"/>
@@ -169,6 +171,7 @@ export default defineComponent({
         const $countrySearchInput = ref<HTMLInputElement | null>(null);
         const $bankAutocomplete = ref<HTMLUListElement | null>(null);
         const $countryAutocomplete = ref<HTMLUListElement | null>(null);
+        const $tooltips = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
         const selectedCountryIndex = ref(0);
@@ -251,11 +254,24 @@ export default defineComponent({
         });
 
         /* List of banks displayed to the user. */
-        const visibleBanks = computed(() =>
-            isScrollable.value
-                ? matchingBanks.value
-                : matchingBanks.value.slice(0, 3),
-        );
+        const visibleBanks = computed(() => {
+            const b: (BankInfos & { tooltip?: Tooltip })[] = [...(
+                isScrollable.value
+                    ? matchingBanks.value
+                    : matchingBanks.value.slice(0, 3)
+            )];
+
+            if ($tooltips.value.length === 0) return b;
+
+            for (let i = 0, tIndex = 0; i < b.length; i++) {
+                if (b[i].support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED) {
+                    b[i].tooltip = $tooltips.value[tIndex];
+                    tIndex++;
+                }
+            }
+
+            return b;
+        });
 
         /* Reset the selectedBankIndex to 0 on text input */
         watch(localValue, () => selectedBankIndex.value = 0);
@@ -431,6 +447,7 @@ export default defineComponent({
             $countrySearchInput,
             $bankAutocomplete,
             $countryAutocomplete,
+            $tooltips,
 
             localValue,
             matchingBanks,

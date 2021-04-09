@@ -10,8 +10,12 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:89
+#: src/components/BankCheckInput.vue:90
 msgid "{bankName} offers generic and individual IBANs."
+msgstr ""
+
+#: src/components/BankCheckInput.vue:96
+msgid "{bankName} offers generic and individual IBANs. "
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:264
@@ -43,7 +47,7 @@ msgstr ""
 msgid "{value} remaining"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:96
+#: src/components/BankCheckInput.vue:103
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
@@ -177,7 +181,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:200
+#: src/components/BankCheckInput.vue:207
 msgid "All countries"
 msgstr ""
 
@@ -598,6 +602,10 @@ msgstr ""
 msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:95
+msgid "Don’t use a generic IBAN!"
+msgstr ""
+
 #: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr ""
@@ -864,7 +872,7 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:90
+#: src/components/BankCheckInput.vue:91
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
@@ -1330,6 +1338,10 @@ msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Sell NIM and BTC directly to your SEPA bank account."
+msgstr ""
+
+#: src/components/BankCheckInput.vue:97
+msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:111
@@ -1813,7 +1825,7 @@ msgstr ""
 msgid "Without a SEPA instant bank account your money will take 1-3 business days to arrive."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:88
+#: src/components/BankCheckInput.vue:89
 msgid "Without an individual IBAN, refunds are impossible!"
 msgstr ""
 
@@ -1884,7 +1896,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:100
+#: src/components/BankCheckInput.vue:107
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

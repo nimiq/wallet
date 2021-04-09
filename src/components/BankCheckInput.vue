@@ -85,10 +85,17 @@
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <AlertTriangleIcon @click.stop slot="trigger"/>
-                    <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
-                    <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
-                    <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
-                        + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
+                    <template v-if="direction == 'outbound'">
+                        <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
+                        <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
+                        <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
+                            + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
+                    </template>
+                    <template v-else>
+                        <p>{{ $t('Don’t use a generic IBAN!') }}</p>
+                        <p>{{ $t('{bankName} offers generic and individual IBANs. ', { bankName: bank.name }) }}</p>
+                        <p class="nq-orange">{{ $t('Selling and refunds will not work with a generic IBAN!') }}</p>
+                    </template>
                 </Tooltip>
             </li>
             <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">

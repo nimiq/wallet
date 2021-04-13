@@ -76,7 +76,7 @@ export default defineComponent({
             addSettlementData,
             userBank,
             userBankAccountDetails,
-            setPromoBoxVisible,
+            // setPromoBoxVisible,
         } = useSwapsStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
@@ -493,9 +493,9 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
-                    if (activeSwap.value!.from.asset === SwapAsset.EUR) {
-                        setPromoBoxVisible(true);
-                    }
+                    // if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                    //     setPromoBoxVisible(true);
+                    // }
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in a swap modal
                         if (['swap', 'buy-crypto', 'sell-crypto'].includes(context.root.$route.name!)) return;

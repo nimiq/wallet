@@ -10,27 +10,43 @@
             <img src="../../assets/exchanges/simplex-full.png" alt="Simplex Logo">
             <div class="flex-spacer"></div>
         </header>
+        <PageBody v-if="showAddressCopyUi" class="copy-address">
+            <p class="nq-text nq-light-blue">
+                {{ $t('Copy the following address into the empty input field to continue:') }}
+            </p>
+            <ResizingCopyable :text="currentlyShownAddress">
+                <div class="address flex-row">{{ currentlyShownAddress }}</div>
+            </ResizingCopyable>
+        </PageBody>
         <div class="separator"></div>
-        <form id="simplex-form" ref="simplex">
+        <form id="simplex-form" ref="$simplex">
             <div id="checkout-element"></div>
         </form>
         <div v-if="mustReload" class="reload-notice flex-column">
             {{ $t('Refresh the page to continue.') }}
         </div>
+        <div v-if="showAddressCopyUi" class="copy-over-arrow">
+            <svg width="162" height="285" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M55.4 24c64 35.8 68.3 151.1 13.3 191.8m12.6 4.2l-15.7-2 1.8-15.7"
+                    stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="copy-over">{{ $t('Copy\nover') }}</div>
+        </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onActivated } from '@vue/composition-api';
-import { Tooltip, InfoCircleSmallIcon, PageFooter } from '@nimiq/vue-components';
+import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
+import { Tooltip, InfoCircleSmallIcon, PageBody } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
+import ResizingCopyable from '../ResizingCopyable.vue';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
-import { useAccountStore } from '../../stores/Account';
+// import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { ENV_MAIN } from '../../lib/Constants';
+import { ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
 
 declare global {
     interface Window {
@@ -71,15 +87,16 @@ export default defineComponent({
     setup(props, context) {
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const fiatCurrencyCode = useFiatStore().state.currency;
-        const cryptoCurrencyCode = useAccountStore().state.activeCurrency;
+        // const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
+        const cryptoCurrencyCode = ref('btc');
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
         const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0];
 
-        const walletAddresses = {
+        const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
-            nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
+            nim: useAddressStore().state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
         };
 
@@ -105,7 +122,8 @@ export default defineComponent({
                     public_key: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
                 });
 
-                window.Simplex.subscribe('onlineFlowFinished', event => {
+                window.Simplex.subscribe('onlineFlowFinished', () => {
+                    // Close modal
                     context.root.$router.push('/');
                 });
             };
@@ -124,15 +142,89 @@ export default defineComponent({
             $style.id = 'simplex-css';
             $style.innerHTML = `
     .simplex-form {
-        padding-right: 1rem;
+        padding: 0 2rem 1rem 1.5rem;
+        font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control,
+    .form-control:focus,
+    .input-group .form-control:focus {
+        border: none;
+        box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.5) !important;
+        font-weight: bold;
+        height: 2.875rem;
+        color: black;
+        font-variant-numeric: tabular-nums;
+        font-size: 1rem;
+    }
+
+    .form-control::placeholder {
+        color: rgba(0, 0, 0, 0.3);
+    }
+
+    .input-group .form-control {
+        margin-right: -0.25rem;
+    }
+
+    /* to overlay the extended .form-control in default state*/
+    .input-group div {
+        position: relative;
+    }
+
+    /* to overlay the extended .form-control during focus */
+    .input-group .form-control:focus + div {
+        z-index: 4;
+    }
+
+    .dropdown-btn {
+        background: #1F2348;
+        border: 0.125rem solid #1F2348;
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        line-height: 1.65;
+        outline: none;
+    }
+
+    .address-disclaimer {
+        opacity: 0.5;
+        margin-top: 0.5rem;
+    }
+
+    .address-disclaimer + div {
+        display: none;
     }
 
     .simplex-continue-button {
-        background-color: lightblue !important;
+        background: #1F2348 !important;
+        border: 0.125rem solid #1F2348 !important;
+        color: white !important;
+        font-weight: bold;
+        font-size: 1rem;
+        letter-spacing: 0.09em;
+        padding: 0.5rem 1.5rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .simplex-continue-button:hover {
+        background: #151833 !important;
+    }
+
+    .powered-logo {
+        flex-grow: 1;
+        align-items: flex-end;
     }
 `;
             window.document.body.appendChild($style);
         }
+
+        const showAddressCopyUi = ref(true);
+
+        let observer: MutationObserver | undefined;
 
         onMounted(async () => {
             await loadScripts();
@@ -141,35 +233,64 @@ export default defineComponent({
                 loadStyles();
             }
 
-            // Wait for DOM to update and include #simplex-form
-            await context.root.$nextTick();
+            try {
+                // Try setting the language in the URL (Simplex SDK takes it from there)
+                await context.root.$router.replace({ name: 'simplex', query: { lang: language } });
+            } catch (error) {
+                // ignore
+            }
 
             const data = await window.simplex.createForm({
                 showFiatFirst: true,
                 fiat: fiatCurrencyCode.toUpperCase(),
-                crypto: cryptoCurrencyCode.toUpperCase(),
+                crypto: cryptoCurrencyCode.value.toUpperCase(),
             });
             console.log(data); // eslint-disable-line no-console
 
-            window.simplex.on('crypto-changed', (crypto) => console.log(crypto)); // eslint-disable-line no-console
+            // Observe for when the simplex iframe is removed, which is when the the checkout flow
+            // is loaded. We use this to remove the address copying UI and copy-over-arrow.
+            observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList' && mutation.removedNodes[0] instanceof HTMLIFrameElement) {
+                        showAddressCopyUi.value = false;
+                    }
+                }
+            });
+            observer.observe((context.refs.$simplex as HTMLFormElement), { childList: true, subtree: true });
+
+            window.simplex.on('crypto-changed', (crypto: string) => {
+                cryptoCurrencyCode.value = crypto.toLowerCase() as CryptoCurrency;
+            });
         });
 
         const mustReload = ref(false);
 
         onActivated(async () => {
-            const $iframe = (context.refs['simplex'] as HTMLFormElement).querySelector('iframe');
+            // If we find an iframe in the simplex-form that has no src attribute, it means the user continued
+            // to the checkout flow. This state is not recoverable once the modal has been closed.
+            // The only workaround is to reload the page and start with a fresh Javascript context.
+            const $iframe = (context.refs.$simplex as HTMLFormElement).querySelector('iframe');
             mustReload.value = window.simplex && (!!$iframe && !$iframe.src);
         });
 
+        onUnmounted(() => {
+            if (observer) observer.disconnect();
+        });
+
+        const currentlyShownAddress = computed(() => walletAddresses[cryptoCurrencyCode.value]);
+
         return {
+            showAddressCopyUi,
+            currentlyShownAddress,
             mustReload,
         };
     },
     components: {
-        PageFooter,
+        PageBody,
         Modal,
         Tooltip,
         InfoCircleSmallIcon,
+        ResizingCopyable,
     },
 });
 </script>
@@ -208,22 +329,34 @@ header {
     }
 }
 
+.copy-address {
+    overflow: hidden;
+    flex-grow: 0;
+    padding-top: 1rem;
+    padding-bottom: 3rem;
+
+    .nq-text {
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1.75rem;
+    }
+
+    .address {
+        padding: 0 var(--padding);
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
 .separator {
     height: 2px;
     margin: -2px 2rem 2px;
     box-shadow: 0 1.5px 0 0 var(--text-14);
 }
 
-.placeholder {
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: var(--small-size);
-    opacity: 0.5;
-}
-
 #simplex-form {
-    padding: 1rem 0 1rem 1rem;
+    padding: calc(3rem - 3px) 0 1rem 1rem;
     flex-grow: 1;
 
     #checkout-element,
@@ -234,7 +367,7 @@ header {
 
 .reload-notice {
     position: absolute;
-    top: 0;
+    top: 9rem;
     right: 0;
     bottom: 0;
     left: 0;
@@ -242,5 +375,21 @@ header {
     align-items: center;
     font-weight: 600;
     font-size: 2rem;
+}
+
+.copy-over-arrow {
+    position: absolute;
+    left: calc(100% - 5rem);
+    top: 17.5rem;
+
+    .copy-over {
+        position: absolute;
+        color: white;
+        font-weight: bold;
+        font-size: 2.5rem;
+        top: 13rem;
+        left: 16rem;
+        white-space: pre-line;
+    }
 }
 </style>

@@ -130,12 +130,11 @@ async function mergeJson() {
         if (!ebaRt1Banks[BIC]) {
             const bank = { ...customBanks[BIC], BIC };
             if (!bank.name || !bank.country || !bank.support.sepa.inbound || !bank.support.sepa.outbound) {
-                console.error('Incomplete info for', BIC, bank);
+                console.error('Incomplete info for', BIC, bank); // eslint-disable-line no-console
                 continue;
             }
             ebaRt1Banks[BIC] = bank;
-        }
-        else {
+        } else {
             ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || BIC;
             ebaRt1Banks[BIC].name = customBanks[BIC].name || ebaRt1Banks[BIC].name;
             ebaRt1Banks[BIC].country = customBanks[BIC].country || ebaRt1Banks[BIC].country;
@@ -183,8 +182,6 @@ async function main() {
         process.stdout.write(`> Merge:\n  > ${EBA_RT1_JSON_FILE_PATH}\n  > ${CUSTOM_JSON_FILE_PATH}\n`);
         process.stdout.write(`  > To:\n   > ${OUTPUT_JSON_FILE_PATH}\n`);
         const itemCount = await mergeJson();
-
-        // TODO?: generate 1 file per country, so we load only banks that we need to display
 
         process.stdout.write(`> Done!\n> ${itemCount} banks imported.\n`);
         process.exit(0);

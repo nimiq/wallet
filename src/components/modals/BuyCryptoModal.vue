@@ -30,7 +30,7 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="userBank ? false : true" @back="goBack">
+                <PageHeader :backArrow="userBank.sepa ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -108,7 +108,7 @@
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <BankIconButton
-                            :bankName="userBank ? userBank.name : ''"
+                            :bankName="userBank.sepa ? userBank.sepa.name : ''"
                             @click="page = Pages.BANK_CHECK"/>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
@@ -288,7 +288,7 @@ import {
 import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/vue';
 import { getNetworkClient } from '@/network';
-import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
@@ -339,6 +339,7 @@ import {
     getFiatSwapParameters,
 } from '../../lib/swap/utils/CommonUtils';
 import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
+import { BankInfos, useUserInfosStore } from '../../stores/UserInfos';
 
 enum Pages {
     WELCOME,
@@ -355,11 +356,8 @@ export default defineComponent({
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
-        const {
-            activeSwap: swap,
-            userBank,
-            setUserBank,
-        } = useSwapsStore();
+        const { activeSwap: swap } = useSwapsStore();
+        const { userBank, setUserBank } = useUserInfosStore();
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
@@ -368,7 +366,7 @@ export default defineComponent({
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref(userBank.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const assets = ref<AssetList>(null);
 
@@ -420,7 +418,7 @@ export default defineComponent({
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && userBank.value
+            && userBank.value.sepa
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientLimit.value,
@@ -633,7 +631,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
                         fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
-                        bankLabel: userBank.value!.name,
+                        bankLabel: userBank.value.sepa!.name,
                     };
                 }
 
@@ -860,7 +858,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = userBank.value ? Pages.SETUP_BUY : Pages.WELCOME;
+                    page.value = userBank.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;

@@ -53,7 +53,7 @@
                         </template>
                     </DoubleInput>
                     <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
-                        <BankIcon/><a class="nq-link nq-blue">{{ userBank.name }}</a>
+                        <BankIcon/><a class="nq-link nq-blue">{{ userBank.sepa.name }}</a>
                     </div>
                 </template>
             </MessageTransition>
@@ -75,11 +75,11 @@
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, LabelInput, AlertTriangleIcon } from '@nimiq/vue-components';
 import IBAN from 'iban';
-import { BankInfos, useSwapsStore } from '../../../stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
+import { BankInfos, useUserInfosStore } from '../../../stores/UserInfos';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',
@@ -88,16 +88,16 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { userBank, userBankAccountDetails } = useSwapsStore();
+        const { userBank, userBankAccountDetails } = useUserInfosStore();
 
         const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
         const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
         const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
-        const bankName = ref(userBank.value?.name || '');
-        const accountName = ref(userBankAccountDetails.value?.accountName || '');
-        const iban = ref(userBankAccountDetails.value?.iban || '');
+        const bankName = ref(userBank.value.sepa?.name || '');
+        const accountName = ref(userBankAccountDetails.value.sepa?.accountName || '');
+        const iban = ref(userBankAccountDetails.value.sepa?.iban || '');
 
         const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
 
@@ -118,8 +118,8 @@ export default defineComponent({
         });
 
         watch(userBank, () => {
-            accountName.value = userBankAccountDetails.value?.accountName || '';
-            iban.value = userBankAccountDetails.value?.iban || '';
+            accountName.value = userBankAccountDetails.value.sepa?.accountName || '';
+            iban.value = userBankAccountDetails.value.sepa?.iban || '';
         });
 
         function onBankSelected(bank: BankInfos) {

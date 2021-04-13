@@ -61,6 +61,7 @@ import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import { ClearingStatus, getHtlc, Htlc, HtlcStatus, settleHtlc, SettlementStatus } from '../../lib/OasisApi';
 import Time from '../../lib/Time';
+import { useUserInfosStore } from '../../stores/UserInfos';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -74,10 +75,10 @@ export default defineComponent({
             setActiveSwap,
             addFundingData,
             addSettlementData,
-            userBank,
-            userBankAccountDetails,
             // setPromoBoxVisible,
         } = useSwapsStore();
+
+        const { userBank, userBankAccountDetails } = useUserInfosStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -344,7 +345,7 @@ export default defineComponent({
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            bankLabel: userBank.value?.name,
+                            bankLabel: userBank.value.sepa?.name,
                             // bankLogo?: string,
                             amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
@@ -464,9 +465,9 @@ export default defineComponent({
                             // place to persist the relevant information in our store.
                             addSettlementData(htlc.hash.value, {
                                 asset: SwapAsset.EUR,
-                                bankLabel: userBank.value?.name,
+                                bankLabel: userBank.value.sepa?.name,
                                 // bankLogo?: string,
-                                iban: userBankAccountDetails.value?.iban,
+                                iban: userBankAccountDetails.value.sepa?.iban,
                                 amount: htlc.amount,
                                 htlc: {
                                     id: htlc.id,

@@ -31,8 +31,8 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
-import { BankInfos } from '@/stores/Swaps';
 import BankCheckInput from '../../BankCheckInput.vue';
+import { BankInfos } from '../../../stores/UserInfos';
 
 export default defineComponent({
     setup(props, context) {

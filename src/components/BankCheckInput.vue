@@ -116,7 +116,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon } from '@nimiq/vue-components';
-import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import loadBankList from '@/data/banksList';
@@ -126,6 +125,7 @@ import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
 import WorldIcon from './icons/WorldIcon.vue';
+import { BankInfos, SEPA_INSTANT_SUPPORT } from '../stores/UserInfos';
 
 type CountryInfo = {
     name: string,

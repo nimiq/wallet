@@ -14,6 +14,7 @@ import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
+import { useUserInfosStore, UserInfosState } from './stores/UserInfos';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -26,6 +27,7 @@ const StorageKeys = {
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
+    USERINFOS: 'wallet_userinfos_v01',
 };
 
 const PersistentStorageKeys = {
@@ -269,6 +271,19 @@ export async function initStorage() {
 
     unsubscriptions.push(
         swapsStore.subscribe(() => Storage.set(StorageKeys.SWAPS, swapsStore.state)),
+    );
+
+    /**
+     * UserInfos
+     */
+    const userInfosStore = useUserInfosStore();
+    const storedUserInfosState = await Storage.get<UserInfosState>(StorageKeys.USERINFOS);
+    if (storedUserInfosState) {
+        userInfosStore.patch(storedUserInfosState);
+    }
+
+    unsubscriptions.push(
+        userInfosStore.subscribe(() => Storage.set(StorageKeys.USERINFOS, userInfosStore.state)),
     );
 }
 

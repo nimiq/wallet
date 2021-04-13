@@ -43,8 +43,8 @@
                 :class="{ selected: selectedBankIndex === index }"
                 :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
-                @mouseenter="selectedBankIndex = index; bank.tooltip && bank.tooltip.show()"
-                @mouseleave="bank.tooltip && bank.tooltip.hide()"
+                @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
+                @mouseleave="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
@@ -178,6 +178,7 @@ export default defineComponent({
         const currentCountry = ref<CountryInfo | null>(null);
         const countryDropdownOpened = ref(false);
         const countrySearch = ref<string>();
+        const isScrollable = ref(false);
 
         const i18nCountryName = new I18nDisplayNames('region');
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
@@ -273,11 +274,42 @@ export default defineComponent({
             return b;
         });
 
+        /* Show warning if any visible bank is not fully supporting SEPA instant */
+        const showWarning = computed(() =>
+            matchingBanks.value.some(
+                (bank: BankInfos) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
+        );
+
         /* Reset the selectedBankIndex to 0 on text input */
         watch(localValue, () => selectedBankIndex.value = 0);
 
         /* Reset the selectedCountryIndex to 0 on text input */
         watch(countrySearch, () => selectedCountryIndex.value = 0);
+
+        /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
+        watch(selectedBankIndex, () => {
+            if (visibleBanks.value[selectedBankIndex.value]?.tooltip?.isShown) return;
+
+            visibleBanks.value.forEach((bank, index) => {
+                if (index !== selectedBankIndex.value && bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
+                if (index === selectedBankIndex.value && bank.tooltip && !bank.tooltip.isShown) bank.tooltip.show();
+            });
+        });
+
+        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
+        watch(countryDropdownOpened, (newBool, oldBool) => {
+            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
+                $countrySearchInput.value.focus();
+            } else if (!newBool && oldBool) { // onClose
+                countrySearch.value = '';
+
+                if ($bankSearchInput.value) {
+                    $bankSearchInput.value.focus();
+                }
+            }
+        });
+
+        watch([localValue, countrySearch], () => isScrollable.value = false);
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
@@ -353,20 +385,24 @@ export default defineComponent({
         }
 
         /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
-        function selectBank(bank: BankInfos) {
+        function selectBank(bank: BankInfos & { tooltip?: Tooltip }) {
             if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
+            if (bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
             localValue.value = bank.name;
-            context.emit('bank-selected', bank);
+            context.emit('bank-selected', { ...bank, tooltip: undefined } as BankInfos);
         }
 
-        /* Show warning if any visible bank is not fully supporting SEPA instant */
-        const showWarning = computed(() =>
-            matchingBanks.value.some(
-                (bank: BankInfos) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
-        );
+        /* set a country as the currently selected one */
+        function selectCountry(country: CountryInfo) {
+            currentCountry.value = country;
+
+            if (countryDropdownOpened.value) {
+                countryDropdownOpened.value = false;
+            }
+        }
 
         /* Those 3 functions are used to highlight the matched string in the bank autocomplete list */
         function getMatchPrefix(s: string) {
@@ -413,32 +449,6 @@ export default defineComponent({
             const rgx = new RegExp(normalizedLocalValue.value, 'i');
             return rgx.test(unicodeNormalize(bankName));
         }
-
-        /* set a country as the currently selected one */
-        function selectCountry(country: CountryInfo) {
-            currentCountry.value = country;
-
-            if (countryDropdownOpened.value) {
-                countryDropdownOpened.value = false;
-            }
-        }
-
-        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
-        watch(countryDropdownOpened, (newBool, oldBool) => {
-            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
-                $countrySearchInput.value.focus();
-            } else if (!newBool && oldBool) { // onClose
-                countrySearch.value = '';
-
-                if ($bankSearchInput.value) {
-                    $bankSearchInput.value.focus();
-                }
-            }
-        });
-
-        const isScrollable = ref(false);
-
-        watch([localValue, countrySearch], () => isScrollable.value = false);
 
         return {
             SEPA_INSTANT_SUPPORT,

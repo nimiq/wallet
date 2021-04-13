@@ -456,6 +456,7 @@ export default defineComponent({
             && !estimateError.value && !swapError.value
             && estimate.value
             && userBank.value
+            && userBankAccountDetails.value
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientBalance.value
@@ -926,7 +927,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = userBank.value ? Pages.SETUP_BUY : Pages.WELCOME;
+                    page.value = userBank.value && userBankAccountDetails.value ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;

@@ -1029,6 +1029,7 @@ export default defineComponent({
         image: url('../../assets/buy-welcome-background.png');
         repeat: no-repeat;
         position: top center;
+        size: 100% auto;
     };
 
     .welcome-text {

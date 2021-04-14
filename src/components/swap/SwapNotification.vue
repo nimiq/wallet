@@ -472,6 +472,7 @@ export default defineComponent({
                                 htlc: {
                                     id: htlc.id,
                                     timeoutTimestamp: htlc.expires,
+                                    settlementStatus: htlc.settlement.status,
                                 },
                             });
                         }

@@ -33,7 +33,7 @@
             </PageBody>
 
             <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column" @click="amountMenuOpened = false">
-                <PageHeader :backArrow="userBank.sepa ? false : true" @back="goBack">
+                <PageHeader :backArrow="banks.sepa ? false : true" @back="goBack">
                     {{ $t('Sell Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -121,10 +121,10 @@
                         </div>
                         <div class="flex-column">
                             <BankIconButton
-                                :bankName="userBank.sepa ? userBank.sepa.name : ''"
+                                :bankName="banks.sepa ? banks.sepa.name : ''"
                                 @click="page = Pages.BANK_CHECK"/>
                             <InteractiveShortAddress
-                                :address="userBankAccountDetails.sepa.iban"
+                                :address="bankAccounts.sepa.iban"
                                 tooltipPosition="left"/>
                         </div>
                     </section>
@@ -349,7 +349,7 @@ import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import { useWindowSize } from '../../composables/useWindowSize';
 import MessageTransition from '../MessageTransition.vue';
-import { BankAccountDetailsInfos, BankInfos, useUserInfosStore } from '../../stores/UserInfos';
+import { BankAccount, Bank, useBankStore } from '../../stores/Bank';
 import {
     calculateFees,
     capDecimals,
@@ -386,11 +386,11 @@ export default defineComponent({
         const { btcUnit } = useSettingsStore();
         const { activeSwap: swap } = useSwapsStore();
         const {
-            userBank,
-            setUserBank,
-            setUserBankAccountDetails,
-            userBankAccountDetails,
-        } = useUserInfosStore();
+            banks,
+            setBank,
+            setBankAccount,
+            bankAccounts,
+        } = useBankStore();
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
@@ -400,7 +400,7 @@ export default defineComponent({
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const page = ref(userBank.value.sepa && userBankAccountDetails.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref(banks.value.sepa && bankAccounts.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
@@ -458,8 +458,8 @@ export default defineComponent({
             && fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && userBank.value.sepa
-            && userBankAccountDetails.value.sepa
+            && banks.value.sepa
+            && bankAccounts.value.sepa
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientBalance.value
@@ -485,13 +485,13 @@ export default defineComponent({
             }
         }
 
-        function onBankSelected(bank: BankInfos) {
-            setUserBank(bank);
+        function onBankSelected(bank: Bank) {
+            setBank(bank);
             addressListOpened.value = false;
         }
 
-        async function onBankDetailsEntered(bankAccountDetails: BankAccountDetailsInfos) {
-            setUserBankAccountDetails(bankAccountDetails);
+        async function onBankDetailsEntered(bankAccount: BankAccount) {
+            setBankAccount(bankAccount);
             page.value = Pages.SETUP_BUY;
             await context.root.$nextTick();
             if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
@@ -724,7 +724,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.to.amount,
                         fee: swapSuggestion.to.fee,
-                        bankLabel: userBank.value.sepa!.name,
+                        bankLabel: banks.value.sepa!.name,
                         settlement: {
                             type: 'mock',
                             // TODO: Change type to 'sepa' and add `recipient: { name, iban }` for Mainnet
@@ -930,7 +930,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = userBank.value.sepa && userBankAccountDetails.value.sepa
+                    page.value = banks.value.sepa && bankAccounts.value.sepa
                         ? Pages.SETUP_BUY
                         : Pages.WELCOME;
                     break;
@@ -1002,7 +1002,7 @@ export default defineComponent({
             canSign,
             fiatAmount,
             fiatCurrencyInfo,
-            userBank,
+            banks,
             SwapAsset,
             SwapState,
             finishSwap,
@@ -1030,7 +1030,7 @@ export default defineComponent({
             Trial,
             oasisSellLimitExceeded,
             onBankDetailsEntered,
-            userBankAccountDetails,
+            bankAccounts,
             amountMenuOpened,
             sendMax,
             OASIS_EUR_DETECTION_DELAY,

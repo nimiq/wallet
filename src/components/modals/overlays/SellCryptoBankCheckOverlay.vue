@@ -53,7 +53,7 @@
                         </template>
                     </DoubleInput>
                     <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
-                        <BankIcon/><a class="nq-link nq-blue">{{ userBank.sepa.name }}</a>
+                        <BankIcon/><a class="nq-link nq-blue">{{ banks.sepa.name }}</a>
                     </div>
                 </template>
             </MessageTransition>
@@ -79,7 +79,7 @@ import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
-import { BankInfos, useUserInfosStore } from '../../../stores/UserInfos';
+import { Bank, useBankStore } from '../../../stores/Bank';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',
@@ -88,16 +88,16 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { userBank, userBankAccountDetails } = useUserInfosStore();
+        const { banks, bankAccounts } = useBankStore();
 
         const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
         const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
         const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
-        const bankName = ref(userBank.value.sepa?.name || '');
-        const accountName = ref(userBankAccountDetails.value.sepa?.accountName || '');
-        const iban = ref(userBankAccountDetails.value.sepa?.iban || '');
+        const bankName = ref(banks.value.sepa?.name || '');
+        const accountName = ref(bankAccounts.value.sepa?.accountName || '');
+        const iban = ref(bankAccounts.value.sepa?.iban || '');
 
         const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
 
@@ -117,12 +117,12 @@ export default defineComponent({
             }
         });
 
-        watch(userBank, () => {
-            accountName.value = userBankAccountDetails.value.sepa?.accountName || '';
-            iban.value = userBankAccountDetails.value.sepa?.iban || '';
+        watch(banks, () => {
+            accountName.value = bankAccounts.value.sepa?.accountName || '';
+            iban.value = bankAccounts.value.sepa?.iban || '';
         });
 
-        function onBankSelected(bank: BankInfos) {
+        function onBankSelected(bank: Bank) {
             context.emit('bank-selected', bank);
             currentStep.value = Step.IBAN_CHECK;
         }
@@ -151,7 +151,7 @@ export default defineComponent({
             $accountNameInput,
             $ibanInput,
 
-            userBank,
+            banks,
             bankName,
             writing,
             currentStep,

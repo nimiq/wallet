@@ -9,7 +9,7 @@
         <PageBody class="flex-column">
             <div class="flex-grow"></div>
             <BankCheckInput v-model="bankName"
-                @bank-selected="onBankSelected"
+                @bank-selected="(bank) => $emit('bank-selected', bank)"
                 direction="outbound"
                 :placeholder="$t('Enter bank name')"
                 :title="$t('Enter bank name')"
@@ -32,7 +32,6 @@
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import BankCheckInput from '../../BankCheckInput.vue';
-import { BankInfos } from '../../../stores/UserInfos';
 
 export default defineComponent({
     setup(props, context) {
@@ -40,10 +39,6 @@ export default defineComponent({
         const bankName = ref('');
 
         const writing = computed(() => bankName.value.length !== 0);
-
-        function onBankSelected(bank: BankInfos) {
-            context.emit('bank-selected', bank);
-        }
 
         onMounted(async () => {
             await context.root.$nextTick();
@@ -53,7 +48,6 @@ export default defineComponent({
         return {
             $bankCheckInput,
             bankName,
-            onBankSelected,
             writing,
         };
     },

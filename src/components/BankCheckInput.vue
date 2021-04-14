@@ -125,7 +125,7 @@ import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
 import WorldIcon from './icons/WorldIcon.vue';
-import { BankInfos, SEPA_INSTANT_SUPPORT } from '../stores/UserInfos';
+import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 
 type CountryInfo = {
     name: string,
@@ -184,7 +184,7 @@ export default defineComponent({
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
         /* Lazy-load the complete bank lists */
-        const banks = ref<BankInfos[]>([]);
+        const banks = ref<Bank[]>([]);
         onMounted(() => {
             selectCountry(countries.value[0]);
             loadBankList().then((BANKS) => banks.value = BANKS);
@@ -256,7 +256,7 @@ export default defineComponent({
 
         /* List of banks displayed to the user. */
         const visibleBanks = computed(() => {
-            const b: (BankInfos & { tooltip?: Tooltip })[] = [...(
+            const b: (Bank & { tooltip?: Tooltip })[] = [...(
                 isScrollable.value
                     ? matchingBanks.value
                     : matchingBanks.value.slice(0, 3)
@@ -277,7 +277,7 @@ export default defineComponent({
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
             matchingBanks.value.some(
-                (bank: BankInfos) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
+                (bank: Bank) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
         );
 
         /* Reset the selectedBankIndex to 0 on text input */
@@ -385,14 +385,14 @@ export default defineComponent({
         }
 
         /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
-        function selectBank(bank: BankInfos & { tooltip?: Tooltip }) {
+        function selectBank(bank: Bank & { tooltip?: Tooltip }) {
             if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
             if (bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
             localValue.value = bank.name;
-            context.emit('bank-selected', { ...bank, tooltip: undefined } as BankInfos);
+            context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
         }
 
         /* set a country as the currently selected one */

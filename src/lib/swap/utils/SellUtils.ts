@@ -20,7 +20,6 @@ const { activeSwap: swap } = useSwapsStore();
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
 const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
-const { estimate } = useSwapEstimate();
 
 /**
  * Sell - Sell crypto related things
@@ -46,17 +45,21 @@ export const oasisSellLimitExceeded = computed(() => {
     return deniedSettlementInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
 });
 
-export const nimFeePerUnit = computed(() =>
-    (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
-    || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-    || 0, // Default zero fees for NIM
-);
+export const nimFeePerUnit = computed(() => {
+    const { estimate } = useSwapEstimate();
 
-export const btcFeePerUnit = computed(() =>
-    (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
-    || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-    || 1,
-);
+    return (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
+        || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
+        || 0; // Default zero fees for NIM
+});
+
+export const btcFeePerUnit = computed(() => {
+    const { estimate } = useSwapEstimate();
+
+    return (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
+        || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
+        || 1;
+});
 
 // 48 extra weight units for BTC HTLC funding tx
 export const btcFeeForSendingAll = computed(() =>
@@ -118,5 +121,6 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
         }
     } // eslint-disable-line brace-style
 
+    const { estimate } = useSwapEstimate();
     estimate.value = newEstimate;
 }

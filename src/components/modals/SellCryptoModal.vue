@@ -285,7 +285,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -990,6 +990,10 @@ export default defineComponent({
                 }
             }
         }
+
+        onUnmounted(() => {
+            estimate.value = null;
+        });
 
         return {
             $cryptoAmountInput,

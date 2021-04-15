@@ -255,7 +255,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -910,6 +910,10 @@ export default defineComponent({
         function buyMax() {
             fiatAmount.value = (currentLimitFiat.value || 0) * 1e2;
         }
+
+        onUnmounted(() => {
+            estimate.value = null;
+        });
 
         return {
             $eurAmountInput,

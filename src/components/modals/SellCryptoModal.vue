@@ -732,6 +732,8 @@ export default defineComponent({
                             recipient: {
                                 name: bankAccounts.value.sepa!.accountName,
                                 iban: bankAccounts.value.sepa!.iban,
+                                // @ts-expect-error HubApi does not yet include this field
+                                bic: banks.value.sepa!.BIC,
                             },
                         } : {
                             type: OasisTransactionType.MOCK,

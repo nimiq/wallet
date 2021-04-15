@@ -100,11 +100,24 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
 
     public async settleHtlc(settlementJWS: string, secret: string): Promise<HtlcDetails> {
         if (this.stopped) throw new Error('EuroAssetAdapter called while stopped');
-        const payload = JSON.parse(atob(settlementJWS.split('.')[1])) as SettlementInstruction;
-        const htlc = await this.client.settleHtlc(payload.contractId, secret, settlementJWS);
-        if (htlc.status !== HtlcStatus.SETTLED || htlc.settlement.status !== SettlementStatus.PENDING) {
+
+        const jwsBody = settlementJWS.split('.')[1];
+        // JWS is encoded as Base64Url
+        const jsonBody = atob(jwsBody.replace(/_/g, '/').replace(/-/g, '+'));
+        const payload = JSON.parse(jsonBody) as SettlementInstruction;
+
+        let htlc: HtlcDetails;
+        try {
+            htlc = await this.client.settleHtlc(payload.contractId, secret, settlementJWS);
+        } catch (error) {
+            console.error(error); // eslint-disable-line no-console
+            htlc = await this.client.getHtlc(payload.contractId);
+        }
+
+        if (htlc.status !== HtlcStatus.SETTLED || htlc.settlement.status === SettlementStatus.WAITING) {
             throw new Error('Could not settle OASIS HTLC (invalid secret?)');
         }
+
         return htlc;
     }
 

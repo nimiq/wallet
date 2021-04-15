@@ -48,15 +48,7 @@ export enum TransactionType {
 export type SepaRecipient = {
     iban: string,
     name: string,
-    bic?: string,
-    address?: {
-        line1: string,
-        line2?: string,
-        city: string,
-        state: string,
-        postalCode: string,
-        country: string,
-    },
+    bic: string,
 }
 
 export type SepaClearingInstruction = {

@@ -79,7 +79,7 @@ import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
-import { Bank, useBankStore } from '../../../stores/Bank';
+import { Bank, BankAccount, useBankStore } from '../../../stores/Bank';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',
@@ -138,10 +138,12 @@ export default defineComponent({
         }
 
         function confirm() {
-            context.emit('details-entered', {
+            const bankAccount: BankAccount = {
                 accountName: accountName.value,
                 iban: iban.value,
-            });
+            };
+
+            context.emit('details-entered', bankAccount);
         }
 
         return {

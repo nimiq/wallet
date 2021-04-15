@@ -229,6 +229,7 @@
                     :error="swap.error"
                     :toFundingDurationMins="isMainnet ? OASIS_EUR_DETECTION_DELAY : 0"
                     :oasisSellLimitExceeded="oasisSellLimitExceeded"
+                    :stateEnteredAt="swap.stateEnteredAt"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 />

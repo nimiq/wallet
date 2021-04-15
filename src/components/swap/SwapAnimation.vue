@@ -405,6 +405,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        stateEnteredAt: {
+            type: Number,
+            required: false,
+        },
     },
     setup(props, context) {
         // NIM Identicon
@@ -540,10 +544,8 @@ export default defineComponent({
         // To-side funding timer
         const timer = ref('00:00');
         let timerInterval = 0;
-        let timerStartedAt = 0;
 
         function startTimer() {
-            timerStartedAt = Date.now();
             if (timerInterval) return;
             timerInterval = window.setInterval(timerTick, 1000);
         }
@@ -554,12 +556,12 @@ export default defineComponent({
         }
 
         function timerTick() {
-            if (!timerStartedAt) {
+            if (!props.stateEnteredAt) {
                 timer.value = '';
                 return;
             }
 
-            const diff = new Date(Date.now() - timerStartedAt);
+            const diff = new Date(Date.now() - props.stateEnteredAt);
             const hours = diff.getUTCHours();
             const minutes = diff.getUTCMinutes();
             const seconds = diff.getUTCSeconds();

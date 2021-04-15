@@ -1698,12 +1698,12 @@ msgstr ""
 "Банк обрабатывает вашу транзакцию.\n"
 "Это может занять до {min} мин."
 
-#: src/components/swap/SwapModal.vue:630 src/lib/swap/utils/BuyUtils.ts:89
-#: src/lib/swap/utils/SellUtils.ts:111
+#: src/components/swap/SwapModal.vue:630 src/lib/swap/utils/BuyUtils.ts:90
+#: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 
-#: src/lib/swap/utils/BuyUtils.ts:94 src/lib/swap/utils/SellUtils.ts:116
+#: src/lib/swap/utils/BuyUtils.ts:95 src/lib/swap/utils/SellUtils.ts:120
 msgid "The fees determine the minimum amount."
 msgstr "Минимальная сумма определяется комиссией."
 

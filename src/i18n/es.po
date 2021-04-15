@@ -1706,12 +1706,12 @@ msgstr ""
 "El banco esta procesando su transacción \n"
 "Esto puede tomar {min} minutos."
 
-#: src/components/swap/SwapModal.vue:630 src/lib/swap/utils/BuyUtils.ts:89
-#: src/lib/swap/utils/SellUtils.ts:111
+#: src/components/swap/SwapModal.vue:630 src/lib/swap/utils/BuyUtils.ts:90
+#: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 
-#: src/lib/swap/utils/BuyUtils.ts:94 src/lib/swap/utils/SellUtils.ts:116
+#: src/lib/swap/utils/BuyUtils.ts:95 src/lib/swap/utils/SellUtils.ts:120
 msgid "The fees determine the minimum amount."
 msgstr "Las cuotas determinan el monto mínimo."
 

@@ -327,6 +327,7 @@ import {
     init as initOasisApi,
     getHtlc,
     HtlcStatus,
+    TransactionType as OasisTransactionType,
 } from '../../lib/OasisApi';
 import { setupSwap } from '../../hub';
 import { getElectrumClient } from '../../electrum';
@@ -725,9 +726,14 @@ export default defineComponent({
                         value: swapSuggestion.to.amount,
                         fee: swapSuggestion.to.fee,
                         bankLabel: banks.value.sepa!.name,
-                        settlement: {
-                            type: 'mock',
-                            // TODO: Change type to 'sepa' and add `recipient: { name, iban }` for Mainnet
+                        settlement: Config.environment === ENV_MAIN ? {
+                            type: OasisTransactionType.SEPA,
+                            recipient: {
+                                name: bankAccounts.value.sepa!.accountName,
+                                iban: bankAccounts.value.sepa!.iban,
+                            },
+                        } : {
+                            type: OasisTransactionType.MOCK,
                         },
                     };
                 }

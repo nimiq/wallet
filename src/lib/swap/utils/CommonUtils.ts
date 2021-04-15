@@ -1,6 +1,6 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
-import { computed, ref } from '@vue/composition-api';
+import { computed, onUnmounted, ref, getCurrentInstance } from '@vue/composition-api';
 import { useSwapLimits } from '../../../composables/useSwapLimits';
 import { useAccountStore } from '../../../stores/Account';
 import { useAddressStore } from '../../../stores/Address';
@@ -276,4 +276,12 @@ export function getFiatSwapParameters({ from, to } : {
     }
 
     return { from: null, to: null };
+}
+
+export function useSwapEstimate() {
+    if (getCurrentInstance()) {
+        onUnmounted(() => estimate.value = null);
+    }
+
+    return { estimate };
 }

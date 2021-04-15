@@ -12,11 +12,12 @@ import {
     HtlcStatus,
 } from '../../OasisApi';
 import { i18n } from '../../../i18n/i18n-setup';
-import { calculateFees, estimate, getFiatSwapParameters, selectedFiatCurrency } from './CommonUtils';
+import { calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 
 const { activeSwap: swap } = useSwapsStore();
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
+const { estimate } = useSwapEstimate();
 
 /**
  * Buy - Buy crypto related things

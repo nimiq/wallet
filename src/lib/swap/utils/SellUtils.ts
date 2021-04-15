@@ -14,12 +14,13 @@ import {
 import { estimateFees } from '../../BitcoinTransactionUtils';
 import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { i18n } from '../../../i18n/i18n-setup';
-import { assets, calculateFees, estimate, getFiatSwapParameters, selectedFiatCurrency } from './CommonUtils';
+import { assets, calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 
 const { activeSwap: swap } = useSwapsStore();
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
 const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
+const { estimate } = useSwapEstimate();
 
 /**
  * Sell - Sell crypto related things

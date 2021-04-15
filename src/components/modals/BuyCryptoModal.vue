@@ -255,7 +255,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -331,7 +331,7 @@ import {
     capDecimals,
     currentLimitCrypto,
     currentLimitFiat,
-    estimate,
+    useSwapEstimate,
     eurPerBtc,
     eurPerNim,
     fetchAssets,
@@ -361,6 +361,7 @@ export default defineComponent({
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
+        const { estimate } = useSwapEstimate();
 
         const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
@@ -910,10 +911,6 @@ export default defineComponent({
         function buyMax() {
             fiatAmount.value = (currentLimitFiat.value || 0) * 1e2;
         }
-
-        onUnmounted(() => {
-            estimate.value = null;
-        });
 
         return {
             $eurAmountInput,

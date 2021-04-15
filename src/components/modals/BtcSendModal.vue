@@ -3,46 +3,42 @@
         <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
             <PageBody class="flex-column">
-                <section class="address-section" :class="{'extended': recipientWithLabel}">
-                    <transition name="slide-n-fade">
-                        <BtcLabelInput v-if="recipientWithLabel"
+                <DoubleInput :extended="!!recipientWithLabel">
+                    <template #second v-if="recipientWithLabel">
+                        <BtcLabelInput
                             v-model="recipientWithLabel.label"
                             :placeholder="$t('Name this recipient...')"
-                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
-                            ref="labelInputRef"/>
-                    </transition>
-                    <BtcAddressInput
-                        :placeholder="$t('Enter recipient address...')"
-                        v-model="addressInputValue"
-                        @paste="(event, text) => parseRequestUri(text, event)"
-                        @input="resetAddress"
-                        @address="onAddressEntered"
-                        @scan="$router.push('/scan')"
-                        ref="addressInputRef"/>
-                    <span
-                        v-if="recipientWithLabel && recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
-                        class="reused-address nq-orange flex-row"
-                    >
-                        <AlertTriangleIcon/>
-                        {{ $t('This address has already been used') }}
-                        <Tooltip preferredPosition="bottom left" :styles="{width: '205px', 'text-align': 'left'}">
-                            <InfoCircleSmallIcon slot="trigger"/>
-                            <span class="header">
-                                {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
-                            </span>
-                            <p>
-                                {{ $t('Although reusing addresses won’t result in a loss of funds, '
-                                    + 'it is highly recommended not to do so.') }}
-                            </p>
-                        </Tooltip>
-                    </span>
-                    <transition name="slide">
-                        <div class="fake-border"
-                            v-if="recipientWithLabel"
-                            :style="`--inputHeight: ${labelInputHeight}px`">
-                        </div>
-                    </transition>
-                </section>
+                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"/>
+                    </template>
+
+                    <template #main>
+                        <BtcAddressInput
+                            :placeholder="$t('Enter recipient address...')"
+                            v-model="addressInputValue"
+                            @paste="(event, text) => parseRequestUri(text, event)"
+                            @input="resetAddress"
+                            @address="onAddressEntered"
+                            @scan="$router.push('/scan')"/>
+                    </template>
+
+                    <template #message
+                        v-if="recipientWithLabel && recipientWithLabel.type === RecipientType.KNOWN_CONTACT">
+                        <span class="nq-orange reused-address flex-row">
+                            <AlertTriangleIcon/>
+                            {{ $t('This address has already been used') }}
+                            <Tooltip preferredPosition="bottom left" :styles="{width: '205px', 'text-align': 'left'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                <span class="header">
+                                    {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                                </span>
+                                <p>
+                                    {{ $t('Although reusing addresses won’t result in a loss of funds, '
+                                        + 'it is highly recommended not to do so.') }}
+                                </p>
+                            </Tooltip>
+                        </span>
+                    </template>
+                </DoubleInput>
 
                 <div class="flex-grow"></div>
 
@@ -177,6 +173,7 @@ import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
+import DoubleInput from '../DoubleInput.vue';
 
 export enum RecipientType {
     NEW_CONTACT,
@@ -405,9 +402,7 @@ export default defineComponent({
         }
 
         const addressInputRef = ref<BtcAddressInput>(null);
-        const labelInputRef = ref<LabelInput>(null);
         const amountInputRef = ref<AmountInput>(null);
-        const labelInputHeight = computed(() => labelInputRef.value?.$el.children[0].clientHeight);
 
         const { width } = useWindowSize();
 
@@ -544,10 +539,7 @@ export default defineComponent({
 
             // DOM refs for autofocus
             addressInputRef,
-            labelInputRef,
             amountInputRef,
-
-            labelInputHeight,
 
             // Status Screen
             statusScreenOpened,
@@ -576,6 +568,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleSmallIcon,
         StatusScreen,
+        DoubleInput,
     },
 });
 </script>
@@ -600,178 +593,18 @@ export default defineComponent({
         overflow: inherit;
     }
 
-    .address-section {
-        text-align: center;
-        position: relative;
+    .reused-address {
+        align-items: center;
+        font-weight: 600;
+        margin-top: -2.5rem; // TODO: check others
 
-        .btc-label-input {
-            $inputHeight: 5.875rem;
-            margin-bottom: -0.25rem;
-
-            & /deep/ form {
-                background-color: white;
-            }
-
-            /* Vue transition: slide-n-fade */
-            &.slide-n-fade-enter-active,
-            &.slide-n-fade-leave-active {
-                $animatedProps: height, opacity;
-
-                will-change: #{$animatedProps};
-                transition: {
-                    duration: var(--short-transition-duration);
-                    timing-function: var(--nimiq-ease);
-                    property: #{$animatedProps};
-                }
-            }
-
-            &.slide-n-fade-enter-to,
-            &.slide-n-fade-leave {
-                height: #{$inputHeight};
-                opacity: 1;
-            }
-
-            &.slide-n-fade-enter,
-            &.slide-n-fade-leave-to {
-                height: 0.25rem;
-                opacity: 0;
-            }
+        > .nq-icon {
+            margin-right: 0.5rem;
         }
 
-        .btc-address-input {
-            width: 100%;
-            font-size: 15px;
-            position: relative; // For correct z-index positioning
-
-            & /deep/ input {
-                transition: all 200ms, width 50ms;
-            }
-
-            & /deep/ form {
-                background-color: white;
-            }
-        }
-
-        .reused-address {
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            margin-top: -2.5rem;
-
-            > .nq-icon {
-                margin-right: 0.5rem;
-            }
-
-            .tooltip {
-                margin-left: 0.5rem;
-                font-size: var(--small-size);
-            }
-        }
-
-        &.extended {
-            .btc-label-input {
-                /deep/ input {
-                    border-bottom-left-radius: 0;
-                    border-bottom-right-radius: 0;
-                }
-
-                &:hover,
-                &:focus-within {
-                    /deep/ .label-input,
-                    /deep/ .avatar {
-                        z-index: 2;
-                    }
-
-                    /deep/ .label-autocomplete {
-                        z-index: 4;
-                    }
-                }
-
-                &:focus-within /deep/ input {
-                    border-bottom-left-radius: .5rem;
-                    border-bottom-right-radius: .5rem;
-                }
-            }
-
-            .btc-address-input {
-                /deep/ input {
-                    border-top-left-radius: 0;
-                    border-top-right-radius: 0;
-                }
-
-                &:focus-within {
-                    z-index: 2;
-
-                    /deep/ input {
-                        border-top-left-radius: .5rem;
-                        border-top-right-radius: .5rem;
-                    }
-                }
-            }
-        }
-    }
-
-    .fake-border {
-        $borderSize: 4px;
-        $borderColor: white;
-        $animatedProps: border-radius, box-shadow;
-        $inputBoxShadowSize: 2px;
-        $defaultInputHeight: 6rem;
-
-        --inputHeight: #{$defaultInputHeight};
-
-        height: #{$inputBoxShadowSize};
-        width: calc(100% - #{$inputBoxShadowSize});
-
-        position: absolute;
-        left: #{$inputBoxShadowSize / 2};
-        z-index: 3;
-
-        border-radius: 0;
-        box-shadow: 0 0 0 0 #{$borderColor};
-        transition: {
-            property: #{$animatedProps};
-            duration: 200ms;
-        }
-
-        .btc-label-input:focus-within ~ &,
-        .btc-address-input:focus-within ~ & {
-            will-change: #{$animatedProps}
-        }
-
-        .btc-address-input:focus-within ~ & {
-            border-top-left-radius: #{$inputBoxShadowSize};
-            border-top-right-radius: #{$inputBoxShadowSize};
-            box-shadow:
-                0 #{($borderSize / 2 + $inputBoxShadowSize) * -1}
-                0 #{$borderSize / 2}
-                $borderColor;
-        }
-
-        .btc-label-input:focus-within ~ & {
-            border-bottom-left-radius: $inputBoxShadowSize;
-            border-bottom-right-radius: $inputBoxShadowSize;
-            box-shadow:
-                0 #{$borderSize / 2 + $inputBoxShadowSize}
-                0 #{$borderSize / 2}
-                $borderColor;
-        }
-
-        /* Vue transition: slide */
-        &.slide-enter-active,
-        &.slide-leave-active {
-            transition: top var(--short-transition-duration) var(--nimiq-ease);
-        }
-
-        &,
-        &.slide-enter-to,
-        &.slide-leave {
-            top: calc(var(--inputHeight) - #{$inputBoxShadowSize});
-        }
-
-        &.slide-enter,
-        &.slide-leave-to {
-            top: 0;
+        .tooltip {
+            margin-left: 0.5rem;
+            font-size: var(--small-size);
         }
     }
 

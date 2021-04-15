@@ -229,7 +229,7 @@ declare global {
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#Converting_a_digest_to_a_hex_string
 // Exposed globally to create passwords for new trials.
 window.digestMessage = async function (message: string): Promise<string> { // eslint-disable-line func-names
-    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+    const msgUint8 = new TextEncoder().encode(message.toLowerCase()); // encode as (utf-8) Uint8Array
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
     const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
     const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
@@ -317,12 +317,12 @@ export default defineComponent({
             }
 
             switch (hash) {
-                case '-impossible-':
+                case '72cdaca316309385cad24e8b548fb8b5d7d3067fb3091d89e728fb2f7b4db1f1':
                     settings.enableTrial(Trial.SELL_TO_EURO); break;
                 default: el.value = 'Nope, no cookie for you'; return;
             }
 
-            el.value = 'OK, trial enabled';
+            el.value = 'OK, trial enabled!';
         }
 
         const applyingWalletUpdate = ref(false);

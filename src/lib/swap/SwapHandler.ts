@@ -23,6 +23,7 @@ export type Swap<FromAsset extends SwapAsset, ToAsset extends SwapAsset> = {
     to: {
         asset: ToAsset,
         amount: number,
+        serviceEscrowFee: number,
     },
     hash: string,
     contracts: { [asset in FromAsset | ToAsset]: Contract<FromAsset | ToAsset> },
@@ -61,7 +62,7 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
 
         return this.toAssetAdapter.awaitHtlcFunding(
             contract.htlc.address,
-            this.swap.to.amount,
+            this.swap.to.amount + this.swap.to.serviceEscrowFee,
             this.swap.to.asset === SwapAsset.NIM ? (contract as Contract<SwapAsset.NIM>).htlc.data : '',
             onUpdate,
         );
@@ -107,8 +108,9 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         );
     }
 
-    public async awaitIncomingConfirmation(onUpdate?: (tx: Transaction<ToAsset>) => any)
-        : Promise<Transaction<ToAsset>> {
+    public async awaitIncomingConfirmation(
+        onUpdate?: (tx: Transaction<ToAsset>) => any,
+    ): Promise<Transaction<ToAsset>> {
         const contract = this.swap.contracts[this.swap.to.asset] as Contract<ToAsset>;
         return this.toAssetAdapter.awaitSettlementConfirmation(contract.htlc.address, onUpdate);
     }

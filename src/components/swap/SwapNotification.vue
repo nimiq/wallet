@@ -1,6 +1,7 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
-        <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
+        <button
+            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
@@ -60,6 +61,7 @@ import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import { ClearingStatus, getHtlc, Htlc, HtlcStatus, settleHtlc, SettlementStatus } from '../../lib/OasisApi';
 import Time from '../../lib/Time';
+import { useBankStore } from '../../stores/Bank';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -72,9 +74,11 @@ export default defineComponent({
             activeSwap,
             setActiveSwap,
             addFundingData,
-            userBank,
-            setPromoBoxVisible,
+            addSettlementData,
+            // setPromoBoxVisible,
         } = useSwapsStore();
+
+        const { banks, bankAccounts } = useBankStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -333,16 +337,15 @@ export default defineComponent({
                                 // TODO: Handle partial funding
                             }
 
-                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
-                                // TODO: Handle limit excess
-                            }
+                            // Limit excess is detected in BuyCryptoModal (`oasisLimitExceeded`)
+                            // if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED)
                         }) as Transaction<SwapAsset.EUR>;
 
                         // As EUR payments are not otherwise detected by the Wallet, we use this
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            bankLabel: userBank.value?.name,
+                            bankLabel: banks.value.sepa?.name,
                             // bankLogo?: string,
                             amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
@@ -428,6 +431,7 @@ export default defineComponent({
                 }
                 case SwapState.SETTLE_INCOMING: {
                     try {
+                        // TODO: Catch double settlement (e.g. after page-reload)
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
@@ -438,19 +442,38 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
-                            await swapHandler.awaitIncomingConfirmation((htlc) => {
+                            // eslint-disable-next-line @typescript-eslint/no-shadow
+                            const htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
+                                updateSwap({
+                                    settlementTx: htlc,
+                                });
+
                                 if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
                                     checkExpired();
                                     return;
                                 }
 
-                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED) {
-                                    // TODO: Handle limit excess
-                                }
+                                // Limit excess is detected in SellCryptoModal (`oasisLimitExceeded`)
+                                // if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED)
 
                                 if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
                                     // TODO: Handle failed payout
                                 }
+                            }) as Htlc<HtlcStatus.SETTLED>;
+
+                            // As EUR payments are not otherwise detected by the Wallet, we use this
+                            // place to persist the relevant information in our store.
+                            addSettlementData(htlc.hash.value, {
+                                asset: SwapAsset.EUR,
+                                bankLabel: banks.value.sepa?.name,
+                                // bankLogo?: string,
+                                iban: bankAccounts.value.sepa?.iban,
+                                amount: htlc.amount,
+                                htlc: {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                    settlementStatus: htlc.settlement.status,
+                                },
                             });
                         }
 
@@ -472,12 +495,12 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
-                    if (activeSwap.value!.from.asset === SwapAsset.EUR) {
-                        setPromoBoxVisible(true);
-                    }
+                    // if (activeSwap.value!.from.asset === SwapAsset.EUR) {
+                    //     setPromoBoxVisible(true);
+                    // }
                     setTimeout(() => {
-                        // Hide notification after a timeout, if not in the SwapModal.
-                        if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;
+                        // Hide notification after a timeout, if not in a swap modal
+                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(context.root.$route.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }
@@ -497,6 +520,8 @@ export default defineComponent({
                 context.root.$router.push('/swap');
             } else if (activeSwap.value.from.asset === SwapAsset.EUR) {
                 context.root.$router.push('/buy-crypto');
+            } else if (activeSwap.value.to.asset === SwapAsset.EUR) {
+                context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
             }

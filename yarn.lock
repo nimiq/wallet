@@ -939,15 +939,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.3.tgz#f0a4de59394f210f2c2d9cda8ee35c716847d40e"
   integrity sha512-W66SS9n3ygYgD52r1GJr1WtYYOkcZsqdtMmDCEwDvkrmeARnHs2sAvj77Wt4PQG8JA7GwK5svIJr6rGccCaekw==
 
-"@nimiq/core-web@1.5.6":
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.6.tgz#3802f9ed996bbd84186b455d28bedc0b62ba20e7"
-  integrity sha512-42tDJBoniJqAg3jYqb+5EzLQYY7/fl2UHMM3jfLpgDuYUgKAk4mHcJ9rP5cWCrkaWfR2z+ZMkaGiWdkrpxwBlQ==
-
-"@nimiq/core-web@^1.5.3":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.7.tgz#e9d5293682531c6df5398e04b06a68a1aefbdbec"
-  integrity sha512-83JYPGJlolHHTJJhJYEI3JQ+llrP2DQAJ1gfsmO2NWNthTj6Dj/K2rdzvImMFefq46uoggmW8bwOJbQCkW6pYA==
+"@nimiq/core-web@1.5.8", "@nimiq/core-web@^1.5.8":
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
+  integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.1.0"
@@ -955,17 +950,18 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.0.tgz#9a342660e217cc2f14892613b7353e5894d7b5ff"
-  integrity sha512-7+lYYu1EQqHUjH2Z7u3jsACZi9vIyKMOTdweqvv66JD9l6S3B1fffl7ha95S5NoTTZ17+QZXbSJnSXXZOsUbpg==
+"@nimiq/fastspot-api@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
+  integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
 
-"@nimiq/hub-api@v1.4.2-beta.1":
-  version "1.4.2-beta.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.4.2-beta.1.tgz#f35a4537123affbab56176681db8c4acab63d8b3"
-  integrity sha512-e+6fkaYNN+pdQKKItnGDw4u78Kpm+/dY97Wm9+Qy3RHbDSxNyWVpX89OgiQptXdF9wumP0T3yIvz9wEiIJYgHQ==
+"@nimiq/hub-api@^1.5.0-beta.0":
+  version "1.5.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.5.0-beta.0.tgz#c9108ee2e208918748481a7c1fd4ea02093a13b9"
+  integrity sha512-lXMuEdg90Xh25fTHaYD+YvRPkJHQOIOWYjy1ruumPgylAqL2+1d40uHuDIZglf4c2XnnDmmPbaBuePzFZx0dbw==
   dependencies:
-    "@nimiq/core-web" "^1.5.3"
+    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/fastspot-api" "^1.5.2"
     "@nimiq/rpc" "^0.4.0"
     big-integer "^1.6.48"
 
@@ -1200,6 +1196,11 @@
   integrity sha512-GNkDE7bTv6Sf8JbV2GksknKOsk7OznNYHSdrtvPJXO0qJ9odZig6IZKUi5RFGi6d1bf6dgIAe4uXi3DBc7069Q==
   dependencies:
     "@types/node" "*"
+
+"@types/iban@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@types/iban/-/iban-0.0.32.tgz#0308cc330fe534d5b7015299feb32ab216e124d5"
+  integrity sha512-GhyJ+IVOC/eFfARnYd8wjL9dKvlQU+amhml0UxgSzTr/13V11op+nVVdkyqEipHYoqJZv4RHWLfkMmZrCgjjCA==
 
 "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5":
   version "7.0.7"
@@ -5853,6 +5854,11 @@ human-signals@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
+
+iban@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/iban/-/iban-0.0.14.tgz#fd8a65ac50c8b770682634b20dc5c5c9feba5c24"
+  integrity sha512-+rocNKk+Ga9m8Lr9fTMWd+87JnsBrucm0ZsIx5ROOarZlaDLmd+FKdbtvb0XyoBw9GAFOYG2GuLqoNB16d+p3w==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"

@@ -1,8 +1,5 @@
 <template>
-    <div class="bank-check-input"
-        :class="{ disabled }"
-        @keydown="onKeyDown"
-    >
+    <div class="bank-check-input" :class="{ disabled }" @keydown="onKeyDown">
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
         <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
             <button class="reset trigger" @click="countryDropdownOpened = true">
@@ -44,13 +41,14 @@
             <li class="bank"
                 v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: selectedBankIndex === index }"
-                :disabled="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE"
+                :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
-                @mouseenter="selectedBankIndex = index"
+                @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
+                @mouseleave="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
-                <BankIcon v-if="bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <BankIcon v-if="bank.support.sepa[direction] !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
 
                 <div class="flex-column">
@@ -67,31 +65,39 @@
                 </div>
 
                 <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL"/>
+                    v-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
                 <Tooltip
-                    v-else-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.PARTIAL
-                        || bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.UNKNOWN"
+                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.PARTIAL
+                        || bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.UNKNOWN"
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <CircledQuestionMarkIcon slot="trigger"/>
+                    <CircledQuestionMarkIcon @click.stop slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
                 <Tooltip
-                    v-else-if="bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED"
+                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED"
                     class="alert-triangle-icon"
                     preferredPosition="bottom left"
                     theme="inverse"
+                    ref="$tooltips"
                     :container="$bankAutocomplete && { $el: $bankAutocomplete }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <AlertTriangleIcon slot="trigger"/>
-                    <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
-                    <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
-                    <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
-                        + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
+                    <AlertTriangleIcon @click.stop slot="trigger"/>
+                    <template v-if="direction == 'outbound'">
+                        <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
+                        <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
+                        <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
+                            + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
+                    </template>
+                    <template v-else>
+                        <p>{{ $t('Don’t use a generic IBAN!') }}</p>
+                        <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
+                        <p class="nq-orange">{{ $t('Selling and refunds will not work with a generic IBAN!') }}</p>
+                    </template>
                 </Tooltip>
             </li>
             <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
@@ -110,7 +116,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon } from '@nimiq/vue-components';
-import { SEPA_INSTANT_SUPPORT, BankInfos } from '@/stores/Swaps';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import loadBankList from '@/data/banksList';
@@ -120,6 +125,7 @@ import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
 import WorldIcon from './icons/WorldIcon.vue';
+import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 
 type CountryInfo = {
     name: string,
@@ -139,6 +145,10 @@ export default defineComponent({
         disabled: {
             type: Boolean,
             default: false,
+        },
+        direction: {
+            type: String as () => 'inbound' | 'outbound',
+            required: true,
         },
     },
     setup(props, context) {
@@ -161,18 +171,20 @@ export default defineComponent({
         const $countrySearchInput = ref<HTMLInputElement | null>(null);
         const $bankAutocomplete = ref<HTMLUListElement | null>(null);
         const $countryAutocomplete = ref<HTMLUListElement | null>(null);
+        const $tooltips = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
         const selectedCountryIndex = ref(0);
         const currentCountry = ref<CountryInfo | null>(null);
         const countryDropdownOpened = ref(false);
         const countrySearch = ref<string>();
+        const isScrollable = ref(false);
 
         const i18nCountryName = new I18nDisplayNames('region');
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
         /* Lazy-load the complete bank lists */
-        const banks = ref<BankInfos[]>([]);
+        const banks = ref<Bank[]>([]);
         onMounted(() => {
             selectCountry(countries.value[0]);
             loadBankList().then((BANKS) => banks.value = BANKS);
@@ -243,10 +255,29 @@ export default defineComponent({
         });
 
         /* List of banks displayed to the user. */
-        const visibleBanks = computed(() =>
-            isScrollable.value
-                ? matchingBanks.value
-                : matchingBanks.value.slice(0, 3),
+        const visibleBanks = computed(() => {
+            const b: (Bank & { tooltip?: Tooltip })[] = [...(
+                isScrollable.value
+                    ? matchingBanks.value
+                    : matchingBanks.value.slice(0, 3)
+            )];
+
+            if ($tooltips.value.length === 0) return b;
+
+            for (let i = 0, tIndex = 0; i < b.length; i++) {
+                if (b[i].support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED) {
+                    b[i].tooltip = $tooltips.value[tIndex];
+                    tIndex++;
+                }
+            }
+
+            return b;
+        });
+
+        /* Show warning if any visible bank is not fully supporting SEPA instant */
+        const showWarning = computed(() =>
+            matchingBanks.value.some(
+                (bank: Bank) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
         );
 
         /* Reset the selectedBankIndex to 0 on text input */
@@ -254,6 +285,31 @@ export default defineComponent({
 
         /* Reset the selectedCountryIndex to 0 on text input */
         watch(countrySearch, () => selectedCountryIndex.value = 0);
+
+        /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
+        watch(selectedBankIndex, () => {
+            if (visibleBanks.value[selectedBankIndex.value]?.tooltip?.isShown) return;
+
+            visibleBanks.value.forEach((bank, index) => {
+                if (index !== selectedBankIndex.value && bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
+                if (index === selectedBankIndex.value && bank.tooltip && !bank.tooltip.isShown) bank.tooltip.show();
+            });
+        });
+
+        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
+        watch(countryDropdownOpened, (newBool, oldBool) => {
+            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
+                $countrySearchInput.value.focus();
+            } else if (!newBool && oldBool) { // onClose
+                countrySearch.value = '';
+
+                if ($bankSearchInput.value) {
+                    $bankSearchInput.value.focus();
+                }
+            }
+        });
+
+        watch([localValue, countrySearch], () => isScrollable.value = false);
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
@@ -328,20 +384,25 @@ export default defineComponent({
             }
         }
 
-        /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound support */
-        function selectBank(bank: BankInfos) {
-            if (bank.support.sepa.outbound === SEPA_INSTANT_SUPPORT.NONE) {
+        /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
+        function selectBank(bank: Bank & { tooltip?: Tooltip }) {
+            if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
+            if (bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
             localValue.value = bank.name;
-            context.emit('bank-selected', bank);
+            context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
         }
 
-        /* Show warning if any visible bank is not fully supporting SEPA instant */
-        const showWarning = computed(() =>
-            matchingBanks.value.some((bank: BankInfos) => bank.support.sepa.outbound !== SEPA_INSTANT_SUPPORT.FULL),
-        );
+        /* set a country as the currently selected one */
+        function selectCountry(country: CountryInfo) {
+            currentCountry.value = country;
+
+            if (countryDropdownOpened.value) {
+                countryDropdownOpened.value = false;
+            }
+        }
 
         /* Those 3 functions are used to highlight the matched string in the bank autocomplete list */
         function getMatchPrefix(s: string) {
@@ -389,32 +450,6 @@ export default defineComponent({
             return rgx.test(unicodeNormalize(bankName));
         }
 
-        /* set a country as the currently selected one */
-        function selectCountry(country: CountryInfo) {
-            currentCountry.value = country;
-
-            if (countryDropdownOpened.value) {
-                countryDropdownOpened.value = false;
-            }
-        }
-
-        /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
-        watch(countryDropdownOpened, (newBool, oldBool) => {
-            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
-                $countrySearchInput.value.focus();
-            } else if (!newBool && oldBool) { // onClose
-                countrySearch.value = '';
-
-                if ($bankSearchInput.value) {
-                    $bankSearchInput.value.focus();
-                }
-            }
-        });
-
-        const isScrollable = ref(false);
-
-        watch([localValue, countrySearch], () => isScrollable.value = false);
-
         return {
             SEPA_INSTANT_SUPPORT,
 
@@ -422,6 +457,7 @@ export default defineComponent({
             $countrySearchInput,
             $bankAutocomplete,
             $countryAutocomplete,
+            $tooltips,
 
             localValue,
             matchingBanks,

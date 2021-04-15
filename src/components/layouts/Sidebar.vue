@@ -28,9 +28,11 @@
                 @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
+
             <button class="nq-button-s inverse"
-                @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
-                :disabled="$route.name !== 'root'"
+                @click="$router.push(isDev || trials.includes(Trial.SELL_TO_EURO)
+                    ? '/sell-crypto?sidebar=true' : '/trade?sidebar=true')" @mousedown.prevent
+                :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Sell') }}</button>
         </div>
 
@@ -74,7 +76,7 @@ import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
-import { useSettingsStore } from '../../stores/Settings';
+import { useSettingsStore, Trial } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -114,7 +116,7 @@ export default defineComponent({
             }
         }
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable, trials } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -132,6 +134,8 @@ export default defineComponent({
             isLegacyAccount,
             updateAvailable,
             hasActiveSwap,
+            trials,
+            Trial,
         };
     },
     components: {

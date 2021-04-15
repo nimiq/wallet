@@ -14,6 +14,7 @@ import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
+import { useBankStore, BankState } from './stores/Bank';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -26,6 +27,7 @@ const StorageKeys = {
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
+    BANK: 'wallet_bank_v01',
 };
 
 const PersistentStorageKeys = {
@@ -269,6 +271,19 @@ export async function initStorage() {
 
     unsubscriptions.push(
         swapsStore.subscribe(() => Storage.set(StorageKeys.SWAPS, swapsStore.state)),
+    );
+
+    /**
+     * Bank
+     */
+    const bankStore = useBankStore();
+    const storedBankState = await Storage.get<BankState>(StorageKeys.BANK);
+    if (storedBankState) {
+        bankStore.patch(storedBankState);
+    }
+
+    unsubscriptions.push(
+        bankStore.subscribe(() => Storage.set(StorageKeys.BANK, bankStore.state)),
     );
 }
 

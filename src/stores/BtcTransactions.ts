@@ -74,6 +74,24 @@ export const useBtcTransactionsStore = createStore({
                                 timeoutTimestamp: fundingData.timeoutTimestamp,
                             },
                         });
+
+                        if (!useSwapsStore().state.swaps[fundingData.hash].out) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            const htlcAddress = plain.outputs
+                                .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+                                .address;
+                            if (htlcAddress) {
+                                getContract(SwapAsset.BTC, htlcAddress).then((contractWithEstimate) => {
+                                    if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+                                        useSwapsStore().addSettlementData(fundingData.hash, {
+                                            asset: SwapAsset.EUR,
+                                            amount: contractWithEstimate.to.amount,
+                                            // We cannot get bank info or EUR HTLC details from this.
+                                        });
+                                    }
+                                }).catch(() => undefined);
+                            }
+                        }
                     }
                     // HTLC Refunding
                     const refundingData = await isHtlcRefunding(plain); // eslint-disable-line no-await-in-loop

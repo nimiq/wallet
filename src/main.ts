@@ -17,6 +17,7 @@ import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { startSentry } from './lib/Sentry';
+import { init as initOasisApi } from './lib/OasisApi';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -57,8 +58,12 @@ async function start() {
 
     startSentry();
 
-    if (Config.fastspot.apiKey) {
+    if (Config.fastspot.apiEndpoint && Config.fastspot.apiKey) {
         initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+    }
+
+    if (Config.oasis.apiEndpoint) {
+        initOasisApi(Config.oasis.apiEndpoint);
     }
 
     const app = new Vue({

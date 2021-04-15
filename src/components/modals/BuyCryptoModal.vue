@@ -296,7 +296,6 @@ import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import {
-    init as initOasisApi,
     getHtlc,
     Htlc,
     HtlcStatus,
@@ -756,7 +755,6 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            initOasisApi(Config.oasis.apiEndpoint);
             let oasisHtlc: Htlc<HtlcStatus>;
             try {
                 // TODO: Retry getting the HTLC if first time fails

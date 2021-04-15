@@ -324,7 +324,6 @@ import { useSettingsStore, Trial } from '../../stores/Settings';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 import {
-    init as initOasisApi,
     getHtlc,
     HtlcStatus,
     TransactionType as OasisTransactionType,
@@ -847,7 +846,6 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            initOasisApi(Config.oasis.apiEndpoint);
             const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);

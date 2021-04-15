@@ -288,7 +288,7 @@
                     }}</div>
                 </template>
 
-                <template v-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
+                <template v-else-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-orange">{{
                         $t('Don\'t close your wallet until the swap is complete!')

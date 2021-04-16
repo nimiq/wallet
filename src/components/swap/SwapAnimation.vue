@@ -472,6 +472,10 @@ export default defineComponent({
         // Swap Direction
         const swapDirection = computed(() => props.switchSides ? 'right-to-left' : 'left-to-right');
 
+        // To-side funding timer
+        const timer = ref('00:00');
+        let timerInterval = 0;
+
         // Swap State
         const state = ref(SwapState.SIGN_SWAP);
         const stateChanges: SwapState[] = [];
@@ -541,13 +545,10 @@ export default defineComponent({
         let bottomNoticeInterval = 0;
         const bottomNoticeMsg = ref<BottomNoticeMessage>(BottomNoticeMessage.FIRST);
 
-        // To-side funding timer
-        const timer = ref('00:00');
-        let timerInterval = 0;
-
         function startTimer() {
             if (timerInterval) return;
             timerInterval = window.setInterval(timerTick, 1000);
+            timerTick();
         }
 
         function stopTimer() {

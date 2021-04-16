@@ -484,7 +484,7 @@ msgid "Choose a Recipient"
 msgstr "Empfänger auswählen"
 
 #: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:279
+#: src/components/modals/SellCryptoModal.vue:280
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"

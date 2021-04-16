@@ -46,7 +46,7 @@ const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './component
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
-    import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/SellCryptoModal.vue');
+    import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
 
 const MoonpayModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');

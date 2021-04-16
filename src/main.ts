@@ -89,6 +89,10 @@ async function start() {
 
         if (router.currentRoute.path !== '/') {
             const startRoute = router.currentRoute.fullPath;
+
+            // Verify that this route exists in the app
+            if (!router.resolve(startRoute).resolved.matched.length) return;
+
             app.$once('route-changed', () => Vue.nextTick().then(() => {
                 // Use push, so the user is able to use the OS' back button.
                 // Use fullpath to also capture query params, like used in payment links.

@@ -79,10 +79,15 @@ export type ClearingInfo<CStatus extends ClearingStatus> = {
 export type SettlementInfo<SStatus extends SettlementStatus> = {
     status: SStatus,
     type?: TransactionType,
-    options: SStatus extends SettlementStatus.PENDING | SettlementStatus.DENIED | SettlementStatus.FAILED
+    options: SStatus extends SettlementStatus.WAITING | SettlementStatus.DENIED | SettlementStatus.FAILED
         ? SettlementDescriptor[] : never,
     detail: SStatus extends SettlementStatus.DENIED | SettlementStatus.FAILED ? {
         reason: SStatus extends SettlementStatus.DENIED ? DeniedReason : string,
+    } : SStatus extends SettlementStatus.ACCEPTED ? {
+        eta: {
+            seconds: number,
+            nanos: number,
+        },
     } : never,
 }
 

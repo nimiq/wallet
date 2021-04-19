@@ -97,6 +97,7 @@ import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
+import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 
 export default defineComponent({
     props: {
@@ -152,6 +153,7 @@ export default defineComponent({
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash));
         const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        useOasisPayoutStatusUpdater(swapData);
         const isCancelledSwap = computed(() =>
             swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 

@@ -91,6 +91,7 @@ import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/C
 import { isProxyData, ProxyType } from '../lib/ProxyDetection';
 import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
+import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 
 export default defineComponent({
     props: {
@@ -131,6 +132,7 @@ export default defineComponent({
                 ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
                 : null));
         const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        useOasisPayoutStatusUpdater(swapData);
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
         const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));

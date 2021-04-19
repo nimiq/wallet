@@ -53,13 +53,21 @@ import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
+import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
-import { ClearingStatus, getHtlc, Htlc, HtlcStatus, settleHtlc, SettlementStatus } from '../../lib/OasisApi';
+import {
+    ClearingStatus,
+    getHtlc,
+    Htlc,
+    HtlcStatus,
+    settleHtlc,
+    SettlementInfo,
+    SettlementStatus,
+} from '../../lib/OasisApi';
 import Time from '../../lib/Time';
 import { useBankStore } from '../../stores/Bank';
 
@@ -442,8 +450,28 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
+                            let htlc = settlementTx as Htlc<HtlcStatus.SETTLED>;
+
+                            // As EUR payments are not otherwise detected by the Wallet, we use this
+                            // place to persist the relevant information in our store.
+                            const swapData: SwapEurData = {
+                                asset: SwapAsset.EUR,
+                                bankLabel: banks.value.sepa?.name,
+                                // bankLogo?: string,
+                                iban: bankAccounts.value.sepa?.iban,
+                                amount: htlc.amount,
+                                htlc: {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                    settlement: {
+                                        status: htlc.settlement.status,
+                                    },
+                                },
+                            };
+                            addSettlementData(htlc.hash.value, swapData);
+
                             // eslint-disable-next-line @typescript-eslint/no-shadow
-                            const htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
+                            htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
                                 updateSwap({
                                     settlementTx: htlc,
                                 });
@@ -463,18 +491,17 @@ export default defineComponent({
 
                             // As EUR payments are not otherwise detected by the Wallet, we use this
                             // place to persist the relevant information in our store.
-                            addSettlementData(htlc.hash.value, {
-                                asset: SwapAsset.EUR,
-                                bankLabel: banks.value.sepa?.name,
-                                // bankLogo?: string,
-                                iban: bankAccounts.value.sepa?.iban,
-                                amount: htlc.amount,
-                                htlc: {
-                                    id: htlc.id,
-                                    timeoutTimestamp: htlc.expires,
-                                    settlementStatus: htlc.settlement.status,
-                                },
-                            });
+                            swapData.htlc!.settlement = {
+                                status: htlc.settlement.status,
+                                ...(htlc.settlement.status === SettlementStatus.ACCEPTED ? {
+                                    eta: (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
+                                        .detail.eta.seconds * 1e3,
+                                    lastUpdated: Date.now(),
+                                } : {}),
+                                // TODO: Also check when SettlementStatus is FAILED with reason "limit-exceeded"
+                                // to catch when EUR is automatically paid out when limit is available again.
+                            };
+                            addSettlementData(htlc.hash.value, swapData);
                         }
 
                         updateSwap({

@@ -51,14 +51,20 @@ export type SwapEurData = {
     htlc?: {
         id: string,
         timeoutTimestamp: number,
-        settlementStatus?: SettlementStatus,
+        settlement?: {
+            status: SettlementStatus,
+            eta?: number,
+            lastUpdated?: number,
+        },
     },
 };
 
+export type SwapData = SwapNimData | SwapBtcData | SwapEurData;
+
 export type Swap = {
     id?: string,
-    in?: SwapNimData | SwapBtcData | SwapEurData,
-    out?: SwapNimData | SwapBtcData | SwapEurData,
+    in?: SwapData,
+    out?: SwapData,
 };
 
 export type ActiveSwap = SwapObject & {

@@ -253,7 +253,7 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:267
+#: src/components/swap/SwapAnimation.vue:265
 msgid "Awaiting swap secret"
 msgstr ""
 
@@ -316,8 +316,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:276
 #: src/components/modals/TransactionModal.vue:277
-#: src/components/swap/SwapAnimation.vue:173
-#: src/components/swap/SwapAnimation.vue:249
+#: src/components/swap/SwapAnimation.vue:171
+#: src/components/swap/SwapAnimation.vue:247
 msgid "Block explorer"
 msgstr ""
 
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:92
+#: src/components/swap/SwapAnimation.vue:90
 msgid "Close"
 msgstr ""
 
@@ -599,8 +599,8 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:294
-#: src/components/swap/SwapAnimation.vue:302
+#: src/components/swap/SwapAnimation.vue:292
+#: src/components/swap/SwapAnimation.vue:300
 msgid "Don't close your wallet until the swap is complete!"
 msgstr ""
 
@@ -697,7 +697,7 @@ msgstr ""
 msgid "Enter your bank details"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:308
+#: src/components/swap/SwapAnimation.vue:306
 msgid "Error:"
 msgstr ""
 
@@ -780,7 +780,7 @@ msgstr ""
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:274
+#: src/components/swap/SwapAnimation.vue:272
 msgid "Finalizing swap"
 msgstr ""
 
@@ -992,8 +992,8 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:261
-#: src/components/swap/SwapAnimation.vue:264
+#: src/components/swap/SwapAnimation.vue:259
+#: src/components/swap/SwapAnimation.vue:262
 msgid "Locking up {asset}"
 msgstr ""
 
@@ -1202,7 +1202,7 @@ msgstr ""
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:271
+#: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
 msgstr ""
 
@@ -1296,7 +1296,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:310
+#: src/components/swap/SwapAnimation.vue:308
 msgid "Retrying..."
 msgstr ""
 
@@ -1443,14 +1443,12 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:258
+#: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up swap"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
-msgid ""
-"Setting up the {currency} side of the swap.\n"
-"This might take up to {min} minutes."
+msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:59
@@ -1539,7 +1537,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:89
+#: src/components/swap/SwapAnimation.vue:87
 msgid "Swap complete"
 msgstr ""
 
@@ -1587,9 +1585,7 @@ msgid "Testnet"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:104
-msgid ""
-"The bank is processing your transaction.\n"
-"This might take up to {min} minutes."
+msgid "The bank is processing your transaction."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:630
@@ -1675,6 +1671,12 @@ msgstr ""
 msgid "This is not a valid IBAN"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:295
+#: src/components/swap/SwapAnimation.vue:72
+#: src/components/swap/SwapSepaFundingInstructions.vue:105
+msgid "This might take up to {min} minutes."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
 #: src/components/TransactionList.vue:252
@@ -1704,8 +1706,7 @@ msgstr ""
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:285
-#: src/components/swap/SwapAnimation.vue:297
+#: src/components/swap/SwapAnimation.vue:283
 msgid "This usually takes {time} seconds."
 msgstr ""
 
@@ -1888,7 +1889,7 @@ msgstr ""
 msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:97
+#: src/components/swap/SwapAnimation.vue:95
 msgid "You have exceeded your OASIS limit."
 msgstr ""
 
@@ -1901,7 +1902,7 @@ msgstr ""
 msgid "You now own crypto!"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:282
+#: src/components/swap/SwapAnimation.vue:280
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 
@@ -1947,7 +1948,7 @@ msgstr ""
 msgid "Your browser is a Node"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:100
+#: src/components/swap/SwapAnimation.vue:98
 #: src/components/TransactionDetailOasisPayoutStatus.vue:22
 msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
 msgstr ""

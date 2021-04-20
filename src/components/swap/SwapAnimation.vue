@@ -68,10 +68,8 @@
         <transition name="fade">
             <div v-if="toFundingDurationMins && state === SwapState.AWAIT_INCOMING" class="to-funding-delay-notice">
                 <h2 class="nq-h2">
-                    {{ $t(
-                        'Setting up the {currency} side of the swap.\nThis might take up to {min} minutes.',
-                        { currency: toAsset, min: toFundingDurationMins },
-                    ) }}
+                    {{ $t('Setting up the {currency} side of the swap.', { currency: toAsset} ) }}
+                    {{ $t('This might take up to {min} minutes.', { min: toFundingDurationMins} ) }}
                 </h2>
                 <p class="nq-gray flex-row action-row">
                     <span class="timer">{{ timer }}</span>
@@ -294,7 +292,7 @@
                         $t('Don\'t close your wallet until the swap is complete!')
                     }}</div>
                     <div v-else class="dont-close-wallet-notice nq-gray">{{
-                        $t('This usually takes {time} seconds.', { time: '30-60' })
+                        $t('This might take up to {min} minutes.', { min: 5 })
                     }}</div>
                 </template>
 

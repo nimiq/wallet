@@ -101,10 +101,8 @@
             </div>
             <div v-else-if="page === Pages.PROCESSING" class="processing">
                 <h2 class="nq-h2">
-                    {{ $t(
-                        'The bank is processing your transaction.\nThis might take up to {min} minutes.',
-                        { min: OASIS_EUR_DETECTION_DELAY },
-                    ) }}
+                    {{ $t('The bank is processing your transaction.') }}
+                    {{ $t('This might take up to {min} minutes.', { min: OASIS_EUR_DETECTION_DELAY }) }}
                 </h2>
                 <p v-if="!takesLongerThanUsual" class="nq-gray">
                     {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}

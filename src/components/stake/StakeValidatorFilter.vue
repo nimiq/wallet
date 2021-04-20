@@ -1,15 +1,15 @@
 <template>
     <div class="validator-filter">
         <div class="validator-filter-wrapper">
-            <button class="validator-switch" :class="state === FilterState.TRUST?'selected':''"
+            <button class="validator-switch" :class="{ selected: state === FilterState.TRUST }"
                 @click="ctrl.stateChange(FilterState.TRUST)">
                 {{ $t('TrustScore') }}
             </button>
-            <button class="validator-switch" :class="state === FilterState.PAYOUT?'selected':''"
+            <button class="validator-switch" :class="{ selected: state === FilterState.PAYOUT }"
                 @click="ctrl.stateChange(FilterState.PAYOUT)">
                 {{ $t('Payout Time') }}
             </button>
-            <button class="validator-switch" :class="state === FilterState.REWARD?'selected':''"
+            <button class="validator-switch" :class="{ selected: state === FilterState.REWARD }"
                 @click="ctrl.stateChange(FilterState.REWARD)">
                 {{ $t('Reward') }}
             </button>
@@ -55,9 +55,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .validator-filter {
-    position: relative;
-    top: -0.5rem;
-    left: -0.25rem;
     width: 38rem;
     height: 3.75rem;
     margin: auto;
@@ -71,6 +68,7 @@ export default defineComponent({
 
         .validator-switch {
             padding: .75rem 1.25rem;
+            margin-right: 0.375rem;
             height: 3.25rem;
 
             border: 0;

@@ -1,5 +1,5 @@
 <template>
-    <button class="validator-list-item reset flex-row">
+    <button class="validator-list-item reset flex-row" @click="selectValidator(validatorData)">
         <div class="validator-item-wrapper">
             <div class="validator-left">
                 <component v-bind:is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']" class="tab"></component>
@@ -7,21 +7,62 @@
             <div class="validator-item-mid">
                 <div class="validator-item-inner-row validator-label">
                     {{ validatorData.label }}
+                    <Tooltip class="validator-label-tip"
+                        preferredPosition="bottom right"
+                        :container="this">
+                        <div slot="trigger" class="validator-label-trigger">
+                            <InfoCircleSmallIcon />
+                        </div>
+                        <span class="validator-label-text">
+                            {{ $t('{validatorDescription}', { validatorDescription: validatorData.labelHeaderText }) }}
+                        </span>
+                        <p class="validator-label-explainer">
+                            {{ stakingData.validatorLabelDisclaimer }}
+                            <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
+                                {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
+                                <ArrowRightSmallIcon/>
+                            </a>
+                        </p>
+                    </Tooltip>
                 </div>
                 <div class="validator-item-inner-row validator-trust">
-                    <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
-                        <StarIcon />
-                    </div>
-                    <div :class="(validatorData.trust > 2.5)?'gold-text':'red-text'">
-                        {{ validatorData.trust.toFixed(2) }}
-                    </div>
+                    <Tooltip class="validator-score-tip"
+                        preferredPosition="bottom right"
+                        :container="this">
+                        <div slot="trigger" class="validator-trust-trigger">
+                            <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
+                                <StarIcon />
+                            </div>
+                            <div class="validator-trust-score" :class="{redText: validatorData.trust < 2.5}">
+                                {{ validatorData.trust.toFixed(2) }}
+                            </div>
+                        </div>
+                        <div class="validator-score-section">
+                            <div class="validator-score-reason">
+                                {{ $t('{number}% Uptime', { number: validatorData.uptime }) }}
+                            </div>
+                            <div class="validator-score-outcome">
+                                <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
+                                    <StarIcon />
+                                </div>
+                                {{ getRuleOutcome(stakingData.uptimeRules, validatorData.uptime)[1] }}
+                            </div>
+                        </div>
+                        <div class="validator-score-explainer">
+                            {{ $t(getRuleOutcome(stakingData.uptimeRules, validatorData.uptime)[2]) }}
+                        </div>
+                        <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
+                            {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
+                            <ArrowRightSmallIcon/>
+                        </a>
+                    </Tooltip>
                     <div class="validator-payout">
                         {{ payoutText }}
                     </div>
                 </div>
             </div>
             <div :class="validatorData.reward < 2.5?'validator-warning':''" class="validator-item-right">
-                {{ validatorData.reward.toFixed(1) }} % {{ $t("p.a.") }}
+                {{ validatorData.reward.toFixed(1) }}% {{ $t("p.a.") }}
             </div>
         </div>
     </button>
@@ -29,7 +70,10 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import { ArrowRightSmallIcon, InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
+import { StakingData, ValidatorData } from '../../stores/Staking';
 import { numberToLiteralTimes } from '../../lib/NumberFormatting';
+import { i18n } from '../../i18n/i18n-setup';
 
 /* mock data icons */
 import OverstakeIcon from '../icons/Staking/OverstakeIcon.vue';
@@ -55,15 +99,36 @@ const getPayoutText = (payout: Array<number>) => {
     }
 
     if (index === periods.length - 1) {
-        return `pays out every ${value}${periods[index]}`;
+        return i18n.t('pays out every {hourCount}', { hourCount: `${value}${periods[index]}` });
     }
-    return `pays out ${numberToLiteralTimes(value)} a ${periods[index]}`;
+
+    return i18n.t('pays out {numberOfTimes} a {period}', {
+        numberOfTimes: numberToLiteralTimes(value),
+        period: periods[index],
+    });
+};
+
+const getRuleOutcome = (ruleset: Array<string>, scalar:number, upwards = true) => {
+    let result = null;
+    for (let i = 0; i < ruleset.length; i++) {
+        if (upwards) {
+            if (scalar < parseFloat(ruleset[i][0])) {
+                result = ruleset[i];
+                break;
+            }
+        } else if (scalar > parseFloat(ruleset[i][0])) {
+            result = ruleset[i];
+            break;
+        }
+    }
+    return result;
 };
 
 export default defineComponent({
     setup(props) {
         return {
             payoutText: getPayoutText(props.validatorData.payout),
+            getRuleOutcome,
             Helpers: {
                 capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
             },
@@ -78,12 +143,23 @@ export default defineComponent({
     },
     props: {
         validatorData: {
-            type: Object,
+            type: Object as () => ValidatorData,
+            required: true,
+        },
+        stakingData: {
+            type: Object as () => StakingData,
+            required: true,
+        },
+        selectValidator: {
+            type: Function as () => unknown,
             required: true,
         },
     },
     components: {
+        Tooltip,
         StarIcon,
+        InfoCircleSmallIcon,
+        ArrowRightSmallIcon,
     },
 });
 </script>
@@ -96,7 +172,6 @@ export default defineComponent({
 
     width: 48.5rem;
     line-height: 9rem;
-    // padding: 1rem 0.5rem;
     padding-left: var(--padding-sides);
     margin: auto;
     margin-bottom: -.25rem;
@@ -114,7 +189,6 @@ export default defineComponent({
         margin-left: .25rem;
         margin-bottom: -.625rem;
         box-shadow: none;
-        // display: inline-block;
     }
 
     input::-moz-focus-inner {
@@ -128,10 +202,9 @@ export default defineComponent({
 
     .validator-item-wrapper {
         display: flex;
-        width: 100%;
+        width: 46.5rem;
         height: 100%;
         flex-direction: row;
-        // padding: 1.75rem 2.5rem;
         .validator-left {
             margin-top: 2.25rem;
             margin-left: 2.5rem;
@@ -152,6 +225,7 @@ export default defineComponent({
         .validator-item-inner-row {
             display: flex;
             flex-direction: row;
+            width: 17rem;
             height: 3rem;
             line-height: 3rem;
             &.validator-label {
@@ -160,19 +234,104 @@ export default defineComponent({
                 font-size: 2rem;
                 line-height: 100%;
                 color: var(--nimiq-blue);
+
+                .validator-label-trigger {
+                    margin-top: -.25rem;
+                    margin-left: 0.5rem;
+                    svg {
+                        width: 1.5rem;
+                        height: 1.5rem;
+                        opacity: 0.6;
+                    }
+                }
+
+                .validator-label-tip {
+                }
+
+                .validator-label-text {
+                    display: flex;
+                    margin-left: .75rem;
+                    padding-left: 1.25rem;
+
+                    font-family: Muli, system-ui, sans-serif;
+                    font-weight: 600;
+                    font-size: 2rem;
+                    line-height: 130%;
+
+                    color: white;
+                    border-left: .1875rem solid rgba(255, 255, 255, 0.4);
+                }
+
+                .validator-label-explainer {
+                    margin-bottom: -1rem;
+                    font-weight: 600;
+                    font-size: 1.75rem;
+                    line-height: 130%;
+
+                    opacity: 0.6;
+                    width: 31.5rem;
+                }
             }
             &.validator-trust {
             }
         }
-        .validator-item-right {
-            height: 3rem;
-            min-width: 13rem;
-            line-height: 2rem;
-            margin-top: 3.75rem;
-            padding-top: 0.25rem;
 
-            border: 2px solid var(--nimiq-green);
-            border-radius: 1.5rem;
+        .validator-score-tip {
+            font-family: Muli, system-ui, sans-serif;
+            font-weight: 600;
+
+            .validator-score-section {
+                display: flex;
+                height: 2rem;
+                width: 31.5rem;
+                margin-bottom: 1rem;
+                flex-direction: row;
+                white-space: nowrap;
+                font-size: 2rem;
+                font-weight: 700;
+
+                .validator-score-outcome {
+                    align-self: flex-end;
+                    margin-left: auto;
+                }
+            }
+
+            .validator-score-explainer {
+                color: #FFFFFF;
+                opacity: 0.6;
+            }
+        }
+
+        .validator-trust-trigger {
+            white-space: nowrap;
+            display: flex;
+            margin-top: 0.7rem;
+        }
+
+        .validator-website-link {
+            display: inline-block;
+            margin-top: 1rem;
+            align-self: center;
+            font-size: 2rem;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+            svg {
+                padding-top: 0.625rem;
+                display: inline-block;
+            }
+        }
+        .validator-item-right {
+            font-family: Muli, system-ui, sans-serif;
+            height: 3.125rem;
+            line-height: 2rem;
+            margin-top: 3.5rem;
+            margin-left: -0.25rem;
+            padding: .5rem .875rem;
+            padding-top: 0.375rem;
+
+            border: 1.5px solid var(--nimiq-green);
+            border-radius: 1.75rem;
             justify-content: flex-end;
             white-space: nowrap;
             text-align: center;
@@ -186,19 +345,20 @@ export default defineComponent({
             }
         }
         .validator-trust {
-            font-family: Mulish;
             font-style: normal;
             font-weight: 600;
             font-size: 1.75rem;
             color: rgba(31, 35, 72, 0.5);
         }
+        .validator-trust-score {
+            margin-right: 1rem;
+        }
         .validator-payout {
             white-space: nowrap;
             padding-left: 1rem;
             padding-top: 0.5rem;
-            // font-family: Mulish;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 600;
             font-size: 1.75rem;
             line-height: 100%;
             color: var(--nimiq-blue);
@@ -212,7 +372,8 @@ export default defineComponent({
         }
     }
     .star {
-        margin-right: 0.125rem;
+        margin-right: 0.25rem;
+        opacity: 1.0;
         svg {
             width: 1.5rem;
             height: 1.5rem;

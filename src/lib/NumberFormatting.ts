@@ -1,5 +1,6 @@
 import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from './Constants';
+import { i18n } from '../i18n/i18n-setup';
 
 export function twoDigit(value: number) {
     if (value < 10) return `0${value}`;
@@ -47,37 +48,37 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
 }
 
 export function numberToLiteral(n: number): string {
-    // https://stackoverflow.com/questions/5529934/javascript-numbers-to-words
+    // https://stackoverflow.com/questions/5529934/javascript-numbers-to-words refactored
     const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const tens = ['', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
     const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
         'sixteen', 'seventeen', 'eighteen', 'nineteen'];
 
-    function convertMillions(num: number): string {
-        if (num >= 1000000) {
-            return `${convertMillions(Math.floor(num / 1000000))} million ${convertThousands(num % 1000000)}`;
+    const magnitudes = [
+        ['million', 1e6, null],
+        ['thousand', 1e3, null],
+        ['hundred', 1e2, null],
+        ['', 2e1, [tens, ones]],
+        ['', 1e1, [teens], 10],
+        ['', 0, [ones], 0],
+    ];
+
+    if (n === 0) return i18n.t('zero').toString();
+    return magnitudes.reduce((result: string, mag: Array<any>) => {
+        if (n >= mag[1]) {
+            if (mag[2] === null) {
+                result += i18n.t(`{number} ${mag[0]}`, { number: numberToLiteral(Math.floor(n / mag[1])) });
+                n %= mag[1];
+            } else if (mag[2].length === 2) {
+                const hi = Math.floor(n / mag[2][0].length) - 1;
+                const lo = n % mag[2][1].length;
+                result += i18n.t('{hi} {lo}', { hi: mag[2][0][hi], lo: mag[2][1][lo] });
+            } else if (mag[2].length === 1) {
+                result += i18n.t(mag[2][0][n - mag[3]]);
+            }
         }
-        return convertThousands(num);
-    }
-
-    function convertThousands(num: number): string {
-        if (num >= 1000) return `${convertHundreds(Math.floor(num / 1000))} thousand ${convertHundreds(num % 1000)}`;
-        return convertHundreds(num);
-    }
-
-    function convertHundreds(num: number): string {
-        if (num > 99) return `${ones[Math.floor(num / 100)]} hundred ${convertTens(num % 100)}`;
-        return convertTens(num);
-    }
-
-    function convertTens(num: number): string {
-        if (num < 10) return ones[num];
-        if (num >= 10 && num < 20) return teens[num - 10];
-        return `${tens[Math.floor(num / 10)]} ${ones[num % 10]}`;
-    }
-
-    if (n === 0) return 'zero';
-    return convertMillions(n);
+        return result;
+    }, '').trim();
 }
 
 export function numberToLiteralTimes(n: number): string {
@@ -87,5 +88,27 @@ export function numberToLiteralTimes(n: number): string {
     if (n <= 0) throw new Error('Invalid Input! Times number must be positive >= 1!');
     if (n < timesTable.length) return timesTable[n];
 
-    return `${numberToLiteral(n)} times`;
+    return i18n.t('{number} times', { number: numberToLiteral(n) }).toString();
+}
+
+export function formatNumber(number: number, fractionDigits = 0): string {
+    return number.toFixed(fractionDigits);// .replace(/\B(?=(\d{3})+(?!\d))/g, '\'').trim();
+}
+
+export function formatAsNim(nim: number, fractionDigits = 0): string {
+    return `${formatNumber(nim, fractionDigits)} NIM`;
+}
+
+export function formatLunaAsNim(luna: number, fractionDigits = 0): string {
+    return formatAsNim(Math.round(luna / 100000), fractionDigits);
+}
+
+export function formatDate(totalMonths = 0, days = 0): string {
+    const elements: string[] = [];
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths - years * 12;
+    if (years >= 1) elements.push(`${Math.floor(years)}Y`);
+    if (months >= 1) elements.push(`${Math.floor(months)}M`);
+    if (days >= 1) elements.push(`${Math.floor(days)}D`);
+    return elements.join(' ');
 }

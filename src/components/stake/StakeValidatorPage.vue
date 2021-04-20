@@ -13,11 +13,19 @@
         </PageHeader>
         <PageBody>
             <StakeValidatorFilter />
-            <div class="validator-list">
-                <StakeValidatorListItem
-                    v-for="(validatorData, index) in validatorsList" :key="index"
-                    :validatorData="validatorData"
-                />
+            <div class="mask-container">
+                <div class="scroll-mask-top"></div>
+                <div class="scroll-container">
+                    <div class="validator-list">
+                        <StakeValidatorListItem
+                            v-for="(validatorData, index) in validatorsList" :key="index"
+                            :validatorData="validatorData"
+                            :stakingData="stakingData"
+                            :selectValidator="selectValidator"
+                        />
+                    </div>
+                </div>
+                <div class="scroll-mask-bottom"></div>
             </div>
         </PageBody>
     </div>
@@ -26,18 +34,40 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { StakingData, StakingScoringRules } from '../../stores/Staking';
+import { i18n } from '../../i18n/i18n-setup';
 
 import StakeValidatorFilter from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
+import stakingData from './assets/staking.json';
 import validatorsList from './assets/validators.mock.json';// mock data
 
 export default defineComponent({
-    setup() {
+    setup(props) {
+        const translatedData = Object.fromEntries(
+            Object.entries(stakingData as StakingData).map(([k, v]) => {
+                if (k.endsWith('Rules')) {
+                    return [k, (v as StakingScoringRules).map((rule) => rule.slice(0, -1).concat([
+                        i18n.t(rule.slice(-1)[0]).toString(),
+                    ]))];
+                }
+                return [k, i18n.t(v as string).toString()];
+            }),
+        );
+
         return {
             validatorsList: Array(3).fill(null)
                 .reduce((o) => o.concat(validatorsList), []), // for mock data only
+            stakingData: translatedData,
+            selectValidator: props.setValidator,
         };
+    },
+    props: {
+        setValidator: {
+            type: Function as () => unknown,
+            required: true,
+        },
     },
     components: {
         PageHeader,
@@ -54,47 +84,55 @@ export default defineComponent({
     .page-header {
         padding-top: .75rem;
         line-height: 1;
-        height: 18rem;
+        height: 17rem;
     }
     .page-body {
-        margin-top: -.25rem;
         padding-top: 0;
         padding-left: 1rem;
         padding-right: 0;
         max-height: 51.25rem;
-        overflow-x: hidden;
-        overflow-y: hidden;
+        overflow: hidden;
+
+        .mask-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-container {
+            overflow-y: auto;
+            height: 45.75rem;
+            @extend %custom-scrollbar;
+        }
+
+        .scroll-mask-top {
+            position: absolute;
+            top: 0;
+            left: 0.875rem;
+            width: calc(100% - 2.25rem);
+            height: 2.5rem;
+            background: linear-gradient(0deg, rgba(244, 244, 244, 0), white);
+        }
+
+        .scroll-mask-bottom {
+            position: absolute;
+            left: 0.875rem;
+            bottom: 0;
+            width: calc(100% - 2.25rem);
+            height: 2.5rem;
+            background: linear-gradient(0deg, white, rgba(244, 244, 244, 0));
+        }
 
         .validator-list {
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow-y: auto;
-            max-height: 45.75rem;
             width: 100%;
-            padding-top: 0.25rem;
-
-            @extend %custom-scrollbar;
-            scrollbar-color: #bcbec9 rgba(0, 0, 0, 0);
-            scrollbar-width: 1rem;
-
-            &::-webkit-scrollbar {
-                width: 1rem;
-            }
-
-            &::-webkit-scrollbar-track {
-                background: rgba(0, 0, 0, 0);
-            }
-            &::-webkit-scrollbar-thumb {
-                background-color: #bcbec9;
-            }
+            padding-top: 1rem;
         }
     }
 
     .nq-text {
         display: inline-block;
-        margin-top: 1rem;
+        margin-top: .75rem;
         margin-bottom: .25rem;
-        font-size: 2rem;
     }
 </style>

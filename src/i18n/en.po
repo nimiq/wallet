@@ -10,6 +10,11 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
+#: src/components/stake/StakeValidatorListItem.vue:22
+#: src/components/stake/StakeValidatorListItem.vue:55
+msgid "{brandName} Website"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:264
 #: src/components/modals/TransactionModal.vue:274
 msgid "{count} Confirmation | {count} Confirmations"
@@ -28,9 +33,25 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
+#: src/lib/NumberFormatting.ts:75
+msgid "{hi} {lo}"
+msgstr ""
+
+#: src/lib/NumberFormatting.ts:91
+msgid "{number} times"
+msgstr ""
+
+#: src/components/stake/StakeValidatorListItem.vue:42
+msgid "{number}% Uptime"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
+msgstr ""
+
+#: src/components/stake/StakeValidatorListItem.vue:17
+msgid "{validatorDescription}"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:98
@@ -56,6 +77,10 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:28
 msgid "1"
+msgstr ""
+
+#: src/components/stake/graph/StakingGraph.vue:23
+msgid "12M"
 msgstr ""
 
 #: src/components/FeeSelector.vue:8
@@ -84,8 +109,16 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
+#: src/components/stake/graph/StakingGraph.vue:23
+msgid "4M"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
+msgstr ""
+
+#: src/components/stake/graph/StakingGraph.vue:23
+msgid "8M"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:285
@@ -462,6 +495,10 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:174
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
+msgstr ""
+
+#: src/components/stake/StakeGraphPage.vue:17
+msgid "confirm stake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
@@ -1072,7 +1109,7 @@ msgstr ""
 msgid "One Account, many Addresses"
 msgstr ""
 
-#: src/components/stake/StakeValidatorListItem.vue:24
+#: src/components/stake/StakeValidatorListItem.vue:65
 msgid "p.a."
 msgstr ""
 
@@ -1086,6 +1123,14 @@ msgstr ""
 
 #: src/components/stake/StakeValidatorFilter.vue:10
 msgid "Payout Time"
+msgstr ""
+
+#: src/components/stake/StakeValidatorListItem.vue:105
+msgid "pays out {numberOfTimes} a {period}"
+msgstr ""
+
+#: src/components/stake/StakeValidatorListItem.vue:102
+msgid "pays out every {hourCount}"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:43
@@ -1337,6 +1382,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76
 msgid "Set Amount"
+msgstr ""
+
+#: src/components/stake/StakeGraphPage.vue:6
+msgid "Set an Amount"
 msgstr ""
 
 #: src/components/AmountMenu.vue:8
@@ -1696,6 +1745,10 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
+#: src/components/stake/StakeGraphPage.vue:10
+msgid "Use the slider to lock your NIM and earn rewards."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:141
 msgid "Vesting Contract"
 msgstr ""
@@ -1831,4 +1884,8 @@ msgstr ""
 #: src/components/BtcTransactionList.vue:65
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
+msgstr ""
+
+#: src/lib/NumberFormatting.ts:66
+msgid "zero"
 msgstr ""

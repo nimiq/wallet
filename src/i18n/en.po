@@ -33,11 +33,15 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/lib/NumberFormatting.ts:75
+#: src/lib/NumberFormatting.ts:78
 msgid "{hi} {lo}"
 msgstr ""
 
-#: src/lib/NumberFormatting.ts:91
+#: src/lib/NumberFormatting.ts:70
+msgid "{number} {magnitude}"
+msgstr ""
+
+#: src/lib/NumberFormatting.ts:94
 msgid "{number} times"
 msgstr ""
 
@@ -48,6 +52,10 @@ msgstr ""
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
+msgstr ""
+
+#: src/components/stake/StakeValidatorListItem.vue:52
+msgid "{text}"
 msgstr ""
 
 #: src/components/stake/StakeValidatorListItem.vue:17

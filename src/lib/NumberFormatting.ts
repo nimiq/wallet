@@ -67,7 +67,10 @@ export function numberToLiteral(n: number): string {
     return magnitudes.reduce((result: string, mag: Array<any>) => {
         if (n >= mag[1]) {
             if (mag[2] === null) {
-                result += i18n.t(`{number} ${mag[0]}`, { number: numberToLiteral(Math.floor(n / mag[1])) });
+                result += i18n.t('{number} {magnitude}', {
+                    number: numberToLiteral(Math.floor(n / mag[1])),
+                    magnitude: mag[0],
+                });
                 n %= mag[1];
             } else if (mag[2].length === 2) {
                 const hi = Math.floor(n / mag[2][0].length) - 1;

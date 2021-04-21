@@ -57,7 +57,7 @@ export default defineComponent({
         padding-right: 0;
         height: 56rem;
         overflow: hidden;
-        
+
         .stake-button {
             margin: auto;
             margin-top: 5.5rem;

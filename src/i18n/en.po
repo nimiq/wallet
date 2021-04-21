@@ -16,7 +16,7 @@ msgid "{bankName} offers generic and individual IBANs."
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:269
-#: src/components/modals/TransactionModal.vue:268
+#: src/components/modals/TransactionModal.vue:270
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -29,20 +29,20 @@ msgstr ""
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:27
+#: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
 msgstr ""
 
-#: src/components/TransactionListOasisPayoutStatus.vue:13
+#: src/components/TransactionListOasisPayoutStatus.vue:11
 msgid "{currency} not paid out"
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:8
-#: src/components/TransactionListOasisPayoutStatus.vue:7
+#: src/components/TransactionDetailOasisPayoutStatus.vue:6
+#: src/components/TransactionListOasisPayoutStatus.vue:5
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:270
+#: src/components/modals/TransactionModal.vue:272
 msgid "{fee} fee"
 msgstr ""
 
@@ -169,8 +169,8 @@ msgid ""
 "to your account"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:122
-#: src/components/modals/TransactionModal.vue:167
+#: src/components/modals/TransactionModal.vue:124
+#: src/components/modals/TransactionModal.vue:169
 msgid "Add contact"
 msgstr ""
 
@@ -261,7 +261,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:124
+#: src/components/swap/SwapSepaFundingInstructions.vue:122
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:251
 #: src/components/modals/BtcTransactionModal.vue:479
-#: src/components/modals/TransactionModal.vue:522
+#: src/components/modals/TransactionModal.vue:524
 #: src/components/TransactionListItem.vue:231
 msgid "Bank Account"
 msgstr ""
@@ -296,7 +296,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:127
 #: src/components/modals/BtcTransactionModal.vue:143
-#: src/components/modals/TransactionModal.vue:518
+#: src/components/modals/TransactionModal.vue:520
 #: src/components/TransactionListItem.vue:227
 msgid "Bitcoin"
 msgstr ""
@@ -310,12 +310,12 @@ msgid "Bitcoin Unit"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:266
-#: src/components/modals/TransactionModal.vue:265
+#: src/components/modals/TransactionModal.vue:267
 msgid "Block #{height}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:276
-#: src/components/modals/TransactionModal.vue:277
+#: src/components/modals/TransactionModal.vue:279
 #: src/components/swap/SwapAnimation.vue:171
 #: src/components/swap/SwapAnimation.vue:247
 msgid "Block explorer"
@@ -408,7 +408,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:469
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
-#: src/components/modals/TransactionModal.vue:513
+#: src/components/modals/TransactionModal.vue:515
 #: src/components/TransactionListItem.vue:222
 msgid "Cancelled Swap"
 msgstr ""
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:531
+#: src/components/modals/TransactionModal.vue:533
 #: src/components/TransactionList.vue:62
 #: src/components/TransactionListItem.vue:240
 msgid "Cashlink"
@@ -718,7 +718,7 @@ msgid "expired"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:75
-#: src/components/modals/TransactionModal.vue:95
+#: src/components/modals/TransactionModal.vue:97
 msgid "Expired"
 msgstr ""
 
@@ -727,7 +727,7 @@ msgid "express"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:75
-#: src/components/modals/TransactionModal.vue:95
+#: src/components/modals/TransactionModal.vue:97
 msgid "Failed"
 msgstr ""
 
@@ -767,7 +767,7 @@ msgid "Fetching"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:65
-#: src/components/modals/TransactionModal.vue:204
+#: src/components/modals/TransactionModal.vue:206
 #: src/components/TransactionListItem.vue:56
 msgid "Fiat value unavailable"
 msgstr ""
@@ -826,13 +826,13 @@ msgid "Handling multiple addresses is now convenient and easy – with one passw
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:216
-#: src/components/modals/TransactionModal.vue:215
+#: src/components/modals/TransactionModal.vue:217
 msgid "Historic value"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:201
 #: src/components/modals/BtcTransactionModal.vue:433
-#: src/components/modals/TransactionModal.vue:461
+#: src/components/modals/TransactionModal.vue:463
 #: src/components/TransactionListItem.vue:179
 #: src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
@@ -840,12 +840,12 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:201
 #: src/components/modals/BtcTransactionModal.vue:433
-#: src/components/modals/TransactionModal.vue:472
+#: src/components/modals/TransactionModal.vue:474
 #: src/components/TransactionListItem.vue:190
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:465
+#: src/components/modals/TransactionModal.vue:467
 #: src/components/TransactionListItem.vue:183
 msgid "HTLC Settlement"
 msgstr ""
@@ -969,7 +969,7 @@ msgstr ""
 msgid "Limits are tied to accounts and IBANs."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:183
+#: src/components/modals/TransactionModal.vue:185
 msgid "Link not available in this browser"
 msgstr ""
 
@@ -1112,7 +1112,7 @@ msgid "not sent"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:47
-#: src/components/TransactionDetailOasisPayoutStatus.vue:17
+#: src/components/TransactionDetailOasisPayoutStatus.vue:15
 msgid "OASIS limit exceeded"
 msgstr ""
 
@@ -1158,7 +1158,7 @@ msgid "Pending Cashlinks"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:67
-#: src/components/modals/TransactionModal.vue:87
+#: src/components/modals/TransactionModal.vue:89
 msgid "Pending..."
 msgstr ""
 
@@ -1198,7 +1198,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:32
+#: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
 
@@ -1237,8 +1237,8 @@ msgid "Receive some free NIM to get started."
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:78
-#: src/components/modals/TransactionModal.vue:98
-msgid "received at {dateAndTime}"
+#: src/components/modals/TransactionModal.vue:100
+msgid "Received at {dateAndTime}"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:74
@@ -1258,7 +1258,7 @@ msgid "Reference currency"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:259
-#: src/components/modals/TransactionModal.vue:258
+#: src/components/modals/TransactionModal.vue:260
 msgid "Refund"
 msgstr ""
 
@@ -1426,8 +1426,8 @@ msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:83
-#: src/components/modals/TransactionModal.vue:103
-msgid "sent at {dateAndTime}"
+#: src/components/modals/TransactionModal.vue:105
+msgid "Sent at {dateAndTime}"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:20
@@ -1482,7 +1482,7 @@ msgstr ""
 msgid "Show Decimals"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:181
+#: src/components/modals/TransactionModal.vue:183
 msgid "Show Link"
 msgstr ""
 
@@ -1503,7 +1503,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:30
+#: src/components/TransactionDetailOasisPayoutStatus.vue:28
 msgid "Something went wrong with your transaction"
 msgstr ""
 
@@ -1531,7 +1531,7 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:247
 #: src/components/modals/BtcTransactionModal.vue:475
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:509
+#: src/components/modals/TransactionModal.vue:511
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/TransactionListItem.vue:218
 msgid "Swap"
@@ -1599,7 +1599,7 @@ msgstr ""
 msgid "The fees determine the minimum amount."
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:20
+#: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
 msgstr ""
 
@@ -1698,7 +1698,7 @@ msgstr ""
 msgid "This service is operated by {link}"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:110
+#: src/components/swap/SwapSepaFundingInstructions.vue:108
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
@@ -1710,7 +1710,7 @@ msgstr ""
 msgid "This usually takes {time} seconds."
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:12
+#: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
 msgstr ""
 
@@ -1754,7 +1754,7 @@ msgid "Trials"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:34
-#: src/components/swap/SwapSepaFundingInstructions.vue:121
+#: src/components/swap/SwapSepaFundingInstructions.vue:119
 msgid "Troubleshooting"
 msgstr ""
 
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:532
+#: src/components/modals/TransactionModal.vue:534
 #: src/components/TransactionListItem.vue:241
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -1808,7 +1808,7 @@ msgstr ""
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:13
+#: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
 
@@ -1828,7 +1828,7 @@ msgstr ""
 msgid "Wait for the swap to be set up."
 msgstr ""
 
-#: src/components/TransactionListOasisPayoutStatus.vue:10
+#: src/components/TransactionListOasisPayoutStatus.vue:8
 msgid "Waiting for {currency}"
 msgstr ""
 
@@ -1949,7 +1949,7 @@ msgid "Your browser is a Node"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:98
-#: src/components/TransactionDetailOasisPayoutStatus.vue:22
+#: src/components/TransactionDetailOasisPayoutStatus.vue:20
 msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
 msgstr ""
 
@@ -1963,11 +1963,11 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:113
+#: src/components/swap/SwapSepaFundingInstructions.vue:111
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr ""
 
-#: src/components/TransactionDetailOasisPayoutStatus.vue:11
+#: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"
 msgstr ""
 

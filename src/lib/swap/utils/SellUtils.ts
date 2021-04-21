@@ -6,7 +6,7 @@ import { useSwapsStore } from '../../../stores/Swaps';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import {
     DeniedReason,
-    Htlc,
+    Htlc as OasisHtlc,
     HtlcStatus,
     SettlementInfo,
     SettlementStatus,
@@ -34,10 +34,10 @@ const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore()
 export const oasisSellLimitExceeded = computed(() => {
     if (!swap.value) return false;
     if (!swap.value.settlementTx) return false;
-    const htlc = swap.value.settlementTx as Htlc<HtlcStatus>;
+    const htlc = swap.value.settlementTx as OasisHtlc;
 
     if (htlc.status !== HtlcStatus.SETTLED) return false;
-    const settledHtlc = htlc as Htlc<HtlcStatus.SETTLED>;
+    const settledHtlc = htlc as OasisHtlc<HtlcStatus.SETTLED>;
 
     if (settledHtlc.settlement.status !== SettlementStatus.DENIED) return false;
     const deniedSettlementInfo = settledHtlc.settlement as SettlementInfo<SettlementStatus.DENIED>;

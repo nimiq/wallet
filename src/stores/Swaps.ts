@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
-import { DeniedReason, Htlc, HtlcStatus, SepaClearingInstruction, SettlementStatus } from '../lib/OasisApi';
+import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '../lib/OasisApi';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -76,10 +76,10 @@ export type ActiveSwap = SwapObject & {
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
     secret?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
     error?: string,
 }
 

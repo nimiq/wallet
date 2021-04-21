@@ -1,9 +1,9 @@
 import { captureException } from '@sentry/vue';
 import Config from 'config';
-import { Htlc, HtlcStatus, SettlementInstruction, SettlementStatus } from '../OasisApi';
+import { Htlc as OasisHtlc, HtlcStatus, SettlementInstruction, SettlementStatus } from '../OasisApi';
 import { AssetAdapter, SwapAsset } from './IAssetAdapter';
 
-export type HtlcDetails = Htlc<HtlcStatus>;
+export type HtlcDetails = OasisHtlc;
 
 export interface OasisClient {
     getHtlc(id: string): Promise<HtlcDetails>;
@@ -20,7 +20,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         id: string,
         test: (htlc: HtlcDetails) => boolean,
     ): Promise<HtlcDetails> {
-        const check = async (): Promise<Htlc<HtlcStatus> | null> => {
+        const check = async (): Promise<HtlcDetails | null> => {
             try {
                 const htlc = await this.client.getHtlc(id);
                 if (test(htlc)) return htlc;
@@ -86,11 +86,11 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         throw new Error('Method "fundHtlc" not available for EUR HTLCs');
     }
 
-    public async awaitHtlcSettlement(id: string): Promise<Htlc<HtlcStatus.SETTLED>> {
+    public async awaitHtlcSettlement(id: string): Promise<OasisHtlc<HtlcStatus.SETTLED>> {
         return this.findTransaction(
             id,
             (htlc) => typeof htlc.preimage.value === 'string',
-        ) as Promise<Htlc<HtlcStatus.SETTLED>>;
+        ) as Promise<OasisHtlc<HtlcStatus.SETTLED>>;
     }
 
     public async awaitSwapSecret(id: string): Promise<string> {

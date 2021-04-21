@@ -8,7 +8,7 @@ import {
     ClearingInfo,
     ClearingStatus,
     DeniedReason,
-    Htlc,
+    Htlc as OasisHtlc,
     HtlcStatus,
 } from '../../OasisApi';
 import { i18n } from '../../../i18n/i18n-setup';
@@ -32,10 +32,10 @@ const { estimate } = useSwapEstimate();
 export const oasisBuyLimitExceeded = computed(() => {
     if (!swap.value) return false;
     if (!swap.value.fundingTx) return false;
-    const htlc = swap.value.fundingTx as Htlc<HtlcStatus>;
+    const htlc = swap.value.fundingTx as OasisHtlc;
 
     if (htlc.status !== HtlcStatus.PENDING) return false;
-    const pendingHtlc = htlc as Htlc<HtlcStatus.PENDING>;
+    const pendingHtlc = htlc as OasisHtlc<HtlcStatus.PENDING>;
 
     if (pendingHtlc.clearing.status !== ClearingStatus.DENIED) return false;
     const deniedClearingInfo = pendingHtlc.clearing as ClearingInfo<ClearingStatus.DENIED>;

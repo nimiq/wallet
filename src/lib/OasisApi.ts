@@ -65,7 +65,7 @@ export type MockClearingInstruction = {
 
 export type ClearingInstruction = SepaClearingInstruction | MockClearingInstruction;
 
-export type ClearingInfo<CStatus extends ClearingStatus> = {
+export type ClearingInfo<CStatus = ClearingStatus> = {
     status: CStatus,
     type?: TransactionType,
     options: ClearingInstruction[],
@@ -76,7 +76,7 @@ export type ClearingInfo<CStatus extends ClearingStatus> = {
     } : never,
 }
 
-export type SettlementInfo<SStatus extends SettlementStatus> = {
+export type SettlementInfo<SStatus = SettlementStatus> = {
     status: SStatus,
     type?: TransactionType,
     options: SStatus extends SettlementStatus.WAITING | SettlementStatus.DENIED | SettlementStatus.FAILED
@@ -126,12 +126,7 @@ export type EllipticCurveKey = {
     y: string,
 }
 
-type OasisHtlc<TStatus extends HtlcStatus> = Omit<Htlc<TStatus>, 'asset' | 'expires'> & {
-    asset: OasisAsset,
-    expires: string,
-};
-
-export type Htlc<TStatus extends HtlcStatus> = {
+export type Htlc<TStatus = HtlcStatus> = {
     id: string,
     status: TStatus,
     asset: Asset,
@@ -147,9 +142,14 @@ export type Htlc<TStatus extends HtlcStatus> = {
         value: TStatus extends HtlcStatus.SETTLED ? string : never,
     },
     expires: number,
-    clearing: TStatus extends HtlcStatus.PENDING ? ClearingInfo<ClearingStatus> : never,
-    settlement: TStatus extends HtlcStatus.CLEARED | HtlcStatus.SETTLED ? SettlementInfo<SettlementStatus> : never,
+    clearing: TStatus extends HtlcStatus.PENDING ? ClearingInfo : never,
+    settlement: TStatus extends HtlcStatus.CLEARED | HtlcStatus.SETTLED ? SettlementInfo : never,
 }
+
+export type RawHtlc<TStatus = HtlcStatus> = Omit<Htlc<TStatus>, 'asset' | 'expires'> & {
+    asset: OasisAsset,
+    expires: string,
+};
 
 export function init(url: string) {
     if (!url) throw new Error('url must be provided');
@@ -160,7 +160,7 @@ async function api(
     path: string,
     method: 'POST' | 'GET' | 'DELETE',
     body?: Record<string, unknown>,
-): Promise<OasisHtlc<HtlcStatus>> {
+): Promise<RawHtlc> {
     if (!API_URL) throw new Error('API URL not set, call init() first');
 
     const response = await fetch(`${API_URL}${path}`, {
@@ -179,7 +179,7 @@ async function api(
 }
 
 export async function createHtlc(
-    contract: Pick<OasisHtlc<HtlcStatus>, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'> & {
+    contract: Pick<RawHtlc, 'asset' | 'amount' | 'beneficiary' | 'hash' | 'preimage' | 'expires'> & {
         includeFee: boolean,
     },
 ): Promise<Htlc<HtlcStatus.PENDING>> {
@@ -221,11 +221,11 @@ export async function createHtlc(
         contract.expires = new Date(expires).toISOString();
     }
 
-    const htlc = await api('/htlc', 'POST', contract) as OasisHtlc<HtlcStatus.PENDING>;
+    const htlc = await api('/htlc', 'POST', contract) as RawHtlc<HtlcStatus.PENDING>;
     return convertHtlc(htlc);
 }
 
-export async function getHtlc(id: string): Promise<Htlc<HtlcStatus>> {
+export async function getHtlc(id: string): Promise<Htlc> {
     const htlc = await api(`/htlc/${id}`, 'GET');
     return convertHtlc(htlc);
 }
@@ -251,7 +251,7 @@ export async function settleHtlc(
     const htlc = await api(`/htlc/${id}/settle`, 'POST', {
         preimage: secret,
         settlement: settlementJWS,
-    }) as OasisHtlc<HtlcStatus.SETTLED>;
+    }) as RawHtlc<HtlcStatus.SETTLED>;
     return convertHtlc(htlc);
 }
 
@@ -269,7 +269,7 @@ export async function sandboxMockClearHtlc(id: string): Promise<boolean> {
     });
 }
 
-function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc<TStatus> {
+function convertHtlc<TStatus extends HtlcStatus>(htlc: RawHtlc<TStatus>): Htlc<TStatus> {
     const contract: Htlc<TStatus> = {
         id: htlc.id,
         status: htlc.status,
@@ -291,7 +291,7 @@ function convertHtlc<TStatus extends HtlcStatus>(htlc: OasisHtlc<TStatus>): Htlc
         preimage: {
             ...htlc.preimage,
             ...('value' in htlc.preimage ? {
-                value: base64ToHex((htlc as unknown as OasisHtlc<HtlcStatus.SETTLED>).preimage.value),
+                value: base64ToHex((htlc as unknown as RawHtlc<HtlcStatus.SETTLED>).preimage.value),
             } : {}),
         },
         expires: Math.floor(Date.parse(htlc.expires) / 1000),

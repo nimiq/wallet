@@ -62,7 +62,7 @@ import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from
 import {
     ClearingStatus,
     getHtlc,
-    Htlc,
+    Htlc as OasisHtlc,
     HtlcStatus,
     settleHtlc,
     SettlementInfo,
@@ -336,12 +336,12 @@ export default defineComponent({
                                 fundingTx: htlc,
                             });
 
-                            if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
+                            if ((htlc as OasisHtlc).status === HtlcStatus.EXPIRED) {
                                 checkExpired();
                                 return;
                             }
 
-                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
+                            if ((htlc as OasisHtlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
                                 // TODO: Handle partial funding
                             }
 
@@ -449,7 +449,7 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
-                            let htlc = settlementTx as Htlc<HtlcStatus.SETTLED>;
+                            let htlc = settlementTx as OasisHtlc<HtlcStatus.SETTLED>;
 
                             // As EUR payments are not otherwise detected by the Wallet, we use this
                             // place to persist the relevant information in our store.
@@ -475,7 +475,7 @@ export default defineComponent({
 
                                 htlc = await swapHandler.awaitIncomingConfirmation((tx) => {
                                     // eslint-disable-next-line @typescript-eslint/no-shadow
-                                    const htlc = tx as Htlc<HtlcStatus.SETTLED>;
+                                    const htlc = tx as OasisHtlc<HtlcStatus.SETTLED>;
 
                                     updateSwap({
                                         settlementTx: htlc,
@@ -502,7 +502,7 @@ export default defineComponent({
                                         };
                                         addSettlementData(htlc.hash.value, swapData);
                                     }
-                                }) as Htlc<HtlcStatus.SETTLED>;
+                                }) as OasisHtlc<HtlcStatus.SETTLED>;
                             }
 
                             // As EUR payments are not otherwise detected by the Wallet, we use this

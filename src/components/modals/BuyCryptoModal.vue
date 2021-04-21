@@ -297,7 +297,7 @@ import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import {
     getHtlc,
-    Htlc,
+    Htlc as OasisHtlc,
     HtlcStatus,
     sandboxMockClearHtlc,
     TransactionType,
@@ -755,7 +755,7 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            let oasisHtlc: Htlc<HtlcStatus>;
+            let oasisHtlc: OasisHtlc;
             try {
                 // TODO: Retry getting the HTLC if first time fails
                 oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
@@ -794,7 +794,7 @@ export default defineComponent({
                 return;
             }
 
-            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing.options
+            const fundingInstructions = (oasisHtlc as OasisHtlc<HtlcStatus.PENDING>).clearing.options
                 .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
 
             // Add swap details to swap store

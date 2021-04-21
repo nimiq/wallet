@@ -117,8 +117,8 @@ function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
     options: {
-        month?: string,
-        year?: string,
+        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
+        year?: 'numeric' | '2-digit',
     },
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);

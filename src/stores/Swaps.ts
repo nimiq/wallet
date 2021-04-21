@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
-import { Htlc, HtlcStatus, SepaClearingInstruction, SettlementStatus } from '../lib/OasisApi';
+import { DeniedReason, Htlc, HtlcStatus, SepaClearingInstruction, SettlementStatus } from '../lib/OasisApi';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -54,6 +54,7 @@ export type SwapEurData = {
         settlement?: {
             status: SettlementStatus,
             eta?: number,
+            reason?: DeniedReason | string,
             lastUpdated?: number,
         },
     },

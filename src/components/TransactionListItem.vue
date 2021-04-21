@@ -41,6 +41,9 @@
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
+                    <TransactionListOasisPayoutStatus
+                        v-if="swapData && swapData.asset === SwapAsset.EUR"
+                        :data="swapData"/>
                 </span>
             </div>
         </div>
@@ -92,6 +95,8 @@ import { isProxyData, ProxyType } from '../lib/ProxyDetection';
 import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
 import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
+import { SettlementStatus } from '../lib/OasisApi';
 
 export default defineComponent({
     props: {
@@ -154,10 +159,19 @@ export default defineComponent({
             }
 
             if (swapData.value && !isCancelledSwap.value) {
-                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                     fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
                     toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
                 }) as string;
+
+                // The TransactionListOasisPayoutStatus takes care of the second half of the message
+                if (
+                    swapData.value.asset === SwapAsset.EUR
+                    && swapData.value.htlc?.settlement
+                    && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                ) return `${message.split('–')[0]} –`;
+
+                return message;
             }
 
             if ('hashRoot' in props.transaction.data
@@ -292,6 +306,7 @@ export default defineComponent({
         BitcoinIcon,
         BankIcon,
         SwapSmallIcon,
+        TransactionListOasisPayoutStatus,
     },
 });
 </script>
@@ -424,7 +439,7 @@ svg {
         .time-and-message {
             font-size: var(--small-size);
             font-weight: 600;
-            opacity: .5;
+            color: var(--text-50);
             white-space: nowrap;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 

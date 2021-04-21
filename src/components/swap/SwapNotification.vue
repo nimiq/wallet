@@ -439,7 +439,6 @@ export default defineComponent({
                 }
                 case SwapState.SETTLE_INCOMING: {
                     try {
-                        // TODO: Catch double settlement (e.g. after page-reload)
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
@@ -468,38 +467,66 @@ export default defineComponent({
                                     },
                                 },
                             };
-                            addSettlementData(htlc.hash.value, swapData);
 
-                            // eslint-disable-next-line @typescript-eslint/no-shadow
-                            htlc = await swapHandler.awaitIncomingConfirmation((htlc) => {
-                                updateSwap({
-                                    settlementTx: htlc,
-                                });
+                            if (htlc.settlement.status === SettlementStatus.PENDING) {
+                                // Add swap data to store so the tx history already shows the tx as a swap
+                                // while we wait for payout acceptance.
+                                addSettlementData(htlc.hash.value, swapData);
 
-                                if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
-                                    checkExpired();
-                                    return;
-                                }
+                                htlc = await swapHandler.awaitIncomingConfirmation((tx) => {
+                                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                                    const htlc = tx as Htlc<HtlcStatus.SETTLED>;
 
-                                // Limit excess is detected in SellCryptoModal (`oasisLimitExceeded`)
-                                // if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED)
+                                    updateSwap({
+                                        settlementTx: htlc,
+                                    });
 
-                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
-                                    // TODO: Handle failed payout
-                                }
-                            }) as Htlc<HtlcStatus.SETTLED>;
+                                    if (htlc.settlement.status === SettlementStatus.DENIED) {
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.DENIED>;
+
+                                        swapData.htlc!.settlement = {
+                                            status: settlement.status,
+                                            reason: settlement.detail.reason,
+                                            lastUpdated: Date.now(),
+                                        };
+                                        addSettlementData(htlc.hash.value, swapData);
+                                    }
+
+                                    if (htlc.settlement.status === SettlementStatus.FAILED) {
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.FAILED>;
+
+                                        swapData.htlc!.settlement = {
+                                            status: settlement.status,
+                                            reason: settlement.detail.reason,
+                                            lastUpdated: Date.now(),
+                                        };
+                                        addSettlementData(htlc.hash.value, swapData);
+                                    }
+                                }) as Htlc<HtlcStatus.SETTLED>;
+                            }
 
                             // As EUR payments are not otherwise detected by the Wallet, we use this
                             // place to persist the relevant information in our store.
                             swapData.htlc!.settlement = {
                                 status: htlc.settlement.status,
-                                ...(htlc.settlement.status === SettlementStatus.ACCEPTED ? {
-                                    eta: (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
-                                        .detail.eta.seconds * 1e3,
-                                    lastUpdated: Date.now(),
-                                } : {}),
-                                // TODO: Also check when SettlementStatus is FAILED with reason "limit-exceeded"
-                                // to catch when EUR is automatically paid out when limit is available again.
+                                ...(htlc.settlement.status === SettlementStatus.ACCEPTED
+                                    ? {
+                                        eta: (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
+                                            .detail.eta.seconds * 1e3,
+                                        lastUpdated: Date.now(),
+                                    }
+                                    : {}
+                                ),
+                                ...(htlc.settlement.status === SettlementStatus.DENIED
+                                    || htlc.settlement.status === SettlementStatus.FAILED
+                                    ? {
+                                        reason: (htlc.settlement as SettlementInfo<
+                                            SettlementStatus.DENIED | SettlementStatus.FAILED
+                                        >).detail.reason,
+                                        lastUpdated: Date.now(),
+                                    }
+                                    : {}
+                                ),
                             };
                             addSettlementData(htlc.hash.value, swapData);
                         }

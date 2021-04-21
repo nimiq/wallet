@@ -53,8 +53,13 @@
                 </template>
             </i18n>
 
+            <TransactionDetailOasisPayoutStatus
+                v-if="swapData && swapData.asset === SwapAsset.EUR && swapData.htlc
+                    && swapData.htlc.settlement && swapData.htlc.settlement !== SettlementStatus.CONFIRMED"
+                :data="swapData"
+            />
             <span
-                v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
+                v-else-if="state === TransactionState.NEW || state === TransactionState.PENDING"
                 slot="more"
                 class="nq-light-blue flex-row"
             >
@@ -322,6 +327,8 @@ import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
+import { SettlementStatus } from '../../lib/OasisApi';
+import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 
 export default defineComponent({
     name: 'btc-transaction-modal',
@@ -625,6 +632,7 @@ export default defineComponent({
             isCancelledSwap,
             showRefundButton,
             refundHtlc,
+            SettlementStatus,
         };
     },
     components: {
@@ -652,6 +660,7 @@ export default defineComponent({
         Identicon,
         SwapMediumIcon,
         SwapFeesTooltip,
+        TransactionDetailOasisPayoutStatus,
     },
 });
 </script>

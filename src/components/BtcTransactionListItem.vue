@@ -47,6 +47,9 @@
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
+                    <TransactionListOasisPayoutStatus
+                        v-if="swapData && swapData.asset === SwapAsset.EUR"
+                        :data="swapData"/>
                 </span>
             </div>
 
@@ -98,6 +101,8 @@ import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
 import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
+import { SettlementStatus } from '../lib/OasisApi';
 
 export default defineComponent({
     props: {
@@ -178,10 +183,19 @@ export default defineComponent({
         const data = computed(() => {
             if (swapData.value) {
                 if (!isCancelledSwap.value) {
-                    return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                    const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                         fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
                         toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
                     }) as string;
+
+                    // The TransactionListOasisPayoutStatus takes care of the second half of the message
+                    if (
+                        swapData.value.asset === SwapAsset.EUR
+                        && swapData.value.htlc?.settlement
+                        && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                    ) return `${message.split('–')[0]} –`;
+
+                    return message;
                 }
 
                 return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
@@ -332,6 +346,7 @@ export default defineComponent({
         Identicon,
         BankIcon,
         SwapSmallIcon,
+        TransactionListOasisPayoutStatus,
     },
 });
 </script>

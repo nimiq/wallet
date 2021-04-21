@@ -73,8 +73,15 @@
             </i18n>
             <!-- TODO: find a way to avoid the template#address repetition -->
 
+            <TransactionDetailOasisPayoutStatus
+                v-if="swapData && swapData.asset === SwapAsset.EUR
+                    && swapData.htlc && swapData.htlc.settlement
+                    && swapData.htlc.settlement !== SettlementStatus.CONFIRMED"
+                slot="more"
+                :data="swapData"
+            />
             <span
-                v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
+                v-else-if="state === TransactionState.NEW || state === TransactionState.PENDING"
                 slot="more"
                 class="nq-light-blue flex-row"
             >
@@ -328,6 +335,8 @@ import { sendTransaction } from '../../network';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import { SettlementStatus } from '../../lib/OasisApi';
+import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -641,6 +650,7 @@ export default defineComponent({
             showRefundButton,
             refundHtlc,
             explorerTxLink,
+            SettlementStatus,
         };
     },
     components: {
@@ -672,6 +682,7 @@ export default defineComponent({
         ShortAddress,
         SwapFeesTooltip,
         InteractiveShortAddress,
+        TransactionDetailOasisPayoutStatus,
     },
 });
 </script>

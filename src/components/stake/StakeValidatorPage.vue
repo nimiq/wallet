@@ -48,7 +48,7 @@ export default defineComponent({
         const translatedData = Object.fromEntries(
             Object.entries(stakingData as StakingData).map(([k, v]) => {
                 if (k.endsWith('Rules')) {
-                    return [k, (v as StakingScoringRules).map((rule) => rule.slice(0, -1).concat([
+                    return [k, (v as StakingScoringRules).map((rule: Array<string>) => rule.slice(0, -1).concat([
                         i18n.t(rule.slice(-1)[0]).toString(),
                     ]))];
                 }

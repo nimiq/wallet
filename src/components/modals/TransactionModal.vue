@@ -97,12 +97,12 @@
                 {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
             </span>
             <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                <i18n v-if="isIncoming" path="received at {dateAndTime}" :tag="false">
+                <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
                     </template>
                 </i18n>
-                <i18n v-else path="sent at {dateAndTime}" :tag="false">
+                <i18n v-else path="Sent at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
                     </template>

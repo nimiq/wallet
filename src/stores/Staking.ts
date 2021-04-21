@@ -18,7 +18,7 @@ export type ValidatorData = {
     dominance: number | .0,
 }
 
-export type StakingScoringRules = Array<Array<string>>
+export type StakingScoringRules = any
 
 export type StakingData = {
     validatorLabelDisclaimer: string,

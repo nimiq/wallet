@@ -45,11 +45,11 @@
                                 <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
                                     <StarIcon />
                                 </div>
-                                {{ getRuleOutcome(stakingData.uptimeRules, validatorData.uptime)[1] }}
+                                {{ scoreData.uptime[1] }}
                             </div>
                         </div>
                         <div class="validator-score-explainer">
-                            {{ $t(getRuleOutcome(stakingData.uptimeRules, validatorData.uptime)[2]) }}
+                            {{ $t('{text}', { text: scoreData.uptime[2] }) }}
                         </div>
                         <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
                             {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { StakingData, ValidatorData } from '../../stores/Staking';
 import { numberToLiteralTimes } from '../../lib/NumberFormatting';
@@ -126,9 +126,12 @@ const getRuleOutcome = (ruleset: Array<string>, scalar:number, upwards = true) =
 
 export default defineComponent({
     setup(props) {
+        const scoreData = computed(() => ({
+            uptime: getRuleOutcome(props.stakingData.uptimeRules, props.validatorData.uptime),
+        }));
         return {
             payoutText: getPayoutText(props.validatorData.payout),
-            getRuleOutcome,
+            scoreData,
             Helpers: {
                 capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
             },

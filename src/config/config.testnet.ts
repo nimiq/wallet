@@ -13,6 +13,7 @@ export default {
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
         watchtowerEndpoint: 'https://watch.fastspot.io/test',
         feePercentage: 0.0025, // 0.25%
+        sepaFee: 0, // Euro
     },
 
     oasis: {

@@ -55,6 +55,7 @@
                             :oasisFeeFiat="fiatFees.oasisFeeFiat"
                             :oasisFeePercentage="fiatFees.oasisFeePercentage"
                             :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
+                            :sepaFeeFiat="fiatFees.sepaFeeFiat"
                             :nimFeeFiat="fiatFees.nimFeeFiat"
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
@@ -510,6 +511,8 @@ export default defineComponent({
                 const oasisFeePercentage = Config.oasis.feePercentage * 100;
                 const oasisMinFeeFiat = Config.oasis.minFee;
 
+                const sepaFeeFiat = Config.fastspot.sepaFee > 0 ? Config.fastspot.sepaFee : undefined;
+
                 let nimFeeFiat: number | undefined;
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     // Funding
@@ -539,22 +542,30 @@ export default defineComponent({
                     oasisFeeFiat,
                     oasisFeePercentage,
                     oasisMinFeeFiat,
+                    sepaFeeFiat,
                     nimFeeFiat,
                     serviceSwapFeePercentage,
                     serviceSwapFeeFiat,
-                    total: (btcFeeFiat || 0) + oasisFeeFiat + (nimFeeFiat || 0) + serviceSwapFeeFiat,
+                    total: (btcFeeFiat || 0)
+                        + oasisFeeFiat
+                        + (sepaFeeFiat || 0)
+                        + (nimFeeFiat || 0)
+                        + serviceSwapFeeFiat,
                     isHigh: false,
                 };
             }
 
             const myEurFee = data.to.fee;
-            const theirEurFee = data.to.serviceEscrowFee + data.to.serviceNetworkFee;
+            const theirOasisFee = data.to.serviceEscrowFee;
+            const theirSepaFee = data.to.serviceNetworkFee;
 
-            const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
+            const oasisFeeFiat = (myEurFee + theirOasisFee) / 100;
             const oasisFeePercentage = oasisFeeFiat === Config.oasis.minFee
                 ? Config.oasis.feePercentage * 100
                 : Math.round((oasisFeeFiat / (data.to.amount / 100)) * 1000) / 10;
             const oasisMinFeeFiat = oasisFeeFiat === Config.oasis.minFee ? Config.oasis.minFee : undefined;
+
+            const sepaFeeFiat = theirSepaFee > 0 ? theirSepaFee / 100 : undefined;
 
             const myCryptoFee = data.from.fee;
             const theirCryptoFee = data.from.serviceNetworkFee;
@@ -574,17 +585,20 @@ export default defineComponent({
                 ? (feeAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value] || 0)
                 : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
 
-            const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceSwapFeeFiat;
-
             return {
                 btcFeeFiat,
                 oasisFeeFiat,
                 oasisFeePercentage,
                 oasisMinFeeFiat,
+                sepaFeeFiat,
                 nimFeeFiat,
                 serviceSwapFeePercentage,
                 serviceSwapFeeFiat,
-                total,
+                total: (btcFeeFiat || 0)
+                    + (oasisFeeFiat || 0)
+                    + (sepaFeeFiat || 0)
+                    + (nimFeeFiat || 0)
+                    + serviceSwapFeeFiat,
                 isHigh: false,
             };
         });
@@ -732,7 +746,6 @@ export default defineComponent({
                             recipient: {
                                 name: bankAccounts.value.sepa!.accountName,
                                 iban: bankAccounts.value.sepa!.iban,
-                                // @ts-expect-error HubApi does not yet include this field
                                 bic: banks.value.sepa!.BIC,
                             },
                         } : {
@@ -760,8 +773,14 @@ export default defineComponent({
                     fundingFiatRate:
                         exchangeRates.value[swapSuggestion.from.asset.toLowerCase()][selectedFiatCurrency.value]!,
                     redeemingFiatRate: 1, // 1 EUR = 1 EUR
-                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee + swapSuggestion.to.serviceEscrowFee,
+                    fundFees: {
+                        processing: 0,
+                        redeeming: swapSuggestion.from.serviceNetworkFee,
+                    },
+                    redeemFees: {
+                        funding: swapSuggestion.to.serviceNetworkFee,
+                        processing: swapSuggestion.to.serviceEscrowFee,
+                    },
                     serviceSwapFee,
                 };
 

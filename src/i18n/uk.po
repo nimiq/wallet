@@ -57,12 +57,12 @@ msgid "{fee} fee"
 msgstr "{fee} комісія"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:41
+#: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% вартості обміну."
 
 #: src/components/modals/BuyCryptoModal.vue:92
-#: src/components/modals/SellCryptoModal.vue:95
+#: src/components/modals/SellCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:84
 msgid "{value} remaining"
 msgstr "{value} залишок"
@@ -111,7 +111,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:89
+#: src/components/modals/SellCryptoModal.vue:90
 #: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
 msgid "30-day Limit"
 msgstr "30-денний ліміт"
@@ -431,7 +431,7 @@ msgstr ""
 "оброблений."
 
 #: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/SellCryptoModal.vue:192
 #: src/components/swap/SwapModal.vue:159
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -440,7 +440,7 @@ msgstr ""
 " {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:205
+#: src/components/modals/SellCryptoModal.vue:206
 #: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -494,7 +494,7 @@ msgid "Choose a Recipient"
 msgstr "Виберіть одержувача"
 
 #: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:280
+#: src/components/modals/SellCryptoModal.vue:281
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -691,7 +691,7 @@ msgid ""
 "During early access, these limits apply. They may be increased gradually."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:105
+#: src/components/modals/SellCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
@@ -826,7 +826,7 @@ msgid "fee"
 msgstr "комісія"
 
 #: src/components/modals/BuyCryptoModal.vue:64
-#: src/components/modals/SellCryptoModal.vue:67
+#: src/components/modals/SellCryptoModal.vue:68
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "комісія"
@@ -987,7 +987,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Недостатньо коштів."
@@ -1051,7 +1051,7 @@ msgid "Limit of copied addresses reached."
 msgstr "Вичерпано ліміт скопійованих адрес."
 
 #: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr "Ліміти прив'язані до рахунків та IBAN."
 
@@ -1068,7 +1068,7 @@ msgid "Loading Moonpay..."
 msgstr "Завантажуємо Moonpay..."
 
 #: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:93
+#: src/components/modals/SellCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
 msgid "loading..."
 msgstr "завантаження..."
@@ -1098,7 +1098,7 @@ msgstr "Вийти"
 msgid "lost"
 msgstr "Втрачено"
 
-#: src/components/modals/SellCryptoModal.vue:171
+#: src/components/modals/SellCryptoModal.vue:172
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr ""
 
@@ -1108,8 +1108,8 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:70
 #: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:78
+#: src/components/modals/SellCryptoModal.vue:74
+#: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Макс."
@@ -1156,7 +1156,7 @@ msgstr "Мережа"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Комісія мережі: {sats} сат/вБайт"
 
-#: src/components/swap/SwapFeesTooltip.vue:31
+#: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr "Комісія NIM"
 
@@ -1257,7 +1257,7 @@ msgid "Pending..."
 msgstr "Очікується..."
 
 #: src/components/modals/BuyCryptoModal.vue:80
-#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
 msgid "Per-Swap Limit"
 msgstr "Ліміт на обмін"
@@ -1449,9 +1449,9 @@ msgstr "Обрати у яких одиницях відображати Біт�
 msgid "Sell"
 msgstr "Продати"
 
-#: src/components/modals/SellCryptoModal.vue:189
-#: src/components/modals/SellCryptoModal.vue:194
-#: src/components/modals/SellCryptoModal.vue:208
+#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/SellCryptoModal.vue:209
 #: src/components/modals/SellCryptoModal.vue:37
 msgid "Sell Crypto"
 msgstr ""
@@ -1493,9 +1493,9 @@ msgstr ""
 msgid "Send crypto to a smart contract."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:149
-#: src/components/modals/SellCryptoModal.vue:176
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:150
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:180
 msgid "Send max"
 msgstr ""
 
@@ -1540,6 +1540,10 @@ msgstr "Надіслано {nim} NIM до {name}"
 #: src/components/modals/TransactionModal.vue:105
 msgid "Sent at {dateAndTime}"
 msgstr "Надіслано {dateAndTime}"
+
+#: src/components/swap/SwapFeesTooltip.vue:31
+msgid "SEPA Instant fee"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
@@ -1654,7 +1658,7 @@ msgstr ""
 msgid "Swap complete"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:37
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Комісія за обмін"
 
@@ -1847,7 +1851,7 @@ msgstr "До {exchange}"
 msgid "Total Balance"
 msgstr "Баланс"
 
-#: src/components/swap/SwapFeesTooltip.vue:47
+#: src/components/swap/SwapFeesTooltip.vue:55
 msgid "Total fees"
 msgstr "Сумарна комісія"
 

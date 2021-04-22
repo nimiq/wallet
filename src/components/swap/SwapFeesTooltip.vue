@@ -26,6 +26,14 @@
             </p>
         </template>
 
+        <template v-if="sepaFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('SEPA Instant fee') }}</label>
+                <FiatAmount :amount="sepaFeeFiat" :currency="currency"/>
+            </div>
+            <!-- <p class="explainer">{{ $t('Banking network fee') }}</p> -->
+        </template>
+
         <template v-if="nimFeeFiat !== undefined">
             <div class="price-breakdown">
                 <label>{{ $t('NIM network fee') }}</label>
@@ -77,6 +85,10 @@ export default defineComponent({
             required: false,
         },
         oasisMinFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        sepaFeeFiat: {
             type: Number,
             required: false,
         },

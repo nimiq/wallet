@@ -56,12 +56,12 @@ msgid "{fee} fee"
 msgstr "{fee} 费用"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:41
+#: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
 
 #: src/components/modals/BuyCryptoModal.vue:92
-#: src/components/modals/SellCryptoModal.vue:95
+#: src/components/modals/SellCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:84
 msgid "{value} remaining"
 msgstr "剩余 {value}"
@@ -110,7 +110,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:89
+#: src/components/modals/SellCryptoModal.vue:90
 #: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
 msgid "30-day Limit"
 msgstr "30天限制"
@@ -414,14 +414,14 @@ msgid ""
 msgstr "通过增加交易费用，您可以提升交易的处理速度"
 
 #: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/SellCryptoModal.vue:192
 #: src/components/swap/SwapModal.vue:159
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "点击“ {text}”，即表示您同意{Fastspot}和{FastspotGO}的服务条款。"
 
 #: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:205
+#: src/components/modals/SellCryptoModal.vue:206
 #: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示您同意{Fastspot}的服务条款。"
@@ -474,7 +474,7 @@ msgid "Choose a Recipient"
 msgstr "选择接收者"
 
 #: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:280
+#: src/components/modals/SellCryptoModal.vue:281
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -666,7 +666,7 @@ msgid ""
 "During early access, these limits apply. They may be increased gradually."
 msgstr "在抢先体验期间，这些限制将被应用。 这些限制项目可能会逐步增加。"
 
-#: src/components/modals/SellCryptoModal.vue:105
+#: src/components/modals/SellCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr "这些限制适用于抢先体验期间，并将逐步增加。"
@@ -795,7 +795,7 @@ msgid "fee"
 msgstr "费用"
 
 #: src/components/modals/BuyCryptoModal.vue:64
-#: src/components/modals/SellCryptoModal.vue:67
+#: src/components/modals/SellCryptoModal.vue:68
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "费用"
@@ -950,7 +950,7 @@ msgstr ""
 "创新"
 
 #: src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "余额不足"
@@ -1014,7 +1014,7 @@ msgid "Limit of copied addresses reached."
 msgstr "已达到复制地址的限制"
 
 #: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr "限额与账户和IBAN挂钩。"
 
@@ -1031,7 +1031,7 @@ msgid "Loading Moonpay..."
 msgstr "正在加载Moonpay..."
 
 #: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:93
+#: src/components/modals/SellCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
 msgid "loading..."
 msgstr "载入中..."
@@ -1061,7 +1061,7 @@ msgstr "登出"
 msgid "lost"
 msgstr "遗失"
 
-#: src/components/modals/SellCryptoModal.vue:171
+#: src/components/modals/SellCryptoModal.vue:172
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr ""
 
@@ -1071,8 +1071,8 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:70
 #: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:78
+#: src/components/modals/SellCryptoModal.vue:74
+#: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "最高"
@@ -1119,7 +1119,7 @@ msgstr "网络"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
-#: src/components/swap/SwapFeesTooltip.vue:31
+#: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr "NIM网络费用"
 
@@ -1219,7 +1219,7 @@ msgid "Pending..."
 msgstr "待处理..."
 
 #: src/components/modals/BuyCryptoModal.vue:80
-#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
 msgid "Per-Swap Limit"
 msgstr "每次交换限制"
@@ -1406,9 +1406,9 @@ msgstr "选择显示比特币金额的单位"
 msgid "Sell"
 msgstr "卖"
 
-#: src/components/modals/SellCryptoModal.vue:189
-#: src/components/modals/SellCryptoModal.vue:194
-#: src/components/modals/SellCryptoModal.vue:208
+#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/SellCryptoModal.vue:209
 #: src/components/modals/SellCryptoModal.vue:37
 msgid "Sell Crypto"
 msgstr ""
@@ -1448,9 +1448,9 @@ msgstr "在没有中间人的情况下发送和接收NIM，享受真正的去中
 msgid "Send crypto to a smart contract."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:149
-#: src/components/modals/SellCryptoModal.vue:176
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:150
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:180
 msgid "Send max"
 msgstr ""
 
@@ -1495,6 +1495,10 @@ msgstr "发送{nim}NIM至{name}"
 #: src/components/modals/TransactionModal.vue:105
 msgid "Sent at {dateAndTime}"
 msgstr "在{dateAndTime}发送"
+
+#: src/components/swap/SwapFeesTooltip.vue:31
+msgid "SEPA Instant fee"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
@@ -1609,7 +1613,7 @@ msgstr "交换"
 msgid "Swap complete"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:37
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "交换费用"
 
@@ -1797,7 +1801,7 @@ msgstr "返回{exchange}"
 msgid "Total Balance"
 msgstr "总余额"
 
-#: src/components/swap/SwapFeesTooltip.vue:47
+#: src/components/swap/SwapFeesTooltip.vue:55
 msgid "Total fees"
 msgstr "总共费用"
 

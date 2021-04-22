@@ -58,12 +58,12 @@ msgid "{fee} fee"
 msgstr "{fee} frais"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:41
+#: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% de la valeur du swap."
 
 #: src/components/modals/BuyCryptoModal.vue:92
-#: src/components/modals/SellCryptoModal.vue:95
+#: src/components/modals/SellCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:84
 msgid "{value} remaining"
 msgstr "{value} restant"
@@ -112,7 +112,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:89
+#: src/components/modals/SellCryptoModal.vue:90
 #: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
 msgid "30-day Limit"
 msgstr "Limite de 30 jours"
@@ -436,7 +436,7 @@ msgstr ""
 "transaction."
 
 #: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/SellCryptoModal.vue:192
 #: src/components/swap/SwapModal.vue:159
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -444,7 +444,7 @@ msgstr ""
 "En cliquant '{text}', vous acceptez les CGU de {Fastspot} et {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:205
+#: src/components/modals/SellCryptoModal.vue:206
 #: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
@@ -497,7 +497,7 @@ msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
 #: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:280
+#: src/components/modals/SellCryptoModal.vue:281
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -695,7 +695,7 @@ msgstr ""
 "Pendant l'accès anticipé, ces limites s'appliquent. Ces dernières pourraient"
 " être augmentées progressivement."
 
-#: src/components/modals/SellCryptoModal.vue:105
+#: src/components/modals/SellCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
@@ -832,7 +832,7 @@ msgid "fee"
 msgstr "frais"
 
 #: src/components/modals/BuyCryptoModal.vue:64
-#: src/components/modals/SellCryptoModal.vue:67
+#: src/components/modals/SellCryptoModal.vue:68
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "frais"
@@ -998,7 +998,7 @@ msgstr ""
 "par Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
@@ -1062,7 +1062,7 @@ msgid "Limit of copied addresses reached."
 msgstr "Limite d'adresses copiées atteinte."
 
 #: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr "Les limites sont liées aux comptes et aux IBANs."
 
@@ -1079,7 +1079,7 @@ msgid "Loading Moonpay..."
 msgstr "Chargement de Moonpay..."
 
 #: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:93
+#: src/components/modals/SellCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
 msgid "loading..."
 msgstr "chargement..."
@@ -1109,7 +1109,7 @@ msgstr "Déconnexion"
 msgid "lost"
 msgstr "perdu"
 
-#: src/components/modals/SellCryptoModal.vue:171
+#: src/components/modals/SellCryptoModal.vue:172
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr "Le montant maximum Swappable est de {amount} {ticker}"
 
@@ -1119,8 +1119,8 @@ msgstr "Le montant maximum Swappable est de {amount} Euros"
 
 #: src/components/modals/BuyCryptoModal.vue:70
 #: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:78
+#: src/components/modals/SellCryptoModal.vue:74
+#: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Max."
@@ -1167,7 +1167,7 @@ msgstr "Réseau"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Frais de réseau: {sats} sat/vByte"
 
-#: src/components/swap/SwapFeesTooltip.vue:31
+#: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr "Frais de réseau NIM"
 
@@ -1273,7 +1273,7 @@ msgid "Pending..."
 msgstr "En attente..."
 
 #: src/components/modals/BuyCryptoModal.vue:80
-#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
 msgid "Per-Swap Limit"
 msgstr "Limite par swap"
@@ -1470,9 +1470,9 @@ msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 msgid "Sell"
 msgstr "Vendre"
 
-#: src/components/modals/SellCryptoModal.vue:189
-#: src/components/modals/SellCryptoModal.vue:194
-#: src/components/modals/SellCryptoModal.vue:208
+#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/SellCryptoModal.vue:209
 #: src/components/modals/SellCryptoModal.vue:37
 msgid "Sell Crypto"
 msgstr "Vendre de la Crypto"
@@ -1517,9 +1517,9 @@ msgstr ""
 msgid "Send crypto to a smart contract."
 msgstr "Envoyer de la crypto à un smart contract."
 
-#: src/components/modals/SellCryptoModal.vue:149
-#: src/components/modals/SellCryptoModal.vue:176
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:150
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:180
 msgid "Send max"
 msgstr "Envoyer le maximum"
 
@@ -1564,6 +1564,10 @@ msgstr "{nim} NIM envoyés à {name}"
 #: src/components/modals/TransactionModal.vue:105
 msgid "Sent at {dateAndTime}"
 msgstr "Envoyé le {dateAndTime}"
+
+#: src/components/swap/SwapFeesTooltip.vue:31
+msgid "SEPA Instant fee"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
@@ -1678,7 +1682,7 @@ msgstr "Swap"
 msgid "Swap complete"
 msgstr "Swap complété"
 
-#: src/components/swap/SwapFeesTooltip.vue:37
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Frais de Swap"
 
@@ -1873,7 +1877,7 @@ msgstr "Aller sur {exchange}"
 msgid "Total Balance"
 msgstr "Solde total"
 
-#: src/components/swap/SwapFeesTooltip.vue:47
+#: src/components/swap/SwapFeesTooltip.vue:55
 msgid "Total fees"
 msgstr "Total des frais"
 

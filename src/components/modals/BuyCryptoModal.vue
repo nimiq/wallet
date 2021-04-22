@@ -678,8 +678,14 @@ export default defineComponent({
                     fundingFiatRate: 1, // 1 EUR = 1 EUR
                     redeemingFiatRate:
                         exchangeRates.value[swapSuggestion.to.asset.toLowerCase()][selectedFiatCurrency.value]!,
-                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    fundFees: {
+                        processing: 0, // The OASIS fee is already part of the `fund` object
+                        redeeming: swapSuggestion.from.serviceNetworkFee,
+                    },
+                    redeemFees: {
+                        funding: swapSuggestion.to.serviceNetworkFee,
+                        processing: 0,
+                    },
                     serviceSwapFee,
                 };
 

@@ -963,8 +963,14 @@ export default defineComponent({
                     fiatCurrency: currency.value,
                     fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
                     redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,
-                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    fundFees: {
+                        processing: 0,
+                        redeeming: swapSuggestion.from.serviceNetworkFee,
+                    },
+                    redeemFees: {
+                        funding: swapSuggestion.to.serviceNetworkFee,
+                        processing: 0,
+                    },
                     serviceSwapFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,

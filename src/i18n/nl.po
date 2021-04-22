@@ -4,12 +4,12 @@
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Jim <jimvendrig10@gmail.com>, 2021
 # Daniel, 2021
-# Stefan, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Stefan, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
+"Last-Translator: Stefan, 2021\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -43,28 +43,28 @@ msgstr "{count} Cashlink in afwachting | {count} Cashlinks in afwachting"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
-msgstr ""
+msgstr "{currency} kan niet worden uitbetaald"
 
 #: src/components/TransactionListOasisPayoutStatus.vue:11
 msgid "{currency} not paid out"
-msgstr ""
+msgstr "{currency} niet uitbetaald"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:6
 #: src/components/TransactionListOasisPayoutStatus.vue:5
 msgid "{currency} payout pending"
-msgstr ""
+msgstr "Uitbetaling van {currency} in behandeling"
 
 #: src/components/modals/TransactionModal.vue:272
 msgid "{fee} fee"
 msgstr "{fee} heffing"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:41
+#: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% van swap waarde."
 
 #: src/components/modals/BuyCryptoModal.vue:92
-#: src/components/modals/SellCryptoModal.vue:95
+#: src/components/modals/SellCryptoModal.vue:96
 #: src/components/swap/SwapModal.vue:84
 msgid "{value} remaining"
 msgstr "{value} resterend"
@@ -113,7 +113,7 @@ msgid "3"
 msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:89
+#: src/components/modals/SellCryptoModal.vue:90
 #: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
 msgid "30-day Limit"
 msgstr "30 dagen limiet"
@@ -435,7 +435,7 @@ msgstr ""
 "wordt verwerkt."
 
 #: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/SellCryptoModal.vue:192
 #: src/components/swap/SwapModal.vue:159
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -444,7 +444,7 @@ msgstr ""
 "{Fastspot} en {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:205
+#: src/components/modals/SellCryptoModal.vue:206
 #: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Door op '{text}' te klikken, ga je akkoord met de ToS van {Fastspot}."
@@ -497,7 +497,7 @@ msgid "Choose a Recipient"
 msgstr "Kies een ontvanger"
 
 #: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:280
+#: src/components/modals/SellCryptoModal.vue:281
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:205
 msgid "Choose an Address"
@@ -697,7 +697,7 @@ msgstr ""
 "Tijdens 'early access' zijn deze limieten van toepassing. Ze kunnen "
 "geleidelijk worden verhoogd."
 
-#: src/components/modals/SellCryptoModal.vue:105
+#: src/components/modals/SellCryptoModal.vue:106
 msgid ""
 "During early access, these limits apply. They will be increased gradually."
 msgstr ""
@@ -834,7 +834,7 @@ msgid "fee"
 msgstr "kosten"
 
 #: src/components/modals/BuyCryptoModal.vue:64
-#: src/components/modals/SellCryptoModal.vue:67
+#: src/components/modals/SellCryptoModal.vue:68
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "wisselkosten"
@@ -1000,7 +1000,7 @@ msgstr ""
 "door Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Onvoldoende balans."
@@ -1064,7 +1064,7 @@ msgid "Limit of copied addresses reached."
 msgstr "Limiet van gekopieerde adressen bereikt."
 
 #: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:103
 msgid "Limits are tied to accounts and IBANs."
 msgstr "Limieten zijn gekoppeld aan rekeningen en IBAN's."
 
@@ -1081,7 +1081,7 @@ msgid "Loading Moonpay..."
 msgstr "Moonpay laden..."
 
 #: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:93
+#: src/components/modals/SellCryptoModal.vue:94
 #: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
 msgid "loading..."
 msgstr "laden..."
@@ -1111,7 +1111,7 @@ msgstr "Log uit"
 msgid "lost"
 msgstr "verloren"
 
-#: src/components/modals/SellCryptoModal.vue:171
+#: src/components/modals/SellCryptoModal.vue:172
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr "De maximale om te wisselen hoeveelheid is {amount} {ticker}"
 
@@ -1121,8 +1121,8 @@ msgstr "De maximale om te wisselen hoeveelheid is {amount} EUR"
 
 #: src/components/modals/BuyCryptoModal.vue:70
 #: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:78
+#: src/components/modals/SellCryptoModal.vue:74
+#: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
 msgid "Max."
 msgstr "Max."
@@ -1169,7 +1169,7 @@ msgstr "Netwerk"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netwerk vergoeding: {sats} sat/vByte"
 
-#: src/components/swap/SwapFeesTooltip.vue:31
+#: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr "NIM netwerkkosten"
 
@@ -1270,7 +1270,7 @@ msgid "Pending..."
 msgstr "In afwachting..."
 
 #: src/components/modals/BuyCryptoModal.vue:80
-#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
 msgid "Per-Swap Limit"
 msgstr "Limiet per swap"
@@ -1319,6 +1319,7 @@ msgstr "Gelieve over te maken"
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
+"Ga naar de pagina voor probleemoplossing om te zien wat je nu moet doen."
 
 #: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
@@ -1464,9 +1465,9 @@ msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 msgid "Sell"
 msgstr "Verkopen"
 
-#: src/components/modals/SellCryptoModal.vue:189
-#: src/components/modals/SellCryptoModal.vue:194
-#: src/components/modals/SellCryptoModal.vue:208
+#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/SellCryptoModal.vue:209
 #: src/components/modals/SellCryptoModal.vue:37
 msgid "Sell Crypto"
 msgstr "Crypto verkopen"
@@ -1477,11 +1478,11 @@ msgstr "Verkoop Crypto voor Fiat"
 
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Sell NIM and BTC directly to your SEPA bank account."
-msgstr ""
+msgstr "Verkoop NIM en BTC rechtstreeks naar je SEPA-bankrekening."
 
 #: src/components/BankCheckInput.vue:99
 msgid "Selling and refunds will not work with a generic IBAN!"
-msgstr ""
+msgstr "Verkopen en terugbetalingen werken niet met een generiek IBAN!"
 
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/MobileActionBar.vue:10
@@ -1506,13 +1507,13 @@ msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:26
 msgid "Send crypto to a smart contract."
-msgstr ""
+msgstr "Stuur crypto naar een smart contract."
 
-#: src/components/modals/SellCryptoModal.vue:149
-#: src/components/modals/SellCryptoModal.vue:176
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:150
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:180
 msgid "Send max"
-msgstr ""
+msgstr "Verstuur max."
 
 #: src/components/modals/BtcSendModal.vue:118
 #: src/components/modals/BtcSendModal.vue:4
@@ -1556,6 +1557,10 @@ msgstr "Stuur {nim} NIM naar {name}"
 msgid "Sent at {dateAndTime}"
 msgstr "Stuur op {dateAndTime}"
 
+#: src/components/swap/SwapFeesTooltip.vue:31
+msgid "SEPA Instant fee"
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:20
 msgid "SEPA Instant only"
 msgstr "Alleen SEPA Instant"
@@ -1575,7 +1580,7 @@ msgstr "Swap opzetten"
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
-msgstr ""
+msgstr "De {currency} kant van de swap instellen."
 
 #: src/components/layouts/Sidebar.vue:59
 msgid "Settings"
@@ -1633,7 +1638,7 @@ msgstr "Er is iets mis gegaan"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:28
 msgid "Something went wrong with your transaction"
-msgstr ""
+msgstr "Er is iets misgegaan met je transactie"
 
 #: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
@@ -1668,9 +1673,9 @@ msgstr "Swap"
 
 #: src/components/swap/SwapAnimation.vue:87
 msgid "Swap complete"
-msgstr ""
+msgstr "Swap voltooid"
 
-#: src/components/swap/SwapFeesTooltip.vue:37
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Swap vergoeding"
 
@@ -1728,7 +1733,7 @@ msgstr "De kosten bepalen het minimumbedrag."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
-msgstr ""
+msgstr "De limiet op je IBAN is bereikt"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1763,7 +1768,7 @@ msgstr "De afzender en ontvanger kunnen niet identiek zijn."
 
 #: src/components/swap/SwapAnimation.vue:18
 msgid "The swap expired"
-msgstr ""
+msgstr "De swap is verlopen"
 
 #: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
@@ -1854,7 +1859,7 @@ msgstr "Dit duurt gewoonlijk {time} seconden."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
-msgstr ""
+msgstr "Dit duurt doorgaans één tot twee werkdagen."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -1865,7 +1870,7 @@ msgstr "Naar {exchange}"
 msgid "Total Balance"
 msgstr "Totale saldo"
 
-#: src/components/swap/SwapFeesTooltip.vue:47
+#: src/components/swap/SwapFeesTooltip.vue:55
 msgid "Total fees"
 msgstr "Totale kosten"
 
@@ -1960,6 +1965,8 @@ msgstr ""
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
+"Gebruik een SEPA Instant rekening om binnen enkele minuten de uitbetalingen "
+"te ontvangen."
 
 #: src/components/modals/BtcReceiveModal.vue:19
 msgid ""
@@ -1983,7 +1990,7 @@ msgstr "Wacht tot de swap is ingesteld."
 
 #: src/components/TransactionListOasisPayoutStatus.vue:8
 msgid "Waiting for {currency}"
-msgstr ""
+msgstr "Wachten op {currency}"
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
@@ -1994,6 +2001,8 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
 "decentralized."
 msgstr ""
+"Welkom bij de eerste fiat-to-crypto atomic swap. Het is eenvoudig, snel en "
+"gedecentraliseerd."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
@@ -2001,7 +2010,7 @@ msgstr "Wat anders? "
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
 msgid "What is your bank called?"
-msgstr ""
+msgstr "Wat is de naam van je bank?"
 
 #: src/components/modals/BtcReceiveModal.vue:9
 msgid ""
@@ -2028,7 +2037,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:91
 msgid "Without an individual IBAN, refunds are impossible!"
-msgstr ""
+msgstr "Zonder een individuele IBAN is restitutie niet mogelijk!"
 
 #: src/components/modals/NetworkInfoModal.vue:10
 msgid "You are a part of the Nimiq Blockchain."
@@ -2064,7 +2073,7 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:95
 msgid "You have exceeded your OASIS limit."
-msgstr ""
+msgstr "Je OASIS-limiet is overschreden."
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
 msgid "You need a SEPA account that supports instant transactions."
@@ -2142,6 +2151,8 @@ msgid ""
 "Your EUR will be transferred to your bank account as soon as new limit is "
 "available."
 msgstr ""
+"Je EUR wordt op je bankrekening gestort zodra er een nieuwe limiet "
+"beschikbaar is."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:88
 msgid ""
@@ -2165,7 +2176,7 @@ msgstr "Betaling is nog niet ontvangen. Er is mogelijk een probleem."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"
-msgstr ""
+msgstr "Je uitbetaling is onderweg"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"

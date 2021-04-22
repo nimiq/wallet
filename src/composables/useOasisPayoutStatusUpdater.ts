@@ -62,18 +62,25 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         );
     }
 
-    onUnmounted(() => {
+    function stop() {
         if (oasisPayoutCheckTimeout) {
-            console.log('Unmounted, stopping check');
+            console.log('Stopping check');
             window.clearTimeout(oasisPayoutCheckTimeout);
+            oasisPayoutCheckTimeout = null;
         }
+    }
+
+    watch(swapData, (data, previousData) => { // eslint-disable-line consistent-return
+        if (previousData?.asset === SwapAsset.EUR) {
+            stop();
+        }
+        if (data?.asset !== SwapAsset.EUR) return stop();
+        if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return stop();
+        if (oasisPayoutCheckTimeout) return; // eslint-disable-line consistent-return
+        checkOasisPayoutStatus();
     });
 
-    watch(swapData, (data) => {
-        if (oasisPayoutCheckTimeout) return;
-        if (!data) return;
-        if (data.asset !== SwapAsset.EUR) return;
-        if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return;
-        checkOasisPayoutStatus();
+    onUnmounted(() => {
+        stop();
     });
 }

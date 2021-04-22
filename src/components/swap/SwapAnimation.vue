@@ -68,7 +68,7 @@
         <transition name="fade">
             <div v-if="toFundingDurationMins && state === SwapState.AWAIT_INCOMING" class="to-funding-delay-notice">
                 <h2 class="nq-h2">
-                    {{ $t('Setting up the {currency} side of the swap.', { currency: toAsset} ) }}
+                    {{ $t('Setting up the {currency} side of the swap.', { currency: toAsset} ) }}<br>
                     {{ $t('This might take up to {min} minutes.', { min: toFundingDurationMins} ) }}
                 </h2>
                 <p class="nq-gray flex-row action-row">
@@ -1291,6 +1291,11 @@ export default defineComponent({
     .nq-h2 {
         font-weight: normal;
         white-space: pre-line;
+        padding: 0 3rem;
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            padding: 0 2rem;
+        }
     }
 
     .nq-gray {

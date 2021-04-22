@@ -22,4 +22,4 @@ export const BTC_ADDRESS_GAP = 10; // TODO: Update to standard 20
 export const BTC_MAX_COPYABLE_ADDRESSES = 5; // TODO: Update to 10 when BTC_ADDRESS_GAP is set to 20
 export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 
-export const OASIS_EUR_DETECTION_DELAY = 4; // minutes
+export const OASIS_EUR_DETECTION_DELAY = 5; // minutes

@@ -2,7 +2,7 @@
     <button class="validator-list-item reset flex-row" @click="selectValidator(validatorData)">
         <div class="validator-item-wrapper">
             <div class="validator-left">
-                <component v-bind:is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']" class="tab"></component>
+                <component :is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']" class="tab"></component>
             </div>
             <div class="validator-item-mid">
                 <div class="validator-item-inner-row validator-label">
@@ -175,7 +175,6 @@ export default defineComponent({
 
     width: 48.5rem;
     line-height: 9rem;
-    padding-left: var(--padding-sides);
     margin: auto;
     margin-bottom: -.25rem;
     background-color: transparent;
@@ -229,14 +228,13 @@ export default defineComponent({
             display: flex;
             flex-direction: row;
             width: 17rem;
-            height: 3rem;
+            min-height: 3rem;
             line-height: 3rem;
             &.validator-label {
                 padding-top: 0.75rem;
                 font-weight: 600;
                 font-size: 2rem;
                 line-height: 100%;
-                color: var(--nimiq-blue);
 
                 .validator-label-trigger {
                     margin-top: -.25rem;

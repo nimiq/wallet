@@ -17,12 +17,13 @@
                             {{ $t('{validatorDescription}', { validatorDescription: validatorData.labelHeaderText }) }}
                         </span>
                         <p class="validator-label-explainer">
-                            {{ stakingData.validatorLabelDisclaimer }}
-                            <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
-                                {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
-                                <ArrowRightSmallIcon/>
-                            </a>
+                            {{ $t('{text}', { text: stakingData.validatorLabelDisclaimer }) }}
                         </p>
+                        </br>
+                        <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
+                            {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
+                            <ArrowRightSmallIcon/>
+                        </a>
                     </Tooltip>
                 </div>
                 <div class="validator-item-inner-row validator-trust">

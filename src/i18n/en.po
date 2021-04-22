@@ -10,11 +10,6 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/stake/StakeValidatorListItem.vue:22
-#: src/components/stake/StakeValidatorListItem.vue:55
-msgid "{brandName} Website"
-msgstr ""
-
 #: src/components/modals/BtcTransactionModal.vue:264
 #: src/components/modals/TransactionModal.vue:274
 msgid "{count} Confirmation | {count} Confirmations"
@@ -45,21 +40,9 @@ msgstr ""
 msgid "{number} times"
 msgstr ""
 
-#: src/components/stake/StakeValidatorListItem.vue:42
-msgid "{number}% Uptime"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
-msgstr ""
-
-#: src/components/stake/StakeValidatorListItem.vue:52
-msgid "{text}"
-msgstr ""
-
-#: src/components/stake/StakeValidatorListItem.vue:17
-msgid "{validatorDescription}"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:98
@@ -1117,10 +1100,6 @@ msgstr ""
 msgid "One Account, many Addresses"
 msgstr ""
 
-#: src/components/stake/StakeValidatorListItem.vue:65
-msgid "p.a."
-msgstr ""
-
 #: src/components/modals/BuyOptionsModal.vue:22
 msgid "Pay by bank transfer. No registration – not even email."
 msgstr ""
@@ -1131,14 +1110,6 @@ msgstr ""
 
 #: src/components/stake/StakeValidatorFilter.vue:10
 msgid "Payout Time"
-msgstr ""
-
-#: src/components/stake/StakeValidatorListItem.vue:105
-msgid "pays out {numberOfTimes} a {period}"
-msgstr ""
-
-#: src/components/stake/StakeValidatorListItem.vue:102
-msgid "pays out every {hourCount}"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:43

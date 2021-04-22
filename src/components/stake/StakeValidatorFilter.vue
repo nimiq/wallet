@@ -106,7 +106,7 @@ export default defineComponent({
             svg {
                 position: relative;
                 top: .25rem;
-                margin-left: 1.25rem;
+                margin-left: .25rem;
             }
         }
     }

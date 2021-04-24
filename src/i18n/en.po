@@ -1715,6 +1715,10 @@ msgstr ""
 msgid "Tweet your map!"
 msgstr ""
 
+#: src/components/stake/StakeValidatorFilter.vue:25
+msgid "Type to search..."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:535
 #: src/components/TransactionListItem.vue:225
 msgid "Unclaimed Cashlink"

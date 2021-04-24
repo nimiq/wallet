@@ -474,7 +474,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:23
+#: src/components/stake/StakeInfoPage.vue:25
 msgid "Choose an amount"
 msgstr ""
 
@@ -946,7 +946,7 @@ msgstr ""
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:30
+#: src/components/stake/StakeInfoPage.vue:32
 msgid "let's go"
 msgstr ""
 
@@ -1314,7 +1314,7 @@ msgstr ""
 msgid "Select a currency and an amount."
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:19
+#: src/components/stake/StakeInfoPage.vue:21
 msgid "Select a validator"
 msgstr ""
 
@@ -1464,7 +1464,7 @@ msgstr ""
 msgid "Speed up your Transaction"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:7
+#: src/components/stake/StakeInfoPage.vue:9
 msgid "Stake NIM to earn NIM"
 msgstr ""
 
@@ -1480,7 +1480,7 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:27
+#: src/components/stake/StakeInfoPage.vue:29
 msgid "Start earning NIM"
 msgstr ""
 
@@ -1777,7 +1777,7 @@ msgstr ""
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 
-#: src/components/stake/StakeInfoPage.vue:11
+#: src/components/stake/StakeInfoPage.vue:13
 msgid "Welcome to staking. Lock up funds with a validator and earn NIM free of risk."
 msgstr ""
 

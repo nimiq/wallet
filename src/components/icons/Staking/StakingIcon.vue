@@ -1,8 +1,7 @@
-<!-- TODO: get latest version from designers -->
 <template functional>
-    <svg class="staking-icon" width="72" height="75" viewBox="0 0 72 75" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="34" y1="32" x2="34" y2="72" stroke="#13B59D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M69 23C69 45.9688 56.9688 58 34 58C34 25.4609 44.1172 23 69 23Z" stroke="#13B59D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 3C3 28.4265 10.75 41 34 41C34 15.5735 32.0625 3 3 3Z" stroke="#13B59D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+        <line x1="8.25" y1="8.25" x2="8.25" y2="12.75" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path d="M12.75,6.75q0,4.5-4.5,4.5C8.25,7,9.5,6.75,12.75,6.75Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path d="M4.25,4.25c0,3.25,1,5,4,5C8.25,6,8,4.25,4.25,4.25Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
     </svg>
 </template>

@@ -2,7 +2,9 @@
     <div>
         <PageHeader>
             <template #default>
-                <StakingIcon/>
+                <span class="staking-icon">
+                    <StakingIcon />
+                </span>
                 <br/>
                 {{ $t('Stake NIM to earn NIM') }}
             </template>
@@ -53,6 +55,13 @@ export default defineComponent({
         .staking-icon {
             margin-left: 1rem;
             margin-bottom: 5.125rem;
+            svg {
+                height: 11rem;
+                line, path {
+                    stroke: var(--nimiq-green);
+                    stroke-width: 0.75;
+                }
+            }
         }
     }
     .page-body {

@@ -13,7 +13,7 @@
                 @click="state = FilterState.REWARD">
                 {{ $t('Reward') }}
             </button>
-            <button class="validator-search" @click="enableSearch">
+            <button class="validator-search-icon" @click="enableSearch">
                 <SearchIcon />
             </button>
         </div>
@@ -112,15 +112,21 @@ export default defineComponent({
             }
         }
 
-        .validator-search {
+        .validator-search-icon {
             cursor: pointer;
+            margin-left: -.5rem;
             border: 0;
-            margin-top: 0.25rem;
-            margin-left: -0.75rem;
             background: transparent;
             box-shadow: none;
             svg {
-                position: relative;
+                width: 1.5rem;
+                height: 1.5rem;
+                circle {
+                    stroke: rgba(31, 35, 72, 0.5);
+                }
+                line {
+                    stroke: rgba(31, 35, 72, 0.5);
+                }
             }
         }
     }
@@ -141,11 +147,13 @@ export default defineComponent({
             margin-left: 1rem;
             margin-right: .25rem;
             svg {
-                /deep/ circle {
-                    stroke: rgba(5, 130, 202, 1);
+                width: 1.5rem;
+                height: 1.5rem;
+                circle {
+                    stroke: rgba(5, 130, 202, .4);
                 }
-                /deep/ path {
-                    fill: rgba(5, 130, 202, 1);
+                line {
+                    stroke: rgba(5, 130, 202, .4);
                 }
             }
         }

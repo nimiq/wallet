@@ -368,17 +368,20 @@ export default defineComponent({
             opacity: 0.5;
         }
     }
-    .red-star {
-        path {
-            fill: var(--nimiq-red);
-        }
-    }
     .star {
         margin-right: 0.25rem;
         opacity: 1.0;
         svg {
             width: 1.5rem;
             height: 1.5rem;
+            path {
+                fill: rgba(31, 35, 72, 0.5);
+            }
+        }
+        &.red-star {
+            path {
+                fill: var(--nimiq-red);
+            }
         }
     }
     .gold-text {

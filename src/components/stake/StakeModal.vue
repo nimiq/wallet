@@ -51,9 +51,18 @@ export default defineComponent({
     //     height: auto;
     //     overflow-y: auto;
     // }
-
-    .modal /deep/ .page-header-back-button {
-        margin-top: 3.25rem;
-        margin-left: 1rem;
+    .modal {
+        /deep/ .wrapper {
+            .small-page {
+                overflow: hidden;
+                .page-body {
+                    overflow: hidden;
+                }
+            }
+        }
+        /deep/ .page-header-back-button {
+            margin-top: 3.25rem;
+            margin-left: 1rem;
+        }
     }
 </style>

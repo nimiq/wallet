@@ -72,12 +72,15 @@ export default defineComponent({
     height: 3.75rem;
     margin: auto;
     margin-bottom: 1.5rem;
+    white-space: nowrap;
+
     .validator-filter-wrapper {
         background-color: #f2f2f4;
         height: 3.75rem;
         border-radius: 2rem;
         padding: 0;
         padding-top: .25rem;
+        white-space: nowrap;
 
         .validator-switch {
             padding: .75rem 1.25rem;
@@ -113,6 +116,8 @@ export default defineComponent({
         }
 
         .validator-search-icon {
+            display: inline-flex;
+            align-items: center;
             cursor: pointer;
             margin-left: -.5rem;
             border: 0;
@@ -121,10 +126,7 @@ export default defineComponent({
             svg {
                 width: 1.5rem;
                 height: 1.5rem;
-                circle {
-                    stroke: rgba(31, 35, 72, 0.5);
-                }
-                line {
+                line, circle {
                     stroke: rgba(31, 35, 72, 0.5);
                 }
             }
@@ -152,12 +154,9 @@ export default defineComponent({
             margin-left: 1rem;
             margin-right: .25rem;
             svg {
-                width: 1.75rem;
-                height: 1.75rem;
-                circle {
-                    stroke: rgba(5, 130, 202, .4);
-                }
-                line {
+                width: 1.5rem;
+                height: 1.5rem;
+                line, circle {
                     stroke: rgba(5, 130, 202, .4);
                 }
             }

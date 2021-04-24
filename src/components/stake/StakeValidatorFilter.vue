@@ -133,10 +133,12 @@ export default defineComponent({
     .validator-filter-search-wrapper {
         display: flex;
         width: 22.875rem;
+        height: 4rem;
         padding: 0.25rem;
         margin: auto;
+        padding-top: 0.125rem;
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
 
         text-align: center;
         border: 0.1875rem solid rgba(5, 130, 202, 0.4);
@@ -144,11 +146,14 @@ export default defineComponent({
         border-radius: 10.9375rem;
 
         .validator-search-icon {
+            display: flex;
+            height: 3.5rem;
+            align-items: center;
             margin-left: 1rem;
             margin-right: .25rem;
             svg {
-                width: 1.5rem;
-                height: 1.5rem;
+                width: 1.75rem;
+                height: 1.75rem;
                 circle {
                     stroke: rgba(5, 130, 202, .4);
                 }
@@ -160,7 +165,6 @@ export default defineComponent({
 
         .validator-search-box {
             width: 15.125rem;
-            margin-top: 0.125rem;
             font-size: 2rem;
             line-height: 1.75rem;
             color: #0582CA;
@@ -175,9 +179,10 @@ export default defineComponent({
         }
 
         .validator-search-close-icon {
+            display: flex;
+            height: 3.5rem;
+            align-items: center;
             cursor: pointer;
-            padding-top: .5rem;
-            height: 2rem;
             border: 0;
             background: transparent;
         }

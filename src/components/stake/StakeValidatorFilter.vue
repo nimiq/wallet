@@ -1,21 +1,31 @@
 <template>
     <div class="validator-filter">
-        <div class="validator-filter-wrapper">
+        <div class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH">
             <button class="validator-switch" :class="{ selected: state === FilterState.TRUST }"
-                @click="ctrl.stateChange(FilterState.TRUST)">
+                @click="state = FilterState.TRUST">
                 {{ $t('TrustScore') }}
             </button>
             <button class="validator-switch" :class="{ selected: state === FilterState.PAYOUT }"
-                @click="ctrl.stateChange(FilterState.PAYOUT)">
+                @click="state = FilterState.PAYOUT">
                 {{ $t('Payout Time') }}
             </button>
             <button class="validator-switch" :class="{ selected: state === FilterState.REWARD }"
-                @click="ctrl.stateChange(FilterState.REWARD)">
+                @click="state = FilterState.REWARD">
                 {{ $t('Reward') }}
             </button>
-            <span class="validator-search" @click="ctrl.stateChange(FilterState.SEARCH)">
-                <SearchIcon/>
+            <button class="validator-search" @click="enableSearch">
+                <SearchIcon />
+            </button>
+        </div>
+        <div class="validator-filter-search-wrapper" v-else>
+            <span class="validator-search-icon">
+                <SearchIcon />
             </span>
+            <input type="text" ref="$search" class="validator-search-box"
+                :placeholder="$t('Type to search...')" />
+            <button class="validator-search-close-icon" @click="state = FilterState.TRUST">
+                <XCloseIcon />
+            </button>
         </div>
     </div>
 </template>
@@ -23,6 +33,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import SearchIcon from '../icons/Staking/SearchIcon.vue';
+import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 
 enum FilterState {
     TRUST,
@@ -34,14 +45,15 @@ enum FilterState {
 export default defineComponent({
     setup() {
         const state = ref(FilterState.TRUST);
+        const $search = ref<HTMLInputElement>();
 
         return {
             state,
             FilterState,
-            ctrl: {
-                stateChange: (newState: FilterState) => {
-                    state.value = newState;
-                },
+            $search,
+            enableSearch: () => {
+                state.value = FilterState.SEARCH;
+                setTimeout(() => $search.value?.focus(), 0);
             },
         };
     },
@@ -49,6 +61,7 @@ export default defineComponent({
     },
     components: {
         SearchIcon,
+        XCloseIcon,
     },
 });
 </script>
@@ -90,24 +103,75 @@ export default defineComponent({
             }
 
             &.selected {
-                // box-shadow: 1px #555;
                 color: var(--nimiq-blue);
                 background: white;
                 box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07),
                             0px 1.875px 3.75px rgba(0, 0, 0, 0.05),
                             0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
-                border-radius: 182.5px;
+                border-radius: 22rem;
             }
         }
 
         .validator-search {
             cursor: pointer;
+            border: 0;
+            margin-top: 0.25rem;
+            margin-left: -0.75rem;
             background: transparent;
+            box-shadow: none;
             svg {
                 position: relative;
-                top: .25rem;
-                margin-left: .25rem;
             }
+        }
+    }
+    .validator-filter-search-wrapper {
+        display: flex;
+        width: 22.875rem;
+        padding: 0.25rem;
+        margin: auto;
+        flex-direction: row;
+        align-items: flex-start;
+
+        text-align: center;
+        border: 0.1875rem solid rgba(5, 130, 202, 0.4);
+        box-sizing: border-box;
+        border-radius: 10.9375rem;
+
+        .validator-search-icon {
+            margin-left: 1rem;
+            margin-right: .25rem;
+            svg {
+                /deep/ circle {
+                    stroke: rgba(5, 130, 202, 1);
+                }
+                /deep/ path {
+                    fill: rgba(5, 130, 202, 1);
+                }
+            }
+        }
+
+        .validator-search-box {
+            width: 15.125rem;
+            margin-top: 0.125rem;
+            font-size: 2rem;
+            line-height: 1.75rem;
+            color: #0582CA;
+            opacity: 0.4;
+            border: 0;
+            &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                color: #0582CA;
+            }
+            &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+                color: #0582CA;
+            }
+        }
+
+        .validator-search-close-icon {
+            cursor: pointer;
+            padding-top: .5rem;
+            height: 2rem;
+            border: 0;
+            background: transparent;
         }
     }
 }

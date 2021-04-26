@@ -44,7 +44,7 @@ interface StorageBackend {
 }
 
 class IndexedDBStorage {
-    static lastError = '';
+    private static lastError = '';
 
     static async get<ResultType>(key: string) {
         return idbGet<ResultType>(key);
@@ -52,8 +52,10 @@ class IndexedDBStorage {
 
     static async set(key: string, value: any) {
         try {
-            return idbSet(key, value);
+            return await idbSet(key, value);
         } catch (error) {
+            // TODO: Handle quota-errors with a user notification
+
             if (this.lastError !== error.message) {
                 this.lastError = error.message;
                 throw error;
@@ -68,6 +70,8 @@ class IndexedDBStorage {
 }
 
 class LocalStorageStorage {
+    private static lastError = '';
+
     static async get<ResultType>(key: string) {
         const stored = localStorage.getItem(key);
         if (!stored) return undefined;
@@ -75,7 +79,17 @@ class LocalStorageStorage {
     }
 
     static async set(key: string, value: any) {
-        return localStorage.setItem(key, JSON.stringify(value));
+        try {
+            return localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+            // TODO: Handle quota-errors with a user notification
+
+            if (this.lastError !== error.message) {
+                this.lastError = error.message;
+                throw error;
+            }
+            return undefined;
+        }
     }
 
     static async del(key: string) {

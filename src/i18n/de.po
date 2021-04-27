@@ -73,8 +73,8 @@ msgstr "{value} verbleibend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} weitere | + {count} weitere"
 
-#: src/components/modals/BuyOptionsModal.vue:39
-#: src/components/modals/BuyOptionsModal.vue:82
+#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ Netzwerk­gebühren"
 
@@ -211,7 +211,8 @@ msgstr "Fortgeschritten"
 msgid "all"
 msgstr "alle"
 
-#: src/components/BankCheckInput.vue:211
+#: src/components/BankCheckInput.vue:205
+#: src/components/CountrySelector.vue:106
 msgid "All countries"
 msgstr "Alle Länder"
 
@@ -235,10 +236,6 @@ msgid ""
 msgstr ""
 "Alle Übersetzungen dienen ausschließlich zu Informationszwecken. Die "
 "englische Originalversion ist rechtlich bindend."
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid "Almost everywhere"
-msgstr "Fast überall"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:35
@@ -315,9 +312,13 @@ msgstr "Backup"
 msgid "Bank Account"
 msgstr "Bankkonto"
 
-#: src/components/modals/BuyOptionsModal.vue:12
+#: src/components/modals/BuyOptionsModal.vue:27
 msgid "Bank Transfer"
 msgstr "Überweisung"
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "Bank Transfer is only supported in the EU’s SEPA area."
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:11
 msgid "Beta"
@@ -416,7 +417,7 @@ msgstr "Kaufe NIM und BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Kaufe NIM & BTC mit OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:93
+#: src/components/modals/BuyOptionsModal.vue:138
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Kaufe NIM auf einer Kryptobörse:"
 
@@ -649,9 +650,19 @@ msgstr "Gerade eben erstellt"
 msgid "Created yesterday"
 msgstr "Gestern erstellt"
 
-#: src/components/modals/BuyOptionsModal.vue:55
+#: src/components/modals/BuyOptionsModal.vue:99
 msgid "Credit Card"
 msgstr "Kreditkarte"
+
+#: src/components/modals/BuyOptionsModal.vue:65
+msgid "Currently under maintenance"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:7
+msgid ""
+"Depending on your country of residence,\n"
+"different options are available."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
@@ -867,6 +878,10 @@ msgstr "Für Anfänger"
 msgid "free"
 msgstr "gratis"
 
+#: src/components/modals/BuyOptionsModal.vue:102
+msgid "Full KYC required, high availability."
+msgstr "Identitätsnachweis erforderlich, hohe Verfügbarkeit."
+
 #: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Full Node"
@@ -985,7 +1000,7 @@ msgstr ""
 "Du kannst eine höhere Netzwerkgebühr bezahlen, um deine Transaktion zu "
 "beschleunigen. Die Gebühr geht direkt an die Miner."
 
-#: src/components/modals/BuyOptionsModal.vue:44
+#: src/components/modals/BuyOptionsModal.vue:59
 msgid ""
 "Innovation\n"
 "by Nimiq"
@@ -1082,6 +1097,7 @@ msgstr "Lade Moonpay..."
 msgid "loading..."
 msgstr "lade..."
 
+#: src/components/modals/BuyOptionsModal.vue:14
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr "Lade..."
@@ -1123,8 +1139,8 @@ msgstr ""
 msgid "Max."
 msgstr "Max."
 
-#: src/components/modals/BuyOptionsModal.vue:35
-#: src/components/modals/BuyOptionsModal.vue:73
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
@@ -1196,6 +1212,10 @@ msgstr "Da keine Geldbeträge eingegangen sind, ist der Tausch abgelaufen."
 msgid "No registration"
 msgstr "Keine Registrierung"
 
+#: src/components/modals/BuyOptionsModal.vue:39
+msgid "No registration – not even email."
+msgstr "Keine Anmeldung, nicht einmal E-Mail."
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1209,6 +1229,11 @@ msgstr "Keine"
 #: src/components/BankCheckInput.vue:78
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
+
+#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:76
+msgid "Not available in your country"
+msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
@@ -1243,16 +1268,6 @@ msgstr "Ein Konto, viele Adressen"
 #: src/components/modals/BtcActivationModal.vue:15
 msgid "Or buy BTC directly in the wallet."
 msgstr ""
-
-#: src/components/modals/BuyOptionsModal.vue:24
-msgid "Pay by bank transfer. No registration – not even email."
-msgstr "Bezahle per Banküberweisung. Keine Anmeldung, nicht einmal E-Mail."
-
-#: src/components/modals/BuyOptionsModal.vue:62
-msgid "Pay with credit card. Full KYC required, high availability."
-msgstr ""
-"Bezahle mit Kreditkarte. Identitätsnachweis erforderlich, hohe "
-"Verfügbarkeit."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1441,7 +1456,8 @@ msgstr ""
 "Code scannen um Geld\n"
 "an diese Adresse zu senden"
 
-#: src/components/BankCheckInput.vue:19 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:19 src/components/CountrySelector.vue:22
+#: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Suchen"
 
@@ -1563,7 +1579,7 @@ msgstr "Gesendet am {dateAndTime}"
 msgid "SEPA Instant fee"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:20
+#: src/components/modals/BuyOptionsModal.vue:35
 msgid "SEPA Instant only"
 msgstr "Nur SEPA Instant"
 
@@ -1716,6 +1732,10 @@ msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 "Die TEN31 Bank stellt ein Bankkonto zur Verfügung, um deine Zahlung "
 "kurzzeitig zu verwahren."
+
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
+msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"

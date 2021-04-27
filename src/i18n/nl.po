@@ -4,12 +4,12 @@
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Jim <jimvendrig10@gmail.com>, 2021
 # Daniel, 2021
-# Sören Schwert <hello@soerenschwert.de>, 2021
 # Stefan, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Stefan, 2021\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -73,8 +73,8 @@ msgstr "{value} resterend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
-#: src/components/modals/BuyOptionsModal.vue:39
-#: src/components/modals/BuyOptionsModal.vue:82
+#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
 
@@ -213,7 +213,8 @@ msgstr "Geavanceerd"
 msgid "all"
 msgstr "alles"
 
-#: src/components/BankCheckInput.vue:211
+#: src/components/BankCheckInput.vue:205
+#: src/components/CountrySelector.vue:106
 msgid "All countries"
 msgstr "Alle landen"
 
@@ -237,10 +238,6 @@ msgid ""
 msgstr ""
 "Alle vertalingen zijn alleen ter informatie. De Engelse tekst is de "
 "controlerende versie."
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid "Almost everywhere"
-msgstr "Bijna overal"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 #: src/components/modals/BtcSendModal.vue:35
@@ -317,9 +314,13 @@ msgstr "Backup"
 msgid "Bank Account"
 msgstr "Bankrekening"
 
-#: src/components/modals/BuyOptionsModal.vue:12
+#: src/components/modals/BuyOptionsModal.vue:27
 msgid "Bank Transfer"
 msgstr "Bankoverschrijving"
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "Bank Transfer is only supported in the EU’s SEPA area."
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:11
 msgid "Beta"
@@ -418,7 +419,7 @@ msgstr "Koop NIM & BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Koop NIM & BTC met OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:93
+#: src/components/modals/BuyOptionsModal.vue:138
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Koop NIM op een crypto exchange:"
 
@@ -651,9 +652,19 @@ msgstr "Zojuist aangemaakt"
 msgid "Created yesterday"
 msgstr "Gisteren aangemaakt"
 
-#: src/components/modals/BuyOptionsModal.vue:55
+#: src/components/modals/BuyOptionsModal.vue:99
 msgid "Credit Card"
 msgstr "Creditcard"
+
+#: src/components/modals/BuyOptionsModal.vue:65
+msgid "Currently under maintenance"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:7
+msgid ""
+"Depending on your country of residence,\n"
+"different options are available."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
@@ -870,6 +881,10 @@ msgstr "Voor beginners"
 msgid "free"
 msgstr "gratis"
 
+#: src/components/modals/BuyOptionsModal.vue:102
+msgid "Full KYC required, high availability."
+msgstr "Volledige KYC vereist, hoge beschikbaarheid."
+
 #: src/components/NetworkMap.vue:30
 msgid "Full Node"
 msgstr "Full Node"
@@ -991,7 +1006,7 @@ msgstr ""
 "Verhoog de snelheid van je transactie door hogere netwerkkosten te betalen. "
 "De vergoedingen gaan rechtstreeks naar de miners."
 
-#: src/components/modals/BuyOptionsModal.vue:44
+#: src/components/modals/BuyOptionsModal.vue:59
 msgid ""
 "Innovation\n"
 "by Nimiq"
@@ -1086,6 +1101,7 @@ msgstr "Moonpay laden..."
 msgid "loading..."
 msgstr "laden..."
 
+#: src/components/modals/BuyOptionsModal.vue:14
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr "Laden..."
@@ -1127,8 +1143,8 @@ msgstr "De maximale om te wisselen hoeveelheid is {amount} EUR"
 msgid "Max."
 msgstr "Max."
 
-#: src/components/modals/BuyOptionsModal.vue:35
-#: src/components/modals/BuyOptionsModal.vue:73
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
@@ -1199,6 +1215,10 @@ msgstr "Er is geen geld ontvangen, dus de swap is verlopen."
 msgid "No registration"
 msgstr "Geen registratie"
 
+#: src/components/modals/BuyOptionsModal.vue:39
+msgid "No registration – not even email."
+msgstr "Geen registratie - zelfs geen e-mail."
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1212,6 +1232,11 @@ msgstr "Geen"
 #: src/components/BankCheckInput.vue:78
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
+
+#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:76
+msgid "Not available in your country"
+msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
@@ -1246,14 +1271,6 @@ msgstr "Eên account, meerdere adressen."
 #: src/components/modals/BtcActivationModal.vue:15
 msgid "Or buy BTC directly in the wallet."
 msgstr "Of koop BTC rechtstreeks in de Wallet."
-
-#: src/components/modals/BuyOptionsModal.vue:24
-msgid "Pay by bank transfer. No registration – not even email."
-msgstr "Betaal via bankoverschrijving. Geen registratie - zelfs geen e-mail."
-
-#: src/components/modals/BuyOptionsModal.vue:62
-msgid "Pay with credit card. Full KYC required, high availability."
-msgstr "Betaal met creditcard. Volledige KYC vereist, hoge beschikbaarheid."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1440,7 +1457,8 @@ msgstr ""
 "Scan de code om het te\n"
 "versturen naar dit adres"
 
-#: src/components/BankCheckInput.vue:19 src/components/SearchBar.vue:18
+#: src/components/BankCheckInput.vue:19 src/components/CountrySelector.vue:22
+#: src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Zoeken"
 
@@ -1561,7 +1579,7 @@ msgstr "Stuur op {dateAndTime}"
 msgid "SEPA Instant fee"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:20
+#: src/components/modals/BuyOptionsModal.vue:35
 msgid "SEPA Instant only"
 msgstr "Alleen SEPA Instant"
 
@@ -1713,6 +1731,10 @@ msgstr "synchroniseren"
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 Bank biedt een bankrekening om uw betaling te vergrendelen."
+
+#: src/components/modals/BuyOptionsModal.vue:69
+msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
+msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"

@@ -1615,13 +1615,13 @@ msgid "The bank is processing your transaction."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:630
-#: src/lib/swap/utils/BuyUtils.ts:91
-#: src/lib/swap/utils/SellUtils.ts:116
+#: src/lib/swap/utils/BuyUtils.ts:90
+#: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/lib/swap/utils/BuyUtils.ts:96
-#: src/lib/swap/utils/SellUtils.ts:121
+#: src/lib/swap/utils/BuyUtils.ts:95
+#: src/lib/swap/utils/SellUtils.ts:120
 msgid "The fees determine the minimum amount."
 msgstr ""
 

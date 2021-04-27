@@ -126,6 +126,7 @@ import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountryFlag from './CountryFlag.vue';
 import WorldIcon from './icons/WorldIcon.vue';
 import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
+import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 
 type CountryInfo = {
     name: string,
@@ -167,15 +168,15 @@ export default defineComponent({
             ),
         );
 
-        const $bankSearchInput = ref<LabelInput | null>(null);
-        const $countrySearchInput = ref<HTMLInputElement | null>(null);
-        const $bankAutocomplete = ref<HTMLUListElement | null>(null);
-        const $countryAutocomplete = ref<HTMLUListElement | null>(null);
+        const $bankSearchInput = ref<LabelInput>(null);
+        const $countrySearchInput = ref<HTMLInputElement>(null);
+        const $bankAutocomplete = ref<HTMLUListElement>(null);
+        const $countryAutocomplete = ref<HTMLUListElement>(null);
         const $tooltips = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
         const selectedCountryIndex = ref(0);
-        const currentCountry = ref<CountryInfo | null>(null);
+        const currentCountry = ref<CountryInfo>(null);
         const countryDropdownOpened = ref(false);
         const countrySearch = ref<string>();
         const isScrollable = ref(false);
@@ -193,15 +194,8 @@ export default defineComponent({
         /* List of country there's an available bank in. Filtered by country name from countrySearch */
         const countries = computed(() => {
             const rgx = RegExp(countrySearch.value || '', 'i');
-            const countryCodes: string[] = [];
 
-            banks.value.forEach(({ country }) => {
-                if (!countryCodes.includes(country)) {
-                    countryCodes.push(country);
-                }
-            });
-
-            const unfilteredCountries = countryCodes.map((code) => ({
+            const unfilteredCountries = SEPA_COUNTRY_CODES.map((code) => ({
                 code,
                 name: i18nCountryName.of(code) || '',
             }));
@@ -557,8 +551,6 @@ export default defineComponent({
     }
 
     .country-dropdown {
-        @extend %custom-scrollbar-inverse;
-
         display: flex;
         flex-direction: column;
         width: 22.25rem;
@@ -624,6 +616,8 @@ export default defineComponent({
             #FFFFFF 83%,
             rgba(255, 255, 255, 0) 98%
         );
+
+        @extend %custom-scrollbar-inverse;
 
         li {
             display: flex;

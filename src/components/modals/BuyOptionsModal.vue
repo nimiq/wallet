@@ -6,8 +6,17 @@
                 <p class="nq-text">
                     {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
                 </p>
+                <CountrySelector @select="c => country = c">
+                    <div slot="trigger" class="pill flex-row">
+                        <CountryFlag v-if="country" :code="country.code" />
+                        <CircleSpinner v-else/>
+                        <span v-if="country">{{ country.name }}</span>
+                        <span v-else>{{ $t('Loading...') }}</span>
+                        <img src="../../assets/arrow-down.svg" />
+                    </div>
+                </CountrySelector>
             </header>
-            <div class="featured-exchanges flex-row">
+            <div class="featured-options flex-row">
                 <router-link :to="{ name: 'buy-crypto', query: $route.query }" replace
                     class="option oasis flex-column"
                     :class="{disabled: !isOasisAvailable}"
@@ -174,36 +183,57 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
-import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+import CountrySelector from '../CountrySelector.vue';
+import CountryFlag from '../CountryFlag.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
+import { useGeoIp } from '../../composables/useGeoIp';
+import I18nDisplayNames from '../../lib/I18nDisplayNames';
+import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES } from '../../lib/Countries';
+
+type Country = {
+    code: string,
+    name: string,
+}
 
 export default defineComponent({
     name: 'buy-options-modal',
     setup() {
         const { currency } = useFiatStore();
 
-        const country = ref<string>(null);
+        const country = ref<Country>(null);
 
         const isOasisUnderMaintenance = ref(false);
         const isOasisAvailable = computed(() => {
             if (isOasisUnderMaintenance.value) return false;
-
-            // TODO: Check country for availability
-
-            return true;
+            if (!country.value) return true;
+            return SEPA_COUNTRY_CODES.includes(country.value.code);
         });
 
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            // TODO: Check country for availability
+            if (!country.value) return true;
+            return MOONPAY_COUNTRY_CODES.includes(country.value.code);
+        });
 
-            return true;
+        const i18nCountryName = new I18nDisplayNames('region');
+
+        onMounted(async () => {
+            const { locate } = useGeoIp();
+            const geo = await locate();
+            const code = geo.country;
+            if (!code) return;
+
+            country.value = {
+                code,
+                name: i18nCountryName.of(code) || '',
+            };
         });
 
         return {
@@ -220,6 +250,9 @@ export default defineComponent({
         PageBody,
         FiatAmount,
         CaretRightIcon,
+        CountrySelector,
+        CircleSpinner,
+        CountryFlag,
         FlameIcon,
         MaintenanceIcon,
         Tooltip,
@@ -251,17 +284,68 @@ header {
     .nq-text {
         white-space: pre-line;
         margin-top: 0;
+        margin-bottom: 1.25rem;
         color: var(--text-100);
+    }
+
+    .country-selector {
+        z-index: 100;
+        display: inline-block;
+        margin-bottom: 3rem;
+
+        /deep/ .trigger {
+            &:hover,
+            &:focus {
+                .pill {
+                    box-shadow: 0 0 0 1.5px var(--text-40);
+                    color: var(--text-100);
+                }
+            }
+        }
+
+        /deep/ .dropdown {
+            margin-left: -4rem;
+        }
+    }
+
+    .country-flag,
+    /deep/ .circle-spinner {
+        width: 2rem;
+        height: 2rem;
+        margin: 0.25rem 0.625rem 0.25rem -0.75rem;
+    }
+
+    img:last-child {
+        margin-left: 0.5rem;
+        margin-right: -0.5rem;
+        margin-bottom: -0.25rem;
     }
 }
 
-.featured-exchanges {
+.pill {
+    align-self: flex-start;
+    align-items: center;
+    font-size: var(--small-size);
+    font-weight: 600;
+    border-radius: 5rem;
+    padding: 0.25rem 1.25rem;
+
+    box-shadow: 0 0 0 1.5px var(--text-20);
+    color: var(--text-60);
+
+    transition:
+        box-shadow 0.2s var(--nimiq-ease),
+        color 0.2s var(--nimiq-ease);
+}
+
+.featured-options {
     flex-grow: 1;
     align-self: stretch;
 }
 
 .option {
     width: 50%;
+    height: 36rem;
     justify-content: flex-start;
     align-items: stretch;
     margin: 1rem;
@@ -332,15 +416,9 @@ header {
     }
 
     .pill {
-        align-self: flex-start;
-        align-items: center;
-        font-size: var(--small-size);
-        font-weight: 600;
+        margin-top: 1.5rem;
         box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.3);
         color: rgba(255, 255, 255, 0.8);
-        border-radius: 5rem;
-        margin-top: 1.5rem;
-        padding: 0.25rem 1.25rem;
     }
 
     .nq-text {
@@ -582,13 +660,14 @@ header {
         padding: 2.25rem 1.25rem;
     }
 
-    .featured-exchanges {
+    .featured-options {
         flex-direction: column;
     }
 
     .option {
         margin: 1rem;
         width: unset;
+        height: unset;
     }
 
     .exchange-logos {

@@ -13,6 +13,7 @@ const EBA_RT1_XLSX_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.xlsx`;
 const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.json`;
 const CUSTOM_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/customBanksList.json`;
 const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/banksList.json`;
+const OUTPUT_SEPA_COUNTRIES_FILE_PATH = `${DATA_FOLDER_PATH}/generated/sepaBankCountries.json`;
 
 const EBA_CLEARING_BASEURL = 'https://www.ebaclearing.eu';
 const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/instant-payments/participants/`;
@@ -164,6 +165,11 @@ async function mergeJson() {
 
     const mergedJsonArray = Object.values(ebaRt1Banks);
     await writeFile(OUTPUT_JSON_FILE_PATH, mergedJsonArray);
+
+    const sepaCountries = [...new Set(mergedJsonArray
+        .filter((bank) => Boolean(bank.support.sepa))
+        .map((bank) => bank.country))];
+    await writeFile(OUTPUT_SEPA_COUNTRIES_FILE_PATH, sepaCountries);
 
     return mergedJsonArray.length;
 }

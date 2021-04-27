@@ -509,7 +509,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: src/components/stake/StakeGraphPage.vue:17
+#: src/components/stake/StakeGraphPage.vue:18
 msgid "confirm stake"
 msgstr ""
 

@@ -51,7 +51,7 @@ export default defineComponent({
                 const sum = result.datasets[0].data[i] + result.datasets[1].data[i];
                 const diff = result.datasets[1].data[i] - result.datasets[0].data[i];
                 midLine.data.push(sum / 2.0);
-                midLine.pointStyle.push(`-${parseInt(diff, 10)} NIM`);
+                midLine.pointStyle.push(`~${parseInt(diff, 10)} NIM`);
             }
             midLine.data.push(null);
             midLine.pointStyle.push('');
@@ -88,7 +88,7 @@ export default defineComponent({
         const updateChart = () => {
             chartData.data.datasets = [{
                 backgroundColor: 'rgba(33, 188, 165, 0.2)',
-                data: [-450, -1000, -1350],
+                data: [450, 1000, 1350],
             }];
 
             chartRef.value.update(250);

@@ -647,14 +647,14 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateFees({ to: FiatCurrency.EUR }, {
+                    const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, {
                         eur: swapSuggestion.to.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.from.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.from.feePerUnit! : 0,
                     }, swapSuggestion.from.amount);
 
                     swapSuggestion.from.fee = fundingFee;
-                    swapSuggestion.to.fee = settlementFee;
+                    swapSuggestion.to.fee = 0; // OASIS' SEPA Instant fees are already included
 
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 

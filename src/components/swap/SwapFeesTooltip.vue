@@ -58,6 +58,7 @@
                 :amount="
                     (btcFeeFiat || 0)
                     + (oasisFeeFiat || 0)
+                    + (sepaFeeFiat || 0)
                     + (nimFeeFiat || 0)
                     + serviceSwapFeeFiat"
                 :currency="currency"/>

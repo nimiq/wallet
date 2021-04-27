@@ -587,13 +587,13 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
+                    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
                         eur: swapSuggestion.from.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
                     });
 
-                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.from.fee = 0; // User's SEPA Instant fees are not considered
                     swapSuggestion.to.fee = settlementFee;
 
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console

@@ -69,13 +69,13 @@ export async function updateBuyEstimate({ fiatAmount, cryptoAmount }
     }
 
     // Update local fees with latest feePerUnit values
-    const { fundingFee, settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
+    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
         eur: newEstimate.from.fee || 0,
         nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
         btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,
     });
 
-    newEstimate.from.fee = fundingFee;
+    newEstimate.from.fee = 0; // User's SEPA Instant fees are not considered
     newEstimate.to.fee = settlementFee;
 
     // Check against minimums

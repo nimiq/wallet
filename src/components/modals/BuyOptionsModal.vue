@@ -3,12 +3,18 @@
         <PageBody class="flex-column">
             <header>
                 <h1 class="nq-h1">{{ $t('Buy NIM & BTC') }}</h1>
+                <p class="nq-text">
+                    {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
+                </p>
             </header>
             <div class="featured-exchanges flex-row">
                 <router-link :to="{ name: 'buy-crypto', query: $route.query }" replace
                     class="option oasis flex-column"
+                    :class="{disabled: !isOasisAvailable}"
+                    :event="isOasisAvailable ? 'click' : ''"
+                    :tabindex="isOasisAvailable ? 0 : -1"
                 >
-                    <div class="top flex-column">
+                    <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
 
                         <div class="pill flex-row">
@@ -21,11 +27,11 @@
                         </div>
 
                         <p class="nq-text">
-                            {{ $t('Pay by bank transfer. No registration – not even email.') }}
+                            {{ $t('No registration – not even email.') }}
                         </p>
                     </div>
 
-                    <div class="bottom flex-column">
+                    <div class="lower-content flex-column">
                         <div class="fees">
                             <span class="percentage flex-row">
                                 1.25%
@@ -39,31 +45,56 @@
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer class="flex-row">
+                        <footer v-if="isOasisAvailable" class="flex-row">
                             <FlameIcon/>
                             {{ $t('Innovation\nby Nimiq') }}
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
+                        </footer>
+                        <footer v-else-if="isOasisUnderMaintenance" class="flex-row">
+                            <MaintenanceIcon/>
+                            {{ $t('Currently under maintenance') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('TEN31’s banking infrastructure is undergoing scheduled maintenance.') }}
+                                <!-- {{ $t('TEN31’s banking infrastructure is undergoing '
+                                    + 'scheduled maintenance until the 24th of March.') }} -->
+                            </Tooltip>
+                        </footer>
+                        <footer v-else class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your country') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('Bank Transfer is only supported in the EU’s SEPA area.') }}
+                                <!-- {{ $t('Bank Transfer is only supported in the EU’s SEPA area, '
+                                    + 'or in Central Americas SIMPE Banks.') }} -->
+                                <!-- <p class="explainer">
+                                    {{ $t('If you have contacts to a banking partner in your country, '
+                                        + 'check out our application form')}}
+                                </p> -->
+                            </Tooltip>
                         </footer>
                     </div>
                 </router-link>
 
                 <router-link :to="{ name: 'moonpay', query: $route.query }" replace
                     class="option credit-card flex-column"
+                    :class="{disabled: !isMoonpayAvailable}"
+                    :event="isMoonpayAvailable ? 'click' : ''"
+                    :tabindex="isMoonpayAvailable ? 0 : -1"
                 >
-                    <div class="top flex-column">
+                    <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
 
-                        <div class="pill flex-row">
-                            {{ $t('Almost everywhere') }}
-                        </div>
-
                         <p class="nq-text">
-                            {{ $t('Pay with credit card. Full KYC required, high availability.') }}
+                            {{ $t('Full KYC required, high availability.') }}
                         </p>
                     </div>
 
-                    <div class="bottom flex-column">
+                    <div class="lower-content flex-column">
                         <div class="fees">
                             <span class="percentage flex-row">
                                 4.5%
@@ -82,16 +113,22 @@
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer class="flex-row">
+                        <footer v-if="isMoonpayAvailable" class="flex-row">
                             <img src="../../assets/exchanges/moonpay-full.svg">
                             <CaretRightIcon/>
+                        </footer>
+                        <footer v-else class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your country') }}
                         </footer>
                     </div>
                 </router-link>
             </div>
 
-            <p class="nq-text exchanges-note">{{ $t('Buy NIM on a crypto exchange:') }}</p>
-            <div class="exchange-logos flex-row">
+            <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isMoonpayAvailable}">
+                {{ $t('Buy NIM on a crypto exchange:') }}
+            </p>
+            <div class="exchange-logos flex-row" :class="{'only-option': !isOasisAvailable && !isMoonpayAvailable}">
                 <!-- eslint-disable max-len -->
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/kucoin.svg">
@@ -137,11 +174,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { PageBody, FiatAmount } from '@nimiq/vue-components';
+import { computed, defineComponent, ref } from '@vue/composition-api';
+import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
+import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
+import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 
@@ -150,7 +189,28 @@ export default defineComponent({
     setup() {
         const { currency } = useFiatStore();
 
+        const country = ref<string>(null);
+
+        const isOasisUnderMaintenance = ref(false);
+        const isOasisAvailable = computed(() => {
+            if (isOasisUnderMaintenance.value) return false;
+
+            // TODO: Check country for availability
+
+            return true;
+        });
+
+        const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            // TODO: Check country for availability
+
+            return true;
+        });
+
         return {
+            country,
+            isOasisAvailable,
+            isOasisUnderMaintenance,
+            isMoonpayAvailable,
             currency,
             FiatCurrency,
         };
@@ -161,6 +221,10 @@ export default defineComponent({
         FiatAmount,
         CaretRightIcon,
         FlameIcon,
+        MaintenanceIcon,
+        Tooltip,
+        InfoCircleSmallIcon,
+        ForbiddenIcon,
     },
 });
 </script>
@@ -175,14 +239,19 @@ export default defineComponent({
 .page-body {
     padding: 2rem;
     align-items: center;
+}
 
-    header {
-        text-align: center;
-    }
+header {
+    text-align: center;
 
     .nq-h1 {
-        margin: 2rem 0 3rem;
-        font-size: var(--h1-size);
+        margin: 2rem 0 1.25rem;
+    }
+
+    .nq-text {
+        white-space: pre-line;
+        margin-top: 0;
+        color: var(--text-100);
     }
 }
 
@@ -199,6 +268,7 @@ export default defineComponent({
     border-radius: 0.75rem;
     padding: 2.5rem 3rem;
     text-decoration: none;
+    color: white;
 
     transition:
         transform 0.3s var(--nimiq-ease),
@@ -206,58 +276,56 @@ export default defineComponent({
         background-color 0.3s var(--nimiq-ease);
     will-change: transform, box-shadow;
 
+    &::before {
+        position: absolute;
+        content: "";
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: inherit;
+        z-index: -1;
+        transition: opacity 0.3s var(--nimiq-ease);
+        opacity: 0;
+    }
+
     &:hover,
     &:focus {
         transform: translate3D(0, -0.5rem, 0);
+        box-shadow:
+            0px 18px 38px rgba(31, 35, 72, 0.07),
+            0px 7px 8.5px rgba(31, 35, 72, 0.04),
+            0px 2px 2.5px rgba(31, 35, 72, 0.02);
+
+        &::before {
+            opacity: 1;
+        }
     }
 
     &.oasis {
-        background-color: var(--nimiq-light-blue);
-        background-image: var(--nimiq-light-blue-bg);
-        color: white;
-        z-index: 1;
+        background-color: var(--nimiq-blue);
+        background-image: var(--nimiq-blue-bg);
 
         &::before {
-            position: absolute;
-            content: "";
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            border-radius: inherit;
-            background-color: var(--nimiq-light-blue-darkened);
-            background-image: var(--nimiq-light-blue-bg-darkened);
-            z-index: -1;
-            transition: opacity 0.3s var(--nimiq-ease);
-            opacity: 0;
-        }
-
-        &:hover,
-        &:focus {
-            box-shadow:
-                0px 18px 38px rgba(31, 35, 72, 0.07),
-                0px 7px 8.5px rgba(31, 35, 72, 0.04),
-                0px 2px 2.5px rgba(31, 35, 72, 0.02);
-
-            &::before {
-                opacity: 1;
-            }
+            background-color: var(--nimiq-blue-darkened);
+            background-image: var(--nimiq-blue-bg-darkened);
         }
     }
 
     &.credit-card {
-        background-color: var(--nimiq-highlight-bg);
-        color: inherit;
+        background-color: var(--nimiq-light-blue);
+        background-image: var(--nimiq-light-blue-bg);
 
-        &:hover,
-        &:focus {
-            background-color: rgba(31, 35, 72, 0.1); /* Based on Nimiq Blue */
+        &::before {
+            position: absolute;
+            background-color: var(--nimiq-light-blue-darkened);
+            background-image: var(--nimiq-light-blue-bg-darkened);
         }
     }
 
     .nq-h1 {
         align-items: center;
-        margin: 0 0 1.5rem;
+        margin: 0;
         line-height: 1.3;
         font-weight: bold;
         font-size: var(--h1-size);
@@ -271,6 +339,7 @@ export default defineComponent({
         box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.3);
         color: rgba(255, 255, 255, 0.8);
         border-radius: 5rem;
+        margin-top: 1.5rem;
         padding: 0.25rem 1.25rem;
     }
 
@@ -280,11 +349,15 @@ export default defineComponent({
         line-height: 1.25;
     }
 
-    .top {
+    .nq-h1 + .nq-text {
+        margin-top: 1rem;
+    }
+
+    .upper-content {
         flex-grow: 1;
     }
 
-    .bottom {
+    .lower-content {
         justify-content: space-between;
     }
 
@@ -312,13 +385,20 @@ export default defineComponent({
     footer {
         align-items: center;
         font-size: var(--small-label-size);
+        line-height: 1;
         font-weight: bold;
         color: rgba(255, 255, 255, 0.65);
         height: 3.25rem;
         margin-bottom: 0.25rem;
         white-space: pre-line;
 
-        svg:last-child {
+        .flex-grow {
+            @media (min-width: 700px) { // Full mobile breakpoint
+                min-width: 2rem;
+            }
+        }
+
+        > svg:last-child {
             color: rgba(255, 255, 255, 0.6);
             flex-shrink: 0;
             margin-left: 0.5rem;
@@ -329,7 +409,7 @@ export default defineComponent({
 
     &:hover,
     &:focus {
-        footer svg:last-child {
+        footer > svg:last-child {
             color: rgba(255, 255, 255, 0.8);
             transform: translateX(0.25rem);
         }
@@ -343,7 +423,7 @@ export default defineComponent({
     }
 
     footer {
-        svg:first-child {
+        > svg:first-child {
             width: 1.75rem;
             height: 2.5rem;
             margin-right: 1rem;
@@ -357,43 +437,55 @@ export default defineComponent({
 }
 
 .credit-card {
-    .pill {
-        box-shadow: 0 0 0 1.5px var(--text-20);
-    }
-
-    .pill,
-    .nq-text,
-    .fees,
-    footer {
-        color: var(--text-60);
-    }
-
-    .fees {
-        .percentage {
-            color: var(--text-100);
-        }
-    }
-
     footer {
         justify-content: space-between;
 
         img {
             width: 10.5rem;
             margin-top: -0.75rem;
-            opacity: 0.55;
-            // Generated with https://codepen.io/sosuke/full/Pjoqqp to make black into ~nimiq-blue
-            filter: invert(13%) sepia(8%) saturate(5326%) hue-rotate(199deg) brightness(99%) contrast(96%);
-        }
-
-        svg:last-child {
-            color: var(--text-40);
+            opacity: 0.6;
+            filter: invert(100%); // Black logo into white
         }
     }
+}
 
-    &:hover,
-    &:focus {
-        footer svg:last-child {
-            color: var(--text-80);
+.option.disabled {
+    pointer-events: none;
+    transition: none;
+    transform: none;
+    box-shadow: 0 0 0 1.5px var(--text-10);
+    background: none;
+    color: var(--text-25);
+
+    &::before {
+        display: none;
+    }
+
+    * {
+        color: inherit !important;
+    }
+
+    .pill {
+        box-shadow: 0 0 0 1.5px var(--text-10);
+    }
+
+    footer {
+        color: var(--text-40) !important;
+
+        > svg:first-child {
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+            margin-right: 1rem;
+
+            // To prevent overlapping opacities in ForbiddenIcon
+            color: var(--text-100) !important;
+            opacity: 0.4;
+        }
+
+        .tooltip {
+            pointer-events: all;
+            font-size: 2.25rem;
         }
     }
 }
@@ -402,6 +494,10 @@ export default defineComponent({
     color: var(--text-50);
     font-size: var(--small-size);
     font-weight: 600;
+
+    &.only-option {
+        color: var(--text-100);
+    }
 }
 
 .exchange-logos {
@@ -410,7 +506,7 @@ export default defineComponent({
     align-items: center;
     padding: 0 2rem 2rem;
 
-    a {
+    &:not(.only-option) a {
         filter: saturate(0);
         opacity: 0.6;
 
@@ -418,18 +514,18 @@ export default defineComponent({
             filter 0.2s var(--nimiq-ease),
             opacity 0.2s var(--nimiq-ease);
 
-        img {
-            width: 3rem;
-            max-width: 3rem;
-            max-height: 3rem;
-            display: block;
-        }
-
         &:hover,
         &:focus {
             filter: saturate(1);
             opacity: 1;
         }
+    }
+
+    img {
+        width: 3rem;
+        max-width: 3rem;
+        max-height: 3rem;
+        display: block;
     }
 }
 
@@ -437,11 +533,11 @@ export default defineComponent({
     .option {
         flex-direction: row;
 
-        .top {
+        .upper-content {
             margin-right: 2rem;
         }
 
-        .bottom {
+        .lower-content {
             width: 13rem;
             flex-shrink: 0;
         }

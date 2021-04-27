@@ -823,6 +823,12 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
+    .forbidden-icon {
+        height: 2.5rem;
+        width: 2.5rem;
+        margin: 0.25rem 1.25rem 0.25rem 0.25rem;
+    }
+
     li.more-count {
         font-size: var(--small-size);
         margin-left: 1.5rem;

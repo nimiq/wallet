@@ -270,7 +270,7 @@ export default defineComponent({
 
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
-            matchingBanks.value.some(
+            props.direction === 'outbound' && matchingBanks.value.some(
                 (bank: Bank) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
         );
 

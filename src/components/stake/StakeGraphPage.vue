@@ -13,6 +13,7 @@
         </PageHeader>
         <PageBody>
             <StakingGraph />
+            <StakeAmountSlider />
             <button class="nq-button light-blue stake-button" @click="$emit('next')">
                 {{ $t('confirm stake') }}
             </button>
@@ -24,6 +25,7 @@
 import { defineComponent, onUnmounted } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import StakingGraph from './graph/StakingGraph.vue';
+import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
@@ -43,6 +45,7 @@ export default defineComponent({
         PageBody,
         StakingIcon,
         StakingGraph,
+        StakeAmountSlider,
     },
 });
 </script>

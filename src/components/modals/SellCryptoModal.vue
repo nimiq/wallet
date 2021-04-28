@@ -100,12 +100,9 @@
                             </i18n>
                             <div></div>
                             <p class="explainer">
-                                {{ $t('Limits are tied to accounts and IBANs.') }}
+                                {{ $t('Nimiq is working on a PRO feature with '
+                                    + 'increased limits after user registration.') }}
                             </p>
-                            <p class="explainer">
-                                {{ $t('During early access, these limits apply. They will be increased gradually.') }}
-                            </p>
-
                         </Tooltip>
                     </div>
                 </PageHeader>

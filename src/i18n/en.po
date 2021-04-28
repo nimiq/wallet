@@ -53,7 +53,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:96
-#: src/components/swap/SwapModal.vue:84
+#: src/components/swap/SwapModal.vue:65
 msgid "{value} remaining"
 msgstr ""
 
@@ -102,8 +102,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:86
 #: src/components/modals/SellCryptoModal.vue:90
-#: src/components/swap/SwapModal.vue:55
-#: src/components/swap/SwapModal.vue:79
+#: src/components/swap/SwapModal.vue:60
 msgid "30-day Limit"
 msgstr ""
 
@@ -342,9 +341,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:164
-#: src/components/modals/BuyCryptoModal.vue:169
-#: src/components/modals/BuyCryptoModal.vue:183
+#: src/components/modals/BuyCryptoModal.vue:161
+#: src/components/modals/BuyCryptoModal.vue:166
+#: src/components/modals/BuyCryptoModal.vue:180
 #: src/components/modals/BuyCryptoModal.vue:34
 msgid "Buy Crypto"
 msgstr ""
@@ -353,7 +352,7 @@ msgstr ""
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:154
+#: src/components/modals/BuyCryptoModal.vue:151
 msgid "Buy max"
 msgstr ""
 
@@ -385,15 +384,15 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:192
-#: src/components/swap/SwapModal.vue:159
+#: src/components/modals/BuyCryptoModal.vue:163
+#: src/components/modals/SellCryptoModal.vue:189
+#: src/components/swap/SwapModal.vue:140
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:206
-#: src/components/swap/SwapModal.vue:171
+#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:203
+#: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -444,10 +443,10 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:249
-#: src/components/modals/SellCryptoModal.vue:281
+#: src/components/modals/BuyCryptoModal.vue:246
+#: src/components/modals/SellCryptoModal.vue:278
 #: src/components/modals/SendModal.vue:169
-#: src/components/swap/SwapModal.vue:205
+#: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
 msgstr ""
 
@@ -479,9 +478,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:157
-#: src/components/swap/SwapModal.vue:162
-#: src/components/swap/SwapModal.vue:174
+#: src/components/swap/SwapModal.vue:138
+#: src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:155
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -635,25 +634,8 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:90
-msgid "During early access, these limits apply."
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:102
-msgid "During early access, these limits apply. They may be increased gradually."
-msgstr ""
-
-#: src/components/modals/SellCryptoModal.vue:106
-msgid "During early access, these limits apply. They will be increased gradually."
-msgstr ""
-
 #: src/components/modals/SellCryptoModal.vue:15
-#: src/components/swap/SwapModal.vue:45
 msgid "Early Access"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:47
-msgid "Early Access means that there are limits in place for swaps. They may be increased gradually."
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:11
@@ -916,7 +898,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:180
+#: src/components/modals/SellCryptoModal.vue:177
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr ""
@@ -979,11 +961,6 @@ msgstr ""
 msgid "Limit of copied addresses reached."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:103
-msgid "Limits are tied to accounts and IBANs."
-msgstr ""
-
 #: src/components/modals/TransactionModal.vue:185
 msgid "Link not available in this browser"
 msgstr ""
@@ -998,8 +975,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:90
 #: src/components/modals/SellCryptoModal.vue:94
-#: src/components/swap/SwapModal.vue:58
-#: src/components/swap/SwapModal.vue:82
+#: src/components/swap/SwapModal.vue:63
 msgid "loading..."
 msgstr ""
 
@@ -1027,11 +1003,11 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:172
+#: src/components/modals/SellCryptoModal.vue:169
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:153
+#: src/components/modals/BuyCryptoModal.vue:150
 msgid "Max swappable amount is {amount} EUR"
 msgstr ""
 
@@ -1039,8 +1015,8 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:74
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:65
-#: src/components/swap/SwapModal.vue:69
+#: src/components/swap/SwapModal.vue:46
+#: src/components/swap/SwapModal.vue:50
 msgid "Max."
 msgstr ""
 
@@ -1090,6 +1066,12 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:99
+#: src/components/modals/SellCryptoModal.vue:103
+#: src/components/swap/SwapModal.vue:71
+msgid "Nimiq is working on a PRO feature with increased limits after user registration."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
@@ -1181,8 +1163,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:80
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:50
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:55
 msgid "Per-Swap Limit"
 msgstr ""
 
@@ -1358,9 +1339,9 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:190
-#: src/components/modals/SellCryptoModal.vue:195
-#: src/components/modals/SellCryptoModal.vue:209
+#: src/components/modals/SellCryptoModal.vue:187
+#: src/components/modals/SellCryptoModal.vue:192
+#: src/components/modals/SellCryptoModal.vue:206
 #: src/components/modals/SellCryptoModal.vue:37
 msgid "Sell Crypto"
 msgstr ""
@@ -1400,9 +1381,9 @@ msgstr ""
 msgid "Send crypto to a smart contract."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:150
+#: src/components/modals/SellCryptoModal.vue:147
+#: src/components/modals/SellCryptoModal.vue:174
 #: src/components/modals/SellCryptoModal.vue:177
-#: src/components/modals/SellCryptoModal.vue:180
 msgid "Send max"
 msgstr ""
 
@@ -1512,7 +1493,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:227
+#: src/components/modals/BuyCryptoModal.vue:224
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1614,7 +1595,7 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:630
+#: src/components/swap/SwapModal.vue:611
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees (currently {amount}) determine the minimum amount."
@@ -1671,10 +1652,6 @@ msgstr ""
 
 #: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:91
-msgid "They may be increased gradually."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:28

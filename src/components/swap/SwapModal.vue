@@ -39,25 +39,6 @@
                             {{ $t('fees') }}
                         </div>
                     </SwapFeesTooltip>
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
-                        <span class="trigger flex-row" slot="trigger">
-                            <FlameIcon/>
-                            {{ $t('Early Access') }}
-                        </span>
-                        <p>{{ $t('Early Access means that there are limits in place for swaps.' +
-                            ' They may be increased gradually.') }}</p>
-                        <div class="price-breakdown">
-                            <label>{{ $t('Per-Swap Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
-                        </div>
-                        <div class="price-breakdown">
-                            <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.monthly.luna" currency="nim" roundDown/>
-                            <span v-else>{{ $t('loading...') }}</span>
-                        </div>
-                    </Tooltip>
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
                         ref="$limitsTooltip">
                         <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
@@ -87,8 +68,8 @@
                         </i18n>
                         <div></div>
                         <p class="explainer">
-                            {{ $t('During early access, these limits apply.') }}
-                            {{ $t('They may be increased gradually.') }}
+                            {{ $t('Nimiq is working on a PRO feature with '
+                                + 'increased limits after user registration.') }}
                         </p>
                     </Tooltip>
                 </div>
@@ -1308,34 +1289,6 @@ export default defineComponent({
     }
 }
 
-.early-access {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    margin: 0 !important;
-
-    .trigger.flex-row {
-        display: flex;
-        align-items: center;
-        font-size: 12px;
-        font-weight: bold;
-        color: #EAA617;
-
-        svg {
-            margin-right: 0.75rem;
-        }
-    }
-
-    /deep/ > .trigger {
-        display: block;
-    }
-
-    /deep/ .tooltip-box {
-        text-align: left;
-        transform: translate(-5rem, 2rem);
-    }
-}
-
 .swap-balance-bar {
     margin-bottom: 3.5rem;
 }
@@ -1549,21 +1502,6 @@ export default defineComponent({
 
     .page-body {
         padding-top: 0;
-    }
-
-    .early-access {
-        top: 1.25rem;
-        left: 1.25rem;
-
-        /deep/ .tooltip-box {
-            transform: translate(-3rem, 2rem);
-        }
-    }
-}
-
-@media (max-width: 450px) { // Vue-components breakpoint
-    .page-header {
-        padding-top: 4rem; // Increase space between Early Access notice and modal title
     }
 }
 </style>

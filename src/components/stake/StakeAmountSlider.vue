@@ -2,20 +2,22 @@
     <div class="slider-container">
         <div class="slider-body">
             <div class="slider-background">
-                <VerticalLineIcon
-                    v-for="index in Array(27)"
-                    :key="index" />
+                <div class="slider-background-left">
+                </div>
                 <div class="gliph">
                     <StakingIcon />
                 </div>
-                <VerticalLineIcon
-                    v-for="index in Array(27)"
-                    :key="index" />
+                <div class="slider-background-right">
+                </div>
                 <div class="gliph">
                     <ThreeLeafStakingIcon />
                 </div>
             </div>
             <div class="slider-gradation">
+                <div v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
+                    :style="`left: ${2 + (4.875 * index)}rem`">
+                    <VerticalLineIcon />
+                </div>
             </div>
             <div class="slider-controls">
                 <div class="slider-knob">
@@ -64,7 +66,7 @@ export default defineComponent({
     .slider-body {
         position: relative;
         margin: auto;
-        margin-top: 2rem;// temporary
+        margin-top: 2rem;
         width: 56rem;
         height: 5rem;
         background-color: #f2f2f4;
@@ -74,18 +76,26 @@ export default defineComponent({
             left: 0;
             top: 0;
             padding-top: 0.75rem;
-            padding-left: 2rem;
-            > svg {
-                margin-right: 0.6rem;
-                line {
-                    stroke: #9e9faf;
+            padding-left: 1.5rem;
+            .slider-background-left, .slider-background-right {
+                display: inline-block;
+                height: 3.5rem;
+                width: 25rem;
+                background-image: url('../../assets/vertical-line.svg');
+                background-repeat: repeat-x;
+                svg {
+                    line, path {
+                        stroke: #9e9faf;
+                    }
                 }
+            }
+            .slider-background-right {
+                width: 21.25rem;
             }
             .gliph {
                 display: inline-block;
                 svg {
                     width: 3.5rem;
-                    margin-left: -0.125rem;
                     margin-right: 0.375rem;
                     line, path {
                         stroke: #9e9faf;
@@ -96,8 +106,16 @@ export default defineComponent({
         }
         .slider-gradation {
             position: absolute;
-            left: 0;
-            top: 7rem;
+            left: 0.5rem;
+            top: 5rem;
+            width: 56rem;
+            .bottom-indicator {
+                display: inline-block;
+                position: relative;
+                svg {
+                    height: 1rem;
+                }
+            }
         }
         .slider-controls {
             position: absolute;

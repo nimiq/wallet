@@ -10,6 +10,10 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
+#: src/components/stake/StakeGraphPage.vue:47
+msgid "{amount} NIM will be available within ~{unstakeDelay}"
+msgstr ""
+
 #: src/components/stake/StakeValidatorListItem.vue:24
 #: src/components/stake/StakeValidatorListItem.vue:56
 msgid "{brandName} Website"

@@ -13,10 +13,13 @@
         </PageHeader>
         <PageBody>
             <StakingGraph />
-            <StakeAmountSlider />
+            <StakeAmountSlider class="stake-amount-slider" />
             <button class="nq-button light-blue stake-button" @click="$emit('next')">
                 {{ $t('confirm stake') }}
             </button>
+            <div class="stake-unstake-disclaimer">
+                {{ unstakeDisclaimer }}
+            </div>
         </PageBody>
     </div>
 </template>
@@ -27,6 +30,7 @@ import { PageHeader, PageBody } from '@nimiq/vue-components';
 import StakingGraph from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import { i18n } from '../../i18n/i18n-setup';
 
 export default defineComponent({
     setup() {
@@ -39,6 +43,12 @@ export default defineComponent({
                 page.style.removeProperty('width');
             }
         });
+        return {
+            unstakeDisclaimer: i18n.t(
+                '{amount} NIM will be available within ~{unstakeDelay}',
+                { amount: '1928', unstakeDelay: '12 hours' },
+            ),
+        };
     },
     components: {
         PageHeader,
@@ -54,18 +64,30 @@ export default defineComponent({
     .page-header {
         padding-top: .75rem;
         height: 17rem;
+        font-weight: 600;
     }
     .page-body {
         padding-left: 0;
         padding-right: 0;
-        height: 56rem;
+        height: 57.875rem;
         overflow: hidden;
+
+        .stake-amount-slider {
+            margin-top: 12.125rem;
+        }
 
         .stake-button {
             margin: auto;
-            margin-top: 5.5rem;
-            margin-bottom: -1rem;
-            width: 32rem;
+            margin-top: 2rem;
+            width: 40.5rem;
+        }
+
+        .stake-unstake-disclaimer {
+            margin-top: 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #0582CA;
+            text-align: center;
         }
     }
 

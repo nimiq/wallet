@@ -5,7 +5,8 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const xlsx = require('xlsx');
-const scraperjs = require('scraperjs'); // https://github.com/ruipgil/scraperjs
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 const DATA_FOLDER_PATH = './src/data/banksList';
 
@@ -66,23 +67,18 @@ function download(url, filePath) {
     });
 }
 
-function getBankListUrl() {
-    return new Promise((resolve, reject) => {
-        scraperjs.StaticScraper
-            .create(EBA_CLEARING_PAGE)
-            .scrape(($) => {
-                const obj = $('.text-rte:not(.clear) a');
+async function getBankListUrl() {
+    /** @type {string} */
+    const html = await fetch(EBA_CLEARING_PAGE).then(res => res.text());
 
-                if (!obj || obj.length === 0) {
-                    reject(Error('Scraper error: BankListUrl not found, please update css selector.'));
-                    return null;
-                }
+    const $ = cheerio.load(html);
+    const obj = $('.text-rte:not(.clear) a');
 
-                return EBA_CLEARING_BASEURL + obj[0].attribs.href;
-            })
-            .catch(reject)
-            .then(resolve);
-    });
+    if (!obj || obj.length === 0) {
+        throw new Error('Scraper error: BankListUrl not found, please update css selector.');
+    }
+
+    return EBA_CLEARING_BASEURL + obj[0].attribs.href;
 }
 
 async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {

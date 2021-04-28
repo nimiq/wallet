@@ -248,16 +248,12 @@
         <div v-else-if="!isDev && !trials.includes(Trial.SELL_TO_EURO)"
             slot="overlay" class="page flex-column closed-beta"
         >
-            <!-- eslint-disable max-len -->
-            <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
-                <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
-                <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
-            </svg>
+            <img src="https://memegenerator.net/img/instances/17937228/access-denied.jpg">
             <!-- eslint-enable max-len -->
             <PageHeader>Private Testing</PageHeader>
             <PageBody>
                 <p>
-                    EUR swaps are currently in closed-beta and require unlocking to access.
+                    Crypto->EUR swaps are currently in closed beta and require unlocking to access.
                     Please contact Max if you wish to try it out now:
                 </p>
                 <p>
@@ -1123,10 +1119,9 @@ export default defineComponent({
     text-align: center;
     align-items: center;
 
-    svg.welcome-euro-logo {
-        width: 10.5rem;
-        height: 10.5rem;
-        margin-top: 8rem;
+    img {
+        width: 75%;
+        margin-top: 6rem;
         margin-bottom: 2rem;
     }
 }

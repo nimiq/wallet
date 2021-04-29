@@ -277,6 +277,7 @@ import {
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
+    EuroHtlcCreationInstructions,
     HtlcCreationInstructions,
     HtlcSettlementInstructions,
     SetupSwapRequest,
@@ -734,6 +735,16 @@ export default defineComponent({
                     throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 }
                 confirmedSwap = swapOrPreSwap;
+
+                // Apply the correct local fees from the swap request
+                const request = await hubRequest;
+                confirmedSwap.from.fee = (request.fund as EuroHtlcCreationInstructions).fee
+                    - confirmedSwap.from.serviceEscrowFee;
+                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
+                    ? request.redeem.fee
+                    : request.redeem.type === SwapAsset.BTC
+                        ? request.redeem.input.value - request.redeem.output.value
+                        : 0;
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

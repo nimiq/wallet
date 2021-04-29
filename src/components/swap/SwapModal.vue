@@ -1010,6 +1010,21 @@ export default defineComponent({
                     throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 }
                 confirmedSwap = swapOrPreSwap;
+
+                // Apply the correct local fees from the swap request
+                const request = await hubRequest;
+                confirmedSwap.from.fee = request.fund.type === SwapAsset.NIM
+                    ? request.fund.fee
+                    : request.fund.type === SwapAsset.BTC
+                        ? request.fund.inputs.reduce((sum, input) => sum + input.value, 0)
+                            - request.fund.output.value
+                            - (request.fund.changeOutput?.value || 0)
+                        : 0;
+                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
+                    ? request.redeem.fee
+                    : request.redeem.type === SwapAsset.BTC
+                        ? request.redeem.input.value - request.redeem.output.value
+                        : 0;
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

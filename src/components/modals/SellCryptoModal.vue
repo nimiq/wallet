@@ -314,7 +314,7 @@ import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
-import { useAccountStore } from '../../stores/Account';
+import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore, Trial } from '../../stores/Settings';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
@@ -400,6 +400,12 @@ export default defineComponent({
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
+
+        onMounted(() => {
+            if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
+                swapError.value = 'Ledger accounts do not support swaps to EUR yet, check back soon!';
+            }
+        });
 
         const _fiatAmount = ref(0);
         const fiatAmount = computed({

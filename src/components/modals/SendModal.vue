@@ -30,7 +30,7 @@
                         {{ $t('Create a Cashlink') }}
                     </button>
                 </section>
-                <button class="reset scan-qr-button" @click="$router.push('/scan').catch((err)=>{})">
+                <button class="reset scan-qr-button" @click="goToScanner">
                     <ScanQrCodeIcon/>
                 </button>
             </PageBody>
@@ -204,7 +204,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -549,7 +549,16 @@ export default defineComponent({
                     });
 
                 // Close modal
-                setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+                sucessCloseTimeout = window.setTimeout(async () => {
+                    if (window.history.state.cameFromSend) {
+                        // This is required when going to the QR scanner from within /send, as a sucessful
+                        // scan _replaces_ the /scan route with the result, meaning the original /send is
+                        // the previous history entry.
+                        context.root.$router.go(-2);
+                    } else {
+                        context.root.$router.back();
+                    }
+                }, SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -575,9 +584,24 @@ export default defineComponent({
             }
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
+
+            // Do nothing when the success status overlay is shown, it will be closed by sucessCloseTimeout
         }
 
         const { amountsHidden } = useSettingsStore();
+
+        function goToScanner() {
+            context.root.$router.push('/scan', () => {
+                // Set a flag that we need to go back 2 history entries on success
+                window.history.state.cameFromSend = true;
+            });
+        }
+
+        let sucessCloseTimeout = 0;
+
+        onBeforeUnmount(() => {
+            window.clearTimeout(sucessCloseTimeout);
+        });
 
         return {
             // General
@@ -598,6 +622,7 @@ export default defineComponent({
             closeRecipientDetails,
             parseRequestUri,
             amountsHidden,
+            goToScanner,
 
             // Amount Input
             resetRecipient,

@@ -38,11 +38,11 @@ export default defineComponent({
         }
 
         function receive() {
-            context.root.$router.push(nimOrBtc('/receive', '/btc-receive'));
+            context.root.$router.push(nimOrBtc<string>('/receive', '/btc-receive'));
         }
 
         function send() {
-            context.root.$router.push(nimOrBtc('/send', '/btc-send'));
+            context.root.$router.push(nimOrBtc<string>('/send', '/btc-send'));
         }
 
         const sendDisabled = computed(() => nimOrBtc(

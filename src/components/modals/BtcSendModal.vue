@@ -18,7 +18,7 @@
                             @paste="(event, text) => parseRequestUri(text, event)"
                             @input="resetAddress"
                             @address="onAddressEntered"
-                            @scan="$router.push('/scan')"/>
+                            @scan="goToScanner"/>
                     </template>
 
                     <template #message
@@ -143,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -285,9 +285,11 @@ export default defineComponent({
         fetchFeeEstimates();
 
         const feeEstimatesInterval = setInterval(fetchFeeEstimates, 60 * 1000); // Update every 60 seconds
+        let sucessCloseTimeout = 0;
 
-        onUnmounted(() => {
+        onBeforeUnmount(() => {
             clearInterval(feeEstimatesInterval);
+            window.clearTimeout(sucessCloseTimeout);
         });
 
         const activeCurrency = ref('btc');
@@ -486,7 +488,16 @@ export default defineComponent({
                     });
 
                 // Close modal
-                setTimeout(() => context.root.$router.back(), SUCCESS_REDIRECT_DELAY);
+                sucessCloseTimeout = window.setTimeout(async () => {
+                    if (window.history.state.cameFromSend) {
+                        // This is required when going to the QR scanner from within /btc-send, as a sucessful
+                        // scan _replaces_ the /scan route with the result, meaning the original /btc-send is
+                        // the previous history entry.
+                        context.root.$router.go(-2);
+                    } else {
+                        context.root.$router.back();
+                    }
+                }, SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -507,6 +518,13 @@ export default defineComponent({
 
         const { btcUnit } = useSettingsStore();
 
+        function goToScanner() {
+            context.root.$router.push('/scan', () => {
+                // Set a flag that we need to go back 2 history entries on success
+                window.history.state.cameFromSend = true;
+            });
+        }
+
         return {
             // General
             RecipientType,
@@ -517,6 +535,7 @@ export default defineComponent({
             onAddressEntered,
             recipientWithLabel,
             parseRequestUri,
+            goToScanner,
 
             // Amount Input
             amount,

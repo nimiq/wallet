@@ -110,7 +110,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:287
+#: src/components/layouts/Settings.vue:288
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:267
+#: src/components/layouts/Settings.vue:268
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -765,7 +765,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:273
+#: src/components/layouts/Settings.vue:274
 msgid "File contains no contacts."
 msgstr ""
 
@@ -1127,7 +1127,7 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:296
+#: src/components/layouts/Settings.vue:297
 msgid "OK! Contacts imported successfully."
 msgstr ""
 

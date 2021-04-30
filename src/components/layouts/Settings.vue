@@ -182,7 +182,7 @@
                         class="reset currency"
                         @click="setCurrency(currencyOption)"
                     >
-                        <img :src="require(`../../assets/currencies/${currencyOption}.svg`)"/>
+                        <CountryFlag :code="currencyOption.substr(0, 2)"/>
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
@@ -213,6 +213,7 @@ import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
+import CountryFlag from '../CountryFlag.vue';
 import { useSettingsStore, ColorMode, Trial } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
@@ -362,6 +363,7 @@ export default defineComponent({
         Portal,
         CrossCloseButton,
         CircleSpinner,
+        CountryFlag,
     },
 });
 </script>
@@ -558,11 +560,10 @@ input[type="file"] {
                     0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
     }
 
-    img {
-        border-radius: 50%;
+    .country-flag {
         margin-right: 1.25rem;
-        width: 3.5rem;
-        height: 3.5rem;
+        --size: 3.5rem;
+        flex-shrink: 0;
     }
 }
 

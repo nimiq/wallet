@@ -1,39 +1,13 @@
 <template>
     <div class="bank-check-input" :class="{ disabled }" @keydown="onKeyDown">
         <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
-        <div class="country-selector" v-click-outside="() => countryDropdownOpened = false">
-            <button class="reset trigger" @click="countryDropdownOpened = true">
-                <CountryFlag v-if="currentCountry" :code="currentCountry.code" />
-                <img src="../assets/arrow-down.svg" />
-            </button>
-            <div v-if="countryDropdownOpened" class="country-dropdown">
-                <div class="country-search">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
-                        <g fill="none" stroke="#FFF" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="1.5px">
-                            <circle cx="5.5" cy="5.5" r="4.5" />
-                            <line x1="13" y1="13" x2="9" y2="9" />
-                        </g>
-                    </svg>
-                    <input class="nq-input"
-                        :placeholder="$t('Search')"
-                        v-model="countrySearch"
-                        ref="$countrySearchInput"/>
-                </div>
-                <ul class="country-list" ref="$countryAutocomplete">
-                    <li v-for="(country, index) in countries"
-                        :key="country.code"
-                        :class="{ selected: index === selectedCountryIndex }"
-                        @click="selectCountry(country)"
-                        @mouseenter="selectedCountryIndex = index"
-                    >
-                        <CountryFlag :code="country.code" />
-                        {{ country.name }}
-                    </li>
-                    <li class="info">{{ $t('More locations will be supported soon.') }}</li>
-                </ul>
-            </div>
-        </div>
+        <CountrySelector :countryCodes="SEPA_COUNTRY_CODES" includeAllOption
+            @open="countryDropdownOpened = true"
+            @close="countryDropdownOpened = false"
+            @select="selectCountry"
+            ref="countrySelect">
+            <li slot="info" class="info">{{ $t('More locations will be supported in the future.') }}</li>
+        </CountrySelector>
         <ul class="bank-autocomplete" ref="$bankAutocomplete"
             v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2 && !countryDropdownOpened"
             :class="{ scroll: isScrollable }"
@@ -116,14 +90,11 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon } from '@nimiq/vue-components';
-// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
-import vClickOutside from 'v-click-outside';
 import loadBankList from '@/data/banksList';
-import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
-import CountryFlag from './CountryFlag.vue';
+import CountrySelector from './CountrySelector.vue';
 import WorldIcon from './icons/WorldIcon.vue';
 import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 import { SEPA_COUNTRY_CODES } from '../lib/Countries';
@@ -169,57 +140,27 @@ export default defineComponent({
         );
 
         const $bankSearchInput = ref<LabelInput>(null);
-        const $countrySearchInput = ref<HTMLInputElement>(null);
         const $bankAutocomplete = ref<HTMLUListElement>(null);
-        const $countryAutocomplete = ref<HTMLUListElement>(null);
         const $tooltips = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
-        const selectedCountryIndex = ref(0);
         const currentCountry = ref<CountryInfo>(null);
         const countryDropdownOpened = ref(false);
-        const countrySearch = ref<string>();
         const isScrollable = ref(false);
 
-        const i18nCountryName = new I18nDisplayNames('region');
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
         onMounted(() => {
-            selectCountry(countries.value[0]);
             loadBankList().then((BANKS) => banks.value = BANKS);
-        });
-
-        /* List of country there's an available bank in. Filtered by country name from countrySearch */
-        const countries = computed(() => {
-            const rgx = RegExp(countrySearch.value || '', 'i');
-
-            const unfilteredCountries = SEPA_COUNTRY_CODES.map((code) => ({
-                code,
-                name: i18nCountryName.of(code) || '',
-            }));
-
-            unfilteredCountries.unshift({
-                code: 'all',
-                name: context.root.$t('All countries') as string,
-            });
-
-            const filteredCountries = unfilteredCountries
-                .filter((country) => country.name && rgx.test(country.name));
-
-            return filteredCountries
-                .sort((a, b) => {
-                    if (a.code === 'all') return -1;
-                    if (b.code === 'all') return 1;
-                    return intlCollator.compare(a.name, b.name);
-                });
         });
 
         /* List of available banks in the currently selected country */
         const availableBanks = computed(() => {
-            if (currentCountry.value?.code === 'all') return banks.value;
-            return banks.value.filter((bank) => bank.country === currentCountry.value?.code);
+            if (!currentCountry.value || currentCountry.value.code === 'all') return banks.value;
+            const { code } = currentCountry.value;
+            return banks.value.filter((bank) => bank.country === code);
         });
 
         /* List of banks matching the BIC or Name search */
@@ -277,9 +218,6 @@ export default defineComponent({
         /* Reset the selectedBankIndex to 0 on text input */
         watch(localValue, () => selectedBankIndex.value = 0);
 
-        /* Reset the selectedCountryIndex to 0 on text input */
-        watch(countrySearch, () => selectedCountryIndex.value = 0);
-
         /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
         watch(selectedBankIndex, () => {
             if (visibleBanks.value[selectedBankIndex.value]?.tooltip?.isShown) return;
@@ -292,59 +230,22 @@ export default defineComponent({
 
         /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
         watch(countryDropdownOpened, (newBool, oldBool) => {
-            if (newBool && !oldBool && $countrySearchInput.value) { // onOpen
-                $countrySearchInput.value.focus();
-            } else if (!newBool && oldBool) { // onClose
-                countrySearch.value = '';
-
+            if (!newBool && oldBool) { // onClose
                 if ($bankSearchInput.value) {
                     $bankSearchInput.value.focus();
                 }
             }
         });
 
-        watch([localValue, countrySearch], () => isScrollable.value = false);
+        watch([localValue, countryDropdownOpened], () => isScrollable.value = false);
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
             if ((!matchingBanks || !$bankAutocomplete.value) && (!countryDropdownOpened.value)) return;
-            const oldCountryIndex = selectedCountryIndex.value;
             const oldBankIndex = selectedBankIndex.value;
 
             if (countryDropdownOpened.value) { // country list
-                switch (event.key) {
-                    case 'ArrowDown':
-                        event.preventDefault();
-                        selectedCountryIndex.value = Math.max(0, Math.min(
-                            countries.value.length - 1, selectedCountryIndex.value + 1),
-                        );
-                        break;
-
-                    case 'ArrowUp':
-                        event.preventDefault();
-                        selectedCountryIndex.value = Math.max(0, Math.min(
-                            countries.value.length - 1, selectedCountryIndex.value - 1),
-                        );
-                        break;
-
-                    case 'Enter':
-                        if (countries.value[selectedCountryIndex.value]) {
-                            selectCountry(countries.value[selectedCountryIndex.value]);
-                        } else if (countries.value.length > 0) {
-                            selectCountry(countries.value[0]);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-
-                if (selectedCountryIndex.value !== oldCountryIndex && $countryAutocomplete.value) {
-                    $countryAutocomplete.value.children[selectedCountryIndex.value].scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center',
-                    });
-                }
+                // Ignore
             } else { // bank list
                 switch (event.key) {
                     case 'ArrowDown':
@@ -392,10 +293,6 @@ export default defineComponent({
         /* set a country as the currently selected one */
         function selectCountry(country: CountryInfo) {
             currentCountry.value = country;
-
-            if (countryDropdownOpened.value) {
-                countryDropdownOpened.value = false;
-            }
         }
 
         /* Those 3 functions are used to highlight the matched string in the bank autocomplete list */
@@ -448,9 +345,7 @@ export default defineComponent({
             SEPA_INSTANT_SUPPORT,
 
             $bankSearchInput,
-            $countrySearchInput,
             $bankAutocomplete,
-            $countryAutocomplete,
             $tooltips,
 
             localValue,
@@ -467,12 +362,9 @@ export default defineComponent({
             getMatchSuffix,
             shouldHighlightMatch,
 
-            countries,
-            currentCountry,
+            SEPA_COUNTRY_CODES,
             countryDropdownOpened,
             selectCountry,
-            selectedCountryIndex,
-            countrySearch,
 
             isScrollable,
         };
@@ -489,12 +381,9 @@ export default defineComponent({
         CircledQuestionMarkIcon,
         ForbiddenIcon,
         Tooltip,
-        CountryFlag,
+        CountrySelector,
         WorldIcon,
         AlertTriangleIcon,
-    },
-    directives: {
-        ClickOutside: vClickOutside.directive,
     },
 });
 </script>
@@ -534,126 +423,26 @@ export default defineComponent({
 }
 
 .country-selector {
-    .trigger {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
 
-        position: absolute;
-        right: 1.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-
-        .country-flag {
-            margin-right: 0.625rem;
-        }
+    /deep/ .trigger {
+        padding: 1.5rem 1rem;
     }
 
-    .country-dropdown {
-        display: flex;
-        flex-direction: column;
-        width: 22.25rem;
-
-        position: absolute;
-        right: -.5rem;
-        top: -.5rem;
-
-        background: var(--nimiq-blue-bg);
-        color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
-        list-style-type: none;
-        text-align: left;
-        user-select: none;
+    /deep/ .dropdown {
+        left: unset;
+        right: 0.25rem;
+        top: 0;
+        transform: none;
     }
 
-    .country-search {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        padding: 1rem;
-        border-bottom: 1.5px solid rgba(white, .15);
-
-        svg {
-            width: 1.75rem;
-            height: 1.75rem;
-            flex-shrink: 0;
-            opacity: .4;
-            margin-left: 0.75rem;
-            margin-right: 1rem;
-        }
-
-        input {
-            --border-color: transparent;
-            width: auto;
-            padding: 0.625rem;
-            color: rgba(white, .6);
-            min-width: 0;
-
-            &:focus {
-                color: white;
-            }
-
-            &::placeholder {
-                color: rgba(white, .4);
-            }
-        }
-    }
-
-    .country-list {
-        max-height: 25rem;
-        padding: .5rem;
-        padding-top: 1.5rem;
-        padding-bottom: 0;
-        margin: 0;
-        overflow-y: auto;
-
-        mask: linear-gradient(180deg,
-            rgba(255, 255, 255, 0) 2%,
-            #FFFFFF 12%,
-            #FFFFFF 83%,
-            rgba(255, 255, 255, 0) 98%
-        );
-
-        @extend %custom-scrollbar-inverse;
-
-        li {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 1rem;
-            border-radius: 0.25rem;
-            font-weight: 400;
-            font-size: var(--body-size);
-
-            &:not(.country-search):not(.info) {
-                cursor: pointer;
-                background-color: rgba(#FFFFFF, 0);
-                transition: background-color 200ms var(--nimiq-ease);
-
-                &:hover,
-                &.selected {
-                    background-color: rgba(#FFFFFF, .12);
-                }
-            }
-
-            .flag-icon {
-                background: rgba(255, 255, 255, 0.1);
-                margin-right: 0.75rem;
-            }
-
-            .country-flag {
-                margin-right: 1rem;
-            }
-
-            &.info {
-                font-size: var(--small-size);
-                color: rgba(white, .5);
-                padding-bottom: 2.5rem;
-            }
-        }
+    .info {
+        font-size: var(--small-size) !important;
+        color: rgba(white, .5);
+        padding-bottom: 2.5rem !important;
     }
 }
 

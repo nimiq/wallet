@@ -68,7 +68,7 @@ export default defineComponent({
 
         const selectedIndex = ref(0);
 
-        const currentCountryCode = ref(props.countryCodes[selectedIndex.value]);
+        const currentCountryCode = ref(props.includeAllOption ? 'all' : props.countryCodes[0]);
 
         const searchTerm = ref('');
 
@@ -79,7 +79,10 @@ export default defineComponent({
             isOpen.value = open;
             context.emit(open ? 'open' : 'close');
 
-            if (!open) searchTerm.value = '';
+            if (!open) {
+                searchTerm.value = '';
+                selectedIndex.value = 0;
+            }
 
             await context.root.$nextTick();
             if (open && $input.value) $input.value.focus();
@@ -172,12 +175,6 @@ export default defineComponent({
             $list,
         };
     },
-    methods: {
-        focus() {
-            const $input = this.$refs.$input as HTMLInputElement | undefined;
-            if ($input) $input.focus();
-        },
-    },
     components: {
         CountryFlag,
     },
@@ -217,8 +214,9 @@ export default defineComponent({
         width: 22.25rem;
 
         position: absolute;
-        left: -0.5rem;
+        left: 50%;
         top: -0.5rem;
+        transform: translateX(-50%);
 
         background: var(--nimiq-blue-bg);
         color: white;
@@ -286,13 +284,16 @@ export default defineComponent({
             border-radius: 0.25rem;
             font-weight: 400;
             font-size: var(--body-size);
-            cursor: pointer;
-            background-color: rgba(white, 0);
-            transition: background-color 200ms var(--nimiq-ease);
 
-            &:hover,
-            &.selected {
-                background-color: rgba(white, .12);
+            &:not(.info) {
+                cursor: pointer;
+                background-color: rgba(white, 0);
+                transition: background-color 200ms var(--nimiq-ease);
+
+                &:hover,
+                &.selected {
+                    background-color: rgba(white, .12);
+                }
             }
 
             .country-flag {

@@ -302,10 +302,6 @@ header {
                 }
             }
         }
-
-        /deep/ .dropdown {
-            margin-left: -4rem;
-        }
     }
 
     .country-flag,

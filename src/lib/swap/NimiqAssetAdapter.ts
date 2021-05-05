@@ -98,7 +98,6 @@ export class NimiqAssetAdapter implements AssetAdapter<SwapAsset.NIM> {
     }
 
     public async fundHtlc(
-        address: string,
         serializedTx: string,
         onPending?: (tx: TransactionDetails) => any,
         serializedProxyTx?: string,

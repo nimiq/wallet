@@ -42,7 +42,6 @@ export interface AssetAdapter<TAsset extends SwapAsset> {
     ): Promise<Transaction<TAsset>>;
 
     fundHtlc(
-        address: string,
         serializedTx: string,
         onPending: (tx: Transaction<TAsset>) => any,
         serializedProxyTx?: string,

@@ -31,6 +31,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
 
     if (Object.keys(accountStore.state.accountInfos).length === 1) {
         welcomeRoute = '/welcome';
+        console.log('Set welcome route to /welcome'); // eslint-disable-line no-console
     } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
         welcomeRoute = '/btc-activation/activated';
     }
@@ -205,8 +206,12 @@ export async function syncFromHub() {
         proxyStore.setHubCashlinks(listedCashlinks);
     }
 
+    console.log('Evaluating welcome route'); // eslint-disable-line no-console
     if (welcomeRoute) {
+        console.log('Navigating to welcome route", welcomeRout'); // eslint-disable-line no-console
         router.push(welcomeRoute);
+    } else {
+        console.log('No welcome route set'); // eslint-disable-line no-console
     }
 }
 

@@ -118,9 +118,7 @@ export default defineComponent({
             }
 
             window.simplexAsyncFunction = () => {
-                window.Simplex.init({
-                    public_key: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
-                });
+                window.Simplex.init({ public_key: Config.simplex.apiKey });
 
                 window.Simplex.subscribe('onlineFlowFinished', () => {
                     // Close modal
@@ -129,8 +127,8 @@ export default defineComponent({
             };
 
             return Promise.all([
-                loadScript('https://iframe.sandbox.test-simplexcc.com/form-sdk.js', 'simplex-form-script'),
-                loadScript('https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js', 'simplex-sdk-script'),
+                loadScript(Config.simplex.formScriptUrl, 'simplex-form-script'),
+                loadScript(Config.simplex.sdkScriptUrl, 'simplex-sdk-script'),
             ]);
         }
 

@@ -23,6 +23,7 @@ const hubApi = new HubApi(Config.hubEndpoint);
 let welcomeRoute = '';
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+    console.log('detected ONBOARD redirect'); // eslint-disable-line no-console
     // Store the returned account(s). For first-time signups on iOS/Safari, this is the only time
     // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
@@ -42,6 +43,7 @@ hubApi.on(HubApi.RequestType.MIGRATE, () => {
 });
 
 export async function initHubApi() {
+    console.log('url at hub response check:', window.location.href); // eslint-disable-line no-console
     return hubApi.checkRedirectResponse();
 }
 
@@ -208,7 +210,7 @@ export async function syncFromHub() {
 
     console.log('Evaluating welcome route'); // eslint-disable-line no-console
     if (welcomeRoute) {
-        console.log('Navigating to welcome route", welcomeRout'); // eslint-disable-line no-console
+        console.log('Navigating to welcome route', welcomeRoute); // eslint-disable-line no-console
         router.push(welcomeRoute);
     } else {
         console.log('No welcome route set'); // eslint-disable-line no-console

@@ -70,7 +70,7 @@ msgstr "剩余 {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+另外{count}个 | +另外{count}个"
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+网络费用"
@@ -399,7 +399,7 @@ msgstr "买 NIM & BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "用OASIS购买 NIM & BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr "在加密货币交易所购买NIM："
 
@@ -575,6 +575,16 @@ msgstr "继续"
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr "继续交换"
+
+#: src/components/modals/SimplexModal.vue:33
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+
+#: src/components/modals/SimplexModal.vue:15
+msgid "Copy the following address into the empty input field to continue:"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -1067,6 +1077,7 @@ msgid "Max."
 msgstr "最高"
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1163,7 +1174,7 @@ msgstr "无"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "该银行提供的帐户并非全部都支持即时交易。"
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
 msgstr ""
@@ -1318,6 +1329,10 @@ msgstr "接收者"
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "参考货币"
+
+#: src/components/modals/SimplexModal.vue:26
+msgid "Refresh the page to continue."
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
@@ -1769,6 +1784,7 @@ msgid "This service is currently not available in your region."
 msgstr "您所在的地区目前尚未提供这项服务"
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "该服务由{link}经营"
 

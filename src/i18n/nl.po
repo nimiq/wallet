@@ -73,7 +73,7 @@ msgstr "{value} resterend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
@@ -418,7 +418,7 @@ msgstr "Koop NIM & BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Koop NIM & BTC met OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Koop NIM op een crypto exchange:"
 
@@ -600,6 +600,16 @@ msgstr "Doorgaan"
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr "Swap voortzetten"
+
+#: src/components/modals/SimplexModal.vue:33
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+
+#: src/components/modals/SimplexModal.vue:15
+msgid "Copy the following address into the empty input field to continue:"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -1111,6 +1121,7 @@ msgid "Max."
 msgstr "Max."
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1208,7 +1219,7 @@ msgstr "Geen"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
 msgstr ""
@@ -1369,6 +1380,10 @@ msgstr "Ontvanger"
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Referentie Valuta"
+
+#: src/components/modals/SimplexModal.vue:26
+msgid "Refresh the page to continue."
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
@@ -1830,6 +1845,7 @@ msgid "This service is currently not available in your region."
 msgstr "Deze service is momenteel niet beschikbaar in jouw regio."
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "Deze service wordt beheerd door {link}"
 

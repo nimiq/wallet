@@ -47,8 +47,11 @@
                         </template>
 
                         <template #message>
-                            <span v-if="isIbanInvalid" class="nq-orange invalid-iban flex-row">
+                            <span v-if="!isIbanValid" class="nq-orange invalid-iban flex-row">
                                 {{ $t('This is not a valid IBAN') }}
+                            </span>
+                            <span v-else-if="!isIbanCountryValid" class="nq-orange invalid-iban flex-row">
+                                {{ $t('This IBAN is for a different country than the bank') }}
                             </span>
                         </template>
                     </DoubleInput>
@@ -99,13 +102,16 @@ export default defineComponent({
         const accountName = ref(bankAccounts.value.sepa?.accountName || '');
         const iban = ref(bankAccounts.value.sepa?.iban || '');
 
-        const isIbanInvalid = computed(() => iban.value.length > 0 && !IBAN.isValid(iban.value));
+        const isIbanValid = computed(() => iban.value.length < 5 || IBAN.isValid(iban.value));
+        const isIbanCountryValid = computed(() => iban.value.length < 2
+            || iban.value.substr(0, 2).toUpperCase() === banks.value.sepa?.country.toUpperCase());
 
         const writing = computed(() => bankName.value.length !== 0);
         const canConfirm = computed(() =>
             accountName.value.length > 0
-                && iban.value.length > 0
-                && !isIbanInvalid.value,
+                && iban.value.length >= 5
+                && isIbanValid.value
+                && isIbanCountryValid.value,
         );
 
         watch(currentStep, async () => {
@@ -160,7 +166,8 @@ export default defineComponent({
             accountName,
             iban,
 
-            isIbanInvalid,
+            isIbanValid,
+            isIbanCountryValid,
             canConfirm,
 
             onBankSelected,

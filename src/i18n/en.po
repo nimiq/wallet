@@ -484,7 +484,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:68
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr ""
 
@@ -1654,6 +1654,10 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:28
 msgid "This address has already been used"
+msgstr ""
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
+msgid "This IBAN is for a different country than the bank"
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7

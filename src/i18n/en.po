@@ -61,7 +61,7 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr ""
@@ -371,7 +371,7 @@ msgstr ""
 msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -542,6 +542,16 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
+msgstr ""
+
+#: src/components/modals/SimplexModal.vue:33
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+
+#: src/components/modals/SimplexModal.vue:15
+msgid "Copy the following address into the empty input field to continue:"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:30
@@ -1020,6 +1030,7 @@ msgid "Max."
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1107,7 +1118,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
 msgstr ""
@@ -1254,7 +1265,7 @@ msgstr ""
 msgid "Reference currency"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:18
+#: src/components/modals/SimplexModal.vue:26
 msgid "Refresh the page to continue."
 msgstr ""
 

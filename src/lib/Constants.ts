@@ -25,3 +25,6 @@ export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-modal-shown';
+
+export const NIM_DECIMALS = 5;
+export const NIM_MAGNITUDE = 1e5;

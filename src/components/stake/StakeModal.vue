@@ -8,7 +8,7 @@
             <StakeValidatorPage @back="page -= 1" @next="page += 1" :setValidator="setValidator" />
         </template>
         <template v-if="page === 3">
-            <StakeGraphPage class="graph-page" @back="page -= 1" @next="page += 1" @activeValidator="activeValidator" />
+            <StakeGraphPage class="graph-page" @back="page -= 1" @next="page += 1" :activeValidator="activeValidator" />
         </template>
     </Modal>
 </template>

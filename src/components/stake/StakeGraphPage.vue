@@ -12,12 +12,24 @@
             </template>
         </PageHeader>
         <PageBody>
-            <StakingGraph />
-            <StakeAmountSlider class="stake-amount-slider" />
+            <StakingGraph :stakedAmount="currentStake" :apy="validator.reward" :key="graphUpdate" />
+            <StakeAmountSlider class="stake-amount-slider"
+                :stakedAmount="currentStake"
+                @amount-staked="updateStaked"
+                @amount-unstaked="updateUnstaked"
+                @amount-chosen="updateGraph" />
             <button class="nq-button light-blue stake-button" @click="$emit('next')">
                 {{ $t('confirm stake') }}
             </button>
-            <div class="stake-unstake-disclaimer">
+            <div class="stake-disclaimer" v-if="unstakedAmount === 0">
+                {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
+            </div>
+            <div class="unstake-disclaimer" v-else>
+                <Amount
+                    :decimals="DISPLAYED_DECIMALS"
+                    :amount="unstakedAmount"
+                    :currency="STAKING_CURRENCY"
+                    :currencyDecimals="NIM_DECIMALS" />
                 {{ unstakeDisclaimer }}
             </div>
         </PageBody>
@@ -25,30 +37,67 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { defineComponent, ref, onUnmounted } from '@vue/composition-api';
+import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
+import { ValidatorData } from '../../stores/Staking';
 import StakingGraph from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { i18n } from '../../i18n/i18n-setup';
 
+import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
+import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+
 export default defineComponent({
-    setup() {
+    setup(props) {
         const page = document.querySelector<HTMLElement>('.small-page');
+        const graphUpdate = ref(0);
+        const currentStake = ref(2000 * NIM_MAGNITUDE);
+        const validator = props.activeValidator;
+        const unstakedAmount = ref(0);
         if (page !== null) {
-            page.style.width = '63.5rem';
+            page!.style.width = '63.5rem';
         }
         onUnmounted(() => {
             if (page !== null) {
                 page.style.removeProperty('width');
             }
         });
-        return {
-            unstakeDisclaimer: i18n.t(
-                '{amount} NIM will be available within ~{unstakeDelay}',
-                { amount: '1928', unstakeDelay: '12 hours' },
-            ),
+        const updateStaked = (amount: number) => {
+            if (amount !== currentStake.value) {
+                currentStake.value = amount;
+            }
         };
+        const updateUnstaked = (amount: number) => {
+            if (amount !== unstakedAmount.value) {
+                unstakedAmount.value = amount;
+            }
+        };
+        const updateGraph = () => {
+            graphUpdate.value += 1;
+        };
+        return {
+            NIM_DECIMALS,
+            STAKING_CURRENCY: CryptoCurrency.NIM,
+            DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
+            unstakeDisclaimer: i18n.t(
+                'will be available within ~{duration}',
+                { duration: '12 hours' },
+            ),
+            graphUpdate,
+            currentStake,
+            validator,
+            unstakedAmount,
+            updateStaked,
+            updateUnstaked,
+            updateGraph,
+        };
+    },
+    props: {
+        activeValidator: {
+            type: Object as () => ValidatorData,
+            required: true,
+        },
     },
     components: {
         PageHeader,
@@ -56,6 +105,7 @@ export default defineComponent({
         StakingIcon,
         StakingGraph,
         StakeAmountSlider,
+        Amount,
     },
 });
 </script>
@@ -82,7 +132,16 @@ export default defineComponent({
             width: 40.5rem;
         }
 
-        .stake-unstake-disclaimer {
+        .stake-disclaimer {
+            margin-top: 2rem;
+            font-weight: 600;
+            font-size: 1.75rem;
+            color: #1F2348;
+            opacity: 0.5;
+            text-align: center;
+        }
+
+        .unstake-disclaimer {
             margin-top: 2rem;
             font-size: 1.75rem;
             font-weight: 600;

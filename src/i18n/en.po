@@ -10,10 +10,6 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/stake/StakeGraphPage.vue:47
-msgid "{amount} NIM will be available within ~{unstakeDelay}"
-msgstr ""
-
 #: src/components/stake/StakeValidatorListItem.vue:24
 #: src/components/stake/StakeValidatorListItem.vue:56
 msgid "{brandName} Website"
@@ -57,6 +53,10 @@ msgstr ""
 msgid "{number}% Uptime"
 msgstr ""
 
+#: src/components/stake/graph/StakingGraph.vue:50
+msgid "{number}M"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:41
 msgid "{perc}% of swap value."
@@ -95,10 +95,6 @@ msgstr ""
 msgid "1"
 msgstr ""
 
-#: src/components/stake/graph/StakingGraph.vue:23
-msgid "12M"
-msgstr ""
-
 #: src/components/FeeSelector.vue:8
 msgid "15m"
 msgstr ""
@@ -125,16 +121,8 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
-#: src/components/stake/graph/StakingGraph.vue:23
-msgid "4M"
-msgstr ""
-
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
-msgstr ""
-
-#: src/components/stake/graph/StakingGraph.vue:23
-msgid "8M"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:285
@@ -513,7 +501,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: src/components/stake/StakeGraphPage.vue:18
+#: src/components/stake/StakeGraphPage.vue:19
 msgid "confirm stake"
 msgstr ""
 
@@ -1735,6 +1723,10 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: src/components/stake/StakeGraphPage.vue:22
+msgid "Unlock at any time. Your NIM will be available within 12 hours."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:153
 msgid "Until end of March, 10 swaps will get reimbursed."
 msgstr ""
@@ -1793,6 +1785,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
+msgstr ""
+
+#: src/components/stake/StakeGraphPage.vue:73
+msgid "will be available within ~{duration}"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:9

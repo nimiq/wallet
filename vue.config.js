@@ -2,6 +2,7 @@ const path = require('path');
 const child_process = require('child_process');
 
 const webpack = require('webpack');
+const SriPlugin = require('webpack-subresource-integrity');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
@@ -26,8 +27,16 @@ if (!release) {
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
+    integrity: true,
     configureWebpack: {
+        output: {
+            crossOriginLoading: 'anonymous',
+        },
         plugins: [
+            new SriPlugin({
+                hashFuncNames: ['sha384'],
+                enabled: process.env.NODE_ENV === 'production',
+            }),
             new PoLoaderOptimizer(),
             new webpack.DefinePlugin({
                 'process.env': {

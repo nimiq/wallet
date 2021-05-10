@@ -89,10 +89,16 @@ async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
         .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
         .slice(2)
         .forEach((bank) => {
-            if (jsonFile[bank.BIC]) {
+            let { BIC } = bank;
+
+            if (BIC.length > 8 && BIC.endsWith('XXX')) {
+                BIC = BIC.substring(0, 8);
+            }
+
+            if (jsonFile[BIC]) {
                 process.stdout.write(`\x1b[33mWarning:\x1b[0m Duplicate entries for BIC \x1b[36m${bank.BIC}\x1b[0m\n`);
             }
-            jsonFile[bank.BIC] = {
+            jsonFile[BIC] = {
                 name: bank.name
                     .split(' ')
                     .filter((word) => word)

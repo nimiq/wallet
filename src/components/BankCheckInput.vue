@@ -172,7 +172,17 @@ export default defineComponent({
             return Object.values(availableBanks.value).filter((bank) => {
                 const normalizedBankName = unicodeNormalize(bank.name);
 
-                return (normalizedBankName && rgx.test(normalizedBankName)) || (bank.BIC && rgx.test(bank.BIC));
+                const matchName = (normalizedBankName && rgx.test(normalizedBankName));
+                const matchBIC = (bank.BIC && rgx.test(bank.BIC));
+
+                if (bank.BIC && bank.BIC.length === 8) {
+                    const rgxBankBIC = RegExp(`${bank.BIC}[\\w]{0,3}`, 'i');
+                    const partiallyMatchBIC = rgxBankBIC.test(normalizedLocalValue.value);
+
+                    return matchName || matchBIC || partiallyMatchBIC;
+                }
+
+                return matchName || matchBIC;
             }).sort((a, b) => {
                 const aStartWithSearchTerm = unicodeNormalize(a.name).toLowerCase()
                     .startsWith(normalizedLocalValue.value.toLowerCase());

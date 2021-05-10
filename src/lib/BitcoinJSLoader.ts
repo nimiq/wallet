@@ -13,6 +13,7 @@ export async function loadBitcoinJS(): Promise<boolean> {
             });
             script.addEventListener('error', reject);
             script.src = '/bitcoin/BitcoinJS.min.js';
+            script.integrity = 'sha384-InTmSE4CheiwuiF+i2DHRMZIBZ8lulBS52s0W2QpKqwOsdPfiXLgzXzJC0ONsupD';
             document.body.appendChild(script);
         })
     );

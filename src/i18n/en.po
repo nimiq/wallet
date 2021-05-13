@@ -544,13 +544,13 @@ msgstr ""
 msgid "Continue Swap"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:33
+#: src/components/modals/SimplexModal.vue:34
 msgid ""
 "Copy\n"
 "over"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:15
+#: src/components/modals/SimplexModal.vue:16
 msgid "Copy the following address into the empty input field to continue:"
 msgstr ""
 
@@ -1265,7 +1265,7 @@ msgstr ""
 msgid "Reference currency"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:26
+#: src/components/modals/SimplexModal.vue:27
 msgid "Refresh the page to continue."
 msgstr ""
 

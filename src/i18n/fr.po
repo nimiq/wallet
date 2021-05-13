@@ -3,12 +3,12 @@
 # Talleyrand, 2020
 # Daniel, 2020
 # Matheo <matheo@nimiq.com>, 2021
-# Robinson BARAIS, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Robinson BARAIS, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
+"Last-Translator: Robinson BARAIS, 2021\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -42,16 +42,16 @@ msgstr "{count} Cashlink | {count} Cashlinks"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
-msgstr ""
+msgstr "{currency} n'ont pas pu être payés"
 
 #: src/components/TransactionListOasisPayoutStatus.vue:11
 msgid "{currency} not paid out"
-msgstr ""
+msgstr "{currency} non versé"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:6
 #: src/components/TransactionListOasisPayoutStatus.vue:5
 msgid "{currency} payout pending"
-msgstr ""
+msgstr "Paiement {currency} en attente"
 
 #: src/components/modals/TransactionModal.vue:272
 msgid "{fee} fee"
@@ -72,7 +72,7 @@ msgstr "{value} restant"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} de plus | + {count} de plus"
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ frais de réseau"
@@ -321,6 +321,7 @@ msgstr "Virement bancaire"
 #: src/components/modals/BuyOptionsModal.vue:80
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
+"Le transfert bancaire est uniquement disponible dans la zone Euro SEPA."
 
 #: src/components/modals/BuyCryptoModal.vue:11
 msgid "Beta"
@@ -419,7 +420,7 @@ msgstr "Acheter NIM et BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Acheter du NIM & BTC avec OASIS !"
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -537,7 +538,7 @@ msgstr "Bientôt disponible"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:68
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr "Confirmer le compte"
 
@@ -599,6 +600,19 @@ msgstr "Continuer"
 msgid "Continue Swap"
 msgstr "Continuer le Swap"
 
+#: src/components/modals/SimplexModal.vue:34
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+"Copier\n"
+"sur"
+
+#: src/components/modals/SimplexModal.vue:16
+msgid "Copy the following address into the empty input field to continue:"
+msgstr ""
+"Copier l'adresse suivante dans le champ de saisie vide pour continuer."
+
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
 msgstr "Créer un Cashlink"
@@ -654,13 +668,15 @@ msgstr "Carte de crédit"
 
 #: src/components/modals/BuyOptionsModal.vue:65
 msgid "Currently under maintenance"
-msgstr ""
+msgstr "Actuellement en cours de maintenance"
 
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
 "different options are available."
 msgstr ""
+"Dépend de votre pays de résidence,\n"
+"plusieurs options sont disponibles."
 
 #: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
@@ -1109,6 +1125,7 @@ msgid "Max."
 msgstr "Max."
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1116,7 +1133,7 @@ msgstr "min {amount}"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
-msgstr ""
+msgstr "Plus de pays seront supportés à l'avenir"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -1171,6 +1188,8 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
+"Nimiq travaille sur une fonctionnalité Pro avec des limites augmentées après"
+" l'enregistrement de l'utilisateur."
 
 #: src/components/modals/BtcSendModal.vue:124
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -1209,10 +1228,10 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
-msgstr ""
+msgstr "Non disponible dans votre pays"
 
 #: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
@@ -1311,7 +1330,7 @@ msgstr "Veuillez transférer"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
-msgstr ""
+msgstr "Consultez la page d'assistance pour savoir ce qu'il faut faire."
 
 #: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
@@ -1369,6 +1388,10 @@ msgstr "Destinataire"
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Devise de référence"
+
+#: src/components/modals/SimplexModal.vue:27
+msgid "Refresh the page to continue."
+msgstr "Rafraîchir la page pour continuer."
 
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
@@ -1557,7 +1580,7 @@ msgstr "Envoyé le {dateAndTime}"
 
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
-msgstr ""
+msgstr "Frais du virement SEPA instantané"
 
 #: src/components/modals/BuyOptionsModal.vue:35
 msgid "SEPA Instant only"
@@ -1636,7 +1659,7 @@ msgstr "Quelque chose s'est mal passé"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:28
 msgid "Something went wrong with your transaction"
-msgstr ""
+msgstr "Un problème est survenu avec votre transaction"
 
 #: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
@@ -1715,6 +1738,8 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:69
 msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
 msgstr ""
+"L'infrastructure bancaire de TEN31 fait l'objet d'une maintenance "
+"programmée."
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -1735,7 +1760,7 @@ msgstr "Les frais déterminent le montant minimum."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
-msgstr ""
+msgstr "La limite de votre IBAN a été atteinte"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1795,6 +1820,10 @@ msgstr "Il y a un problème"
 msgid "This address has already been used"
 msgstr "Cette adresse a déjà été utilisée"
 
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
+msgid "This IBAN is for a different country than the bank"
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Ceci est un ancien type de compte."
@@ -1835,6 +1864,7 @@ msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "Ce service est géré par {link}"
 
@@ -1856,7 +1886,7 @@ msgstr "Cette opération prend généralement {time} secondes."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
-msgstr ""
+msgstr "Cela met en général un à deux jours ouvrés."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -1964,6 +1994,8 @@ msgstr ""
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
+"Utilisez un compte acceptant les virements SEPA instantanés pour être payé "
+"en quelques minutes."
 
 #: src/components/modals/BtcReceiveModal.vue:19
 msgid ""
@@ -1988,7 +2020,7 @@ msgstr "Attendez que le Swap soit mis en place."
 
 #: src/components/TransactionListOasisPayoutStatus.vue:8
 msgid "Waiting for {currency}"
-msgstr ""
+msgstr "En attente de {currency}"
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
@@ -2179,7 +2211,7 @@ msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"
-msgstr ""
+msgstr "Votre paiement est en chemin"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"

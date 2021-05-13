@@ -72,7 +72,7 @@ msgstr "Осталось {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+ ещё {count} | + ещё {count} "
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ комиссия сети"
@@ -420,7 +420,7 @@ msgstr "Купить NIM и BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Покупайте NIM и BTC через OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купить NIM на криптовалютной бирже:"
 
@@ -535,7 +535,7 @@ msgstr "В скором времени"
 msgid "Confirm"
 msgstr "Подтвердить"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:68
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr ""
 
@@ -597,6 +597,16 @@ msgstr "Продолжить"
 #: src/components/swap/SwapSepaFundingInstructions.vue:92
 msgid "Continue Swap"
 msgstr "Продолжить обмен"
+
+#: src/components/modals/SimplexModal.vue:34
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+
+#: src/components/modals/SimplexModal.vue:16
+msgid "Copy the following address into the empty input field to continue:"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -1105,6 +1115,7 @@ msgid "Max."
 msgstr "Макс."
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1202,7 +1213,7 @@ msgstr "Нет"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не все счета этого банка поддерживают моментальные транзакции."
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
 msgstr ""
@@ -1361,6 +1372,10 @@ msgstr "Получатель"
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Базовая валюта"
+
+#: src/components/modals/SimplexModal.vue:27
+msgid "Refresh the page to continue."
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
@@ -1785,6 +1800,10 @@ msgstr "Есть проблема"
 msgid "This address has already been used"
 msgstr "Этот адрес уже использован"
 
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
+msgid "This IBAN is for a different country than the bank"
+msgstr ""
+
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Это Аккаунт \"старого\"  типа"
@@ -1827,6 +1846,7 @@ msgid "This service is currently not available in your region."
 msgstr "Данный сервис не доступен в Вашем регионе."
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "Этот сервис предоставляется {link}"
 

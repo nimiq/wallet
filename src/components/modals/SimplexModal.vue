@@ -239,12 +239,11 @@ export default defineComponent({
                 // ignore
             }
 
-            const data = await window.simplex.createForm({
+            await window.simplex.createForm({
                 showFiatFirst: true,
                 fiat: fiatCurrencyCode.toUpperCase(),
                 crypto: cryptoCurrencyCode.value.toUpperCase(),
             });
-            console.log(data); // eslint-disable-line no-console
 
             // Observe for when the simplex iframe is removed, which is when the the checkout flow
             // is loaded. We use this to remove the address copying UI and copy-over-arrow.
@@ -380,6 +379,7 @@ header {
     position: absolute;
     left: calc(100% - 5rem);
     top: 17.5rem;
+    z-index: -1;
 
     .copy-over {
         position: absolute;

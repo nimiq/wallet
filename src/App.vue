@@ -85,7 +85,7 @@ export default defineComponent({
         let lastTouchPos: Point | null = null;
         let rafPending = false;
 
-        function getGesturePointFromEvent(evt: PointerEvent | TouchEvent | MouseEvent) {
+        function getGesturePointFromEvent(evt: PointerEvent | TouchEvent) {
             if ('targetTouches' in evt) {
                 // Prefer Touch Events
                 const point: Point = {
@@ -108,25 +108,18 @@ export default defineComponent({
         }
 
         // Handle the start of gestures
-        function handleGestureStart(evt: PointerEvent | TouchEvent | MouseEvent) {
+        function handleGestureStart(evt: PointerEvent | TouchEvent) {
             evt.preventDefault();
 
             if ('touches' in evt && evt.touches.length > 1) return;
 
-            // Add the move and end listeners
-            if ('pointerId' in evt) {
-                (evt.target as HTMLDivElement).setPointerCapture(evt.pointerId);
-            } else {
-                // Add Mouse Listeners
-                document.addEventListener('mousemove', handleGestureMove, true);
-                document.addEventListener('mouseup', handleGestureEnd, true);
-            }
-
             initialTouchPos = getGesturePointFromEvent(evt);
             initialXPosition = getXPosition($main.value!);
+
+            $main.value!.style.transition = 'initial';
         }
 
-        function handleGestureMove(evt: PointerEvent | TouchEvent | MouseEvent) {
+        function handleGestureMove(evt: PointerEvent | TouchEvent) {
             evt.preventDefault();
 
             if (!initialTouchPos) return;
@@ -145,15 +138,6 @@ export default defineComponent({
             if ('touches' in evt && evt.touches.length > 0) return;
 
             rafPending = false;
-
-            // Remove Event Listeners
-            if ('pointerId' in evt) {
-                (evt.target as HTMLDivElement).releasePointerCapture(evt.pointerId);
-            } else {
-                // Remove Mouse Listeners
-                document.removeEventListener('mousemove', handleGestureMove, true);
-                document.removeEventListener('mouseup', handleGestureEnd, true);
-            }
 
             updateSwipeRestPosition();
 
@@ -216,9 +200,6 @@ export default defineComponent({
                 target.addEventListener('touchmove', handleGestureMove, true);
                 target.addEventListener('touchend', handleGestureEnd, true);
                 target.addEventListener('touchcancel', handleGestureEnd, true);
-
-                // Add Mouse Listener
-                target.addEventListener('mousedown', handleGestureStart, true);
             }
         });
 

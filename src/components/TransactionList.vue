@@ -440,6 +440,8 @@ export default defineComponent({
     padding-left: calc(2rem + var(--padding));
     padding-bottom: var(--padding, 4rem);
 
+    touch-action: pan-y;
+
     @extend %custom-scrollbar;
 }
 

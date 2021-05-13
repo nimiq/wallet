@@ -1,6 +1,6 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="routeClass">
+        <main :class="routeClass" ref="$main">
             <Sidebar/>
 
             <transition name="delay">
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
@@ -34,6 +34,8 @@ import UpdateNotification from './components/UpdateNotification.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+
+/* global WebKitCSSMatrix */
 
 export default defineComponent({
     name: 'app',
@@ -76,10 +78,155 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
+        // https://developers.google.com/web/fundamentals/design-and-ux/input/touch
+        type Point = {x: number, y: number};
+        let initialXPosition: number | null = null;
+        let initialTouchPos: Point | null = null;
+        let lastTouchPos: Point | null = null;
+        let rafPending = false;
+
+        function getGesturePointFromEvent(evt: PointerEvent | TouchEvent | MouseEvent) {
+            if ('targetTouches' in evt) {
+                // Prefer Touch Events
+                const point: Point = {
+                    x: evt.targetTouches[0].clientX,
+                    y: evt.targetTouches[0].clientY,
+                };
+                return point;
+            }
+
+            // Either Mouse event or Pointer Event
+            const point: Point = {
+                x: evt.clientX,
+                y: evt.clientY,
+            };
+            return point;
+        }
+
+        function getXPosition(element: HTMLDivElement): number {
+            return new (DOMMatrix || WebKitCSSMatrix)(getComputedStyle(element).transform).m41;
+        }
+
+        // Handle the start of gestures
+        function handleGestureStart(evt: PointerEvent | TouchEvent | MouseEvent) {
+            evt.preventDefault();
+
+            if ('touches' in evt && evt.touches.length > 1) return;
+
+            // Add the move and end listeners
+            if ('pointerId' in evt) {
+                (evt.target as HTMLDivElement).setPointerCapture(evt.pointerId);
+            } else {
+                // Add Mouse Listeners
+                document.addEventListener('mousemove', handleGestureMove, true);
+                document.addEventListener('mouseup', handleGestureEnd, true);
+            }
+
+            initialTouchPos = getGesturePointFromEvent(evt);
+            initialXPosition = getXPosition($main.value!);
+        }
+
+        function handleGestureMove(evt: PointerEvent | TouchEvent | MouseEvent) {
+            evt.preventDefault();
+
+            if (!initialTouchPos) return;
+
+            lastTouchPos = getGesturePointFromEvent(evt);
+
+            if (rafPending) return;
+
+            rafPending = true;
+            window.requestAnimationFrame(onAnimFrame);
+        }
+
+        function handleGestureEnd(evt: PointerEvent | TouchEvent | MouseEvent) {
+            evt.preventDefault();
+
+            if ('touches' in evt && evt.touches.length > 0) return;
+
+            rafPending = false;
+
+            // Remove Event Listeners
+            if ('pointerId' in evt) {
+                (evt.target as HTMLDivElement).releasePointerCapture(evt.pointerId);
+            } else {
+                // Remove Mouse Listeners
+                document.removeEventListener('mousemove', handleGestureMove, true);
+                document.removeEventListener('mouseup', handleGestureEnd, true);
+            }
+
+            updateSwipeRestPosition();
+
+            initialXPosition = null;
+            initialTouchPos = null;
+            lastTouchPos = null;
+        }
+
+        function onAnimFrame() {
+            if (!rafPending || !initialTouchPos || !lastTouchPos || !initialXPosition) return;
+
+            const differenceInX = initialTouchPos.x - lastTouchPos.x;
+            const maxOffset = document.body.offsetWidth + 192;
+            const newXPosition = Math.min(0, Math.max(initialXPosition - differenceInX, -maxOffset));
+            $main.value!.style.transform = `translateX(${newXPosition}px)`;
+
+            rafPending = false;
+        }
+
+        function updateSwipeRestPosition() {
+            if (initialXPosition !== null) {
+                const currentXPosition = getXPosition($main.value!);
+
+                const sidebarBarrier = -192 / 2;
+                const transactionsBarrier = -(document.body.offsetWidth / 2 + 192);
+
+                if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
+                    // Go to sidebar
+                    context.root.$router.push({ name: 'root', query: { sidebar: 'true' } });
+                } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
+                    // Go to transactions
+                    context.root.$router.push('/transactions');
+                } else if (
+                    (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
+                    && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
+                ) {
+                    // Go back to root (addresses)
+                    context.root.$router.back();
+                }
+            }
+
+            $main.value!.style.transition = '';
+            $main.value!.style.transform = '';
+        }
+
+        const $main = ref<HTMLDivElement>(null);
+        onMounted(() => {
+            const target = $main.value!;
+
+            // Check if pointer events are supported.
+            if (window.PointerEvent) {
+                // Add Pointer Event Listener
+                target.addEventListener('pointerdown', handleGestureStart, true);
+                target.addEventListener('pointermove', handleGestureMove, true);
+                target.addEventListener('pointerup', handleGestureEnd, true);
+                target.addEventListener('pointercancel', handleGestureEnd, true);
+            } else {
+                // Add Touch Listener
+                target.addEventListener('touchstart', handleGestureStart, true);
+                target.addEventListener('touchmove', handleGestureMove, true);
+                target.addEventListener('touchend', handleGestureEnd, true);
+                target.addEventListener('touchcancel', handleGestureEnd, true);
+
+                // Add Mouse Listener
+                target.addEventListener('mousedown', handleGestureStart, true);
+            }
+        });
+
         return {
             routeClass,
             hasAccounts,
             amountsHidden,
+            $main,
         };
     },
     components: {
@@ -97,6 +244,7 @@ export default defineComponent({
     @include flex-full-height;
     @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+    touch-action: pan-y;
 
     /* Default: >= 1500px */
     --sidebar-width: 24rem;

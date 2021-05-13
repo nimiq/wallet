@@ -10,7 +10,8 @@
             <img src="../../assets/exchanges/simplex-full.png" alt="Simplex Logo">
             <div class="flex-spacer"></div>
         </header>
-        <PageBody v-if="showAddressCopyUi" class="copy-address">
+        <!-- Using v-show here is on purpose: the Simplex widget breaks when removing this element with using v-if -->
+        <PageBody v-show="showAddressCopyUi" class="copy-address">
             <p class="nq-text nq-light-blue">
                 {{ $t('Copy the following address into the empty input field to continue:') }}
             </p>

@@ -34,6 +34,7 @@ import UpdateNotification from './components/UpdateNotification.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useWindowSize } from './composables/useWindowSize';
 
 /* global WebKitCSSMatrix */
 
@@ -84,6 +85,7 @@ export default defineComponent({
         let initialTouchPos: Point | null = null;
         let lastTouchPos: Point | null = null;
         let rafPending = false;
+        const $main = ref<HTMLDivElement>(null);
 
         function getGesturePointFromEvent(evt: PointerEvent | TouchEvent) {
             if ('targetTouches' in evt) {
@@ -183,8 +185,7 @@ export default defineComponent({
             $main.value!.style.transform = '';
         }
 
-        const $main = ref<HTMLDivElement>(null);
-        onMounted(() => {
+        function addEventListeners() {
             const target = $main.value!;
 
             // Check if pointer events are supported.
@@ -201,6 +202,41 @@ export default defineComponent({
                 target.addEventListener('touchend', handleGestureEnd, true);
                 target.addEventListener('touchcancel', handleGestureEnd, true);
             }
+        }
+
+        function removeEventListeners() {
+            const target = $main.value!;
+
+            // Check if pointer events are supported.
+            if (window.PointerEvent) {
+                // Add Pointer Event Listener
+                target.removeEventListener('pointerdown', handleGestureStart, true);
+                target.removeEventListener('pointermove', handleGestureMove, true);
+                target.removeEventListener('pointerup', handleGestureEnd, true);
+                target.removeEventListener('pointercancel', handleGestureEnd, true);
+            } else {
+                // Add Touch Listener
+                target.removeEventListener('touchstart', handleGestureStart, true);
+                target.removeEventListener('touchmove', handleGestureMove, true);
+                target.removeEventListener('touchend', handleGestureEnd, true);
+                target.removeEventListener('touchcancel', handleGestureEnd, true);
+            }
+        }
+
+        const { width } = useWindowSize();
+
+        watch(width, (newWidth, oldWidth) => {
+            if (!$main.value) return;
+
+            if (newWidth <= 700 && oldWidth > 700) {
+                addEventListeners();
+            } else if (newWidth > 700) {
+                removeEventListeners();
+            }
+        }, { lazy: false });
+
+        onMounted(() => {
+            if (width.value <= 700) addEventListeners();
         });
 
         return {

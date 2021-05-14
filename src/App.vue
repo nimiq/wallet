@@ -182,7 +182,9 @@ export default defineComponent({
             }
 
             $main.value!.style.transition = '';
+            $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
             $main.value!.style.transform = '';
+            setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
         }
 
         function addEventListeners() {

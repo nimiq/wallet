@@ -84,6 +84,9 @@ export default defineComponent({
         let initialXPosition: number | null = null;
         let initialTouchPos: Point | null = null;
         let lastTouchPos: Point | null = null;
+        let lastTouchTime: number | null = null;
+        let velocityDistance: number | null = null;
+        let velocityTime: number | null = null;
         let rafPending = false;
         const $main = ref<HTMLDivElement>(null);
 
@@ -117,6 +120,7 @@ export default defineComponent({
 
             initialTouchPos = getGesturePointFromEvent(evt);
             initialXPosition = getXPosition($main.value!);
+            lastTouchTime = 'performance' in window ? performance.now() : Date.now();
 
             $main.value!.style.transition = 'initial';
         }
@@ -126,7 +130,15 @@ export default defineComponent({
 
             if (!initialTouchPos) return;
 
+            const previousTouchPos = lastTouchPos;
             lastTouchPos = getGesturePointFromEvent(evt);
+            velocityDistance = lastTouchPos.x - (previousTouchPos || initialTouchPos).x;
+
+            if (lastTouchTime) {
+                const previousTouchTime = lastTouchTime;
+                lastTouchTime = 'performance' in window ? performance.now() : Date.now();
+                velocityTime = lastTouchTime - previousTouchTime;
+            }
 
             if (rafPending) return;
 
@@ -134,7 +146,7 @@ export default defineComponent({
             window.requestAnimationFrame(onAnimFrame);
         }
 
-        function handleGestureEnd(evt: PointerEvent | TouchEvent | MouseEvent) {
+        function handleGestureEnd(evt: PointerEvent | TouchEvent) {
             evt.preventDefault();
 
             if ('touches' in evt && evt.touches.length > 0) return;
@@ -161,7 +173,15 @@ export default defineComponent({
 
         function updateSwipeRestPosition() {
             if (initialXPosition !== null) {
-                const currentXPosition = getXPosition($main.value!);
+                let currentXPosition = getXPosition($main.value!);
+
+                if (velocityDistance && velocityTime) {
+                    const swipeFactor = 10;
+                    const velocity = (velocityDistance! / velocityTime!) * 1000 * swipeFactor; // px/s
+                    const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                    // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
+                    currentXPosition += remainingXDistance;
+                }
 
                 const sidebarBarrier = -192 / 2;
                 const transactionsBarrier = -(document.body.offsetWidth / 2 + 192);
@@ -182,9 +202,11 @@ export default defineComponent({
             }
 
             $main.value!.style.transition = '';
-            $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
+            if (initialXPosition !== null) {
+                $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
+                setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
+            }
             $main.value!.style.transform = '';
-            setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
         }
 
         function addEventListeners() {

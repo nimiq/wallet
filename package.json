@@ -4,7 +4,7 @@
   "private": false,
   "author": "Nimiq (https://www.nimiq.com)",
   "scripts": {
-    "pre": "yarn i18n:extract && if [ ! -f public/bitcoin/BitcoinJS.min.js ]; then yarn build:bitcoinjs; fi",
+    "pre": "yarn i18n:extract && test -e public/bitcoin/BitcoinJS.min.js || yarn build:bitcoinjs",
     "serve": "yarn pre && yarn vue-cli-service serve --port 8081",
     "build": "yarn pre && yarn vue-cli-service build",
     "build:ci": "yarn pre && build=testnet yarn vue-cli-service build",

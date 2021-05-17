@@ -53,7 +53,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     let rafPending = false;
 
     function handleGestureStart(evt: PointerEvent | TouchEvent) {
-        evt.preventDefault();
+        // evt.preventDefault();
 
         if ('touches' in evt && evt.touches.length > 1) return;
 
@@ -65,7 +65,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function handleGestureMove(evt: PointerEvent | TouchEvent) {
-        evt.preventDefault();
+        // evt.preventDefault();
 
         if (!initialTouchPos) return;
 
@@ -85,7 +85,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function handleGestureEnd(evt: PointerEvent | TouchEvent) {
-        evt.preventDefault();
+        // evt.preventDefault();
 
         if ('touches' in evt && evt.touches.length > 0) return;
 

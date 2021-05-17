@@ -92,8 +92,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         rafPending = false;
 
         // If too much time passed between last move event and touch end, reset the velocity
-        const now = getTime();
-        if (lastTouchTime && now - lastTouchTime > 200) velocityTime = 0;
+        if (lastTouchTime && getTime() - lastTouchTime > 200) velocityTime = 0;
 
         const currentXPosition = getXPosition(element.value);
 
@@ -107,6 +106,9 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         initialXPosition = null;
         initialTouchPos = null;
         lastTouchPos = null;
+        lastTouchTime = null;
+        velocityDistance = null;
+        velocityTime = null;
     }
 
     function onAnimFrame() {

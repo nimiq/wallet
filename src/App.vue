@@ -153,6 +153,10 @@ export default defineComponent({
 
             rafPending = false;
 
+            // If too much time passed between last move event and touch end, reset the velocity
+            const now = 'performance' in window ? performance.now() : Date.now();
+            if (lastTouchTime && now - lastTouchTime > 200) velocityTime = 0;
+
             updateSwipeRestPosition();
 
             initialXPosition = null;
@@ -164,6 +168,7 @@ export default defineComponent({
             if (!rafPending || !initialTouchPos || !lastTouchPos || !initialXPosition) return;
 
             const differenceInX = initialTouchPos.x - lastTouchPos.x;
+            if (Math.abs(differenceInX) <= 1) return;
             const maxOffset = document.body.offsetWidth + 192;
             const newXPosition = Math.min(0, Math.max(initialXPosition - differenceInX, -maxOffset));
             $main.value!.style.transform = `translateX(${newXPosition}px)`;
@@ -172,40 +177,45 @@ export default defineComponent({
         }
 
         function updateSwipeRestPosition() {
-            if (initialXPosition !== null) {
-                let currentXPosition = getXPosition($main.value!);
+            if (
+                !initialXPosition || !initialTouchPos || !lastTouchPos
+                || Math.abs(initialTouchPos.x - lastTouchPos.x) <= 1
+            ) {
+                $main.value!.style.transition = '';
+                $main.value!.style.transform = '';
+                return;
+            }
 
-                if (velocityDistance && velocityTime) {
-                    const swipeFactor = 10;
-                    const velocity = (velocityDistance! / velocityTime!) * 1000 * swipeFactor; // px/s
-                    const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
-                    // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
-                    currentXPosition += remainingXDistance;
-                }
+            let currentXPosition = getXPosition($main.value!);
 
-                const sidebarBarrier = -192 / 2;
-                const transactionsBarrier = -(document.body.offsetWidth / 2 + 192);
+            if (velocityDistance && velocityTime) {
+                const swipeFactor = 10;
+                const velocity = (velocityDistance! / velocityTime!) * 1000 * swipeFactor; // px/s
+                const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
+                currentXPosition += remainingXDistance;
+            }
 
-                if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
-                    // Go to sidebar
-                    context.root.$router.push({ name: 'root', query: { sidebar: 'true' } });
-                } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
-                    // Go to transactions
-                    context.root.$router.push('/transactions');
-                } else if (
-                    (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
-                    && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
-                ) {
-                    // Go back to root (addresses)
-                    context.root.$router.back();
-                }
+            const sidebarBarrier = -192 / 2;
+            const transactionsBarrier = -(document.body.offsetWidth / 2 + 192);
+
+            if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
+                // Go to sidebar
+                context.root.$router.push({ name: 'root', query: { sidebar: 'true' } });
+            } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
+                // Go to transactions
+                context.root.$router.push('/transactions');
+            } else if (
+                (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
+                && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
+            ) {
+                // Go back to root (addresses)
+                context.root.$router.back();
             }
 
             $main.value!.style.transition = '';
-            if (initialXPosition !== null) {
-                $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
-                setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
-            }
+            $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
+            setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
             $main.value!.style.transform = '';
         }
 

@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
@@ -35,8 +35,7 @@ import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
 import { useWindowSize } from './composables/useWindowSize';
-
-/* global WebKitCSSMatrix */
+import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
@@ -79,115 +78,17 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
-        // https://developers.google.com/web/fundamentals/design-and-ux/input/touch
-        type Point = {x: number, y: number};
-        let initialXPosition: number | null = null;
-        let initialTouchPos: Point | null = null;
-        let lastTouchPos: Point | null = null;
-        let lastTouchTime: number | null = null;
-        let velocityDistance: number | null = null;
-        let velocityTime: number | null = null;
-        let rafPending = false;
+        // Swiping
+
         const $main = ref<HTMLDivElement>(null);
+        const { width } = useWindowSize();
 
-        function getGesturePointFromEvent(evt: PointerEvent | TouchEvent) {
-            if ('targetTouches' in evt) {
-                // Prefer Touch Events
-                const point: Point = {
-                    x: evt.targetTouches[0].clientX,
-                    y: evt.targetTouches[0].clientY,
-                };
-                return point;
-            }
-
-            // Either Mouse event or Pointer Event
-            const point: Point = {
-                x: evt.clientX,
-                y: evt.clientY,
-            };
-            return point;
-        }
-
-        function getXPosition(element: HTMLDivElement): number {
-            return new (DOMMatrix || WebKitCSSMatrix)(getComputedStyle(element).transform).m41;
-        }
-
-        // Handle the start of gestures
-        function handleGestureStart(evt: PointerEvent | TouchEvent) {
-            evt.preventDefault();
-
-            if ('touches' in evt && evt.touches.length > 1) return;
-
-            initialTouchPos = getGesturePointFromEvent(evt);
-            initialXPosition = getXPosition($main.value!);
-            lastTouchTime = 'performance' in window ? performance.now() : Date.now();
-
-            $main.value!.style.transition = 'initial';
-        }
-
-        function handleGestureMove(evt: PointerEvent | TouchEvent) {
-            evt.preventDefault();
-
-            if (!initialTouchPos) return;
-
-            const previousTouchPos = lastTouchPos;
-            lastTouchPos = getGesturePointFromEvent(evt);
-            velocityDistance = lastTouchPos.x - (previousTouchPos || initialTouchPos).x;
-
-            if (lastTouchTime) {
-                const previousTouchTime = lastTouchTime;
-                lastTouchTime = 'performance' in window ? performance.now() : Date.now();
-                velocityTime = lastTouchTime - previousTouchTime;
-            }
-
-            if (rafPending) return;
-
-            rafPending = true;
-            window.requestAnimationFrame(onAnimFrame);
-        }
-
-        function handleGestureEnd(evt: PointerEvent | TouchEvent) {
-            evt.preventDefault();
-
-            if ('touches' in evt && evt.touches.length > 0) return;
-
-            rafPending = false;
-
-            // If too much time passed between last move event and touch end, reset the velocity
-            const now = 'performance' in window ? performance.now() : Date.now();
-            if (lastTouchTime && now - lastTouchTime > 200) velocityTime = 0;
-
-            updateSwipeRestPosition();
-
-            initialXPosition = null;
-            initialTouchPos = null;
-            lastTouchPos = null;
-        }
-
-        function onAnimFrame() {
-            if (!rafPending || !initialTouchPos || !lastTouchPos || !initialXPosition) return;
-
-            const differenceInX = initialTouchPos.x - lastTouchPos.x;
-            if (Math.abs(differenceInX) <= 1) return;
-            const maxOffset = document.body.offsetWidth + 192;
-            const newXPosition = Math.min(0, Math.max(initialXPosition - differenceInX, -maxOffset));
-            $main.value!.style.transform = `translateX(${newXPosition}px)`;
-
-            rafPending = false;
-        }
-
-        function updateSwipeRestPosition() {
-            if (
-                !initialXPosition || !initialTouchPos || !lastTouchPos
-                || Math.abs(initialTouchPos.x - lastTouchPos.x) <= 1
-            ) {
-                $main.value!.style.transition = '';
-                $main.value!.style.transform = '';
-                return;
-            }
-
-            let currentXPosition = getXPosition($main.value!);
-
+        function updateSwipeRestPosition(
+            velocityDistance: number,
+            velocityTime: number,
+            initialXPosition: number,
+            currentXPosition: number,
+        ) {
             if (velocityDistance && velocityTime) {
                 const swipeFactor = 10;
                 const velocity = (velocityDistance! / velocityTime!) * 1000 * swipeFactor; // px/s
@@ -212,65 +113,25 @@ export default defineComponent({
                 // Go back to root (addresses)
                 context.root.$router.back();
             }
-
-            $main.value!.style.transition = '';
-            $main.value!.style.transitionTimingFunction = 'cubic-bezier(0, 0, 0, 1)';
-            setTimeout(() => $main.value!.style.transitionTimingFunction = '', 500);
-            $main.value!.style.transform = '';
         }
 
-        function addEventListeners() {
-            const target = $main.value!;
-
-            // Check if pointer events are supported.
-            if (window.PointerEvent) {
-                // Add Pointer Event Listener
-                target.addEventListener('pointerdown', handleGestureStart, true);
-                target.addEventListener('pointermove', handleGestureMove, true);
-                target.addEventListener('pointerup', handleGestureEnd, true);
-                target.addEventListener('pointercancel', handleGestureEnd, true);
-            } else {
-                // Add Touch Listener
-                target.addEventListener('touchstart', handleGestureStart, true);
-                target.addEventListener('touchmove', handleGestureMove, true);
-                target.addEventListener('touchend', handleGestureEnd, true);
-                target.addEventListener('touchcancel', handleGestureEnd, true);
-            }
-        }
-
-        function removeEventListeners() {
-            const target = $main.value!;
-
-            // Check if pointer events are supported.
-            if (window.PointerEvent) {
-                // Add Pointer Event Listener
-                target.removeEventListener('pointerdown', handleGestureStart, true);
-                target.removeEventListener('pointermove', handleGestureMove, true);
-                target.removeEventListener('pointerup', handleGestureEnd, true);
-                target.removeEventListener('pointercancel', handleGestureEnd, true);
-            } else {
-                // Add Touch Listener
-                target.removeEventListener('touchstart', handleGestureStart, true);
-                target.removeEventListener('touchmove', handleGestureMove, true);
-                target.removeEventListener('touchend', handleGestureEnd, true);
-                target.removeEventListener('touchcancel', handleGestureEnd, true);
-            }
-        }
-
-        const { width } = useWindowSize();
+        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            onSwipeEnded: updateSwipeRestPosition,
+            clampMovement: computed<[number, number]>(() => [-width.value - 192, 0]),
+        });
 
         watch(width, (newWidth, oldWidth) => {
             if (!$main.value) return;
 
             if (newWidth <= 700 && oldWidth > 700) {
-                addEventListeners();
+                attachSwipe();
             } else if (newWidth > 700) {
-                removeEventListeners();
+                detachSwipe();
             }
-        }, { lazy: false });
+        }, { lazy: true });
 
         onMounted(() => {
-            if (width.value <= 700) addEventListeners();
+            if (width.value <= 700) attachSwipe();
         });
 
         return {

@@ -80,8 +80,11 @@
                 </a>
             </li>
             <li class="warning" v-if="showWarning" key="warning">
-                {{ $t('Your bank needs to support SEPA Instant out transactions.'
-                    + ' Some banks don’t support it yet, but are likely to do so in the future.') }}
+                {{ direction === 'outbound'
+                    ? $t('Your bank needs to support SEPA Instant out transactions.'
+                        + ' Some banks don’t support it yet, but are likely to do so in the future.')
+                    : $t('In some rare cases, banks fail to instantly process transactions and take up to 48 hours.')
+                }}
             </li>
         </ul>
     </div>
@@ -221,7 +224,7 @@ export default defineComponent({
 
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
-            props.direction === 'outbound' && matchingBanks.value.some(
+            matchingBanks.value.some(
                 (bank: Bank) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
         );
 

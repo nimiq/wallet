@@ -882,6 +882,10 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
+#: src/components/BankCheckInput.vue:86
+msgid "In some rare cases, banks fail to instantly process transactions and take up to 48 hours."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:150
 msgid "Include #NimiqOASIS"
 msgstr ""
@@ -1937,7 +1941,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/BankCheckInput.vue:83
+#: src/components/BankCheckInput.vue:84
 msgid "Your bank needs to support SEPA Instant out transactions. Some banks don’t support it yet, but are likely to do so in the future."
 msgstr ""
 

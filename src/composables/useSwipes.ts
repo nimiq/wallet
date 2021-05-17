@@ -53,8 +53,6 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     let rafPending = false;
 
     function handleGestureStart(evt: PointerEvent | TouchEvent) {
-        // evt.preventDefault();
-
         if ('touches' in evt && evt.touches.length > 1) return;
 
         if (window.PointerEvent) {
@@ -69,8 +67,6 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function handleGestureMove(evt: PointerEvent | TouchEvent) {
-        // evt.preventDefault();
-
         if (!initialTouchPos) return;
 
         const previousTouchPos = lastTouchPos;
@@ -89,8 +85,6 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function handleGestureEnd(evt: PointerEvent | TouchEvent) {
-        // evt.preventDefault();
-
         if ('touches' in evt && evt.touches.length > 0) return;
 
         rafPending = false;
@@ -120,7 +114,10 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function onAnimFrame() {
-        if (!rafPending || !initialTouchPos || !lastTouchPos || !initialXPosition) return;
+        if (!rafPending || !initialTouchPos || !lastTouchPos || initialXPosition === null) {
+            rafPending = false;
+            return;
+        }
 
         const differenceInX = initialTouchPos.x - lastTouchPos.x;
         if (Math.abs(differenceInX) <= 1) {

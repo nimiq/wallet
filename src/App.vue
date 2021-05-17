@@ -102,10 +102,12 @@ export default defineComponent({
 
             if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
                 // Go to sidebar
-                context.root.$router.push({ name: 'root', query: { sidebar: 'true' } });
+                context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
             } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
                 // Go to transactions
-                context.root.$router.push('/transactions');
+                if (context.root.$route.name === 'root') {
+                    context.root.$router.push('/transactions');
+                }
             } else if (
                 (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
                 && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
@@ -117,6 +119,7 @@ export default defineComponent({
 
         const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
             onSwipeEnded: updateSwipeRestPosition,
+            // TODO: clamp movement to smaller area on settings and network view
             clampMovement: computed<[number, number]>(() => [-width.value - 192, 0]),
         });
 

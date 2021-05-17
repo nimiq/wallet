@@ -642,6 +642,8 @@ input[type="file"] {
         align-items: stretch;
         flex-wrap: nowrap;
 
+        touch-action: pan-y;
+
         .description {
             margin-right: 3rem;
         }

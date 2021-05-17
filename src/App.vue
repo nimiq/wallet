@@ -76,7 +76,7 @@ export default defineComponent({
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
-        const { amountsHidden } = useSettingsStore();
+        const { amountsHidden, swipingEnabled } = useSettingsStore();
 
         // Swiping
 
@@ -123,18 +123,18 @@ export default defineComponent({
             clampMovement: computed<[number, number]>(() => [-width.value - 192, 0]),
         });
 
-        watch(width, (newWidth, oldWidth) => {
+        watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
             if (!$main.value) return;
 
-            if (newWidth <= 700 && oldWidth > 700) {
+            if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
                 attachSwipe();
-            } else if (newWidth > 700) {
+            } else if (newWidth > 700 || newSwiping !== 1) {
                 detachSwipe();
             }
         }, { lazy: true });
 
         onMounted(() => {
-            if (width.value <= 700) attachSwipe();
+            if (width.value <= 700 && swipingEnabled.value === 1) attachSwipe();
         });
 
         return {

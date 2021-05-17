@@ -136,7 +136,7 @@
             <section>
                 <h2 class="nq-label">{{ $t('Advanced') }}</h2>
 
-                <div class="setting">
+                <div class="setting swiping-setting">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Swiping Gestures') }}</label>
                         <p class="nq-text">
@@ -645,6 +645,12 @@ input[type="file"] {
 
     section {
         padding: 4rem 5rem;
+    }
+}
+
+@media (min-width: 700px) { // Full mobile breakpoint
+    .swiping-setting {
+        display: none;
     }
 }
 

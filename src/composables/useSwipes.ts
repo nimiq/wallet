@@ -57,6 +57,10 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         if ('touches' in evt && evt.touches.length > 1) return;
 
+        if (window.PointerEvent) {
+            element.value.setPointerCapture((evt as PointerEvent).pointerId);
+        }
+
         initialTouchPos = getGesturePointFromEvent(evt);
         initialXPosition = getXPosition(element.value);
         lastTouchTime = getTime();
@@ -91,6 +95,10 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         rafPending = false;
 
+        if (window.PointerEvent) {
+            element.value.releasePointerCapture((evt as PointerEvent).pointerId);
+        }
+
         // If too much time passed between last move event and touch end, reset the velocity
         if (lastTouchTime && getTime() - lastTouchTime > 200) velocityTime = 0;
 
@@ -115,7 +123,11 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         if (!rafPending || !initialTouchPos || !lastTouchPos || !initialXPosition) return;
 
         const differenceInX = initialTouchPos.x - lastTouchPos.x;
-        if (Math.abs(differenceInX) <= 1) return;
+        if (Math.abs(differenceInX) <= 1) {
+            rafPending = false;
+            return;
+        }
+
         const minOffset = options.clampMovement.value[0];
         const maxOffset = options.clampMovement.value[1];
         const newXPosition = Math.max(minOffset, Math.min(initialXPosition - differenceInX, maxOffset));

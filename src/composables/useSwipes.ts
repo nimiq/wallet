@@ -98,7 +98,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         const currentXPosition = getXPosition(element.value);
 
-        if (!velocityDistance || !velocityTime || initialXPosition === null) {
+        if (velocityDistance === null || velocityTime === null || initialXPosition === null) {
             resetStyles();
         } else {
             options.onSwipeEnded(velocityDistance, velocityTime, initialXPosition, currentXPosition);

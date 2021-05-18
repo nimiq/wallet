@@ -83,7 +83,7 @@ export default defineComponent({
         const $main = ref<HTMLDivElement>(null);
         const { width } = useWindowSize();
 
-        function updateSwipeRestPosition(
+        async function updateSwipeRestPosition(
             velocityDistance: number,
             velocityTime: number,
             initialXPosition: number,
@@ -102,11 +102,11 @@ export default defineComponent({
 
             if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
                 // Go to sidebar
-                context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
+                await context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
             } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
                 // Go to transactions
                 if (context.root.$route.name === 'root') {
-                    context.root.$router.push('/transactions');
+                    await context.root.$router.push('/transactions');
                 }
             } else if (
                 (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
@@ -114,6 +114,7 @@ export default defineComponent({
             ) {
                 // Go back to root (addresses)
                 context.root.$router.back();
+                await context.root.$nextTick();
             }
         }
 

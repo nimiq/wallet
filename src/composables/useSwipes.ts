@@ -10,7 +10,7 @@ type UpdateSwipeRestPositionCallback = (
     velocityTime: number,
     initialXPosition: number,
     currentXPosition: number,
-) => void;
+) => void | Promise<void>;
 
 type UseSwipeOptions = {
     onSwipeEnded: UpdateSwipeRestPositionCallback,
@@ -84,7 +84,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         window.requestAnimationFrame(onAnimFrame);
     }
 
-    function handleGestureEnd(evt: PointerEvent | TouchEvent) {
+    async function handleGestureEnd(evt: PointerEvent | TouchEvent) {
         if ('touches' in evt && evt.touches.length > 0) return;
 
         rafPending = false;
@@ -101,7 +101,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         if (velocityDistance === null || velocityTime === null || initialXPosition === null) {
             resetStyles();
         } else {
-            options.onSwipeEnded(velocityDistance, velocityTime, initialXPosition, currentXPosition);
+            await options.onSwipeEnded(velocityDistance, velocityTime, initialXPosition, currentXPosition);
             resetStyles(true);
         }
 
@@ -182,7 +182,9 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
             target.style.transitionTimingFunction = timingFunction;
             setTimeout(() => target.style.transitionTimingFunction = '', duration);
         }
-        target.style.transform = '';
+
+        // Queue after other CSS classes/styles where set, so no jump occurs
+        setTimeout(() => target.style.transform = '', 0);
     }
 
     return {

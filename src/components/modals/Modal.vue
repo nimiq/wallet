@@ -1,6 +1,6 @@
 <template>
     <div class="modal backdrop flex-column" @mousedown.self="close" @touchstart.self="close">
-        <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close">
+        <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close" ref="$main">
             <SmallPage class="main" :class="{'smallen': showOverlay}">
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
@@ -20,8 +20,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { useSwipes } from '../../composables/useSwipes';
+import { useSettingsStore } from '../../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -64,8 +67,56 @@ export default defineComponent({
             document.removeEventListener('keydown', onEscape);
         });
 
+        // Swiping
+        const $main = ref<HTMLDivElement>(null);
+        const { width, height } = useWindowSize();
+        const { swipingEnabled } = useSettingsStore();
+
+        async function updateSwipeRestPosition(
+            velocityDistance: number,
+            velocityTime: number,
+            initialYPosition: number,
+            currentYPosition: number,
+        ) {
+            if (velocityDistance && velocityTime) {
+                const swipeFactor = 10;
+                const velocity = (velocityDistance / velocityTime) * 1000 * swipeFactor; // px/s
+                const remainingYDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                currentYPosition += remainingYDistance;
+            }
+
+            const closeBarrier = document.body.offsetHeight / 2;
+
+            if (currentYPosition >= closeBarrier && initialYPosition < closeBarrier) {
+                // Close modal
+                close();
+                await context.root.$nextTick();
+            }
+        }
+
+        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            onSwipeEnded: updateSwipeRestPosition,
+            clampMovement: computed<[number, number]>(() => [0, height.value]),
+            vertical: true,
+        });
+
+        watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
+            if (!$main.value) return;
+
+            if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
+                attachSwipe();
+            } else if (newWidth > 700 || newSwiping !== 1) {
+                detachSwipe();
+            }
+        }, { lazy: true });
+
+        onMounted(() => {
+            if (width.value <= 700 && swipingEnabled.value === 1) attachSwipe();
+        });
+
         return {
             close,
+            $main,
         };
     },
     components: {
@@ -105,6 +156,7 @@ export default defineComponent({
     transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
+    touch-action: none;
 
     height: auto;
     min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function

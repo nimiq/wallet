@@ -79,7 +79,6 @@ export default defineComponent({
         const { amountsHidden, swipingEnabled } = useSettingsStore();
 
         // Swiping
-
         const $main = ref<HTMLDivElement>(null);
         const { width } = useWindowSize();
 
@@ -91,7 +90,7 @@ export default defineComponent({
         ) {
             if (velocityDistance && velocityTime) {
                 const swipeFactor = 10;
-                const velocity = (velocityDistance! / velocityTime!) * 1000 * swipeFactor; // px/s
+                const velocity = (velocityDistance / velocityTime) * 1000 * swipeFactor; // px/s
                 const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
                 // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
                 currentXPosition += remainingXDistance;

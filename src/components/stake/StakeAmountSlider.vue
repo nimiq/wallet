@@ -164,7 +164,7 @@ export default defineComponent({
             (percent / 100.0) * (sliderBox.width - knobBox.width);
 
         const updatePosition = (offsetX: number) => {
-            amountBox = $stakedNIMAmount.value!.$el.getBoundingClientRect();
+            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
             if (currentPercentage.value! < 0.1) {
                 $progressBar.value!.style.width = '0';
@@ -266,7 +266,7 @@ export default defineComponent({
             containerBox = $container.value!.getBoundingClientRect();
             sliderBox = $slide.value!.getBoundingClientRect();
             knobBox = $knob.value!.getBoundingClientRect();
-            amountBox = $stakedNIMAmount.value!.$el.getBoundingClientRect();
+            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
             $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
                 + (knobBox.width / 2) - 8}px`;

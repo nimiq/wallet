@@ -87,7 +87,7 @@ const plugin = {
         }
 
         if (args.index === 2) {
-            ctx.scale(.5, .5);
+            // ctx.scale(.5, .5);
         }
 
         ctx.restore();

@@ -103,6 +103,24 @@
                     ) }}
                 </button>
 
+                <Tooltip
+                    class="staking-feature-tip"
+                    preferredPosition="bottom left"
+                    :container="this">
+                    <div slot="trigger">
+                        <button class="stake" @click="$router.push('/stake')"
+                            @mousedown.prevent
+                            :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
+                            || activeCurrency !== 'nim'"
+                        >
+                            <StakingHeroIcon />
+                        </button>
+                    </div>
+                    <span>
+                        {{ $t('Earn ~304 NIM a month by staking your NIM') }}
+                    </span>
+                </Tooltip>
+
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
@@ -178,6 +196,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
+    Tooltip,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -191,6 +210,7 @@ import BtcTransactionList from '../BtcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -314,6 +334,7 @@ export default defineComponent({
         GearIcon,
         RenameIcon,
         RefreshIcon,
+        StakingHeroIcon,
         Copyable,
         Amount,
         FiatConvertedAmount,
@@ -325,6 +346,7 @@ export default defineComponent({
         MobileActionBar,
         Portal,
         HighFiveIcon,
+        Tooltip,
     },
 });
 </script>
@@ -622,6 +644,43 @@ export default defineComponent({
     left: -0.25rem;
 }
 
+.tooltip.staking-feature-tip {
+    /deep/ .trigger::after {
+        background-color: var(--nimiq-green);
+    }
+
+    /deep/ .tooltip-box {
+        background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
+        white-space: nowrap;
+        box-shadow:
+            0rem 2.25rem 4.75rem rgba(31, 35, 72, 0.07),
+            0rem 0.875rem 1.0625rem rgba(31, 35, 72, 0.04),
+            0rem .25rem 0.3125rem rgba(31, 35, 72, 0.02);
+        color: #fff;
+        font-size: 1.75rem;
+        font-weight: bold;
+        line-height: .5rem;
+    }
+}
+
+.stake {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.5rem;
+    transition: opacity 1s ease-in-out;
+    opacity: 0.7;
+    svg {
+        width: 6.75rem;
+        height: 6.75rem;
+    }
+}
+
+.stake:hover {
+    opacity: 1.0;
+}
+
 .send, .receive {
     margin: 0 0.5rem;
     align-items: center;
@@ -659,10 +718,6 @@ export default defineComponent({
     .nq-icon {
         transform: rotateZ(90deg);
     }
-}
-
-.search-bar {
-    margin-right: 3rem;
 }
 
 .unclaimed-cashlinks {

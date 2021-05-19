@@ -35,6 +35,8 @@ import {
     Title,
     Tooltip,
 } from 'chart.js';
+import 'chartjs-adapter-luxon';
+
 import StakingGraphGridPlugin from '../plugins/StakingGraphGridPlugin';
 import StakingGraphPointsPlugin from '../plugins/StakingGraphPointsPlugin';
 import { chartJsEventNames, generateEventObject, generateChartJsEventListener } from './includes';
@@ -63,7 +65,7 @@ Chart.register(
     Legend,
     Title,
     Tooltip,
-    StakingGraphGridPlugin,
+    // StakingGraphGridPlugin,
     StakingGraphPointsPlugin,
 );
 

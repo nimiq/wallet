@@ -24,9 +24,14 @@ const drawRoundedRectBox = (ctx: CanvasRenderingContext2D, text: string, x: numb
     ctx.fillText(text, x - ((width - r) / 2.0), y - ((height - r) / 2.0) + 2.0);
 };
 
+const getPosInInterval = (n = 1, min = 1, max = 1, mag = 518) =>
+    ((n - min) / Math.max(1, (max - min))) * mag;
+
 const plugin = {
     id: 'staking-points',
     afterDatasetDraw: (chart: any, args: any) => {
+        // console.info("atChartStakingPointsPlugin", { chart, args });
+
         if (args.index !== 0) return;
         const ctx = chart.canvas.getContext('2d');
         ctx.save();
@@ -35,13 +40,21 @@ const plugin = {
 
         ctx.strokeStyle = 'rgba(33, 188, 165, 1.0)';
 
-        for (let i = 0; i < args.meta.data.length; i++) {
-            const point = args.meta.data[i];
-            const label = point.$context.element.options.pointStyle;
-            if (label.length > 0) {
-                drawRoundedRectBox(ctx, label, point.x, point.y);
+        for (let i = 0; i < args.meta._dataset.data.length; i++) {
+            const point = args.meta._dataset.data[i];
+            if (point) {
+                const x = getPosInInterval(point.x, args.meta._scaleRanges.xmin, args.meta._scaleRanges.xmax);
+                const y = Math.min(
+                    110,
+                    140 - getPosInInterval(point.y, args.meta._scaleRanges.ymin, args.meta._scaleRanges.ymax, 165),
+                );
+                const label = args.meta.data[i].$context.element.options.pointStyle;
+                if (label.length > 0) {
+                    drawRoundedRectBox(ctx, label, x, y);
+                }
             }
         }
+        // ctx.scale(0.5, 0.5);
         ctx.restore();
     },
 };

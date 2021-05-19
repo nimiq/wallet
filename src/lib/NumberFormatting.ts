@@ -1,3 +1,4 @@
+import { FormattableNumber } from '@nimiq/utils';
 import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from './Constants';
 import { i18n } from '../i18n/i18n-setup';
@@ -115,3 +116,10 @@ export function formatDate(totalMonths = 0, days = 0): string {
     if (days >= 1) elements.push(`${Math.floor(days)}D`);
     return elements.join(' ');
 }
+
+export const formatSpaceyNumber = (value = 1, magnitude = 1):string => (
+    new FormattableNumber(Math.round(value / magnitude)).toString({
+        maxDecimals: 0,
+        useGrouping: true,
+    })
+);

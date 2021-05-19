@@ -9,11 +9,17 @@
             </div>
             <div class="slider-gradation">
                 <div class="scalar-amount-text" ref="$stakedNIMText">
+                <!--
                     <Amount ref="$stakedNIMAmount"
                         :decimals="DISPLAYED_DECIMALS"
                         :amount="currentAmount"
                         :currency="STAKING_CURRENCY"
                         :currencyDecimals="NIM_DECIMALS" />
+                -->
+                    <input class="nq-input"
+                        :style="`width: ${currentFormattedAmount.value / 100.0}px!important;`"
+                        ref="$stakedNIMAmount"
+                        :value="currentFormattedAmount" />
                 </div>
                 <div class="percent-amount-text" ref="$percentText">
                     {{ Math.round(currentPercentage) }}%
@@ -46,13 +52,14 @@ import Vue from 'vue';
 import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
+import { calculateDisplayedDecimals, formatSpaceyNumber } from '../../lib/NumberFormatting';
+
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
 import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
 
-import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
-import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -110,6 +117,7 @@ export default defineComponent({
         const currentPercentage = ref((100 * currentAmount.value) / availableAmount.value!);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
+        const currentFormattedAmount = computed(() => formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
 
         const stakePercentage = computed(() => currentPercentage);
         let containerBox:DOMRect;
@@ -165,7 +173,11 @@ export default defineComponent({
             }
             $percentText.value!.style.left = `${offsetX + 2}px`;
             $stakedNIMText.value!.style.width = `${amountBox.width + 16}px`;
-            if (containerBox.width > offsetX + amountBox.width + 52) {
+            offsetX -= (amountBox.width / 2.0) - (knobBox.width / 2.0);
+            const minXPos = (-3 * (knobBox.width / 2.0)) + 24;
+            if (offsetX < minXPos) {
+                $stakedNIMText.value!.style.left = `${minXPos}px`;
+            } else if (containerBox.width > offsetX + amountBox.width + 52) {
                 $stakedNIMText.value!.style.left = `${offsetX + 2}px`;
             } else {
                 $stakedNIMText.value!.style.left = `${containerBox.width - (amountBox.width + 52)}px`;
@@ -184,7 +196,6 @@ export default defineComponent({
 
                 if (alreadyStaked.value === true) {
                     if (percent < alreadyStakedPercentage.value) {
-                        fillBackground(percent, alreadyStakedPercentage.value);
                         context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
                     } else {
                         context.emit('amount-unstaked', 0);
@@ -259,6 +270,10 @@ export default defineComponent({
             updatePosition(getPointAtPercent(currentPercentage.value!));
             $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
                 + (knobBox.width / 2) - 8}px`;
+
+            if (alreadyStaked.value) {
+                fillBackground(0, alreadyStakedPercentage.value);
+            }
         });
         return {
             NIM_DECIMALS,
@@ -272,6 +287,7 @@ export default defineComponent({
             stakePercentage,
             currentAmount,
             alreadyStaked,
+            currentFormattedAmount,
             $container,
             $knob,
             $slide,
@@ -369,12 +385,12 @@ export default defineComponent({
                 align-items: center;
                 padding: .75rem 1rem;
 
-                background: #fff;
-                border: 0.1875rem solid #D2D3DA;
-                border-radius: .5rem;
-                top: -5.5rem;
+                // background: #fff;
+                // border: 0.1875rem solid #D2D3DA;
+                // border-radius: .5rem;
+                top: -5.9rem;
                 font-size: 2rem;
-                color: #1F2348;
+                // color: #1F2348;
             }
             .percent-amount-text {
                 position: relative;

@@ -11,18 +11,57 @@
 
 <script>
 import { defineComponent, ref } from '@vue/composition-api';
+import { Duration, DateTime } from 'luxon';
+import { formatSpaceyNumber } from '../../../lib/NumberFormatting';
 import { NIM_MAGNITUDE } from '../../../lib/Constants';
 import { i18n } from '../../../i18n/i18n-setup';
 import Vue3ChartJs from './lib/Vue3ChartJs.vue';
 
-const getProjectionLine = (apy, staked, steps, stepSize) => {
+const NOW = DateTime.now();
+
+const getProjectionLine = (apy, staked, steps, stepSize, dV = 1.13) => {
     const projection = [];
     const apm = (apy / 12.0) / 100.0;
 
     for (let i = 0; i < steps; i++) {
-        projection.push(staked * (1.0 + (apm * stepSize * i)));
+        projection.push(
+            {
+                x: NOW.plus(Duration.fromObject({ months: stepSize * i })).toMillis(),
+                y: staked * (1.0 + (apm * stepSize * i * (dV ** i))),
+            });
     }
     return projection;
+};
+
+const createPatternFill = (bgColor = '', width = 518, height = 103) => {
+    const patternCanvas = document.createElement('canvas');
+    const patternContext = patternCanvas.getContext('2d');
+    patternCanvas.width = width;
+    patternCanvas.height = height;
+
+    if (bgColor) {
+        patternContext.fillStyle = bgColor;
+        patternContext.fillRect(0, 0, width, height);
+    }
+
+    patternContext.lineWidth = 0.5;
+    patternContext.strokeStyle = 'rgba(31, 35, 72, 0.3)';
+    const gaps = [18 / 2.0, 18];
+
+    for (let x = gaps[0] - 1; x <= patternCanvas.width; x += gaps[0]) {
+        patternContext.moveTo(x, 0);
+        patternContext.lineTo(x, patternCanvas.height);
+        x += 0.075;
+    }
+
+    for (let y = gaps[1] / 4.0; y <= patternCanvas.height; y += gaps[1]) {
+        patternContext.moveTo(0, y);
+        patternContext.lineTo(patternCanvas.width, y);
+    }
+    patternContext.stroke();
+
+    const pattern = patternContext.createPattern(patternCanvas, 'no-repeat');
+    return pattern;
 };
 
 export default defineComponent({
@@ -51,8 +90,10 @@ export default defineComponent({
             }
             for (let i = sideSteps / 2; i < steps - (sideSteps / 2); i++) {
                 // const label = Math.round((bestProjection[i] - baseProjection[i]) / NIM_MAGNITUDE);
-                const label = Math.round(normProjection[i] / NIM_MAGNITUDE);
-                pointLabels.push(`~${label} NIM`);
+
+                const label = formatSpaceyNumber(normProjection[i].y * 1000, NIM_MAGNITUDE);
+
+                pointLabels.push(`~ ${label} NIM`);
             }
             for (let i = 0; i < sideSteps / 2; i++) {
                 normProjection.splice(i, 1, null);
@@ -70,15 +111,16 @@ export default defineComponent({
                         pointStyle: pointLabels,
                     },
                     {
-                        fill: true,
-                        backgroundColor: 'rgba(255, 255, 255, 1.0)',
+                        fill: 'origin',
+                        backgroundColor: createPatternFill(),
                         borderColor: 'rgba(33, 188, 165, 0.8)',
                         data: baseProjection,
                         pointStyle: transparentPixel,
                     },
                     {
-                        fill: true,
-                        backgroundColor: 'rgba(33, 188, 165, 0.1)',
+                        fill: '-1',
+                        tension: 1,
+                        backgroundColor: createPatternFill('rgba(33, 188, 165, 0.1)'), // 'rgba(33, 188, 165, 0.1)',
                         borderColor: 'rgba(33, 188, 165, 0.8)',
                         data: bestProjection,
                         pointStyle: transparentPixel,
@@ -93,17 +135,42 @@ export default defineComponent({
         transparentPixel.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1H'
             + 'AwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
+        const noMonths = 12;
+        const data = getChartData(noMonths);
+        const minYValue = data.datasets[1].data[0].y;
+        const maxYValue = data.datasets[2].data[data.datasets[2].data.length - 1].y;
+
         const chartData = {
             id: 'stakingGraph',
             type: 'line',
-            data: getChartData(),
+            data,
             options: {
                 scales: {
                     y: {
-                        display: false,
+                        max: maxYValue,
+                        min: minYValue,
+                        ticks: {
+                            // source: 'data',
+                            stepSize: (maxYValue - minYValue) / 6.0,
+                            // maxTicksLimit: 7,
+                            callback: () => '',
+                            font: {
+                                size: 0,
+                            },
+                        },
                     },
                     x: {
-                        display: true,
+                        type: 'time',
+                        bounds: 'data',
+                        min: NOW.toMillis(),
+                        max: NOW.plus(Duration.fromObject({ months: noMonths * 1.3334 })).toMillis(),
+                        time: {
+                            unit: 'month',
+                        },
+                        ticks: {
+                            source: 'data',
+                            callback: (value, index) => data.labels[index],
+                        },
                     },
                 },
                 plugins: {

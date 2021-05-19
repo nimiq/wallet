@@ -40,19 +40,23 @@
 import { defineComponent, ref, onUnmounted } from '@vue/composition-api';
 import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
+import { useAddressStore } from '../../stores/Address';
+
 import StakingGraph from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { i18n } from '../../i18n/i18n-setup';
 
-import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
+import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 
 export default defineComponent({
     setup(props) {
+        const { activeAddressInfo } = useAddressStore();
+
         const page = document.querySelector<HTMLElement>('.small-page');
         const graphUpdate = ref(0);
-        const currentStake = ref(2000 * NIM_MAGNITUDE);
+        const currentStake = ref((activeAddressInfo.value?.balance || 0) * Math.random());
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         if (page !== null) {

@@ -89,9 +89,7 @@ export default defineComponent({
                 labels.splice(i, 0, i18n.t('{number}M', { number: i * stepSize }));
             }
             for (let i = sideSteps / 2; i < steps - (sideSteps / 2); i++) {
-                // const label = Math.round((bestProjection[i] - baseProjection[i]) / NIM_MAGNITUDE);
-
-                const label = formatSpaceyNumber(normProjection[i].y * 1000, NIM_MAGNITUDE);
+                const label = formatSpaceyNumber(normProjection[i].y, NIM_MAGNITUDE);
 
                 pointLabels.push(`~ ${label} NIM`);
             }

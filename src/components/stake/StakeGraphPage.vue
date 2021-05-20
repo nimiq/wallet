@@ -56,7 +56,7 @@ export default defineComponent({
 
         const page = document.querySelector<HTMLElement>('.small-page');
         const graphUpdate = ref(0);
-        const currentStake = ref((activeAddressInfo.value?.balance || 0) * Math.random());
+        const currentStake = ref((activeAddressInfo.value?.balance || 0) * Math.random() * 0.5);
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         if (page !== null) {

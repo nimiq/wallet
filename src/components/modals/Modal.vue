@@ -2,6 +2,9 @@
     <div class="modal backdrop flex-column" @mousedown.self="close" @touchstart.self="close">
         <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close" ref="$main">
             <SmallPage class="main" :class="{'smallen': showOverlay}">
+                <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
+                    <div class="swipe-bar"></div>
+                </div>
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
                 <transition name="fade">
@@ -69,6 +72,8 @@ export default defineComponent({
 
         // Swiping
         const $main = ref<HTMLDivElement>(null);
+        const $handle = ref<HTMLDivElement>(null);
+        const showSwipeHandle = ref(false);
         const { width, height } = useWindowSize();
         const { swipingEnabled } = useSettingsStore();
 
@@ -85,7 +90,7 @@ export default defineComponent({
                 currentYPosition += remainingYDistance;
             }
 
-            const closeBarrier = document.body.offsetHeight / 2;
+            const closeBarrier = 160; // 20rem = 160px
 
             if (currentYPosition >= closeBarrier && initialYPosition < closeBarrier) {
                 // Close modal
@@ -98,25 +103,31 @@ export default defineComponent({
             onSwipeEnded: updateSwipeRestPosition,
             clampMovement: computed<[number, number]>(() => [0, height.value]),
             vertical: true,
+            handle: $handle as Ref<HTMLDivElement>,
         });
 
         watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
             if (!$main.value) return;
 
             if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
-                attachSwipe();
+                showSwipeHandle.value = true;
+                context.root.$nextTick(attachSwipe);
             } else if (newWidth > 700 || newSwiping !== 1) {
                 detachSwipe();
+                showSwipeHandle.value = false;
             }
         }, { lazy: true });
 
-        onMounted(() => {
-            if (width.value <= 700 && swipingEnabled.value === 1) attachSwipe();
-        });
+        if (width.value <= 700 && swipingEnabled.value === 1) {
+            showSwipeHandle.value = true;
+            onMounted(attachSwipe);
+        }
 
         return {
             close,
             $main,
+            $handle,
+            showSwipeHandle,
         };
     },
     components: {
@@ -156,7 +167,6 @@ export default defineComponent({
     transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
-    touch-action: none;
 
     height: auto;
     min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function
@@ -217,6 +227,29 @@ export default defineComponent({
             transform: scale(0.942857143) translateY(-1.5rem);
         }
     }
+
+    .swipe-handle {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3.5rem;
+        touch-action: none; // To let Javascript handle touch events
+        justify-content: center;
+        z-index: 1; // To be above .page-header
+
+        .swipe-bar {
+            width: 5rem;
+            height: 0.5rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            background: var(--text-14);
+        }
+    }
+
+    .close-button {
+        z-index: 2; // To be above .swipe-handle
+    }
 }
 </style>
 
@@ -226,14 +259,14 @@ export default defineComponent({
     --overlay-transition-time: 0.65s;
 }
 
+.wrapper {
+    transition:
+        opacity calc(0.55 * var(--modal-transition-time)) cubic-bezier(0.4, 0, 0.2, 1),
+        transform var(--modal-transition-time) var(--nimiq-ease);
+}
+
 .modal-enter-active, .modal-leave-active {
     transition: background-color var(--modal-transition-time) cubic-bezier(0.4, 0, 0.2, 1);
-
-    .wrapper {
-        transition:
-            opacity calc(0.55 * var(--modal-transition-time)) cubic-bezier(0.4, 0, 0.2, 1),
-            transform var(--modal-transition-time) var(--nimiq-ease);
-    }
 }
 
 .modal-leave-active, .modal-leave-to {

@@ -18,6 +18,7 @@ type UseSwipeOptions = {
     motionTransitionTimingFunction?: string,
     motionTransitionDuration?: number,
     vertical?: boolean,
+    handle?: Ref<HTMLDivElement>,
 }
 
 function getGesturePointFromEvent(evt: PointerEvent | TouchEvent): Point {
@@ -57,10 +58,10 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
     function handleGestureStart(evt: PointerEvent | TouchEvent) {
         if ('touches' in evt && evt.touches.length > 1) return;
-        console.log('gesture start');
+        // console.log('gesture start');
 
         if (window.PointerEvent) {
-            element.value.setPointerCapture((evt as PointerEvent).pointerId);
+            (options.handle || element).value.setPointerCapture((evt as PointerEvent).pointerId);
         }
 
         initialTouchPos = getGesturePointFromEvent(evt);
@@ -72,7 +73,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
     function handleGestureMove(evt: PointerEvent | TouchEvent) {
         if (!initialTouchPos) return;
-        console.log('gesture move');
+        // console.log('gesture move');
 
         const previousTouchPos = lastTouchPos;
         lastTouchPos = getGesturePointFromEvent(evt);
@@ -93,12 +94,12 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
     async function handleGestureEnd(evt: PointerEvent | TouchEvent) {
         if ('touches' in evt && evt.touches.length > 0) return;
-        console.log('gesture end');
+        // console.log('gesture end');
 
         rafPending = false;
 
         if (window.PointerEvent) {
-            element.value.releasePointerCapture((evt as PointerEvent).pointerId);
+            (options.handle || element).value.releasePointerCapture((evt as PointerEvent).pointerId);
         }
 
         // If too much time passed between last move event and touch end, reset the velocity
@@ -147,7 +148,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function attachSwipe() {
-        const target = element.value;
+        const target = (options.handle || element).value;
 
         // Check if pointer events are supported.
         if (window.PointerEvent) {
@@ -166,7 +167,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     function detachSwipe() {
-        const target = element.value;
+        const target = (options.handle || element).value;
 
         // Check if pointer events are supported.
         if (window.PointerEvent) {

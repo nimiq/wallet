@@ -1,7 +1,7 @@
 <template>
-    <div class="modal backdrop flex-column" @mousedown.self="close" @touchstart.self="close">
-        <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close" ref="$main">
-            <SmallPage class="main" :class="{'smallen': showOverlay}">
+    <div class="modal backdrop flex-column" @click.self="onBackdropClick">
+        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
+            <SmallPage class="main" :class="{ 'smallen': showOverlay }">
                 <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
                     <div class="swipe-bar"></div>
                 </div>
@@ -123,11 +123,39 @@ export default defineComponent({
             onMounted(attachSwipe);
         }
 
+        let touchStartedOnBackdrop = false;
+
+        function checkTouchStart(e: Event) {
+            touchStartedOnBackdrop = !!e.target && (e.target as HTMLDivElement).matches('.backdrop, .wrapper');
+        }
+
+        onMounted(() => {
+            if (window.PointerEvent) {
+                context.parent!.$el.addEventListener('pointerdown', checkTouchStart);
+            } else {
+                context.parent!.$el.addEventListener('mousedown', checkTouchStart);
+            }
+        });
+
+        onUnmounted(() => {
+            if (window.PointerEvent) {
+                context.parent!.$el.removeEventListener('pointerdown', checkTouchStart);
+            } else {
+                context.parent!.$el.removeEventListener('mousedown', checkTouchStart);
+            }
+        });
+
+        function onBackdropClick() {
+            if (!touchStartedOnBackdrop) return;
+            close();
+        }
+
         return {
             close,
             $main,
             $handle,
             showSwipeHandle,
+            onBackdropClick,
         };
     },
     components: {

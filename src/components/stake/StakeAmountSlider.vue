@@ -6,9 +6,19 @@
                 <div class="background-two" ref="$backgroundTwo" />
                 <div class="background-three" ref="$backgroundThree" />
                 <div class="background-four" ref="$backgroundFour" />
+                <div class="scalar-amount left">
+                    0 NIM
+                </div>
+
+                <div class="scalar-amount right">
+                    {{ availableFormattedAmount }} NIM
+                </div>
             </div>
             <div class="slider-gradation">
-                <div class="scalar-amount-text" ref="$stakedNIMText">
+                <div
+                    class="scalar-amount-text"
+                    ref="$stakedNIMText"
+                    @click="$stakedNIMAmount.focus()">
                 <!--
                     <Amount ref="$stakedNIMAmount"
                         :decimals="DISPLAYED_DECIMALS"
@@ -17,9 +27,15 @@
                         :currencyDecimals="NIM_DECIMALS" />
                 -->
                     <input class="nq-input"
-                        :style="`width: ${currentFormattedAmount.value / 100.0}px!important;`"
                         ref="$stakedNIMAmount"
-                        :value="currentFormattedAmount" />
+                        @blur="reSetAmount"
+                        @input="updateAmount"
+                        @keypress.enter="$event.target.blur()"
+                        :style="`width: ${inputAmountWidth}px;`"
+                        />
+                    <div class="right-suffix">
+                        NIM
+                    </div>
                 </div>
                 <div class="percent-amount-text" ref="$percentText">
                     {{ Math.round(currentPercentage) }}%
@@ -48,7 +64,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
@@ -114,10 +129,35 @@ export default defineComponent({
         const alreadyStakedAmount = ref(props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = ref(activeAddressInfo.value?.balance);
-        const currentPercentage = ref((100 * currentAmount.value) / availableAmount.value!);
+        const currentPercentage = computed({
+            get: () => (100 * currentAmount.value) / availableAmount.value!,
+            set: () => {
+                //
+            },
+        });
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
-        const currentFormattedAmount = computed(() => formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
+        const inputFocused = ref(false);
+        const currentFormattedAmount = computed(() =>
+            formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
+
+        const availableFormattedAmount = computed(() =>
+            formatSpaceyNumber(availableAmount.value!, NIM_MAGNITUDE));
+
+        const estimateTextWidth = (text: string, defaultSize: number, options = { ' ': 3 }) => {
+            let result = 0;
+            let special = 0;
+
+            Object.keys(options).forEach((key) => {
+                const found = text.split(key).length;
+                result += (options as {[key: string]: number})[key] * found;
+                special += found;
+            });
+            result += Math.max(2, (text.length - special)) * defaultSize;
+            return result;
+        };
+
+        const inputAmountWidth = computed(() => estimateTextWidth(currentFormattedAmount.value, 9) + 69);
 
         const stakePercentage = computed(() => currentPercentage);
         let containerBox:DOMRect;
@@ -125,6 +165,8 @@ export default defineComponent({
         let knobBox:DOMRect;
         let amountBox:DOMRect;
         let pivotPoint:Point = null;
+        let startSelection = 0;
+        let endSelection = 0;
 
         const $container = ref<HTMLElement>(null);
         const $knob = ref<HTMLElement>(null);
@@ -136,7 +178,7 @@ export default defineComponent({
         const $progressBar = ref<HTMLElement>(null);
         const $percentText = ref<HTMLElement>(null);
         const $stakedNIMText = ref<HTMLElement>(null);
-        const $stakedNIMAmount = ref<Vue>(null);
+        const $stakedNIMAmount = ref<HTMLInputElement>(null);
         const $dotIndicator = ref<HTMLElement>(null);
 
         const atClick = (e: MouseEvent | TouchEvent) => {
@@ -151,6 +193,32 @@ export default defineComponent({
                 window.addEventListener('mouseup', atEnd, { once: true });
                 window.addEventListener('touchend', atEnd, { once: true });
             }
+        };
+
+        const reSetAmount = (e: MouseEvent | TouchEvent) => {
+            (e!.target! as HTMLInputElement).value = formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE);
+        };
+
+        const updateAmount = (e: MouseEvent | TouchEvent) => {
+            startSelection = ((e!.target! as HTMLInputElement).selectionStart as number);
+            endSelection = (e!.target! as HTMLInputElement).selectionEnd as number;
+
+            const value = parseFloat((e!.target! as HTMLInputElement).value.replace(/[^\d.]/g, ''));
+            const amount = Math.max(
+                0,
+                Math.min(availableAmount.value!, (value || 0) * NIM_MAGNITUDE),
+            );
+            const percent = (100.0 * amount) / availableAmount.value!;
+            inputFocused.value = true;
+            currentAmount.value = amount;
+
+            const offsetX = getPointAtPercent(percent);
+            updatePosition(offsetX);
+            setTimeout(() => {
+                (e!.target! as HTMLInputElement).setSelectionRange(startSelection, endSelection);
+            }, 0);
+            context.emit('amount-staked', currentAmount.value);
+            context.emit('amount-chosen', 0);
         };
 
         const atEnd = () => {
@@ -173,15 +241,18 @@ export default defineComponent({
             }
             $percentText.value!.style.left = `${offsetX + 2}px`;
             $stakedNIMText.value!.style.width = `${amountBox.width + 16}px`;
-            offsetX -= (amountBox.width / 2.0) - (knobBox.width / 2.0);
-            const minXPos = (-3 * (knobBox.width / 2.0)) + 24;
-            if (offsetX < minXPos) {
+            offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
+            const rightSpacing = (knobBox.width * 2.0);
+            const minXPos = (-knobBox.width) + 24;
+            const maxXPos = containerBox.width - (amountBox.width + rightSpacing);
+            if (offsetX <= minXPos) {
                 $stakedNIMText.value!.style.left = `${minXPos}px`;
-            } else if (containerBox.width > offsetX + amountBox.width + 52) {
-                $stakedNIMText.value!.style.left = `${offsetX + 2}px`;
+            } else if (offsetX < maxXPos) {
+                $stakedNIMText.value!.style.left = `${offsetX}px`;
             } else {
-                $stakedNIMText.value!.style.left = `${containerBox.width - (amountBox.width + 52)}px`;
+                $stakedNIMText.value!.style.left = `${maxXPos}px`;
             }
+            $stakedNIMAmount.value!.value = currentFormattedAmount.value;
         };
 
         const atMove = (e: MouseEvent | TouchEvent) => {
@@ -209,10 +280,10 @@ export default defineComponent({
 
         const fillBackground = (lo: number, hi: number) => {
             const map = [
-                [0, 47, $backgroundOne],
-                [47, 51, $backgroundTwo],
-                [51, 96, $backgroundThree],
-                [96, 100, $backgroundFour],
+                [0, 46.2, $backgroundOne, 5.9, 4.5],
+                [46.2, 54.95, $backgroundTwo],
+                [54.95, 90.89, $backgroundThree],
+                [90.89, 100, $backgroundFour],
             ];
             let start = NaN;
             let end = NaN;
@@ -228,37 +299,39 @@ export default defineComponent({
 
             let startOffset = 0;
             let endOffset = 0;
+
             for (let i = end; i >= start; i--) {
-                if (i === start) {
-                    startOffset = getPointAtPercent(Math.max(map[i][0] as number, lo))
-                        - getPointAtPercent(map[i][0] as number);
-                } else {
-                    startOffset = 0;
-                }
+                const startPoint = (map[i].length >= 4) ? map[i][3] : map[i][0];
+                startOffset = getPointAtPercent(startPoint as number);
+
                 if (i === end) {
                     endOffset = getPointAtPercent(Math.min(map[i][1] as number, hi))
-                        - getPointAtPercent(map[i][0] as number);
+                        - getPointAtPercent(startPoint as number);
                 } else {
                     endOffset = (map[i][2] as Ref<HTMLElement>).value!.getBoundingClientRect().width;
                 }
+
                 if (startOffset >= endOffset) {
-                    (
-                        (map[i][2] as Ref<HTMLElement>).value!.style as { [key: string]: any }
-                    )['background-image'] = null;
-                } else {
-                    const svg = buildSVG(
-                        [['rect', {
-                            x: `${startOffset}px`,
-                            y: '0px',
-                            width: `${endOffset - startOffset}px`,
-                            height: '3.5rem',
-                            fill: '#21BCA5',
-                        }]],
-                    ) as string;
-                    (
-                        (map[i][2] as Ref<HTMLElement>).value!.style as { [key: string]: any }
-                    )['background-image'] = `url(${svg})`;
+                    startOffset = 0;
                 }
+
+                if (map[i].length >= 4) {
+                    startOffset = getPointAtPercent(map[i][3] as number);
+                    endOffset += startOffset + (map[i][4] as number);
+                }
+
+                const svg = buildSVG(
+                    [['rect', {
+                        x: `${startOffset}px`,
+                        y: '0px',
+                        width: `${endOffset - startOffset}px`,
+                        height: '3.5rem',
+                        fill: '#21BCA5',
+                    }]],
+                ) as string;
+                (
+                    (map[i][2] as Ref<HTMLElement>).value!.style as { [key: string]: any }
+                )['background-image'] = `url(${svg})`;
             }
         };
 
@@ -268,10 +341,10 @@ export default defineComponent({
             knobBox = $knob.value!.getBoundingClientRect();
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
-            $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
-                + (knobBox.width / 2) - 8}px`;
 
             if (alreadyStaked.value) {
+                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
+                        + (knobBox.width / 2) - 8}px`;
                 fillBackground(0, alreadyStakedPercentage.value);
             }
         });
@@ -287,7 +360,11 @@ export default defineComponent({
             stakePercentage,
             currentAmount,
             alreadyStaked,
+            reSetAmount,
+            updateAmount,
+            availableFormattedAmount,
             currentFormattedAmount,
+            inputAmountWidth,
             $container,
             $knob,
             $slide,
@@ -332,6 +409,10 @@ export default defineComponent({
         height: 5rem;
         background-color: #f2f2f4;
         border-radius: 2.5rem;
+        .nq-input {
+            padding: 0.75rem 1.75rem;
+            font-weight: bold;
+        }
         .slider-background {
             position: absolute;
             left: 0;
@@ -373,6 +454,32 @@ export default defineComponent({
                 mask-position: center;
             }
         }
+        .scalar-amount {
+            font-weight: bold;
+            font-size: 1.375;
+            line-height: 100%;
+
+            text-align: right;
+            // letter-spacing: .0625rem;
+            color: var(--nimiq-blue);
+            opacity: 0.3;
+            background: linear-gradient(270deg, #FFFFFF 16.67%, rgba(255, 255, 255, 0) 100%)!important;
+            // background: transparent!important;
+            &.left {
+                position: absolute;
+                top: -3rem;
+                left: 0rem;
+                top: -4.375rem;
+                background-color: transparent!important;
+            }
+
+            &.right {
+                position: absolute;
+                top: -4.375rem;
+                right: 0rem;
+                background-color: transparent!important;
+            }
+        }
         .slider-gradation {
             position: absolute;
             left: 0.5rem;
@@ -385,12 +492,18 @@ export default defineComponent({
                 align-items: center;
                 padding: .75rem 1rem;
 
-                // background: #fff;
+                background: #fff;
                 // border: 0.1875rem solid #D2D3DA;
                 // border-radius: .5rem;
                 top: -5.9rem;
                 font-size: 2rem;
+                font-weight: bold;
                 // color: #1F2348;
+
+                .right-suffix {
+                    position: absolute;
+                    right: 1.75rem;
+                }
             }
             .percent-amount-text {
                 position: relative;

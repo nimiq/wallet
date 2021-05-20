@@ -80,6 +80,7 @@ export default defineComponent({
 
         // Swiping
         const $main = ref<HTMLDivElement>(null);
+        let $mobileTapArea: HTMLDivElement | null = null;
         const { width } = useWindowSize();
 
         async function updateSwipeRestPosition(
@@ -117,10 +118,28 @@ export default defineComponent({
             }
         }
 
+        function onSwipeFrame(position: number) {
+            if (position <= -192) return;
+            if (!$mobileTapArea) {
+                $mobileTapArea = document.querySelector('.mobile-tap-area') as HTMLDivElement;
+            }
+            $mobileTapArea!.style.transition = 'initial';
+            $mobileTapArea!.style.opacity = `${1 - (position / -192)}`;
+        }
+
+        function resetStyles() {
+            if (!$mobileTapArea) return;
+            $mobileTapArea!.style.transition = '';
+            $mobileTapArea!.style.opacity = '';
+            $mobileTapArea = null;
+        }
+
         const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
             onSwipeEnded: updateSwipeRestPosition,
             // TODO: clamp movement to smaller area on settings and network view
             clampMovement: computed<[number, number]>(() => [-width.value - 192, 0]),
+            onFrame: onSwipeFrame,
+            reset: resetStyles,
         });
 
         watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
@@ -229,7 +248,7 @@ export default defineComponent({
         }
 
         /deep/ .mobile-tap-area {
-            z-index: 4;
+            z-index: 100;
         }
 
         .network {

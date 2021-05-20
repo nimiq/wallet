@@ -19,6 +19,8 @@ type UseSwipeOptions = {
     motionTransitionDuration?: number,
     vertical?: boolean,
     handle?: Ref<HTMLDivElement>,
+    onFrame?: (position: number) => void,
+    reset?: (inMotion: boolean) => void,
 }
 
 function getGesturePointFromEvent(evt: PointerEvent | TouchEvent): Point {
@@ -144,6 +146,8 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
             ? `translateY(${newPosition}px)`
             : `translateX(${newPosition}px)`;
 
+        if (typeof options.onFrame === 'function') options.onFrame(newPosition);
+
         rafPending = false;
     }
 
@@ -196,6 +200,8 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
             target.style.transitionTimingFunction = timingFunction;
             setTimeout(() => target.style.transitionTimingFunction = '', duration);
         }
+
+        if (typeof options.reset === 'function') options.reset(inMotion);
 
         // Queue after other CSS classes/styles where set, so no jump occurs
         setTimeout(() => target.style.transform = '', 0);

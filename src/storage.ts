@@ -55,9 +55,10 @@ class IndexedDBStorage {
             return await idbSet(key, value);
         } catch (error) {
             // TODO: Handle quota-errors with a user notification
+            const message = error instanceof Error ? error.message : error;
 
-            if (this.lastError !== error.message) {
-                this.lastError = error.message;
+            if (this.lastError !== message) {
+                this.lastError = message;
                 throw error;
             }
             return undefined;
@@ -83,9 +84,10 @@ class LocalStorageStorage {
             return localStorage.setItem(key, JSON.stringify(value));
         } catch (error) {
             // TODO: Handle quota-errors with a user notification
+            const message = error instanceof Error ? error.message : error;
 
-            if (this.lastError !== error.message) {
-                this.lastError = error.message;
+            if (this.lastError !== message) {
+                this.lastError = message;
                 throw error;
             }
             return undefined;

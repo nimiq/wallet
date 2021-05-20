@@ -137,7 +137,14 @@ export default defineComponent({
         const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
             onSwipeEnded: updateSwipeRestPosition,
             // TODO: clamp movement to smaller area on settings and network view
-            clampMovement: computed<[number, number]>(() => [-width.value - 192, 0]),
+            clampMovement: computed<[number, number]>(() => {
+                if (context.root.$route.path === '/transactions') {
+                    // Allow swiping back from transactions to address list, but not all the way to sidebar
+                    return [-width.value - 192, -192];
+                }
+                // Otherwise only allow swiping between main column and sidebar
+                return [-192, 0];
+            }),
             onFrame: onSwipeFrame,
             reset: resetStyles,
         });

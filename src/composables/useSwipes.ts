@@ -21,6 +21,7 @@ type UseSwipeOptions = {
     handle?: Ref<HTMLDivElement>,
     onFrame?: (position: number) => void,
     reset?: (inMotion: boolean) => void,
+    excludeSelector?: string,
 }
 
 function getGesturePointFromEvent(evt: PointerEvent | TouchEvent): Point {
@@ -62,6 +63,8 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         if ('touches' in evt && evt.touches.length > 1) return;
         // console.log('gesture start');
 
+        if (options.excludeSelector && (evt.target as Element).matches(options.excludeSelector)) return;
+
         if (window.PointerEvent) {
             (options.handle || element).value.setPointerCapture((evt as PointerEvent).pointerId);
         }
@@ -95,6 +98,8 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
     }
 
     async function handleGestureEnd(evt: PointerEvent | TouchEvent) {
+        if (!initialTouchPos) return;
+
         if ('touches' in evt && evt.touches.length > 0) return;
         // console.log('gesture end');
 

@@ -147,6 +147,7 @@ export default defineComponent({
             }),
             onFrame: onSwipeFrame,
             reset: resetStyles,
+            excludeSelector: '.network-inner *',
         });
 
         watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {

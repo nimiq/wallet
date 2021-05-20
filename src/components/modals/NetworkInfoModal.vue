@@ -98,6 +98,10 @@ export default defineComponent({
             // background: rgba(255, 255, 255, 0.2);
             // backdrop-filter: blur(1rem);
         }
+
+        .swipe-bar {
+            background: rgba(255, 255, 255, 0.14);
+        }
     }
 }
 
@@ -106,6 +110,7 @@ export default defineComponent({
     --height: var(--padding); // default value, will be updated with Javascript
 
     padding: var(--padding);
+    touch-action: none;
 
     .image {
         display: inline-flex;

@@ -113,13 +113,13 @@ export default defineComponent({
                 handle: $handle as Ref<HTMLDivElement>,
             });
 
-            watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
+            watch(width, (newWidth, oldWidth) => {
                 if (!$main.value) return;
 
-                if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
+                if (newWidth <= 700 && oldWidth > 700 && swipingEnabled.value === 1) {
                     showSwipeHandle.value = true;
                     context.root.$nextTick(attachSwipe);
-                } else if (newWidth > 700 || newSwiping !== 1) {
+                } else if (newWidth > 700 && showSwipeHandle.value) {
                     detachSwipe();
                     showSwipeHandle.value = false;
                 }

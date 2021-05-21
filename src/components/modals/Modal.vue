@@ -1,5 +1,5 @@
 <template>
-    <div class="modal backdrop flex-column" @click.self="onBackdropClick">
+    <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
         <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
             <SmallPage class="main" :class="{ 'smallen': showOverlay }">
                 <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
@@ -28,6 +28,7 @@ import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
+import { pointerdown } from '../../directives/PointerEvents';
 
 export default defineComponent({
     props: {
@@ -123,27 +124,12 @@ export default defineComponent({
             onMounted(attachSwipe);
         }
 
+        // Backdrop click handling
         let touchStartedOnBackdrop = false;
 
         function checkTouchStart(e: Event) {
             touchStartedOnBackdrop = !!e.target && (e.target as HTMLDivElement).matches('.backdrop, .wrapper');
         }
-
-        onMounted(() => {
-            if (window.PointerEvent) {
-                context.parent!.$el.addEventListener('pointerdown', checkTouchStart);
-            } else {
-                context.parent!.$el.addEventListener('mousedown', checkTouchStart);
-            }
-        });
-
-        onUnmounted(() => {
-            if (window.PointerEvent) {
-                context.parent!.$el.removeEventListener('pointerdown', checkTouchStart);
-            } else {
-                context.parent!.$el.removeEventListener('mousedown', checkTouchStart);
-            }
-        });
 
         function onBackdropClick() {
             if (!touchStartedOnBackdrop) return;
@@ -155,8 +141,12 @@ export default defineComponent({
             $main,
             $handle,
             showSwipeHandle,
+            checkTouchStart,
             onBackdropClick,
         };
+    },
+    directives: {
+        pointerdown,
     },
     components: {
         SmallPage,

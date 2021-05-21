@@ -13,24 +13,31 @@
         </PageHeader>
         <PageBody>
             <StakingGraph :stakedAmount="currentStake" :apy="validator.reward" :key="graphUpdate" />
-            <StakeAmountSlider class="stake-amount-slider"
-                :stakedAmount="currentStake"
-                @amount-staked="updateStaked"
-                @amount-unstaked="updateUnstaked"
-                @amount-chosen="updateGraph" />
-            <button class="nq-button light-blue stake-button" @click="$emit('next')">
-                {{ $t('confirm stake') }}
-            </button>
-            <div class="stake-disclaimer" v-if="unstakedAmount === 0">
-                {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
+            <div v-if="alreadyStaked === true">
+                <AlreadyStakedPartial
+                    :validator="validator"
+                    :availableBalance="availableBalance" />
             </div>
-            <div class="unstake-disclaimer" v-else>
-                <Amount
-                    :decimals="DISPLAYED_DECIMALS"
-                    :amount="unstakedAmount"
-                    :currency="STAKING_CURRENCY"
-                    :currencyDecimals="NIM_DECIMALS" />
-                {{ unstakeDisclaimer }}
+            <div v-else>
+                <StakeAmountSlider class="stake-amount-slider"
+                    :stakedAmount="currentStake"
+                    @amount-staked="updateStaked"
+                    @amount-unstaked="updateUnstaked"
+                    @amount-chosen="updateGraph" />
+                <button class="nq-button light-blue stake-button" @click="$emit('next')">
+                    {{ $t('confirm stake') }}
+                </button>
+                <div class="stake-disclaimer" v-if="unstakedAmount === 0">
+                    {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
+                </div>
+                <div class="unstake-disclaimer" v-else>
+                    <Amount
+                        :decimals="DISPLAYED_DECIMALS"
+                        :amount="unstakedAmount"
+                        :currency="STAKING_CURRENCY"
+                        :currencyDecimals="NIM_DECIMALS" />
+                    {{ unstakeDisclaimer }}
+                </div>
             </div>
         </PageBody>
     </div>
@@ -42,6 +49,7 @@ import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
+import AlreadyStakedPartial from './partials/AlreadyStakedPartial.vue';
 import StakingGraph from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -56,9 +64,16 @@ export default defineComponent({
 
         const page = document.querySelector<HTMLElement>('.small-page');
         const graphUpdate = ref(0);
-        const currentStake = ref((activeAddressInfo.value?.balance || 0) * Math.random() * 0.5);
+        // whole amount, including staking, check with design
+        const availableBalance = ref(activeAddressInfo.value?.balance || 0);
+        //
+        const currentStake = ref(availableBalance.value * Math.random() * 0.5);
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
+        const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
+
+        validator.stakedAmount = currentStake.value; // temporary
+
         if (page !== null) {
             page!.style.width = '63.5rem';
         }
@@ -91,6 +106,8 @@ export default defineComponent({
             graphUpdate,
             currentStake,
             validator,
+            alreadyStaked,
+            availableBalance,
             unstakedAmount,
             updateStaked,
             updateUnstaked,
@@ -109,6 +126,7 @@ export default defineComponent({
         StakingIcon,
         StakingGraph,
         StakeAmountSlider,
+        AlreadyStakedPartial,
         Amount,
     },
 });

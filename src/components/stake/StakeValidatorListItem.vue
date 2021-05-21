@@ -1,15 +1,22 @@
 <template>
-    <button class="validator-list-item reset flex-row" @click="selectValidator(validatorData)">
-        <div class="validator-item-wrapper">
-            <div class="validator-left">
-                <component :is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']" class="tab"></component>
+    <button
+        class="validator-list-item reset flex-row"
+        :class="{ 'wrapper-mini': isMini }"
+        @click="selectValidator(validatorData)">
+
+        <div class="validator-item-wrapper" :class="{ 'wrapper-mini': isMini }">
+            <div class="validator-left validator-icon"
+                :class="{ 'mini-validator-icon': isMini }">
+                <component
+                    :is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']">
+                </component>
             </div>
             <div class="validator-item-mid">
                 <div class="validator-item-inner-row validator-label">
                     {{ validatorData.label }}
-                    <Tooltip class="validator-label-tip"
-                        preferredPosition="bottom right"
-                        :container="this">
+                    <Tooltip v-if="!isMini" class="validator-label-tip"
+                        :preferredPosition="isMini?'top right':'bottom right'"
+                        :container="isMini?this.$parent:this">
                         <div slot="trigger" class="validator-label-trigger">
                             <InfoCircleSmallIcon />
                         </div>
@@ -28,8 +35,8 @@
                 </div>
                 <div class="validator-item-inner-row validator-trust">
                     <Tooltip class="validator-score-tip"
-                        preferredPosition="bottom right"
-                        :container="this">
+                        :preferredPosition="isMini?'top right':'bottom right'"
+                        :container="isMini?this.$parent:this">
                         <div slot="trigger" class="validator-trust-trigger">
                             <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
                                 <StarIcon />
@@ -57,7 +64,7 @@
                             <ArrowRightSmallIcon/>
                         </a>
                     </Tooltip>
-                    <div class="validator-payout">
+                    <div class="validator-payout" v-if="!isMini">
                         {{ payoutText }}
                     </div>
                 </div>
@@ -158,6 +165,11 @@ export default defineComponent({
             type: Function as () => unknown,
             required: true,
         },
+        isMini: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
     components: {
         Tooltip,
@@ -188,10 +200,12 @@ export default defineComponent({
     &:focus {
         width: 49.5rem;
         border: 4px solid #f2f2f4;
-        margin: -.5rem;
-        margin-left: .25rem;
-        margin-bottom: -.625rem;
+        margin: -.5rem -.25rem -.75rem -.25rem;
         box-shadow: none;
+        &:first-child {
+            margin-top: .25rem;
+            margin-bottom: -1.5rem;
+        }
     }
 
     input::-moz-focus-inner {
@@ -200,7 +214,9 @@ export default defineComponent({
 
     &:hover {
         background-color: #f2f2f4;
-
+    }
+    &.wrapper-mini {
+        width: 27.625rem;
     }
 
     .validator-item-wrapper {
@@ -208,14 +224,53 @@ export default defineComponent({
         width: 46.5rem;
         height: 100%;
         flex-direction: row;
+        &.wrapper-mini {
+            position: relative;
+            width: 27.625rem;
+            .validator-left {
+                align-self: baseline;
+                justify-content: flex-start;
+                margin: 0;
+                margin-top: 0.5rem;
+            }
+            .validator-item-mid {
+                padding: 0;
+                width: auto;
+                min-height: 5rem;
+            }
+            .validator-item-inner-row {
+                display: flex;
+                justify-content: flex-start;
+                &.validator-label {
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin: 0rem 0.75rem;
+                    color: var(--nimiq-blue);
+                }
+            }
+            .validator-item-right {
+                position: absolute;
+                top: -2.875rem;
+                right: -4.5rem;
+            }
+        }
         .validator-left {
             margin-top: 2.25rem;
             margin-left: 2.5rem;
             margin-bottom: -2rem;
-            svg {
-                width: 5rem;
-                height: 5rem;
-                border-radius: 2.5rem; // temporary, this will be req just for the mock data I guess
+            &.validator-icon {
+                svg {
+                    width: 5rem;
+                    height: 5rem;
+                    border-radius: 2.5rem; // temporary, this will be req just for the mock data I guess
+                }
+                &.mini-validator-icon {
+                    display: flex;
+                    svg {
+                        width: 3rem;
+                        height: 3rem;
+                    }
+                }
             }
         }
         .validator-item-mid {

@@ -44,6 +44,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        swipeToClose: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, context) {
         function close() {
@@ -75,8 +79,6 @@ export default defineComponent({
         const $main = ref<HTMLDivElement>(null);
         const $handle = ref<HTMLDivElement>(null);
         const showSwipeHandle = ref(false);
-        const { width, height } = useWindowSize();
-        const { swipingEnabled } = useSettingsStore();
 
         async function updateSwipeRestPosition(
             velocityDistance: number,
@@ -100,28 +102,33 @@ export default defineComponent({
             }
         }
 
-        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
-            onSwipeEnded: updateSwipeRestPosition,
-            clampMovement: computed<[number, number]>(() => [0, height.value]),
-            vertical: true,
-            handle: $handle as Ref<HTMLDivElement>,
-        });
+        if (props.swipeToClose) {
+            const { width, height } = useWindowSize();
+            const { swipingEnabled } = useSettingsStore();
 
-        watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
-            if (!$main.value) return;
+            const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+                onSwipeEnded: updateSwipeRestPosition,
+                clampMovement: computed<[number, number]>(() => [0, height.value]),
+                vertical: true,
+                handle: $handle as Ref<HTMLDivElement>,
+            });
 
-            if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
+            watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
+                if (!$main.value) return;
+
+                if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
+                    showSwipeHandle.value = true;
+                    context.root.$nextTick(attachSwipe);
+                } else if (newWidth > 700 || newSwiping !== 1) {
+                    detachSwipe();
+                    showSwipeHandle.value = false;
+                }
+            }, { lazy: true });
+
+            if (width.value <= 700 && swipingEnabled.value === 1) {
                 showSwipeHandle.value = true;
-                context.root.$nextTick(attachSwipe);
-            } else if (newWidth > 700 || newSwiping !== 1) {
-                detachSwipe();
-                showSwipeHandle.value = false;
+                onMounted(attachSwipe);
             }
-        }, { lazy: true });
-
-        if (width.value <= 700 && swipingEnabled.value === 1) {
-            showSwipeHandle.value = true;
-            onMounted(attachSwipe);
         }
 
         // Backdrop click handling

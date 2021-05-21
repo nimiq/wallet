@@ -1,5 +1,5 @@
 <template>
-    <Modal class="scan-qr-modal">
+    <Modal class="scan-qr-modal" :swipePadding="false">
         <PageBody>
             <QrScanner @result="checkResult" @cancel="$router.back()" />
         </PageBody>
@@ -130,6 +130,11 @@ export default defineComponent({
             height: 100%;
             max-height: 100%;
             border-radius: 0;
+        }
+
+        .swipe-bar {
+            background: var(--text-20);
+            backdrop-filter: invert(1);
         }
     }
 

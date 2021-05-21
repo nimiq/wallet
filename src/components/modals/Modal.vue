@@ -1,7 +1,10 @@
 <template>
     <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
         <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
-            <SmallPage class="main" :class="{ 'smallen': showOverlay }">
+            <SmallPage
+                class="main"
+                :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }"
+            >
                 <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
                     <div class="swipe-bar"></div>
                 </div>
@@ -45,6 +48,10 @@ export default defineComponent({
             default: false,
         },
         swipeToClose: {
+            type: Boolean,
+            default: true,
+        },
+        swipePadding: {
             type: Boolean,
             default: true,
         },
@@ -251,6 +258,10 @@ export default defineComponent({
         &.smallen {
             transform: scale(0.942857143) translateY(-1.5rem);
         }
+
+        &.swipe-padding {
+            padding-top: 0.5rem;
+        }
     }
 
     .swipe-handle {
@@ -258,7 +269,7 @@ export default defineComponent({
         left: 0;
         right: 0;
         top: 0;
-        height: 3.5rem;
+        height: 4rem;
         touch-action: none; // To let Javascript handle touch events
         justify-content: center;
         z-index: 1; // To be above .page-header

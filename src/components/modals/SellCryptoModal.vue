@@ -6,6 +6,7 @@
             || !!swap
             || (!isDev && !trials.includes(Trial.SELL_TO_EURO))"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :swipePadding="page !== Pages.WELCOME"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">

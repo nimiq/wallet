@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse>
+    <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse :swipePadding="false">
         <PageBody :style="height !== 0 ? `--height: calc(${height}px)`: ''">
             <div class="image">
                 <img src="../../assets/browser-network.png" alt="Browser Network Graph" />

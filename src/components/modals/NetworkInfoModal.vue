@@ -80,13 +80,12 @@ export default defineComponent({
     pointer-events: none;
 
     /deep/ .wrapper {
-        pointer-events: all;
-
         .small-page {
             min-height: unset;
             color: white;
             background: #302949; // Determined by Julian
             box-shadow: none;
+            pointer-events: all;
 
             /**
              * Backdrop Blur can be enabled once these bugs are fixed in browsers:

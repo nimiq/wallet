@@ -14,12 +14,12 @@
                 {{ $t('Reward') }}
             </button>
             <button class="validator-search-icon" @click="enableSearch">
-                <SearchIcon />
+                <FatSearchIcon />
             </button>
         </div>
         <div class="validator-filter-search-wrapper" v-else>
             <span class="validator-search-icon">
-                <SearchIcon />
+                <FatSearchIcon />
             </span>
             <input type="text" ref="$search" class="validator-search-box"
                 :placeholder="$t('Type to search...')" />
@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
+import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 import SearchIcon from '../icons/Staking/SearchIcon.vue';
 import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 
@@ -60,6 +61,7 @@ export default defineComponent({
     props: {
     },
     components: {
+        FatSearchIcon,
         SearchIcon,
         XCloseIcon,
     },
@@ -83,6 +85,7 @@ export default defineComponent({
         white-space: nowrap;
 
         .validator-switch {
+            font-family: Muli, Helvetica, serif;
             padding: .75rem 1.25rem;
             margin-right: 0.375rem;
             height: 3.25rem;
@@ -93,7 +96,7 @@ export default defineComponent({
             border-radius: 2rem;
 
             font-style: normal;
-            font-weight: bold;
+            font-weight: 700;
 
             font-size: 1.75rem;
             line-height: 1.75rem;
@@ -124,10 +127,14 @@ export default defineComponent({
             background: transparent;
             box-shadow: none;
             svg {
-                width: 1.5rem;
-                height: 1.5rem;
+                position: relative;
+                top: .25rem;
+                width: 2rem;
+                height: 2rem;
+                opacity: .5;
                 line, circle {
-                    stroke: rgba(31, 35, 72, 0.5);
+                    stroke: rgb(31, 35, 72);
+                    stroke-width: 2.0;
                 }
             }
         }
@@ -154,10 +161,11 @@ export default defineComponent({
             margin-left: 1rem;
             margin-right: .25rem;
             svg {
-                width: 1.5rem;
-                height: 1.5rem;
+                width: 1.75rem;
+                height: 1.75rem;
+                opacity:  .7;
                 line, circle {
-                    stroke: rgba(5, 130, 202, .4);
+                    stroke: rgb(5, 130, 202);
                 }
             }
         }

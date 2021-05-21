@@ -410,6 +410,7 @@ export default defineComponent({
         background-color: #f2f2f4;
         border-radius: 2.5rem;
         .nq-input {
+            background-color: #fff;
             padding: 0.75rem 1.75rem;
             font-weight: bold;
         }
@@ -456,15 +457,12 @@ export default defineComponent({
         }
         .scalar-amount {
             font-weight: bold;
-            font-size: 1.375;
+            font-size: 1.25;
             line-height: 100%;
 
             text-align: right;
-            // letter-spacing: .0625rem;
             color: var(--nimiq-blue);
             opacity: 0.3;
-            background: linear-gradient(270deg, #FFFFFF 16.67%, rgba(255, 255, 255, 0) 100%)!important;
-            // background: transparent!important;
             &.left {
                 position: absolute;
                 top: -3rem;
@@ -490,15 +488,11 @@ export default defineComponent({
                 position: relative;
                 justify-content: center;
                 align-items: center;
-                padding: .75rem 1rem;
 
-                background: #fff;
-                // border: 0.1875rem solid #D2D3DA;
-                // border-radius: .5rem;
-                top: -5.9rem;
+                background: radial-gradient(center, farthest-corner, rgba(255, 255, 255, 1.0), white)!important;
+                top: -5.25rem;
                 font-size: 2rem;
                 font-weight: bold;
-                // color: #1F2348;
 
                 .right-suffix {
                     position: absolute;

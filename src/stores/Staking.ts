@@ -5,6 +5,7 @@ export type StakingState = {
 }
 
 export type ValidatorData = {
+    id: string | null,
     name: string | null,
     icon: string | null,
     label: string | null,
@@ -16,6 +17,7 @@ export type ValidatorData = {
     uptime: number | .0,
     monthsOld: number | 0,
     dominance: number | .0,
+    stakedAmount: number | .0,
 }
 
 export type StakingScoringRules = any

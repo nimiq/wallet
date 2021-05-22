@@ -217,6 +217,46 @@ export default defineComponent({
     }
     &.wrapper-mini {
         width: 27.625rem;
+        &:focus, &:first-child {
+            border: 0;
+            margin: 0;
+            width: inherit;
+        }
+        &:hover {
+            background-color: transparent;
+        }
+        .validator-item-wrapper {
+            &.wrapper-mini {
+                position: relative;
+                width: 27.625rem;
+                .validator-left {
+                    align-self: baseline;
+                    justify-content: flex-start;
+                    margin: 0;
+                    margin-top: 0.5rem;
+                }
+                .validator-item-mid {
+                    padding: 0;
+                    width: auto;
+                    min-height: 5rem;
+                }
+                .validator-item-inner-row {
+                    display: flex;
+                    justify-content: flex-start;
+                    &.validator-label {
+                        font-size: 2.5rem;
+                        font-weight: 700;
+                        margin: 0rem 0.75rem;
+                        color: var(--nimiq-blue);
+                    }
+                }
+                .validator-item-right {
+                    position: absolute;
+                    top: -2.875rem;
+                    right: -4.5rem;
+                }
+            }
+        }
     }
 
     .validator-item-wrapper {
@@ -224,36 +264,6 @@ export default defineComponent({
         width: 46.5rem;
         height: 100%;
         flex-direction: row;
-        &.wrapper-mini {
-            position: relative;
-            width: 27.625rem;
-            .validator-left {
-                align-self: baseline;
-                justify-content: flex-start;
-                margin: 0;
-                margin-top: 0.5rem;
-            }
-            .validator-item-mid {
-                padding: 0;
-                width: auto;
-                min-height: 5rem;
-            }
-            .validator-item-inner-row {
-                display: flex;
-                justify-content: flex-start;
-                &.validator-label {
-                    font-size: 2.5rem;
-                    font-weight: 700;
-                    margin: 0rem 0.75rem;
-                    color: var(--nimiq-blue);
-                }
-            }
-            .validator-item-right {
-                position: absolute;
-                top: -2.875rem;
-                right: -4.5rem;
-            }
-        }
         .validator-left {
             margin-top: 2.25rem;
             margin-left: 2.5rem;

@@ -98,6 +98,7 @@ export default defineComponent({
         letter-spacing: 1px;
         text-transform: uppercase;
         opacity: 0.4;
+        margin-bottom: 1.125rem;
         svg {
             position: relative;
             top: 0.375rem;
@@ -154,6 +155,7 @@ export default defineComponent({
     justify-self: center;
     justify-content: center;
     margin: auto;
+    padding-top: 1.125rem;
     margin-right: 0;
 }
 </style>

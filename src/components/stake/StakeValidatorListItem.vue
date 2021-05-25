@@ -7,9 +7,7 @@
         <div class="validator-item-wrapper" :class="{ 'wrapper-mini': isMini }">
             <div class="validator-left validator-icon"
                 :class="{ 'mini-validator-icon': isMini }">
-                <component
-                    :is="Icons[Helpers.capitalise(validatorData.icon) + 'Icon']">
-                </component>
+                <img :src="`/img/staking/providers/${validatorData.icon}`" />
             </div>
             <div class="validator-item-mid">
                 <div class="validator-item-inner-row validator-label">
@@ -64,7 +62,7 @@
                             <ArrowRightSmallIcon/>
                         </a>
                     </Tooltip>
-                    <div class="validator-payout" v-if="!isMini">
+                    <div class="validator-payout">
                         {{ payoutText }}
                     </div>
                 </div>
@@ -157,6 +155,10 @@ export default defineComponent({
             type: Object as () => ValidatorData,
             required: true,
         },
+        validatorsList: {
+            type: Array as () => ValidatorData[],
+            required: true,
+        },
         stakingData: {
             type: Object as () => StakingData,
             required: true,
@@ -216,6 +218,7 @@ export default defineComponent({
         background-color: #f2f2f4;
     }
     &.wrapper-mini {
+        cursor: initial;
         width: 27.625rem;
         &:focus, &:first-child {
             border: 0;
@@ -243,6 +246,7 @@ export default defineComponent({
                 .validator-item-inner-row {
                     display: flex;
                     justify-content: flex-start;
+                    margin-top: 0.25rem;
                     &.validator-label {
                         font-size: 2.5rem;
                         font-weight: 700;
@@ -269,14 +273,13 @@ export default defineComponent({
             margin-left: 2.5rem;
             margin-bottom: -2rem;
             &.validator-icon {
-                svg {
+                img, svg {
                     width: 5rem;
                     height: 5rem;
-                    border-radius: 2.5rem; // temporary, this will be req just for the mock data I guess
                 }
                 &.mini-validator-icon {
                     display: flex;
-                    svg {
+                    img, svg {
                         width: 3rem;
                         height: 3rem;
                     }

@@ -18,7 +18,7 @@
                 <div class="scroll-container">
                     <div class="validator-list">
                         <StakeValidatorListItem
-                            v-for="(validatorData, index) in validatorsList" :key="index"
+                            v-for="(validatorData, index) in list" :key="index"
                             :validatorData="validatorData"
                             :stakingData="stakingData"
                             :selectValidator="selectValidator"
@@ -34,36 +34,29 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { StakingData, StakingScoringRules } from '../../stores/Staking';
-import { i18n } from '../../i18n/i18n-setup';
+import { StakingData, ValidatorData, StakingScoringRules } from '../../stores/Staking';
 
 import StakeValidatorFilter from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
-import stakingData from './assets/staking.json';
-import validatorsList from './assets/validators.mock.json';// mock data
-
 export default defineComponent({
     setup(props) {
-        const translatedData = Object.fromEntries(
-            Object.entries(stakingData as StakingData).map(([k, v]) => {
-                if (k.endsWith('Rules')) {
-                    return [k, (v as StakingScoringRules).map((rule: Array<string>) => rule.slice(0, -1).concat([
-                        i18n.t(rule.slice(-1)[0]).toString(),
-                    ]))];
-                }
-                return [k, i18n.t(v as string).toString()];
-            }),
-        );
-
         return {
-            validatorsList: Array(3).fill(null)
-                .reduce((o) => o.concat(validatorsList), []), // for mock data only
-            stakingData: translatedData,
+            list: Array(3).fill(null)
+                .reduce((o) => o.concat(props.validatorsList), []), // for mock data only
+            stakingData: props.stakingData,
             selectValidator: props.setValidator,
         };
     },
     props: {
+        validatorsList: {
+            type: Object as () => Array<ValidatorData>[],
+            required: true,
+        },
+        stakingData: {
+            type: Object as () => StakingData,
+            required: true,
+        },        
         setValidator: {
             type: Function as () => unknown,
             required: true,

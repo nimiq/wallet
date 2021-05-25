@@ -48,16 +48,29 @@ function getYPosition(el: HTMLDivElement): number {
     return new (DOMMatrix || WebKitCSSMatrix)(getComputedStyle(el).transform).m42;
 }
 
+function isFloat(number: number) {
+    return number !== Math.floor(number);
+}
+
+function pointHasSubpixelPrecision(point: Point) {
+    return isFloat(point.x) || isFloat(point.y);
+}
+
 const getTime = 'performance' in window ? performance.now.bind(performance) : Date.now;
 
 export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions) {
     let initialPosition: number | null = null;
     let initialTouchPos: Point | null = null;
+    let initialTouchTime: number | null = null;
     let currentTouchPos: Point | null = null;
     let currentTouchTime: number | null = null;
     let velocityDistance: number | null = null;
     let velocityTime: number | null = null;
+    let lastDifferentTouchPos: Point | null = null;
+    let lastDifferentTouchTime: number | null = null;
     let rafPending = false;
+
+    let hasSubpixelPrecision = true;
 
     function handleGestureStart(evt: PointerEvent | TouchEvent) {
         if ('touches' in evt && evt.touches.length > 1) return;
@@ -70,26 +83,40 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         }
 
         initialTouchPos = getGesturePointFromEvent(evt);
+        hasSubpixelPrecision = pointHasSubpixelPrecision(initialTouchPos);
         initialPosition = options.vertical ? getYPosition(element.value) : getXPosition(element.value);
-        currentTouchTime = getTime();
+        initialTouchTime = getTime();
 
         element.value.style.transition = 'initial';
     }
 
     function handleGestureMove(evt: PointerEvent | TouchEvent) {
-        if (!initialTouchPos) return;
+        if (!initialTouchPos || !initialTouchTime) return;
         // console.log('gesture move');
 
         const previousTouchPos = currentTouchPos;
+        const previousTouchTime = currentTouchTime;
         currentTouchPos = getGesturePointFromEvent(evt);
-        velocityDistance = options.vertical
-            ? currentTouchPos.y - (previousTouchPos || initialTouchPos).y
-            : currentTouchPos.x - (previousTouchPos || initialTouchPos).x;
+        currentTouchTime = getTime();
 
-        if (currentTouchTime) {
-            const previousTouchTime = currentTouchTime;
-            currentTouchTime = getTime();
-            velocityTime = currentTouchTime - previousTouchTime;
+        if (hasSubpixelPrecision) {
+            velocityDistance = options.vertical
+                ? currentTouchPos.y - (previousTouchPos || initialTouchPos).y
+                : currentTouchPos.x - (previousTouchPos || initialTouchPos).x;
+
+            velocityTime = currentTouchTime - (previousTouchTime || initialTouchTime);
+        } else {
+            const distance = options.vertical
+                ? currentTouchPos.y - (lastDifferentTouchPos || initialTouchPos).y
+                : currentTouchPos.x - (lastDifferentTouchPos || initialTouchPos).x;
+
+            if (Math.abs(distance) > 0) {
+                velocityDistance = distance;
+                lastDifferentTouchPos = currentTouchPos;
+
+                velocityTime = currentTouchTime - (lastDifferentTouchTime || initialTouchTime);
+                lastDifferentTouchTime = currentTouchTime;
+            }
         }
 
         if (rafPending) return;
@@ -123,10 +150,13 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         initialPosition = null;
         initialTouchPos = null;
+        initialTouchTime = null;
         currentTouchPos = null;
         currentTouchTime = null;
         velocityDistance = null;
         velocityTime = null;
+        lastDifferentTouchPos = null;
+        lastDifferentTouchTime = null;
     }
 
     function onAnimFrame() {

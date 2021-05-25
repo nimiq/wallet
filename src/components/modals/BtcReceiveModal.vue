@@ -98,7 +98,7 @@
 
             <footer class="flex-row">
                 <button class="nq-button-s" @click="receiveLinkOverlayOpened = true">
-                    {{ $t('Create payment link') }}
+                    {{ $t('Create request link') }}
                 </button>
                 <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true;">
                     <QrCodeIcon/>

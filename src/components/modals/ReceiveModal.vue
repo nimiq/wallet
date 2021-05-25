@@ -25,7 +25,7 @@
                 @mousedown.prevent
                 class="nq-button-s"
             >
-                {{ $t('Create payment link') }}
+                {{ $t('Create request link') }}
             </button>
         </PageBody>
 

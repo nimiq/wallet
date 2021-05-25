@@ -2,17 +2,17 @@
     <div class="amount-menu">
         <button class="reset button flex-row">{{ ticker }}</button>
         <div v-if="open" class="menu flex-column">
-            <button v-if="currency === 'nim'" class="reset flex-row" @click="$emit('fee-selection')">
+            <button v-if="feeOption" class="reset flex-row" @click="$emit('fee-selection')">
                 <!-- eslint-disable-next-line max-len -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="15.25" y1="3.25" x2="7.75" y2="3.25"/><line class="cls-1" x1="12.25" y1="7.75" x2="0.75" y2="7.75"/><line class="cls-1" x1="13.75" y1="12.25" x2="4.75" y2="12.25"/></g></svg>
                 {{ $t('Set fee') }}
             </button>
-            <button class="reset flex-row" @click="$emit('send-max')">
+            <button v-if="sendAllOption" class="reset flex-row" @click="$emit('send-max')">
                 <!-- eslint-disable-next-line max-len -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25"/><path class="cls-1" d="M12.25,9.3l-4-4-4,4"/><line class="cls-1" x1="3.25" y1="1.25" x2="13.25" y2="1.25"/></g></svg>
                 {{ $t('Send all') }}
             </button>
-            <div class="separator"></div>
+            <div v-if="feeOption || sendAllOption" class="separator"></div>
             <div class="flex-row currencies">
                 <button
                     class="reset" :class="{
@@ -55,6 +55,14 @@ export default defineComponent({
         otherFiatCurrencies: {
             type: Array as () => FiatCurrency[],
             required: true,
+        },
+        feeOption: {
+            type: Boolean,
+            default: true,
+        },
+        sendAllOption: {
+            type: Boolean,
+            default: true,
         },
     },
     setup(props) {

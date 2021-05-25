@@ -300,7 +300,7 @@ msgstr ""
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:122
+#: src/components/modals/BtcSendModal.vue:124
 msgid "Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily."
 msgstr ""
 
@@ -566,7 +566,7 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
-msgid "Create payment link"
+msgid "Create request link"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:193
@@ -629,7 +629,7 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:110
 msgid "Duration and fees are estimates."
 msgstr ""
 
@@ -653,7 +653,7 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:432
+#: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr ""
@@ -890,7 +890,7 @@ msgstr ""
 msgid "Include #NimiqOASIS"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:104
+#: src/components/modals/BtcSendModal.vue:106
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
@@ -900,7 +900,7 @@ msgid ""
 "by Nimiq"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:86
+#: src/components/modals/BtcSendModal.vue:88
 #: src/components/modals/SellCryptoModal.vue:177
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
@@ -1059,7 +1059,7 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:101
+#: src/components/modals/BtcSendModal.vue:103
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
@@ -1077,7 +1077,7 @@ msgstr ""
 msgid "Nimiq is working on a PRO feature with increased limits after user registration."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:126
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
@@ -1292,7 +1292,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:433
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr ""
@@ -1366,7 +1366,7 @@ msgid "Send"
 msgstr ""
 
 #: src/components/AmountMenu.vue:13
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr ""
@@ -1389,7 +1389,7 @@ msgstr ""
 msgid "Send max"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:118
+#: src/components/modals/BtcSendModal.vue:120
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:164
@@ -1400,16 +1400,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:428
+#: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:486
+#: src/components/modals/BtcSendModal.vue:488
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:482
+#: src/components/modals/BtcSendModal.vue:484
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1475,7 +1475,7 @@ msgid "Share your address with the sender."
 msgstr ""
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
-msgid "Share your Payment Link"
+msgid "Share your Request Link"
 msgstr ""
 
 #: src/components/ContactBook.vue:14
@@ -1503,7 +1503,7 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/BtcSendModal.vue:508
 #: src/components/modals/SendModal.vue:567
 msgid "Something went wrong"
 msgstr ""
@@ -1750,7 +1750,7 @@ msgstr ""
 msgid "Transaction to {address}"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:125
+#: src/components/modals/BtcSendModal.vue:127
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 
@@ -1915,7 +1915,7 @@ msgstr ""
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:79
+#: src/components/modals/BtcSendModal.vue:81
 msgid "You will send {amount}"
 msgstr ""
 

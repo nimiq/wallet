@@ -53,6 +53,7 @@
                                 :activeCurrency="btcUnit.ticker.toLowerCase()"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
+                                :feeOption="false"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -65,6 +66,7 @@
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
+                                :feeOption="false"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>

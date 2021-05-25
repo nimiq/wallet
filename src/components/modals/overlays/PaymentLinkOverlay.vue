@@ -1,7 +1,7 @@
 <template>
-    <div class="payment-link-overlay">
+    <div class="payment-link-overlay flex-column" @click="amountMenuOpened = false">
         <PageHeader class="link-overlay">
-            {{ $t('Share your Payment Link') }}
+            {{ $t('Share your Request Link') }}
             <div slot="more">
                 {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
             </div>
@@ -9,13 +9,46 @@
         <PageBody class="flex-column link-overlay">
             <div class="inputs">
                 <div class="separator"></div>
-                <AmountInput
-                    v-model="amount"
-                    :maxFontSize="5"
-                    :decimals="currency === 'btc' ? btcUnit.decimals : undefined"
+
+                <AmountInput v-if="activeCurrency === 'nim' || activeCurrency === 'btc'"
+                    v-model="amount" :decimals="currency === 'btc' ? btcUnit.decimals : undefined"
+                    :maxFontSize="5" ref="amountInputRef"
                 >
-                    <span slot="suffix" class="ticker" v-if="currency === 'btc'">{{ btcUnit.ticker }}</span>
+                    <AmountMenu slot="suffix" class="ticker"
+                        :open="amountMenuOpened"
+                        :currency="currency"
+                        :activeCurrency="activeCurrency === 'nim' ? activeCurrency : btcUnit.ticker.toLowerCase()"
+                        :fiatCurrency="fiatCurrency"
+                        :otherFiatCurrencies="otherFiatCurrencies"
+                        :feeOption="false" :sendAllOption="false"
+                        @currency="(currency) => activeCurrency = currency"
+                        @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                 </AmountInput>
+                <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" :maxFontSize="5" >
+                    <span slot="prefix" class="tilde">~</span>
+                    <AmountMenu slot="suffix" class="ticker"
+                        :open="amountMenuOpened"
+                        :currency="currency"
+                        :activeCurrency="activeCurrency"
+                        :fiatCurrency="fiatCurrency"
+                        :otherFiatCurrencies="otherFiatCurrencies"
+                        :feeOption="false" :sendAllOption="false"
+                        @currency="(currency) => activeCurrency = currency"
+                        @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                </AmountInput>
+
+                <div class="secondary-amount">
+                    <span v-if="activeCurrency === 'nim' || activeCurrency === 'btc'" key="fiat-amount">
+                        {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" :currency="activeCurrency"/>
+                    </span>
+                    <span v-else-if="currency === 'nim'" key="nim-amount">
+                        {{ amount / 1e5 }} NIM
+                    </span>
+                    <span v-else key="btc-amount">
+                        {{ amount / btcUnit.unitToCoins }} {{ btcUnit.ticker }}
+                    </span>
+                </div>
+
                 <div class="separator"></div>
             </div>
             <QrCode
@@ -32,11 +65,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
-import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
+import { createRequestLink, CurrencyInfo, GeneralRequestLinkOptions, NimiqRequestLinkType } from '@nimiq/utils';
 import { useSettingsStore } from '@/stores/Settings';
 import AmountInput from '../../AmountInput.vue';
+import AmountMenu from '../../AmountMenu.vue';
+import FiatConvertedAmount from '../../FiatConvertedAmount.vue';
+import Amount from '../../Amount.vue';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../../lib/Constants';
+import { useFiatStore } from '../../../stores/Fiat';
 
 export default defineComponent({
     props: {
@@ -47,7 +85,7 @@ export default defineComponent({
         currency: {
             type: String,
             required: true,
-            validator: (currency: Currency) => Object.values(Currency).includes(currency),
+            validator: (currency: CryptoCurrency) => Object.values(CryptoCurrency).includes(currency),
         },
     },
     setup(props/* , context */) {
@@ -56,7 +94,7 @@ export default defineComponent({
         const { btcUnit } = useSettingsStore();
 
         const requestLinkOptions = computed(() => ({
-            type: props.currency === Currency.NIM ? NimiqRequestLinkType.URI : undefined,
+            type: props.currency === CryptoCurrency.NIM ? NimiqRequestLinkType.URI : undefined,
             amount: amount.value,
             currency: props.currency,
             message: message.value,
@@ -66,12 +104,58 @@ export default defineComponent({
             () => createRequestLink(props.address, requestLinkOptions.value),
         );
 
+        const amountMenuOpened = ref(false);
+        const activeCurrency = ref(props.currency);
+        const fiatAmount = ref(0);
+
+        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const otherFiatCurrencies = computed(() =>
+            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
+                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+
+        const fiatCurrencyInfo = computed(() => {
+            if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) {
+                return new CurrencyInfo(referenceCurrency.value);
+            }
+            return new CurrencyInfo(activeCurrency.value);
+        });
+
+        const fiatToCoinDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals
+            / (props.currency === CryptoCurrency.NIM ? 1e5 : 1e8));
+
+        watch(activeCurrency, (currency) => {
+            if (currency === CryptoCurrency.NIM || currency === CryptoCurrency.BTC) {
+                fiatAmount.value = 0;
+                return;
+            }
+
+            // Fiat store already has all exchange rates for all supported fiat currencies
+            // TODO: What to do when exchange rates are not yet populated?
+            fiatAmount.value = amount.value
+                * fiat$.exchangeRates[props.currency][currency]!
+                * fiatToCoinDecimalRatio.value;
+        });
+
+        watch(() => {
+            if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) return;
+            amount.value = Math.floor(
+                fiatAmount.value
+                / exchangeRates.value[props.currency][activeCurrency.value]!
+                / fiatToCoinDecimalRatio.value);
+        });
+
         return {
             origin: window.location.origin,
             amount,
             message,
             btcUnit,
             requestLink,
+            amountMenuOpened,
+            activeCurrency,
+            fiatAmount,
+            fiatCurrency: fiat$.currency,
+            fiatCurrencyInfo,
+            otherFiatCurrencies,
         };
     },
     components: {
@@ -80,11 +164,18 @@ export default defineComponent({
         QrCode,
         Copyable,
         AmountInput,
+        AmountMenu,
+        FiatConvertedAmount,
+        Amount,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+.payment-link-overlay {
+    flex-grow: 1;
+}
+
 .page-header {
     padding: 4rem 3rem 2rem;
 
@@ -98,10 +189,11 @@ export default defineComponent({
 }
 
 .page-body {
-    padding: 1rem 3rem 3rem;
+    padding: 1rem 3rem 2rem;
     justify-content: space-between;
     align-items: center;
     overflow: visible;
+    flex-grow: 1;
 
     .dynamic-spacer {
         flex-grow: 1;
@@ -110,8 +202,7 @@ export default defineComponent({
 
     .inputs {
         width: calc(100% + 4rem);
-        margin: -1rem -2rem 4rem;
-        position: relative;
+        margin: -1rem -2rem 1rem;
 
         .separator:first-child {
             height: 2px;
@@ -142,6 +233,26 @@ export default defineComponent({
                 padding: 0 1rem;
             }
         }
+
+        .amount-menu /deep/ .menu {
+            position: absolute;
+            right: 3rem;
+            bottom: 3rem;
+            z-index: 1;
+            max-height: calc(100% - 6rem);
+        }
+
+        .secondary-amount {
+            font-weight: 600;
+            opacity: 0.5;
+            text-align: center;
+            font-size: var(--body-size);
+            margin-top: 0.5rem;
+
+            .fiat-amount {
+                margin-left: -0.2em;
+            }
+        }
     }
 
     .qr-code {
@@ -161,10 +272,10 @@ export default defineComponent({
         flex-shrink: 0;
         max-width: 100%;
         word-wrap: break-word;
-        color: rgba(31, 35, 72, 0.5);
+        color: var(--text-60);
         text-align: center;
-        font-size: var(--h2-size);
-        margin-top: 2rem;
+        font-size: var(--body-size);
+        margin-top: 1rem;
     }
 }
 </style>

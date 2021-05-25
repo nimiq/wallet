@@ -3,12 +3,12 @@
 # Talleyrand, 2020
 # Daniel, 2020
 # Matheo <matheo@nimiq.com>, 2021
-# Robinson BARAIS, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Robinson BARAIS, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
+"Last-Translator: Robinson BARAIS, 2021\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -42,16 +42,16 @@ msgstr "{count} Cashlink | {count} Cashlinks"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
-msgstr ""
+msgstr "{currency} n'ont pas pu être payés"
 
 #: src/components/TransactionListOasisPayoutStatus.vue:11
 msgid "{currency} not paid out"
-msgstr ""
+msgstr "{currency} non versé"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:6
 #: src/components/TransactionListOasisPayoutStatus.vue:5
 msgid "{currency} payout pending"
-msgstr ""
+msgstr "Paiement {currency} en attente"
 
 #: src/components/modals/TransactionModal.vue:272
 msgid "{fee} fee"
@@ -321,6 +321,7 @@ msgstr "Virement bancaire"
 #: src/components/modals/BuyOptionsModal.vue:80
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
+"Le transfert bancaire est uniquement disponible dans la zone Euro SEPA."
 
 #: src/components/modals/BuyCryptoModal.vue:11
 msgid "Beta"
@@ -343,7 +344,7 @@ msgstr "Le BIC fonctionne aussi."
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:122
+#: src/components/modals/BtcSendModal.vue:124
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -537,7 +538,7 @@ msgstr "Bientôt disponible"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:68
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr "Confirmer le compte"
 
@@ -625,8 +626,8 @@ msgstr "Créer une sauvegarde"
 
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
-msgid "Create payment link"
-msgstr "Créer un lien de paiement"
+msgid "Create request link"
+msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:193
 msgid "Created {count} day ago | Created {count} days ago"
@@ -654,13 +655,15 @@ msgstr "Carte de crédit"
 
 #: src/components/modals/BuyOptionsModal.vue:65
 msgid "Currently under maintenance"
-msgstr ""
+msgstr "Actuellement en cours de maintenance"
 
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
 "different options are available."
 msgstr ""
+"Dépend de votre pays de résidence,\n"
+"plusieurs options sont disponibles."
 
 #: src/components/layouts/Settings.vue:197
 #: src/components/modals/DisclaimerModal.vue:5
@@ -690,7 +693,7 @@ msgstr "N'utilisez pas d'IBAN générique !"
 msgid "Done"
 msgstr "Terminé"
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:110
 msgid "Duration and fees are estimates."
 msgstr "La durée et les frais sont des estimations."
 
@@ -718,7 +721,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en BTC."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
-#: src/components/modals/BtcSendModal.vue:432
+#: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
@@ -964,11 +967,17 @@ msgstr ""
 "insuffisant, les remboursements automatiques ne fonctionneront que pour les "
 "IBANs individuels."
 
+#: src/components/BankCheckInput.vue:86
+msgid ""
+"In some rare cases, banks fail to instantly process transactions and take up"
+" to 48 hours."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:150
 msgid "Include #NimiqOASIS"
 msgstr "Inclure #NimiqOASIS"
 
-#: src/components/modals/BtcSendModal.vue:104
+#: src/components/modals/BtcSendModal.vue:106
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -984,7 +993,7 @@ msgstr ""
 "Innovation\n"
 "par Nimiq"
 
-#: src/components/modals/BtcSendModal.vue:86
+#: src/components/modals/BtcSendModal.vue:88
 #: src/components/modals/SellCryptoModal.vue:177
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
@@ -1116,7 +1125,7 @@ msgstr "min {amount}"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
-msgstr ""
+msgstr "Plus de pays seront supportés à l'avenir"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -1146,7 +1155,7 @@ msgstr "Nommez votre contact"
 msgid "Network"
 msgstr "Réseau"
 
-#: src/components/modals/BtcSendModal.vue:101
+#: src/components/modals/BtcSendModal.vue:103
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Frais de réseau: {sats} sat/vByte"
 
@@ -1171,8 +1180,10 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
+"Nimiq travaille sur une fonctionnalité Pro avec des limites augmentées après"
+" l'enregistrement de l'utilisateur."
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:126
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 "Le Wallet Nimiq ne supporte pas les messages de transaction pour Bitcoin."
@@ -1212,7 +1223,7 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
-msgstr ""
+msgstr "Non disponible dans votre pays"
 
 #: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
@@ -1311,7 +1322,7 @@ msgstr "Veuillez transférer"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
-msgstr ""
+msgstr "Consultez la page d'assistance pour savoir ce qu'il faut faire."
 
 #: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
@@ -1410,7 +1421,7 @@ msgstr ""
 "Réinitialisez les paramètres de votre Wallet et rechargez les données depuis"
 " la Blockchain."
 
-#: src/components/modals/BtcSendModal.vue:431
+#: src/components/modals/BtcSendModal.vue:433
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Réessayer"
@@ -1487,7 +1498,7 @@ msgstr ""
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:88
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:90
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Tout envoyer"
@@ -1513,7 +1524,7 @@ msgstr "Envoyer de la crypto à un smart contract."
 msgid "Send max"
 msgstr "Envoyer le maximum"
 
-#: src/components/modals/BtcSendModal.vue:118
+#: src/components/modals/BtcSendModal.vue:120
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:164
@@ -1524,16 +1535,16 @@ msgstr "Envoyer la Transaction"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
 
-#: src/components/modals/BtcSendModal.vue:428
+#: src/components/modals/BtcSendModal.vue:430
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Transaction en cours."
 
-#: src/components/modals/BtcSendModal.vue:486
+#: src/components/modals/BtcSendModal.vue:488
 msgid "Sent {btc} BTC"
 msgstr "{btc} BTC envoyé"
 
-#: src/components/modals/BtcSendModal.vue:482
+#: src/components/modals/BtcSendModal.vue:484
 msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC envoyé à {name}"
 
@@ -1557,7 +1568,7 @@ msgstr "Envoyé le {dateAndTime}"
 
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
-msgstr ""
+msgstr "Frais du virement SEPA instantané"
 
 #: src/components/modals/BuyOptionsModal.vue:35
 msgid "SEPA Instant only"
@@ -1601,8 +1612,8 @@ msgid "Share your address with the sender."
 msgstr "Partagez votre adresse avec l'expéditeur."
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
-msgid "Share your Payment Link"
-msgstr "Partagez votre Lien de Paiement"
+msgid "Share your Request Link"
+msgstr ""
 
 #: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
@@ -1629,14 +1640,14 @@ msgstr "Simuler le paiement en Euro"
 msgid "Skip for now"
 msgstr "Ignorer pour l'instant"
 
-#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/BtcSendModal.vue:508
 #: src/components/modals/SendModal.vue:567
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:28
 msgid "Something went wrong with your transaction"
-msgstr ""
+msgstr "Un problème est survenu avec votre transaction"
 
 #: src/components/modals/SendModal.vue:177
 msgid "Speed up your Transaction"
@@ -1715,6 +1726,8 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:69
 msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
 msgstr ""
+"L'infrastructure bancaire de TEN31 fait l'objet d'une maintenance "
+"programmée."
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -1735,7 +1748,7 @@ msgstr "Les frais déterminent le montant minimum."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
-msgstr ""
+msgstr "La limite de votre IBAN a été atteinte"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1794,6 +1807,10 @@ msgstr "Il y a un problème"
 #: src/components/modals/BtcSendModal.vue:28
 msgid "This address has already been used"
 msgstr "Cette adresse a déjà été utilisée"
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
+msgid "This IBAN is for a different country than the bank"
+msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
@@ -1856,7 +1873,7 @@ msgstr "Cette opération prend généralement {time} secondes."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
-msgstr ""
+msgstr "Cela met en général un à deux jours ouvrés."
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -1885,7 +1902,7 @@ msgstr "Transaction depuis {address}"
 msgid "Transaction to {address}"
 msgstr "Transaction vers {address}"
 
-#: src/components/modals/BtcSendModal.vue:125
+#: src/components/modals/BtcSendModal.vue:127
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Les transactions prennent plus de 10 minutes à cause des délais de blocks de"
@@ -1964,6 +1981,8 @@ msgstr ""
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
+"Utilisez un compte acceptant les virements SEPA instantanés pour être payé "
+"en quelques minutes."
 
 #: src/components/modals/BtcReceiveModal.vue:19
 msgid ""
@@ -1988,7 +2007,7 @@ msgstr "Attendez que le Swap soit mis en place."
 
 #: src/components/TransactionListOasisPayoutStatus.vue:8
 msgid "Waiting for {currency}"
-msgstr ""
+msgstr "En attente de {currency}"
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
@@ -2088,7 +2107,7 @@ msgstr "Vous possédez maintenant de la crypto !"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Vous finaliserez votre achat par virement bancaire."
 
-#: src/components/modals/BtcSendModal.vue:79
+#: src/components/modals/BtcSendModal.vue:81
 msgid "You will send {amount}"
 msgstr "Vous allez envoyer {amount}"
 
@@ -2120,7 +2139,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Votre banque n'est pas éligible ?"
 
-#: src/components/BankCheckInput.vue:83
+#: src/components/BankCheckInput.vue:84
 msgid ""
 "Your bank needs to support SEPA Instant out transactions. Some banks don’t "
 "support it yet, but are likely to do so in the future."
@@ -2179,7 +2198,7 @@ msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"
-msgstr ""
+msgstr "Votre paiement est en chemin"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:61
 msgid "Your transaction must be SEPA Instant"

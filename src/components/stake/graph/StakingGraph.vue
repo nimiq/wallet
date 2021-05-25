@@ -17,7 +17,8 @@ import { NIM_MAGNITUDE } from '../../../lib/Constants';
 import { i18n } from '../../../i18n/i18n-setup';
 import Vue3ChartJs from './lib/Vue3ChartJs.vue';
 
-const NOW = DateTime.now();
+export const NOW = DateTime.now();
+export const MONTH = DateTime.fromObject({ months: 1 });
 
 const getProjectionLine = (apy, staked, steps, stepSize, dV = 1.13) => {
     const projection = [];
@@ -69,6 +70,7 @@ export default defineComponent({
         const chartRef = ref(null);
         const stakedAmount = ref(props.stakedAmount);
         const apy = ref(props.apy);
+        console.log({ props, period: props.period });
 
         const getChartData = (noMonths = 12) => {
             const steps = 5;

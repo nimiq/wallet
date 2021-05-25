@@ -12,13 +12,38 @@
             </template>
         </PageHeader>
         <PageBody>
-            <StakingGraph :stakedAmount="currentStake" :apy="validator.reward" :key="graphUpdate" />
-            <div v-if="alreadyStaked === true">
+            <div v-if="alreadyStaked === true && showView === true">
+                <StakingGraph :stakedAmount="currentStake"
+                    :apy="validator.reward" :readonly="true"
+                    :period="{
+                        s: NOW,
+                        p: 12,
+                        m: MONTH,
+                    }"
+                    :key="graphUpdate" />
                 <AlreadyStakedPartial
                     :validator="validator"
-                    :availableBalance="availableBalance" />
+                    :availableBalance="availableBalance"
+                    @adjust-stake="showView = false; showEdit = true;"/>
             </div>
             <div v-else>
+                <StakingGraph v-if="alreadyStaked === true && showEdit === true"
+                    :stakedAmount="currentStake" :apy="validator.reward"
+                    :period="{
+                        s: NOW,
+                        p: 12,
+                        m: MONTH,
+                    }"
+                    :key="graphUpdate" />
+                <StakingGraph v-else
+                    :stakedAmount="currentStake" :apy="validator.reward"
+                    :period="{
+                        s: NOW,
+                        p: 12,
+                        m: MONTH,
+                    }"
+                    :key="graphUpdate" />
+
                 <StakeAmountSlider class="stake-amount-slider"
                     :stakedAmount="currentStake"
                     @amount-staked="updateStaked"
@@ -44,13 +69,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
 import AlreadyStakedPartial from './partials/AlreadyStakedPartial.vue';
-import StakingGraph from './graph/StakingGraph.vue';
+import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { i18n } from '../../i18n/i18n-setup';
@@ -62,7 +87,7 @@ export default defineComponent({
     setup(props) {
         const { activeAddressInfo } = useAddressStore();
 
-        const page = document.querySelector<HTMLElement>('.small-page');
+        // const page = document.querySelector<HTMLElement>('.small-page');
         const graphUpdate = ref(0);
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
@@ -71,17 +96,19 @@ export default defineComponent({
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
+        const showView = ref(true);
+        const showEdit = ref(false);
 
         validator.stakedAmount = currentStake.value; // temporary
 
-        if (page !== null) {
-            page!.style.width = '63.5rem';
-        }
-        onUnmounted(() => {
-            if (page !== null) {
-                page.style.removeProperty('width');
-            }
-        });
+        // if (page !== null) {
+        //     page!.style.width = '63.5rem';
+        // }
+        // onUnmounted(() => {
+        //     if (page !== null) {
+        //         page.style.removeProperty('width');
+        //     }
+        // });
         const updateStaked = (amount: number) => {
             if (amount !== currentStake.value) {
                 currentStake.value = amount;
@@ -96,6 +123,8 @@ export default defineComponent({
             graphUpdate.value += 1;
         };
         return {
+            NOW,
+            MONTH,
             NIM_DECIMALS,
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
@@ -106,6 +135,8 @@ export default defineComponent({
             graphUpdate,
             currentStake,
             validator,
+            showView,
+            showEdit,
             alreadyStaked,
             availableBalance,
             unstakedAmount,

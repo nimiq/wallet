@@ -18,7 +18,9 @@
                 </div>
             </div>
             <div class="col right">
-                <button class="nq-button-s">Adjust Stake</button>
+                <button class="nq-button-s"
+                    @click="$emit('adjust-stake')">
+                        Adjust Stake</button>
                 <button class="nq-button-s solid-red">Unstake all</button>
             </div>
         </div>

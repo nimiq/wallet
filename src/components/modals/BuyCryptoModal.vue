@@ -273,7 +273,6 @@ import {
     cancelSwap,
     getSwap,
     Swap,
-    AssetList,
 } from '@nimiq/fastspot-api';
 import Config from 'config';
 import {
@@ -365,8 +364,6 @@ export default defineComponent({
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const page = ref(banks.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
-
-        const assets = ref<AssetList>(null);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);

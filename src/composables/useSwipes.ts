@@ -53,8 +53,8 @@ const getTime = 'performance' in window ? performance.now.bind(performance) : Da
 export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions) {
     let initialPosition: number | null = null;
     let initialTouchPos: Point | null = null;
-    let lastTouchPos: Point | null = null;
-    let lastTouchTime: number | null = null;
+    let currentTouchPos: Point | null = null;
+    let currentTouchTime: number | null = null;
     let velocityDistance: number | null = null;
     let velocityTime: number | null = null;
     let rafPending = false;
@@ -71,7 +71,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         initialTouchPos = getGesturePointFromEvent(evt);
         initialPosition = options.vertical ? getYPosition(element.value) : getXPosition(element.value);
-        lastTouchTime = getTime();
+        currentTouchTime = getTime();
 
         element.value.style.transition = 'initial';
     }
@@ -80,16 +80,16 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         if (!initialTouchPos) return;
         // console.log('gesture move');
 
-        const previousTouchPos = lastTouchPos;
-        lastTouchPos = getGesturePointFromEvent(evt);
+        const previousTouchPos = currentTouchPos;
+        currentTouchPos = getGesturePointFromEvent(evt);
         velocityDistance = options.vertical
-            ? lastTouchPos.y - (previousTouchPos || initialTouchPos).y
-            : lastTouchPos.x - (previousTouchPos || initialTouchPos).x;
+            ? currentTouchPos.y - (previousTouchPos || initialTouchPos).y
+            : currentTouchPos.x - (previousTouchPos || initialTouchPos).x;
 
-        if (lastTouchTime) {
-            const previousTouchTime = lastTouchTime;
-            lastTouchTime = getTime();
-            velocityTime = lastTouchTime - previousTouchTime;
+        if (currentTouchTime) {
+            const previousTouchTime = currentTouchTime;
+            currentTouchTime = getTime();
+            velocityTime = currentTouchTime - previousTouchTime;
         }
 
         if (rafPending) return;
@@ -110,7 +110,7 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         }
 
         // If too much time passed between last move event and touch end, reset the velocity
-        if (lastTouchTime && getTime() - lastTouchTime > 200) velocityTime = 0;
+        if (currentTouchTime && getTime() - currentTouchTime > 200) velocityTime = 0;
 
         const currentPosition = options.vertical ? getYPosition(element.value) : getXPosition(element.value);
 
@@ -123,21 +123,21 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
 
         initialPosition = null;
         initialTouchPos = null;
-        lastTouchPos = null;
-        lastTouchTime = null;
+        currentTouchPos = null;
+        currentTouchTime = null;
         velocityDistance = null;
         velocityTime = null;
     }
 
     function onAnimFrame() {
-        if (!rafPending || !initialTouchPos || !lastTouchPos || initialPosition === null) {
+        if (!rafPending || !initialTouchPos || !currentTouchPos || initialPosition === null) {
             rafPending = false;
             return;
         }
 
         const movedDistance = options.vertical
-            ? initialTouchPos.y - lastTouchPos.y
-            : initialTouchPos.x - lastTouchPos.x;
+            ? initialTouchPos.y - currentTouchPos.y
+            : initialTouchPos.x - currentTouchPos.x;
 
         if (Math.abs(movedDistance) <= 1) {
             rafPending = false;

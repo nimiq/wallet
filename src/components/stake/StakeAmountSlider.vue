@@ -195,11 +195,6 @@ export default defineComponent({
             }
         };
 
-        const atSkip = (e: MouseEvent | TouchEvent) => {
-            e.preventDefault();
-
-        };
-
         const reSetAmount = (e: MouseEvent | TouchEvent) => {
             (e!.target! as HTMLInputElement).value = formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE);
         };
@@ -238,7 +233,7 @@ export default defineComponent({
 
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);
-        
+
         const updatePosition = (offsetX: number) => {
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
@@ -350,8 +345,8 @@ export default defineComponent({
             knobBox = $knob.value!.getBoundingClientRect();
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
-            pivotPoint = {x: knobBox.x, y: knobBox.y} as Point;
-            pivotPoint.x -= knobBox.x;
+            pivotPoint = { x: knobBox.x, y: knobBox.y } as Point;
+            pivotPoint!.x -= knobBox.x;
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)

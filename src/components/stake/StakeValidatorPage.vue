@@ -35,14 +35,13 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { StakingData, ValidatorData, StakingScoringRules } from '../../stores/Staking';
+import { StakingData, ValidatorData } from '../../stores/Staking';// StakingScoringRules
 
 import StakeValidatorFilter from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
 export default defineComponent({
     setup(props) {
-        console.log({ validatorsList: props.validatorsList });
         return {
             list: Array(3).fill(null)
                 .reduce((o) => o.concat(props.validatorsList), []), // for mock data only
@@ -51,13 +50,13 @@ export default defineComponent({
     },
     props: {
         validatorsList: {
-            type: Array as () => ValidatorData>[],
+            type: Array as () => ValidatorData[],
             required: true,
         },
         stakingData: {
             type: Object as () => StakingData,
             required: true,
-        },        
+        },
         setValidator: {
             type: Function as () => unknown,
             required: true,

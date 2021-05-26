@@ -112,7 +112,8 @@
                     preferredPosition="bottom left"
                     :container="this">
                     <div slot="trigger">
-                        <button class="stake" :class="{ stackattack: ENABLED.stackattack }" @click="$router.push('/stake')"
+                        <button class="stake"
+                            :class="{ stackattack: ENABLED.stackattack }" @click="$router.push('/stake')"
                             @mousedown.prevent
                             :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || activeCurrency !== 'nim'"

@@ -152,7 +152,7 @@ export default defineComponent({
             required: true,
         },
         validatorsList: {
-            type: Array as () => ValidatorData>[],
+            type: Array as () => ValidatorData[],
             required: true,
         },
     },

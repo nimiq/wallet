@@ -21,7 +21,8 @@
                         :key="index"
                         :src="`/img/staking/providers/${icon}`"
                         :style="{
-                            top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25) + (ENABLED.necklace?progression(index, orderOfValidators.length)*28:0)}px`,
+                            top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)
+                            + (ENABLED.necklace ? progression(index, orderOfValidators.length)*28 : 0)}px`,
                             width: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
                             height: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
                         }"
@@ -46,12 +47,12 @@ import { ValidatorData } from '../../stores/Staking';
 import { ENABLED } from '../../lib/FeatureProposal';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
-const progression = (i, n) => {
+const progression = (i:number, n:number) => {
     if (n % 2 === 0) {
         throw new Error('Invalid progression scale(not an odd number)!');
     }
     const leg = (n - 1) / 2.0;
-    const d = Math.max(0, (i >= leg)?((leg + 1) - (n - i)):(leg - i)) / n;
+    const d = Math.max(0, (i >= leg) ? ((leg + 1) - (n - i)) : (leg - i)) / n;
     return 1.0 - d;
 };
 

@@ -46,7 +46,7 @@
                 </div>
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
-            <div class="slider-controls" ref="$slide">
+            <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
                     <div class="slider-knob"
@@ -190,9 +190,14 @@ export default defineComponent({
                 pivotPoint!.x -= $knob.value!.getBoundingClientRect().x;
                 window.addEventListener('mousemove', atMove);
                 window.addEventListener('touchmove', atMove);
-                window.addEventListener('mouseup', atEnd, { once: true });
-                window.addEventListener('touchend', atEnd, { once: true });
+                window.addEventListener('mouseup', atEnd);
+                window.addEventListener('touchend', atEnd);
             }
+        };
+
+        const atSkip = (e: MouseEvent | TouchEvent) => {
+            e.preventDefault();
+
         };
 
         const reSetAmount = (e: MouseEvent | TouchEvent) => {
@@ -225,12 +230,15 @@ export default defineComponent({
             active.value = false;
             window.removeEventListener('mousemove', atMove);
             window.removeEventListener('touchmove', atMove);
+            window.removeEventListener('mouseup', atEnd);
+            window.removeEventListener('touchend', atEnd);
+
             context.emit('amount-chosen', 0);
         };
 
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);
-
+        
         const updatePosition = (offsetX: number) => {
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
@@ -253,10 +261,11 @@ export default defineComponent({
                 $stakedNIMText.value!.style.left = `${maxXPos}px`;
             }
             $stakedNIMAmount.value!.value = currentFormattedAmount.value;
+            context.emit('amount-chosen', 0);
         };
 
-        const atMove = (e: MouseEvent | TouchEvent) => {
-            if (active.value === true) {
+        const atMove = (e: MouseEvent | TouchEvent, skip = false) => {
+            if (skip === true || active.value === true) {
                 const position = extractInfo(e);
 
                 const percent = Math.min(100, Math.max(0,
@@ -341,6 +350,8 @@ export default defineComponent({
             knobBox = $knob.value!.getBoundingClientRect();
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
+            pivotPoint = {x: knobBox.x, y: knobBox.y} as Point;
+            pivotPoint.x -= knobBox.x;
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
@@ -545,6 +556,7 @@ export default defineComponent({
                 .slider-knob {
                     display: flex;
                     position: absolute;
+                    cursor: pointer;
                     left: 0;
                     top: 0;
                     align-items: center;

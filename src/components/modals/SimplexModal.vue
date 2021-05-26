@@ -44,10 +44,10 @@ import Modal from './Modal.vue';
 import ResizingCopyable from '../ResizingCopyable.vue';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
-// import { useAccountStore } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { ENV_MAIN, CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 
 declare global {
     interface Window {
@@ -88,12 +88,11 @@ export default defineComponent({
     setup(props, context) {
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const fiatCurrencyCode = useFiatStore().state.currency;
-        // const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
-        const cryptoCurrencyCode = ref('btc');
+        const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
-        const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0];
+        const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses.value[0];
 
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
@@ -228,7 +227,7 @@ export default defineComponent({
         onMounted(async () => {
             await loadScripts();
 
-            if (Config.environment !== ENV_MAIN) {
+            if (Config.environment === ENV_DEV) {
                 loadStyles();
             }
 

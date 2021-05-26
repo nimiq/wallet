@@ -1,6 +1,10 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
+        <span class="feature-bar dev-bar">
+            <FeatureToggler featureName="necklace" />
+            <FeatureToggler featureName="stackattack" />
+        </span>
         <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -108,7 +112,7 @@
                     preferredPosition="bottom left"
                     :container="this">
                     <div slot="trigger">
-                        <button class="stake" @click="$router.push('/stake')"
+                        <button class="stake" :class="{ stackattack: ENABLED.stackattack }" @click="$router.push('/stake')"
                             @mousedown.prevent
                             :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || activeCurrency !== 'nim'"
@@ -211,6 +215,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
+import FeatureToggler from '../widgets/FeatureToggler.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -222,6 +227,7 @@ import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
+import { ENABLED } from '../../lib/FeatureProposal';
 
 export default defineComponent({
     name: 'address-overview',
@@ -325,6 +331,7 @@ export default defineComponent({
             onTransactionListScroll,
             $address,
             addressMasked,
+            ENABLED,
         };
     },
     components: {
@@ -347,6 +354,7 @@ export default defineComponent({
         Portal,
         HighFiveIcon,
         Tooltip,
+        FeatureToggler,
     },
 });
 </script>
@@ -399,6 +407,14 @@ export default defineComponent({
     @media (min-width: 2000px) {
         --padding: 9rem;
         --padding-bottom: 6rem;
+    }
+
+    .dev-bar {
+        white-space: nowrap;
+    }
+
+    .feature-bar {
+        height: 2rem;
     }
 
     &.no-accounts {
@@ -675,10 +691,44 @@ export default defineComponent({
         width: 6.75rem;
         height: 6.75rem;
     }
+    &.stackattack {
+        svg {
+            animation: flicker 15s ease alternate infinite;
+            path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+                animation: fastwave 3s ease alternate infinite;
+            }
+        }
+    }
 }
 
 .stake:hover {
     opacity: 1.0;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1.0;
+    }
+    97% {
+        opacity: 0.9;
+    }
+    98% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+@keyframes fastwave {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.15;
+    }
+    100% {
+        opacity: 0.0;
+    }
 }
 
 .send, .receive {

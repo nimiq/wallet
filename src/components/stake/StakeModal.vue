@@ -77,6 +77,8 @@ export default defineComponent({
         /deep/ .wrapper {
             .small-page {
                 overflow: hidden;
+                min-width: 52.5rem;
+                min-height: 70rem;
                 .page-body {
                     overflow: hidden;
                 }

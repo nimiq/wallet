@@ -21,6 +21,7 @@
                             v-for="(validatorData, index) in list" :key="index"
                             :validatorData="validatorData"
                             :stakingData="stakingData"
+                            :validatorsList="validatorsList"
                             :selectValidator="selectValidator"
                         />
                     </div>
@@ -41,16 +42,16 @@ import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
 export default defineComponent({
     setup(props) {
+        console.log({ validatorsList: props.validatorsList });
         return {
             list: Array(3).fill(null)
                 .reduce((o) => o.concat(props.validatorsList), []), // for mock data only
-            stakingData: props.stakingData,
             selectValidator: props.setValidator,
         };
     },
     props: {
         validatorsList: {
-            type: Object as () => Array<ValidatorData>[],
+            type: Array as () => ValidatorData>[],
             required: true,
         },
         stakingData: {

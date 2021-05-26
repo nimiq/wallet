@@ -34,6 +34,7 @@
                 <StakeValidatorListItem
                     :validatorData="validator"
                     :stakingData="stakingData"
+                    :validatorsList="validatorsList"
                     :selectValidator="() => {}"
                     :isMini="true"
                 />
@@ -78,6 +79,10 @@ export default defineComponent({
         },
         validator: {
             type: Object as () => ValidatorData,
+            required: true,
+        },
+        validatorsList: {
+            type: Array as () => ValidatorData>[],
             required: true,
         },
     },

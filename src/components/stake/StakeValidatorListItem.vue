@@ -59,7 +59,7 @@
                         </div>
                         <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
                             {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
-                            <ArrowRightSmallIcon/>
+                            <ArrowRightSmallIcon />
                         </a>
                     </Tooltip>
                     <div class="validator-payout">
@@ -82,11 +82,11 @@ import { numberToLiteralTimes } from '../../lib/NumberFormatting';
 import { i18n } from '../../i18n/i18n-setup';
 
 /* mock data icons */
-import OverstakeIcon from '../icons/Staking/OverstakeIcon.vue';
-import NimiqWatchIcon from '../icons/Staking/NimiqWatchIcon.vue';
-import NimpoolIcon from '../icons/Staking/NimpoolIcon.vue';
-import AceStakingIcon from '../icons/Staking/AceStakingIcon.vue';
-import IceStakingIcon from '../icons/Staking/IceStakingIcon.vue';
+// import OverstakeIcon from '../icons/Staking/OverstakeIcon.vue';
+// import NimiqWatchIcon from '../icons/Staking/NimiqWatchIcon.vue';
+// import NimpoolIcon from '../icons/Staking/NimpoolIcon.vue';
+// import AceStakingIcon from '../icons/Staking/AceStakingIcon.vue';
+// import IceStakingIcon from '../icons/Staking/IceStakingIcon.vue';
 /* mock data icons */
 
 import StarIcon from '../icons/Staking/StarIcon.vue';
@@ -141,13 +141,13 @@ export default defineComponent({
             Helpers: {
                 capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
             },
-            Icons: {
-                OverstakeIcon,
-                NimiqWatchIcon,
-                NimpoolIcon,
-                AceStakingIcon,
-                IceStakingIcon,
-            },
+            // Icons: {
+            //     OverstakeIcon,
+            //     NimiqWatchIcon,
+            //     NimpoolIcon,
+            //     AceStakingIcon,
+            //     IceStakingIcon,
+            // },
         };
     },
     props: {

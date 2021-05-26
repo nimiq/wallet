@@ -16,11 +16,15 @@
         </PageHeader>
         <PageBody>
             <div class="staking-rounded-background">
-                <div class="staking-icons-lace">
+                <div class="staking-icons-lace" :class="{ necklace: ENABLED.necklace }">
                     <img v-for="(icon, index) in orderOfValidators"
                         :key="index"
                         :src="`/img/staking/providers/${icon}`"
-                        :style="{ top: `${Math.sin((index + 1) * (Math.PI / 10)) * 25}px` }"
+                        :style="{
+                            top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25) + (ENABLED.necklace?progression(index, orderOfValidators.length)*28:0)}px`,
+                            width: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
+                            height: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
+                        }"
                     />
                 </div>
                 <div class="staking-under-icons-text">
@@ -39,7 +43,17 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
+import { ENABLED } from '../../lib/FeatureProposal';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
+
+const progression = (i, n) => {
+    if (n % 2 === 0) {
+        throw new Error('Invalid progression scale(not an odd number)!');
+    }
+    const leg = (n - 1) / 2.0;
+    const d = Math.max(0, (i >= leg)?((leg + 1) - (n - i)):(leg - i)) / n;
+    return 1.0 - d;
+};
 
 export default defineComponent({
     setup(props) {
@@ -47,6 +61,8 @@ export default defineComponent({
             (validator: ValidatorData) => validator.icon,
         );
         return {
+            ENABLED,
+            progression,
             orderOfValidators: sortedSequence.reverse().concat(
                 sortedSequence.filter((item, index) => (index > 0)),
             ),
@@ -75,10 +91,10 @@ export default defineComponent({
             margin-bottom: 5.125rem;
             svg {
                 height: 16.584rem;
-            //     line, path {
-            //         stroke: var(--nimiq-green);
-            //         stroke-width: 0.75;
-            //     }
+                animation: flicker 5s ease alternate infinite;
+                path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+                    animation: fastwave 1s ease alternate infinite;
+                }
             }
         }
     }
@@ -92,12 +108,10 @@ export default defineComponent({
             flex-direction: column;
             justify-content: center;
             background-image: url('/img/staking/background-collar.svg');
-            background-size: 350%;
-            background-position: 0rem -15rem;
+            background-size: cover;
+            background-position: 0rem -2.125rem;
             background-repeat: no-repeat;
             text-align: center;
-            width: 95%;
-            margin: auto;
             .staking-under-icons-text {
                 font-size: 1.75rem;
                 font-weight: 600;
@@ -106,12 +120,20 @@ export default defineComponent({
                 text-align: center;
                 color: #231044;
                 opacity: 0.6;
+                width: 95%;
+                margin: auto;
             }
             .staking-icons-lace {
                 position: relative;
                 top: -1.0rem;
                 left: -3.0rem;
                 white-space: nowrap;
+                width: 95%;
+                margin: auto;
+                &.necklace {
+                    top: -3.5rem;
+                    left: -2.5rem;
+                }
                 img {
                     position:relative;
                     width: 5.375rem;
@@ -119,31 +141,6 @@ export default defineComponent({
                     margin-left: .75rem;
                 }
             }
-            // .staking-bullet-list {
-            //     padding-left: 0.5rem;
-            //     font-size: 2rem;
-            //     line-height: 140%;
-            //     li {
-            //         list-style: none;
-            //         margin-bottom: 1.25rem;
-            //     }
-            //     .step-number {
-            //         display: inline-block;
-            //         padding-top: 0.375rem;
-            //         padding-left: 1.25rem;
-            //         width: 4rem;
-            //         height: 4rem;
-            //         border-radius: 50%;
-            //         border: 1.5px solid rgba(31, 35, 72, 0.2);
-            //     }
-            //     .step-label {
-            //         padding-left: 1.375rem;
-            //         padding-top: 0.125rem;
-            //     }
-            //     .step-up {
-            //         padding-bottom: 0.375rem;
-            //     }
-            // }
             .stake-button {
                 height: 8rem;
                 width: 31.5rem;

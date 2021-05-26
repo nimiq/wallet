@@ -24,6 +24,7 @@
                 <AlreadyStakedPartial
                     :validator="validator"
                     :availableBalance="availableBalance"
+                    :validatorsList="validatorsList"
                     @adjust-stake="showView = false; showEdit = true;"/>
             </div>
             <div v-else>
@@ -148,6 +149,10 @@ export default defineComponent({
     props: {
         activeValidator: {
             type: Object as () => ValidatorData,
+            required: true,
+        },
+        validatorsList: {
+            type: Array as () => ValidatorData>[],
             required: true,
         },
     },

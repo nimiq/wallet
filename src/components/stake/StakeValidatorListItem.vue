@@ -36,10 +36,17 @@
                         :preferredPosition="isMini?'top right':'bottom right'"
                         :container="isMini?this.$parent:this">
                         <div slot="trigger" class="validator-trust-trigger">
-                            <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
+                            <div :class="{
+                                'red-star': (validatorData.trust < 2.5),
+                                'silver-star': (validatorData.trust < 2.5 && (validatorData.trust < 5.0)),
+                                'gold-star': (validatorData.trust >= 5.0),
+                            }" class="star">
                                 <StarIcon />
                             </div>
-                            <div class="validator-trust-score" :class="{redText: validatorData.trust < 2.5}">
+                            <div class="validator-trust-score" :class="{
+                                    'red-text': validatorData.trust < 2.5,
+                                    'gold-text': validatorData.trust >= 5.0,
+                                }">
                                 {{ validatorData.trust.toFixed(2) }}
                             </div>
                         </div>
@@ -48,21 +55,44 @@
                                 {{ $t('{number}% Uptime', { number: validatorData.uptime }) }}
                             </div>
                             <div class="validator-score-outcome">
-                                <div :class="(validatorData.trust < 2.5)?'red-star':'silver-star'" class="star">
-                                    <StarIcon />
-                                </div>
                                 {{ scoreData.uptime[1] }}
                             </div>
                         </div>
                         <div class="validator-score-explainer">
                             {{ $t('{text}', { text: scoreData.uptime[2] }) }}
                         </div>
+                        <!---->
+                        <div class="validator-score-section">
+                            <div class="validator-score-reason">
+                                {{ $t('{number} months old', { number: validatorData.monthsOld }) }}
+                            </div>
+                            <div class="validator-score-outcome">
+                                {{ scoreData.age[1] }}
+                            </div>
+                        </div>
+                        <div class="validator-score-explainer">
+                            {{ $t('{text}', { text: scoreData.age[2] }) }}
+                        </div>
+                        <!---->
+                        <div class="validator-score-section">
+                            <div class="validator-score-reason">
+                                {{ $t('{number}% Dominance', { number: validatorData.dominance }) }}
+                            </div>
+                            <div class="validator-score-outcome">
+                                {{ scoreData.dominance[1] }}
+                            </div>
+                        </div>
+                        <div class="validator-score-explainer">
+                            {{ $t('{text}', { text: scoreData.dominance[2] }) }}
+                        </div>
+                        <!---->
                         <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
                             {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
                             <ArrowRightSmallIcon />
                         </a>
                     </Tooltip>
                     <div class="validator-payout">
+                        <img src="/img/staking/dot.svg" />
                         {{ payoutText }}
                     </div>
                 </div>
@@ -134,6 +164,8 @@ export default defineComponent({
     setup(props) {
         const scoreData = computed(() => ({
             uptime: getRuleOutcome(props.stakingData.uptimeRules, props.validatorData.uptime),
+            age: getRuleOutcome(props.stakingData.ageRules, props.validatorData.monthsOld),
+            dominance: getRuleOutcome(props.stakingData.dominanceRules, props.validatorData.dominance),
         }));
         return {
             payoutText: getPayoutText(props.validatorData.payout),
@@ -434,6 +466,12 @@ export default defineComponent({
             color: var(--nimiq-blue);
 
             opacity: 0.5;
+            img {
+                position:relative;
+                top: -.625rem;
+                left: -.5rem;
+                margin: -.5rem;
+            }
         }
     }
     .star {
@@ -449,6 +487,11 @@ export default defineComponent({
         &.red-star {
             path {
                 fill: var(--nimiq-red);
+            }
+        }
+        &.gold-star {
+            path {
+                fill: var(--nimiq-gold);
             }
         }
     }

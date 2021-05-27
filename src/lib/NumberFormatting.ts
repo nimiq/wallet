@@ -50,7 +50,7 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
 
 export function numberToLiteral(n: number): string {
     // https://stackoverflow.com/questions/5529934/javascript-numbers-to-words refactored
-    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+    const ones = ['', i18n.t('one'), 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
     const tens = ['', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
     const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
         'sixteen', 'seventeen', 'eighteen', 'nineteen'];
@@ -86,13 +86,14 @@ export function numberToLiteral(n: number): string {
 }
 
 export function numberToLiteralTimes(n: number): string {
-    const timesTable = ['', 'once', 'twice', 'thrice'];
+    const timesTable = [
+        i18n.t('zero times'), i18n.t('once'), i18n.t('twice'), i18n.t('thrice'), i18n.t('four times'),
+        i18n.t('five times'), i18n.t('six times'), i18n.t('seven times'),
+        i18n.t('eight times'), i18n.t('nine times'),
+    ];
 
-    n = parseInt(n.toString(), 10);
-    if (n <= 0) throw new Error('Invalid Input! Times number must be positive >= 1!');
-    if (n < timesTable.length) return timesTable[n];
-
-    return i18n.t('{number} times', { number: numberToLiteral(n) }).toString();
+    if (timesTable[n]) return timesTable[n].toString();
+    return i18n.t('{number} times', { number: n }).toString();
 }
 
 export function formatNumber(number: number, fractionDigits = 0): string {

@@ -98,7 +98,7 @@ export default defineComponent({
             }
 
             const sidebarBarrier = -192 / 2;
-            const transactionsBarrier = -(document.body.offsetWidth / 2 + 192);
+            const transactionsBarrier = -(window.innerWidth / 2 + 192);
 
             if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
                 // Go to sidebar
@@ -328,6 +328,13 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+html, body {
+    // Disable viewport overscrolling on iOS
+    // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
+    position: fixed;
+    overflow: hidden;
+}
+
 body {
     overscroll-behavior-y: contain; // Disable pull-to-refresh
 }

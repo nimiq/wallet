@@ -95,6 +95,10 @@ export default defineComponent({
             overflow-y: auto;
             height: 45.75rem;
             @extend %custom-scrollbar;
+            &::-webkit-scrollbar {
+                width: 0.75rem;
+            }
+            scrollbar-width: thin;
         }
 
         .scroll-mask-top {

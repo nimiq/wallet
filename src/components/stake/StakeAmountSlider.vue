@@ -19,16 +19,8 @@
                     class="scalar-amount-text"
                     ref="$stakedNIMText"
                     @click="$stakedNIMAmount.focus()">
-                <!--
-                    <Amount ref="$stakedNIMAmount"
-                        :decimals="DISPLAYED_DECIMALS"
-                        :amount="currentAmount"
-                        :currency="STAKING_CURRENCY"
-                        :currencyDecimals="NIM_DECIMALS" />
-                -->
                     <input class="nq-input"
                         ref="$stakedNIMAmount"
-                        @blur="reSetAmount"
                         @input="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
@@ -40,10 +32,8 @@
                 <div class="percent-amount-text" ref="$percentText">
                     {{ Math.round(currentPercentage) }}%
                 </div>
-                <div v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
-                    :style="`left: ${2 + (4.875 * index)}rem`">
-                    <VerticalLineIcon />
-                </div>
+                <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
+                    :style="`left: ${1.375 + (5 * Math.min(5, index)) + (index > 5 ? (index - 5) * 4.77 : 0)}rem`" />
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
             <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
@@ -53,8 +43,8 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafStakingIcon v-if="stakePercentage.value < 50" />
-                        <StakingIcon v-else-if="stakePercentage.value < 75" />
+                        <OneLeafStakingIcon v-if="currentPercentage < 50" />
+                        <StakingIcon v-else-if="currentPercentage < 75" />
                         <ThreeLeafStakingIcon v-else />
                     </div>
                 </div>
@@ -101,7 +91,7 @@ type Point = {
     y: number,
 } | null
 
-const extractInfo = (e: MouseEvent | TouchEvent):Point => {
+const extractEventPosition = (e: MouseEvent | TouchEvent):Point => {
     if (e.type === 'touchstart') {
         e = e as TouchEvent;
         if (e.touches.length > 1) return null;
@@ -132,25 +122,24 @@ export default defineComponent({
         const currentPercentage = computed({
             get: () => (100 * currentAmount.value) / availableAmount.value!,
             set: () => {
-                //
+                // es-lint hack
             },
         });
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
-        const inputFocused = ref(false);
         const currentFormattedAmount = computed(() =>
             formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
 
         const availableFormattedAmount = computed(() =>
             formatSpaceyNumber(availableAmount.value!, NIM_MAGNITUDE));
 
-        const estimateTextWidth = (text: string, defaultSize: number, options = { ' ': 3 }) => {
+        const estimateTextWidth = (text: string, defaultSize: number, options:Record<string, number> = { ' ': 3 }) => {
             let result = 0;
             let special = 0;
 
             Object.keys(options).forEach((key) => {
                 const found = text.split(key).length;
-                result += (options as {[key: string]: number})[key] * found;
+                result += options[key] * found;
                 special += found;
             });
             result += Math.max(2, (text.length - special)) * defaultSize;
@@ -159,7 +148,6 @@ export default defineComponent({
 
         const inputAmountWidth = computed(() => estimateTextWidth(currentFormattedAmount.value, 9) + 69);
 
-        const stakePercentage = computed(() => currentPercentage);
         let containerBox:DOMRect;
         let sliderBox:DOMRect;
         let knobBox:DOMRect;
@@ -184,20 +172,19 @@ export default defineComponent({
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
 
-            if (!active.value) {
-                active.value = true;
-                pivotPoint = extractInfo(e);
-                pivotPoint!.x -= $knob.value!.getBoundingClientRect().x;
-                window.addEventListener('mousemove', atMove);
-                window.addEventListener('touchmove', atMove);
-                window.addEventListener('mouseup', atEnd);
-                window.addEventListener('touchend', atEnd);
-            }
+            if (active.value) return;
+            active.value = true;
+            pivotPoint = extractEventPosition(e);
+            pivotPoint!.x -= $knob.value!.getBoundingClientRect().x;
+            window.addEventListener('mousemove', atMove);
+            window.addEventListener('touchmove', atMove);
+            window.addEventListener('mouseup', atEnd);
+            window.addEventListener('touchend', atEnd);
         };
 
-        const reSetAmount = (e: MouseEvent | TouchEvent) => {
-            (e!.target! as HTMLInputElement).value = formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE);
-        };
+        // const reSetAmount = (e: MouseEvent | TouchEvent) => {
+        //     (e!.target! as HTMLInputElement).value = formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE);
+        // };
 
         const updateAmount = (e: MouseEvent | TouchEvent) => {
             startSelection = ((e!.target! as HTMLInputElement).selectionStart as number);
@@ -209,7 +196,6 @@ export default defineComponent({
                 Math.min(availableAmount.value!, (value || 0) * NIM_MAGNITUDE),
             );
             const percent = (100.0 * amount) / availableAmount.value!;
-            inputFocused.value = true;
             currentAmount.value = amount;
 
             const offsetX = getPointAtPercent(percent);
@@ -242,7 +228,7 @@ export default defineComponent({
             } else {
                 $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
             }
-            $percentText.value!.style.left = `${offsetX + 2}px`;
+            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 7}px`;
             $stakedNIMText.value!.style.width = `${amountBox.width + 16}px`;
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const rightSpacing = (knobBox.width * 2.0);
@@ -261,7 +247,7 @@ export default defineComponent({
 
         const atMove = (e: MouseEvent | TouchEvent, skip = false) => {
             if (skip === true || active.value === true) {
-                const position = extractInfo(e);
+                const position = extractEventPosition(e);
 
                 const percent = Math.min(100, Math.max(0,
                     (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
@@ -284,7 +270,7 @@ export default defineComponent({
 
         const fillBackground = (lo: number, hi: number) => {
             const map = [
-                [0, 46.2, $backgroundOne, 5.9, 4.5],
+                [0, 46.2, $backgroundOne, 5.9, 9.5],
                 [46.2, 54.95, $backgroundTwo],
                 [54.95, 90.89, $backgroundThree],
                 [90.89, 100, $backgroundFour],
@@ -345,12 +331,11 @@ export default defineComponent({
             knobBox = $knob.value!.getBoundingClientRect();
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
-            pivotPoint = { x: knobBox.x, y: knobBox.y } as Point;
-            pivotPoint!.x -= knobBox.x;
+            pivotPoint = { x: 0, y: knobBox.y } as Point;
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
-                        + (knobBox.width / 2) - 8}px`;
+                        + (knobBox.width / 2) - 5}px`;
                 fillBackground(0, alreadyStakedPercentage.value);
             }
         });
@@ -363,10 +348,8 @@ export default defineComponent({
             atClick,
             atMove,
             currentPercentage,
-            stakePercentage,
             currentAmount,
             alreadyStaked,
-            reSetAmount,
             updateAmount,
             availableFormattedAmount,
             currentFormattedAmount,
@@ -507,6 +490,9 @@ export default defineComponent({
             }
             .percent-amount-text {
                 position: relative;
+                display: flex;
+                justify-content: center;
+                width: 7rem;
                 top: 1rem;
                 color: var(--nimiq-green);
                 font-size: 1.625rem;
@@ -517,9 +503,7 @@ export default defineComponent({
                 display: inline-block;
                 position: relative;
                 top: 1rem;
-                svg {
-                    height: 1rem;
-                }
+                height: 1rem;
             }
             .stake-dot-indicator {
                 position: relative;

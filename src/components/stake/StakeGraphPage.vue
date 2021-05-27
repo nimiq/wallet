@@ -12,6 +12,21 @@
             </template>
         </PageHeader>
         <PageBody>
+            <Tooltip :container="this">
+                <div slot="trigger">
+                    Estimated rewards <InfoCircleSmallIcon />
+                </div>
+                <div class="estimated-rewards">
+                    <div class="big">
+                        <img src="/img/staking/estimated-rewards-projection.svg" />
+                        Your reward is depending on how many people stake.
+                        The less people stake, the higher your rewards.
+                    </div>
+                    <div class="small">
+                        The corridor assumes that between 20% and 80% of all NIM holders stake.
+                    </div>
+                </div>
+            </Tooltip>
             <div v-if="alreadyStaked === true && showView === true">
                 <StakingGraph :stakedAmount="currentStake"
                     :apy="validator.reward" :readonly="true"
@@ -71,7 +86,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
+import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
@@ -93,7 +108,7 @@ export default defineComponent({
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
         //
-        const currentStake = ref(availableBalance.value * Math.random() * 0.5);
+        const currentStake = ref(availableBalance.value * 0.14);
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
@@ -164,6 +179,8 @@ export default defineComponent({
         StakeAmountSlider,
         AlreadyStakedPartial,
         Amount,
+        Tooltip,
+        InfoCircleSmallIcon,
     },
 });
 </script>
@@ -179,6 +196,17 @@ export default defineComponent({
         padding-right: 0;
         height: 57.875rem;
         overflow: hidden;
+        .estimated-rewards {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            line-height: 130%;
+            .big {
+            }
+            .small {
+                opacity: .6;
+            }
+        }
 
         .stake-amount-slider {
             margin-top: 12.125rem;

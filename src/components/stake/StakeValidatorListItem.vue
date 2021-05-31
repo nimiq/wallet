@@ -52,7 +52,7 @@
                                 {{ validatorData.trust.toFixed(2) }}
                             </div>
                         </div>
-                        <div class="validator-score-section">
+                        <div class="validator-score-section" :class="{ 'warning-text': validatorData.uptime < 96 }">
                             <div class="validator-score-reason">
                                 {{ $t('{number}% Uptime', { number: validatorData.uptime }) }}
                             </div>
@@ -60,11 +60,11 @@
                                 {{ scoreData.uptime[1] }}
                             </div>
                         </div>
-                        <div class="validator-score-explainer">
+                        <div class="validator-score-explainer" :class="{ 'warning-text': validatorData.uptime < 96 }">
                             {{ $t('{text}', { text: scoreData.uptime[2] }) }}
                         </div>
                         <!---->
-                        <div class="validator-score-section">
+                        <div class="validator-score-section" :class="{ 'warning-text': validatorData.monthsOld < 2 }">
                             <div class="validator-score-reason">
                                 {{ $t('{number} months old', { number: validatorData.monthsOld }) }}
                             </div>
@@ -72,11 +72,14 @@
                                 {{ scoreData.age[1] }}
                             </div>
                         </div>
-                        <div class="validator-score-explainer">
+                        <div class="validator-score-explainer" :class="{ 'warning-text': validatorData.monthsOld < 2 }">
                             {{ $t('{text}', { text: scoreData.age[2] }) }}
                         </div>
                         <!---->
-                        <div class="validator-score-section">
+                        <div class="validator-score-section" :class="{
+                            'warning-text': validatorData.dominance > 12 && validatorData.dominance <= 22,
+                            'danger-text': validatorData.dominance > 22,
+                            }">
                             <div class="validator-score-reason">
                                 {{ $t('{number}% Dominance', { number: validatorData.dominance }) }}
                             </div>
@@ -84,7 +87,10 @@
                                 {{ scoreData.dominance[1] }}
                             </div>
                         </div>
-                        <div class="validator-score-explainer">
+                        <div class="validator-score-explainer" :class="{
+                            'warning-text': validatorData.dominance > 12 && validatorData.dominance <= 22,
+                            'danger-text': validatorData.dominance > 22,
+                            }">
                             {{ $t('{text}', { text: scoreData.dominance[2] }) }}
                         </div>
                         <!---->
@@ -422,6 +428,16 @@ export default defineComponent({
             .validator-score-explainer {
                 color: #FFFFFF;
                 opacity: 0.6;
+            }
+
+            .warning-text {
+                color: #FC8702;
+                .validator-score-explainer {
+                    color: inherit;
+                }
+            }
+            .danger-text {
+                color: #FF5C48;
             }
         }
 

@@ -15,7 +15,7 @@
         ["Infinity", "4.99", "The validator is very experienced."]
     ],
     "dominanceRules": [
-        ["25", "4.28", "Do not stake with this validator!\n\nThe validator controls a substantial share of the total stake. This makes it a potential threat to the network."],
+        ["Infinity", "4.28", "Do not stake with this validator!\n\nThe validator controls a substantial share of the total stake. This makes it a potential threat to the network."],
         ["22", "4.28", "Staking with this validator is not recommended!\n\nThe validator controls a substantial share of the total stake. This makes it a potential threat to the network."],
         ["18", "4.28", "The validator controls a large share of the total stake.\n\nConsider choosing a smaller validator to improve the network’s security."],
         ["12", "4.28", "The validator controls a sizeable share of the total stake. You can support the network by staking with a smaller validator."],

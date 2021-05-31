@@ -27,4 +27,11 @@ export default {
         widgetUrl: 'https://buy.moonpay.com?apiKey=pk_live_fBJsMWLtYLqqRR1mtw8mr4fQ7lCMakNL',
         signatureEndpoint: 'https://mun.soerenschwert.de',
     },
+
+    simplex: {
+        formScriptUrl: 'https://iframe.simplex-affiliates.com/form-sdk.js',
+        sdkScriptUrl: 'https://cdn.simplex.com/sdk/v1/js/sdk.js',
+        splxScriptUrl: 'https://checkout.simplexcc.com/splx.js',
+        apiKey: 'pk_live_c33fd2b9-39e7-472b-8330-f96a9ff07573',
+    },
 };

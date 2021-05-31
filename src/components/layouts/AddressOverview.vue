@@ -172,6 +172,14 @@
                 <router-view name="modal"/>
             </transition>
         </Portal>
+
+        <Portal>
+            <transition name="modal">
+                <keep-alive>
+                    <router-view name="persistent-modal"/>
+                </keep-alive>
+            </transition>
+        </Portal>
     </div>
 </template>
 

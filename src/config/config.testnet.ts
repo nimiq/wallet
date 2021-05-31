@@ -27,4 +27,11 @@ export default {
         widgetUrl: 'https://buy-staging.moonpay.com?apiKey=pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://mun.soerenschwert.de',
     },
+
+    simplex: {
+        formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
+        sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
+        splxScriptUrl: null,
+        apiKey: 'pk_test_4cc61433-31dc-4020-b442-ba7b77cc9fa7',
+    },
 };

@@ -17,6 +17,7 @@ const MOONPAY_UNSUPPORTED_COUNTRY_CODES = [
     'BO', // Bolivia
     'BW', // Botswana
     'KH', // Cambodia
+    'KP', // North Korea
     'CN', // China
     'CU', // Cuba
     'CG', // Congo
@@ -33,7 +34,6 @@ const MOONPAY_UNSUPPORTED_COUNTRY_CODES = [
     'MN', // Mongolia
     'MM', // Myanmar
     'NI', // Nicaragua
-    'KP', // North Korea
     'PK', // Pakistan
     'PA', // Panama
     'SD', // Sudan
@@ -44,6 +44,7 @@ const MOONPAY_UNSUPPORTED_COUNTRY_CODES = [
     'YE', // Yemen
     'ZW', // Zimbabwe
 
+    // US Overseas Territories
     'AS', // American Samoa
     'GU', // Guam
     'MP', // Northern Mariana Islands
@@ -56,3 +57,36 @@ const MOONPAY_UNSUPPORTED_COUNTRY_CODES = [
 
 export const MOONPAY_COUNTRY_CODES = ALL_COUNTRY_CODES
     .filter((code) => !MOONPAY_UNSUPPORTED_COUNTRY_CODES.includes(code));
+
+// https://support.simplex.com/hc/en-gb/articles/360014137459-What-are-your-supported-countries-states-and-territories-
+// Updated from PDF for May sent in group chat
+const SIMPLEX_UNSUPPORTED_COUNTRY_CODES = [
+    'AL', // Albania
+    'BB', // Barbados
+    'BW', // Botswana
+    'BF', // Burkina Faso
+    'KH', // Cambodia
+    'KY', // Cayman Islands
+    'KP', // North Korea
+    'GH', // Ghana
+    'IR', // Iran
+    'IQ', // Iraq
+    'JM', // Jamaica
+    'KG', // Kyrgyzstan
+    'MA', // Morocco
+    'MN', // Mongolia
+    'MU', // Mauritius
+    'MM', // Myanmar
+    'NI', // Nicaragua
+    'PA', // Panama
+    'PK', // Pakistan
+    'SD', // Sudan
+    'SN', // Senegal
+    'SY', // Syria
+    'UG', // Uganda
+    'YE', // Yemen
+    'ZW', // Zimbabwe
+];
+
+export const SIMPLEX_COUNTRY_CODES = ALL_COUNTRY_CODES
+    .filter((code) => !SIMPLEX_UNSUPPORTED_COUNTRY_CODES.includes(code));

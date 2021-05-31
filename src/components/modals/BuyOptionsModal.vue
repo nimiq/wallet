@@ -89,11 +89,11 @@
                     </div>
                 </router-link>
 
-                <router-link :to="{ name: 'moonpay', query: $route.query }" replace
+                <router-link :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
                     class="option credit-card flex-column"
-                    :class="{disabled: !isMoonpayAvailable}"
-                    :event="isMoonpayAvailable ? 'click' : ''"
-                    :tabindex="isMoonpayAvailable ? 0 : -1"
+                    :class="{disabled: !isCreditCardAvailable}"
+                    :event="isCreditCardAvailable ? 'click' : ''"
+                    :tabindex="isCreditCardAvailable ? 0 : -1"
                 >
                     <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
@@ -105,7 +105,7 @@
 
                     <div class="lower-content flex-column">
                         <div class="fees">
-                            <span class="percentage flex-row">
+                            <span v-if="isMoonpayAvailable" class="percentage flex-row">
                                 4.5%
                                 <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
@@ -119,11 +119,24 @@
                                     />
                                 </i18n>
                             </span>
+                            <span v-else-if="isSimplexAvailable" class="percentage flex-row">
+                                5.0%
+                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                                </svg>
+                                <i18n path="min {amount}" tag="span">
+                                    <FiatAmount slot="amount" :amount="5.00" :currency="FiatCurrency.USD" />
+                                </i18n>
+                            </span>
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer v-if="isMoonpayAvailable" class="flex-row">
+                        <footer v-if="isMoonpayAvailable" class="moonpay flex-row">
                             <img src="../../assets/exchanges/moonpay-full.svg">
+                            <CaretRightIcon/>
+                        </footer>
+                        <footer v-else-if="isSimplexAvailable" class="simplex flex-row">
+                            <img src="../../assets/exchanges/simplex-full.png">
                             <CaretRightIcon/>
                         </footer>
                         <footer v-else class="flex-row">
@@ -134,10 +147,10 @@
                 </router-link>
             </div>
 
-            <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isMoonpayAvailable}">
+            <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
                 {{ $t('Buy NIM on a crypto exchange:') }}
             </p>
-            <div class="exchange-logos flex-row" :class="{'only-option': !isOasisAvailable && !isMoonpayAvailable}">
+            <div class="exchange-logos flex-row" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
                 <!-- eslint-disable max-len -->
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/kucoin.svg">
@@ -196,7 +209,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
-import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES } from '../../lib/Countries';
+import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 
 type Country = {
     code: string,
@@ -222,6 +235,13 @@ export default defineComponent({
             return MOONPAY_COUNTRY_CODES.includes(country.value.code);
         });
 
+        const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            if (!country.value) return true;
+            return SIMPLEX_COUNTRY_CODES.includes(country.value.code);
+        });
+
+        const isCreditCardAvailable = computed(() => isMoonpayAvailable.value || isSimplexAvailable.value);
+
         const i18nCountryName = new I18nDisplayNames('region');
 
         onMounted(async () => {
@@ -240,7 +260,9 @@ export default defineComponent({
             country,
             isOasisAvailable,
             isOasisUnderMaintenance,
+            isCreditCardAvailable,
             isMoonpayAvailable,
+            isSimplexAvailable,
             currency,
             FiatCurrency,
         };
@@ -516,9 +538,17 @@ header {
 
         img {
             width: 10.5rem;
+        }
+
+        &.moonpay img {
             margin-top: -0.75rem;
             opacity: 0.6;
             filter: invert(100%); // Black logo into white
+        }
+
+        &.simplex img {
+            opacity: 0.7;
+            filter: brightness(0) invert(1);; // Colored logo into white
         }
     }
 }

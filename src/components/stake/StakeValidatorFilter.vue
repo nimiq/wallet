@@ -31,12 +31,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from '@vue/composition-api';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 import SearchIcon from '../icons/Staking/SearchIcon.vue';
 import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 
-enum FilterState {
+export enum FilterState {
     TRUST,
     PAYOUT,
     REWARD,
@@ -44,10 +44,11 @@ enum FilterState {
 }
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const state = ref(FilterState.TRUST);
         const $search = ref<HTMLInputElement>();
 
+        watch(state, () => context.emit('changed', state.value));
         return {
             state,
             FilterState,

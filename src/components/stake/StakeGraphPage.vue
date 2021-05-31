@@ -12,21 +12,23 @@
             </template>
         </PageHeader>
         <PageBody>
-            <Tooltip :container="this">
-                <div slot="trigger">
-                    Estimated rewards <InfoCircleSmallIcon />
-                </div>
-                <div class="estimated-rewards">
-                    <div class="big">
-                        <img src="/img/staking/estimated-rewards-projection.svg" />
-                        Your reward is depending on how many people stake.
-                        The less people stake, the higher your rewards.
+            <span class="estimated-rewards-overlay">
+                <Tooltip :container="this">
+                    <div slot="trigger">
+                        Estimated rewards <InfoCircleSmallIcon />
                     </div>
-                    <div class="small">
-                        The corridor assumes that between 20% and 80% of all NIM holders stake.
+                    <div class="estimated-rewards">
+                        <div class="big">
+                            <img src="/img/staking/estimated-rewards-projection.svg" />
+                            Your reward is depending on how many people stake.
+                            The less people stake, the higher your rewards.
+                        </div>
+                        <div class="small">
+                            The corridor assumes that between 20% and 80% of all NIM holders stake.
+                        </div>
                     </div>
-                </div>
-            </Tooltip>
+                </Tooltip>
+            </span>
             <div v-if="alreadyStaked === true && showView === true">
                 <StakingGraph :stakedAmount="currentStake"
                     :apy="validator.reward" :readonly="true"
@@ -108,7 +110,7 @@ export default defineComponent({
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
         //
-        const currentStake = ref(availableBalance.value * 0.14);
+        const currentStake = ref(availableBalance.value * .515);
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
@@ -192,10 +194,11 @@ export default defineComponent({
         font-weight: 600;
     }
     .page-body {
-        padding-left: 0;
-        padding-right: 0;
-        height: 57.875rem;
+        padding: 0;
+        margin: 0;
+        height: 59.875rem;
         overflow: hidden;
+        position: relative;
         .estimated-rewards {
             font-size: 1.75rem;
             font-weight: 600;
@@ -207,7 +210,29 @@ export default defineComponent({
                 opacity: .6;
             }
         }
-
+        .estimated-rewards-overlay {
+            position: absolute;
+            top: 1.375rem;
+            left: 1.5rem;
+            .tooltip {
+                .tooltip-box {
+                    width: 32rem;
+                    max-width: 32rem;
+                }
+            }
+            /deep/ .trigger {
+                line-height: 120%;
+                font-size: 1.75rem;
+                font-weight: 600;
+                color: var(--nim-blue);
+                opacity: 0.4;
+                border: .375rem solid white;
+                white-space: nowrap;
+                div svg, div img {
+                    display: inline-block;
+                }
+            }
+        }
         .stake-amount-slider {
             margin-top: 12.125rem;
         }

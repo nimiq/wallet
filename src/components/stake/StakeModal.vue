@@ -51,7 +51,7 @@ export default defineComponent({
                             (rule: Array<string>) => rule.slice(0, -1).concat([
                                 i18n.t(rule.slice(-1)[0]).toString(),
                             ]),
-                        ),];
+                        )];
                     }
                     return [k, i18n.t(v as string).toString()];
                 }),
@@ -91,6 +91,7 @@ export default defineComponent({
         &.fat-modal {
             /deep/ .small-page {
                 width: 63.5rem;
+                height: 74.875rem;
                 transition: width 1.5s ease-out;
             }
             transition: width 0.75s ease-out;

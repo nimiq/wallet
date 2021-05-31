@@ -72,7 +72,7 @@ msgstr "{value} restant"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} de plus | + {count} de plus"
 
-#: src/components/modals/BuyOptionsModal.vue:122
+#: src/components/modals/BuyOptionsModal.vue:131
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr "+ frais de réseau"
@@ -420,7 +420,7 @@ msgstr "Acheter NIM et BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Acheter du NIM & BTC avec OASIS !"
 
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:151
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -600,6 +600,19 @@ msgstr "Continuer"
 msgid "Continue Swap"
 msgstr "Continuer le Swap"
 
+#: src/components/modals/SimplexModal.vue:34
+msgid ""
+"Copy\n"
+"over"
+msgstr ""
+"Copier\n"
+"sur"
+
+#: src/components/modals/SimplexModal.vue:16
+msgid "Copy the following address into the empty input field to continue:"
+msgstr ""
+"Copier l'adresse suivante dans le champ de saisie vide pour continuer."
+
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
 msgstr "Créer un Cashlink"
@@ -627,7 +640,7 @@ msgstr "Créer une sauvegarde"
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create request link"
-msgstr ""
+msgstr "Créer un lien de requête"
 
 #: src/components/modals/BtcReceiveModal.vue:193
 msgid "Created {count} day ago | Created {count} days ago"
@@ -972,6 +985,8 @@ msgid ""
 "In some rare cases, banks fail to instantly process transactions and take up"
 " to 48 hours."
 msgstr ""
+"Dans de rares cas, les banques n'arrivent pas à procéder aux transactions "
+"instantanées et cela peut prendre jusqu'à 48 heures."
 
 #: src/components/layouts/AddressOverview.vue:150
 msgid "Include #NimiqOASIS"
@@ -1118,6 +1133,7 @@ msgid "Max."
 msgstr "Max."
 
 #: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:127
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1220,7 +1236,7 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your country"
 msgstr "Non disponible dans votre pays"
@@ -1380,6 +1396,10 @@ msgstr "Destinataire"
 #: src/components/layouts/Settings.vue:176
 msgid "Reference currency"
 msgstr "Devise de référence"
+
+#: src/components/modals/SimplexModal.vue:27
+msgid "Refresh the page to continue."
+msgstr "Rafraîchir la page pour continuer."
 
 #: src/components/modals/BtcTransactionModal.vue:259
 #: src/components/modals/TransactionModal.vue:260
@@ -1613,7 +1633,7 @@ msgstr "Partagez votre adresse avec l'expéditeur."
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
 msgid "Share your Request Link"
-msgstr ""
+msgstr "Partager votre lien de requête"
 
 #: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
@@ -1810,7 +1830,7 @@ msgstr "Cette adresse a déjà été utilisée"
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
 msgid "This IBAN is for a different country than the bank"
-msgstr ""
+msgstr "Cet IBAN correspond à un pays différent de celui de votre banque"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
@@ -1852,6 +1872,7 @@ msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:6
 msgid "This service is operated by {link}"
 msgstr "Ce service est géré par {link}"
 

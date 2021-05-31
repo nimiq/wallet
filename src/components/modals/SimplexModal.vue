@@ -129,9 +129,8 @@ export default defineComponent({
             return Promise.all([
                 loadScript(Config.simplex.formScriptUrl, 'simplex-form-script'),
                 loadScript(Config.simplex.sdkScriptUrl, 'simplex-sdk-script'),
-                ...(
-                    Config.simplex.splxScriptUrl
-                    ? [ loadScript(Config.simplex.splxScriptUrl, 'simplex-splx-script') ]
+                ...(Config.simplex.splxScriptUrl
+                    ? [loadScript(Config.simplex.splxScriptUrl, 'simplex-splx-script')]
                     : []
                 ),
             ]);

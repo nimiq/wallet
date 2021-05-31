@@ -11,11 +11,11 @@ import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
 const toggle = (featureName) => {
     ENABLED[featureName] = !ENABLED[featureName];
-    alert(`${featureName} FEATURE ${ENABLED[featureName]?'enabled':'disabled'} !`);
-}
+    alert(`${featureName} FEATURE ${ENABLED[featureName] ? 'enabled' : 'disabled'} !`);
+};
 
 export default defineComponent({
-    setup(props) {
+    setup() {
         return {
             toggle,
         };
@@ -28,7 +28,7 @@ export default defineComponent({
     },
     components: {
         StakingHeroIcon,
-    }
+    },
 });
 </script>
 
@@ -38,7 +38,7 @@ export default defineComponent({
         cursor: pointer;
         width: 3rem;
         height: 3rem;
-        
+
         /deep/ svg {
             width: 3rem;
             height: 3rem;
@@ -74,4 +74,3 @@ export default defineComponent({
         }
     }
 </style>
- 

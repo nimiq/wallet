@@ -12,40 +12,84 @@
             </template>
         </PageHeader>
         <PageBody>
-            <StakeValidatorFilter />
+            <StakeValidatorFilter @changed="doSort"/>
             <div class="mask-container">
-                <div class="scroll-mask-top"></div>
+                <div class="scroll-mask-top" :class="{ 'disabled-mask': !masks }"></div>
                 <div class="scroll-container">
                     <div class="validator-list">
                         <StakeValidatorListItem
-                            v-for="(validatorData, index) in list" :key="index"
+                            v-for="(validatorData, index) in sortedList" :key="index"
                             :validatorData="validatorData"
                             :stakingData="stakingData"
                             :validatorsList="validatorsList"
                             :selectValidator="selectValidator"
+                            @focus="onValidatorFocusChange"
                         />
                     </div>
                 </div>
-                <div class="scroll-mask-bottom"></div>
+                <div class="scroll-mask-bottom" :class="{ 'disabled-mask': !masks }"></div>
             </div>
         </PageBody>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { StakingData, ValidatorData } from '../../stores/Staking';// StakingScoringRules
 
-import StakeValidatorFilter from './StakeValidatorFilter.vue';
+import StakeValidatorFilter, { FilterState } from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
 export default defineComponent({
     setup(props) {
+        const masks = ref(true);
+        const onValidatorFocusChange = (state:boolean) => {
+            masks.value = !state;
+        };
+        const sortedList = ref(props.validatorsList.map((i) => i));
+        const doSort = (state: FilterState) => {
+            // console.log(state, FilterState.TRUST);
+            switch (state) {
+                case FilterState.TRUST: {
+                    sortedList.value.sort((a, b) => (a.trust < b.trust)
+                        ? 1
+                        : ((a.trust > b.trust)
+                            ? -1
+                            : 0),
+                    );
+                    break;
+                }
+                case FilterState.PAYOUT: {
+                    sortedList.value.sort((a, b) => (a.payout < b.payout)
+                        ? 1
+                        : ((a.payout > b.payout)
+                            ? -1
+                            : 0),
+                    );
+                    break;
+                }
+                case FilterState.REWARD: {
+                    sortedList.value.sort((a, b) => (a.reward < b.reward)
+                        ? 1
+                        : ((a.reward > b.reward)
+                            ? -1
+                            : 0),
+                    );
+                    break;
+                }
+                default: {
+                    //
+                }
+            }
+        };
+
         return {
-            list: Array(3).fill(null)
-                .reduce((o) => o.concat(props.validatorsList), []), // for mock data only
+            masks,
+            sortedList,
             selectValidator: props.setValidator,
+            onValidatorFocusChange,
+            doSort,
         };
     },
     props: {
@@ -117,6 +161,10 @@ export default defineComponent({
             width: calc(100% - 2.25rem);
             height: 2.5rem;
             background: linear-gradient(0deg, white, rgba(244, 244, 244, 0));
+        }
+
+        .disabled-mask {
+            background: none;
         }
 
         .validator-list {

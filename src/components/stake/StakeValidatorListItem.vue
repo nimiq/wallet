@@ -2,7 +2,9 @@
     <button
         class="validator-list-item reset flex-row"
         :class="{ 'wrapper-mini': isMini }"
-        @click="selectValidator(validatorData)">
+        @click="selectValidator(validatorData)"
+        @focus="$emit('focus', true)"
+        @blur="$emit('focus', false)">
 
         <div class="validator-item-wrapper" :class="{ 'wrapper-mini': isMini }">
             <div class="validator-left validator-icon"
@@ -97,9 +99,22 @@
                     </div>
                 </div>
             </div>
-            <div :class="validatorData.reward < 2.5?'validator-warning':''" class="validator-item-right">
-                {{ validatorData.reward.toFixed(1) }}% {{ $t("p.a.") }}
-            </div>
+            <Tooltip
+                class="validator-ppa"
+                preferredPosition="bottom left"
+                :container="this">
+                <div slot="trigger"
+                    :class="validatorData.reward < 2.5?'validator-warning':''"
+                    class="validator-item-right">
+                    {{ validatorData.reward.toFixed(1) }}% {{ $t("p.a.") }}
+                </div>
+                <div class="tooltip-heading">
+                    {{ $t('Your projected return within one year.') }}
+                </div>
+                <div class="tooltip-content">
+                    {{ $t('This is depending on the network and can vary. Learn more at “Estimated rewards”') }}
+                </div>
+            </Tooltip>
         </div>
     </button>
 </template>
@@ -234,12 +249,8 @@ export default defineComponent({
     &:focus {
         width: 49.5rem;
         border: 4px solid #f2f2f4;
-        margin: -.5rem -.25rem -.75rem -.25rem;
+        margin: -.375rem -.5rem -.875rem .5rem;
         box-shadow: none;
-        &:first-child {
-            margin-top: .25rem;
-            margin-bottom: -1.5rem;
-        }
     }
 
     input::-moz-focus-inner {
@@ -264,6 +275,11 @@ export default defineComponent({
             &.wrapper-mini {
                 position: relative;
                 width: 27.625rem;
+                .validator-ppa {
+                    position: relative;
+                    top: -2rem;
+                    left: 11rem;
+                }
                 .validator-left {
                     align-self: baseline;
                     justify-content: flex-start;
@@ -300,6 +316,11 @@ export default defineComponent({
         width: 46.5rem;
         height: 100%;
         flex-direction: row;
+
+        .validator-ppa /deep/ .tooltip-box {
+            width: 25.75rem;
+        }
+
         .validator-left {
             margin-top: 2.25rem;
             margin-left: 2.5rem;
@@ -501,5 +522,20 @@ export default defineComponent({
     .red-text {
         color: var(--nimiq-red);
     }
+}
+
+.tooltip-heading {
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 130%;
+    color: white;
+}
+
+.tooltip-content {
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 130%;
+    color: white;
+    opacity: 0.6;
 }
 </style>

@@ -31,6 +31,7 @@ export default {
     simplex: {
         formScriptUrl: 'https://iframe.simplex-affiliates.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.simplex.com/sdk/v1/js/sdk.js',
-        apiKey: '',
+        splxScriptUrl: 'https://checkout.simplexcc.com/splx.js',
+        apiKey: 'pk_live_c33fd2b9-39e7-472b-8330-f96a9ff07573',
     },
 };

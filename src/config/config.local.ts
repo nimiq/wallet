@@ -31,6 +31,7 @@ export default {
     simplex: {
         formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
+        splxScriptUrl: null as string | null,
         apiKey: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
     },
 };

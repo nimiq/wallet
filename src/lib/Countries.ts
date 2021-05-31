@@ -88,6 +88,5 @@ const SIMPLEX_UNSUPPORTED_COUNTRY_CODES = [
     'ZW', // Zimbabwe
 ];
 
-// export const SIMPLEX_COUNTRY_CODES = ALL_COUNTRY_CODES
-//     .filter((code) => !SIMPLEX_UNSUPPORTED_COUNTRY_CODES.includes(code));
-export const SIMPLEX_COUNTRY_CODES: string[] = [];
+export const SIMPLEX_COUNTRY_CODES = ALL_COUNTRY_CODES
+    .filter((code) => !SIMPLEX_UNSUPPORTED_COUNTRY_CODES.includes(code));

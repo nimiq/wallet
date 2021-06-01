@@ -938,7 +938,7 @@ export default defineComponent({
         right: 6rem;
     };
     background: {
-        image: url('../../assets/buy-welcome-background.png');
+        image: url('../../assets/buy-welcome-background.svg');
         repeat: no-repeat;
         position: top center;
         size: 100% auto;

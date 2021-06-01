@@ -43,6 +43,11 @@
                 <button class="nq-button-s">Switch Validator</button>
             </div>
         </div>
+        <div class="rewards-history">
+            <a href="#">
+                {{ $t('Rewards history') }} &gt;
+            </a>
+        </div>
     </div>
 </template>
 
@@ -136,6 +141,18 @@ export default defineComponent({
 
         margin-top: 4rem;
         margin-bottom: 4rem;
+    }
+    .rewards-history {
+        font-weight: 600;
+        font-size: 1.75rem;
+        line-height: 2.625rem;
+        opacity: 0.4;
+        margin-top: 7rem;
+        text-align: center;
+        a {
+            color: var(--nimiq-blue);
+            text-decoration: none;
+        }
     }
 }
 .solid-red {

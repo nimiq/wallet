@@ -34,19 +34,18 @@ const getProjectionLine = (apy, staked, steps, stepSize, dV = 1.13) => {
     return projection;
 };
 
-const createPatternFill = (bgColor = '', width = 518, height = 103) => {
+const createPatternFill = (lineColor = '', width = 518, height = 103) => {
     const patternCanvas = document.createElement('canvas');
     const patternContext = patternCanvas.getContext('2d');
     patternCanvas.width = width;
     patternCanvas.height = height;
 
-    if (bgColor) {
-        patternContext.fillStyle = bgColor;
-        patternContext.fillRect(0, 0, width, height);
-    }
-
     patternContext.lineWidth = 0.5;
-    patternContext.strokeStyle = 'rgba(31, 35, 72, 0.3)';
+    if (lineColor) {
+        patternContext.strokeStyle = lineColor;
+    } else {
+        patternContext.strokeStyle = 'rgba(31, 35, 72, 0.3)';
+    }
     const gaps = [18 / 2.0, 18];
 
     for (let x = gaps[0] - 1; x <= patternCanvas.width; x += gaps[0]) {
@@ -70,7 +69,6 @@ export default defineComponent({
         const chartRef = ref(null);
         const stakedAmount = ref(props.stakedAmount);
         const apy = ref(props.apy);
-        console.log({ props, period: props.period });
 
         const getChartData = (noMonths = 12) => {
             const steps = 5;
@@ -120,7 +118,7 @@ export default defineComponent({
                     {
                         fill: '-1',
                         tension: 1,
-                        backgroundColor: createPatternFill('rgba(33, 188, 165, 0.1)'), // 'rgba(33, 188, 165, 0.1)',
+                        backgroundColor: createPatternFill('rgba(33, 188, 165, 0.7)'), // 'rgba(33, 188, 165, 0.1)',
                         borderColor: 'rgba(33, 188, 165, 0.8)',
                         data: bestProjection,
                         pointStyle: transparentPixel,

@@ -9,6 +9,20 @@
                 <span class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </span>
+                <div class="tooltip-bar">
+                    <LabelTooltip
+                        :validatorData="validator"
+                        :stakingData="stakingData"
+                        />
+                    <ScoreTooltip :isMini="false"
+                        :validatorData="validator"
+                        :stakingData="stakingData"
+                        />
+                    <RewardTooltip :isMini="false"
+                        :validatorData="validator"
+                        :stakingData="stakingData"
+                        />
+                </div>
             </template>
         </PageHeader>
         <PageBody>
@@ -89,13 +103,18 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
-import { ValidatorData } from '../../stores/Staking';
+import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
 import AlreadyStakedPartial from './partials/AlreadyStakedPartial.vue';
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
+
+import LabelTooltip from './tooltips/LabelTooltip.vue';
+import ScoreTooltip from './tooltips/ScoreTooltip.vue';
+import RewardTooltip from './tooltips/RewardTooltip.vue';
+
 import { i18n } from '../../i18n/i18n-setup';
 
 import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
@@ -164,6 +183,10 @@ export default defineComponent({
         };
     },
     props: {
+        stakingData: {
+            type: Object as () => StakingData,
+            required: true,
+        },
         activeValidator: {
             type: Object as () => ValidatorData,
             required: true,
@@ -176,6 +199,9 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
+        LabelTooltip,
+        ScoreTooltip,
+        RewardTooltip,
         StakingIcon,
         StakingGraph,
         StakeAmountSlider,
@@ -189,9 +215,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .page-header {
+        position: relative;
         padding-top: .75rem;
         height: 17rem;
         font-weight: 600;
+        .tooltip-bar {
+            position: absolute;
+            bottom: 0rem;
+            width: 100%;
+            text-align: center;
+            z-index: 9001;
+            white-space: nowrap;
+        }
     }
     .page-body {
         padding: 0;

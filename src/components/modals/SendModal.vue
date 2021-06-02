@@ -1048,8 +1048,8 @@ export default defineComponent({
         }
     }
 
-    .page-body {
-        @media (min-width: 420px) {
+    @media (min-width: 420px) {
+        .page__amount-input {
             padding-left: 5rem;
             padding-right: 5rem;
         }

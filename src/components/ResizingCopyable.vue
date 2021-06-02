@@ -23,20 +23,16 @@ export default defineComponent({
         const $copyable = ref<Copyable>(null);
         const $widthFinder = ref<HTMLDivElement>(null);
         const addressFontSizeScaleFactor = ref(1);
-        let innerPadding: number | undefined;
 
         async function updateAddressFontSizeScaleFactor() {
             if (!$copyable.value || !$widthFinder.value) return;
 
-            innerPadding = innerPadding || parseInt(
-                window.getComputedStyle($copyable.value.$el.children[1])
-                    .getPropertyValue('padding-left')
-                    .replace('px', ''),
-                10,
-            );
+            const style = window.getComputedStyle($copyable.value.$el.children[1]);
+            const leftPadding = parseInt(style.getPropertyValue('padding-left'), 10);
+            const rightPadding = parseInt(style.getPropertyValue('padding-right'), 10);
 
             const width = $widthFinder.value.clientWidth;
-            const maxWidth = $copyable.value.$el.clientWidth - (innerPadding * 2);
+            const maxWidth = $copyable.value.$el.clientWidth - leftPadding - rightPadding;
 
             addressFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
         }

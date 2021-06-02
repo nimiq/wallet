@@ -1,23 +1,28 @@
 <template>
     <Modal class="moonpay-modal">
-        <header class="flex-row">
-            <Tooltip preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger"/>
-                <i18n path="This service is operated by {link}" tag="span">
-                    <a slot="link" href="https://simplex.com" target="_blank" rel="noopener">simplex.com</a>
-                </i18n>
-            </Tooltip>
-            <img src="../../assets/exchanges/simplex-full.png" alt="Simplex Logo">
-            <div class="flex-spacer"></div>
-        </header>
+        <PageHeader>
+            {{ $t('Buy with Simplex') }}
+        </PageHeader>
+        <Tooltip preferredPosition="bottom right">
+            <InfoCircleSmallIcon slot="trigger"/>
+            <i18n path="This service is operated by {link}" tag="span">
+                <a slot="link" href="https://simplex.com" target="_blank" rel="noopener">simplex.com</a>
+            </i18n>
+        </Tooltip>
         <!-- Using v-show here is on purpose: the Simplex widget breaks when removing this element with using v-if -->
         <PageBody v-show="showAddressCopyUi" class="copy-address">
             <p class="nq-text nq-light-blue">
-                {{ $t('Copy the following address into the empty input field to continue:') }}
+                {{ $t('Copy and paste your address into\nthe Simplex interface below.') }}
             </p>
-            <ResizingCopyable :text="currentlyShownAddress">
-                <div class="address flex-row">{{ currentlyShownAddress }}</div>
-            </ResizingCopyable>
+            <div class="identicon-container">
+                <ResizingCopyable :text="currentlyShownAddress">
+                    <div
+                        class="address flex-row"
+                        :class="{'show-identicon': cryptoCurrencyCode === CryptoCurrency.NIM}"
+                    >{{ currentlyShownAddress }}</div>
+                </ResizingCopyable>
+                <Identicon v-if="cryptoCurrencyCode === CryptoCurrency.NIM" :address="currentlyShownAddress"/>
+            </div>
         </PageBody>
         <div class="separator"></div>
         <form id="simplex-form" ref="$simplex">
@@ -38,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
-import { Tooltip, InfoCircleSmallIcon, PageBody } from '@nimiq/vue-components';
+import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
 import ResizingCopyable from '../ResizingCopyable.vue';
@@ -284,14 +289,18 @@ export default defineComponent({
             showAddressCopyUi,
             currentlyShownAddress,
             mustReload,
+            cryptoCurrencyCode,
+            CryptoCurrency,
         };
     },
     components: {
+        PageHeader,
         PageBody,
         Modal,
         Tooltip,
         InfoCircleSmallIcon,
         ResizingCopyable,
+        Identicon,
     },
 });
 </script>
@@ -301,12 +310,16 @@ export default defineComponent({
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
-header {
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 3rem;
+.page-header {
+    padding-bottom: 2rem;
+}
 
-    .tooltip /deep/ {
+.tooltip {
+    position: absolute;
+    left: 3rem;
+    top: 3rem;
+
+        /deep/ {
         .trigger {
             color: var(--text-30);
         }
@@ -320,26 +333,18 @@ header {
             }
         }
     }
-
-    img {
-        width: 114px;
-    }
-
-    .flex-spacer {
-        width: 2.25rem;
-    }
 }
 
 .copy-address {
     overflow: hidden;
     flex-grow: 0;
-    padding-top: 1rem;
-    padding-bottom: 3rem;
+    padding: 0 2rem 3rem;
 
     .nq-text {
         font-weight: 600;
         text-align: center;
         margin-bottom: 1.75rem;
+        white-space: pre-line;
     }
 
     .address {
@@ -347,6 +352,22 @@ header {
         height: 100%;
         justify-content: center;
         align-items: center;
+
+        &.show-identicon {
+            padding-left: 6.5rem;
+        }
+    }
+
+    .identicon-container {
+        position: relative;
+    }
+
+    .identicon {
+        width: 4rem;
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        margin: -0.25rem 0;
     }
 }
 

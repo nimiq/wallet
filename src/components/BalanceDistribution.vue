@@ -361,9 +361,10 @@ export default defineComponent({
             cursor: default;
             background-color: var(--bg-base);
             padding: 0.5rem;
-            margin-top: -0.5rem;
+            margin-top: -0.125rem;
             margin-left: -0.375rem;
             margin-right: -0.375rem;
+            line-height: 1;
 
             position: absolute;
             z-index: 3;

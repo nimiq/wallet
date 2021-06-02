@@ -428,6 +428,10 @@ msgstr "Acheter du NIM sur une plateforme d'échange :"
 msgid "Buy with Credit Card"
 msgstr "Acheter avec une carte de crédit"
 
+#: src/components/modals/SimplexModal.vue:4
+msgid "Buy with Simplex"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:179
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
@@ -600,7 +604,7 @@ msgstr "Continuer"
 msgid "Continue Swap"
 msgstr "Continuer le Swap"
 
-#: src/components/modals/SimplexModal.vue:34
+#: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
 "over"
@@ -608,10 +612,11 @@ msgstr ""
 "Copier\n"
 "sur"
 
-#: src/components/modals/SimplexModal.vue:16
-msgid "Copy the following address into the empty input field to continue:"
+#: src/components/modals/SimplexModal.vue:15
+msgid ""
+"Copy and paste your address into\n"
+"the Simplex interface below."
 msgstr ""
-"Copier l'adresse suivante dans le champ de saisie vide pour continuer."
 
 #: src/components/modals/SendModal.vue:30
 msgid "Create a Cashlink"
@@ -1397,7 +1402,7 @@ msgstr "Destinataire"
 msgid "Reference currency"
 msgstr "Devise de référence"
 
-#: src/components/modals/SimplexModal.vue:27
+#: src/components/modals/SimplexModal.vue:32
 msgid "Refresh the page to continue."
 msgstr "Rafraîchir la page pour continuer."
 
@@ -1872,7 +1877,7 @@ msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
 #: src/components/modals/MoonpayModal.vue:6
-#: src/components/modals/SimplexModal.vue:6
+#: src/components/modals/SimplexModal.vue:8
 msgid "This service is operated by {link}"
 msgstr "Ce service est géré par {link}"
 

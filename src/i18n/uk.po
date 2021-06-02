@@ -422,6 +422,10 @@ msgstr ""
 msgid "Buy with Credit Card"
 msgstr "Купити за допомогою банківської карти."
 
+#: src/components/modals/SimplexModal.vue:4
+msgid "Buy with Simplex"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:179
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
@@ -598,14 +602,16 @@ msgstr "Продовжити"
 msgid "Continue Swap"
 msgstr "Продовжити Обмін"
 
-#: src/components/modals/SimplexModal.vue:34
+#: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
 "over"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:16
-msgid "Copy the following address into the empty input field to continue:"
+#: src/components/modals/SimplexModal.vue:15
+msgid ""
+"Copy and paste your address into\n"
+"the Simplex interface below."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:30
@@ -1375,7 +1381,7 @@ msgstr "Одержувач"
 msgid "Reference currency"
 msgstr "Основна валюта"
 
-#: src/components/modals/SimplexModal.vue:27
+#: src/components/modals/SimplexModal.vue:32
 msgid "Refresh the page to continue."
 msgstr ""
 
@@ -1840,7 +1846,7 @@ msgid "This service is currently not available in your region."
 msgstr "Наразі цей сервіс є недоступним у вашому регіоні."
 
 #: src/components/modals/MoonpayModal.vue:6
-#: src/components/modals/SimplexModal.vue:6
+#: src/components/modals/SimplexModal.vue:8
 msgid "This service is operated by {link}"
 msgstr "Цю послугу забезпечує {link} "
 

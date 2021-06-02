@@ -407,6 +407,10 @@ msgstr "在加密货币交易所购买NIM："
 msgid "Buy with Credit Card"
 msgstr "用信用卡购买"
 
+#: src/components/modals/SimplexModal.vue:4
+msgid "Buy with Simplex"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:179
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
@@ -576,14 +580,16 @@ msgstr "继续"
 msgid "Continue Swap"
 msgstr "继续交换"
 
-#: src/components/modals/SimplexModal.vue:34
+#: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
 "over"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:16
-msgid "Copy the following address into the empty input field to continue:"
+#: src/components/modals/SimplexModal.vue:15
+msgid ""
+"Copy and paste your address into\n"
+"the Simplex interface below."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:30
@@ -1336,7 +1342,7 @@ msgstr "接收者"
 msgid "Reference currency"
 msgstr "参考货币"
 
-#: src/components/modals/SimplexModal.vue:27
+#: src/components/modals/SimplexModal.vue:32
 msgid "Refresh the page to continue."
 msgstr ""
 
@@ -1794,7 +1800,7 @@ msgid "This service is currently not available in your region."
 msgstr "您所在的地区目前尚未提供这项服务"
 
 #: src/components/modals/MoonpayModal.vue:6
-#: src/components/modals/SimplexModal.vue:6
+#: src/components/modals/SimplexModal.vue:8
 msgid "This service is operated by {link}"
 msgstr "该服务由{link}经营"
 

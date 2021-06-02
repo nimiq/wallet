@@ -298,6 +298,7 @@ export default defineComponent({
 
             .country-flag {
                 margin-right: 1rem;
+                flex-shrink: 0;
             }
         }
     }

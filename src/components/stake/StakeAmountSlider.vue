@@ -39,6 +39,7 @@
             <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
+                    <div class="slider-staked-amount" v-if="ENABLED.dualSlider" />
                     <div class="slider-knob"
                         ref="$knob"
                         @touchstart="atClick"
@@ -57,6 +58,7 @@
 import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
+import { ENABLED } from '../../lib/FeatureProposal';
 import { calculateDisplayedDecimals, formatSpaceyNumber } from '../../lib/NumberFormatting';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -119,12 +121,7 @@ export default defineComponent({
         const alreadyStakedAmount = ref(props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = ref(activeAddressInfo.value?.balance);
-        const currentPercentage = computed({
-            get: () => (100 * currentAmount.value) / availableAmount.value!,
-            set: () => {
-                // es-lint hack
-            },
-        });
+        const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value!);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
         const currentFormattedAmount = computed(() =>
@@ -252,7 +249,6 @@ export default defineComponent({
                 const percent = Math.min(100, Math.max(0,
                     (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
                 ));
-                currentPercentage.value = percent;
                 currentAmount.value = (percent / 100) * availableAmount.value!;
 
                 if (alreadyStaked.value === true) {
@@ -343,6 +339,7 @@ export default defineComponent({
             NIM_DECIMALS,
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(availableAmount.value!, CryptoCurrency.NIM),
+            ENABLED,
             active,
             readonly,
             atClick,

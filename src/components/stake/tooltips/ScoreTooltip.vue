@@ -2,7 +2,9 @@
     <Tooltip class="validator-score-tip"
         :preferredPosition="isMini?'top right':'bottom right'"
         :container="this.$parent">
-        <div slot="trigger" class="validator-trust-trigger">
+        <div slot="trigger"
+            class="validator-trust-trigger"
+            :class="{ 'score-dry': isDry }">
             <div :class="{
                 'red-star': (validatorData.trust < 2.5),
                 'silver-star': (validatorData.trust < 2.5 && (validatorData.trust < 5.0)),
@@ -102,6 +104,11 @@ export default defineComponent({
             type: Boolean,
             required: true,
         },
+        isDry: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
         validatorData: {
             type: Object as () => ValidatorData,
             required: true,
@@ -130,6 +137,31 @@ export default defineComponent({
         display: flex;
         flex-direction: row;
         white-space: nowrap;
+        &.score-dry {
+            display: flex;
+            justify-content: center;
+            margin-right: .75rem;
+            border: .1875rem solid rgba(31, 35, 72, 0.15);
+            padding: .375rem 1.375rem .375rem 1rem;
+            box-sizing: border-box;
+            border-radius: 1.75rem;
+            white-space: nowrap;
+            height: 3.25rem;
+
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: rgba(31, 35, 72, 0.6);
+            div {
+                padding: .25rem;
+                color: var(--nimiq-blue);
+                opacity: 0.6;
+            }
+            svg {
+                path {
+                    fill: rgba(31, 35, 72, 0.6);
+                }
+            }
+        }
     }
 
     .validator-score-section {
@@ -188,6 +220,19 @@ export default defineComponent({
     }
     .red-text {
         color: var(--nimiq-red);
+    }
+}
+.validator-website-link {
+    display: inline-block;
+    margin-top: 1rem;
+    align-self: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+    svg {
+        padding-top: 0.625rem;
+        display: inline-block;
     }
 }
 </style>

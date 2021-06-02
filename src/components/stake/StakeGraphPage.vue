@@ -11,14 +11,17 @@
                 </span>
                 <div class="tooltip-bar">
                     <LabelTooltip
+                        :isDry="true"
                         :validatorData="validator"
                         :stakingData="stakingData"
                         />
                     <ScoreTooltip :isMini="false"
+                        :isDry="true"
                         :validatorData="validator"
                         :stakingData="stakingData"
                         />
                     <RewardTooltip :isMini="false"
+                        :isDry="true"
                         :validatorData="validator"
                         :stakingData="stakingData"
                         />

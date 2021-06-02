@@ -235,19 +235,6 @@ export default defineComponent({
             margin-top: 0.7rem;
         }
 
-        /deep/ .validator-website-link {
-            display: inline-block;
-            margin-top: 1rem;
-            align-self: center;
-            font-size: 2rem;
-            font-weight: bold;
-            text-decoration: none;
-            white-space: nowrap;
-            svg {
-                padding-top: 0.625rem;
-                display: inline-block;
-            }
-        }
         .validator-trust {
             font-style: normal;
             font-weight: 600;

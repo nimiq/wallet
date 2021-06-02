@@ -216,6 +216,7 @@ export default defineComponent({
         flex-direction: column;
         position: relative;
         overflow-y: auto;
+        overflow-x: hidden;
         padding-right: var(--padding-sides);
         margin: 0 calc(-1 * var(--padding-sides));
         color: var(--text-70);

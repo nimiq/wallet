@@ -333,10 +333,12 @@ html, body {
     // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
     position: fixed;
     overflow: hidden;
+    width: 100vw;
 }
 
 body {
-    overscroll-behavior-y: contain; // Disable pull-to-refresh
+    overscroll-behavior: contain; // Disable pull-to-refresh
+    font-size: 14px; // Affects the font-size of the testnet branch-selector banner
 }
 
 :root {

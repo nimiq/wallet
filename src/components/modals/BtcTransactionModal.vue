@@ -856,7 +856,6 @@ export default defineComponent({
         padding: 0.5rem 1rem;
         border-radius: 0.5rem;
         transition: background 300ms var(--nimiq-ease);
-        margin-bottom: .5rem;
 
         &:hover,
         &:focus,

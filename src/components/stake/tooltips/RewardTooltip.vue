@@ -5,8 +5,11 @@
         preferredPosition="bottom left"
         :container="this.$parent">
         <div slot="trigger"
-            :class="{'validator-warning': validatorData.reward < 2.5}"
-            class="validator-item-right">
+            :class="{
+                'validator-warning': validatorData.reward < 2.5,
+                'reward-dry': isDry,
+            }"
+            class="validator-reward">
             {{ validatorData.reward.toFixed(1) }}% {{ $t("p.a.") }}
         </div>
         <div class="tooltip-heading">
@@ -29,6 +32,11 @@ export default defineComponent({
             type: Boolean,
             required: true,
         },
+        isDry: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
         validatorData: {
             type: Object as () => ValidatorData,
             required: true,
@@ -41,7 +49,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validator-item-right {
+.validator-reward {
     font-family: Muli, system-ui, sans-serif;
     height: 3.125rem;
     line-height: 2rem;
@@ -63,6 +71,19 @@ export default defineComponent({
         border: 2px solid var(--nimiq-orange);
         color: var(--nimiq-orange);
     }
+
+    &.reward-dry {
+        border: .1875rem solid rgba(31, 35, 72, 0.15);
+        box-sizing: border-box;
+        padding: .375rem 1.375rem;
+        border-radius: 1.75rem;
+        white-space: nowrap;
+        height: 3.25rem;
+
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: rgba(31, 35, 72, 0.6);
+    }
 }
 
 /deep/ .tooltip-box {
@@ -83,8 +104,10 @@ export default defineComponent({
     color: white;
     opacity: 0.6;
 }
+
 .mini {
-    .validator-item-right {
+    position: relative;
+    .validator-reward {
         position: absolute;
         top: -5rem;
         left: 4.5rem;

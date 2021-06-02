@@ -1,9 +1,10 @@
 <template>
     <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
-        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
+        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$wrapper">
             <SmallPage
                 class="main"
-                :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }"
+                :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding, scrolled }"
+                ref="$main"
             >
                 <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
                     <div class="swipe-bar"></div>
@@ -83,7 +84,8 @@ export default defineComponent({
         });
 
         // Swiping
-        const $main = ref<HTMLDivElement>(null);
+        const $wrapper = ref<HTMLDivElement>(null);
+        const $main = ref<SmallPage>(null);
         const $handle = ref<HTMLDivElement>(null);
         const showSwipeHandle = ref(false);
 
@@ -113,7 +115,7 @@ export default defineComponent({
             const { width, height } = useWindowSize();
             const { swipingEnabled } = useSettingsStore();
 
-            const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            const { attachSwipe, detachSwipe } = useSwipes($wrapper as Ref<HTMLDivElement>, {
                 onSwipeEnded: updateSwipeRestPosition,
                 clampMovement: computed<[number, number]>(() => [0, height.value]),
                 vertical: true,
@@ -150,13 +152,29 @@ export default defineComponent({
             close();
         }
 
+        const scrolled = ref(false);
+
+        function scrollListener(event: Event) {
+            scrolled.value = (event.target as HTMLDivElement).scrollTop > 0;
+        }
+
+        onMounted(() => {
+            $main.value!.$el.addEventListener('scroll', scrollListener);
+        });
+
+        onUnmounted(() => {
+            $main.value!.$el.removeEventListener('scroll', scrollListener);
+        });
+
         return {
             close,
+            $wrapper,
             $main,
             $handle,
             showSwipeHandle,
             checkTouchStart,
             onBackdropClick,
+            scrolled,
         };
     },
     directives: {
@@ -199,9 +217,14 @@ export default defineComponent({
     transition: transform var(--transition-time) var(--nimiq-ease);
     transform-origin: center bottom;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
+    touch-action: pan-down; // Allow only scrolling down, scrolling up moves the modal instead
 
     height: auto;
     min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function
+
+    &.scrolled {
+        touch-action: pan-y; // Allow scrolling up, too
+    }
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);

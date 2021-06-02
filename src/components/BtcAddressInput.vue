@@ -168,6 +168,10 @@ export default defineComponent({
                 color: var(--nimiq-orange);
             }
         }
+
+        /deep/ .width-finder {
+            padding: 0 2rem;
+        }
     }
 
     .scan-qr-button {

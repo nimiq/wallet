@@ -1,9 +1,14 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
-        <span class="feature-bar dev-bar">
-            <FeatureToggler featureName="necklace" />
-            <FeatureToggler featureName="stackattack" />
+        <span class="dev-bar">
+            <span class="feature-bar">
+                <FeatureToggler featureName="necklace" />
+                <FeatureToggler featureName="stackattack" />
+            </span>
+            <span class="mockpare">
+                <Mockpare />
+            </span>
         </span>
         <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
@@ -217,6 +222,7 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 import FeatureToggler from '../widgets/FeatureToggler.vue';
+import Mockpare from '../widgets/Mockpare.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -356,6 +362,7 @@ export default defineComponent({
         HighFiveIcon,
         Tooltip,
         FeatureToggler,
+        Mockpare,
     },
 });
 </script>
@@ -411,6 +418,8 @@ export default defineComponent({
     }
 
     .dev-bar {
+        display: flex;
+        flex-direction: row;
         white-space: nowrap;
     }
 

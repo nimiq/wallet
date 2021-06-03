@@ -82,13 +82,12 @@ export default defineComponent({
         height: 3.75rem;
         border-radius: 2rem;
         padding: 0;
-        padding-top: .25rem;
+        padding-top: .125rem;
         white-space: nowrap;
 
         .validator-switch {
             font-family: Muli, Helvetica, serif;
             padding: .75rem 1.25rem;
-            margin-right: 0.375rem;
             height: 3.25rem;
 
             border: 0;
@@ -129,9 +128,10 @@ export default defineComponent({
             box-shadow: none;
             svg {
                 position: relative;
-                top: .25rem;
-                width: 2rem;
-                height: 2rem;
+                top: .375rem;
+                left: .25rem;
+                width: 2.375rem;
+                height: 2.375rem;
                 opacity: .5;
                 line, circle {
                     stroke: rgb(31, 35, 72);

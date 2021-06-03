@@ -2,10 +2,9 @@
     <div>
         <PageHeader>
             <template #default>
-                <span class="staking-icon">
+                <div class="staking-icon">
                     <StakingHeroIcon />
-                </span>
-                <br/>
+                </div>
                 {{ $t('Stake NIM to earn NIM') }}
             </template>
             <template #more>
@@ -85,17 +84,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .page-header {
-        padding-top: 9rem;
+        padding-top: 4rem;
         line-height: 1;
+        /deep/ .nq-h1 {
+            margin-top: 3rem;
+            font-size: 3rem;
+        }
         .staking-icon {
-            margin-left: 1rem;
-            margin-bottom: 5.125rem;
             svg {
-                height: 16.584rem;
-                animation: flicker 5s ease alternate infinite;
-                path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-                    animation: fastwave 1s ease alternate infinite;
-                }
+                height: 17.375rem;
             }
         }
     }

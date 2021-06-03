@@ -62,7 +62,7 @@ export default defineComponent({
             imgNode.style.display = 'none';
             imgNode.style.position = 'absolute';
             imgNode.style.zIndex = '9001';
-            imgNode.style.top  = 'calc((100vh - 822px) / 2.0)';
+            imgNode.style.top = 'calc((100vh - 822px) / 2.0)';
             imgNode.style.left = 'calc((100vw - 815px) / 2.0)';
             imgNode.style.opacity = opacity.value.toFixed(1);
             imgNode.id = mockContainerID;

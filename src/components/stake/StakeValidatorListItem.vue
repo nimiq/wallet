@@ -143,6 +143,7 @@ export default defineComponent({
     &:hover {
         background-color: #f2f2f4;
     }
+
     &.wrapper-mini {
         cursor: initial;
         width: 27.625rem;
@@ -191,13 +192,13 @@ export default defineComponent({
         flex-direction: row;
 
         .validator-left {
-            margin-top: 2.25rem;
-            margin-left: 2.5rem;
+            margin-top: 2.125rem;
+            margin-left: 2rem;
             margin-bottom: -2rem;
             &.validator-icon {
                 img, svg {
-                    width: 5rem;
-                    height: 5rem;
+                    width: 5.5rem;
+                    height: 5.5rem;
                 }
                 &.mini-validator-icon {
                     display: flex;
@@ -222,7 +223,9 @@ export default defineComponent({
             min-height: 3rem;
             line-height: 3rem;
             &.validator-label {
-                padding-top: 0.75rem;
+                padding-top: .5rem;
+                padding-right: .5rem;
+                font-style: normal;
                 font-weight: 600;
                 font-size: 2rem;
                 line-height: 100%;

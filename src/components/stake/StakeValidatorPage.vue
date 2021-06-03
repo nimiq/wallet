@@ -2,7 +2,6 @@
     <div>
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
-                <br/>
                 {{ $t('Choose a Validator') }}
             </template>
             <template #more>
@@ -119,9 +118,15 @@ export default defineComponent({
     @import '../../scss/mixins.scss';
 
     .page-header {
-        padding-top: .75rem;
+        padding-top: .5rem;
+        margin-left: -.25rem;
         line-height: 1;
         height: 17rem;
+        /deep/ .nq-h1 {
+            color: var(--nimiq-blue);
+            padding-top: 3.25rem;
+            font-size: 3rem;
+        }
     }
     .page-body {
         padding-top: 0;
@@ -174,10 +179,12 @@ export default defineComponent({
             padding-top: 1rem;
         }
     }
-
     .nq-text {
         display: inline-block;
-        margin-top: .75rem;
+        margin-top: .875rem;
         margin-bottom: .25rem;
+        font-size: 2rem;
+        line-height: 140%;
+        color: var(--nimiq-blue);
     }
 </style>

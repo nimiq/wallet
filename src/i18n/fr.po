@@ -62,8 +62,8 @@ msgstr "{fee} frais"
 msgid "{perc}% of swap value."
 msgstr "{perc}% de la valeur du swap."
 
-#: src/components/modals/BuyCryptoModal.vue:92
-#: src/components/modals/SellCryptoModal.vue:96
+#: src/components/modals/BuyCryptoModal.vue:93
+#: src/components/modals/SellCryptoModal.vue:97
 #: src/components/swap/SwapModal.vue:65
 msgid "{value} remaining"
 msgstr "{value} restant"
@@ -84,8 +84,8 @@ msgstr "+ frais de réseau"
 msgid "+{n} more"
 msgstr "+{n} de plus"
 
-#: src/components/modals/BuyCryptoModal.vue:22
-#: src/components/modals/SellCryptoModal.vue:25
+#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/SellCryptoModal.vue:26
 msgid "1"
 msgstr "1"
 
@@ -93,8 +93,8 @@ msgstr "1"
 msgid "15m"
 msgstr "15m"
 
-#: src/components/modals/BuyCryptoModal.vue:23
-#: src/components/modals/SellCryptoModal.vue:26
+#: src/components/modals/BuyCryptoModal.vue:24
+#: src/components/modals/SellCryptoModal.vue:27
 msgid "2"
 msgstr "2"
 
@@ -106,13 +106,13 @@ msgstr "2-4h"
 msgid "24/7 Support"
 msgstr "Support 24/7"
 
-#: src/components/modals/BuyCryptoModal.vue:24
-#: src/components/modals/SellCryptoModal.vue:27
+#: src/components/modals/BuyCryptoModal.vue:25
+#: src/components/modals/SellCryptoModal.vue:28
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:86
-#: src/components/modals/SellCryptoModal.vue:90
+#: src/components/modals/BuyCryptoModal.vue:87
+#: src/components/modals/SellCryptoModal.vue:91
 #: src/components/swap/SwapModal.vue:60
 msgid "30-day Limit"
 msgstr "Limite de 30 jours"
@@ -121,7 +121,7 @@ msgstr "Limite de 30 jours"
 msgid "6h+"
 msgstr "6h+"
 
-#: src/components/layouts/Settings.vue:288
+#: src/components/layouts/Settings.vue:303
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -149,7 +149,7 @@ msgstr "Activer"
 msgid "Activate Bitcoin"
 msgstr "Activer Bitcoin"
 
-#: src/components/layouts/Settings.vue:147
+#: src/components/layouts/Settings.vue:162
 msgid "Add"
 msgstr "Ajouter"
 
@@ -179,7 +179,7 @@ msgstr "Ajouter un compte"
 msgid "Add address"
 msgstr "Ajouter une adresse"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:158
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Ajouter un contrat d'acquisition existant à votre Wallet."
 
@@ -323,7 +323,7 @@ msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
 "Le transfert bancaire est uniquement disponible dans la zone Euro SEPA."
 
-#: src/components/modals/BuyCryptoModal.vue:11
+#: src/components/modals/BuyCryptoModal.vue:12
 msgid "Beta"
 msgstr "Beta"
 
@@ -389,18 +389,18 @@ msgstr "Acheter"
 msgid "Buy BTC"
 msgstr "Acheter du BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:161
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/BuyCryptoModal.vue:180
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:162
+#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:35
 msgid "Buy Crypto"
 msgstr "Acheter de la Crypto"
 
-#: src/components/modals/BuyCryptoModal.vue:13
+#: src/components/modals/BuyCryptoModal.vue:14
 msgid "Buy Crypto with Fiat"
 msgstr "Acheter de la Crypto avec des Fiats"
 
-#: src/components/modals/BuyCryptoModal.vue:151
+#: src/components/modals/BuyCryptoModal.vue:152
 msgid "Buy max"
 msgstr "Acheter le maximum"
 
@@ -440,16 +440,16 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité d'exécution de votre "
 "transaction."
 
-#: src/components/modals/BuyCryptoModal.vue:163
-#: src/components/modals/SellCryptoModal.vue:189
+#: src/components/modals/BuyCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:190
 #: src/components/swap/SwapModal.vue:140
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "En cliquant '{text}', vous acceptez les CGU de {Fastspot} et {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:177
-#: src/components/modals/SellCryptoModal.vue:203
+#: src/components/modals/BuyCryptoModal.vue:178
+#: src/components/modals/SellCryptoModal.vue:204
 #: src/components/swap/SwapModal.vue:152
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
@@ -471,7 +471,7 @@ msgstr "Annuler le Swap"
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
-#: src/components/layouts/Settings.vue:268
+#: src/components/layouts/Settings.vue:283
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -501,8 +501,8 @@ msgstr "Modifier vos paramètres de langue."
 msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
-#: src/components/modals/BuyCryptoModal.vue:246
-#: src/components/modals/SellCryptoModal.vue:274
+#: src/components/modals/BuyCryptoModal.vue:247
+#: src/components/modals/SellCryptoModal.vue:275
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:186
 msgid "Choose an Address"
@@ -512,11 +512,11 @@ msgstr "Choisissez une adresse"
 msgid "Claiming Cashlink"
 msgstr "Réclamer le Cashlink"
 
-#: src/components/layouts/Settings.vue:159
+#: src/components/layouts/Settings.vue:174
 msgid "Clear"
 msgstr "Vider"
 
-#: src/components/layouts/Settings.vue:153
+#: src/components/layouts/Settings.vue:168
 msgid "Clear Cache"
 msgstr "Vider le cache"
 
@@ -683,7 +683,7 @@ msgstr ""
 "Dépend de votre pays de résidence,\n"
 "plusieurs options sont disponibles."
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:212
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -715,7 +715,7 @@ msgstr "Terminé"
 msgid "Duration and fees are estimates."
 msgstr "La durée et les frais sont des estimations."
 
-#: src/components/modals/SellCryptoModal.vue:15
+#: src/components/modals/SellCryptoModal.vue:16
 msgid "Early Access"
 msgstr "Accès anticipé"
 
@@ -744,6 +744,10 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
+#: src/components/layouts/Settings.vue:143
+msgid "Enable experimental support for swiping gestures on mobile."
+msgstr ""
+
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
 msgid "Enter account holder name"
 msgstr "Entrer le nom du titulaire du compte"
@@ -767,7 +771,7 @@ msgstr "Saisir l'IBAN"
 msgid "Enter recipient address..."
 msgstr "Entrez l'adresse du destinataire..."
 
-#: src/components/layouts/Settings.vue:167
+#: src/components/layouts/Settings.vue:182
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Saisissez le mot de passe du test que vous souhaitez activer, puis appuyez "
@@ -835,8 +839,8 @@ msgstr "Faucet indisponible (mauvais réseau)"
 msgid "fee"
 msgstr "frais"
 
-#: src/components/modals/BuyCryptoModal.vue:64
-#: src/components/modals/SellCryptoModal.vue:68
+#: src/components/modals/BuyCryptoModal.vue:65
+#: src/components/modals/SellCryptoModal.vue:69
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "frais"
@@ -852,11 +856,11 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Valeur du FIAT indisponible"
 
-#: src/components/layouts/Settings.vue:274
+#: src/components/layouts/Settings.vue:289
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
-#: src/components/modals/BuyCryptoModal.vue:24
+#: src/components/modals/BuyCryptoModal.vue:25
 msgid "Finalize the swap by bank transfer."
 msgstr "Finalisez le Swap par virement bancaire."
 
@@ -1014,7 +1018,7 @@ msgstr ""
 "par Nimiq"
 
 #: src/components/modals/BtcSendModal.vue:88
-#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:178
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
@@ -1060,8 +1064,8 @@ msgstr "En apprendre plus"
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
-#: src/components/modals/BuyCryptoModal.vue:28
-#: src/components/modals/SellCryptoModal.vue:31
+#: src/components/modals/BuyCryptoModal.vue:29
+#: src/components/modals/SellCryptoModal.vue:32
 msgid "Let's go"
 msgstr "Allons-y"
 
@@ -1089,8 +1093,8 @@ msgstr "Charger le fichier"
 msgid "Loading Moonpay..."
 msgstr "Chargement de Moonpay..."
 
-#: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:94
+#: src/components/modals/BuyCryptoModal.vue:91
+#: src/components/modals/SellCryptoModal.vue:95
 #: src/components/swap/SwapModal.vue:63
 msgid "loading..."
 msgstr "chargement..."
@@ -1121,18 +1125,18 @@ msgstr "Déconnexion"
 msgid "lost"
 msgstr "perdu"
 
-#: src/components/modals/SellCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:170
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr "Le montant maximum Swappable est de {amount} {ticker}"
 
-#: src/components/modals/BuyCryptoModal.vue:150
+#: src/components/modals/BuyCryptoModal.vue:151
 msgid "Max swappable amount is {amount} EUR"
 msgstr "Le montant maximum Swappable est de {amount} Euros"
 
-#: src/components/modals/BuyCryptoModal.vue:70
-#: src/components/modals/BuyCryptoModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:74
-#: src/components/modals/SellCryptoModal.vue:79
+#: src/components/modals/BuyCryptoModal.vue:71
+#: src/components/modals/BuyCryptoModal.vue:76
+#: src/components/modals/SellCryptoModal.vue:75
+#: src/components/modals/SellCryptoModal.vue:80
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
 msgstr "Max."
@@ -1194,8 +1198,8 @@ msgstr ""
 "hub.nimiq.com & keyguard.nimiq.com, et certaines des bibliothèques sous-"
 "jacentes sont en cours de développement."
 
-#: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/modals/SellCryptoModal.vue:103
+#: src/components/modals/BuyCryptoModal.vue:100
+#: src/components/modals/SellCryptoModal.vue:104
 #: src/components/swap/SwapModal.vue:71
 msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
@@ -1260,13 +1264,21 @@ msgstr "Limite d'utilisation d'OASIS dépassée "
 msgid "OASIS service fee"
 msgstr "frais de service OASIS"
 
-#: src/components/layouts/Settings.vue:297
+#: src/components/layouts/Settings.vue:150
+msgid "Off"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:312
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
 msgstr "Anciens et nouveaux Comptes"
+
+#: src/components/layouts/Settings.vue:149
+msgid "On"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
@@ -1294,8 +1306,8 @@ msgstr "Cashlinks en Attente"
 msgid "Pending..."
 msgstr "En attente..."
 
-#: src/components/modals/BuyCryptoModal.vue:80
-#: src/components/modals/SellCryptoModal.vue:84
+#: src/components/modals/BuyCryptoModal.vue:81
+#: src/components/modals/SellCryptoModal.vue:85
 #: src/components/swap/SwapModal.vue:55
 msgid "Per-Swap Limit"
 msgstr "Limite par swap"
@@ -1362,7 +1374,7 @@ msgstr "Recevoir"
 msgid "Receive BTC"
 msgstr "Recevoir des BTC"
 
-#: src/components/modals/SellCryptoModal.vue:27
+#: src/components/modals/SellCryptoModal.vue:28
 msgid "Receive fiat to your bank account."
 msgstr "Recevoir du Fiat sur votre compte bancaire."
 
@@ -1398,7 +1410,7 @@ msgstr "Copiée récemment"
 msgid "Recipient"
 msgstr "Destinataire"
 
-#: src/components/layouts/Settings.vue:176
+#: src/components/layouts/Settings.vue:191
 msgid "Reference currency"
 msgstr "Devise de référence"
 
@@ -1420,7 +1432,7 @@ msgstr ""
 "Votre banque utilise peut-être un autre nom, comme \"transactions en temps "
 "réel\", par exemple."
 
-#: src/components/layouts/Settings.vue:195
+#: src/components/layouts/Settings.vue:210
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr "Notes de mise à jour"
@@ -1440,7 +1452,7 @@ msgstr "Requête échouée"
 msgid "Rescan"
 msgstr "Re-scanner"
 
-#: src/components/layouts/Settings.vue:155
+#: src/components/layouts/Settings.vue:170
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Réinitialisez les paramètres de votre Wallet et rechargez les données depuis"
@@ -1483,8 +1495,8 @@ msgstr "Rechercher des transactions"
 msgid "Search transactions by contact, address, etc."
 msgstr "Rechercher des transactions via vos contacts, adresses, etc..."
 
-#: src/components/modals/BuyCryptoModal.vue:22
-#: src/components/modals/SellCryptoModal.vue:25
+#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/SellCryptoModal.vue:26
 msgid "Select a currency and an amount."
 msgstr "Sélectionnez une devise et un montant."
 
@@ -1496,18 +1508,18 @@ msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 msgid "Sell"
 msgstr "Vendre"
 
-#: src/components/modals/SellCryptoModal.vue:187
-#: src/components/modals/SellCryptoModal.vue:192
-#: src/components/modals/SellCryptoModal.vue:206
-#: src/components/modals/SellCryptoModal.vue:37
+#: src/components/modals/SellCryptoModal.vue:188
+#: src/components/modals/SellCryptoModal.vue:193
+#: src/components/modals/SellCryptoModal.vue:207
+#: src/components/modals/SellCryptoModal.vue:38
 msgid "Sell Crypto"
 msgstr "Vendre de la Crypto"
 
-#: src/components/modals/SellCryptoModal.vue:17
+#: src/components/modals/SellCryptoModal.vue:18
 msgid "Sell Crypto for Fiat"
 msgstr "Vendre de la Crypto pour du Fiat"
 
-#: src/components/modals/SellCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:21
 msgid "Sell NIM and BTC directly to your SEPA bank account."
 msgstr ""
 "Vendre du NIM et du BTC directement sur votre compte bancaire avec un "
@@ -1539,13 +1551,13 @@ msgstr ""
 "Envoyez et recevez des NIM sans intermédiaire et profitez d'une véritable "
 "décentralisation."
 
-#: src/components/modals/SellCryptoModal.vue:26
+#: src/components/modals/SellCryptoModal.vue:27
 msgid "Send crypto to a smart contract."
 msgstr "Envoyer de la crypto à un smart contract."
 
-#: src/components/modals/SellCryptoModal.vue:147
-#: src/components/modals/SellCryptoModal.vue:174
-#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:148
+#: src/components/modals/SellCryptoModal.vue:175
+#: src/components/modals/SellCryptoModal.vue:178
 msgid "Send max"
 msgstr "Envoyer le maximum"
 
@@ -1657,7 +1669,7 @@ msgstr "Afficher le lien"
 msgid "Signup"
 msgstr "S'inscrire"
 
-#: src/components/modals/BuyCryptoModal.vue:224
+#: src/components/modals/BuyCryptoModal.vue:225
 msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en Euro"
 
@@ -1739,6 +1751,10 @@ msgstr "Swap réussi !"
 msgid "Swap to {address}"
 msgstr "Swap vers {address}"
 
+#: src/components/layouts/Settings.vue:141
+msgid "Swiping Gestures"
+msgstr ""
+
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
 msgstr "synchronisation"
@@ -1795,8 +1811,8 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr "Le Wallet Nimiq est plus qu'un web-wallet, c'est un nœud du réseau."
 
-#: src/components/modals/BuyCryptoModal.vue:46
-#: src/components/modals/SellCryptoModal.vue:49
+#: src/components/modals/BuyCryptoModal.vue:47
+#: src/components/modals/SellCryptoModal.vue:50
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
@@ -1866,8 +1882,8 @@ msgstr "Cela peut prendre jusqu'à {min} minutes."
 msgid "This month"
 msgstr "Ce mois-ci"
 
-#: src/components/modals/BuyCryptoModal.vue:44
-#: src/components/modals/SellCryptoModal.vue:47
+#: src/components/modals/BuyCryptoModal.vue:45
+#: src/components/modals/SellCryptoModal.vue:48
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "Ce taux inclut les frais de Swap."
@@ -1938,7 +1954,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Transférer des fonds"
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:180
 msgid "Trials"
 msgstr "Tests"
 
@@ -2023,11 +2039,11 @@ msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Utilisez le slider ou modifiez les valeurs pour mettre en place un Swap."
 
-#: src/components/layouts/Settings.vue:141
+#: src/components/layouts/Settings.vue:156
 msgid "Vesting Contract"
 msgstr "Contrat d'acquisition"
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:24
 msgid "Wait for the swap to be set up."
 msgstr "Attendez que le Swap soit mis en place."
 
@@ -2039,7 +2055,7 @@ msgstr "En attente de {currency}"
 msgid "Waiting for Nimiq network informations"
 msgstr "En attente des informations du réseau Nimiq"
 
-#: src/components/modals/BuyCryptoModal.vue:16
+#: src/components/modals/BuyCryptoModal.vue:17
 msgid ""
 "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
 "decentralized."
@@ -2054,6 +2070,10 @@ msgstr "Quoi d'autre ?"
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
 msgid "What is your bank called?"
 msgstr "Quel est le nom de votre banque ?"
+
+#: src/components/layouts/Settings.vue:148
+msgid "When ready"
+msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:9
 msgid ""

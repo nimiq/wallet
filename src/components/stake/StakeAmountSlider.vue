@@ -58,7 +58,7 @@
 import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
-import { ENABLED } from '../../lib/FeatureProposal';
+import { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
 import { calculateDisplayedDecimals, formatSpaceyNumber } from '../../lib/NumberFormatting';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -178,10 +178,6 @@ export default defineComponent({
             window.addEventListener('mouseup', atEnd);
             window.addEventListener('touchend', atEnd);
         };
-
-        // const reSetAmount = (e: MouseEvent | TouchEvent) => {
-        //     (e!.target! as HTMLInputElement).value = formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE);
-        // };
 
         const updateAmount = (e: MouseEvent | TouchEvent) => {
             startSelection = ((e!.target! as HTMLInputElement).selectionStart as number);

@@ -98,24 +98,34 @@ export async function checkHistory(
     allowedGap: number,
     onError: (error: Error) => any,
     forceCheck = false,
+    checkForReuse = false,
 ): Promise<number> {
     const client = await getElectrumClient();
     const { state: btcNetwork$ } = useBtcNetworkStore();
     const btcTransactionsStore = useBtcTransactionsStore();
 
+    let counter = 0;
+
     for (const addressInfo of addressInfos) {
         const { address } = addressInfo;
 
-        if (!forceCheck && addressInfo.used && !addressInfo.utxos.length) {
+        if (!forceCheck && !checkForReuse && addressInfo.txoCount && !addressInfo.utxos.length) {
             const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
             if (!hasPendingTransactions) {
                 gap = 0;
-                // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
                 continue;
             }
         }
 
-        const knownTxDetails = addressInfo.used
+        // When checking for address reuse, only check those addresses that are used,
+        // check only the latest addresses no matter how often they were used,
+        // check old addresses only if used more than once.
+        if (checkForReuse && !addressInfo.txoCount) continue;
+        if (checkForReuse && counter > allowedGap * 2 && addressInfo.txoCount === 1) continue;
+
+        counter += 1;
+
+        const knownTxDetails = addressInfo.txoCount
             ? Object.values(btcTransactionsStore.state.transactions)
                 .filter((tx) => tx.addresses.includes(address))
             : [];
@@ -136,9 +146,7 @@ export async function checkHistory(
             .then((txDetails) => { // eslint-disable-line no-loop-func
                 btcTransactionsStore.addTransactions(txDetails);
 
-                const used = addressInfo.used || txDetails.length > 0;
-
-                if (used) {
+                if (addressInfo.txoCount || txDetails.length) {
                     gap = 0;
                 } else {
                     gap += 1;
@@ -147,7 +155,7 @@ export async function checkHistory(
             .catch(onError)
             // Delay resetting fetchingTxHistory to prevent flickering of status,
             // because we are only checking one address after the other currently.
-            .then(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
+            .finally(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
 
         if (gap >= allowedGap) break;
     }
@@ -178,8 +186,6 @@ export async function launchElectrum() {
         console.log('BTC Consensus', state);
         btcNetwork$.consensus = state;
     });
-
-    // TODO: Subscribe to new addresses?
 
     // Fetch transactions for active account
     const fetchedAccounts = new Set<string>();
@@ -225,6 +231,20 @@ export async function launchElectrum() {
                     setTimeout(() => btcNetwork$.fetchingTxHistory--, 100);
                 }
             } while (gap < allowedGap);
+
+            if (chain === 'internal') continue;
+
+            // Now check for external address reuse
+            gap = await checkHistory( // eslint-disable-line no-await-in-loop
+                addressSet.value[chain].slice().reverse(),
+                [],
+                0,
+                allowedGap,
+                console.error, // eslint-disable-line no-console
+                false,
+                true,
+            );
+            console.log('Checked for BTC address reuse', gap);
         }
 
         // Subscribe to addresses that now have UTXOs
@@ -250,13 +270,13 @@ export async function launchElectrum() {
         let gap = 0;
         const addresses = addressSet.value.external.filter((addressInfo) => {
             if (gap >= BTC_ADDRESS_GAP) return false;
-            if (addressInfo.used) {
+            if (addressInfo.txoCount) {
                 gap = 0;
                 return false;
             }
             gap += 1;
             return true;
-        }).map((addressInfo) => addressInfo.address);
+        }).map(({ address }) => address);
 
         if (gap < BTC_ADDRESS_GAP) {
             addBtcAddresses(useAccountStore().activeAccountId.value!, 'external', BTC_ADDRESS_GAP - gap);
@@ -272,6 +292,32 @@ export async function launchElectrum() {
         subscribeToAddresses(addresses);
     });
 
+    // Subscribe to all used external addresses that might get reused
+    const maybeReusedExternalAddresses = computed(() => {
+        if (isFetchingTxHistory.value) return null;
+        if (!addressSet.value.external.length) return null;
+
+        const addresses: string[] = [];
+        for (const addressInfo of addressSet.value.external.slice().reverse()) {
+            if (!addressInfo.txoCount) continue; // Skip unused addresses
+
+            // Subscribe to all recently used addresses
+            // Subscribe to older addresses that have been used more than once
+            if (addresses.length < BTC_ADDRESS_GAP * 2 || addressInfo.txoCount > 1) {
+                addresses.push(addressInfo.address);
+            }
+        }
+
+        return addresses;
+    });
+    watch([maybeReusedExternalAddresses, isFetchingTxHistory], (newValues) => {
+        if (!Array.isArray(newValues)) return;
+        const [addresses, isFetching] = newValues as unknown as [string[] | null, boolean];
+        if (isFetching) return; // Wait for fetching to finish before subscribing
+        if (!addresses) return;
+        subscribeToAddresses(addresses);
+    });
+
     // Subscribe to the next unused internal address per account
     // (This is not really necessary, since an internal address can only receive txs from an external
     // address, all of which we are monitoring anyway. So this is more of a backup-subscription.)
@@ -280,7 +326,7 @@ export async function launchElectrum() {
         if (!addressSet.value.internal.length) return undefined;
 
         const unusedAddresses = addressSet.value.internal
-            .filter((addressInfo) => !addressInfo.used)
+            .filter((addressInfo) => !addressInfo.txoCount)
             .map((addressInfo) => addressInfo.address);
 
         // When only 2 unused change addresses are left, get new ones from Hub

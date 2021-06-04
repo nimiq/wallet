@@ -116,7 +116,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
                 btcAddressInfos.push({
                     address: btcAddress,
-                    used: existingAddressInfo.used || false,
+                    txoCount: existingAddressInfo.txoCount || 0,
                     utxos: existingAddressInfo.utxos || [],
                 });
             }
@@ -486,7 +486,7 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
 
     const btcAddressInfos: BtcAddressInfo[] = newAddresses.map((address) => ({
         address,
-        used: false,
+        txoCount: 0,
         utxos: [],
     }));
 

@@ -136,9 +136,7 @@ export async function checkHistory(
             .then((txDetails) => { // eslint-disable-line no-loop-func
                 btcTransactionsStore.addTransactions(txDetails);
 
-                const used = Boolean(addressInfo.txoCount) || txDetails.length > 0;
-
-                if (used) {
+                if (addressInfo.txoCount || txDetails.length) {
                     gap = 0;
                 } else {
                     gap += 1;
@@ -147,7 +145,7 @@ export async function checkHistory(
             .catch(onError)
             // Delay resetting fetchingTxHistory to prevent flickering of status,
             // because we are only checking one address after the other currently.
-            .then(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
+            .finally(() => setTimeout(() => btcNetwork$.fetchingTxHistory--, 100));
 
         if (gap >= allowedGap) break;
     }
@@ -178,8 +176,6 @@ export async function launchElectrum() {
         console.log('BTC Consensus', state);
         btcNetwork$.consensus = state;
     });
-
-    // TODO: Subscribe to new addresses?
 
     // Fetch transactions for active account
     const fetchedAccounts = new Set<string>();
@@ -256,7 +252,7 @@ export async function launchElectrum() {
             }
             gap += 1;
             return true;
-        }).map((addressInfo) => addressInfo.address);
+        }).map(({ address }) => address);
 
         if (gap < BTC_ADDRESS_GAP) {
             addBtcAddresses(useAccountStore().activeAccountId.value!, 'external', BTC_ADDRESS_GAP - gap);
@@ -271,6 +267,8 @@ export async function launchElectrum() {
         if (!addresses) return;
         subscribeToAddresses(addresses);
     });
+
+    // TODO: Collect used external address which should be subscribed to detect reusing
 
     // Subscribe to the next unused internal address per account
     // (This is not really necessary, since an internal address can only receive txs from an external

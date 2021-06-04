@@ -268,7 +268,31 @@ export async function launchElectrum() {
         subscribeToAddresses(addresses);
     });
 
-    // TODO: Collect used external address which should be subscribed to detect reusing
+    // Subscribe to all used external addresses that might get reused
+    const maybeReusedExternalAddresses = computed(() => {
+        if (isFetchingTxHistory.value) return null;
+        if (!addressSet.value.external.length) return null;
+
+        const addresses: string[] = [];
+        for (const addressInfo of addressSet.value.external.slice().reverse()) {
+            if (!addressInfo.txoCount) continue; // Skip unused addresses
+
+            // Subscribe to all recently used addresses
+            // Subscribe to older addresses that have been used more than once
+            if (addresses.length < BTC_ADDRESS_GAP * 2 || addressInfo.txoCount > 1) {
+                addresses.push(addressInfo.address);
+            }
+        }
+
+        return addresses;
+    });
+    watch([maybeReusedExternalAddresses, isFetchingTxHistory], (newValues) => {
+        if (!Array.isArray(newValues)) return;
+        const [addresses, isFetching] = newValues as unknown as [string[] | null, boolean];
+        if (isFetching) return; // Wait for fetching to finish before subscribing
+        if (!addresses) return;
+        subscribeToAddresses(addresses);
+    });
 
     // Subscribe to the next unused internal address per account
     // (This is not really necessary, since an internal address can only receive txs from an external

@@ -48,7 +48,6 @@ export default defineComponent({
         };
         const sortedList = ref(props.validatorsList.map((i) => i));
         const doSort = (state: FilterState) => {
-            // console.log(state, FilterState.TRUST);
             switch (state) {
                 case FilterState.TRUST: {
                     sortedList.value.sort((a, b) => (a.trust < b.trust)
@@ -121,7 +120,7 @@ export default defineComponent({
         padding-top: .5rem;
         margin-left: -.25rem;
         line-height: 1;
-        height: 17rem;
+        height: 16rem;
         /deep/ .nq-h1 {
             color: var(--nimiq-blue);
             padding-top: 3.25rem;
@@ -129,15 +128,17 @@ export default defineComponent({
         }
     }
     .page-body {
-        padding-top: 0;
+        padding-top: 1rem;
         padding-left: 1rem;
         padding-right: 0;
-        max-height: 51.25rem;
+        max-height: 52.25rem;
         overflow: hidden;
 
         .mask-container {
             position: relative;
+            top: -.75rem;
             overflow: hidden;
+            padding-top: .75rem;
         }
 
         .scroll-container {

@@ -98,22 +98,32 @@ export async function checkHistory(
     allowedGap: number,
     onError: (error: Error) => any,
     forceCheck = false,
+    checkForReuse = false,
 ): Promise<number> {
     const client = await getElectrumClient();
     const { state: btcNetwork$ } = useBtcNetworkStore();
     const btcTransactionsStore = useBtcTransactionsStore();
 
+    let counter = 0;
+
     for (const addressInfo of addressInfos) {
         const { address } = addressInfo;
 
-        if (!forceCheck && addressInfo.txoCount && !addressInfo.utxos.length) {
+        if (!forceCheck && !checkForReuse && addressInfo.txoCount && !addressInfo.utxos.length) {
             const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
             if (!hasPendingTransactions) {
                 gap = 0;
-                // TODO: Still re-check/subscribe addresses that had more than one incoming tx (recently)
                 continue;
             }
         }
+
+        // When checking for address reuse, only check those addresses that are used,
+        // check only the latest addresses no matter how often they were used,
+        // check old addresses only if used more than once.
+        if (checkForReuse && !addressInfo.txoCount) continue;
+        if (checkForReuse && counter > allowedGap * 2 && addressInfo.txoCount === 1) continue;
+
+        counter += 1;
 
         const knownTxDetails = addressInfo.txoCount
             ? Object.values(btcTransactionsStore.state.transactions)
@@ -221,6 +231,20 @@ export async function launchElectrum() {
                     setTimeout(() => btcNetwork$.fetchingTxHistory--, 100);
                 }
             } while (gap < allowedGap);
+
+            if (chain === 'internal') continue;
+
+            // Now check for external address reuse
+            gap = await checkHistory( // eslint-disable-line no-await-in-loop
+                addressSet.value[chain].slice().reverse(),
+                [],
+                0,
+                allowedGap,
+                console.error, // eslint-disable-line no-console
+                false,
+                true,
+            );
+            console.log('Checked for BTC address reuse', gap);
         }
 
         // Subscribe to addresses that now have UTXOs

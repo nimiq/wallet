@@ -945,8 +945,8 @@
   integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
-  version "0.1.0"
-  resolved "https://github.com/nimiq/electrum-client#61c5b97d9bcd3ff0f49703dd5bdc30c711dd506c"
+  version "0.2.1"
+  resolved "https://github.com/nimiq/electrum-client#cc7a2bf9913bfe4ec5f89b6d487a645d8ac15aea"
   dependencies:
     bitcoinjs-lib "^5.1.10"
 

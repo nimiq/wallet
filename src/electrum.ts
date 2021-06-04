@@ -106,7 +106,7 @@ export async function checkHistory(
     for (const addressInfo of addressInfos) {
         const { address } = addressInfo;
 
-        if (!forceCheck && addressInfo.used && !addressInfo.utxos.length) {
+        if (!forceCheck && addressInfo.txoCount && !addressInfo.utxos.length) {
             const hasPendingTransactions = pendingTransactions.some((tx) => tx.addresses.includes(address));
             if (!hasPendingTransactions) {
                 gap = 0;
@@ -115,7 +115,7 @@ export async function checkHistory(
             }
         }
 
-        const knownTxDetails = addressInfo.used
+        const knownTxDetails = addressInfo.txoCount
             ? Object.values(btcTransactionsStore.state.transactions)
                 .filter((tx) => tx.addresses.includes(address))
             : [];
@@ -136,7 +136,7 @@ export async function checkHistory(
             .then((txDetails) => { // eslint-disable-line no-loop-func
                 btcTransactionsStore.addTransactions(txDetails);
 
-                const used = addressInfo.used || txDetails.length > 0;
+                const used = Boolean(addressInfo.txoCount) || txDetails.length > 0;
 
                 if (used) {
                     gap = 0;
@@ -250,7 +250,7 @@ export async function launchElectrum() {
         let gap = 0;
         const addresses = addressSet.value.external.filter((addressInfo) => {
             if (gap >= BTC_ADDRESS_GAP) return false;
-            if (addressInfo.used) {
+            if (addressInfo.txoCount) {
                 gap = 0;
                 return false;
             }
@@ -280,7 +280,7 @@ export async function launchElectrum() {
         if (!addressSet.value.internal.length) return undefined;
 
         const unusedAddresses = addressSet.value.internal
-            .filter((addressInfo) => !addressInfo.used)
+            .filter((addressInfo) => !addressInfo.txoCount)
             .map((addressInfo) => addressInfo.address);
 
         // When only 2 unused change addresses are left, get new ones from Hub

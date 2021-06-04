@@ -16,7 +16,6 @@ export default defineComponent({
         const active = computed(() => props.ENABLED[props.featureName]);
         const toggle = (featureName) => {
             props.ENABLED[featureName] = !props.ENABLED[featureName];
-            alert(`${featureName} FEATURE ${props.ENABLED[featureName] ? 'enabled' : 'disabled'} !`);
         };
 
         return {

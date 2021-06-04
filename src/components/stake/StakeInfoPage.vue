@@ -84,36 +84,40 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .page-header {
-        padding-top: 4rem;
+        height: 36.625rem;
+        padding-top: 3rem;
         line-height: 1;
         /deep/ .nq-h1 {
-            margin-top: 3rem;
             font-size: 3rem;
+            color: var(--nimiq-blue);
         }
         .staking-icon {
+            margin-top: .75rem;
+            margin-left: -.125rem;
+            margin-bottom: 2.375rem;
             svg {
                 height: 17.375rem;
             }
         }
     }
     .page-body {
-        margin-top: -1.75rem;
         padding: 0;
         margin: 0;
-        height: 32rem;
+        height: 31rem;
         .staking-rounded-background {
             display: flex;
             flex-direction: column;
             justify-content: center;
             background-image: url('/img/staking/background-collar.svg');
             background-size: cover;
-            background-position: 0rem -2.125rem;
+            background-position: 0rem -1rem;
             background-repeat: no-repeat;
             text-align: center;
             .staking-under-icons-text {
                 font-size: 1.75rem;
                 font-weight: 600;
-                padding: 3rem 2rem;
+                padding: 7.625rem 2rem;
+                padding-bottom: 1.25rem;
                 line-height: 2.45rem;
                 text-align: center;
                 color: #231044;
@@ -123,8 +127,8 @@ export default defineComponent({
             }
             .staking-icons-lace {
                 position: relative;
-                top: -1.0rem;
-                left: -3.0rem;
+                top: 3.0rem;
+                left: -3.25rem;
                 white-space: nowrap;
                 width: 95%;
                 margin: auto;
@@ -136,19 +140,27 @@ export default defineComponent({
                     position:relative;
                     width: 5.375rem;
                     height: 5.375rem;
-                    margin-left: .75rem;
+                    margin-left: .81rem;
                 }
             }
             .stake-button {
                 height: 8rem;
                 width: 31.5rem;
+                font-weight: bold;
+                font-size: 2rem;
+                line-height: 2.5rem;
+                letter-spacing: 0.1875rem;
             }
         }
     }
 
     .nq-text {
         display: inline-block;
-        margin-top: 1rem;
+        margin-top: 1.25rem;
+        padding: 0rem 1rem;
         font-size: 2rem;
+        font-weight: 400;
+        line-height: 140%;
+        color: #231044;
     }
 </style>

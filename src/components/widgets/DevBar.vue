@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref, reactive } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import FeatureToggler from './FeatureToggler.vue';
 import Mockpare from './Mockpare.vue';
 
@@ -20,13 +20,14 @@ import Mockpare from './Mockpare.vue';
 // difference between their feature improvement/proposal and existing wallet functionality
 
 export const ENABLED_FEATURES = Vue.observable({
-    necklace: true,
+    necklace: false,
     stackattack: false,
 });
 
 export default defineComponent({
     setup() {
-        const visible = ref(process.env.NODE_ENV === 'development');
+        const visible = ref(process.env.NODE_ENV === 'development'
+        || /https:\/\/wallet\.nimiq-testnet.com/.test(window.location.href));
 
         return {
             ENABLED: ENABLED_FEATURES,

@@ -1,6 +1,6 @@
 <template>
     <span>
-        <select @change="screenName = $event.target.value">
+        <select v-model="screenName">
             <option v-for="screen in screens" :key="screen">
                 {{ screen }}
             </option>
@@ -12,10 +12,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 
 export default defineComponent({
     setup() {
+        const $screens = ref<HTMLSelectElement>();
         const screens = ref([
             'Welcome',
             'Choose Validator',
@@ -47,12 +48,16 @@ export default defineComponent({
         const keyboardControl = (e:KeyboardEvent) => {
             if (e.key === 'M') {
                 toggleMock();
-            }
-            if (e.key === '+') {
-                adjustOpacity(0.1);
-            }
-            if (e.key === '-') {
-                adjustOpacity(-0.1);
+            } else if (e.key === '+') {
+                adjustOpacity(.1);
+            } else if (e.key === '-') {
+                adjustOpacity(-.1);
+            } else if (e.key === 'PageUp') {
+                const pos = screens.value.indexOf(screenName.value);
+                screenName.value = screens.value[(pos + 1) % screens.value.length];
+            } else if (e.key === 'PageDown') {
+                const pos = screens.value.indexOf(screenName.value);
+                screenName.value = screens.value[(pos + screens.value.length - 1) % screens.value.length];
             }
         };
 
@@ -75,6 +80,7 @@ export default defineComponent({
         });
         return {
             screens,
+            $screens,
             screenName,
             toggleMock,
         };

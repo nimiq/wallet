@@ -43,7 +43,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
-import { ENABLED } from '../../lib/FeatureProposal';
+import { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
 const progression = (i:number, n:number) => {

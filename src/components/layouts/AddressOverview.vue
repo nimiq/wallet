@@ -1,15 +1,7 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
-        <span class="dev-bar">
-            <span class="feature-bar">
-                <FeatureToggler featureName="necklace" />
-                <FeatureToggler featureName="stackattack" />
-            </span>
-            <span class="mockpare">
-                <Mockpare />
-            </span>
-        </span>
+        <DevBar />
         <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -118,7 +110,7 @@
                     :container="this">
                     <div slot="trigger">
                         <button class="stake"
-                            :class="{ stackattack: ENABLED.stackattack }" @click="$router.push('/stake')"
+                            :class="{ stackattack: stackattack }" @click="$router.push('/stake')"
                             @mousedown.prevent
                             :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || activeCurrency !== 'nim'"
@@ -227,8 +219,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
-import FeatureToggler from '../widgets/FeatureToggler.vue';
-import Mockpare from '../widgets/Mockpare.vue';
+import DevBar, { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -241,7 +232,6 @@ import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import EventIcon from '../icons/EventIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
 import CrossCloseButton from '../CrossCloseButton.vue';
-import { ENABLED } from '../../lib/FeatureProposal';
 
 export default defineComponent({
     name: 'address-overview',
@@ -251,6 +241,7 @@ export default defineComponent({
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
+        const stackattack = computed(() => ENABLED.stackattack);
         const searchString = ref('');
 
         const unclaimedCashlinkCount = ref(0);
@@ -335,7 +326,7 @@ export default defineComponent({
             promoBoxVisible,
             setPromoBoxVisible,
             onTransactionListScroll,
-            ENABLED,
+            stackattack,
         };
     },
     components: {
@@ -361,8 +352,7 @@ export default defineComponent({
         CrossIcon,
         CrossCloseButton,
         Tooltip,
-        FeatureToggler,
-        Mockpare,
+        DevBar,
     },
     directives: {
         responsive: ResponsiveDirective,
@@ -698,6 +688,15 @@ export default defineComponent({
             animation: flicker 15s ease alternate infinite;
             path:nth-child(1), path:nth-child(2), path:nth-child(4) {
                 animation: fastwave 3s ease alternate infinite;
+            }
+            path:nth-child(1) {
+                animation-delay: .5s;
+            }
+            path:nth-child(2) {
+                animation-delay: .7s;
+            }
+            path:nth-child(4) {
+                animation-delay: .9s;
             }
         }
     }

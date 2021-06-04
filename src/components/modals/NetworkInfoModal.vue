@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse>
+    <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse :swipePadding="false">
         <PageBody :style="height !== 0 ? `--height: calc(${height}px)`: ''">
             <div class="image">
                 <img src="../../assets/browser-network.png" alt="Browser Network Graph" />
@@ -80,13 +80,12 @@ export default defineComponent({
     pointer-events: none;
 
     /deep/ .wrapper {
-        pointer-events: all;
-
         .small-page {
             min-height: unset;
             color: white;
             background: #302949; // Determined by Julian
             box-shadow: none;
+            pointer-events: all;
 
             /**
              * Backdrop Blur can be enabled once these bugs are fixed in browsers:
@@ -98,6 +97,10 @@ export default defineComponent({
             // background: rgba(255, 255, 255, 0.2);
             // backdrop-filter: blur(1rem);
         }
+
+        .swipe-bar {
+            background: rgba(255, 255, 255, 0.14);
+        }
     }
 }
 
@@ -106,6 +109,7 @@ export default defineComponent({
     --height: var(--padding); // default value, will be updated with Javascript
 
     padding: var(--padding);
+    touch-action: none;
 
     .image {
         display: inline-flex;

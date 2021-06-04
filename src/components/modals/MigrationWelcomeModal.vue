@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners">
+    <Modal v-bind="$attrs" v-on="$listeners" :swipeToClose="false">
         <PageHeader :backArrow="page > 1" @back="page -= 1" progressIndicator :numberSteps="3" :step="page">
             <template v-if="page === 1">
                 {{ $t('One Account, many Addresses') }}

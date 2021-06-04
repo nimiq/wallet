@@ -3,6 +3,7 @@
         :class="{'wider-overlay': !!swap}"
         :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :swipePadding="page !== Pages.WELCOME"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">

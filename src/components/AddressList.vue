@@ -221,6 +221,8 @@ export default defineComponent({
         margin: 0 calc(-1 * var(--padding-sides));
         color: var(--text-70);
 
+        touch-action: pan-y;
+
         // To make space for the .active-box leftside box-shadow
         padding-left: var(--padding-sides);
 

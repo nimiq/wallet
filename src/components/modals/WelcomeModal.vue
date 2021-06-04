@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose>
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false">
         <PageHeader :backArrow="page > 1" @back="page -= 1">
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}

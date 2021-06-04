@@ -24,7 +24,7 @@ export type UTXO = {
 
 export type BtcAddressInfo = {
     address: string,
-    used: boolean,
+    txoCount?: number, // Number of transaction outputs received, to track if the address has been reused
     utxos: UTXO[],
 }
 
@@ -94,10 +94,10 @@ export const useBtcAddressStore = createStore({
         // activeExternalAddresses that were never copied
         availableExternalAddresses: (state, { addressSet, copiedExternalAddresses }): string[] =>
             addressSet.value.external
-                .filter(({ used, address }: BtcAddressInfo) => !used && !copiedExternalAddresses.value[address])
+                .filter(({ txoCount, address }: BtcAddressInfo) => !txoCount && !copiedExternalAddresses.value[address])
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
         nextChangeAddress: (state, { addressSet }): string | undefined =>
-            (addressSet as Ref<BtcAddressSet>).value.internal.find((addressInfo) => !addressInfo.used)?.address,
+            (addressSet as Ref<BtcAddressSet>).value.internal.find((addressInfo) => !addressInfo.txoCount)?.address,
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {
@@ -131,14 +131,13 @@ export const useBtcAddressStore = createStore({
                     this.patchAddress(address, {
                         utxos: addressInfo.utxos.filter((utxo) =>
                             !spentInputs.has(`${utxo.transactionHash}:${utxo.index}`)),
-                        // Not setting `used` to true here, so that this address's history still gets scanned
                     });
                 }
             }
 
             // Add new UTXOs in transactions to addresses
             const utxosByAddress = new Map<string, UTXO[]>();
-            const usedAddresses = new Set<string>();
+            const txoCountByAddress = new Map<string, number>();
             for (const { outputs, transactionHash } of transactions) {
                 for (const { address, index, script, value } of outputs) {
                     if (!address) continue;
@@ -147,7 +146,7 @@ export const useBtcAddressStore = createStore({
 
                     // Skip this output if it is already spent
                     if (spentInputs.has(`${transactionHash}:${index}`)) {
-                        usedAddresses.add(address);
+                        txoCountByAddress.set(address, (txoCountByAddress.get(address) || 0) + 1);
                         continue;
                     }
 
@@ -171,15 +170,15 @@ export const useBtcAddressStore = createStore({
                 const existingUtxos = this.state.addressInfos[address].utxos;
                 this.patchAddress(address, {
                     utxos: existingUtxos.concat(utxos),
-                    used: true,
+                    txoCount: (this.state.addressInfos[address].txoCount || 0) + utxos.length,
                 });
             }
-            for (const address of usedAddresses) {
+            for (const [address, txoCount] of txoCountByAddress) {
                 this.patchAddress(address, {
-                    used: true,
+                    txoCount: (this.state.addressInfos[address].txoCount || 0) + txoCount,
                 });
             }
-            this.removeCopiedAddresses([...utxosByAddress.keys(), ...usedAddresses]);
+            this.removeCopiedAddresses([...utxosByAddress.keys(), ...txoCountByAddress.keys()]);
         },
         removeAddresses(addresses: string[]) {
             const addressInfos = { ...this.state.addressInfos };

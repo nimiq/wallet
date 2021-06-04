@@ -1,6 +1,9 @@
 <template>
     <!-- Pass down all attributes not declared as props -->
-    <Modal v-bind="$attrs" v-on="$listeners" class="stake-modal" :class="{'fat-modal': (page === 3)}">
+    <Modal v-bind="$attrs" v-on="$listeners" class="stake-modal" :class="{
+        'fat-modal': (page === 3),
+        'bluetailed-modal': (page === 1),
+    }">
         <template v-if="page === 1">
             <StakeInfoPage @next="page += 1"
                 :validatorsList="validatorsList" />
@@ -95,6 +98,11 @@ export default defineComponent({
                 transition: width 1.5s ease-out;
             }
             transition: width 0.75s ease-out;
+        }
+        &.bluetailed-modal {
+            /deep/ .small-page {
+                background: linear-gradient(180deg, #FFF 0%, #FFF 96%, rgb(248, 248, 248) 96%, #FFF 100%);
+            }
         }
     }
 </style>

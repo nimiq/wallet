@@ -2,14 +2,26 @@
     <div>
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
-                <br />
-                {{ $t('Set an Amount') }}
+                <span v-if="alreadyStaked === true && showView === true">
+                    {{
+                        $t('Staking with {validator}', {
+                            validator: validator.label,
+                        })
+                    }}
+                </span>
+                <span v-else>
+                    {{ $t('Set an Amount') }}
+                </span>
             </template>
             <template #more>
-                <span class="nq-text nq-blue">
+                <span v-if="alreadyStaked === true && showView === true">
+                </span>
+                <span class="nq-text nq-blue" v-else>
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </span>
-                <div class="tooltip-bar">
+                <div
+                    v-if="alreadyStaked === true && showEdit === true"
+                    class="tooltip-bar">
                     <LabelTooltip
                         :isDry="true"
                         :validatorData="validator"
@@ -127,7 +139,6 @@ export default defineComponent({
     setup(props) {
         const { activeAddressInfo } = useAddressStore();
 
-        // const page = document.querySelector<HTMLElement>('.small-page');
         const graphUpdate = ref(0);
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
@@ -141,14 +152,6 @@ export default defineComponent({
 
         validator.stakedAmount = currentStake.value; // temporary
 
-        // if (page !== null) {
-        //     page!.style.width = '63.5rem';
-        // }
-        // onUnmounted(() => {
-        //     if (page !== null) {
-        //         page.style.removeProperty('width');
-        //     }
-        // });
         const updateStaked = (amount: number) => {
             if (amount !== currentStake.value) {
                 currentStake.value = amount;

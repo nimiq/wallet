@@ -39,8 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import { InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { defineComponent } from '@vue/composition-api';
 import { StakingData, ValidatorData } from '../../stores/Staking';
 import { numberToLiteralTimes } from '../../lib/NumberFormatting';
 import { i18n } from '../../i18n/i18n-setup';
@@ -49,26 +48,33 @@ import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ScoreTooltip from './tooltips/ScoreTooltip.vue';
 import RewardTooltip from './tooltips/RewardTooltip.vue';
 
-const getPayoutText = (payout: Array<number>) => {
-    const periods = ['year', 'month', 'week', 'day', 'h'];
+const getPayoutText = (payout: number) => {
+    const periods = {
+        year: (((3600 * 1000) * 24) * 30) * 12,
+        month: ((3600 * 1000) * 24) * 30,
+        week: ((3600 * 1000) * 24) * 7,
+        day: (3600 * 1000) * 24,
+        h: 3600 * 1000,
+    };
     let index = 0;
     let value = 0;
+    const periodNames = Object.keys(periods);
 
-    for (let i = 0; i < payout.length; i++) {
-        if (payout[i] > 0) {
-            index = i;
-            value = payout[i];
+    for (const [, period] of Object.entries(periods)) {
+        value = payout / period;
+        if (value >= 1) {
             break;
         }
+        index += 1;
     }
 
-    if (index === periods.length - 1) {
-        return i18n.t('pays out every {hourCount}', { hourCount: `${value}${periods[index]}` });
+    if (index === periodNames.length - 1) {
+        return i18n.t('pays out every {hourCount}', { hourCount: `${value}${periodNames[index]}` });
     }
 
     return i18n.t('pays out {numberOfTimes} a {period}', {
-        numberOfTimes: numberToLiteralTimes(value),
-        period: periods[index],
+        numberOfTimes: numberToLiteralTimes(Math.floor(value)),
+        period: periodNames[index],
     });
 };
 

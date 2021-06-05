@@ -61,7 +61,7 @@ export default defineComponent({
                 case FilterState.PAYOUT: {
                     sortedList.value.sort((a, b) => (a.payout < b.payout)
                         ? 1
-                        : ((a.payout > b.payout)
+                        : ((a!.payout > b!.payout)
                             ? -1
                             : 0),
                     );

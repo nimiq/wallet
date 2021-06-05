@@ -10,7 +10,7 @@ export type ValidatorData = {
     icon: string | null,
     label: string | null,
     trust: number | .0,
-    payout: Array<number> | [0, 0, 0, 0, 0],
+    payout: number | 0,
     reward: number | .0,
     labelHeaderText: string | null,
     link: string | null,

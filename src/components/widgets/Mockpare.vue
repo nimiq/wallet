@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
 
 export default defineComponent({
     setup() {
@@ -38,6 +38,13 @@ export default defineComponent({
             el!.style.display = state.value ? 'block' : 'none';
         };
 
+        const updateSource = () => {
+            const el = document.getElementById(mockContainerID) as HTMLImageElement;
+            if (state.value) {
+                el.src = `/mockups/${screenName.value}.png`;
+            }
+        };
+
         const adjustOpacity = (adjustment: number) => {
             opacity.value += adjustment;
             opacity.value = Math.min(1.0, Math.max(0.0, opacity.value));
@@ -55,9 +62,11 @@ export default defineComponent({
             } else if (e.key === 'PageUp') {
                 const pos = screens.value.indexOf(screenName.value);
                 screenName.value = screens.value[(pos + 1) % screens.value.length];
+                updateSource();
             } else if (e.key === 'PageDown') {
                 const pos = screens.value.indexOf(screenName.value);
                 screenName.value = screens.value[(pos + screens.value.length - 1) % screens.value.length];
+                updateSource();
             }
         };
 

@@ -3,6 +3,7 @@
         <span class="feature-bar">
             <FeatureToggler featureName="necklace" :ENABLED="ENABLED" />
             <FeatureToggler featureName="stackattack" :ENABLED="ENABLED" />
+            <FeatureToggler featureName="dualSlider" :ENABLED="ENABLED" />
         </span>
         <span class="mockpare">
             <Mockpare />
@@ -22,6 +23,7 @@ import Mockpare from './Mockpare.vue';
 export const ENABLED_FEATURES = Vue.observable({
     necklace: false,
     stackattack: false,
+    dualSlider: false,
 });
 
 export default defineComponent({

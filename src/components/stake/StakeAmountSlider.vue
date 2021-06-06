@@ -2,10 +2,10 @@
     <div class="slider-container" ref="$container">
         <div class="slider-body">
             <div class="slider-background">
-                <div class="background-one" ref="$backgroundOne" />
-                <div class="background-two" ref="$backgroundTwo" />
-                <div class="background-three" ref="$backgroundThree" />
-                <div class="background-four" ref="$backgroundFour" />
+                <div class="background-one" ref="$backgroundLinesLeft" />
+                <div class="background-two" ref="$backgroundMiddlePlant" />
+                <div class="background-three" ref="$backgroundLinesRight" />
+                <div class="background-four" ref="$backgroundRightPlant" />
                 <div class="scalar-amount left">
                     0 NIM
                 </div>
@@ -39,7 +39,9 @@
             <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
-                    <div class="slider-staked-amount" v-if="ENABLED.dualSlider" />
+                    <div class="slider-staked-amount"
+                        v-if="ENABLED.dualSlider"
+                        ref="$dualSlider" />
                     <div class="slider-knob"
                         ref="$knob"
                         @touchstart="atClick"
@@ -126,9 +128,13 @@ export default defineComponent({
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
         const currentFormattedAmount = computed(() =>
             formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
-
         const availableFormattedAmount = computed(() =>
             formatSpaceyNumber(availableAmount.value!, NIM_MAGNITUDE));
+
+        const getPointAtPercent = (percent: number): number =>
+            (percent / 100.0) * (sliderBox.width - knobBox.width);
+
+        let initialX = 0;
 
         const estimateTextWidth = (text: string, defaultSize: number, options:Record<string, number> = { ' ': 3 }) => {
             let result = 0;
@@ -156,10 +162,11 @@ export default defineComponent({
         const $container = ref<HTMLElement>(null);
         const $knob = ref<HTMLElement>(null);
         const $slide = ref<HTMLElement>(null);
-        const $backgroundOne = ref<HTMLElement>(null);
-        const $backgroundTwo = ref<HTMLElement>(null);
-        const $backgroundThree = ref<HTMLElement>(null);
-        const $backgroundFour = ref<HTMLElement>(null);
+        const $dualSlider = ref<HTMLElement>(null);
+        const $backgroundLinesLeft = ref<HTMLElement>(null);
+        const $backgroundMiddlePlant = ref<HTMLElement>(null);
+        const $backgroundLinesRight = ref<HTMLElement>(null);
+        const $backgroundRightPlant = ref<HTMLElement>(null);
         const $progressBar = ref<HTMLElement>(null);
         const $percentText = ref<HTMLElement>(null);
         const $stakedNIMText = ref<HTMLElement>(null);
@@ -210,9 +217,6 @@ export default defineComponent({
             context.emit('amount-chosen', 0);
         };
 
-        const getPointAtPercent = (percent: number): number =>
-            (percent / 100.0) * (sliderBox.width - knobBox.width);
-
         const updatePosition = (offsetX: number) => {
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
@@ -245,27 +249,34 @@ export default defineComponent({
                 const percent = Math.min(100, Math.max(0,
                     (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
                 ));
+                const offsetX = getPointAtPercent(percent);
                 currentAmount.value = (percent / 100) * availableAmount.value!;
 
                 if (alreadyStaked.value === true) {
                     if (percent < alreadyStakedPercentage.value) {
                         context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
+                        if (ENABLED.dualSlider) {
+                            $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
+                            $dualSlider.value!.style.left = `${offsetX}px`;
+                        }
                     } else {
+                        if (ENABLED.dualSlider) {
+                            $dualSlider.value!.style.width = '0px';
+                        }
                         context.emit('amount-unstaked', 0);
                     }
                 }
                 context.emit('amount-staked', currentAmount.value);
-                const offsetX = getPointAtPercent(percent);
                 updatePosition(offsetX);
             }
         };
 
         const fillBackground = (lo: number, hi: number) => {
             const map = [
-                [0, 46.2, $backgroundOne, 5.9, 9.5],
-                [46.2, 54.95, $backgroundTwo],
-                [54.95, 90.89, $backgroundThree],
-                [90.89, 100, $backgroundFour],
+                [0, 46.2, $backgroundLinesLeft, 5.9, 9.5],
+                [46.2, 54.95, $backgroundMiddlePlant],
+                [54.95, 90.89, $backgroundLinesRight],
+                [90.89, 100, $backgroundRightPlant],
             ];
             let start = NaN;
             let end = NaN;
@@ -324,6 +335,7 @@ export default defineComponent({
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
             pivotPoint = { x: 0, y: knobBox.y } as Point;
+            initialX = getPointAtPercent(alreadyStakedPercentage.value);
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
@@ -353,12 +365,13 @@ export default defineComponent({
             $percentText,
             $stakedNIMText,
             $stakedNIMAmount,
-            $backgroundOne,
-            $backgroundTwo,
-            $backgroundThree,
-            $backgroundFour,
+            $backgroundLinesLeft,
+            $backgroundMiddlePlant,
+            $backgroundLinesRight,
+            $backgroundRightPlant,
             $progressBar,
             $dotIndicator,
+            $dualSlider,
             buildSVG,
         };
     },
@@ -439,7 +452,7 @@ export default defineComponent({
         }
         .scalar-amount {
             font-weight: bold;
-            font-size: 1.25;
+            font-size: 1.75rem;
             line-height: 100%;
 
             text-align: right;
@@ -447,16 +460,15 @@ export default defineComponent({
             opacity: 0.3;
             &.left {
                 position: absolute;
-                top: -3rem;
                 left: 0rem;
-                top: -4.375rem;
+                top: -3.5rem;
                 background-color: transparent!important;
             }
 
             &.right {
                 position: absolute;
-                top: -4.375rem;
-                right: 0rem;
+                top: -3.5rem;
+                right: -0.5rem;
                 background-color: transparent!important;
             }
         }
@@ -486,21 +498,22 @@ export default defineComponent({
                 display: flex;
                 justify-content: center;
                 width: 7rem;
-                top: 1rem;
+                top: 1.75rem;
                 color: var(--nimiq-green);
                 font-size: 1.625rem;
                 font-weight: 700;
                 letter-spacing: .0625rem;
+                background: white;
             }
             .bottom-indicator {
                 display: inline-block;
                 position: relative;
-                top: 1rem;
+                top: -1rem;
                 height: 1rem;
             }
             .stake-dot-indicator {
                 position: relative;
-                top: -.25rem;
+                top: -2.25rem;
                 background-color: var(--nimiq-green);
                 width: .375rem;
                 height: .375rem;
@@ -522,6 +535,14 @@ export default defineComponent({
                     left: 0;
                     top: 0;
                     background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
+                    height: 100%;
+                    border-radius: 3rem;
+                }
+                .slider-staked-amount {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    background: radial-gradient(100% 100% at 100% 100%, #D1D33E 0%, #B1BC35 100%);
                     height: 100%;
                     border-radius: 3rem;
                 }

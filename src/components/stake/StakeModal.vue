@@ -18,6 +18,16 @@
                 :stakingData="stakingData" :validatorsList="validatorsList"
                 :activeValidator="activeValidator" />
         </template>
+        <template v-if="page === 4">
+            <StakedAlreadyPage @back="page -= 1" @next="page += 1"
+                :stakingData="stakingData" :validatorsList="validatorsList"
+                :activeValidator="activeValidator" />
+        </template>
+        <template v-if="page === 5">
+            <StakeRewardsHistoryPage @back="page -= 1" @next="page += 1"
+                :stakingData="stakingData" :validatorsList="validatorsList"
+                :activeValidator="activeValidator" />
+        </template>
     </Modal>
 </template>
 
@@ -29,6 +39,8 @@ import Modal from '../modals/Modal.vue';
 import StakeInfoPage from './StakeInfoPage.vue';
 import StakeValidatorPage from './StakeValidatorPage.vue';
 import StakeGraphPage from './StakeGraphPage.vue';
+import StakedAlreadyPage from './StakedAlreadyPage.vue';
+import StakeRewardsHistoryPage from './StakeRewardsHistoryPage.vue';
 
 import stakingData from './assets/staking.json';
 import validatorsList from './assets/validators.mock.json';// mock data
@@ -67,6 +79,8 @@ export default defineComponent({
         StakeInfoPage,
         StakeValidatorPage,
         StakeGraphPage,
+        StakedAlreadyPage,
+        StakeRewardsHistoryPage,
     },
 });
 </script>
@@ -95,9 +109,9 @@ export default defineComponent({
             /deep/ .small-page {
                 width: 63.5rem;
                 height: 74.875rem;
-                transition: width 1.5s ease-out;
+                // transition: width 1.5s ease-out;
             }
-            transition: width 0.75s ease-out;
+            // transition: width 0.75s ease-out;
         }
         &.bluetailed-modal {
             /deep/ .small-page {

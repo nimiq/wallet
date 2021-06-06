@@ -2,26 +2,13 @@
     <div>
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
-                <span v-if="alreadyStaked === true && showView === true">
-                    {{
-                        $t('Staking with {validator}', {
-                            validator: validator.label,
-                        })
-                    }}
-                </span>
-                <span v-else>
-                    {{ $t('Set an Amount') }}
-                </span>
+                {{ $t('Set an Amount') }}
             </template>
             <template #more>
-                <span v-if="alreadyStaked === true && showView === true">
-                </span>
-                <span class="nq-text nq-blue" v-else>
+                <span class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </span>
-                <div
-                    v-if="alreadyStaked === true && showEdit === true"
-                    class="tooltip-bar">
+                <div class="tooltip-bar">
                     <LabelTooltip
                         :isDry="true"
                         :validatorData="validator"
@@ -58,58 +45,41 @@
                     </div>
                 </Tooltip>
             </span>
-            <div v-if="alreadyStaked === true && showView === true">
-                <StakingGraph :stakedAmount="currentStake"
-                    :apy="validator.reward" :readonly="true"
-                    :period="{
-                        s: NOW,
-                        p: 12,
-                        m: MONTH,
-                    }"
-                    :key="graphUpdate" />
-                <AlreadyStakedPartial
-                    :validator="validator"
-                    :availableBalance="availableBalance"
-                    :validatorsList="validatorsList"
-                    @adjust-stake="showView = false; showEdit = true;"/>
-            </div>
-            <div v-else>
-                <StakingGraph v-if="alreadyStaked === true && showEdit === true"
-                    :stakedAmount="currentStake" :apy="validator.reward"
-                    :period="{
-                        s: NOW,
-                        p: 12,
-                        m: MONTH,
-                    }"
-                    :key="graphUpdate" />
-                <StakingGraph v-else
-                    :stakedAmount="currentStake" :apy="validator.reward"
-                    :period="{
-                        s: NOW,
-                        p: 12,
-                        m: MONTH,
-                    }"
-                    :key="graphUpdate" />
+            <StakingGraph v-if="alreadyStaked === true"
+                :stakedAmount="currentStake" :apy="validator.reward"
+                :period="{
+                    s: NOW,
+                    p: 12,
+                    m: MONTH,
+                }"
+                :key="graphUpdate" />
+            <StakingGraph v-else
+                :stakedAmount="currentStake" :apy="validator.reward"
+                :period="{
+                    s: NOW,
+                    p: 12,
+                    m: MONTH,
+                }"
+                :key="graphUpdate" />
 
-                <StakeAmountSlider class="stake-amount-slider"
-                    :stakedAmount="currentStake"
-                    @amount-staked="updateStaked"
-                    @amount-unstaked="updateUnstaked"
-                    @amount-chosen="updateGraph" />
-                <button class="nq-button light-blue stake-button" @click="$emit('next')">
-                    {{ $t('confirm stake') }}
-                </button>
-                <div class="stake-disclaimer" v-if="unstakedAmount === 0">
-                    {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
-                </div>
-                <div class="unstake-disclaimer" v-else>
-                    <Amount
-                        :decimals="DISPLAYED_DECIMALS"
-                        :amount="unstakedAmount"
-                        :currency="STAKING_CURRENCY"
-                        :currencyDecimals="NIM_DECIMALS" />
-                    {{ unstakeDisclaimer }}
-                </div>
+            <StakeAmountSlider class="stake-amount-slider"
+                :stakedAmount="currentStake"
+                @amount-staked="updateStaked"
+                @amount-unstaked="updateUnstaked"
+                @amount-chosen="updateGraph" />
+            <button class="nq-button light-blue stake-button" @click="$emit('next')">
+                {{ $t('confirm stake') }}
+            </button>
+            <div class="stake-disclaimer" v-if="unstakedAmount === 0">
+                {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
+            </div>
+            <div class="unstake-disclaimer" v-else>
+                <Amount
+                    :decimals="DISPLAYED_DECIMALS"
+                    :amount="unstakedAmount"
+                    :currency="STAKING_CURRENCY"
+                    :currencyDecimals="NIM_DECIMALS" />
+                {{ unstakeDisclaimer }}
             </div>
         </PageBody>
     </div>
@@ -220,16 +190,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    /deep/ .page-header {
+        a.page-header-back-button {
+            margin-top: 0;
+            margin-left: .5rem;
+            //padding: 0;
+        }
+    }
     .page-header {
         position: relative;
-        padding-top: .75rem;
-        height: 17rem;
+        padding-top: 3.125rem;
+        height: 20.5rem;
         font-weight: 600;
+        /deep/ .nq-h1 {
+            font-size: 3rem;
+        }
         .tooltip-bar {
-            position: absolute;
-            bottom: 0rem;
+            height: 3rem;
             width: 100%;
-            text-align: center;
+            margin-top: -3rem;
+            margin-bottom: -3rem;
             z-index: 9001;
             white-space: nowrap;
         }
@@ -237,7 +217,7 @@ export default defineComponent({
     .page-body {
         padding: 0;
         margin: 0;
-        height: 59.875rem;
+        height: 60.375rem;
         overflow: hidden;
         position: relative;
         .estimated-rewards {
@@ -275,13 +255,17 @@ export default defineComponent({
             }
         }
         .stake-amount-slider {
-            margin-top: 12.125rem;
+            margin-top: 8.875rem;
         }
 
         .stake-button {
             margin: auto;
-            margin-top: 2rem;
+            margin-top: 2.25rem;
             width: 40.5rem;
+            height: 8rem;
+            line-height: 2.5rem;
+            letter-spacing: 0.1875rem;
+            font-weight: 700;
         }
 
         .stake-disclaimer {

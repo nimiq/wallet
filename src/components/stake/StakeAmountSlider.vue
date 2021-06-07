@@ -39,15 +39,15 @@
             <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
-                    <div class="slider-staked-amount"
+                    <div class="slider-dual"
                         v-if="ENABLED.dualSlider"
                         ref="$dualSlider" />
                     <div class="slider-knob"
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafStakingIcon v-if="currentPercentage < 50" />
-                        <StakingIcon v-else-if="currentPercentage < 75" />
+                        <OneLeafStakingIcon v-if="currentPercentage < 50 && !ENABLED.dualSlider" />
+                        <StakingIcon v-else-if="currentPercentage < 75 && !ENABLED.dualSlider" />
                         <ThreeLeafStakingIcon v-else />
                     </div>
                 </div>
@@ -256,12 +256,20 @@ export default defineComponent({
                     if (percent < alreadyStakedPercentage.value) {
                         context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
                         if (ENABLED.dualSlider) {
+                            $dualSlider.value!.style.display = 'inline-block';
                             $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
                             $dualSlider.value!.style.left = `${offsetX}px`;
+                            $dualSlider.value!.style.border = '0.25rem solid var(--nimiq-gold)';
+                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%,'
+                            + ' rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
                         }
                     } else {
-                        if (ENABLED.dualSlider) {
-                            $dualSlider.value!.style.width = '0px';
+                        if (ENABLED.dualSlider && percent > alreadyStakedPercentage.value) {
+                            $dualSlider.value!.style.width = `${(offsetX - initialX) + knobBox.width}px`;
+                            $dualSlider.value!.style.left = `${initialX}px`;
+                            $dualSlider.value!.style.border = '0';
+                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
+                            + ', #15a2da 0%, #0582ca 100%)';
                         }
                         context.emit('amount-unstaked', 0);
                     }
@@ -340,7 +348,9 @@ export default defineComponent({
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
                         + (knobBox.width / 2) - 5}px`;
-                fillBackground(0, alreadyStakedPercentage.value);
+                if (!ENABLED.dualSlider) {
+                    fillBackground(0, alreadyStakedPercentage.value);
+                }
             }
         });
         return {
@@ -538,12 +548,14 @@ export default defineComponent({
                     height: 100%;
                     border-radius: 3rem;
                 }
-                .slider-staked-amount {
+                .slider-dual {
+                    display: none;
                     position: absolute;
                     left: 0;
                     top: 0;
-                    background: radial-gradient(100% 100% at 100% 100%, #D1D33E 0%, #B1BC35 100%);
+                    background: none;
                     height: 100%;
+                    border: 0.25rem solid var(--nimiq-gold);
                     border-radius: 3rem;
                 }
                 .slider-knob {

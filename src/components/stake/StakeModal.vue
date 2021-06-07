@@ -1,7 +1,7 @@
 <template>
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="stake-modal" :class="{
-        'fat-modal': (page === 3),
+        'fat-modal': (page >= 3),
         'bluetailed-modal': (page === 1),
     }">
         <template v-if="page === 1">

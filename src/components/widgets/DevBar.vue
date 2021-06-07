@@ -1,11 +1,11 @@
 <template>
     <div v-if="visible && ENABLED" class="dev-bar">
-        <span class="feature-bar">
+        <span>
             <FeatureToggler featureName="necklace" :ENABLED="ENABLED" />
             <FeatureToggler featureName="stackattack" :ENABLED="ENABLED" />
             <FeatureToggler featureName="dualSlider" :ENABLED="ENABLED" />
         </span>
-        <span class="mockpare">
+        <span>
             <Mockpare />
         </span>
     </div>

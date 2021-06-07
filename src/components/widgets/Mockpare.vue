@@ -5,14 +5,39 @@
                 {{ screen }}
             </option>
         </select>
-        <button
-            @click="toggleMock">
-            Mock</button>
+        <button @click="toggleMock">Mock</button>
+        <Tooltip
+            preferredPosition="bottom right"
+            :container="this.$parent">
+            <div slot="trigger">
+                <InfoCircleSmallIcon />
+            </div>
+            <span class="dev-documentation">
+                <h1>
+                    Key bindings
+                </h1>
+                <ul>
+                    <li>
+                        <h2>M(shift + m)</h2>
+                        <h3>Mock / UnMock current selected image</h3>
+                    </li>
+                    <li>
+                        <h2>+ / -</h2>
+                        <h3>Increase / Decrease opacity of the projected image</h3>
+                    </li>
+                    <li>
+                        <h2>PageUp / PageDown</h2>
+                        <h3>Navigate through the available images</h3>
+                    </li>
+                </ul>
+            </span>
+        </Tooltip>
     </span>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
 
 export default defineComponent({
     setup() {
@@ -72,12 +97,14 @@ export default defineComponent({
 
         onMounted(() => {
             document.body.style.overflow = 'hidden';
-            const imgNode = document.createElement('IMG');
+            const imgNode = document.createElement('IMG') as HTMLImageElement;
+            imgNode.onload = () => {
+                imgNode.style.top = `calc((100vh - ${imgNode.height}px) / 2.0)`;
+                imgNode.style.left = `calc((100vw - ${imgNode.width}px) / 2.0)`;
+            };
             imgNode.style.display = 'none';
             imgNode.style.position = 'absolute';
             imgNode.style.zIndex = '9001';
-            imgNode.style.top = 'calc((100vh - 822px) / 2.0)';
-            imgNode.style.left = 'calc((100vw - 815px) / 2.0)';
             imgNode.style.opacity = opacity.value.toFixed(1);
             imgNode.id = mockContainerID;
             document.body.appendChild(imgNode);
@@ -94,9 +121,36 @@ export default defineComponent({
             toggleMock,
         };
     },
+    components: {
+        InfoCircleSmallIcon,
+        Tooltip,
+    },
 });
 </script>
 
 <style lang="scss" scoped>
-
+/deep/ .tooltip-box {
+    width: 57rem;
+}
+.dev-documentation {
+    h1 {
+        font-size: 2.5rem;
+    }
+    ul {
+        padding-left: .5rem;
+    }
+    h2 {
+        display: inline-block;
+        font-size: 1.75rem;
+        padding: .5rem .75rem;
+        margin-right: .75rem;
+        background: var(--nimiq-gold);
+        border: .125rem solid #f8f8f8;
+        border-radius: 0.375rem;
+    }
+    h3 {
+        display: inline-block;
+        font-size: 1.75rem;
+    }
+}
 </style>

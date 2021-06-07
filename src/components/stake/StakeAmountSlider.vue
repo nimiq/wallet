@@ -260,8 +260,8 @@ export default defineComponent({
                             $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
                             $dualSlider.value!.style.left = `${offsetX}px`;
                             $dualSlider.value!.style.border = '0.25rem solid var(--nimiq-gold)';
-                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%,'
-                            + ' rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
+                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
+                            + ', rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
                         }
                     } else {
                         if (ENABLED.dualSlider && percent > alreadyStakedPercentage.value) {

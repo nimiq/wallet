@@ -97,15 +97,15 @@
 }
 
 @mixin blue-tooltip($position: left) {
-    --width: 28rem;
-    --padding: 1.5rem;
+    --blueTooltipWidth: 28rem;
+    --blueTooltipPadding: 1.5rem;
     --arrowWidth: 2.75rem;
     --arrowHeight: 2.5rem;
     --arrowDistance: 2rem;
     --fadeInTranslate: .5rem;
 
-    width: var(--width);
-    padding: var(--padding);
+    width: var(--blueTooltipWidth);
+    padding: var(--blueTooltipPadding);
 
     pointer-events: inherit;
     user-select: none;

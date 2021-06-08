@@ -123,6 +123,7 @@
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
+                @scroll="onTransactionListScroll"
             />
             <BtcTransactionList
                 v-else
@@ -137,31 +138,18 @@
         </template>
 
         <transition name="fadeY">
-            <div class="promo-box nq-light-blue-bg" v-if="promoBoxVisible">
+            <div class="promo-box flex-column" v-if="promoBoxVisible && !showUnclaimedCashlinkList && !searchString">
                 <div class="flex-row">
-                    <EventIcon />
                     <h2 class="nq-h2">
-                        <CrossCloseButton @click="setPromoBoxVisible(false)"/>
-                        {{ $t('You did it – time to spread the word. Promote Nimiq and win your Euro back! ') }}
+                        <!-- <CrossCloseButton @click="setPromoBoxVisible(false)"/> -->
+                        {{ $t('Your swap was successful!') }}
                     </h2>
+                    <HighFiveIcon />
                 </div>
-                <ul>
-                    <li>{{ $t('Tweet about your experience with a Twitter account that’s at least 1 month old.') }}</li>
-                    <li>{{ $t('Include #NimiqOASIS') }}</li>
-                    <li class="flex-row">
-                        <ArrowRightSmallIcon />
-                        {{ $t('Until end of March, 10 swaps will get reimbursed.') }}
-                        <a class="nq-button-s inverse light-blue flex-row"
-                            href="https://twitter.com/intent/tweet?hashtags=NimiqOasis"
-                            target="_blank" rel="noopener" @mousedown.prevent>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 14">
-                                <!-- eslint-disable-next-line max-len -->
-                                <path fill="#fff" d="M15.8 3.15a.34.34 0 00-.15-.6l-.54-.13a.34.34 0 01-.23-.49l.3-.6a.34.34 0 00-.4-.49l-1.37.39a.34.34 0 01-.3-.06A3.44 3.44 0 007.6 3.92v.25a.17.17 0 01-.16.18c-1.93.22-3.78-.76-5.78-3.06a.35.35 0 00-.35-.1.34.34 0 00-.2.28 5.22 5.22 0 00.33 3.48.17.17 0 01-.2.16l-.76-.15a.34.34 0 00-.4.4 3.55 3.55 0 001.7 2.67.17.17 0 01-.07.25l-.36.14a.34.34 0 00-.18.48 3 3 0 002.2 1.7.17.17 0 01.09.27.17.17 0 01-.09.06c-.93.39-1.94.58-2.95.57a.35.35 0 10-.14.69c1.76.83 3.67 1.28 5.6 1.33 1.72.02 3.4-.45 4.83-1.38a8.6 8.6 0 003.83-7.18v-.6a.35.35 0 01.12-.26l1.13-.95z"/>
-                            </svg>
-                            {{ $t('Tweet') }}
-                        </a>
-                    </li>
-                </ul>
+                <p>{{ $t('All swaps are part of your transaction history and feature a small swap icon.') }}</p>
+                <a class="nq-button-s inverse light-blue flex-row" @click="setPromoBoxVisible(false)">
+                    {{ $t('Close') }}
+                </a>
             </div>
         </transition>
 
@@ -216,6 +204,7 @@ import { onboard, rename } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
+import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import EventIcon from '../icons/EventIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -246,9 +235,19 @@ export default defineComponent({
             searchString.value = '';
         }
 
-        watch(activeAddress, () => {
+        watch(activeAddress, (address, oldAddress) => {
             hideUnclaimedCashlinkList();
             clearSearchString();
+
+            if (address !== oldAddress && promoBoxVisible) {
+                setPromoBoxVisible(false);
+            }
+        });
+
+        watch(activeCurrency, (currency, oldCurrency) => {
+            if (currency !== oldCurrency && promoBoxVisible) {
+                setPromoBoxVisible(false);
+            }
         });
 
         const { width: windowWidth } = useWindowSize();
@@ -279,6 +278,11 @@ export default defineComponent({
             );
         }
 
+        function onTransactionListScroll() {
+            if (!promoBoxVisible.value) return;
+            setPromoBoxVisible(false);
+        }
+
         return {
             activeCurrency,
             searchString,
@@ -296,6 +300,7 @@ export default defineComponent({
             CryptoCurrency,
             promoBoxVisible,
             setPromoBoxVisible,
+            onTransactionListScroll,
         };
     },
     components: {
@@ -315,6 +320,7 @@ export default defineComponent({
         MenuDotsIcon,
         MobileActionBar,
         Portal,
+        HighFiveIcon,
         EventIcon,
         CrossIcon,
         CrossCloseButton,
@@ -349,6 +355,7 @@ export default defineComponent({
     background: var(--bg-primary);
     flex-direction: column;
     box-shadow: -0.75rem 0 12rem rgba(0, 0, 0, 0.05);
+    position: relative;
 
     /* Default: 1440px */
     --padding: 4rem;
@@ -687,19 +694,25 @@ export default defineComponent({
 }
 
 .promo-box {
-    position: absolute;
-    bottom: 3rem;
-    right: 3rem;
-    border-radius: 0.75rem;
-    width: 48rem;
-    padding: 2.25rem;
-    box-shadow:
-        0px 4px 16px rgba(0, 0, 0, 0.07),
-        0px 1.5px 3px rgba(0, 0, 0, 0.05),
-        0px 0.337011px 2px rgba(0, 0, 0, 0.0254662);
+    @include blue-tooltip(bottom);
+    @include blue-tooltip_open(bottom);
+    --blueTooltipPadding: 2rem;
 
-    .flex-row {
+    align-items: flex-start;
+    position: absolute;
+    width: 25.625rem;
+    border-radius: 0.75rem;
+    padding-top: 1.5rem;
+
+    --promoBoxTop: 37rem;
+    --promoBoxLeft: 14.5rem;
+
+    top: calc(var(--promoBoxTop) + var(--padding) + var(--padding-bottom));
+    left: calc(var(--promoBoxLeft) + var(--padding));
+
+    div.flex-row {
         align-items: center;
+        justify-content: flex-start;
 
         .nq-h2 {
             font-size: 16px;
@@ -708,66 +721,81 @@ export default defineComponent({
         }
 
         svg {
-            width: 29px;
-            height: 29px;
+            width: auto;
+            height: 35px;
             flex-shrink: 0;
-            margin-right: 1.5rem;
         }
     }
 
-    ul {
-        padding-left: 2.25rem;
-        margin: 0;
+    // ul {
+        // padding-left: 2.25rem;
+        // margin: 0;
 
-        li {
-            padding-top: 1.5rem;
-            font-size: 14px;
-            color: rgba(white, 0.8);
-            font-weight: 600;
+        // li {
+        //     padding-top: 1.5rem;
 
-            &.flex-row {
-                margin-left: -2.25rem;
-                list-style-type: none;
-                position: relative;
-                align-items: flex-start;
+        //     svg.nq-icon {
+        //         margin-right: 1rem;
+        //     }
 
-                .nq-icon {
-                    opacity: .7;
-                    width: 12px;
-                    height: auto;
-                    padding-top: 6px;
-                }
+        //     &.flex-row {
+        //         margin-left: -2.25rem;
+        //         list-style-type: none;
+        //         position: relative;
+        //         align-items: flex-start;
 
-                .nq-button-s {
-                    font-size: 14px;
-                    line-height: 18px;
-                    margin-left: 2rem;
+        //         .nq-icon {
+        //             opacity: .7;
+        //             width: 12px;
+        //             height: auto;
+        //             padding-top: 6px;
+        //         }
 
-                    &:hover,
-                    &:focus,
-                    &:active {
-                        color: white;
-                    }
+        //         .nq-button-s {
+        //             font-size: 14px;
+        //             line-height: 18px;
+        //             margin-left: 2rem;
 
-                    svg {
-                        width: 15px;
-                        height: auto;
-                    }
-                }
-            }
+        //             &:hover,
+        //             &:focus,
+        //             &:active {
+        //                 color: white;
+        //             }
 
-            &::marker {
-                color: rgba(white, .7);
-                transform: translateX(2px);
-                font-size: 12px;
-            }
-        }
+        //             svg {
+        //                 width: 15px;
+        //                 height: auto;
+        //             }
+        //         }
+        //     }
+
+        //     &::marker {
+        //         color: rgba(white, .7);
+        //         transform: translateX(2px);
+        //         font-size: 12px;
+        //     }
+        // }
+    // }
+
+    p, li {
+        font-size: 14px;
+        color: rgba(white, 0.8);
+        font-weight: 600;
     }
 
-    .cross-close-button {
-        float: right;
-        margin: -1rem -1rem 0 0;
-        opacity: .7;
+    // .cross-close-button {
+        // position: absolute;
+        // top: 1rem;
+        // right: 1rem;
+        // opacity: .7;
+    // }
+
+    a.nq-button-s {
+        flex-grow: 0;
+        align-items: center;
+        svg {
+            margin-right: 1rem;
+        }
     }
 
     &.fadeY-enter-active, &.fadeY-leave-active {
@@ -779,23 +807,15 @@ export default defineComponent({
         }
     }
 
-    &.fadeY-enter-active {
-        transition-delay: 50ms;
-    }
-
     &.fadeY-leave,
     &.fadeY-enter-to {
-        transform: translateY(0);
+        transform: translateY(0) translateX(-50%);
     }
 
-    &.fadeY-enter {
-        opacity: 0;
-        transform: translateY(1rem);
-    }
-
+    &.fadeY-enter,
     &.fadeY-leave-to {
         opacity: 0;
-        transform: translateY(-1rem);
+        transform: translateY(1rem) translateX(-50%);
     }
 }
 
@@ -886,9 +906,12 @@ export default defineComponent({
     }
 
     .promo-box {
-        width: calc(100% - 2rem);
-        right: 1rem;
-        bottom: 10rem;
+        top: 35rem;
+        left: 15rem;
+
+        &::after {
+            left: 40%;
+        }
     }
 }
 </style>

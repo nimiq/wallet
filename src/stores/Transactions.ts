@@ -176,6 +176,11 @@ export const useTransactionsStore = createStore({
                 }, {} as { [hash: string]: Transaction }),
             };
 
+            const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
+            if (promoBoxVisible.value) {
+                setPromoBoxVisible(false);
+            }
+
             this.calculateFiatAmounts();
         },
 

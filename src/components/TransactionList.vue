@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
@@ -372,16 +372,36 @@ export default defineComponent({
         // Scroll to top when
         // - Active address changes
         // - Unclaimed Cashlinks list is opened
-        const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
+        const scroller = ref<{
+            scrollToPosition(position: number, smooth?: boolean): void,
+            $el: HTMLDivElement,
+                } | null>(null);
+
         watch(activeAddress, () => {
             if (scroller.value) {
                 scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
             }
         });
+
         watch(() => props.showUnclaimedCashlinkList, (show) => {
             if (show && scroller.value) {
                 scroller.value.scrollToPosition(0, true);
             }
+        });
+
+        function onScroll() {
+            context.emit('scroll');
+        }
+
+        // @scroll / @scroll.native doesn't seem to work, so using standard event system
+        onMounted(() => {
+            if (!scroller.value) return;
+            scroller.value.$el.addEventListener('scroll', onScroll);
+        });
+
+        onUnmounted(() => {
+            if (!scroller.value) return;
+            scroller.value.$el.removeEventListener('scroll', onScroll);
         });
 
         return {

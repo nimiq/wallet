@@ -8,9 +8,6 @@
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
                 <div class="welcome-text">
-                    <span class="beta-access">
-                        {{ $t('Beta') }}
-                    </span>
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
@@ -76,12 +73,6 @@
                                     {{ $t('Max.') }}
                                     <CircleSpinner/>
                                 </template>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Per-Swap Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.perSwap.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
@@ -292,7 +283,7 @@ import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import {
     getHtlc,
     Htlc as OasisHtlc,
@@ -403,7 +394,6 @@ export default defineComponent({
 
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
-        const isDev = Config.environment === ENV_DEV;
 
         const insufficientLimit = computed(() => (
             (_cryptoAmount.value > (currentLimitCrypto.value || 0))
@@ -860,7 +850,6 @@ export default defineComponent({
             swapError,
             isMainnet,
             onPaid,
-            isDev,
             oasisBuyLimitExceeded,
             insufficientLimit,
             buyMax,
@@ -933,7 +922,7 @@ export default defineComponent({
     max-width: 100%;
     border-radius: 1.25rem;
     padding: {
-        top: 23.5rem; // 26rem without .beta-access
+        top: 26rem;
         bottom: 4rem;
         left: 5rem;
         right: 6rem;
@@ -947,22 +936,6 @@ export default defineComponent({
 
     .welcome-text {
         text-align: center;
-
-        .beta-access {
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text-60);
-            box-shadow: 0 0 0 1.5px var(--text-20);
-            border-radius: 1.75rem;
-            margin: 0 auto;
-            padding: 0.5rem 1.5rem;
-
-            svg {
-                margin-right: 0.75rem;
-            }
-        }
 
         .nq-h1 {
             margin-top: 1rem;

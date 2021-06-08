@@ -1,24 +1,17 @@
 <template>
     <Modal class="sell-crypto-modal"
         :class="{'wider-overlay': !!swap}"
-        :showOverlay="page === Pages.BANK_CHECK
-            || addressListOpened
-            || !!swap
-            || (!isDev && !trials.includes(Trial.SELL_TO_EURO))"
+        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
         :swipePadding="page !== Pages.WELCOME"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
                 <div class="welcome-text">
-                    <span class="early-access flex-row">
-                        <FlameIcon />
-                        {{ $t('Early Access') }}
-                    </span>
                     <h1 class="nq-h1">{{ $t('Sell Crypto for Fiat') }}</h1>
 
                     <p class="nq-text">
-                        {{ $t('Sell NIM and BTC directly to your SEPA bank account.') }}
+                        {{ $t('Sell NIM and BTC directly to your\nSEPA bank account.') }}
                     </p>
                 </div>
 
@@ -80,12 +73,6 @@
                                     {{ $t('Max.') }}
                                     <CircleSpinner/>
                                 </template>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Per-Swap Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.perSwap.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
                             </div>
                             <div class="price-breakdown">
                                 <label>{{ $t('30-day Limit') }}</label>
@@ -246,25 +233,6 @@
             />
         </div>
 
-        <div v-else-if="!isDev && !trials.includes(Trial.SELL_TO_EURO)"
-            slot="overlay" class="page flex-column closed-beta"
-        >
-            <img src="https://memegenerator.net/img/instances/17937228/access-denied.jpg">
-            <!-- eslint-enable max-len -->
-            <PageHeader>Private Testing</PageHeader>
-            <PageBody>
-                <p>
-                    Crypto->EUR swaps are currently in closed beta and require unlocking to access.
-                    Please contact Max if you wish to try it out now:
-                </p>
-                <p>
-                    Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link"
-                        target="_blank" rel="noopener"
-                    >@Max_Nimiq</a>
-                </p>
-            </PageBody>
-        </div>
-
         <SellCryptoBankCheckOverlay slot="overlay"
             v-else-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
@@ -316,9 +284,9 @@ import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { AccountType, useAccountStore } from '../../stores/Account';
-import { useSettingsStore, Trial } from '../../stores/Settings';
+import { useSettingsStore } from '../../stores/Settings';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 import {
     getHtlc,
     HtlcStatus,
@@ -389,7 +357,6 @@ export default defineComponent({
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
-        const { trials } = useSettingsStore();
         const { estimate } = useSwapEstimate();
 
         const $cryptoAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
@@ -441,7 +408,6 @@ export default defineComponent({
 
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
-        const isDev = Config.environment === ENV_DEV;
 
         const insufficientBalance = computed(() => (
             (activeCurrency.value === CryptoCurrency.NIM
@@ -456,8 +422,7 @@ export default defineComponent({
         ));
 
         const canSign = computed(() =>
-            (isDev || trials.value.includes(Trial.SELL_TO_EURO))
-            && fiatAmount.value
+            fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
             && banks.value.sepa
@@ -520,8 +485,6 @@ export default defineComponent({
         }
 
         async function sign() {
-            if (!isDev && !trials.value.includes(Trial.SELL_TO_EURO)) return;
-
             // currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -961,9 +924,6 @@ export default defineComponent({
             estimateError,
             swapError,
             isMainnet,
-            isDev,
-            trials,
-            Trial,
             oasisSellLimitExceeded,
             onBankDetailsEntered,
             bankAccounts,
@@ -1031,17 +991,6 @@ export default defineComponent({
     font-size: var(--body-size);
 }
 
-.page.closed-beta {
-    text-align: center;
-    align-items: center;
-
-    img {
-        width: 75%;
-        margin-top: 6rem;
-        margin-bottom: 2rem;
-    }
-}
-
 .page-body {
     justify-content: space-between;
     align-items: center;
@@ -1053,7 +1002,7 @@ export default defineComponent({
     max-width: 100%;
     border-radius: 1.25rem;
     padding: {
-        top: 23.5rem; // 26rem without .beta-access or .early-access
+        top: 26rem;
         bottom: 4rem;
         left: 5rem;
         right: 6rem;
@@ -1067,22 +1016,6 @@ export default defineComponent({
 
     .welcome-text {
         text-align: center;
-
-        .early-access {
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--nimiq-gold);
-            border: 1px solid var(--nimiq-gold);
-            display: inline-flex;
-            border-radius: 2rem;
-            padding: 0.5rem 1rem;
-
-            svg {
-                margin-right: 0.75rem;
-            }
-        }
 
         .nq-h1 {
             margin-top: 1rem;

@@ -229,7 +229,7 @@ import { Portal } from '@linusborg/vue-simple-portal';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
-import { useSettingsStore, ColorMode, Trial } from '../../stores/Settings';
+import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract } from '../../hub';
@@ -333,12 +333,10 @@ export default defineComponent({
             }
 
             switch (hash) {
-                case '72cdaca316309385cad24e8b548fb8b5d7d3067fb3091d89e728fb2f7b4db1f1':
-                    settings.enableTrial(Trial.SELL_TO_EURO); break;
-                default: el.value = 'Nope, no cookie for you'; return;
+                default: el.value = 'Nope, no cookie for you'; // return;
             }
 
-            el.value = 'OK, trial enabled!';
+            // el.value = 'OK, trial enabled!';
         }
 
         const applyingWalletUpdate = ref(false);

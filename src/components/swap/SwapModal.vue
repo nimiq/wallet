@@ -52,11 +52,6 @@
                             </template>
                         </div>
                         <div class="price-breakdown">
-                            <label>{{ $t('Per-Swap Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
-                        </div>
-                        <div class="price-breakdown">
                             <label>{{ $t('30-day Limit') }}</label>
                             <FiatConvertedAmount v-if="limits"
                                 :amount="limits.monthly.luna" currency="nim" roundDown/>

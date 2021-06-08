@@ -15,7 +15,6 @@ const { exchangeRates } = useFiatStore();
 
 const limits = ref<{
     current: { usd: number, luna: number, sat: number },
-    perSwap: { usd: number, luna: number, sat: number },
     monthly: { usd: number, luna: number, sat: number },
     remaining: { usd: number, luna: number, sat: number },
 } | undefined>(undefined);
@@ -106,11 +105,9 @@ watch(async () => {
     const satRate = (btcAddressLimits.reference.monthly / 100) / btcAddressLimits.monthly;
 
     const monthlyUsdLimit = (userLimits || nimAddressLimits.reference).monthly / 100;
-    const perSwapUsdLimit = (userLimits || nimAddressLimits.reference).perSwap / 100;
 
     const currentUsdLimit = Math.max(0, Math.min(
         userLimits ? (userLimits.current / 100) : Infinity,
-        perSwapUsdLimit,
         nimAddressLimits.reference.monthly / 100 - swappedAmount,
         nimAddress.value ? (nimAddressLimits.reference.current / 100) : Infinity,
         btcAddress.value ? (btcAddressLimits.reference.current / 100) : Infinity,
@@ -128,11 +125,6 @@ watch(async () => {
             usd: currentUsdLimit,
             luna: Math.floor(currentUsdLimit / lunaRate),
             sat: Math.floor(currentUsdLimit / satRate),
-        },
-        perSwap: {
-            usd: perSwapUsdLimit,
-            luna: Math.floor(perSwapUsdLimit / lunaRate),
-            sat: Math.floor(perSwapUsdLimit / satRate),
         },
         monthly: {
             usd: monthlyUsdLimit,

@@ -26,9 +26,7 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
     },
 };
 
-export enum Trial {
-    SELL_TO_EURO = 'sell-to-euro',
-}
+export enum Trial {}
 
 export type NimDecimals = 0 | 2 | 5;
 export type BtcDecimals = 0 | 3 | 8;

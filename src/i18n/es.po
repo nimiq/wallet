@@ -393,8 +393,8 @@ msgid ""
 "Buy and sell crypto for EUR. Simply by bank transfer and from inside your "
 "wallet."
 msgstr ""
-"Compra y venda cripto por EUR. Simplemente por medio de una transferencia "
-"bancaria y desde su billetera."
+"Compra y venda cripto por EUR. Con una simple transferencia bancaria y desde"
+" su billetera."
 
 #: src/components/BtcTransactionList.vue:58
 msgid "Buy BTC"

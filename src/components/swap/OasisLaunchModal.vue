@@ -88,12 +88,10 @@ export default defineComponent({
 
 .nq-h1, .nq-text, ul {
     margin-top: 0;
-    margin-bottom: 0;
 }
 
 .nq-text {
     color: var(--text-100);
-    margin-top: -1.5rem;
 }
 
 ul {
@@ -101,6 +99,7 @@ ul {
     padding: 0;
     width: 100%;
     font-size: var(--body-size);
+    margin-bottom: 0;
 }
 
 li svg {

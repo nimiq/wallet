@@ -23,8 +23,8 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { ArrowRightSmallIcon, Tooltip } from '@nimiq/vue-components';
-import { ValidatorData, StakingData } from '../../../stores/Staking';
+import { Tooltip } from '@nimiq/vue-components';
+import { ValidatorData } from '../../../stores/Staking';
 
 export default defineComponent({
     props: {

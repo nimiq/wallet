@@ -37,7 +37,6 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-luxon';
 
-import StakingGraphGridPlugin from '../plugins/StakingGraphGridPlugin';
 import StakingGraphPointsPlugin from '../plugins/StakingGraphPointsPlugin';
 import { chartJsEventNames, generateEventObject, generateChartJsEventListener } from './includes';
 
@@ -65,7 +64,6 @@ Chart.register(
     Legend,
     Title,
     Tooltip,
-    // StakingGraphGridPlugin,
     StakingGraphPointsPlugin,
 );
 
@@ -73,6 +71,11 @@ Chart.defaults.font.family = 'Muli, system-ui, sans-serif';
 Chart.defaults.font.size = 12;
 Chart.defaults.font.weight = '700';
 Chart.defaults.font.color = 'rgba(166, 167, 182, 1.0)';
+
+const fontSize = parseFloat(
+    window.getComputedStyle(document.querySelector(':root'), null).getPropertyValue('font-size'),
+);
+const remToPx = (x) => fontSize * x;
 
 const Vue3ChartJs = defineComponent({
     name: 'Vue3ChartJs',
@@ -97,8 +100,8 @@ const Vue3ChartJs = defineComponent({
             type: Object,
             required: false,
             default: () => ({
-                width: '129rem',
-                height: '35.5rem',
+                width: `${remToPx(91)}px`,
+                height: `${remToPx(19)}px`,
             }),
         },
     },
@@ -164,10 +167,6 @@ const Vue3ChartJs = defineComponent({
         };
     },
 });
-
-Vue3ChartJs.install = (app) => {
-    app.component(Vue3ChartJs.name, Vue3ChartJs);
-};
 
 export default Vue3ChartJs;
 

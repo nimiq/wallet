@@ -19,7 +19,7 @@ export default {
     oasis: {
         apiEndpoint: 'https://oasis.ten31.com/v1',
         feePercentage: 0.01, // 1%
-        minFee: 0.10, // Euro
+        minFee: 0.50, // Euro
     },
 
     moonpay: {

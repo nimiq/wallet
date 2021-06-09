@@ -1186,7 +1186,7 @@ msgstr "De nombre a este receptor..."
 msgid "Name your contact"
 msgstr "De un nombre a su contacto"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:50
 msgid "Network"
 msgstr "Red"
 
@@ -1516,7 +1516,7 @@ msgstr "Seleccione una moneda y un monto."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Seleccione en que unidad desea mostrar montos en Bitcoin"
 
-#: src/components/layouts/Sidebar.vue:36
+#: src/components/layouts/Sidebar.vue:35
 msgid "Sell"
 msgstr "Vender"
 
@@ -1645,7 +1645,7 @@ msgstr "Estableciendo intercambio"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Configurando el lado {currency} del intercambio."
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:58
 msgid "Settings"
 msgstr "Ajustes"
 

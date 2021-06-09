@@ -1137,7 +1137,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为您的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:50
 msgid "Network"
 msgstr "网络"
 
@@ -1451,7 +1451,7 @@ msgstr "请选择货币和金额。"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
-#: src/components/layouts/Sidebar.vue:36
+#: src/components/layouts/Sidebar.vue:35
 msgid "Sell"
 msgstr "卖"
 
@@ -1578,7 +1578,7 @@ msgstr "设置交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:58
 msgid "Settings"
 msgstr "设置"
 

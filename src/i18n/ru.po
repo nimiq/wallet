@@ -1171,7 +1171,7 @@ msgstr "Назовите этого отправителя..."
 msgid "Name your contact"
 msgstr "Укажите имя контакта"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:50
 msgid "Network"
 msgstr "Сеть"
 
@@ -1493,7 +1493,7 @@ msgstr "Выберите валюту и сумму"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Выберите в каких единицах будет отображаться сумма в биткойнах."
 
-#: src/components/layouts/Sidebar.vue:36
+#: src/components/layouts/Sidebar.vue:35
 msgid "Sell"
 msgstr "Продать"
 
@@ -1620,7 +1620,7 @@ msgstr "Подготавливаем обмен"
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:58
 msgid "Settings"
 msgstr "Настройки"
 

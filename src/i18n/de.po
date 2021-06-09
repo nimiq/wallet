@@ -1191,7 +1191,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:50
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1519,7 +1519,7 @@ msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
 
-#: src/components/layouts/Sidebar.vue:36
+#: src/components/layouts/Sidebar.vue:35
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -1649,7 +1649,7 @@ msgstr "Tausch wird gestartet"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Die {currency}-Seite des Tauschs wird vorbereitet."
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:58
 msgid "Settings"
 msgstr "Einstellungen"
 

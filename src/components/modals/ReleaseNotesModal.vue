@@ -89,6 +89,7 @@ details {
 
 details summary {
     cursor: pointer;
+    font-size: 2.25rem;
     font-weight: 600;
     padding: 1rem 2rem 1rem 1.75rem;
     border-radius: 0.5rem;

@@ -539,6 +539,10 @@ export default defineComponent({
             );
 
             transition: transform 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+            span {
+                font-size: 2.25rem;
+            }
         }
 
         .bic {

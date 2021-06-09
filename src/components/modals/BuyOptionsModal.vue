@@ -48,7 +48,7 @@
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                                 </svg>
                                 <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="0.10" currency="eur"/>
+                                    <FiatAmount slot="amount" :amount="0.50" currency="eur"/>
                                 </i18n>
                             </span>
                             {{ $t('+ network fees') }}

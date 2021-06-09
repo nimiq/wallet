@@ -26,7 +26,7 @@
 
         <!-- Submenu -->
         <transition name="modal">
-            <Modal v-if="menuOpen" class="menu" emitClose @close="closeMenu" @click.native.stop>
+            <Modal v-if="menuOpen" class="menu" :swipeToClose="false" emitClose @close="closeMenu" @click.native.stop>
                 <div class="current-account">
                     <AccountMenuItem :id="activeAccountId"/>
                     <button v-if="canExportFile" class="item reset flex-row"

@@ -1,6 +1,6 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="routeClass">
+        <main :class="routeClass" ref="$main">
             <Sidebar/>
 
             <transition name="delay">
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 
 import Sidebar from './components/layouts/Sidebar.vue';
@@ -34,6 +34,8 @@ import UpdateNotification from './components/UpdateNotification.vue';
 import router, { provideRouter, Columns } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useWindowSize } from './composables/useWindowSize';
+import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
@@ -74,12 +76,99 @@ export default defineComponent({
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
-        const { amountsHidden } = useSettingsStore();
+        const { amountsHidden, swipingEnabled } = useSettingsStore();
+
+        // Swiping
+        const $main = ref<HTMLDivElement>(null);
+        let $mobileTapArea: HTMLDivElement | null = null;
+        const { width } = useWindowSize();
+
+        async function updateSwipeRestPosition(
+            velocityDistance: number,
+            velocityTime: number,
+            initialXPosition: number,
+            currentXPosition: number,
+        ) {
+            if (velocityDistance && velocityTime) {
+                const swipeFactor = 10;
+                const velocity = (velocityDistance / velocityTime) * 1000 * swipeFactor; // px/s
+                const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
+                currentXPosition += remainingXDistance;
+            }
+
+            const sidebarBarrier = -192 / 2;
+            const transactionsBarrier = -(window.innerWidth / 2 + 192);
+
+            if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
+                // Go to sidebar
+                await context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
+            } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
+                // Go to transactions
+                if (context.root.$route.name === 'root') {
+                    await context.root.$router.push('/transactions');
+                }
+            } else if (
+                (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
+                && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
+            ) {
+                // Go back to root (addresses)
+                context.root.$router.back();
+                await context.root.$nextTick();
+            }
+        }
+
+        function onSwipeFrame(position: number) {
+            if (position <= -192) return;
+            if (!$mobileTapArea) {
+                $mobileTapArea = document.querySelector('.mobile-tap-area') as HTMLDivElement;
+            }
+            $mobileTapArea!.style.transition = 'initial';
+            $mobileTapArea!.style.opacity = `${1 - (position / -192)}`;
+        }
+
+        function resetStyles() {
+            if (!$mobileTapArea) return;
+            $mobileTapArea!.style.transition = '';
+            $mobileTapArea!.style.opacity = '';
+            $mobileTapArea = null;
+        }
+
+        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            onSwipeEnded: updateSwipeRestPosition,
+            // TODO: clamp movement to smaller area on settings and network view
+            clampMovement: computed<[number, number]>(() => {
+                if (context.root.$route.path === '/transactions') {
+                    // Allow swiping back from transactions to address list, but not all the way to sidebar
+                    return [-width.value - 192, -192];
+                }
+                // Otherwise only allow swiping between main column and sidebar
+                return [-192, 0];
+            }),
+            onFrame: onSwipeFrame,
+            reset: resetStyles,
+            excludeSelector: '.scroller, .scroller *',
+        });
+
+        watch([width, swipingEnabled], ([newWidth, newSwiping], [oldWidth, oldSwiping]) => {
+            if (!$main.value) return;
+
+            if ((newWidth <= 700 && oldWidth > 700) || (newSwiping === 1 && oldSwiping !== 1)) {
+                attachSwipe();
+            } else if (newWidth > 700 || newSwiping !== 1) {
+                detachSwipe();
+            }
+        }, { lazy: true });
+
+        onMounted(() => {
+            if (width.value <= 700 && swipingEnabled.value === 1) attachSwipe();
+        });
 
         return {
             routeClass,
             hasAccounts,
             amountsHidden,
+            $main,
         };
     },
     components: {
@@ -97,6 +186,7 @@ export default defineComponent({
     @include flex-full-height;
     @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+    touch-action: pan-y;
 
     /* Default: >= 1500px */
     --sidebar-width: 24rem;
@@ -166,7 +256,7 @@ export default defineComponent({
         }
 
         /deep/ .mobile-tap-area {
-            z-index: 4;
+            z-index: 100;
         }
 
         .network {
@@ -238,8 +328,17 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+html, body {
+    // Disable viewport overscrolling on iOS
+    // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
+    position: fixed;
+    overflow: hidden;
+    width: 100vw;
+}
+
 body {
-    overscroll-behavior-y: contain; // Disable pull-to-refresh
+    overscroll-behavior: contain; // Disable pull-to-refresh
+    font-size: 14px; // Affects the font-size of the testnet branch-selector banner
 }
 
 :root {

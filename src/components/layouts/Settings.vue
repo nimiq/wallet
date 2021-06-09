@@ -136,6 +136,21 @@
             <section>
                 <h2 class="nq-label">{{ $t('Advanced') }}</h2>
 
+                <div class="setting swiping-setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Swiping Gestures') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Enable experimental support for swiping gestures on mobile.') }}
+                        </p>
+                    </div>
+
+                    <select id="enable-swiping" @input="setSwipingEnabled(parseInt($event.target.value))">
+                        <option value="-1" :selected="swipingEnabled === -1">{{ $t('When ready') }}</option>
+                        <option value="1" :selected="swipingEnabled === 1">{{ $t('On') }}</option>
+                        <option value="0" :selected="swipingEnabled === 0">{{ $t('Off') }}</option>
+                    </select>
+                </div>
+
                 <div v-if="showVestingSetting" class="setting">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Vesting Contract') }}</label>
@@ -633,6 +648,12 @@ input[type="file"] {
     }
 }
 
+@media (min-width: 700px) { // Full mobile breakpoint
+    .swiping-setting {
+        display: none;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .settings {
         width: 100vw;
@@ -641,6 +662,8 @@ input[type="file"] {
         flex-direction: column;
         align-items: stretch;
         flex-wrap: nowrap;
+
+        touch-action: pan-y;
 
         .description {
             margin-right: 3rem;

@@ -1011,6 +1011,7 @@ export default defineComponent({
     position: absolute;
     left: 2rem;
     top: 2rem;
+    z-index: 3; // To be above .swipe-handle
 
     /deep/ .trigger {
         color: rgba(31, 35, 72, 0.25);

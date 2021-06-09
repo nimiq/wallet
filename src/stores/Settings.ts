@@ -30,13 +30,18 @@ export enum Trial {
     SELL_TO_EURO = 'sell-to-euro',
 }
 
+export type NimDecimals = 0 | 2 | 5;
+export type BtcDecimals = 0 | 3 | 8;
+export type SwipingEnabled = -1 | 0 | 1;
+
 export type SettingsState = {
-    decimals: 0 | 2 | 5,
+    decimals: NimDecimals,
     language: string, // locale
     colorMode: ColorMode,
     amountsHidden: boolean,
-    btcDecimals: 0 | 3 | 8,
+    btcDecimals: BtcDecimals,
     btcUnit: BtcUnit,
+    swipingEnabled: SwipingEnabled,
     trials: Trial[],
     updateAvailable: boolean,
 };
@@ -50,21 +55,23 @@ export const useSettingsStore = createStore({
         amountsHidden: false,
         btcDecimals: 0,
         btcUnit: BtcUnits.btc,
+        swipingEnabled: -1,
         trials: [],
         updateAvailable: false,
     }),
     getters: {
-        decimals: (state): Readonly<number> => state.decimals,
+        decimals: (state): Readonly<NimDecimals> => state.decimals,
         language: (state): Readonly<string> => state.language,
         colorMode: (state): Readonly<ColorMode> => state.colorMode,
         amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
-        btcDecimals: (state): Readonly<number> => state.btcDecimals,
+        btcDecimals: (state): Readonly<BtcDecimals> => state.btcDecimals,
         btcUnit: (state): Readonly<BtcUnit> => state.btcUnit,
+        swipingEnabled: (state): Readonly<SwipingEnabled> => state.swipingEnabled,
         trials: (state): Readonly<Trial[]> => state.trials,
         updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
     },
     actions: {
-        setDecimals(num: 0 | 2 | 5 = 0) {
+        setDecimals(num: NimDecimals = 0) {
             this.state.decimals = num;
         },
         setLanguage(language: string) {
@@ -79,11 +86,14 @@ export const useSettingsStore = createStore({
         toggleAmountsHidden() {
             this.state.amountsHidden = !this.state.amountsHidden;
         },
-        setBtcDecimals(num: 0 | 3 | 8 = 0) {
+        setBtcDecimals(num: BtcDecimals = 0) {
             this.state.btcDecimals = num;
         },
         setBtcUnit(unit: 'btc' | 'mbtc') {
             this.state.btcUnit = BtcUnits[unit];
+        },
+        setSwipingEnabled(set: SwipingEnabled) {
+            this.state.swipingEnabled = set;
         },
         enableTrial(trial: Trial) {
             if (this.state.trials.includes(trial)) return;

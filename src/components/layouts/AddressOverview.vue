@@ -105,6 +105,7 @@
                 </button>
 
                 <Tooltip
+                    v-if="activeCurrency === 'nim'"
                     class="staking-feature-tip"
                     preferredPosition="bottom left"
                     :container="this">

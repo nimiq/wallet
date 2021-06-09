@@ -51,8 +51,8 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:83
-#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/modals/BuyCryptoModal.vue:84
+#: src/components/modals/SellCryptoModal.vue:84
 #: src/components/swap/SwapModal.vue:60
 msgid "{value} remaining"
 msgstr ""
@@ -73,8 +73,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:19
-#: src/components/modals/SellCryptoModal.vue:18
+#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:19
 msgid "1"
 msgstr ""
 
@@ -82,8 +82,8 @@ msgstr ""
 msgid "15m"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:20
-#: src/components/modals/SellCryptoModal.vue:19
+#: src/components/modals/BuyCryptoModal.vue:21
+#: src/components/modals/SellCryptoModal.vue:20
 msgid "2"
 msgstr ""
 
@@ -95,13 +95,13 @@ msgstr ""
 msgid "24/7 Support"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:21
-#: src/components/modals/SellCryptoModal.vue:20
+#: src/components/modals/BuyCryptoModal.vue:22
+#: src/components/modals/SellCryptoModal.vue:21
 msgid "3"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:77
-#: src/components/modals/SellCryptoModal.vue:77
+#: src/components/modals/BuyCryptoModal.vue:78
+#: src/components/modals/SellCryptoModal.vue:78
 #: src/components/swap/SwapModal.vue:55
 msgid "30-day Limit"
 msgstr ""
@@ -344,18 +344,18 @@ msgstr ""
 msgid "Buy BTC"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:152
-#: src/components/modals/BuyCryptoModal.vue:157
-#: src/components/modals/BuyCryptoModal.vue:171
-#: src/components/modals/BuyCryptoModal.vue:31
+#: src/components/modals/BuyCryptoModal.vue:153
+#: src/components/modals/BuyCryptoModal.vue:158
+#: src/components/modals/BuyCryptoModal.vue:172
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:10
+#: src/components/modals/BuyCryptoModal.vue:11
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:142
+#: src/components/modals/BuyCryptoModal.vue:143
 msgid "Buy max"
 msgstr ""
 
@@ -391,14 +391,14 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:154
-#: src/components/modals/SellCryptoModal.vue:176
+#: src/components/modals/BuyCryptoModal.vue:155
+#: src/components/modals/SellCryptoModal.vue:177
 #: src/components/swap/SwapModal.vue:135
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:168
-#: src/components/modals/SellCryptoModal.vue:190
+#: src/components/modals/BuyCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:191
 #: src/components/swap/SwapModal.vue:147
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -450,8 +450,8 @@ msgstr ""
 msgid "Choose a Recipient"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:237
-#: src/components/modals/SellCryptoModal.vue:242
+#: src/components/modals/BuyCryptoModal.vue:238
+#: src/components/modals/SellCryptoModal.vue:243
 #: src/components/modals/SendModal.vue:169
 #: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
@@ -624,6 +624,10 @@ msgid ""
 "different options are available."
 msgstr ""
 
+#: src/components/swap/OasisLaunchModal.vue:19
+msgid "Developer resources"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:212
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
@@ -768,8 +772,8 @@ msgstr ""
 msgid "fee"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:61
-#: src/components/modals/SellCryptoModal.vue:61
+#: src/components/modals/BuyCryptoModal.vue:62
+#: src/components/modals/SellCryptoModal.vue:62
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr ""
@@ -789,7 +793,7 @@ msgstr ""
 msgid "File contains no contacts."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:21
+#: src/components/modals/BuyCryptoModal.vue:22
 msgid "Finalize the swap by bank transfer."
 msgstr ""
 
@@ -919,7 +923,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:88
-#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
 msgstr ""
@@ -965,8 +969,8 @@ msgstr ""
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:25
-#: src/components/modals/SellCryptoModal.vue:24
+#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/SellCryptoModal.vue:25
 msgid "Let's go"
 msgstr ""
 
@@ -994,8 +998,8 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:81
-#: src/components/modals/SellCryptoModal.vue:81
+#: src/components/modals/BuyCryptoModal.vue:82
+#: src/components/modals/SellCryptoModal.vue:82
 #: src/components/swap/SwapModal.vue:58
 msgid "loading..."
 msgstr ""
@@ -1024,18 +1028,18 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:156
+#: src/components/modals/SellCryptoModal.vue:157
 msgid "Max swappable amount is {amount} {ticker}"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:141
+#: src/components/modals/BuyCryptoModal.vue:142
 msgid "Max swappable amount is {amount} EUR"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:67
-#: src/components/modals/BuyCryptoModal.vue:72
-#: src/components/modals/SellCryptoModal.vue:67
-#: src/components/modals/SellCryptoModal.vue:72
+#: src/components/modals/BuyCryptoModal.vue:68
+#: src/components/modals/BuyCryptoModal.vue:73
+#: src/components/modals/SellCryptoModal.vue:68
+#: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46
 #: src/components/swap/SwapModal.vue:50
 msgid "Max."
@@ -1090,8 +1094,8 @@ msgstr ""
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:90
+#: src/components/modals/BuyCryptoModal.vue:91
+#: src/components/modals/SellCryptoModal.vue:91
 #: src/components/swap/SwapModal.vue:66
 msgid "Nimiq is working on a PRO feature with increased limits after user registration."
 msgstr ""
@@ -1196,7 +1200,7 @@ msgid "Pending..."
 msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:12
-msgid "Per-swap limits raised to $1000"
+msgid "Per-swap limits raised to {amount}"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:58
@@ -1249,7 +1253,7 @@ msgstr ""
 msgid "Receive BTC"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:21
 msgid "Receive fiat to your bank account."
 msgstr ""
 
@@ -1361,8 +1365,8 @@ msgstr ""
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:19
-#: src/components/modals/SellCryptoModal.vue:18
+#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:19
 msgid "Select a currency and an amount."
 msgstr ""
 
@@ -1374,18 +1378,18 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:174
-#: src/components/modals/SellCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:193
-#: src/components/modals/SellCryptoModal.vue:30
+#: src/components/modals/SellCryptoModal.vue:175
+#: src/components/modals/SellCryptoModal.vue:180
+#: src/components/modals/SellCryptoModal.vue:194
+#: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:10
+#: src/components/modals/SellCryptoModal.vue:11
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:13
+#: src/components/modals/SellCryptoModal.vue:14
 msgid ""
 "Sell NIM and BTC directly to your\n"
 "SEPA bank account."
@@ -1418,13 +1422,13 @@ msgstr ""
 msgid "Send and receive NIM without a middleman and enjoy true decentralization."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:19
+#: src/components/modals/SellCryptoModal.vue:20
 msgid "Send crypto to a smart contract."
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:134
-#: src/components/modals/SellCryptoModal.vue:161
-#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:162
+#: src/components/modals/SellCryptoModal.vue:165
 msgid "Send max"
 msgstr ""
 
@@ -1534,7 +1538,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:215
+#: src/components/modals/BuyCryptoModal.vue:216
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1669,8 +1673,8 @@ msgstr ""
 msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:43
-#: src/components/modals/SellCryptoModal.vue:42
+#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/modals/SellCryptoModal.vue:43
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr ""
@@ -1736,8 +1740,8 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:41
-#: src/components/modals/SellCryptoModal.vue:40
+#: src/components/modals/BuyCryptoModal.vue:42
+#: src/components/modals/SellCryptoModal.vue:41
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr ""
@@ -1865,7 +1869,7 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."
 msgstr ""
 
@@ -1877,7 +1881,7 @@ msgstr ""
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:13
+#: src/components/modals/BuyCryptoModal.vue:14
 msgid "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and decentralized."
 msgstr ""
 

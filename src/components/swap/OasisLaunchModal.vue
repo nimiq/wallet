@@ -9,7 +9,7 @@
 
             <ul>
                 <li><StarIcon/> {{ $t('Selling now available') }}</li>
-                <li><StarIcon/> {{ $t('Per-swap limits raised to $1000') }}</li>
+                <li><StarIcon/> {{ $t('Per-swap limits raised to {amount}', { amount: '820€' }) }}</li>
                 <li>
                     <StarIcon/>
                     <a

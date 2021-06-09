@@ -26,8 +26,8 @@ export default defineComponent({
 
         text = () => context.root.$t('Buy NIM & BTC with OASIS!');
         cta = () => context.root.$t('Try it now');
-        action = () => context.root.$router.push('buy-crypto');
-        storageKey = 'buy-with-oasis';
+        action = () => context.root.$router.push('buy');
+        storageKey = 'buy-with-oasis-1';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 

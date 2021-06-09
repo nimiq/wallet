@@ -102,6 +102,7 @@ export default defineComponent({
                 imgNode.style.top = `calc((100vh - ${imgNode.height}px) / 2.0)`;
                 imgNode.style.left = `calc((100vw - ${imgNode.width}px) / 2.0)`;
             };
+            imgNode.style.pointerEvents = 'none';
             imgNode.style.display = 'none';
             imgNode.style.position = 'absolute';
             imgNode.style.zIndex = '9001';

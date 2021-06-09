@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { Duration, DateTime } from 'luxon';
 import { formatSpaceyNumber } from '../../../lib/NumberFormatting';
 import { NIM_MAGNITUDE } from '../../../lib/Constants';
@@ -34,7 +34,7 @@ const getProjectionLine = (apy, staked, steps, stepSize, dV = 1.13) => {
     return projection;
 };
 
-const createPatternFill = (lineColor = '', width = 518, height = 103) => {
+const createPatternFill = (lineColor = '', width = 718, height = 103) => {
     const patternCanvas = document.createElement('canvas');
     const patternContext = patternCanvas.getContext('2d');
     patternCanvas.width = width;
@@ -46,7 +46,7 @@ const createPatternFill = (lineColor = '', width = 518, height = 103) => {
     } else {
         patternContext.strokeStyle = 'rgba(31, 35, 72, 0.3)';
     }
-    const gaps = [18 / 2.0, 18];
+    const gaps = [18 / 2.0, 20];
 
     for (let x = gaps[0] - 1; x <= patternCanvas.width; x += gaps[0]) {
         patternContext.moveTo(x, 0);
@@ -54,10 +54,10 @@ const createPatternFill = (lineColor = '', width = 518, height = 103) => {
         x += 0.075;
     }
 
-    for (let y = gaps[1] / 4.0; y <= patternCanvas.height; y += gaps[1]) {
-        patternContext.moveTo(0, y);
-        patternContext.lineTo(patternCanvas.width, y);
-    }
+    // for (let y = 4; y <= patternCanvas.height; y += gaps[1]) {
+    //     patternContext.moveTo(0, y);
+    //     patternContext.lineTo(patternCanvas.width, y);
+    // }
     patternContext.stroke();
 
     const pattern = patternContext.createPattern(patternCanvas, 'no-repeat');
@@ -67,7 +67,9 @@ const createPatternFill = (lineColor = '', width = 518, height = 103) => {
 export default defineComponent({
     setup(props) {
         const chartRef = ref(null);
-        const stakedAmount = ref(props.stakedAmount);
+        const _amount = ref(props.stakedAmount);
+        const stakedAmount = computed(() => _amount.value);
+
         const apy = ref(props.apy);
 
         const getChartData = (noMonths = 12) => {
@@ -129,48 +131,59 @@ export default defineComponent({
             return result;
         };
 
+        const getScalesData = (data) => {
+            const minYValue = data.datasets[1].data[0].y;
+            const maxYValue = data.datasets[2].data[data.datasets[2].data.length - 1].y;
+
+            return {
+                y: {
+                    max: maxYValue,
+                    min: minYValue,
+                    ticks: {
+                        // source: 'data',
+                        stepSize: (maxYValue - minYValue) / 6.0,
+                        // maxTicksLimit: 7,
+                        callback: () => '',
+                        font: {
+                            size: 0,
+                        },
+                    },
+                },
+                x: {
+                    type: 'time',
+                    bounds: 'data',
+                    min: NOW.plus(Duration.fromObject({ months: 0 })).toMillis(),
+                    max: NOW.plus(Duration.fromObject({ months: (noMonths * 1.3334) + 0 })).toMillis(),
+                    time: {
+                        unit: 'month',
+                    },
+                    ticks: {
+                        source: 'data',
+                        callback: (value, index) => data.labels[index],
+                    },
+                },
+            };
+        };
+
         const transparentPixel = new Image(1, 1);
         transparentPixel.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1H'
             + 'AwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
         const noMonths = 12;
         const data = getChartData(noMonths);
-        const minYValue = data.datasets[1].data[0].y;
-        const maxYValue = data.datasets[2].data[data.datasets[2].data.length - 1].y;
+        const scales = getScalesData(data);
 
         const chartData = {
             id: 'stakingGraph',
             type: 'line',
             data,
             options: {
-                scales: {
-                    y: {
-                        max: maxYValue,
-                        min: minYValue,
-                        ticks: {
-                            // source: 'data',
-                            stepSize: (maxYValue - minYValue) / 6.0,
-                            // maxTicksLimit: 7,
-                            callback: () => '',
-                            font: {
-                                size: 0,
-                            },
-                        },
-                    },
-                    x: {
-                        type: 'time',
-                        bounds: 'data',
-                        min: NOW.toMillis(),
-                        max: NOW.plus(Duration.fromObject({ months: noMonths * 1.3334 })).toMillis(),
-                        time: {
-                            unit: 'month',
-                        },
-                        ticks: {
-                            source: 'data',
-                            callback: (value, index) => data.labels[index],
-                        },
-                    },
+                animation: {
+                    duration: 0,
                 },
+                responsive: false,
+                maintainAspectRatio: false,
+                scales,
                 plugins: {
                     legend: { display: false },
                     tooltip: { enabled: false },
@@ -178,14 +191,17 @@ export default defineComponent({
             },
         };
 
-        // const updateChart = () => {
-        //     chartData.data.datasets = [{
-        //         backgroundColor: 'rgba(33, 188, 165, 0.2)',
-        //         data: [450, 1000, 1350],
-        //     }];
+        watch(() => props.stakedAmount, () => {
+            if (chartRef.value === null) return;
+            _amount.value = props.stakedAmount;
+            const _data = getChartData(noMonths);
+            const _scales = getScalesData(_data);
 
-        //     chartRef.value.update(250);
-        // };
+            chartData.data.datasets = _data.datasets;
+            chartData.options.scales = _scales;
+
+            chartRef.value.update();
+        });
 
         return {
             chartData,
@@ -211,6 +227,11 @@ export default defineComponent({
 <style lang="scss" scoped>
     .chart-container {
         display: flex;
+        width: 110rem;
+        text-align: center;
+        position: relative;
+        top: 1rem;
+        left: -13.625rem;
         flex-direction: column;
         margin: 0;
         margin-left: -0.625rem;

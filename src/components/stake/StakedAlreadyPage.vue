@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHeader :backArrow="true" @back="$emit('back')">
+        <PageHeader :backArrow="false">
             <template #default>
                 {{
                     $t('Staking with {validator}', {
@@ -79,7 +79,8 @@
                         />
                     </div>
                     <div class="col right">
-                        <button class="nq-button-s">Switch Validator</button>
+                        <button class="nq-button-s"
+                            @click="$emit('switch-validator')">Switch Validator</button>
                     </div>
                 </div>
                 <div class="rewards-history" @click="$emit('next')">
@@ -96,9 +97,8 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
-import AlreadyStakedPartial from './partials/AlreadyStakedPartial.vue';
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import StakeAmountSlider from './StakeAmountSlider.vue';
+import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 import LabelTooltip from './tooltips/LabelTooltip.vue';
@@ -122,8 +122,6 @@ export default defineComponent({
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
-        const showView = ref(true);
-        const showEdit = ref(false);
 
         validator.stakedAmount = currentStake.value; // temporary
 
@@ -157,8 +155,6 @@ export default defineComponent({
             graphUpdate,
             currentStake,
             validator,
-            showView,
-            showEdit,
             alreadyStaked,
             availableBalance,
             unstakedAmount,
@@ -190,8 +186,7 @@ export default defineComponent({
         RewardTooltip,
         StakingIcon,
         StakingGraph,
-        StakeAmountSlider,
-        AlreadyStakedPartial,
+        StakeValidatorListItem,
         Amount,
         Tooltip,
         InfoCircleSmallIcon,
@@ -202,9 +197,12 @@ export default defineComponent({
 <style lang="scss" scoped>
     .page-header {
         position: relative;
-        padding-top: .75rem;
+        padding-top: 3.5rem;
         height: 17rem;
-        font-weight: 600;
+        /deep/ .nq-h1 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
         .tooltip-bar {
             position: absolute;
             bottom: 0rem;

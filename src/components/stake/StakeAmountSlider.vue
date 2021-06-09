@@ -36,7 +36,7 @@
                     :style="`left: ${1.375 + (5 * Math.min(5, index)) + (index > 5 ? (index - 5) * 4.77 : 0)}rem`" />
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
-            <div class="slider-controls" ref="$slide" @click="atMove($event, true);">
+            <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
                     <div class="slider-dual"
@@ -119,7 +119,6 @@ export default defineComponent({
         const { activeAddressInfo } = useAddressStore();
 
         const readonly = ref(false);
-        const active = ref(false);
         const alreadyStakedAmount = ref(props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = ref(activeAddressInfo.value?.balance);
@@ -176,12 +175,10 @@ export default defineComponent({
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
 
-            if (active.value) return;
-            active.value = true;
             pivotPoint = extractEventPosition(e);
             pivotPoint!.x -= $knob.value!.getBoundingClientRect().x;
-            window.addEventListener('mousemove', atMove);
-            window.addEventListener('touchmove', atMove);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchmove', onMove);
             window.addEventListener('mouseup', atEnd);
             window.addEventListener('touchend', atEnd);
         };
@@ -204,13 +201,12 @@ export default defineComponent({
                 (e!.target! as HTMLInputElement).setSelectionRange(startSelection, endSelection);
             }, 0);
             context.emit('amount-staked', currentAmount.value);
-            context.emit('amount-chosen', 0);
+            onMove(e, true, true, percent);
         };
 
         const atEnd = () => {
-            active.value = false;
-            window.removeEventListener('mousemove', atMove);
-            window.removeEventListener('touchmove', atMove);
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('touchmove', onMove);
             window.removeEventListener('mouseup', atEnd);
             window.removeEventListener('touchend', atEnd);
 
@@ -220,7 +216,7 @@ export default defineComponent({
         const updatePosition = (offsetX: number) => {
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
-            if (currentPercentage.value! < 0.1) {
+            if (currentPercentage.value! <= 0) {
                 $progressBar.value!.style.width = '0';
             } else {
                 $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
@@ -242,41 +238,48 @@ export default defineComponent({
             context.emit('amount-chosen', 0);
         };
 
-        const atMove = (e: MouseEvent | TouchEvent, skip = false) => {
-            if (skip === true || active.value === true) {
-                const position = extractEventPosition(e);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false, _percent = NaN) => {
+            // if (execute !== true) return;
+            const position = extractEventPosition(e);
 
-                const percent = Math.min(100, Math.max(0,
-                    (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
-                ));
-                const offsetX = getPointAtPercent(percent);
-                currentAmount.value = (percent / 100) * availableAmount.value!;
+            const percent = (!Number.isNaN(_percent)) ? _percent : Math.min(100, Math.max(0,
+                (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
+            ));
+            const offsetX = getPointAtPercent(percent);
+            currentAmount.value = (percent / 100) * availableAmount.value!;
 
-                if (alreadyStaked.value === true) {
-                    if (percent < alreadyStakedPercentage.value) {
+            if (alreadyStaked.value === true) {
+                if (percent < alreadyStakedPercentage.value) {
+                    if (!skipSignals) {
                         context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
-                        if (ENABLED.dualSlider) {
-                            $dualSlider.value!.style.display = 'inline-block';
-                            $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
-                            $dualSlider.value!.style.left = `${offsetX}px`;
-                            $dualSlider.value!.style.border = '0.25rem solid var(--nimiq-gold)';
-                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
-                            + ', rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
-                        }
-                    } else {
-                        if (ENABLED.dualSlider && percent > alreadyStakedPercentage.value) {
-                            $dualSlider.value!.style.width = `${(offsetX - initialX) + knobBox.width}px`;
-                            $dualSlider.value!.style.left = `${initialX}px`;
-                            $dualSlider.value!.style.border = '0';
-                            $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
-                            + ', #15a2da 0%, #0582ca 100%)';
-                        }
+                    }
+                    if (ENABLED.dualSlider) {
+                        $dualSlider.value!.style.display = 'inline-block';
+                        $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
+                        $dualSlider.value!.style.left = `${offsetX}px`;
+                        $dualSlider.value!.style.border = '0.25rem solid var(--nimiq-gold)';
+                        $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
+                        + ', rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
+                    }
+                } else {
+                    if (ENABLED.dualSlider && percent > alreadyStakedPercentage.value) {
+                        $dualSlider.value!.style.display = 'inline-block';
+                        $dualSlider.value!.style.width = `${(offsetX - initialX) + knobBox.width}px`;
+                        $dualSlider.value!.style.left = `${initialX}px`;
+                        $dualSlider.value!.style.border = '0';
+                        $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
+                        + ', #15a2da 0%, #0582ca 100%)';
+                    }
+                    if (!skipSignals) {
                         context.emit('amount-unstaked', 0);
                     }
                 }
-                context.emit('amount-staked', currentAmount.value);
-                updatePosition(offsetX);
             }
+            if (!skipSignals) {
+                context.emit('amount-staked', currentAmount.value);
+            }
+            updatePosition(offsetX);
         };
 
         const fillBackground = (lo: number, hi: number) => {
@@ -358,10 +361,9 @@ export default defineComponent({
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(availableAmount.value!, CryptoCurrency.NIM),
             ENABLED,
-            active,
             readonly,
             atClick,
-            atMove,
+            onMove,
             currentPercentage,
             currentAmount,
             alreadyStaked,
@@ -494,7 +496,7 @@ export default defineComponent({
                 align-items: center;
 
                 background: radial-gradient(center, farthest-corner, rgba(255, 255, 255, 1.0), white)!important;
-                top: -5.25rem;
+                top: -4.5rem;
                 font-size: 2rem;
                 font-weight: bold;
 

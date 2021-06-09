@@ -1,7 +1,6 @@
 <template>
     <Tooltip class="validator-label-tip"
-        preferredPosition="bottom right"
-        :container="this.$parent">
+        preferredPosition="bottom right">
         <div slot="trigger"
             class="validator-label-trigger"
             :class="{'dry-trigger': isDry}">
@@ -70,7 +69,9 @@ export default defineComponent({
     }
     &.dry-trigger {
         border: .1875rem solid rgba(31, 35, 72, 0.15);
-        padding: .375rem 1.375rem .375rem .375rem;
+        padding: .1rem;
+        padding-left: 0;
+        padding-right: 1rem;
         margin-right: .75rem;
         box-sizing: border-box;
         border-radius: 1.75rem;
@@ -80,6 +81,8 @@ export default defineComponent({
             display: flex;
             flex-direction: row;
             justify-content: center;
+            width: 100%;
+            height: 100%;
 
             .label {
                 height: 1.75rem;
@@ -94,8 +97,8 @@ export default defineComponent({
             }
             img {
                 display: inline-block;
-                width: 2.5rem;
-                height: 2.5rem;
+                width: 2.75rem;
+                height: 2.75rem;
             }
         }
     }

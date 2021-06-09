@@ -20,6 +20,8 @@
         </template>
         <template v-if="page === 4">
             <StakedAlreadyPage @back="page -= 1" @next="page += 1"
+                @adjust-stake="adjustStake"
+                @switch-validator="switchValidator"
                 :stakingData="stakingData" :validatorsList="validatorsList"
                 :activeValidator="activeValidator" />
         </template>
@@ -55,10 +57,20 @@ export default defineComponent({
             page.value = 3;
         };
 
+        const adjustStake = () => {
+            page.value = 3;
+        };
+
+        const switchValidator = () => {
+            page.value = 2;
+        };
+
         return {
             page,
             setValidator,
             activeValidator,
+            adjustStake,
+            switchValidator,
             stakingData: computed(() => Object.fromEntries(
                 Object.entries(stakingData as StakingData).map(([k, v]) => {
                     if (k.endsWith('Rules')) {

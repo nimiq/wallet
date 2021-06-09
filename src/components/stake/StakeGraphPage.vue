@@ -29,7 +29,9 @@
         </PageHeader>
         <PageBody>
             <span class="estimated-rewards-overlay">
-                <Tooltip :container="this">
+                <Tooltip
+                    preferredPosition="bottom right"
+                    :container="this">
                     <div slot="trigger">
                         Estimated rewards <InfoCircleSmallIcon />
                     </div>
@@ -46,27 +48,24 @@
                 </Tooltip>
             </span>
             <StakingGraph v-if="alreadyStaked === true"
-                :stakedAmount="currentStake" :apy="validator.reward"
+                :stakedAmount="currentStake.amount" :apy="validator.reward"
                 :period="{
                     s: NOW,
                     p: 12,
                     m: MONTH,
-                }"
-                :key="graphUpdate" />
+                }" />
             <StakingGraph v-else
-                :stakedAmount="currentStake" :apy="validator.reward"
+                :stakedAmount="currentStake.amount" :apy="validator.reward"
                 :period="{
                     s: NOW,
                     p: 12,
                     m: MONTH,
-                }"
-                :key="graphUpdate" />
+                }" />
 
             <StakeAmountSlider class="stake-amount-slider"
-                :stakedAmount="currentStake"
+                :stakedAmount="preStaked"
                 @amount-staked="updateStaked"
-                @amount-unstaked="updateUnstaked"
-                @amount-chosen="updateGraph" />
+                @amount-unstaked="updateUnstaked" />
             <button class="nq-button light-blue stake-button" @click="$emit('next')">
                 {{ $t('confirm stake') }}
             </button>
@@ -86,12 +85,12 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 
-import AlreadyStakedPartial from './partials/AlreadyStakedPartial.vue';
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -108,33 +107,30 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 export default defineComponent({
     setup(props) {
         const { activeAddressInfo } = useAddressStore();
-
-        const graphUpdate = ref(0);
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
-        //
-        const currentStake = ref(availableBalance.value * .515);
+
+        const preStaked = ref(availableBalance.value * .515);
+        const currentStake = Vue.observable({ amount: preStaked.value });
         const validator = props.activeValidator;
         const unstakedAmount = ref(0);
-        const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
-        const showView = ref(true);
-        const showEdit = ref(false);
+        const alreadyStaked = ref(currentStake.amount > 0.0 && validator !== null);
 
-        validator.stakedAmount = currentStake.value; // temporary
+        validator.stakedAmount = currentStake.amount; // temporary
 
         const updateStaked = (amount: number) => {
-            if (amount !== currentStake.value) {
-                currentStake.value = amount;
+            if (amount !== currentStake.amount) {
+                currentStake.amount = amount;
             }
         };
+
         const updateUnstaked = (amount: number) => {
             if (amount !== unstakedAmount.value) {
+                currentStake.amount = preStaked.value - amount;
                 unstakedAmount.value = amount;
             }
         };
-        const updateGraph = () => {
-            graphUpdate.value += 1;
-        };
+
         return {
             NOW,
             MONTH,
@@ -145,17 +141,14 @@ export default defineComponent({
                 'will be available within ~{duration}',
                 { duration: '12 hours' },
             ),
-            graphUpdate,
+            preStaked,
             currentStake,
             validator,
-            showView,
-            showEdit,
             alreadyStaked,
             availableBalance,
             unstakedAmount,
             updateStaked,
             updateUnstaked,
-            updateGraph,
         };
     },
     props: {
@@ -181,7 +174,6 @@ export default defineComponent({
         StakingIcon,
         StakingGraph,
         StakeAmountSlider,
-        AlreadyStakedPartial,
         Amount,
         Tooltip,
         InfoCircleSmallIcon,
@@ -200,7 +192,7 @@ export default defineComponent({
     .page-header {
         position: relative;
         padding-top: 3.125rem;
-        height: 20.5rem;
+        height: 17.5rem;
         font-weight: 600;
         /deep/ .nq-h1 {
             font-size: 3rem;
@@ -208,7 +200,7 @@ export default defineComponent({
         .tooltip-bar {
             height: 3rem;
             width: 100%;
-            margin-top: -3rem;
+            margin-top: -4rem;
             margin-bottom: -3rem;
             z-index: 9001;
             white-space: nowrap;
@@ -217,7 +209,7 @@ export default defineComponent({
     .page-body {
         padding: 0;
         margin: 0;
-        height: 60.375rem;
+        height: 63.375rem;
         overflow: hidden;
         position: relative;
         .estimated-rewards {
@@ -233,10 +225,11 @@ export default defineComponent({
         }
         .estimated-rewards-overlay {
             position: absolute;
-            top: 1.375rem;
+            top: 2.375rem;
             left: 1.5rem;
+            z-index: 9001;
             .tooltip {
-                .tooltip-box {
+                /deep/ .tooltip-box {
                     width: 32rem;
                     max-width: 32rem;
                 }
@@ -255,21 +248,21 @@ export default defineComponent({
             }
         }
         .stake-amount-slider {
-            margin-top: 8.875rem;
+            margin-top: 9.875rem;
         }
 
         .stake-button {
             margin: auto;
-            margin-top: 2.25rem;
+            margin-top: 2rem;
             width: 40.5rem;
             height: 8rem;
             line-height: 2.5rem;
-            letter-spacing: 0.1875rem;
+            letter-spacing: 0.25rem;
             font-weight: 700;
         }
 
         .stake-disclaimer {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             font-weight: 600;
             font-size: 1.75rem;
             color: #1F2348;

@@ -142,7 +142,9 @@ export default defineComponent({
             justify-content: center;
             margin-right: .75rem;
             border: .1875rem solid rgba(31, 35, 72, 0.15);
-            padding: .375rem 1.375rem .375rem 1rem;
+            padding: .25rem;
+            padding-left: .75rem;
+            padding-right: .625rem;
             box-sizing: border-box;
             border-radius: 1.75rem;
             white-space: nowrap;

@@ -15,10 +15,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     a {
+        display: flex;
+        flex-direction: row;
         align-items: center;
         text-decoration: none !important;
         font-weight: bold;
-        display: block;
 
         .nq-icon {
             display: inline;

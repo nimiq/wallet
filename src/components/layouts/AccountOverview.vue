@@ -100,6 +100,12 @@
                     emitClose @close="showModalLegacyAccountNotice = false"/>
             </transition>
         </Portal>
+
+        <Portal>
+            <transition name="modal">
+                <OasisLaunchModal/>
+            </transition>
+        </Portal>
     </div>
 </template>
 
@@ -119,6 +125,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
+import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
@@ -233,6 +240,7 @@ export default defineComponent({
         LegacyAccountNotice,
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
+        OasisLaunchModal,
         Portal,
         Amount,
         FiatConvertedAmount,

@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
@@ -23,24 +23,21 @@ export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'ad
     uid?: string,
 }
 
-export const useAccountStore = createStore({
+export const useAccountStore = defineStore({
     id: 'accounts',
-    state: () => ({
+    state: (): AccountState => ({
         accountInfos: {},
         activeAccountId: null,
         activeCurrency: CryptoCurrency.NIM,
-    } as AccountState),
+    }),
     getters: {
-        accountInfos: (state) => state.accountInfos,
-        activeAccountId: (state) => state.activeAccountId,
-        activeAccountInfo: (state) => state.activeAccountId
-            ? state.accountInfos[state.activeAccountId]
-            : null,
-        activeCurrency: (state) => state.activeCurrency,
+        activeAccountInfo(): AccountInfo | null {
+            return this.activeAccountId ? this.accountInfos[this.activeAccountId] : null;
+        },
     },
     actions: {
         selectAccount(accountId: string) {
-            this.state.activeAccountId = accountId;
+            this.activeAccountId = accountId;
 
             // If the selected account does not support Bitcoin (or has it not enabled), switch active currency to NIM
             const activeAccountInfo = this.activeAccountInfo.value!;
@@ -55,12 +52,12 @@ export const useAccountStore = createStore({
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to assign whole object for change detection of new accounts.
             // TODO: Simply set new accountInfo in Vue 3.
-            this.state.accountInfos = {
-                ...this.state.accountInfos,
+            this.accountInfos = {
+                ...this.accountInfos,
                 [accountInfo.id]: accountInfo,
             };
 
-            if (selectIt) this.state.activeAccountId = accountInfo.id;
+            if (selectIt) this.activeAccountId = accountInfo.id;
         },
         setAccountInfos(accountInfos: AccountInfo[]) {
             const newAccountInfos: {[id: string]: AccountInfo} = {};
@@ -69,40 +66,40 @@ export const useAccountStore = createStore({
                 newAccountInfos[accountInfo.id] = accountInfo;
             }
 
-            this.state.accountInfos = newAccountInfos;
+            this.accountInfos = newAccountInfos;
 
             // If no account selected yet, or selected account does not exist anymore, select the first available.
             // TODO: Replace with account selection screen?
-            if (!this.state.activeAccountId || !this.state.accountInfos[this.state.activeAccountId]) {
-                this.state.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
+            if (!this.activeAccountId || !this.accountInfos[this.activeAccountId]) {
+                this.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
             }
         },
-        patchAccount(accountId, patch: Partial<AccountInfo>) {
-            this.state.accountInfos[accountId] = {
-                ...this.state.accountInfos[accountId],
+        patchAccount(accountId: string, patch: Partial<AccountInfo>) {
+            this.accountInfos[accountId] = {
+                ...this.accountInfos[accountId],
                 ...patch,
             };
         },
         addAddressToAccount(accountId: string, address: string) {
-            if (this.state.accountInfos[accountId].addresses.includes(address)) return;
-            this.state.accountInfos[accountId].addresses.push(address);
+            if (this.accountInfos[accountId].addresses.includes(address)) return;
+            this.accountInfos[accountId].addresses.push(address);
         },
         removeAccount(accountId: string) {
-            const accountInfos = { ...this.state.accountInfos };
+            const accountInfos = { ...this.accountInfos };
             delete accountInfos[accountId];
-            this.state.accountInfos = accountInfos;
+            this.accountInfos = accountInfos;
 
-            if (this.state.activeAccountId === accountId) {
+            if (this.activeAccountId === accountId) {
                 const accountInfosArray = Object.values(accountInfos);
                 if (accountInfosArray[0]) {
                     this.selectAccount(accountInfosArray[0].id);
                 } else {
-                    this.state.activeAccountId = null;
+                    this.activeAccountId = null;
                 }
             }
         },
         setActiveCurrency(currency: CryptoCurrency) {
-            this.state.activeCurrency = currency;
+            this.activeCurrency = currency;
         },
     },
 });

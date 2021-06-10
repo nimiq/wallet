@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
+import { PiniaPlugin, createPinia } from 'pinia';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -32,9 +33,11 @@ setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}
 Vue.config.productionTip = false;
 
 Vue.use(VueCompositionApi);
+Vue.use(PiniaPlugin);
 Vue.use(VueVirtualScroller);
 
 async function start() {
+    const pinia = createPinia();
     await initStorage(); // Must be awaited before starting Vue
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization
@@ -69,6 +72,7 @@ async function start() {
     const app = new Vue({
         router,
         i18n,
+        pinia,
         render: (h) => h(App),
     }).$mount('#app');
 

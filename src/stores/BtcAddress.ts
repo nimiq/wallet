@@ -68,12 +68,12 @@ export const useBtcAddressStore = createStore({
                 .concat((addressSet as Ref<BtcAddressSet>).value.external);
 
             for (const addressInfo of addressInfos) {
-                if (!addressInfo.utxos.length) continue;
-
-                utxos.push(...addressInfo.utxos.map((utxo) => ({
-                    ...utxo,
-                    address: addressInfo.address,
-                })));
+                for (const utxo of addressInfo.utxos) {
+                    utxos.push({
+                        ...utxo,
+                        address: addressInfo.address,
+                    });
+                }
             }
             return utxos;
         },

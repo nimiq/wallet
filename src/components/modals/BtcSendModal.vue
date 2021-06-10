@@ -20,24 +20,6 @@
                             @address="onAddressEntered"
                             @scan="goToScanner"/>
                     </template>
-
-                    <template #message
-                        v-if="recipientWithLabel && recipientWithLabel.type === RecipientType.KNOWN_CONTACT">
-                        <span class="nq-orange reused-address flex-row">
-                            <AlertTriangleIcon/>
-                            {{ $t('This address has already been used') }}
-                            <Tooltip preferredPosition="bottom left" :styles="{width: '205px', 'text-align': 'left'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                <span class="header">
-                                    {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
-                                </span>
-                                <p>
-                                    {{ $t('Although reusing addresses won’t result in a loss of funds, '
-                                        + 'it is highly recommended not to do so.') }}
-                                </p>
-                            </Tooltip>
-                        </span>
-                    </template>
                 </DoubleInput>
 
                 <div class="flex-grow"></div>

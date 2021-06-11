@@ -130,6 +130,7 @@ export default defineComponent({
         };
 
         const performStaking = () => {
+            alert(currentStake.amount);
             validator.stakedAmount = currentStake.amount;
             if (currentStake.amount < preStaked.value) {
                 validator.unstakePending = true;

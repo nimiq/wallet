@@ -49,8 +49,8 @@ import validatorsList from './assets/validators.mock.json';// mock data
 
 export default defineComponent({
     setup() {
-        const page = ref(1);
         const { activeValidator, selectValidator } = useStakingStore();
+        const page = ref(activeValidator.value ? 4 : 1);
 
         const setValidator = (validator: ValidatorData) => {
             selectValidator(validator);

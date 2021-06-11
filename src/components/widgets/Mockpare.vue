@@ -29,6 +29,18 @@
                         <h2>PageUp / PageDown</h2>
                         <h3>Navigate through the available images</h3>
                     </li>
+                    <li>
+                        <h2>X(shift + x)</h2>
+                        <h3>Fit on the X axis</h3>
+                    </li>
+                    <li>
+                        <h2>Y(shift + y)</h2>
+                        <h3>Fit on the Y axis</h3>
+                    </li>
+                    <li>
+                        <h2>Arrow keys</h2>
+                        <h3>Manually adjust projection's position</h3>
+                    </li>
                 </ul>
             </span>
         </Tooltip>

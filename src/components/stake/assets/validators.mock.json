@@ -10,7 +10,10 @@
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 2,
-    "dominance": 12
+    "dominance": 12,
+    "stakedAmount": 0,
+    "unclaimedReward": 0,
+    "unstakePending": false
   },
   {
     "name": "nimiq-watch",
@@ -23,7 +26,10 @@
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 48,
-    "dominance": 10
+    "dominance": 10,
+    "stakedAmount": 0,
+    "unclaimedReward": 0,
+    "unstakePending": false
   },
   {
     "name": "nimpool",
@@ -36,7 +42,10 @@
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 48,
-    "dominance": 25
+    "dominance": 25,
+    "stakedAmount": 0,
+    "unclaimedReward": 0,
+    "unstakePending": false
   },
   {
     "name": "icestaking",
@@ -49,7 +58,10 @@
     "link": "https://www.nimiq.com",
     "uptime": 84,
     "monthsOld": 48,
-    "dominance": 10
+    "dominance": 10,
+    "stakedAmount": 0,
+    "unclaimedReward": 0,
+    "unstakePending": false
   },
   {
     "name": "acestaking",
@@ -62,6 +74,9 @@
     "link": "https://www.nimiq.com",
     "uptime": 80,
     "monthsOld": 48,
-    "dominance": 10
+    "dominance": 10,
+    "stakedAmount": 0,
+    "unclaimedReward": 0,
+    "unstakePending": false
   }
 ]

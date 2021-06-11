@@ -44,7 +44,7 @@ const plugin = {
         for (let i = 0; i < args.meta._dataset.data.length; i++) {
             const point = args.meta._dataset.data[i];
             if (point) {
-                const { x, y } = points[i - 1];
+                const { x, y } = (point.y === 0) ? { x: 0, y: 0 } : points[i - 1];
 
                 const label = args.meta.data[i].$context.element.options.pointStyle;
                 if (label.length > 0) {

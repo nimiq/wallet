@@ -108,17 +108,7 @@ export function formatLunaAsNim(luna: number, fractionDigits = 0): string {
     return formatAsNim(Math.round(luna / 100000), fractionDigits);
 }
 
-export function formatDate(totalMonths = 0, days = 0): string {
-    const elements: string[] = [];
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths - years * 12;
-    if (years >= 1) elements.push(`${Math.floor(years)}Y`);
-    if (months >= 1) elements.push(`${Math.floor(months)}M`);
-    if (days >= 1) elements.push(`${Math.floor(days)}D`);
-    return elements.join(' ');
-}
-
-export const formatSpaceyNumber = (value = 1, magnitude = 1):string => (
+export const formatAmount = (value = 0, magnitude = 1): string => (
     new FormattableNumber(Math.round(value / magnitude)).toString({
         maxDecimals: 0,
         useGrouping: true,

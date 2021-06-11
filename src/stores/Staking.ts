@@ -9,15 +9,18 @@ export type ValidatorData = {
     name: string | null,
     icon: string | null,
     label: string | null,
-    trust: number | .0,
+    trust: number | 0,
     payout: number | 0,
-    reward: number | .0,
+    reward: number | 0,
     labelHeaderText: string | null,
     link: string | null,
-    uptime: number | .0,
+    uptime: number | 0,
     monthsOld: number | 0,
-    dominance: number | .0,
-    stakedAmount: number | .0,
+    dominance: number | 0,
+    stakedAmount: number | 0,
+    unclaimedReward: number | 0,
+    stakePending: boolean | false,
+    unstakePending: boolean | false,
 }
 
 export type StakingScoringRules = any

@@ -11,18 +11,20 @@
             </template>
         </PageHeader>
         <PageBody>
-            <StakeValidatorFilter @changed="doSort"/>
+            <StakeValidatorFilter @changed="doSort" />
             <div class="mask-container">
                 <div class="scroll-mask-top" :class="{ 'disabled-mask': !masks }"></div>
                 <div class="scroll-container">
                     <div class="validator-list">
                         <StakeValidatorListItem
-                            v-for="(validatorData, index) in sortedList" :key="index"
+                            v-for="(validatorData) in sortedList" :key="validatorData.name"
+                            :prop="validatorData.name"
                             :validatorData="validatorData"
                             :stakingData="stakingData"
                             :validatorsList="validatorsList"
                             :selectValidator="selectValidator"
                             @focus="onValidatorFocusChange"
+                            sortable
                         />
                     </div>
                 </div>
@@ -35,7 +37,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { StakingData, ValidatorData } from '../../stores/Staking';// StakingScoringRules
+import { StakingData, ValidatorData } from '../../stores/Staking';
 
 import StakeValidatorFilter, { FilterState } from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
@@ -50,30 +52,15 @@ export default defineComponent({
         const doSort = (state: FilterState) => {
             switch (state) {
                 case FilterState.TRUST: {
-                    sortedList.value.sort((a, b) => (a.trust < b.trust)
-                        ? 1
-                        : ((a.trust > b.trust)
-                            ? -1
-                            : 0),
-                    );
+                    sortedList.value.sort((a, b) => b.trust - a.trust);
                     break;
                 }
                 case FilterState.PAYOUT: {
-                    sortedList.value.sort((a, b) => (a.payout < b.payout)
-                        ? 1
-                        : ((a!.payout > b!.payout)
-                            ? -1
-                            : 0),
-                    );
+                    sortedList.value.sort((a, b) => a.payout - b.payout);
                     break;
                 }
                 case FilterState.REWARD: {
-                    sortedList.value.sort((a, b) => (a.reward < b.reward)
-                        ? 1
-                        : ((a.reward > b.reward)
-                            ? -1
-                            : 0),
-                    );
+                    sortedList.value.sort((a, b) => b.reward - a.reward);
                     break;
                 }
                 default: {

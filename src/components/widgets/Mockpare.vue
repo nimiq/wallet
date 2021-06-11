@@ -52,8 +52,11 @@ export default defineComponent({
         const state = ref(false);
         const opacity = ref(0.5);
         const screenName = ref(screens.value[0]);
-        const numericID = Math.random() * Number.MAX_SAFE_INTEGER;
+        // const numericID = Math.random() * Number.MAX_SAFE_INTEGER;
+        const numericID = 1;
         const mockContainerID = `mock-container-${numericID}`;
+        let offsetX = 0;
+        let offsetY = 0;
 
         const toggleMock = () => {
             state.value = !state.value;
@@ -100,6 +103,12 @@ export default defineComponent({
             el!.style.opacity = opacity.value.toFixed(1);
         };
 
+        const adjustPosition = () => {
+            const el = document.getElementById(mockContainerID) as HTMLImageElement;
+            el.style.top = `${offsetY}px`;
+            el.style.left = `${offsetX}px`;
+        };
+
         const keyboardControl = (e:KeyboardEvent) => {
             if (e.key === 'M') {
                 toggleMock();
@@ -119,6 +128,18 @@ export default defineComponent({
                 fitToScreenW();
             } else if (e.key === 'Y') {
                 fitToScreenH();
+            } else if (e.key === 'ArrowUp') {
+                offsetY -= 1;
+                adjustPosition();
+            } else if (e.key === 'ArrowDown') {
+                offsetY += 1;
+                adjustPosition();
+            } else if (e.key === 'ArrowRight') {
+                offsetX += 1;
+                adjustPosition();
+            } else if (e.key === 'ArrowLeft') {
+                offsetX -= 1;
+                adjustPosition();
             }
         };
 

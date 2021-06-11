@@ -116,15 +116,12 @@ export default defineComponent({
         const { activeAddressInfo } = useAddressStore();
 
         const graphUpdate = ref(0);
-        // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
-        //
-        const currentStake = ref(availableBalance.value * .515);
         const validator = props.activeValidator;
+        //
+        const currentStake = ref(validator.stakedAmount);
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
-
-        validator.stakedAmount = currentStake.value; // temporary
 
         const updateStaked = (amount: number) => {
             if (amount !== currentStake.value) {

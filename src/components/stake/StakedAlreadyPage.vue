@@ -46,11 +46,12 @@
                             staked
                         </div>
                         <div class="amount-staked">
-                            <Amount ref="$stakedNIMAmount"
+                            {{ format(validator.stakedAmount, NIM_MAGNITUDE) }} NIM
+                            <!-- <Amount ref="$stakedNIMAmount"
                                 :decimals="DISPLAYED_DECIMALS"
                                 :amount="validator.stakedAmount"
                                 :currency="STAKING_CURRENCY"
-                                :currencyDecimals="NIM_DECIMALS" />
+                                :currencyDecimals="NIM_DECIMALS" /> -->
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
@@ -96,6 +97,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
+import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
 
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
@@ -107,8 +109,7 @@ import RewardTooltip from './tooltips/RewardTooltip.vue';
 
 import { i18n } from '../../i18n/i18n-setup';
 
-import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
-import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props) {
@@ -146,12 +147,14 @@ export default defineComponent({
             NOW,
             MONTH,
             NIM_DECIMALS,
+            NIM_MAGNITUDE,
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
             unstakeDisclaimer: i18n.t(
                 'will be available within ~{duration}',
                 { duration: '12 hours' },
             ),
+            format: formatAmount,
             graphUpdate,
             currentStake,
             validator,

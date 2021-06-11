@@ -66,7 +66,7 @@
                 :stakedAmount="preStaked"
                 @amount-staked="updateStaked"
                 @amount-unstaked="updateUnstaked" />
-            <button class="nq-button light-blue stake-button" @click="$emit('next')">
+            <button class="nq-button light-blue stake-button" @click="performStaking">
                 {{ $t('confirm stake') }}
             </button>
             <div class="stake-disclaimer" v-if="unstakedAmount === 0">
@@ -105,18 +105,16 @@ import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 
 export default defineComponent({
-    setup(props) {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
+        const validator = props.activeValidator;
         // whole amount, including staking, check with design
         const availableBalance = ref(activeAddressInfo.value?.balance || 0);
 
-        const preStaked = ref(availableBalance.value * .515);
+        const preStaked = ref(validator ? validator.stakedAmount : 0);
         const currentStake = Vue.observable({ amount: preStaked.value });
-        const validator = props.activeValidator;
         const unstakedAmount = ref(0);
         const alreadyStaked = ref(currentStake.amount > 0.0 && validator !== null);
-
-        validator.stakedAmount = currentStake.amount; // temporary
 
         const updateStaked = (amount: number) => {
             if (amount !== currentStake.amount) {
@@ -129,6 +127,16 @@ export default defineComponent({
                 currentStake.amount = preStaked.value - amount;
                 unstakedAmount.value = amount;
             }
+        };
+
+        const performStaking = () => {
+            validator.stakedAmount = currentStake.amount;
+            if (currentStake.amount < preStaked.value) {
+                validator.unstakePending = true;
+            } else if (currentStake.amount > preStaked.value) {
+                validator.stakePending = true;
+            }
+            context.emit('next');
         };
 
         return {
@@ -149,6 +157,7 @@ export default defineComponent({
             unstakedAmount,
             updateStaked,
             updateUnstaked,
+            performStaking,
         };
     },
     props: {

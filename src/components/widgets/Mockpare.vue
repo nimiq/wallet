@@ -47,6 +47,7 @@ export default defineComponent({
             'Choose Validator',
             'Set Amount',
             'Staking Details',
+            'Overview',
         ]);
         const state = ref(false);
         const opacity = ref(0.5);
@@ -68,6 +69,28 @@ export default defineComponent({
             if (state.value) {
                 el.src = `/mockups/${screenName.value}.png`;
             }
+        };
+
+        const fitToScreenW = () => {
+            const el = document.getElementById(mockContainerID) as HTMLImageElement;
+            if (!el.style.width) {
+                el.style.width = `${window.innerWidth}px`;
+            } else {
+                el.style.width = '';
+            }
+            el.style.top = '0';
+            el.style.left = '0';
+        };
+
+        const fitToScreenH = () => {
+            const el = document.getElementById(mockContainerID) as HTMLImageElement;
+            if (!el.style.height) {
+                el.style.height = `${window.innerHeight}px`;
+            } else {
+                el.style.height = '';
+            }
+            el.style.top = '0';
+            el.style.left = '0';
         };
 
         const adjustOpacity = (adjustment: number) => {
@@ -92,6 +115,10 @@ export default defineComponent({
                 const pos = screens.value.indexOf(screenName.value);
                 screenName.value = screens.value[(pos + screens.value.length - 1) % screens.value.length];
                 updateSource();
+            } else if (e.key === 'X') {
+                fitToScreenW();
+            } else if (e.key === 'Y') {
+                fitToScreenH();
             }
         };
 
@@ -99,8 +126,8 @@ export default defineComponent({
             document.body.style.overflow = 'hidden';
             const imgNode = document.createElement('IMG') as HTMLImageElement;
             imgNode.onload = () => {
-                imgNode.style.top = `calc((100vh - ${imgNode.height}px) / 2.0)`;
-                imgNode.style.left = `calc((100vw - ${imgNode.width}px) / 2.0)`;
+                imgNode.style.top = `${(window.innerHeight - imgNode.height) / 2.0}px`;
+                imgNode.style.left = `${(window.innerWidth - imgNode.width) / 2.0}px`;
             };
             imgNode.style.pointerEvents = 'none';
             imgNode.style.display = 'none';
@@ -115,6 +142,7 @@ export default defineComponent({
         onUnmounted(() => {
             window.removeEventListener('keydown', keyboardControl);
         });
+
         return {
             screens,
             $screens,

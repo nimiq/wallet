@@ -12,7 +12,7 @@
 <script>
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import { Duration, DateTime } from 'luxon';
-import { formatSpaceyNumber } from '../../../lib/NumberFormatting';
+import { formatAmount } from '../../../lib/NumberFormatting';
 import { NIM_MAGNITUDE } from '../../../lib/Constants';
 import { i18n } from '../../../i18n/i18n-setup';
 import Vue3ChartJs from './lib/Vue3ChartJs.vue';
@@ -91,7 +91,7 @@ export default defineComponent({
                 labels.splice(i, 0, i18n.t('{number}M', { number: i * stepSize }));
             }
             for (let i = sideSteps / 2; i < steps - (sideSteps / 2); i++) {
-                const label = formatSpaceyNumber(normProjection[i].y, NIM_MAGNITUDE);
+                const label = formatAmount(normProjection[i].y, NIM_MAGNITUDE);
 
                 pointLabels.push(`~ ${label} NIM`);
             }
@@ -111,6 +111,7 @@ export default defineComponent({
                         pointStyle: pointLabels,
                     },
                     {
+                        tension: 0,
                         fill: 'origin',
                         backgroundColor: createPatternFill(),
                         borderColor: 'rgba(33, 188, 165, 0.8)',
@@ -119,7 +120,7 @@ export default defineComponent({
                     },
                     {
                         fill: '-1',
-                        tension: 1,
+                        tension: 0,
                         backgroundColor: createPatternFill('rgba(33, 188, 165, 0.7)'), // 'rgba(33, 188, 165, 0.1)',
                         borderColor: 'rgba(33, 188, 165, 0.8)',
                         data: bestProjection,

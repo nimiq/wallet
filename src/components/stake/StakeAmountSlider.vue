@@ -61,7 +61,7 @@ import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
-import { calculateDisplayedDecimals, formatSpaceyNumber } from '../../lib/NumberFormatting';
+import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
@@ -126,9 +126,9 @@ export default defineComponent({
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
         const currentFormattedAmount = computed(() =>
-            formatSpaceyNumber(currentAmount.value, NIM_MAGNITUDE));
+            formatAmount(currentAmount.value, NIM_MAGNITUDE));
         const availableFormattedAmount = computed(() =>
-            formatSpaceyNumber(availableAmount.value!, NIM_MAGNITUDE));
+            formatAmount(availableAmount.value!, NIM_MAGNITUDE));
 
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);

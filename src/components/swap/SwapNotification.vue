@@ -304,6 +304,8 @@ export default defineComponent({
                             if (state.activeSwap.state === SwapState.AWAIT_INCOMING) resolve(true);
                         });
                     }).finally(() => unsubscribe());
+                    // The swap may have updated
+                    swapHandler.setSwap(activeSwap.value as unknown as GenericSwap<SwapAsset, SwapAsset>);
                 }
                 case SwapState.AWAIT_INCOMING: {
                     if (await checkExpired()) break;

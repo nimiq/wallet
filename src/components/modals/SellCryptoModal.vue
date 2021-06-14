@@ -760,6 +760,11 @@ export default defineComponent({
                 if (oasisHtlc.amount !== confirmedSwap.to.amount) {
                     throw new Error('OASIS HTLC amount does not match swap amount');
                 }
+
+                // For selling, Fastspot can sometimes report a wrongly rounded fee. Since for this direction
+                // it is not important for the user what the exact fee is (that Fastspot pays to OASIS),
+                // we are taking the fee that OASIS reports, so we don't run into an HTLC validation error.
+                swap.value!.to.serviceEscrowFee = oasisHtlc.fee;
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

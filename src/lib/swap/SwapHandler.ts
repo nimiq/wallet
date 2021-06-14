@@ -57,6 +57,10 @@ export class SwapHandler<FromAsset extends SwapAsset, ToAsset extends SwapAsset>
         this.toAssetAdapter = SwapHandler.makeAssetAdapter(this.swap.to.asset, toClient);
     }
 
+    public setSwap(swap: Swap<FromAsset, ToAsset>) {
+        this.swap = swap;
+    }
+
     public async awaitIncoming(onUpdate: (tx: Transaction<ToAsset>) => any): Promise<Transaction<ToAsset>> {
         const contract = this.swap.contracts[this.swap.to.asset] as Contract<ToAsset>;
 

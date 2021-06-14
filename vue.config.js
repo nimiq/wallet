@@ -28,7 +28,7 @@ if (!release) {
 
 // Accesible within client code via process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = `sha384-${createHash('sha384')
+process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = `sha256-${createHash('sha256')
     .update(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')))
     .digest('base64')}`;
 
@@ -42,7 +42,7 @@ module.exports = {
         },
         plugins: [
             new SriPlugin({
-                hashFuncNames: ['sha384'],
+                hashFuncNames: ['sha256'],
                 enabled: process.env.NODE_ENV === 'production',
             }),
             new PoLoaderOptimizer(),

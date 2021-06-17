@@ -87,6 +87,12 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
         initialPosition = options.vertical ? getYPosition(element.value) : getXPosition(element.value);
         initialTouchTime = getTime();
 
+        // If touch is started near a vertical screen edge, prevent browser navigation gestures.
+        // https://pqina.nl/blog/blocking-navigation-gestures-on-ios-13-4/
+        if (initialTouchPos.x <= 10 || initialTouchPos.x >= window.outerWidth - 10) {
+            evt.preventDefault();
+        }
+
         element.value.style.transition = 'initial';
     }
 

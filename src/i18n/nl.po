@@ -245,7 +245,6 @@ msgstr ""
 "controlerende versie."
 
 #: src/components/modals/BtcReceiveModal.vue:55
-#: src/components/modals/BtcSendModal.vue:35
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -344,7 +343,7 @@ msgstr "BIC werkt ook."
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:106
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -721,7 +720,7 @@ msgstr "Gebruik geen algemeen IBAN!"
 msgid "Done"
 msgstr "Klaar"
 
-#: src/components/modals/BtcSendModal.vue:110
+#: src/components/modals/BtcSendModal.vue:92
 msgid "Duration and fees are estimates."
 msgstr "Looptijd en kosten zijn geschat."
 
@@ -745,7 +744,7 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor BTC waarden."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:416
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
@@ -1002,7 +1001,7 @@ msgid ""
 " to 48 hours."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:106
+#: src/components/modals/BtcSendModal.vue:88
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -1018,7 +1017,7 @@ msgstr ""
 "Innovatie\n"
 "door Nimiq"
 
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
@@ -1181,7 +1180,7 @@ msgstr "Geef je contact een naam"
 msgid "Network"
 msgstr "Netwerk"
 
-#: src/components/modals/BtcSendModal.vue:103
+#: src/components/modals/BtcSendModal.vue:85
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netwerk vergoeding: {sats} sat/vByte"
 
@@ -1207,7 +1206,7 @@ msgid ""
 "registration."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:126
+#: src/components/modals/BtcSendModal.vue:108
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "De Nimiq wallet ondersteunt geen transactieberichten voor Bitcoin."
 
@@ -1454,7 +1453,7 @@ msgstr "Opnieuw scannen"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 
-#: src/components/modals/BtcSendModal.vue:433
+#: src/components/modals/BtcSendModal.vue:415
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Probeer opnieuw"
@@ -1536,7 +1535,7 @@ msgstr ""
 msgid "Send"
 msgstr "Verstuur"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:90
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:72
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Verstuur alles"
@@ -1562,7 +1561,7 @@ msgstr "Stuur crypto naar een smart contract."
 msgid "Send max"
 msgstr "Verstuur max."
 
-#: src/components/modals/BtcSendModal.vue:120
+#: src/components/modals/BtcSendModal.vue:102
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:164
@@ -1573,16 +1572,16 @@ msgstr "Verstuur transactie"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/modals/BtcSendModal.vue:430
+#: src/components/modals/BtcSendModal.vue:412
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
-#: src/components/modals/BtcSendModal.vue:488
+#: src/components/modals/BtcSendModal.vue:470
 msgid "Sent {btc} BTC"
 msgstr "Stuur {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:484
+#: src/components/modals/BtcSendModal.vue:466
 msgid "Sent {btc} BTC to {name}"
 msgstr "Stuur {btc} BTC naar {name}"
 
@@ -1678,7 +1677,7 @@ msgstr "Simuleer betaling in EUR"
 msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
-#: src/components/modals/BtcSendModal.vue:508
+#: src/components/modals/BtcSendModal.vue:490
 #: src/components/modals/SendModal.vue:567
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
@@ -1845,10 +1844,6 @@ msgstr "Er is geen \"wachtwoord vergeten\""
 msgid "There's a problem"
 msgstr "Er is een probleem"
 
-#: src/components/modals/BtcSendModal.vue:28
-msgid "This address has already been used"
-msgstr "Dit adres is al gebruikt"
-
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
 msgid "This IBAN is for a different country than the bank"
 msgstr ""
@@ -1944,7 +1939,7 @@ msgstr "Transacties van {address}"
 msgid "Transaction to {address}"
 msgstr "Transacties naar {address}"
 
-#: src/components/modals/BtcSendModal.vue:127
+#: src/components/modals/BtcSendModal.vue:109
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Transacties nemen >10min in beslag. Afhankelijk van de Bitcoin block tijd."
@@ -1997,7 +1992,6 @@ msgstr ""
 "Gebruik {NIM}, de super performante en browser gebaseerde betaal munt."
 
 #: src/components/modals/BtcReceiveModal.vue:53
-#: src/components/modals/BtcSendModal.vue:32
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Gebruik een nieuw Bitcoin adres voor iedere trans­ac­tie om de privacy te "
@@ -2126,7 +2120,7 @@ msgstr "Je bent nu in het bezit van crypto!"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Je rondt de aankoop af via een bankoverschrijving."
 
-#: src/components/modals/BtcSendModal.vue:81
+#: src/components/modals/BtcSendModal.vue:63
 msgid "You will send {amount}"
 msgstr "Je zal {amount} versturen"
 

@@ -246,7 +246,6 @@ msgstr ""
 "principal."
 
 #: src/components/modals/BtcReceiveModal.vue:55
-#: src/components/modals/BtcSendModal.vue:35
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -347,7 +346,7 @@ msgstr "BIC también funciona."
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:106
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -729,7 +728,7 @@ msgstr "No utilice IBAN genéricos!"
 msgid "Done"
 msgstr "Listo"
 
-#: src/components/modals/BtcSendModal.vue:110
+#: src/components/modals/BtcSendModal.vue:92
 msgid "Duration and fees are estimates."
 msgstr "La duración y las cuotas son estimados."
 
@@ -753,7 +752,7 @@ msgstr "Edite la cantidad de decimales visibles para valores en BTC."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:416
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Editar transacción"
@@ -1010,7 +1009,7 @@ msgstr ""
 "En algunos casos remotos, los bancos fallan al procesar transacciones "
 "instantáneamente y tardan hasta 48 horas."
 
-#: src/components/modals/BtcSendModal.vue:106
+#: src/components/modals/BtcSendModal.vue:88
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -1026,7 +1025,7 @@ msgstr ""
 "Innovación\n"
 "por Nimiq"
 
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
@@ -1190,7 +1189,7 @@ msgstr "De un nombre a su contacto"
 msgid "Network"
 msgstr "Red"
 
-#: src/components/modals/BtcSendModal.vue:103
+#: src/components/modals/BtcSendModal.vue:85
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Cuota de red: {sats} sat/vByte"
 
@@ -1218,7 +1217,7 @@ msgstr ""
 "Nimiq esta trabajando en una versión PRO con mayores límites que se pueden "
 "acceder después de registrarse."
 
-#: src/components/modals/BtcSendModal.vue:126
+#: src/components/modals/BtcSendModal.vue:108
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "La billetera Nimiq no soporta mensajes en transacciones para Bitcoin."
 
@@ -1470,7 +1469,7 @@ msgstr ""
 "Reinicialice los ajustes de su billetera y recargue los datos de la cadena "
 "de bloques."
 
-#: src/components/modals/BtcSendModal.vue:433
+#: src/components/modals/BtcSendModal.vue:415
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Intente de nuevo"
@@ -1552,7 +1551,7 @@ msgstr "Ventas ahora disponibles"
 msgid "Send"
 msgstr "Enviar"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:90
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:72
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Enviar todo"
@@ -1578,7 +1577,7 @@ msgstr "Vender cripto a un contrato inteligente."
 msgid "Send max"
 msgstr "Enviar el máximo"
 
-#: src/components/modals/BtcSendModal.vue:120
+#: src/components/modals/BtcSendModal.vue:102
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:164
@@ -1589,16 +1588,16 @@ msgstr "Enviar Transacción"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envíe, reciba y almacene BTC en su billetera."
 
-#: src/components/modals/BtcSendModal.vue:430
+#: src/components/modals/BtcSendModal.vue:412
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/modals/BtcSendModal.vue:488
+#: src/components/modals/BtcSendModal.vue:470
 msgid "Sent {btc} BTC"
 msgstr "Enviar {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:484
+#: src/components/modals/BtcSendModal.vue:466
 msgid "Sent {btc} BTC to {name}"
 msgstr "Enviar {btc} BTC a {name}"
 
@@ -1694,7 +1693,7 @@ msgstr "Simular pago en EUR"
 msgid "Skip for now"
 msgstr "Saltar por ahora"
 
-#: src/components/modals/BtcSendModal.vue:508
+#: src/components/modals/BtcSendModal.vue:490
 #: src/components/modals/SendModal.vue:567
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
@@ -1864,10 +1863,6 @@ msgstr "No hay opción de \"Olvidé mi contraseña\""
 msgid "There's a problem"
 msgstr "Hay un problema"
 
-#: src/components/modals/BtcSendModal.vue:28
-msgid "This address has already been used"
-msgstr "La dirección ya ha sido usada"
-
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
 msgid "This IBAN is for a different country than the bank"
 msgstr "El IBAN es de un país diferente que el banco"
@@ -1963,7 +1958,7 @@ msgstr "Transacción desde {address}"
 msgid "Transaction to {address}"
 msgstr "Transacción para {address}"
 
-#: src/components/modals/BtcSendModal.vue:127
+#: src/components/modals/BtcSendModal.vue:109
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Las transacciones toman >10 min. debido al tiempo por bloque de Bitcoin."
@@ -2015,7 +2010,6 @@ msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "Use {NIM}, la moneda con super rendimiento y nativa al navegador."
 
 #: src/components/modals/BtcReceiveModal.vue:53
-#: src/components/modals/BtcSendModal.vue:32
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Use una nueva dirección Bitcoin por cada transacción para mejorar la "
@@ -2143,7 +2137,7 @@ msgstr "¡Ahora posee criptomonedas!"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Usted finalizará su compra por medio de transferencia bancaria."
 
-#: src/components/modals/BtcSendModal.vue:81
+#: src/components/modals/BtcSendModal.vue:63
 msgid "You will send {amount}"
 msgstr "Va a enviar {amount}"
 

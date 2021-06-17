@@ -245,7 +245,6 @@ msgstr ""
 "englische Originalversion ist rechtlich bindend."
 
 #: src/components/modals/BtcReceiveModal.vue:55
-#: src/components/modals/BtcSendModal.vue:35
 msgid ""
 "Although reusing addresses won’t result in a loss of funds, it is highly "
 "recommended not to do so."
@@ -344,7 +343,7 @@ msgstr "BIC funktioniert auch."
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/BtcSendModal.vue:106
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -730,7 +729,7 @@ msgstr "Benutze nicht eine generische IBAN!"
 msgid "Done"
 msgstr "Fertig"
 
-#: src/components/modals/BtcSendModal.vue:110
+#: src/components/modals/BtcSendModal.vue:92
 msgid "Duration and fees are estimates."
 msgstr "Dauer und Gebühren sind Schätzungen."
 
@@ -754,7 +753,7 @@ msgstr "Wie viele Nachkommenstellen möchtest du für BTC sehen?"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
-#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/BtcSendModal.vue:416
 #: src/components/modals/SendModal.vue:516
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
@@ -1014,7 +1013,7 @@ msgstr ""
 "In seltenen Fällen können Banken Instant-Überweisungen nicht richtig "
 "bearbeiten und brauchen bis zu 48 Stunden."
 
-#: src/components/modals/BtcSendModal.vue:106
+#: src/components/modals/BtcSendModal.vue:88
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -1030,7 +1029,7 @@ msgstr ""
 "Innovation\n"
 "von Nimiq"
 
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
 msgid "Insufficient balance."
@@ -1195,7 +1194,7 @@ msgstr "Benenne deinen Kontakt"
 msgid "Network"
 msgstr "Netzwerk"
 
-#: src/components/modals/BtcSendModal.vue:103
+#: src/components/modals/BtcSendModal.vue:85
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netzwerkgebühr: {sats} sat/vByte"
 
@@ -1222,7 +1221,7 @@ msgid ""
 msgstr ""
 "Nimiq arbeitet an einem PRO-Feature mit höheren Obergrenzen nach Anmeldung."
 
-#: src/components/modals/BtcSendModal.vue:126
+#: src/components/modals/BtcSendModal.vue:108
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 "Die Nimiq-Wallet unterstützt keine Transaktionsnachrichten für Bitcoin."
@@ -1472,7 +1471,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Setze deine Wallet-Einstellungen zurück und lade die Blockchain-Daten neu."
 
-#: src/components/modals/BtcSendModal.vue:433
+#: src/components/modals/BtcSendModal.vue:415
 #: src/components/modals/SendModal.vue:515
 msgid "Retry"
 msgstr "Erneut versuchen"
@@ -1556,7 +1555,7 @@ msgstr "Verkaufen jetzt möglich"
 msgid "Send"
 msgstr "Senden"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:90
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:72
 #: src/components/modals/SendModal.vue:145
 msgid "Send all"
 msgstr "Alles senden"
@@ -1582,7 +1581,7 @@ msgstr "Sende Crypto zu einem Smart-Contract."
 msgid "Send max"
 msgstr "Alles senden"
 
-#: src/components/modals/BtcSendModal.vue:120
+#: src/components/modals/BtcSendModal.vue:102
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
 #: src/components/modals/SendModal.vue:164
@@ -1593,16 +1592,16 @@ msgstr "Transaktion senden"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
-#: src/components/modals/BtcSendModal.vue:430
+#: src/components/modals/BtcSendModal.vue:412
 #: src/components/modals/SendModal.vue:512
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
-#: src/components/modals/BtcSendModal.vue:488
+#: src/components/modals/BtcSendModal.vue:470
 msgid "Sent {btc} BTC"
 msgstr "{btc} BTC versendet"
 
-#: src/components/modals/BtcSendModal.vue:484
+#: src/components/modals/BtcSendModal.vue:466
 msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC an {name} versendet"
 
@@ -1698,7 +1697,7 @@ msgstr "EUR-Zahlung simulieren"
 msgid "Skip for now"
 msgstr "Erstmal überspringen"
 
-#: src/components/modals/BtcSendModal.vue:508
+#: src/components/modals/BtcSendModal.vue:490
 #: src/components/modals/SendModal.vue:567
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
@@ -1867,10 +1866,6 @@ msgstr "Es gibt kein \"Passwort vergessen\""
 msgid "There's a problem"
 msgstr "Es gibt ein Problem"
 
-#: src/components/modals/BtcSendModal.vue:28
-msgid "This address has already been used"
-msgstr "Diese Adresse wurde bereits verwendet"
-
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
 msgid "This IBAN is for a different country than the bank"
 msgstr "Diese IBAN ist für ein anderes Land als die Bank"
@@ -1966,7 +1961,7 @@ msgstr "Transaktion von {address}"
 msgid "Transaction to {address}"
 msgstr "Transaktion an {address}"
 
-#: src/components/modals/BtcSendModal.vue:127
+#: src/components/modals/BtcSendModal.vue:109
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Transaktionen können, aufgrund der Blockzeit von Bitcoin, 10 Minuten oder "
@@ -2019,7 +2014,6 @@ msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "Nutze {NIM}, die super schnelle Browser-Währung."
 
 #: src/components/modals/BtcReceiveModal.vue:53
-#: src/components/modals/BtcSendModal.vue:32
 msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 "Benutze für jede Transaktion eine neue Bitcoin-Adresse, um deine "
@@ -2149,7 +2143,7 @@ msgstr "Du besitzt jetzt Krypto!"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Der Kauf wird durch die Banküberweisung abgeschlossen."
 
-#: src/components/modals/BtcSendModal.vue:81
+#: src/components/modals/BtcSendModal.vue:63
 msgid "You will send {amount}"
 msgstr "Du wirst {amount} senden"
 

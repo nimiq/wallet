@@ -6,7 +6,10 @@
         :container="this.$parent">
         <div slot="trigger">
             <button class="stake"
-                :class="{ stackattack: stackattack }" @click="$router.push('/stake')"
+                :class="{
+                    stackattack: stackattack,
+                    disabled: !activeAddressInfo || !activeAddressInfo.balance,
+                }" @click="$router.push('/stake')"
                 @mousedown.prevent
                 :disabled="!activeAddressInfo || !activeAddressInfo.balance">
                 <StakingHeroIcon />
@@ -79,6 +82,42 @@ export default defineComponent({
                 animation-delay: .9s;
             }
         }
+    }
+    &.disabled {
+        svg {
+            animation: initial;
+            path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+                animation: initial;
+                opacity: 0;
+            }
+        }
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1.0;
+    }
+    97% {
+        opacity: 0.9;
+    }
+    98% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@keyframes fastwave {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.15;
+    }
+    100% {
+        opacity: 0.0;
     }
 }
 </style>

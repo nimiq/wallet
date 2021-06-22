@@ -656,32 +656,6 @@ export default defineComponent({
     }
 }
 
-@keyframes flicker {
-    0% {
-        opacity: 1.0;
-    }
-    97% {
-        opacity: 0.9;
-    }
-    98% {
-        opacity: 0.0;
-    }
-    100% {
-        opacity: 1.0;
-    }
-}
-@keyframes fastwave {
-    0% {
-        opacity: 1.0;
-    }
-    50% {
-        opacity: 0.15;
-    }
-    100% {
-        opacity: 0.0;
-    }
-}
-
 .send, .receive {
     margin: 0 0.5rem;
     align-items: center;

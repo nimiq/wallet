@@ -3,7 +3,9 @@
     <Modal v-bind="$attrs" v-on="$listeners" class="stake-modal" :class="{
         'fat-modal': (page >= 3),
         'bluetailed-modal': (page === 1),
-    }">
+        }"
+        :showOverlay="page === 2 && invalidAccount"
+        >
         <template v-if="page === 1">
             <StakeInfoPage @next="page += 1"
                 :validatorsList="validatorsList" />
@@ -30,12 +32,14 @@
                 :stakingData="stakingData" :validatorsList="validatorsList"
                 :activeValidator="activeValidator" />
         </template>
+        <SelectAccountOverlay slot="overlay" />
     </Modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { useStakingStore, ValidatorData, StakingData, StakingScoringRules } from '../../stores/Staking';
+import { useAddressStore } from '../../stores/Address';
 import { i18n } from '../../i18n/i18n-setup';
 import Modal from '../modals/Modal.vue';
 import StakeInfoPage from './StakeInfoPage.vue';
@@ -43,14 +47,20 @@ import StakeValidatorPage from './StakeValidatorPage.vue';
 import StakeGraphPage from './StakeGraphPage.vue';
 import StakedAlreadyPage from './StakedAlreadyPage.vue';
 import StakeRewardsHistoryPage from './StakeRewardsHistoryPage.vue';
+import SelectAccountOverlay from './SelectAccountOverlay.vue';
 
 import stakingData from './assets/staking.json';
 import validatorsList from './assets/validators.mock.json';// mock data
 
 export default defineComponent({
     setup() {
+        const { activeAddressInfo } = useAddressStore();
         const { activeValidator, selectValidator } = useStakingStore();
         const page = ref(activeValidator.value ? 4 : 1);
+
+        const invalidAccount = computed(() => activeAddressInfo.value
+            ? !activeAddressInfo.value.balance
+            : false);
 
         const setValidator = (validator: ValidatorData) => {
             selectValidator(validator);
@@ -84,6 +94,7 @@ export default defineComponent({
                 }),
             )),
             validatorsList: computed(() => validatorsList),
+            invalidAccount,
         };
     },
     components: {
@@ -93,6 +104,7 @@ export default defineComponent({
         StakeGraphPage,
         StakedAlreadyPage,
         StakeRewardsHistoryPage,
+        SelectAccountOverlay,
     },
 });
 </script>

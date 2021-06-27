@@ -1,7 +1,7 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
-        <DevBar />
+        <DevBar v-if="!isMobile" />
         <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -317,6 +317,7 @@ export default defineComponent({
             onTransactionListScroll,
             $address,
             addressMasked,
+            isMobile,
         };
     },
     components: {

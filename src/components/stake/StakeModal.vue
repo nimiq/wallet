@@ -153,6 +153,7 @@ export default defineComponent({
                 .small-page {
                     overflow: hidden;
                     min-width: 45rem;
+                    width: 45rem;
                     min-height: 65.25rem;
                 }
             }

@@ -43,13 +43,15 @@ export default defineComponent({
         width: 19.375rem;
         height: 6.75;
         padding: 1rem 0rem;
-        margin-left: 2.5rem;
+        margin-left: 3rem;
         color: white;
         font-weight: 700;
         font-size: 1.625rem;
         line-height: 2.275rem;
     }
     .staking-action {
+        position: absolute;
+        right: 2.75rem;
         color: white;
         font-weight: 700;
         font-size: 1.625rem;

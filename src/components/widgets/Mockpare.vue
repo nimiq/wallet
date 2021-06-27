@@ -78,7 +78,9 @@ export default defineComponent({
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
             if (state.value) {
                 el.src = `/mockups/${screenName.value}.png`;
-                !opacity.value && adjustOpacity();
+                if (!opacity.value) {
+                    adjustOpacity();
+                }
             }
             el!.style.display = state.value ? 'block' : 'none';
         };

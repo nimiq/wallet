@@ -143,4 +143,19 @@ export default defineComponent({
             }
         }
     }
+
+    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    }
+
+    @media (max-width: 700px) { // Full mobile breakpoint
+        .modal {
+            /deep/ .wrapper {
+                .small-page {
+                    overflow: hidden;
+                    min-width: 45rem;
+                    min-height: 65.25rem;
+                }
+            }
+        }
+    }
 </style>

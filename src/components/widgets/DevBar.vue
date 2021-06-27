@@ -60,7 +60,7 @@ export default defineComponent({
         .dev-bar {
             position: absolute;
             top: 1.5rem;
-            right: 7rem;
+            right: calc((100vw - 230px) / 2.0);
             .features {
                 position: relative;
                 left: -1rem;

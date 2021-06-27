@@ -163,4 +163,57 @@ export default defineComponent({
         line-height: 140%;
         color: #231044;
     }
+
+    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    }
+
+    @media (max-width: 700px) { // Full mobile breakpoint
+        .page-header {
+            padding-top: 3.5rem;
+            .staking-icon {
+                margin-top: 1.5rem;
+                margin-bottom: 1.75rem;
+                svg {
+                    height: 16.5rem;
+                }
+            }
+            /deep/ .nq-h1 {
+                font-size: 2.875rem;
+                font-weight: 700;
+                line-height: 120%;
+                color: var(--nimiq-blue);
+            }
+        }
+        .page-body {
+            padding: 0;
+            margin: 0;
+            height: 31rem;
+            .staking-rounded-background {
+                .staking-under-icons-text {
+                    padding-top: 8.5rem;
+                    padding-bottom: .25rem;
+                    width: 39rem;
+                    font-weight: 700;
+                    font-size: 1.65625rem;
+                    line-height: 140%;
+                }
+                .staking-icons-lace {
+                    position: relative;
+                    top: 2.75rem;
+                    img {
+                        width: 4.75rem;
+                        height: 4.75rem;
+                    }
+                }
+                .stake-button {
+                    height: 7.25rem;
+                    width: 35rem;
+                }
+            }
+        }
+        .nq-text {
+            margin-top: 1rem;
+            line-height: 2.5rem;
+        }
+    }
 </style>

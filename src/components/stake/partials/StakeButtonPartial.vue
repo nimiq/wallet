@@ -1,24 +1,35 @@
 <template>
-    <Tooltip
-        v-if="visible && activeCurrency === 'nim'"
-        class="staking-feature-tip"
-        preferredPosition="bottom left"
-        :container="this.$parent">
-        <div slot="trigger">
-            <button class="stake"
-                :class="{
-                    stackattack: stackattack,
-                    disabled: !activeAddressInfo || !activeAddressInfo.balance,
-                }" @click="$router.push('/stake')"
-                @mousedown.prevent
-                :disabled="!activeAddressInfo || !activeAddressInfo.balance">
-                <StakingHeroIcon />
-            </button>
+    <span>
+        <Tooltip
+            v-if="asButton && visible && activeCurrency === 'nim'"
+            class="staking-feature-tip"
+            preferredPosition="bottom left"
+            :container="this.$parent">
+            <div slot="trigger">
+                <button class="stake"
+                    :class="{
+                        stackattack: stackattack,
+                        disabled: !activeAddressInfo || !activeAddressInfo.balance,
+                        inverse: inversePalette,
+                    }" @click="$router.push('/stake')"
+                    @mousedown.prevent
+                    :disabled="!activeAddressInfo || !activeAddressInfo.balance">
+                    <StakingHeroIcon />
+                </button>
+            </div>
+            <span>
+                {{ $t('Earn ~304 NIM a month by staking your NIM') }}
+            </span>
+        </Tooltip>
+        <div class="stake"
+            v-if="!asButton"
+            :class="{
+                stackattack: stackattack,
+                inverse: inversePalette,
+            }">
+            <StakingHeroIcon />
         </div>
-        <span>
-            {{ $t('Earn ~304 NIM a month by staking your NIM') }}
-        </span>
-    </Tooltip>
+    </span>
 </template>
 
 <script lang="ts">
@@ -46,6 +57,18 @@ export default defineComponent({
             activeCurrency,
             activeAddressInfo,
         };
+    },
+    props: {
+        asButton: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+        inversePalette: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
     components: {
         Tooltip,
@@ -90,6 +113,12 @@ export default defineComponent({
                 animation: initial;
                 opacity: 0;
             }
+        }
+    }
+    &.inverse {
+        cursor: initial;
+        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+            stroke: white;
         }
     }
 }

@@ -175,4 +175,10 @@ export default defineComponent({
         line-height: 140%;
         color: var(--nimiq-blue);
     }
+
+    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    }
+
+    @media (max-width: 700px) { // Full mobile breakpoint
+    }
 </style>

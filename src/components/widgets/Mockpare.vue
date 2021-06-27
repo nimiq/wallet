@@ -5,7 +5,10 @@
                 {{ screen }}
             </option>
         </select>
-        <button @click="toggleMock">Mock</button>
+        <button
+            @click="toggleMock"
+            class="mockpare-button"
+            :class="{ active: isActive }">Mock</button>
         <Tooltip
             preferredPosition="bottom right"
             :container="this.$parent">
@@ -48,19 +51,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     setup() {
+        const { width: windowWidth } = useWindowSize();
+        const isMobile = computed(() => windowWidth.value <= 700);
         const $screens = ref<HTMLSelectElement>();
-        const screens = ref([
-            'Welcome',
-            'Choose Validator',
-            'Set Amount',
-            'Staking Details',
-            'Overview',
-        ]);
+        const screens = computed(() => isMobile.value
+            ? ['[mobile]Intro', '[mobile]Validators', '[mobile]Graph', '[mobile]ValidatorConfirm',
+                '[mobile]GraphCenterTooltip', '[mobile]AccountOverview']
+            : ['Welcome', 'Choose Validator', 'Set Amount', 'Staking Details', 'Overview']);
         const state = ref(false);
         const opacity = ref(0.5);
         const screenName = ref(screens.value[0]);
@@ -177,6 +180,7 @@ export default defineComponent({
         });
 
         return {
+            isActive: state,
             screens,
             $screens,
             screenName,
@@ -193,6 +197,18 @@ export default defineComponent({
 <style lang="scss" scoped>
 /deep/ .tooltip-box {
     width: 57rem;
+}
+.mockpare-button {
+    width: 9rem;
+    cursor: pointer;
+    border: 1px solid var(--nimiq-green);
+    border-radius: 1rem;
+    padding: .5rem .5rem;
+    margin: 0rem .5rem;
+    &.active {
+        background-color: var(--nimiq-green);
+        // border-radius: .75rem;
+    }
 }
 .dev-documentation {
     h1 {

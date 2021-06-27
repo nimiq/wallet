@@ -1,6 +1,6 @@
 <template>
     <div v-if="visible && ENABLED" class="dev-bar">
-        <span>
+        <span class="features">
             <FeatureToggler featureName="necklace" :ENABLED="ENABLED" />
             <FeatureToggler featureName="stackattack" :ENABLED="ENABLED" />
             <FeatureToggler featureName="dualSlider" :ENABLED="ENABLED" />
@@ -44,5 +44,41 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    .dev-bar {
+        white-space: nowrap;
+        pointer-events: initial;
+        .features {
+            display: inline-flex;
+            flex-direction: row;
+            height: 100%;
+        }
+    }
+    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    }
 
+    @media (max-width: 700px) { // Full mobile breakpoint
+        .dev-bar {
+            position: absolute;
+            top: 1.5rem;
+            right: 7rem;
+            .features {
+                position: relative;
+                left: -1rem;
+                flex-direction: column;
+                .flicker {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    /deep/ svg {
+                        position: relative;
+                        top: -.5rem;
+                        width: 1.5rem;
+                        height: 1.5rem;
+                    }
+                }
+            }
+            /deep/ select, /deep/ button {
+                font-size: .75rem;
+            }
+        }
+    }
 </style>

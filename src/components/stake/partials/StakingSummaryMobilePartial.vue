@@ -31,7 +31,7 @@ export default defineComponent({
     height: 6.75rem;
     margin-top: 1.25rem;
     border-radius: .75rem;
-    background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);    
+    background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
     /deep/ svg {
         width: 6.5rem;
         height: 6.5rem;

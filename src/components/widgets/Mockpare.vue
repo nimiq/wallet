@@ -78,6 +78,7 @@ export default defineComponent({
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
             if (state.value) {
                 el.src = `/mockups/${screenName.value}.png`;
+                !opacity.value && adjustOpacity();
             }
             el!.style.display = state.value ? 'block' : 'none';
         };
@@ -111,7 +112,7 @@ export default defineComponent({
             el.style.left = '0';
         };
 
-        const adjustOpacity = (adjustment: number) => {
+        const adjustOpacity = (adjustment = 0.1) => {
             opacity.value += adjustment;
             opacity.value = Math.min(1.0, Math.max(0.0, opacity.value));
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
@@ -207,7 +208,9 @@ export default defineComponent({
     margin: 0rem .5rem;
     &.active {
         background-color: var(--nimiq-green);
-        // border-radius: .75rem;
+        color: white;
+        font-weight: bold;
+        border: 1px solid black;
     }
 }
 .dev-documentation {
@@ -229,6 +232,16 @@ export default defineComponent({
     h3 {
         display: inline-block;
         font-size: 1.75rem;
+    }
+}
+@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+}
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    svg {
+        position: relative;
+        top: 0.5rem;
+        left: 0.5rem;
     }
 }
 </style>

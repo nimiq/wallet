@@ -137,7 +137,7 @@ export default defineComponent({
                     left: -2.5rem;
                 }
                 img {
-                    position:relative;
+                    position: relative;
                     width: 5.375rem;
                     height: 5.375rem;
                     margin-left: .81rem;
@@ -169,51 +169,65 @@ export default defineComponent({
 
     @media (max-width: 700px) { // Full mobile breakpoint
         .page-header {
+            height: 36.625rem;
             padding-top: 3.5rem;
             .staking-icon {
-                margin-top: 1.5rem;
-                margin-bottom: 1.75rem;
+                margin-top: 1.375rem;
+                margin-bottom: 1.25rem;
                 svg {
-                    height: 16.5rem;
+                    margin-left: 0.25rem;
+                    height: 16rem;
                 }
             }
             /deep/ .nq-h1 {
-                font-size: 2.875rem;
+                font-size: 2.75rem;
                 font-weight: 700;
-                line-height: 120%;
+                line-height: 3.3rem;
                 color: var(--nimiq-blue);
             }
         }
         .page-body {
             padding: 0;
-            margin: 0;
-            height: 31rem;
+            margin-top: -1.375rem;
+            height: 32.375rem;
             .staking-rounded-background {
                 .staking-under-icons-text {
-                    padding-top: 8.5rem;
+                    position: relative;
+                    left: .125rem;
+                    padding-top: 7.75rem;
                     padding-bottom: .25rem;
-                    width: 39rem;
-                    font-weight: 700;
-                    font-size: 1.65625rem;
+                    width: 37rem;
+                    font-weight: 600;
+                    font-size: 1.625rem;
                     line-height: 140%;
                 }
                 .staking-icons-lace {
                     position: relative;
-                    top: 2.75rem;
+                    top: 2.5rem;
                     img {
+                        margin-left: .65rem;
                         width: 4.75rem;
                         height: 4.75rem;
                     }
                 }
                 .stake-button {
-                    height: 7.25rem;
-                    width: 35rem;
+                    position: relative;
+                    top: -.25rem;
+                    left: .25rem;
+                    height: 7rem;
+                    width: 34rem;
+                    font-size: 1.875rem;
+                    letter-spacing: 0.1875rem;
                 }
             }
         }
         .nq-text {
+            font-size: 1.875rem;
             margin-top: 1rem;
+            margin-left: .25rem;
             line-height: 2.5rem;
+            font-weight: 600;
+            opacity: 0.8;
         }
     }
 </style>

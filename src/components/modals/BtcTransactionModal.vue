@@ -11,13 +11,11 @@
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>?</template>
@@ -25,13 +23,11 @@
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>?</template>
@@ -39,17 +35,13 @@
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 6)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
                 </template>
             </i18n>
 
             <i18n v-else path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 6)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
                 </template>
             </i18n>
 

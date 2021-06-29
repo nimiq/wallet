@@ -8,13 +8,11 @@
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
@@ -22,53 +20,41 @@
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
             </i18n>
 
             <template v-else-if="peerAddress === constants.CASHLINK_ADDRESS">
-                <label><i>&nbsp;</i>{{
-                    peerLabel || peerAddress.substring(0, 9)
-                }}</label>
+                <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
             </template>
 
             <i18n v-else-if="isCashlink && isIncoming" path="Cashlink from {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
             <i18n v-else-if="isCashlink && !isIncoming" path="Cashlink to {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
             <i18n v-else-if="!isCashlink && isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
             <i18n v-else-if="!isCashlink && !isIncoming" path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddress.substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
             <!-- TODO: find a way to avoid the template#address repetition -->

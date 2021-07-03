@@ -5,9 +5,6 @@ import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
 
-// TODO: remove this as soon as the Safari IndexedDB bug is fixed
-import idbReady from 'safari-14-idb-fix';
-
 import Config from 'config';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
@@ -38,8 +35,6 @@ Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 
 async function start() {
-    await idbReady(); // TODO: remove this as soon as the Safari IndexedDB bug is fixed
-
     await initStorage(); // Must be awaited before starting Vue
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization

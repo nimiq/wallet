@@ -997,6 +997,7 @@ export default defineComponent({
 
     /deep/ .trigger {
         color: rgba(31, 35, 72, 0.25);
+        font-size: 2.25rem;
 
         transition: color 0.3s var(--nimiq-ease);
 

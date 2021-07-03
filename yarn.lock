@@ -9128,6 +9128,11 @@ rxjs@^6.6.0:
   dependencies:
     tslib "^1.9.0"
 
+safari-14-idb-fix@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-1.0.3.tgz#3efabd6ee57bcd1522ebecbedaa61d14ca6061cc"
+  integrity sha512-g+mlH1SOHKYmZ46O5gV7A5LSpxyzpJhjhhwEl8EOp8BX2iy6XgfnrlY0fo3+Xjiid82ilEBTwIKiJHe38i8N2w==
+
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"

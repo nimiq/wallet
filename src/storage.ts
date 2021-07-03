@@ -2,6 +2,7 @@
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import { captureException } from '@sentry/vue';
+import idbReady from 'safari-14-idb-fix';
 import Config from 'config';
 import { useTransactionsStore, Transaction } from './stores/Transactions';
 import { useAddressStore, AddressState } from './stores/Address';
@@ -103,6 +104,7 @@ let Storage: StorageBackend;
 
 export async function initStorage() {
     try {
+        await idbReady();
         await migrateToIdb();
         Storage = IndexedDBStorage;
     } catch (error) {

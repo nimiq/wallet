@@ -72,6 +72,19 @@
                     </label>
                 </div>
 
+                <div class="setting" v-if="deferredPrompt">
+                    <div class="description">
+                        <label class="nq-h2" for="pwa-install">{{ $t('Install') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Install the Nimiq Wallet locally on your device.') }}
+                        </p>
+                    </div>
+
+                    <button class="nq-button-pill light-blue" @click="promptInstall" @mousedown.prevent>
+                        {{ $t('Install') }}
+                    </button>
+                </div>
+
                 <!-- <div class="setting">
                     <div class="description">
                         <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
@@ -221,10 +234,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
+import { BeforeInstallPromptEvent } from '../../pwa';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -354,6 +368,24 @@ export default defineComponent({
         // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
+        /* Browser's install prompt */
+        const deferredPrompt = computed<BeforeInstallPromptEvent | null>({
+            get: () => window.deferredInstallPrompt,
+            set: (value) => window.deferredInstallPrompt = value,
+        });
+
+        /* Manually show the browser's PWA install prompt if available */
+        function promptInstall() {
+            if (!deferredPrompt.value) return;
+            // Show the prompt
+            deferredPrompt.value.prompt();
+            // Wait for the user to respond to the prompt
+            deferredPrompt.value.userChoice.then(() => {
+                // set deferredPrompt to null since deferredPrompt.prompt is one time use
+                deferredPrompt.value = null;
+            });
+        }
+
         return {
             addVestingContract,
             clearCache,
@@ -369,6 +401,8 @@ export default defineComponent({
             onTrialPassword,
             applyWalletUpdate,
             applyingWalletUpdate,
+            deferredPrompt,
+            promptInstall,
         };
     },
     components: {

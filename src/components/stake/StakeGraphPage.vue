@@ -101,7 +101,7 @@ import RewardTooltip from './tooltips/RewardTooltip.vue';
 
 import { i18n } from '../../i18n/i18n-setup';
 
-import { CryptoCurrency, NIM_DECIMALS } from '../../lib/Constants';
+import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 
 export default defineComponent({
@@ -129,6 +129,11 @@ export default defineComponent({
             }
         };
 
+        const mockStakedAlready = () => {
+            validator.stakeAge = 60 * 60 * 24 * 110;
+            validator.stakeSessionRewards = 450 * NIM_MAGNITUDE;
+        };
+
         const performStaking = () => {
             validator.stakedAmount = currentStake.amount;
             if (currentStake.amount < preStaked.value) {
@@ -136,6 +141,7 @@ export default defineComponent({
             } else if (currentStake.amount > preStaked.value) {
                 validator.stakePending = true;
             }
+            mockStakedAlready();
             context.emit('next');
         };
 

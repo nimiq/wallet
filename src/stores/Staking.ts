@@ -19,6 +19,8 @@ export type ValidatorData = {
     dominance: number | 0,
     stakedAmount: number | 0,
     unclaimedReward: number | 0,
+    stakeAge: number | 0, // in seconds
+    stakeSessionRewards: number | 0,
     stakePending: boolean | false,
     unstakePending: boolean | false,
 }

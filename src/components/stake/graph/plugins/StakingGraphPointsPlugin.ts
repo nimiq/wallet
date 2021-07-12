@@ -41,10 +41,13 @@ const plugin = {
 
         ctx.strokeStyle = 'rgba(33, 188, 165, 1.0)';
 
+        const yRange = args.meta._scaleRanges.ymax - args.meta._scaleRanges.ymin;
+
         for (let i = 0; i < args.meta._dataset.data.length; i++) {
             const point = args.meta._dataset.data[i];
             if (point) {
-                const { x, y } = (point.y === 0) ? { x: 0, y: 0 } : points[i - 1];
+                const y = (152 - 16) - ((point.y - args.meta._scaleRanges.ymin) / yRange) * 152;
+                const x = (point.y === 0) ? 0 : points[i - 1].x;
 
                 const label = args.meta.data[i].$context.element.options.pointStyle;
                 if (label.length > 0) {
@@ -52,7 +55,6 @@ const plugin = {
                 }
             }
         }
-        // ctx.scale(0.5, 0.5);
         ctx.restore();
     },
 };

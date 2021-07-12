@@ -1,6 +1,6 @@
 <template>
     <span>
-        <select v-model="screenName">
+        <select v-model="screenName" @change="screenChange()" >
             <option v-for="screen in screens" :key="screen">
                 {{ screen }}
             </option>
@@ -92,26 +92,37 @@ export default defineComponent({
             }
         };
 
+        const fitCenter = (img:HTMLImageElement) => {
+            offsetX = (window.innerWidth - img.width) / 2.0;
+            offsetY = (window.innerHeight - img.height) / 2.0;
+        };
+
         const fitToScreenW = () => {
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
             if (!el.style.width) {
                 el.style.width = `${window.innerWidth}px`;
+                offsetX = 0;
+                offsetY = 0;
             } else {
                 el.style.width = '';
+                fitCenter(el);
             }
-            el.style.top = '0';
-            el.style.left = '0';
+            el.style.top = `${offsetY}px`;
+            el.style.left = `${offsetX}px`;
         };
 
         const fitToScreenH = () => {
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
             if (!el.style.height) {
                 el.style.height = `${window.innerHeight}px`;
+                offsetX = 0;
+                offsetY = 0;
             } else {
                 el.style.height = '';
+                fitCenter(el);
             }
-            el.style.top = '0';
-            el.style.left = '0';
+            el.style.top = `${offsetY}px`;
+            el.style.left = `${offsetX}px`;
         };
 
         const adjustOpacity = (adjustment = 0.1) => {
@@ -125,6 +136,10 @@ export default defineComponent({
             const el = document.getElementById(mockContainerID) as HTMLImageElement;
             el.style.top = `${offsetY}px`;
             el.style.left = `${offsetX}px`;
+        };
+
+        const screenChange = () => {
+            updateSource();
         };
 
         const keyboardControl = (e:KeyboardEvent) => {
@@ -165,8 +180,9 @@ export default defineComponent({
             document.body.style.overflow = 'hidden';
             const imgNode = document.createElement('IMG') as HTMLImageElement;
             imgNode.onload = () => {
-                imgNode.style.top = `${(window.innerHeight - imgNode.height) / 2.0}px`;
-                imgNode.style.left = `${(window.innerWidth - imgNode.width) / 2.0}px`;
+                fitCenter(imgNode);
+                imgNode.style.top = `${offsetY.toFixed(2)}px`;
+                imgNode.style.left = `${offsetX.toFixed(2)}px`;
             };
             imgNode.style.pointerEvents = 'none';
             imgNode.style.display = 'none';
@@ -187,6 +203,7 @@ export default defineComponent({
             screens,
             $screens,
             screenName,
+            screenChange,
             toggleMock,
         };
     },

@@ -19,7 +19,7 @@ export default {
     oasis: {
         apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
         feePercentage: 0.01, // 1% - only used for estimate creation
-        minFee: 0.10, // Euro
+        minFee: 0.50, // Euro
     },
 
     moonpay: {

@@ -318,6 +318,7 @@
     "GENODED1NLD": {"name": "Volksbank, Dormagen" },
     "GENODED1PAF": { "name": "Volksbank, Bergisch Gladbach" },
     "GENODED1SMR": { "name": "Raiffeisenbank, Simmerath" },
+    "GENODED1VSN": { "support": { "sepa": { "outbound": "no" } } },
     "GENODED1WUR": { "name": "Volksbank, Wuerselen" },
     "GENODEDD570": { "name": "DZ Bank, Koblenz" },
     "GENODEDD": { "name": "DZ Bank, Düsseldorf" },
@@ -421,7 +422,7 @@
     "KREDBEBB": { "name": "KBC Bank" },
     "LHVBEE22": { "support": { "sepa": { "outbound": "full" } } },
     "LUHSDE6A": { "support": { "sepa": { "outbound": "full" } } },
-    "MALADE51MYN": { "support": { "sepa": { "outbound": "full" } } },
+    "MALADE51MYN": { "support": { "sepa": { "outbound": "no" } } },
     "MALADE51ROK": { "support": { "sepa": { "outbound": "full" } } },
     "MANSDE66": { "support": { "sepa": { "outbound": "full" } } },
     "NASSDE55": { "support": { "sepa": { "outbound": "full" } } },
@@ -429,7 +430,7 @@
     "NOLADE21CMV": { "name": "Norddeutsche Landesbank" },
     "NOLADE21CSH": { "name": "Finanz Informatik" },
     "NOLADE21DVS": { "name": "Finanz Informatik" },
-    "NOLADE21HIK": { "support": { "sepa": { "outbound": "full" } } },
+    "NOLADE21HIK": { "support": { "sepa": { "outbound": "no" } } },
     "NOLADE21LBS": { "name": "LBS Norddeutsche Landesbausparkasse" },
     "NORDFRPP": { "name": "Crédit Du Nord", "support": { "sepa": { "outbound": "full" } } },
     "NORSDE71": { "support": { "sepa": { "outbound": "full" } } },
@@ -450,6 +451,7 @@
     "SBEXFRP1": { "name": "Banque SBE" },
     "SBREDE22": { "support": { "sepa": { "outbound": "full" } } },
     "SCFBDE33": { "name": "Santander Consumer Bank",  "support": { "sepa": { "outbound": "full" } } },
+    "SDUEDE33": { "support": { "sepa": { "outbound": "no" } } },
     "SGABBEB2": { "name": "Société Générale Belgium" },
     "SGABCHZZ": { "name": "Société Générale Switzerland" },
     "SLZODE22": { "support": { "sepa": { "outbound": "full" } } },
@@ -480,5 +482,5 @@
     "WELADED1STB": { "support": { "sepa": { "outbound": "full" } } },
     "WELADED1VEL": { "support": { "sepa": { "outbound": "full" } } },
     "WELADEDD": { "name": "Landesbank Hessen-Thüringen"},
-    "WUPSDE33": { "support": { "sepa": { "outbound": "full" } } }
+    "WUPSDE33": { "support": { "sepa": { "outbound": "no" } } }
 }

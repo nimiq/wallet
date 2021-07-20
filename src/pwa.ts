@@ -4,7 +4,7 @@
  *
  * @see https://stackoverflow.com/a/51847335
  * @see https://developer.mozilla.org/en-US/docs/Web/API/BeforeInstallPromptEvent
- * @see https://github.com/Bartozzz/vue-pwa-install/blob/master/types/index.d.ts
+ * @see https://github.com/Bartozzz/vue-pwa-install/blob/02cbdb4039ae224f0ba059d2b3dce7330256d729/types/index.d.ts
  */
 export interface BeforeInstallPromptEvent extends Event {
     /**

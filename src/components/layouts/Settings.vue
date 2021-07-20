@@ -25,6 +25,21 @@
                 </div>
             </section>
 
+            <section v-if="deferredPrompt">
+                <div class="setting pwa-install">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Install Web App') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Use the Nimiq Wallet as a web app outside the browser.') }}
+                        </p>
+                    </div>
+
+                    <button class="nq-button-pill green" @click="promptInstall" @mousedown.prevent>
+                        {{ $t('Install') }}
+                    </button>
+                </div>
+            </section>
+
             <section>
                 <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -70,19 +85,6 @@
                         {{ $t('Load file') }}
                         <input type="file" @change="loadFile" ref="$fileInput">
                     </label>
-                </div>
-
-                <div class="setting" v-if="deferredPrompt">
-                    <div class="description">
-                        <label class="nq-h2" for="pwa-install">{{ $t('Install') }}</label>
-                        <p class="nq-text">
-                            {{ $t('Install the Nimiq Wallet locally on your device.') }}
-                        </p>
-                    </div>
-
-                    <button class="nq-button-pill light-blue" @click="promptInstall" @mousedown.prevent>
-                        {{ $t('Install') }}
-                    </button>
                 </div>
 
                 <!-- <div class="setting">
@@ -369,10 +371,7 @@ export default defineComponent({
         window.enableVestingSetting = enableVestingSetting;
 
         /* Browser's install prompt */
-        const deferredPrompt = computed<BeforeInstallPromptEvent | null>({
-            get: () => window.deferredInstallPrompt,
-            set: (value) => window.deferredInstallPrompt = value,
-        });
+        const deferredPrompt = ref<BeforeInstallPromptEvent | null>(window.deferredInstallPrompt);
 
         /* Manually show the browser's PWA install prompt if available */
         function promptInstall() {

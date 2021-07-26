@@ -122,7 +122,7 @@ msgstr "30 dagen limiet"
 msgid "6h+"
 msgstr "+ 6 uur"
 
-#: src/components/layouts/Settings.vue:303
+#: src/components/layouts/Settings.vue:319
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -150,7 +150,7 @@ msgstr "Activeren"
 msgid "Activate Bitcoin"
 msgstr "Activeer Bitcoin"
 
-#: src/components/layouts/Settings.vue:162
+#: src/components/layouts/Settings.vue:177
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -179,7 +179,7 @@ msgstr "Account toevoegen"
 msgid "Add address"
 msgstr "Adres toevoegen"
 
-#: src/components/layouts/Settings.vue:158
+#: src/components/layouts/Settings.vue:173
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Voeg een bestaand vestingcontract toe aan je wallet."
 
@@ -204,12 +204,12 @@ msgstr "Adres niet beschikbaar?"
 msgid "Addresses"
 msgstr "Adressen"
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:152
 msgid "Advanced"
 msgstr "Geavanceerd"
 
-#: src/components/layouts/Settings.vue:117
-#: src/components/layouts/Settings.vue:57
+#: src/components/layouts/Settings.vue:132
+#: src/components/layouts/Settings.vue:72
 msgid "all"
 msgstr "alles"
 
@@ -334,7 +334,7 @@ msgstr "BIC werkt ook."
 #: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:104
+#: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
@@ -352,7 +352,7 @@ msgstr ""
 "Gebruik in plaats daarvan labels om transacties in je geschiedenis "
 "gemakkelijk te vinden."
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:138
 msgid "Bitcoin Unit"
 msgstr "Bitcoin eenheid"
 
@@ -477,7 +477,7 @@ msgstr "Swap annuleren"
 msgid "Cancelled Swap"
 msgstr "Geannuleerde Swap"
 
-#: src/components/layouts/Settings.vue:283
+#: src/components/layouts/Settings.vue:299
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
@@ -499,7 +499,7 @@ msgstr "Cashlink naar {address}"
 msgid "Change password"
 msgstr "Verander wachtwoord"
 
-#: src/components/layouts/Settings.vue:35
+#: src/components/layouts/Settings.vue:50
 msgid "Change your language setting."
 msgstr "Verander je taalinstelling."
 
@@ -518,11 +518,11 @@ msgstr "Kies een adres"
 msgid "Claiming Cashlink"
 msgstr "Cashlink claimen"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:189
 msgid "Clear"
 msgstr "Duidelijk"
 
-#: src/components/layouts/Settings.vue:168
+#: src/components/layouts/Settings.vue:183
 msgid "Clear Cache"
 msgstr "Cache wissen"
 
@@ -693,7 +693,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:227
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Disclaimer"
@@ -736,11 +736,11 @@ msgstr ""
 msgid "Edit contacts"
 msgstr "Bewerk contacten"
 
-#: src/components/layouts/Settings.vue:110
+#: src/components/layouts/Settings.vue:125
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor BTC waarden."
 
-#: src/components/layouts/Settings.vue:50
+#: src/components/layouts/Settings.vue:65
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
@@ -749,7 +749,7 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:158
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
@@ -776,7 +776,7 @@ msgstr "IBAN invullen"
 msgid "Enter recipient address..."
 msgstr "Voer het adres van de ontvanger in..."
 
-#: src/components/layouts/Settings.vue:182
+#: src/components/layouts/Settings.vue:197
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Voer het wachtwoord in van de proefversie die je wilt inschakelen en druk op"
@@ -861,7 +861,7 @@ msgstr "Ophalen"
 msgid "Fiat value unavailable"
 msgstr "Fiat waarde niet beschikbaar"
 
-#: src/components/layouts/Settings.vue:289
+#: src/components/layouts/Settings.vue:305
 msgid "File contains no contacts."
 msgstr "Bestand bevat geen contacten."
 
@@ -893,7 +893,7 @@ msgstr "Full Node"
 msgid "Funding Cashlink"
 msgstr "Cashlink opwaarderen"
 
-#: src/components/layouts/Settings.vue:29
+#: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "Algemeen"
 
@@ -967,11 +967,11 @@ msgstr ""
 "Als deze fout zich blijft voordoen, controleer dan je internetverbinding of "
 "laadt de pagina opnieuw om opnieuw verbinding te maken."
 
-#: src/components/layouts/Settings.vue:63
+#: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
 msgstr "Contacten importeren"
 
-#: src/components/layouts/Settings.vue:65
+#: src/components/layouts/Settings.vue:80
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importeer contacten die je heb geëxporteerd van de Safe."
 
@@ -1017,6 +1017,14 @@ msgstr ""
 "Innovatie\n"
 "door Nimiq"
 
+#: src/components/layouts/Settings.vue:38
+msgid "Install"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:31
+msgid "Install Web App"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
@@ -1048,7 +1056,7 @@ msgstr "Je kan je wallet nu veilig afsluiten"
 msgid "Label the sender"
 msgstr "Label de afzender"
 
-#: src/components/layouts/Settings.vue:33
+#: src/components/layouts/Settings.vue:48
 msgid "Language"
 msgstr "Taal"
 
@@ -1085,7 +1093,7 @@ msgstr "Limiet van gekopieerde adressen bereikt."
 msgid "Link not available in this browser"
 msgstr "Link niet beschikbaar in deze browser"
 
-#: src/components/layouts/Settings.vue:70
+#: src/components/layouts/Settings.vue:85
 msgid "Load file"
 msgstr "Bestand laden"
 
@@ -1231,8 +1239,8 @@ msgstr "Geen registratie - zelfs geen e-mail."
 msgid "No transactions found"
 msgstr "Geen transacties gevonden"
 
-#: src/components/layouts/Settings.vue:115
-#: src/components/layouts/Settings.vue:55
+#: src/components/layouts/Settings.vue:130
+#: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr "Geen"
 
@@ -1263,11 +1271,11 @@ msgstr "OASIS-limiet overschreden"
 msgid "OASIS service fee"
 msgstr "OASIS servicekosten"
 
-#: src/components/layouts/Settings.vue:150
+#: src/components/layouts/Settings.vue:165
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:312
+#: src/components/layouts/Settings.vue:328
 msgid "OK! Contacts imported successfully."
 msgstr "HOPPA! Contacten succesvol geïmporteerd."
 
@@ -1275,7 +1283,7 @@ msgstr "HOPPA! Contacten succesvol geïmporteerd."
 msgid "Old and new Accounts"
 msgstr "Oude en nieuwe accounts"
 
-#: src/components/layouts/Settings.vue:149
+#: src/components/layouts/Settings.vue:164
 msgid "On"
 msgstr ""
 
@@ -1408,7 +1416,7 @@ msgstr "Zojuist gekopieerd "
 msgid "Recipient"
 msgstr "Ontvanger"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:206
 msgid "Reference currency"
 msgstr "Referentie Valuta"
 
@@ -1429,7 +1437,7 @@ msgstr ""
 "Normale transacties zijn te traag en worden niet verwerkt. Jouw bank "
 "gebruikt mogelijk een andere naam, bijvoorbeeld ‘realtime transacties’."
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:225
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr "Release Notes"
@@ -1449,7 +1457,7 @@ msgstr "Verzoek mislukt"
 msgid "Rescan"
 msgstr "Opnieuw scannen"
 
-#: src/components/layouts/Settings.vue:170
+#: src/components/layouts/Settings.vue:185
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 
@@ -1495,7 +1503,7 @@ msgstr "Zoek transacties op contact, adres, etc."
 msgid "Select a currency and an amount."
 msgstr "Selecteer een valuta en een bedrag."
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 
@@ -1656,8 +1664,8 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr "Laat al mijn adressen zien"
 
-#: src/components/layouts/Settings.vue:108
-#: src/components/layouts/Settings.vue:48
+#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:63
 msgid "Show Decimals"
 msgstr "Laat decimalen zien"
 
@@ -1752,7 +1760,7 @@ msgstr "Swap succesvol!"
 msgid "Swap to {address}"
 msgstr "Swap naar {address}"
 
-#: src/components/layouts/Settings.vue:141
+#: src/components/layouts/Settings.vue:156
 msgid "Swiping Gestures"
 msgstr ""
 
@@ -1948,7 +1956,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "overboekingskosten"
 
-#: src/components/layouts/Settings.vue:180
+#: src/components/layouts/Settings.vue:195
 msgid "Trials"
 msgstr "Proefversie"
 
@@ -2011,11 +2019,15 @@ msgstr ""
 "Gebruik labels in plaats van contacten om makkelijk je transacties te "
 "herkennen in je geschiedenis."
 
+#: src/components/layouts/Settings.vue:33
+msgid "Use the Nimiq Wallet as a web app outside the browser."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Gebruik de slider of vul de waardes in om een swap in te stellen."
 
-#: src/components/layouts/Settings.vue:156
+#: src/components/layouts/Settings.vue:171
 msgid "Vesting Contract"
 msgstr "Vestingcontract"
 
@@ -2047,7 +2059,7 @@ msgstr "Wat anders? "
 msgid "What is your bank called?"
 msgstr "Wat is de naam van je bank?"
 
-#: src/components/layouts/Settings.vue:148
+#: src/components/layouts/Settings.vue:163
 msgid "When ready"
 msgstr ""
 

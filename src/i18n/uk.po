@@ -120,7 +120,7 @@ msgstr "30-денний ліміт"
 msgid "6h+"
 msgstr "6+ год."
 
-#: src/components/layouts/Settings.vue:303
+#: src/components/layouts/Settings.vue:319
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -147,7 +147,7 @@ msgstr "Активувати"
 msgid "Activate Bitcoin"
 msgstr "Активувати Біткоїн"
 
-#: src/components/layouts/Settings.vue:162
+#: src/components/layouts/Settings.vue:177
 msgid "Add"
 msgstr "Додати"
 
@@ -175,7 +175,7 @@ msgstr "Додати рахунок"
 msgid "Add address"
 msgstr "Додати адресу"
 
-#: src/components/layouts/Settings.vue:158
+#: src/components/layouts/Settings.vue:173
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Додайте існуючий розподільний контракт до вашого гаманця."
 
@@ -200,12 +200,12 @@ msgstr "Адреса недоступна?"
 msgid "Addresses"
 msgstr "Адреси"
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:152
 msgid "Advanced"
 msgstr "Розширені"
 
-#: src/components/layouts/Settings.vue:117
-#: src/components/layouts/Settings.vue:57
+#: src/components/layouts/Settings.vue:132
+#: src/components/layouts/Settings.vue:72
 msgid "all"
 msgstr "Усі"
 
@@ -331,7 +331,7 @@ msgstr "BIC працює також."
 #: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:62
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:104
+#: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
@@ -348,7 +348,7 @@ msgstr ""
 "Біткоїн адреси використовуються лише один раз, тому їх немає в контактах. "
 "Використовуйте назви, щоб легко знаходити перекази у вашій історії."
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:138
 msgid "Bitcoin Unit"
 msgstr "Одиниця Біткоїн"
 
@@ -474,7 +474,7 @@ msgstr "Скасувати обмін"
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:283
+#: src/components/layouts/Settings.vue:299
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
@@ -496,7 +496,7 @@ msgstr "Чек для {address}"
 msgid "Change password"
 msgstr "Змінити пароль"
 
-#: src/components/layouts/Settings.vue:35
+#: src/components/layouts/Settings.vue:50
 msgid "Change your language setting."
 msgstr "Змінити налаштування мови."
 
@@ -515,11 +515,11 @@ msgstr "Виберіть адресу"
 msgid "Claiming Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:189
 msgid "Clear"
 msgstr "Очистити"
 
-#: src/components/layouts/Settings.vue:168
+#: src/components/layouts/Settings.vue:183
 msgid "Clear Cache"
 msgstr "Очистити кеш"
 
@@ -689,7 +689,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:227
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Застереження"
@@ -732,11 +732,11 @@ msgstr ""
 msgid "Edit contacts"
 msgstr "Редагувати контакти"
 
-#: src/components/layouts/Settings.vue:110
+#: src/components/layouts/Settings.vue:125
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr "Змінити кількість знаків після коми для BTC."
 
-#: src/components/layouts/Settings.vue:50
+#: src/components/layouts/Settings.vue:65
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Змінити кількість знаків після коми для NIM."
 
@@ -745,7 +745,7 @@ msgstr "Змінити кількість знаків після коми дл�
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:158
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
@@ -772,7 +772,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr "Вкажіть адресу отримувача..."
 
-#: src/components/layouts/Settings.vue:182
+#: src/components/layouts/Settings.vue:197
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Введіть пароль пробної версії, яку потрібно увімкнути, а потім натисніть "
@@ -857,7 +857,7 @@ msgstr "Завантаження"
 msgid "Fiat value unavailable"
 msgstr "Сума у валюті недоступна"
 
-#: src/components/layouts/Settings.vue:289
+#: src/components/layouts/Settings.vue:305
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
@@ -889,7 +889,7 @@ msgstr "Повноцінний вузол"
 msgid "Funding Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:29
+#: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "Загальні"
 
@@ -963,11 +963,11 @@ msgstr ""
 "Якщо ця помилка не зникає, перевірте підключення до Інтернету або "
 "перезавантажте сторінку, щоб відновити зв’язок."
 
-#: src/components/layouts/Settings.vue:63
+#: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
 msgstr "Додати контакти"
 
-#: src/components/layouts/Settings.vue:65
+#: src/components/layouts/Settings.vue:80
 msgid "Import contacts that you exported from the Safe."
 msgstr "Додати контакти що використовувалися у старій версії."
 
@@ -1008,6 +1008,14 @@ msgid ""
 "by Nimiq"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:38
+msgid "Install"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:31
+msgid "Install Web App"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
 #: src/components/modals/SendModal.vue:143
@@ -1039,7 +1047,7 @@ msgstr "Тепер можна закрити веб-оглядач"
 msgid "Label the sender"
 msgstr "Підпишіть відправника"
 
-#: src/components/layouts/Settings.vue:33
+#: src/components/layouts/Settings.vue:48
 msgid "Language"
 msgstr "Мова"
 
@@ -1076,7 +1084,7 @@ msgstr "Вичерпано ліміт скопійованих адрес."
 msgid "Link not available in this browser"
 msgstr "Посилання не доступне у вашому веб-оглядачі"
 
-#: src/components/layouts/Settings.vue:70
+#: src/components/layouts/Settings.vue:85
 msgid "Load file"
 msgstr "Завантажити"
 
@@ -1222,8 +1230,8 @@ msgstr ""
 msgid "No transactions found"
 msgstr "Переказів не знайдено"
 
-#: src/components/layouts/Settings.vue:115
-#: src/components/layouts/Settings.vue:55
+#: src/components/layouts/Settings.vue:130
+#: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr "Ні"
 
@@ -1254,11 +1262,11 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr "Комісія OASIS"
 
-#: src/components/layouts/Settings.vue:150
+#: src/components/layouts/Settings.vue:165
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:312
+#: src/components/layouts/Settings.vue:328
 msgid "OK! Contacts imported successfully."
 msgstr "Контакти було додано успішно."
 
@@ -1266,7 +1274,7 @@ msgstr "Контакти було додано успішно."
 msgid "Old and new Accounts"
 msgstr "Нові і старі рахунки"
 
-#: src/components/layouts/Settings.vue:149
+#: src/components/layouts/Settings.vue:164
 msgid "On"
 msgstr ""
 
@@ -1396,7 +1404,7 @@ msgstr "Скопійовано"
 msgid "Recipient"
 msgstr "Одержувач"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:206
 msgid "Reference currency"
 msgstr "Основна валюта"
 
@@ -1417,7 +1425,7 @@ msgstr ""
 "Звичайні перекази занадто повільні і не обробляються. Ваш банк може "
 "використовувати іншу назву, наприклад, \"операції в режимі реального часу\"."
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:225
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr ""
@@ -1437,7 +1445,7 @@ msgstr "Запит не пройшов"
 msgid "Rescan"
 msgstr "Пересканувати"
 
-#: src/components/layouts/Settings.vue:170
+#: src/components/layouts/Settings.vue:185
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Скинути налаштування веб-оглядача і перезавантажити дані з блокчейну."
 
@@ -1483,7 +1491,7 @@ msgstr "Пошук переказів за контактами, адресам�
 msgid "Select a currency and an amount."
 msgstr "Виберіть валюту та суму."
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Обрати у яких одиницях відображати Біткоїн."
 
@@ -1642,8 +1650,8 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr "Показати усі мої адреси"
 
-#: src/components/layouts/Settings.vue:108
-#: src/components/layouts/Settings.vue:48
+#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:63
 msgid "Show Decimals"
 msgstr "Показувати десяткові значення"
 
@@ -1737,7 +1745,7 @@ msgstr "Обмін було проведено успішно!"
 msgid "Swap to {address}"
 msgstr "Обмін на {address}"
 
-#: src/components/layouts/Settings.vue:141
+#: src/components/layouts/Settings.vue:156
 msgid "Swiping Gestures"
 msgstr ""
 
@@ -1932,7 +1940,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Переказати кошти"
 
-#: src/components/layouts/Settings.vue:180
+#: src/components/layouts/Settings.vue:195
 msgid "Trials"
 msgstr "Пробні версії"
 
@@ -1991,12 +1999,16 @@ msgstr ""
 "Використовуйте назви замість контактів, щоб з легкістю ідентифікувати "
 "перекази."
 
+#: src/components/layouts/Settings.vue:33
+msgid "Use the Nimiq Wallet as a web app outside the browser."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Використовуйте повзунок або редагуйте значення, щоб задати параметри обміну."
 
-#: src/components/layouts/Settings.vue:156
+#: src/components/layouts/Settings.vue:171
 msgid "Vesting Contract"
 msgstr "Контракт Наділення Прав"
 
@@ -2026,7 +2038,7 @@ msgstr "Щось ще?"
 msgid "What is your bank called?"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:148
+#: src/components/layouts/Settings.vue:163
 msgid "When ready"
 msgstr ""
 

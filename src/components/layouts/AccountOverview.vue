@@ -359,6 +359,7 @@ export default defineComponent({
 
 .bitcoin-account {
     height: 15rem;
+    flex-shrink: 0;
     padding: 3rem 2rem;
     margin: 0 -2rem;
     color: var(--text-70);

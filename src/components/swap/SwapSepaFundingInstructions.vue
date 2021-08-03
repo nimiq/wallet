@@ -47,10 +47,11 @@
                         </div>
                     </Copyable>
                 </div>
-                <div class="row flex-row">
+                <div class="row flex-row purpose">
                     <Copyable :text="reference" class="glass flex-column flex-grow">
                         <div class="line flex-row">
                             <label class="nq-label">{{ $t('Purpose') }}</label>
+                            <strong class="nq-orange nq-label">{{ $t('Required') }}</strong>
                         </div>
                         <div class="line flex-row">
                             <strong class="reference">{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
@@ -331,6 +332,10 @@ export default defineComponent({
     word-spacing: -0.2em;
 }
 
+.purpose .nq-label.nq-orange {
+    font-size: var(--small-label-size);
+}
+
 .instant-warning {
     justify-content: center;
     align-items: center;
@@ -338,8 +343,16 @@ export default defineComponent({
 
     .text {
         font-weight: 600;
-        opacity: 0.5;
         margin-right: 1rem;
+    }
+
+    .text,
+    .tooltip /deep/ .trigger {
+        color: var(--nimiq-orange);
+
+        .nq-icon {
+            opacity: 1;
+        }
     }
 }
 

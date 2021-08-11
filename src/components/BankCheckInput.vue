@@ -14,7 +14,7 @@
         >
             <li class="bank"
                 v-for="(bank, index) in visibleBanks" :key="index"
-                :class="{ selected: selectedBankIndex === index }"
+                :class="{ selected: bankToConfirm || selectedBankIndex === index }"
                 :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
                 @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
@@ -305,21 +305,31 @@ export default defineComponent({
             }
         }
 
-        /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
         function selectBank(bank: Bank & { tooltip?: Tooltip }) {
             if (bankToConfirm.value?.BIC === bank.BIC) return;
+
+            // Only continue if the selected bank supports the wanted direction
             if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
+
             if (bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
-            bankToConfirm.value = bank;
-            selectedBankIndex.value = 0;
+
+            if (props.direction === 'outbound') {
+                // Trigger an extra confirmation step when user has to send fiat
+                bankToConfirm.value = bank;
+            } else {
+                setBank(bank);
+            }
         }
 
         function confirmBank() {
-            const bank = bankToConfirm.value;
-            if (!bank) return;
+            if (!bankToConfirm.value) return;
+            setBank(bankToConfirm.value);
+        }
+
+        function setBank(bank: Bank & { tooltip?: Tooltip }) {
             localValue.value = bank.name;
             context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
         }

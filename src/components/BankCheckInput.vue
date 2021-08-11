@@ -38,8 +38,9 @@
                     <div class="bic">{{ bank.BIC }}</div>
                 </div>
 
+                <CrossIcon v-if="bankToConfirm" class="cancel-bank" @click.stop="bankToConfirm = null"/>
                 <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
+                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
                 <Tooltip
                     v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.PARTIAL
                         || bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.UNKNOWN"
@@ -74,17 +75,20 @@
                     </template>
                 </Tooltip>
             </li>
-            <li class="more-count" v-if="matchingBanks.length > visibleBanks.length">
+            <li class="more-count" v-if="!bankToConfirm && matchingBanks.length > visibleBanks.length">
                 <a @click="isScrollable = true">
                     {{ $tc('+ {count} more | + {count} more', matchingBanks.length - visibleBanks.length) }}
                 </a>
             </li>
-            <li class="warning" v-if="showWarning" key="warning">
-                {{ direction === 'outbound'
-                    ? $t('Your bank needs to support SEPA Instant out transactions.'
-                        + ' Some banks don’t support it yet, but are likely to do so in the future.')
-                    : $t('In some rare cases, banks fail to instantly process transactions and take up to 48 hours.')
-                }}
+            <li class="confirm-bank" v-if="bankToConfirm">
+                <i18n path="I understand that I have to send a {sepaInstantLink}." tag="p">
+                    <template v-slot:sepaInstantLink>
+                        <strong>{{ $t('SEPA Instant transaction') }}</strong>
+                    </template>
+                </i18n>
+                <button class="nq-button-pill light-blue" @click="confirmBank" @mousedown.prevent>
+                    {{ $t('Got it') }}
+                </button>
             </li>
         </ul>
     </div>
@@ -92,7 +96,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
-import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon } from '@nimiq/vue-components';
+import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
 import loadBankList from '@/data/banksList';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
@@ -153,6 +157,8 @@ export default defineComponent({
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
+        const bankToConfirm = ref<Bank & { tooltip?: Tooltip }>(null);
+
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
         onMounted(() => {
@@ -204,6 +210,8 @@ export default defineComponent({
 
         /* List of banks displayed to the user. */
         const visibleBanks = computed(() => {
+            if (bankToConfirm.value) return [bankToConfirm.value];
+
             const b: (Bank & { tooltip?: Tooltip })[] = [...(
                 isScrollable.value
                     ? matchingBanks.value
@@ -229,7 +237,10 @@ export default defineComponent({
         );
 
         /* Reset the selectedBankIndex to 0 on text input */
-        watch(localValue, () => selectedBankIndex.value = 0);
+        watch(localValue, () => {
+            selectedBankIndex.value = 0;
+            bankToConfirm.value = null;
+        });
 
         /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
         watch(selectedBankIndex, () => {
@@ -294,11 +305,19 @@ export default defineComponent({
 
         /* Emit a bank-selected with the choosen bank as arg, if this one have sepa outbound/inbound support */
         function selectBank(bank: Bank & { tooltip?: Tooltip }) {
+            if (bankToConfirm.value?.BIC === bank.BIC) return;
             if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
             if (bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
+            bankToConfirm.value = bank;
+            selectedBankIndex.value = 0;
+        }
+
+        function confirmBank() {
+            const bank = bankToConfirm.value;
+            if (!bank) return;
             localValue.value = bank.name;
             context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
         }
@@ -368,6 +387,8 @@ export default defineComponent({
 
             onKeyDown,
             selectBank,
+            bankToConfirm,
+            confirmBank,
 
             showWarning,
             getMatchPrefix,
@@ -397,6 +418,7 @@ export default defineComponent({
         CountrySelector,
         WorldIcon,
         AlertTriangleIcon,
+        CrossIcon,
     },
 });
 </script>
@@ -642,6 +664,30 @@ export default defineComponent({
             &:focus {
                 opacity: .75;
             }
+        }
+    }
+
+    .nq-icon.cancel-bank {
+        width: 2rem;
+        height: 2rem;
+        flex-shrink: 0;
+        margin-left: 0.25rem;
+        cursor: pointer; // Enable clicking on iOS
+    }
+
+    li.confirm-bank {
+        padding: 1rem;
+        font-size: var(--body-size);
+        color: rgba(white, 0.6);
+        white-space: pre-line;
+
+        p {
+            margin-top: 0;
+        }
+
+        strong {
+            color: white;
+            white-space: pre;
         }
     }
 

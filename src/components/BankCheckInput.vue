@@ -38,7 +38,9 @@
                     <div class="bic">{{ bank.BIC }}</div>
                 </div>
 
-                <CrossIcon v-if="bankToConfirm" class="cancel-bank" @click.stop="bankToConfirm = null"/>
+                <button v-if="bankToConfirm" class="reset cancel-bank" @click.stop="bankToConfirm = null" >
+                    <CrossIcon/>
+                </button>
                 <CaretRightSmallIcon class="caret-right-small-icon"
                     v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
                 <Tooltip
@@ -667,12 +669,25 @@ export default defineComponent({
         }
     }
 
-    .nq-icon.cancel-bank {
-        width: 2rem;
-        height: 2rem;
+    .cancel-bank {
+        width: 3.5rem;
+        height: 3.5rem;
         flex-shrink: 0;
-        margin-left: 0.25rem;
-        cursor: pointer; // Enable clicking on iOS
+        margin-left: -0.5rem;
+        margin-right: -0.75rem;
+        padding: 0.75rem;
+        border-radius: 50%;
+        transition: background 0.2s var(--nimiq-ease);
+
+        .nq-icon {
+            width: 100%;
+            height: 100%;
+        }
+
+        &:hover,
+        &:focus {
+            background: rgba(white, 0.1);
+        }
     }
 
     li.confirm-bank {

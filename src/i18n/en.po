@@ -259,7 +259,7 @@ msgstr ""
 msgid "Back to addresses"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:122
+#: src/components/swap/SwapSepaFundingInstructions.vue:123
 msgid "Back to Bank Details"
 msgstr ""
 
@@ -402,11 +402,11 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:79
+#: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:95
+#: src/components/swap/SwapSepaFundingInstructions.vue:96
 msgid "Cancel Swap"
 msgstr ""
 
@@ -548,7 +548,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:92
+#: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr ""
 
@@ -876,7 +876,7 @@ msgstr ""
 msgid "HTLC Settlement or Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:81
+#: src/components/swap/SwapSepaFundingInstructions.vue:82
 msgid "I paid"
 msgstr ""
 
@@ -1223,7 +1223,7 @@ msgstr ""
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:69
+#: src/components/swap/SwapSepaFundingInstructions.vue:70
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr ""
 
@@ -1308,7 +1308,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:71
+#: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
@@ -1326,6 +1326,10 @@ msgstr ""
 #: src/components/TestnetFaucet.vue:142
 #: src/components/TestnetFaucet.vue:148
 msgid "Request failed"
+msgstr ""
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:54
+msgid "Required"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:36
@@ -1652,7 +1656,7 @@ msgstr ""
 msgid "Testnet"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:104
+#: src/components/swap/SwapSepaFundingInstructions.vue:105
 msgid "The bank is processing your transaction."
 msgstr ""
 
@@ -1737,7 +1741,7 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:295
 #: src/components/swap/SwapAnimation.vue:72
-#: src/components/swap/SwapSepaFundingInstructions.vue:105
+#: src/components/swap/SwapSepaFundingInstructions.vue:106
 msgid "This might take up to {min} minutes."
 msgstr ""
 
@@ -1763,7 +1767,7 @@ msgstr ""
 msgid "This service is operated by {link}"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:108
+#: src/components/swap/SwapSepaFundingInstructions.vue:109
 msgid "This service will soon be sped up significantly by banks updating their infrastructure."
 msgstr ""
 
@@ -1819,7 +1823,7 @@ msgid "Trials"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:34
-#: src/components/swap/SwapSepaFundingInstructions.vue:119
+#: src/components/swap/SwapSepaFundingInstructions.vue:120
 msgid "Troubleshooting"
 msgstr ""
 
@@ -2005,7 +2009,7 @@ msgstr ""
 msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:89
 msgid ""
 "Your monthly purchase limit will still\n"
 "be reduced, even if you cancel now."
@@ -2015,7 +2019,7 @@ msgstr ""
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:111
+#: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr ""
 
@@ -2027,7 +2031,7 @@ msgstr ""
 msgid "Your swap was successful!"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:61
+#: src/components/swap/SwapSepaFundingInstructions.vue:62
 msgid "Your transaction must be SEPA Instant"
 msgstr ""
 

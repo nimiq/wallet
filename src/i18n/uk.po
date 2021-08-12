@@ -21,7 +21,7 @@ msgstr "{accounts} зберігайте, керуйте і накопичуйт�
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} надсилати та отримувати перекази."
 
-#: src/components/BankCheckInput.vue:66 src/components/BankCheckInput.vue:72
+#: src/components/BankCheckInput.vue:69 src/components/BankCheckInput.vue:75
 msgid "{bankName} offers generic and individual IBANs."
 msgstr ""
 
@@ -67,7 +67,7 @@ msgstr "{perc}% вартості обміну."
 msgid "{value} remaining"
 msgstr "{value} залишок"
 
-#: src/components/BankCheckInput.vue:79
+#: src/components/BankCheckInput.vue:82
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} інший | + {count} інші"
 
@@ -300,7 +300,7 @@ msgstr "Очікуємо на ключі обміну"
 msgid "Back to addresses"
 msgstr "Повернутися до адрес"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:122
+#: src/components/swap/SwapSepaFundingInstructions.vue:123
 msgid "Back to Bank Details"
 msgstr "Назад до банкіських реквізитів"
 
@@ -457,11 +457,11 @@ msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot}."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:79
+#: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:95
+#: src/components/swap/SwapSepaFundingInstructions.vue:96
 msgid "Cancel Swap"
 msgstr "Скасувати обмін"
 
@@ -591,7 +591,7 @@ msgstr "Зв'язок втрачений"
 msgid "Consensus"
 msgstr "Консенсус"
 
-#: src/components/BankCheckInput.vue:53
+#: src/components/BankCheckInput.vue:56
 msgid "Contact your bank to find out if your account is eligible."
 msgstr ""
 "Зв’яжіться зі своїм банком, щоб з’ясувати, чи ваш рахунок підходить для "
@@ -606,7 +606,7 @@ msgstr "Контакти"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:92
+#: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr "Продовжити Обмін"
 
@@ -708,7 +708,7 @@ msgid "Don’t reuse addresses and create a new one for every transaction."
 msgstr ""
 "Не використовуйте адреси повторно - створюйте нові для кожного переказу."
 
-#: src/components/BankCheckInput.vue:71
+#: src/components/BankCheckInput.vue:74
 msgid "Don’t use a generic IBAN!"
 msgstr ""
 
@@ -898,6 +898,7 @@ msgstr "Загальні"
 msgid "Get NIM"
 msgstr "Отримати NIM"
 
+#: src/components/BankCheckInput.vue:92
 #: src/components/modals/BtcActivationModal.vue:21
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -947,9 +948,13 @@ msgstr "повідомлення HTLC"
 msgid "HTLC Settlement or Refund"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:81
+#: src/components/swap/SwapSepaFundingInstructions.vue:82
 msgid "I paid"
 msgstr "Я заплатив"
+
+#: src/components/BankCheckInput.vue:86
+msgid "I understand that I have to send a {sepaInstantLink}."
+msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
@@ -982,16 +987,10 @@ msgstr ""
 msgid "Improved Accessibility"
 msgstr "Покращений інтерфейс"
 
-#: src/components/BankCheckInput.vue:67
+#: src/components/BankCheckInput.vue:70
 msgid ""
 "In case of any issues, like exceeded limits or insufficient amounts, the "
 "automatic refunds will only work for individual IBAN addresses."
-msgstr ""
-
-#: src/components/BankCheckInput.vue:86
-msgid ""
-"In some rare cases, banks fail to instantly process transactions and take up"
-" to 48 hours."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:88
@@ -1235,7 +1234,7 @@ msgstr "Переказів не знайдено"
 msgid "None"
 msgstr "Ні"
 
-#: src/components/BankCheckInput.vue:52
+#: src/components/BankCheckInput.vue:55
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
@@ -1320,7 +1319,7 @@ msgstr "Проводиться обмін {progress}/5"
 msgid "Please do not use your Mainnet accounts!"
 msgstr "Будь ласка, не використовуйте ваші рахунки з основної мережі."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:69
+#: src/components/swap/SwapSepaFundingInstructions.vue:70
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Переконайтесь, що ви надсилаєте миттєву транзакцію!"
 
@@ -1417,7 +1416,7 @@ msgstr ""
 msgid "Refund"
 msgstr "Відшкодування"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:71
+#: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
 "another name, like ‘real-time transactions’ i.a."
@@ -1439,6 +1438,10 @@ msgstr "Перейменувати"
 #: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr "Запит не пройшов"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:54
+msgid "Required"
+msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
@@ -1516,7 +1519,7 @@ msgid ""
 "SEPA bank account."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:73
+#: src/components/BankCheckInput.vue:76
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 
@@ -1603,6 +1606,10 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:35
 msgid "SEPA Instant only"
+msgstr ""
+
+#: src/components/BankCheckInput.vue:88
+msgid "SEPA Instant transaction"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:65
@@ -1765,7 +1772,7 @@ msgstr ""
 msgid "Testnet"
 msgstr "Тестова мережа"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:104
+#: src/components/swap/SwapSepaFundingInstructions.vue:105
 msgid "The bank is processing your transaction."
 msgstr "Банк обробляє вашу операцію."
 
@@ -1857,7 +1864,7 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:295
 #: src/components/swap/SwapAnimation.vue:72
-#: src/components/swap/SwapSepaFundingInstructions.vue:105
+#: src/components/swap/SwapSepaFundingInstructions.vue:106
 msgid "This might take up to {min} minutes."
 msgstr "Це може зайняти до {min} хвилин."
 
@@ -1883,7 +1890,7 @@ msgstr "Наразі цей сервіс є недоступним у вашом
 msgid "This service is operated by {link}"
 msgstr "Цю послугу забезпечує {link} "
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:108
+#: src/components/swap/SwapSepaFundingInstructions.vue:109
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
 "infrastructure."
@@ -1945,7 +1952,7 @@ msgid "Trials"
 msgstr "Пробні версії"
 
 #: src/components/swap/SwapAnimation.vue:34
-#: src/components/swap/SwapSepaFundingInstructions.vue:119
+#: src/components/swap/SwapSepaFundingInstructions.vue:120
 msgid "Troubleshooting"
 msgstr ""
 
@@ -2063,7 +2070,7 @@ msgid ""
 "to arrive."
 msgstr ""
 
-#: src/components/BankCheckInput.vue:65
+#: src/components/BankCheckInput.vue:68
 msgid "Without an individual IBAN, refunds are impossible!"
 msgstr ""
 
@@ -2138,14 +2145,6 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Ваш банк не відповідає вимогам?"
 
-#: src/components/BankCheckInput.vue:84
-msgid ""
-"Your bank needs to support SEPA Instant out transactions. Some banks don’t "
-"support it yet, but are likely to do so in the future."
-msgstr ""
-"Ваш банк повинен підтримувати операції SEPA Instant out. Деякі банки його "
-"поки не підтримують, але, ймовірно, підтримають у майбутньому."
-
 #: src/components/NetworkMap.vue:23
 msgid "Your browser"
 msgstr "Ваш веб-оглядач"
@@ -2171,7 +2170,7 @@ msgid ""
 "available."
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapSepaFundingInstructions.vue:89
 msgid ""
 "Your monthly purchase limit will still\n"
 "be reduced, even if you cancel now."
@@ -2187,7 +2186,7 @@ msgstr ""
 "Ваш NIM знаходиться на рахунку старого зразка. Переведіть кошти на новий "
 "рахунок, щоб використовувати нові можливості."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:111
+#: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr ""
 
@@ -2199,7 +2198,7 @@ msgstr ""
 msgid "Your swap was successful!"
 msgstr ""
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:61
+#: src/components/swap/SwapSepaFundingInstructions.vue:62
 msgid "Your transaction must be SEPA Instant"
 msgstr "Ваша транзакція повинна бути миттєвою SEPA"
 

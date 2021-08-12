@@ -159,7 +159,7 @@ export default defineComponent({
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-        const bankToConfirm = ref<Bank & { tooltip?: Tooltip }>(null);
+        const bankToConfirm = ref<Bank & { tooltip: undefined }>(null);
 
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
@@ -318,7 +318,7 @@ export default defineComponent({
 
             if (props.direction === 'outbound') {
                 // Trigger an extra confirmation step when user has to send fiat
-                bankToConfirm.value = bank;
+                bankToConfirm.value = { ...bank, tooltip: undefined }; // Remove reference to unmounted tooltip
             } else {
                 setBank(bank);
             }

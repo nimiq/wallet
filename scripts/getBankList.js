@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable import/no-extraneous-dependencies */
 
-const https = require('https');
-const http = require('http');
-const fs = require('fs');
+const fs = require('fs/promises');
 const xlsx = require('xlsx');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
@@ -19,52 +17,26 @@ const OUTPUT_SEPA_COUNTRIES_FILE_PATH = `${DATA_FOLDER_PATH}/generated/sepaBankC
 const EBA_CLEARING_BASEURL = 'https://www.ebaclearing.eu';
 const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/instant-payments/participants/`;
 
-function readFile(path) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(path, { encoding: 'utf8' }, (err, data) => {
-            if (err) return reject(err);
-            return resolve(JSON.parse(data));
-        });
-    });
+async function readFile(path) {
+    let data;
+
+    if (path.startsWith('http')) {
+        data = await fetch(path).then(res => res.text());
+    } else {
+        data = await fs.readFile(path, { encoding: 'utf8' });
+    }
+
+    return JSON.parse(data);
 }
 
 function writeFile(path, data) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile(path, JSON.stringify(data), (err) => {
-            if (err) return reject(err);
-            return resolve(data);
-        });
-    });
+    return fs.writeFile(path, JSON.stringify(data));
 }
 
 function download(url, filePath) {
-    const proto = !url.charAt(4).localeCompare('s') ? https : http;
-
-    return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(filePath);
-        let fileInfo = null;
-
-        const request = proto.get(url, (response) => {
-            if (response.statusCode !== 200) {
-                reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
-                return;
-            }
-
-            fileInfo = {
-                mime: response.headers['content-type'],
-                size: parseInt(response.headers['content-length'], 10),
-            };
-
-            response.pipe(file);
-        });
-
-        file.on('finish', () => resolve(fileInfo));
-
-        request.on('error', (err) => fs.unlink(filePath, () => reject(err)));
-        file.on('error', (err) => fs.unlink(filePath, () => reject(err)));
-
-        request.end();
-    });
+    return fetch(url)
+        .then(x => x.arrayBuffer())
+        .then(x => fs.writeFile(filePath, Buffer.from(x)));
 }
 
 async function getBankListUrl() {

@@ -486,13 +486,17 @@ export default defineComponent({
                     swapSuggestion.from.fee = 0; // User's SEPA Instant fees are not considered
                     swapSuggestion.to.fee = settlementFee;
 
+                    if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
+                        throw new Error(`${swapSuggestion.to.asset} output value is 0`);
+                    }
+
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                    swapError.value = null;
                 } catch (error) {
                     console.error(error); // eslint-disable-line no-console
-                    swapError.value = error.message;
+                    estimateError.value = error.message;
+                    if (swapSuggestion!) cancelSwap(swapSuggestion);
                     reject(error);
                     return;
                 }
@@ -529,7 +533,7 @@ export default defineComponent({
                     redeem = {
                         type: SwapAsset.NIM,
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swapSuggestion.to.amount, // Luna
+                        value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
                         validityStartHeight: useNetworkStore().state.height,
                     };

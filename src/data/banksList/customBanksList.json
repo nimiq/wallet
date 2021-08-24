@@ -464,7 +464,7 @@
     "SOGENL2A": { "name": "Société Générale Holland" },
     "SOLADEST": { "name": "Landesbank Baden-Württemberg", "support": { "sepa": { "outbound": "full" } } },
     "SSKNDE77": { "support": { "sepa": { "outbound": "full" } } },
-    "TRWIBEB1": { "support": { "sepa": { "outbound": "full-or-shared", "inbound": "full-or-shared" } } },
+    "TRWIBEB1": { "name": "Wise Europe Sa (Transferwise)", "support": { "sepa": { "outbound": "full-or-shared", "inbound": "full-or-shared" } } },
     "TRWIGB22": { "support": { "sepa": { "outbound": "full-or-shared", "inbound": "no" } } },
     "UNCRITM1": { "name": "UniCredit" },
     "UNCRITMM": { "name": "UniCredit" },

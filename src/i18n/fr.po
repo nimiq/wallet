@@ -970,7 +970,7 @@ msgstr "J'ai payé"
 
 #: src/components/BankCheckInput.vue:86
 msgid "I understand that I have to send a {sepaInstantLink}."
-msgstr ""
+msgstr "Je comprends que je dois envoyer un {sepaInstantLink}."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
@@ -1470,7 +1470,7 @@ msgstr "Requête échouée"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:54
 msgid "Required"
-msgstr ""
+msgstr "Requis"
 
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
@@ -1645,7 +1645,7 @@ msgstr "Virement SEPA instantané uniquement"
 
 #: src/components/BankCheckInput.vue:88
 msgid "SEPA Instant transaction"
-msgstr ""
+msgstr "virement SEPA instantané"
 
 #: src/components/modals/SendModal.vue:65
 #: src/components/modals/SendModal.vue:76

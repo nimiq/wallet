@@ -15,7 +15,7 @@ const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/banksList.json`;
 const OUTPUT_SEPA_COUNTRIES_FILE_PATH = `${DATA_FOLDER_PATH}/generated/sepaBankCountries.json`;
 
 const EBA_CLEARING_BASEURL = 'https://www.ebaclearing.eu';
-const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/instant-payments/participants/`;
+const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/rt1/participants/`;
 
 async function readFile(path) {
     let data;

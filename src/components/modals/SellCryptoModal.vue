@@ -26,7 +26,7 @@
                 </button>
             </PageBody>
 
-            <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column" @click="amountMenuOpened = false">
+            <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column" @click="amountMenuOpened = false">
                 <PageHeader :backArrow="banks.sepa ? false : true" @back="goBack">
                     {{ $t('Sell Crypto') }}
                     <div slot="more" class="pills flex-row">

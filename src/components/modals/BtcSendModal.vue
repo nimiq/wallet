@@ -18,6 +18,7 @@
                             @paste="onPaste"
                             @input="resetAddress"
                             @address="onAddressEntered"
+                            @domain-address="onDomainEntered"
                             @scan="goToScanner"/>
                     </template>
                 </DoubleInput>
@@ -200,6 +201,8 @@ export default defineComponent({
         }
 
         function onAddressEntered(address: string) {
+            if (recipientWithLabel.value && recipientWithLabel.value.address === address) return;
+
             // Find label across recipient labels, own addresses
             let label = '';
             let type = RecipientType.NEW_CONTACT; // Can be stored as a new contact by default
@@ -227,6 +230,15 @@ export default defineComponent({
             // }
 
             recipientWithLabel.value = { address, label, type };
+        }
+
+        function onDomainEntered(domain: string, address: string) {
+            recipientWithLabel.value = {
+                address,
+                label: domain,
+                type: RecipientType.NEW_CONTACT,
+            };
+            addressInputValue.value = address;
         }
 
         const amount = ref(0);
@@ -529,6 +541,7 @@ export default defineComponent({
             addressInputValue,
             resetAddress,
             onAddressEntered,
+            onDomainEntered,
             recipientWithLabel,
             onPaste,
             parseRequestUri,

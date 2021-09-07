@@ -45,15 +45,15 @@ export default defineComponent({
             default: CryptoCurrency.NIM,
         },
         activeCurrency: {
-            type: String,
+            type: String as () => CryptoCurrency | 'mbtc' | FiatCurrency,
             required: true,
         },
         fiatCurrency: {
-            type: String,
+            type: String as () => FiatCurrency,
             required: true,
         },
         otherFiatCurrencies: {
-            type: Array as () => FiatCurrency[],
+            type: Array as () => FiatCurrency[] | Readonly<FiatCurrency[]>,
             required: true,
         },
         feeOption: {

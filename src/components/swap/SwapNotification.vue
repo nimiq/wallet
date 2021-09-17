@@ -5,13 +5,13 @@
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
-                'errored': swapIsErrored && !swapIsExpired,
+                'errored': (swapIsErrored && !swapIsExpired) || oasisPayoutFailed,
             }"
             @click="openSwap"
         >
             <div class="icon">
                 <StopwatchIcon v-if="swapIsExpired" />
-                <AlertTriangleIcon v-else-if="swapIsErrored"/>
+                <AlertTriangleIcon v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed"/>
                 <CheckmarkIcon v-else-if="swapIsComplete"/>
                 <LoadingSpinner v-else/>
             </div>
@@ -19,7 +19,7 @@
                 <div v-if="swapIsExpired" class="status">
                     {{ $t('Swap has expired') }}
                 </div>
-                <div v-else-if="swapIsErrored" class="status">
+                <div v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed" class="status">
                     {{ $t('There\'s a problem') }}
                 </div>
                 <div v-else-if="swapIsComplete" class="status">
@@ -29,7 +29,10 @@
                     {{ $t('Performing swap {progress}/5', { progress: (activeSwap ? activeSwap.state : 0) + 1 }) }}
                 </div>
 
-                <span v-if="swapIsExpired || swapIsErrored" class="closing-notice">
+                <span
+                    v-if="swapIsExpired || swapIsErrored || oasisLimitExceeded || oasisPayoutFailed"
+                    class="closing-notice"
+                >
                     {{ $t('Click for more information') }}
                 </span>
                 <span v-else-if="swapIsComplete" class="closing-notice">
@@ -60,7 +63,9 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import {
+    ClearingInfo,
     ClearingStatus,
+    DeniedReason,
     getHtlc,
     Htlc as OasisHtlc,
     HtlcStatus,
@@ -239,6 +244,9 @@ export default defineComponent({
             }
         }
 
+        const oasisLimitExceeded = ref(false);
+        const oasisPayoutFailed = ref(false);
+
         async function processSwap() {
             if (!activeSwap.value || !activeSwap.value.id || !activeSwap.value.from) {
                 // This is a ghost swap that could happen in versions 2.11.0-2.11.5 when an onUpdate handler
@@ -348,9 +356,16 @@ export default defineComponent({
                                 // TODO: Handle partial funding
                             }
 
-                            // Limit excess is detected in BuyCryptoModal (`oasisLimitExceeded`)
-                            // if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED)
+                            if ((htlc as OasisHtlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
+                                const clearingInfo = (htlc as OasisHtlc<HtlcStatus.PENDING>)
+                                    .clearing as ClearingInfo<ClearingStatus.DENIED>;
+                                oasisLimitExceeded.value = clearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
+                            } else {
+                                oasisLimitExceeded.value = false;
+                            }
                         }) as Transaction<SwapAsset.EUR>;
+
+                        oasisLimitExceeded.value = false;
 
                         // As EUR payments are not otherwise detected by the Wallet, we use this
                         // place to persist the relevant information in our store.
@@ -486,6 +501,8 @@ export default defineComponent({
 
                                     if (htlc.settlement.status === SettlementStatus.DENIED) {
                                         const settlement = htlc.settlement as SettlementInfo<SettlementStatus.DENIED>;
+                                        const { reason } = settlement.detail;
+                                        oasisLimitExceeded.value = reason === DeniedReason.LIMIT_EXCEEDED;
 
                                         swapData.htlc!.settlement = {
                                             status: settlement.status,
@@ -493,10 +510,13 @@ export default defineComponent({
                                             lastUpdated: Date.now(),
                                         };
                                         addSettlementData(htlc.hash.value, swapData);
+                                    } else {
+                                        oasisLimitExceeded.value = false;
                                     }
 
                                     if (htlc.settlement.status === SettlementStatus.FAILED) {
                                         const settlement = htlc.settlement as SettlementInfo<SettlementStatus.FAILED>;
+                                        oasisPayoutFailed.value = true;
 
                                         swapData.htlc!.settlement = {
                                             status: settlement.status,
@@ -504,8 +524,13 @@ export default defineComponent({
                                             lastUpdated: Date.now(),
                                         };
                                         addSettlementData(htlc.hash.value, swapData);
+                                    } else {
+                                        oasisPayoutFailed.value = false;
                                     }
                                 }) as OasisHtlc<HtlcStatus.SETTLED>;
+
+                                oasisLimitExceeded.value = false;
+                                oasisPayoutFailed.value = false;
                             }
 
                             // As EUR payments are not otherwise detected by the Wallet, we use this
@@ -589,6 +614,8 @@ export default defineComponent({
             swapIsComplete,
             swapIsExpired,
             swapIsErrored,
+            oasisLimitExceeded,
+            oasisPayoutFailed,
             openSwap,
         };
     },

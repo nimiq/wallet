@@ -1255,7 +1255,7 @@ export default defineComponent({
 
 .to-limit-exceeded {
     .nq-card-footer {
-        opacity: 0;
+        opacity: 0 !important;
         pointer-events: none;
         animation: none;
     }

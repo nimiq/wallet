@@ -160,7 +160,6 @@ export default defineComponent({
 .nq-icon {
     font-size: 2.75rem;
     color: var(--nimiq-orange);
-    margin-right: 1.5rem;
     flex-shrink: 0;
 }
 

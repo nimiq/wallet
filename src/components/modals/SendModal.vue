@@ -43,7 +43,7 @@
             </PageBody>
         </div>
 
-        <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
+        <div v-if="recipientDetailsOpened && recipientWithLabel" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <div class="flex-grow"></div>
@@ -70,7 +70,7 @@
         </div>
 
         <div
-            v-if="page === Pages.AMOUNT_INPUT" class="page flex-column"
+            v-if="page === Pages.AMOUNT_INPUT && recipientWithLabel" class="page flex-column"
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader

@@ -66,6 +66,10 @@ export type Swap = {
     id?: string,
     in?: SwapData,
     out?: SwapData,
+    fees?: {
+        totalFee: number,
+        asset: SwapAsset,
+    },
 };
 
 export type ActiveSwap = SwapObject & {

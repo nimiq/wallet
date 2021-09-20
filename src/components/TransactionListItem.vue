@@ -49,7 +49,7 @@
         </div>
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value" value-mask/>
-            <transition name="fade">
+            <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -60,6 +60,11 @@
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
+            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
+                :amount="(swapData.amount / 100)
+                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                    * (isIncoming ? 1 : -1)"
+                :currency="swapData.asset.toLowerCase()" value-mask/>
         </div>
     </button>
 </template>

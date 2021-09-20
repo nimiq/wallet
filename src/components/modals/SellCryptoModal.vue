@@ -778,7 +778,10 @@ export default defineComponent({
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
-                // fees: swapFees,
+                fees: {
+                    totalFee: fiatFees.value.funding.total,
+                    asset: confirmedSwap.to.asset,
+                },
             });
 
             setActiveSwap({

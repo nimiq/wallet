@@ -186,7 +186,21 @@
                 }" currency="btc" value-mask/>
 
                 <div class="flex-row">
-                    <transition name="fade">
+                    <div v-if="
+                        swapData && swapData.asset === SwapAsset.EUR
+                        && swapInfo && swapInfo.fees && swapInfo.fees.totalFee
+                    " class="fiat-amount">
+                        <Tooltip>
+                            <template slot="trigger">
+                                <FiatAmount :amount="(swapData.amount / 100)
+                                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                                    * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
+                                />
+                            </template>
+                            {{ $t('Historic value') }}
+                        </Tooltip>
+                    </div>
+                    <transition v-else-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                         <FiatConvertedAmount
                             v-if="state === TransactionState.PENDING"
                             :amount="isIncoming ? amountReceived : amountSent"
@@ -210,7 +224,11 @@
                         </div>
                     </transition>
                     <template v-if="swapData && (swapTransaction || swapData.asset === SwapAsset.EUR)">
-                        <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                        <svg v-if="
+                            swapData.asset !== SwapAsset.EUR
+                            || (swapInfo && swapInfo.fees && swapInfo.fees.totalFee)"
+                            viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot"
+                        >
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
                         <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction

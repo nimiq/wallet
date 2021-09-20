@@ -7,6 +7,7 @@ import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Con
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
+import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
@@ -68,6 +69,7 @@ export const useTransactionsStore = createStore({
                             hashRoot: string,
                             hashCount: number,
                             timeout: number,
+                            raw: string,
                         };
                         useSwapsStore().addFundingData(fundingData.hashRoot, {
                             asset: SwapAsset.NIM,
@@ -84,10 +86,28 @@ export const useTransactionsStore = createStore({
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
                             getContract(SwapAsset.NIM, plain.recipient).then((contractWithEstimate) => {
                                 if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+                                    const exchangeRate = {
+                                        [CryptoCurrency.NIM]: {
+                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
+                                        },
+                                    };
+                                    const fiatFees = getFiatFees(
+                                        contractWithEstimate,
+                                        CryptoCurrency.NIM,
+                                        exchangeRate,
+                                        FiatCurrency.EUR,
+                                        null,
+                                    );
+
                                     useSwapsStore().addSettlementData(fundingData.hashRoot, {
                                         asset: SwapAsset.EUR,
                                         amount: contractWithEstimate.to.amount,
                                         // We cannot get bank info or EUR HTLC details from this.
+                                    }, {
+                                        fees: {
+                                            totalFee: fiatFees.funding.total,
+                                            asset: SwapAsset.EUR,
+                                        },
                                     });
                                 }
                             }).catch(() => undefined);
@@ -140,6 +160,7 @@ export const useTransactionsStore = createStore({
                             signature: string,
                             publicKey: string,
                             pathLength: number,
+                            raw: string,
                         };
                         useSwapsStore().addSettlementData(settlementData.hashRoot, {
                             asset: SwapAsset.NIM,
@@ -150,10 +171,28 @@ export const useTransactionsStore = createStore({
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
                             getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    const exchangeRate = {
+                                        [CryptoCurrency.NIM]: {
+                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
+                                        },
+                                    };
+                                    const fiatFees = getFiatFees(
+                                        contractWithEstimate,
+                                        CryptoCurrency.NIM,
+                                        exchangeRate,
+                                        FiatCurrency.EUR,
+                                        null,
+                                    );
+
                                     useSwapsStore().addFundingData(settlementData.hashRoot, {
                                         asset: SwapAsset.EUR,
                                         amount: contractWithEstimate.from.amount,
                                         // We cannot get bank info or EUR HTLC details from this.
+                                    }, {
+                                        fees: {
+                                            totalFee: fiatFees.settlement.total,
+                                            asset: SwapAsset.EUR,
+                                        },
                                     });
                                 }
                             }).catch(() => undefined);

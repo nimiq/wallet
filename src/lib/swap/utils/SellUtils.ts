@@ -15,6 +15,7 @@ import { estimateFees } from '../../BitcoinTransactionUtils';
 import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { i18n } from '../../../i18n/i18n-setup';
 import { assets, calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
+import { getFeePerUnit } from './Functions';
 
 const { activeSwap: swap } = useSwapsStore();
 const { exchangeRates } = useFiatStore();
@@ -47,18 +48,12 @@ export const oasisSellLimitExceeded = computed(() => {
 
 export const nimFeePerUnit = computed(() => {
     const { estimate } = useSwapEstimate();
-
-    return (estimate.value && estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
-        || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-        || 0; // Default zero fees for NIM
+    return getFeePerUnit(SwapAsset.NIM, estimate.value, assets.value);
 });
 
 export const btcFeePerUnit = computed(() => {
     const { estimate } = useSwapEstimate();
-
-    return (estimate.value && estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
-        || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-        || 1;
+    return getFeePerUnit(SwapAsset.BTC, estimate.value, assets.value);
 });
 
 // 48 extra weight units for BTC HTLC funding tx

@@ -8,6 +8,7 @@ import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Con
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
+import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
@@ -83,10 +84,31 @@ export const useBtcTransactionsStore = createStore({
                             if (htlcAddress) {
                                 getContract(SwapAsset.BTC, htlcAddress).then((contractWithEstimate) => {
                                     if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+                                        const exchangeRate = {
+                                            [CryptoCurrency.BTC]: {
+                                                [FiatCurrency.EUR]: getEurPerCrypto(
+                                                    SwapAsset.BTC,
+                                                    contractWithEstimate,
+                                                ),
+                                            },
+                                        };
+                                        const fiatFees = getFiatFees(
+                                            contractWithEstimate,
+                                            CryptoCurrency.BTC,
+                                            exchangeRate,
+                                            FiatCurrency.EUR,
+                                            null,
+                                        );
+
                                         useSwapsStore().addSettlementData(fundingData.hash, {
                                             asset: SwapAsset.EUR,
                                             amount: contractWithEstimate.to.amount,
                                             // We cannot get bank info or EUR HTLC details from this.
+                                        }, {
+                                            fees: {
+                                                totalFee: fiatFees.funding.total,
+                                                asset: SwapAsset.EUR,
+                                            },
                                         });
                                     }
                                 }).catch(() => undefined);
@@ -115,10 +137,28 @@ export const useBtcTransactionsStore = createStore({
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
                             getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    const exchangeRate = {
+                                        [CryptoCurrency.BTC]: {
+                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.BTC, contractWithEstimate),
+                                        },
+                                    };
+                                    const fiatFees = getFiatFees(
+                                        contractWithEstimate,
+                                        CryptoCurrency.BTC,
+                                        exchangeRate,
+                                        FiatCurrency.EUR,
+                                        null,
+                                    );
+
                                     useSwapsStore().addFundingData(settlementData.hash, {
                                         asset: SwapAsset.EUR,
                                         amount: contractWithEstimate.from.amount,
                                         // We cannot get bank info or EUR HTLC details from this.
+                                    }, {
+                                        fees: {
+                                            totalFee: fiatFees.settlement.total,
+                                            asset: SwapAsset.EUR,
+                                        },
                                     });
                                 }
                             }).catch(() => undefined);

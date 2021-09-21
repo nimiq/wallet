@@ -29,19 +29,25 @@ export type SettlementFees = {
     isHigh: boolean,
 }
 
-export function getEurPerCrypto(asset: SwapAsset, estimate: Estimate) {
+export function getEurPerCrypto(asset: SwapAsset.NIM | SwapAsset.BTC, estimate: Estimate) {
+    let coinFactor: number;
+    switch (asset) { // eslint-disable-line default-case
+        case SwapAsset.NIM: coinFactor = 1e5; break;
+        case SwapAsset.BTC: coinFactor = 1e8; break;
+    }
+
     if (estimate.from.asset === asset) {
         const eur = estimate.to.amount + estimate.to.serviceEscrowFee + estimate.to.serviceNetworkFee;
         const crypto = estimate.from.amount - estimate.from.serviceNetworkFee;
 
-        return (eur / 100) / (crypto / 1e5);
+        return (eur / 100) / (crypto / coinFactor);
     }
 
     if (estimate.to.asset === asset) {
         const eur = estimate.from.amount - estimate.from.serviceEscrowFee - estimate.from.serviceNetworkFee;
         const crypto = estimate.to.amount + estimate.to.serviceNetworkFee;
 
-        return (eur / 100) / (crypto / 1e5);
+        return (eur / 100) / (crypto / coinFactor);
     }
 
     throw new Error('Asset not part of estimate');

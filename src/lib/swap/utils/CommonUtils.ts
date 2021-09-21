@@ -91,7 +91,10 @@ export const btcFeePerUnit = computed(() => getFeePerUnit(
 export const fiatFees = computed<{ funding: FundingFees, settlement: SettlementFees }>(() => getFiatFees(
     estimate.value,
     activeCurrency.value,
-    exchangeRates.value,
+    {
+        [CryptoCurrency.NIM]: { [selectedFiatCurrency.value]: eurPerNim.value },
+        [CryptoCurrency.BTC]: { [selectedFiatCurrency.value]: eurPerBtc.value },
+    },
     selectedFiatCurrency.value,
     assets.value,
 ));

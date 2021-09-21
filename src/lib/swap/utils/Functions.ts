@@ -40,14 +40,14 @@ export function getEurPerCrypto(asset: SwapAsset.NIM | SwapAsset.BTC, estimate: 
         const eur = estimate.to.amount + estimate.to.serviceEscrowFee + estimate.to.serviceNetworkFee;
         const crypto = estimate.from.amount - estimate.from.serviceNetworkFee;
 
-        return (eur / 100) / (crypto / coinFactor);
+        return ((eur / 100) / (crypto / coinFactor)) * (1 + estimate.serviceFeePercentage);
     }
 
     if (estimate.to.asset === asset) {
         const eur = estimate.from.amount - estimate.from.serviceEscrowFee - estimate.from.serviceNetworkFee;
         const crypto = estimate.to.amount + estimate.to.serviceNetworkFee;
 
-        return (eur / 100) / (crypto / coinFactor);
+        return ((eur / 100) / (crypto / coinFactor)) * (1 - estimate.serviceFeePercentage);
     }
 
     throw new Error('Asset not part of estimate');

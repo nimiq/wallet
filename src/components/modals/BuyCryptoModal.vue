@@ -39,7 +39,7 @@
                             <div v-else slot="trigger" class="pill exchange-rate">
                                 1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
                             </div>
-                            <span>{{ $t('This rate includes the swap fee.') }}</span>
+                            <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
                             <p class="explainer">
                                 {{ $t('The rate might change depending on the swap volume.') }}
                             </p>

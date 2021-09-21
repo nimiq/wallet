@@ -47,7 +47,7 @@
 
             <TransactionDetailOasisPayoutStatus
                 v-if="swapData && swapData.asset === SwapAsset.EUR && swapData.htlc
-                    && swapData.htlc.settlement && swapData.htlc.settlement !== SettlementStatus.CONFIRMED"
+                    && swapData.htlc.settlement && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED"
                 :data="swapData"
             />
             <span

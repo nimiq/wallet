@@ -25,8 +25,8 @@ msgstr "{addresss} 发送和接收交易"
 msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} 提供通用和个人 IBAN"
 
-#: src/components/modals/BtcTransactionModal.vue:261
-#: src/components/modals/TransactionModal.vue:256
+#: src/components/modals/BtcTransactionModal.vue:279
+#: src/components/modals/TransactionModal.vue:274
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count}个确认 | {count}个确认"
 
@@ -52,7 +52,7 @@ msgstr "{currency} 未支付"
 msgid "{currency} payout pending"
 msgstr "{currency} 付款待处理"
 
-#: src/components/modals/TransactionModal.vue:258
+#: src/components/modals/TransactionModal.vue:276
 msgid "{fee} fee"
 msgstr "{fee} 费用"
 
@@ -296,10 +296,10 @@ msgstr "返回银行详情"
 msgid "Backup"
 msgstr "备份"
 
-#: src/components/BtcTransactionListItem.vue:251
-#: src/components/modals/BtcTransactionModal.vue:471
-#: src/components/modals/TransactionModal.vue:510
-#: src/components/TransactionListItem.vue:231
+#: src/components/BtcTransactionListItem.vue:256
+#: src/components/modals/BtcTransactionModal.vue:489
+#: src/components/modals/TransactionModal.vue:528
+#: src/components/TransactionListItem.vue:236
 msgid "Bank Account"
 msgstr "银行账户"
 
@@ -323,8 +323,8 @@ msgstr "BIC适用"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
-#: src/components/modals/TransactionModal.vue:506
-#: src/components/TransactionListItem.vue:227
+#: src/components/modals/TransactionModal.vue:524
+#: src/components/TransactionListItem.vue:232
 msgid "Bitcoin"
 msgstr "比特币"
 
@@ -338,13 +338,13 @@ msgstr "比特币地址仅使用一次，因此不在联系人内。请改用标
 msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
-#: src/components/modals/BtcTransactionModal.vue:258
-#: src/components/modals/TransactionModal.vue:253
+#: src/components/modals/BtcTransactionModal.vue:276
+#: src/components/modals/TransactionModal.vue:271
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:268
-#: src/components/modals/TransactionModal.vue:265
+#: src/components/modals/BtcTransactionModal.vue:286
+#: src/components/modals/TransactionModal.vue:283
 #: src/components/swap/SwapAnimation.vue:171
 #: src/components/swap/SwapAnimation.vue:247
 msgid "Block explorer"
@@ -446,12 +446,12 @@ msgstr "取消"
 msgid "Cancel Swap"
 msgstr "取消交换"
 
-#: src/components/BtcTransactionListItem.vue:241
-#: src/components/modals/BtcTransactionModal.vue:461
+#: src/components/BtcTransactionListItem.vue:246
+#: src/components/modals/BtcTransactionModal.vue:479
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
-#: src/components/modals/TransactionModal.vue:501
-#: src/components/TransactionListItem.vue:222
+#: src/components/modals/TransactionModal.vue:519
+#: src/components/TransactionListItem.vue:227
 msgid "Cancelled Swap"
 msgstr "取消交换"
 
@@ -459,9 +459,9 @@ msgstr "取消交换"
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
-#: src/components/modals/TransactionModal.vue:519
+#: src/components/modals/TransactionModal.vue:537
 #: src/components/TransactionList.vue:62
-#: src/components/TransactionListItem.vue:240
+#: src/components/TransactionListItem.vue:245
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -504,7 +504,7 @@ msgstr "清除"
 msgid "Clear Cache"
 msgstr "清除缓存"
 
-#: src/components/swap/SwapNotification.vue:33
+#: src/components/swap/SwapNotification.vue:36
 msgid "Click for more information"
 msgstr "点击了解更多信息"
 
@@ -680,7 +680,7 @@ msgstr "免责声明"
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "在交换完成之前，请勿关闭钱包！"
 
-#: src/components/swap/SwapNotification.vue:39
+#: src/components/swap/SwapNotification.vue:42
 msgid "Don't close your wallet!"
 msgstr "不要关闭你的钱包！"
 
@@ -828,7 +828,7 @@ msgid "Fetching"
 msgstr "正在取得更新"
 
 #: src/components/BtcTransactionListItem.vue:65
-#: src/components/modals/TransactionModal.vue:192
+#: src/components/modals/TransactionModal.vue:206
 #: src/components/TransactionListItem.vue:56
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
@@ -894,27 +894,29 @@ msgid ""
 "and shared login information."
 msgstr "使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址"
 
-#: src/components/modals/BtcTransactionModal.vue:208
-#: src/components/modals/TransactionModal.vue:203
+#: src/components/modals/BtcTransactionModal.vue:200
+#: src/components/modals/BtcTransactionModal.vue:222
+#: src/components/modals/TransactionModal.vue:196
+#: src/components/modals/TransactionModal.vue:217
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/BtcTransactionListItem.vue:201
-#: src/components/modals/BtcTransactionModal.vue:425
-#: src/components/modals/TransactionModal.vue:449
-#: src/components/TransactionListItem.vue:179 src/lib/DataFormatting.ts:21
+#: src/components/BtcTransactionListItem.vue:206
+#: src/components/modals/BtcTransactionModal.vue:443
+#: src/components/modals/TransactionModal.vue:467
+#: src/components/TransactionListItem.vue:184 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/BtcTransactionListItem.vue:201
-#: src/components/modals/BtcTransactionModal.vue:425
-#: src/components/modals/TransactionModal.vue:460
-#: src/components/TransactionListItem.vue:190
+#: src/components/BtcTransactionListItem.vue:206
+#: src/components/modals/BtcTransactionModal.vue:443
+#: src/components/modals/TransactionModal.vue:478
+#: src/components/TransactionListItem.vue:195
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:453
-#: src/components/TransactionListItem.vue:183
+#: src/components/modals/TransactionModal.vue:471
+#: src/components/TransactionListItem.vue:188
 msgid "HTLC Settlement"
 msgstr "HTLC结算"
 
@@ -934,7 +936,7 @@ msgstr ""
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:199
+#: src/components/swap/SwapNotification.vue:204
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1008,7 +1010,7 @@ msgstr "你的银行是否符合条件？"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "快速、安全，让你完全独立"
 
-#: src/components/swap/SwapNotification.vue:36
+#: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "你现在可以安全关闭电子钱包"
 
@@ -1177,7 +1179,7 @@ msgstr "Nimiq正在开发PRO功能，用户在注册后可提高金额限制"
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
-#: src/components/swap/SwapNotification.vue:198
+#: src/components/swap/SwapNotification.vue:203
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
@@ -1377,8 +1379,8 @@ msgstr "参考货币"
 msgid "Refresh the page to continue."
 msgstr "刷新页面以继续"
 
-#: src/components/modals/BtcTransactionModal.vue:251
-#: src/components/modals/TransactionModal.vue:246
+#: src/components/modals/BtcTransactionModal.vue:269
+#: src/components/modals/TransactionModal.vue:264
 msgid "Refund"
 msgstr "退款"
 
@@ -1546,8 +1548,8 @@ msgstr "已发送{btc} 比特币"
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
-#: src/components/BtcTransactionListItem.vue:186
-#: src/components/TransactionListItem.vue:162
+#: src/components/BtcTransactionListItem.vue:191
+#: src/components/TransactionListItem.vue:167
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
@@ -1672,12 +1674,12 @@ msgid "Store, send and receive NIM."
 msgstr "存储、发送和接收NIM"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/BtcTransactionListItem.vue:247
-#: src/components/modals/BtcTransactionModal.vue:467
+#: src/components/BtcTransactionListItem.vue:252
+#: src/components/modals/BtcTransactionModal.vue:485
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:497
+#: src/components/modals/TransactionModal.vue:515
 #: src/components/modals/TransactionModal.vue:7
-#: src/components/TransactionListItem.vue:218
+#: src/components/TransactionListItem.vue:223
 msgid "Swap"
 msgstr "交换"
 
@@ -1741,11 +1743,11 @@ msgid "The bank is processing your transaction."
 msgstr "银行正在处理你的交易"
 
 #: src/components/swap/SwapModal.vue:606 src/lib/swap/utils/BuyUtils.ts:90
-#: src/lib/swap/utils/SellUtils.ts:115
+#: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额"
 
-#: src/lib/swap/utils/BuyUtils.ts:95 src/lib/swap/utils/SellUtils.ts:120
+#: src/lib/swap/utils/BuyUtils.ts:95 src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "费用将决定最低金额"
 
@@ -1836,8 +1838,6 @@ msgstr "这可能会花费{min}分钟"
 msgid "This month"
 msgstr "本月份"
 
-#: src/components/modals/BuyCryptoModal.vue:42
-#: src/components/modals/SellCryptoModal.vue:41
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "此汇率已将交换费用纳入计算"
@@ -1921,8 +1921,8 @@ msgstr "现在就试试"
 msgid "Tweet your map!"
 msgstr "在推特分享你的地图！"
 
-#: src/components/modals/TransactionModal.vue:520
-#: src/components/TransactionListItem.vue:241
+#: src/components/modals/TransactionModal.vue:538
+#: src/components/TransactionListItem.vue:246
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 

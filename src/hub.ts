@@ -458,8 +458,8 @@ export async function logout(accountId: string) {
         .map((tx) => {
             // Note: proxy transactions from or to our addresses always hold the proxy data. Currently only swap proxy
             // htlc creation transactions hold the htlc data instead
-            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)) return tx.recipient;
-            if (isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.REDEEM)) return tx.sender;
+            if (isProxyData(tx.data, undefined, ProxyTransactionDirection.FUND)) return tx.recipient;
+            if (isProxyData(tx.data, undefined, ProxyTransactionDirection.REDEEM)) return tx.sender;
             return '';
         })
         .filter((address) => !!address);

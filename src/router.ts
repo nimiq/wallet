@@ -10,8 +10,8 @@ import AddressOverview from './components/layouts/AddressOverview.vue';
 
 // Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
-const Network = () =>
-    import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
+// const Network = () =>
+//     import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
 
 // Modals
 const AccountMenuModal = () =>
@@ -48,16 +48,16 @@ const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
 // Swap Modals
-const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
-const BuyCryptoModal = () =>
-    import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
-const SellCryptoModal = () =>
-    import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
+// const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
+// const BuyCryptoModal = () =>
+//     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
+// const SellCryptoModal = () =>
+//     import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
 
-const MoonpayModal = () =>
-    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
-const SimplexModal = () =>
-    import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
+// const MoonpayModal = () =>
+//     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
+// const SimplexModal = () =>
+//     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
 Vue.use(VueRouter);
 
@@ -155,22 +155,22 @@ const routes: RouteConfig[] = [{
             name: 'buy',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/buy-crypto',
-            components: {
-                modal: BuyCryptoModal,
-            },
-            name: 'buy-crypto',
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/sell-crypto',
-            components: {
-                modal: SellCryptoModal,
-            },
-            name: 'sell-crypto',
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
+        // }, {
+        //     path: '/buy-crypto',
+        //     components: {
+        //         modal: BuyCryptoModal,
+        //     },
+        //     name: 'buy-crypto',
+        //     props: { modal: true },
+        //     meta: { column: Columns.DYNAMIC },
+        // }, {
+        //     path: '/sell-crypto',
+        //     components: {
+        //         modal: SellCryptoModal,
+        //     },
+        //     name: 'sell-crypto',
+        //     props: { modal: true },
+        //     meta: { column: Columns.DYNAMIC },
         }, {
             path: '/scan',
             components: {
@@ -228,30 +228,30 @@ const routes: RouteConfig[] = [{
                 modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
             },
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/swap',
-            components: {
-                modal: SwapModal,
-            },
-            name: 'swap',
-            props: { modal: true },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/moonpay',
-            components: {
-                modal: MoonpayModal,
-            },
-            name: 'moonpay',
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/simplex',
-            components: {
-                'persistent-modal': SimplexModal,
-            },
-            name: 'simplex',
-            // props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
+        // }, {
+        //     path: '/swap',
+        //     components: {
+        //         modal: SwapModal,
+        //     },
+        //     name: 'swap',
+        //     props: { modal: true },
+        //     meta: { column: Columns.ACCOUNT },
+        // }, {
+        //     path: '/moonpay',
+        //     components: {
+        //         modal: MoonpayModal,
+        //     },
+        //     name: 'moonpay',
+        //     props: { modal: true },
+        //     meta: { column: Columns.DYNAMIC },
+        // }, {
+        //     path: '/simplex',
+        //     components: {
+        //         'persistent-modal': SimplexModal,
+        //     },
+        //     name: 'simplex',
+        //     // props: { modal: true },
+        //     meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',
             components: {
@@ -301,30 +301,30 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }],
     }],
-}, {
-    path: '/network',
-    components: {
-        basement: Network,
-    },
-    name: 'network',
-    meta: { column: Columns.ACCOUNT },
-    children: [{
-        path: '/accounts',
-        components: {
-            modal: AccountMenuModal,
-        },
-        name: 'network-accounts',
-        props: { modal: true },
-        meta: { column: Columns.DYNAMIC },
-    }, {
-        path: '/release-notes',
-        components: {
-            modal: ReleaseNotesModal,
-        },
-        name: 'network-release-notes',
-        props: { modal: true },
-        meta: { column: Columns.DYNAMIC },
-    }],
+// }, {
+//     path: '/network',
+//     components: {
+//         basement: Network,
+//     },
+//     name: 'network',
+//     meta: { column: Columns.ACCOUNT },
+//     children: [{
+//         path: '/accounts',
+//         components: {
+//             modal: AccountMenuModal,
+//         },
+//         name: 'network-accounts',
+//         props: { modal: true },
+//         meta: { column: Columns.DYNAMIC },
+//     }, {
+//         path: '/release-notes',
+//         components: {
+//             modal: ReleaseNotesModal,
+//         },
+//         name: 'network-release-notes',
+//         props: { modal: true },
+//         meta: { column: Columns.DYNAMIC },
+//     }],
 }];
 
 const router = new VueRouter({

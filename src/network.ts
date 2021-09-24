@@ -1,30 +1,167 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
-import { useProxyStore } from './stores/Proxy';
-import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { ENV_MAIN } from './lib/Constants';
+// import { useProxyStore } from './stores/Proxy';
+
+import { Block } from '../../../github/albatross-remote/src/lib/server-types'
 
 let isLaunched = false;
-let clientPromise: Promise<Nimiq.Client>;
+let clientPromise: Promise<AlbatrossRpcClient>;
 
-type Balances = Map<string, number>;
-const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
+export enum ConsensusState {
+    CONNECTING = 'connecting',
+    SYNCING = 'syncing',
+    ESTABLISHED = 'established',
+}
+
+export type Account = {
+    Basic: {
+        balance: number,
+    }
+} | {
+    Vesting: {
+        balance: number,
+        // ...
+    }
+} | {
+    HTLC: {
+        balance: number,
+        // ...
+    }
+}
+
+export type Handle = number;
+export type ConsensusChangedListener = (consensusState: ConsensusState) => any;
+export type HeadChangedListener = (block: Block) => any;
+export type TransactionListener = (transaction: Transaction) => any;
+
+class AlbatrossRpcClient {
+    private textDecoder?: TextDecoder;
+    private url: string
+    private ws?: WebSocket
+    private blockSubscriptions: {
+        [handle: number]: HeadChangedListener,
+    } = {}
+
+    private transactionSubscriptions: {
+        [address: string]: TransactionListener[],
+    } = {}
+
+    constructor(url: string) {
+        this.url = url;
+
+        this.ws = new WebSocket(`${this.url.replace('http', 'ws')}/ws`);
+        this.ws.addEventListener('open', () => {
+            this.ws!.send(JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'headSubscribe',
+                params: [],
+                id: 42,
+            }));
+        });
+        this.ws.addEventListener('message', async (event) => {
+            let msg: string;
+            if (event.data instanceof Blob) {
+                msg = this.getTextDecoder().decode(await event.data.arrayBuffer());
+            } else if (event.data instanceof ArrayBuffer) {
+                msg = this.getTextDecoder().decode(event.data);
+            } else {
+                msg = event.data;
+            }
+
+            const msgObj = JSON.parse(msg)
+
+            if (msgObj.result) {
+                // const subscriptionId = msgObj.result as number;
+                return;
+            }
+
+            const blockHash = msgObj.params.result as string
+            console.log(blockHash)
+
+            // TODO: Get block for the hash
+        });
+    }
+
+    public addHeadChangedListener(listener: HeadChangedListener): Handle {
+        let handle: Handle;
+        do {
+            handle = Math.round(Math.random() * 1000);
+        } while (this.blockSubscriptions[handle]);
+
+        this.blockSubscriptions[handle] = listener;
+        return handle;
+    }
+
+    public addTransactionListener(listener: TransactionListener, address: string) {
+        const listeners = this.transactionSubscriptions[address] || [];
+        listeners.push(listener);
+        this.transactionSubscriptions[address] = listeners;
+    }
+
+    public async getTransactionsByAddress(
+        address: string,
+        _fromHeight?: number,
+        _knownTxs?: Transaction[],
+        max?: number,
+    ) {
+        return this.rpc('getTransactionsByAddress', [address, max || null]) as Promise<Transaction[]>;
+    }
+
+    public async sendTransaction(tx: string | Transaction) {
+        if (typeof tx === 'string') {
+            const hash = await this.rpc('sendRawTransaction', [tx]) as Promise<string>;
+            do {
+                try {
+                    // eslint-disable-next-line no-await-in-loop
+                    return await this.rpc('getTransactionByHash', [hash]) as Transaction;
+                } catch (error) {
+                    console.error(error);
+                }
+            } while (true); // eslint-disable-line no-constant-condition
+        } else {
+            throw new Error('UNIMPLEMENTED: sending transaction objects');
+        }
+    }
+
+    public async getAccount(address: string): Promise<Account> {
+        return this.rpc('getAccount', [address]).catch(error => {
+            console.error(error);
+            return {
+                Basic: {
+                    balance: 0,
+                },
+            };
+        });
+    }
+
+    private async rpc(method: string, params: any[]) {
+        return fetch(this.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                method,
+                params,
+                id: 42,
+            }),
+        }).then((res) => res.json());
+    }
+
+    private getTextDecoder(): TextDecoder {
+        return this.textDecoder || (this.textDecoder = new TextDecoder());
+    }
+}
 
 export async function getNetworkClient() {
-    // eslint-disable-next-line no-async-promise-executor
-    clientPromise = clientPromise || new Promise(async (resolve) => {
-        await loadNimiqJS();
-        Nimiq.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
-        await Nimiq.WasmHelper.doImport();
-        const client = Nimiq.Client.Configuration.builder().instantiateClient();
-        resolve(client);
-    });
+    clientPromise = clientPromise || Promise.resolve(new AlbatrossRpcClient(Config.networkEndpoint));
 
     return clientPromise;
 }
@@ -162,82 +299,42 @@ export async function launchNetwork() {
             addressStore.patchAddress(address, { balance });
         }
     }
+    // client.on(NetworkClient.Events.BALANCES, balancesListener);
 
-    function forgetBalances(addresses: string[]) {
-        for (const address of addresses) {
-            balances.delete(address);
-        }
-    }
+    // let consensusConnectingTimeout: number | undefined;
+    // function startConnectingTimeout() {
+    //     consensusConnectingTimeout = window.setTimeout(() => {
+    //         network$.consensus = 'connecting';
+    //         consensusConnectingTimeout = undefined;
+    //     }, 5e3); // Show disconnected state after 5 seconds
+    // }
+    // function stopConnectingTimeout() {
+    //     window.clearTimeout(consensusConnectingTimeout);
+    //     consensusConnectingTimeout = undefined;
+    // }
 
-    const txFetchTrigger = ref(0);
-    function invalidateTransactionHistory(includeProxies = false) {
-        // Invalidate fetched addresses
-        fetchedAddresses.clear();
-        // Trigger watcher
-        txFetchTrigger.value += 1;
+    // client.on(NetworkClient.Events.CONSENSUS, (consensus) => {
+    //     network$.consensus = consensus;
+    // 
+    //     if (consensus === 'syncing' && !consensusConnectingTimeout) {
+    //         startConnectingTimeout();
+    //     } else {
+    //         stopConnectingTimeout();
+    //     }
+    // });
+    // 
+    // window.addEventListener('offline', () => {
+    //     console.warn('Browser is OFFLINE');
+    //     startConnectingTimeout();
+    // });
+    // window.addEventListener('online', () => {
+    //     console.info('Browser is ONLINE');
+    //     stopConnectingTimeout();
+    //     client.resetConsensus();
+    // });
 
-        // Do the same for proxies if requested
-        if (includeProxies) {
-            seenProxies.clear();
-            proxyStore.triggerNetwork();
-        }
-    }
-
-    // Start as true, since at app start everything is already invalidated and unconnected
-    let txHistoryWasInvalidatedSinceLastConsensus = true;
-    let networkWasReconnectedSinceLastConsensus = true;
-    client.addConsensusChangedListener(async (consensus) => {
-        network$.consensus = consensus;
-
-        if (consensus === 'established') {
-            const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
-                if (fetching === 0) {
-                    txHistoryWasInvalidatedSinceLastConsensus = false;
-                    stop();
-                }
-            }, { lazy: true });
-            networkWasReconnectedSinceLastConsensus = false;
-        } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
-            invalidateTransactionHistory(true);
-            updateBalances();
-            txHistoryWasInvalidatedSinceLastConsensus = true;
-        }
-    });
-
-    let lastVisibilityFetch = Date.now();
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState !== 'visible') return;
-
-        if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
-            if (!txHistoryWasInvalidatedSinceLastConsensus) {
-                invalidateTransactionHistory();
-                lastVisibilityFetch = Date.now();
-            }
-        }
-
-        // If network is disconnected when going back to app, trigger reconnect
-        if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
-            disconnectNetwork().then(reconnectNetwork);
-            networkWasReconnectedSinceLastConsensus = true;
-        }
-    });
-
-    let reconnectTimeout: number | undefined;
-    window.addEventListener('offline', async () => {
-        console.warn('Browser is OFFLINE');
-        if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
-        disconnectNetwork();
-    });
-    window.addEventListener('online', () => {
-        console.info('Browser is ONLINE');
-        reconnectTimeout = window.setTimeout(() => {
-            reconnectNetwork();
-            reconnectTimeout = undefined;
-        }, 1000);
-    });
-
-    client.addHeadChangedListener(async (hash) => {
-        const { height } = await client.getBlock(hash, false);
+    client.addHeadChangedListener((block) => {
+        const height = block.blockNumber;
         console.debug('Head is now at', height);
         network$.height = height;
 
@@ -247,7 +344,7 @@ export async function launchNetwork() {
         // directly.
     });
 
-    subscribeToPeerCount();
+    // client.on(NetworkClient.Events.PEER_COUNT, (peerCount) => network$.peerCount = peerCount);
 
     function transactionListener(tx: Nimiq.Client.TransactionDetails) {
         const plain = tx.toPlain();
@@ -294,13 +391,23 @@ export async function launchNetwork() {
             }
             // Let the network forget the balances of the removed addresses,
             // so that they are reported as new again at re-login.
-            forgetBalances([...removedAddresses]);
+            // client.forgetBalances([...removedAddresses]);
         }
 
         if (!newAddresses.length) return;
 
         console.debug('Subscribing addresses', newAddresses);
-        subscribe(newAddresses);
+        for (const address of newAddresses) {
+            client.addTransactionListener(transactionListener, address);
+            client.getAccount(address).then(account => {
+                const balance = 'Basic' in account
+                    ? account.Basic.balance
+                    : 'Vesting' in account
+                        ? account.Vesting.balance
+                        : account.HTLC.balance;
+                addressStore.patchAddress(address, { balance });
+            });
+        }
     });
 
     // Fetch transactions for active address
@@ -336,72 +443,75 @@ export async function launchNetwork() {
             .then(() => network$.fetchingTxHistory--);
     });
 
-    // Fetch transactions for proxies
-    const proxyStore = useProxyStore();
-    watch(proxyStore.networkTrigger, () => {
-        const newProxies: string[] = [];
-        const addressesToSubscribe: string[] = [];
-        for (const proxyAddress of proxyStore.allProxies.value) {
-            if (!seenProxies.has(proxyAddress)) {
-                // For new addresses the tx history and if required subscribing is handled below
-                seenProxies.add(proxyAddress);
-                newProxies.push(proxyAddress);
-                continue;
-            }
+    // // Fetch transactions for proxies
+    // const proxyStore = useProxyStore();
+    // const seenProxies = new Set<string>();
+    // const subscribedProxies = new Set<string>();
+    // watch(proxyStore.networkTrigger, () => {
+    //     const newProxies: string[] = [];
+    //     const addressesToSubscribe: string[] = [];
+    //     for (const proxyAddress of proxyStore.allProxies.value) {
+    //         if (!seenProxies.has(proxyAddress)) {
+    //             // For new addresses the tx history and if required subscribing is handled below
+    //             seenProxies.add(proxyAddress);
+    //             newProxies.push(proxyAddress);
+    //             continue;
+    //         }
 
-            // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
-            if (
-                !subscribedProxies.has(proxyAddress)
-                && proxyStore.state.funded.includes(proxyAddress)
-                && proxyStore.state.claimed.includes(proxyAddress)
-            ) {
-                subscribedProxies.add(proxyAddress);
-                addressesToSubscribe.push(proxyAddress);
-            }
-        }
-        if (addressesToSubscribe.length) subscribe(addressesToSubscribe);
-        if (!newProxies.length) return;
+    //         // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
+    //         if (
+    //             !subscribedProxies.has(proxyAddress)
+    //             && proxyStore.state.funded.includes(proxyAddress)
+    //             && proxyStore.state.claimed.includes(proxyAddress)
+    //         ) {
+    //             subscribedProxies.add(proxyAddress);
+    //             addressesToSubscribe.push(proxyAddress);
+    //         }
+    //     }
+    //     if (addressesToSubscribe.length) {
+    //         for (const address of addressesToSubscribe) {
+    //             client.addTransactionListener(transactionListener, address);
+    //         }
+    //     }
+    //     if (!newProxies.length) return;
 
-        console.debug(`Fetching history for ${newProxies.length} proxies`);
+    //     console.debug(`Fetching history for ${newProxies.length} proxies`);
 
-        for (const proxyAddress of newProxies) {
-            const knownTxDetails = Object.values(transactionsStore.state.transactions)
-                .filter((tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress);
+    //     for (const proxyAddress of newProxies) {
+    //         const knownTxDetails = Object.values(transactionsStore.state.transactions)
+    //             .filter((tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress);
 
-            network$.fetchingTxHistory++;
+    //         network$.fetchingTxHistory++;
 
-            client.waitForConsensusEstablished()
-                .then(() => {
-                    console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
-                    return client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails);
-                })
-                .then((txDetails) => {
-                    if (
-                        proxyStore.state.funded.includes(proxyAddress)
-                        && !subscribedProxies.has(proxyAddress)
-                        && !txDetails.find((tx) => tx.sender.toUserFriendlyAddress() === proxyAddress
-                            && tx.state === TransactionState.CONFIRMED)
-                    ) {
-                        // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
-                        // subscribe for updates.
-                        // If we were triggered by a funding transaction, we have to subscribe in any case because we
-                        // don't know when and to where the proxy will be claimed. If we were triggered by a claimed
-                        // transaction and don't know the funding transaction yet wait with subscribing until the second
-                        // pass to see whether we actually have to subscribe (which is for example not the case if
-                        // funding and claiming are both from/to addresses that are subscribed anyways; see
-                        // needToSubscribe in ProxyDetection).
-                        // If the funding tx has not been known so far, it will be added to the transaction store below
-                        // which in turn runs the ProxyDetection again and triggers the network and this watcher again
-                        // for the second pass if needed.
-                        subscribedProxies.add(proxyAddress);
-                        subscribe([proxyAddress]);
-                    }
-                    transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
-                })
-                .catch(() => seenProxies.delete(proxyAddress))
-                .then(() => network$.fetchingTxHistory--);
-        }
-    });
+    //         console.debug('Fetching transaction history for', proxyAddress, knownTxDetails);
+    //         client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails)
+    //             .then((txDetails) => {
+    //                 if (
+    //                     proxyStore.state.funded.includes(proxyAddress)
+    //                     && !subscribedProxies.has(proxyAddress)
+    //                     && !txDetails.find((tx) => tx.sender === proxyAddress
+    //                         && tx.state === TransactionState.CONFIRMED)
+    //                 ) {
+    //                     // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
+    //                     // subscribe for updates.
+    //                     // If we were triggered by a funding transaction, we have to subscribe in any case because we
+    //                     // don't know when and to where the proxy will be claimed. If we were triggered by a claimed
+    //                     // transaction and don't know the funding transaction yet wait with subscribing until the second
+    //                     // pass to see whether we actually have to subscribe (which is for example not the case if
+    //                     // funding and claiming are both from/to addresses that are subscribed anyways; see
+    //                     // needToSubscribe in ProxyDetection).
+    //                     // If the funding tx has not been known so far, it will be added to the transaction store below
+    //                     // which in turn runs the ProxyDetection again and triggers the network and this watcher again
+    //                     // for the second pass if needed.
+    //                     subscribedProxies.add(proxyAddress);
+    //                     client.addTransactionListener(transactionListener, proxyAddress);
+    //                 }
+    //                 transactionsStore.addTransactions(txDetails);
+    //             })
+    //             .catch(() => seenProxies.delete(proxyAddress))
+    //             .then(() => network$.fetchingTxHistory--);
+    //     }
+    // });
 }
 
 export async function sendTransaction(tx: SignedTransaction | string) {

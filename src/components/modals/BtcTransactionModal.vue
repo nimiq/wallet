@@ -437,7 +437,7 @@ export default defineComponent({
                 : swapTransaction.value.recipient;
             // Note that we don't only test for the swap proxy detection extra data here as the swap tx holds htlc data
             // instead. Only the related tx holds the proxy identifying extra data.
-            return isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
+            return isProxyData(swapTransaction.value.data, ProxyType.HTLC_PROXY)
                 || swapTransaction.value.relatedTransactionHash
                 || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });

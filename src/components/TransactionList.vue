@@ -175,7 +175,7 @@ export default defineComponent({
         const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
             .filter((tx) =>
                 tx.sender === activeAddress.value && !tx.relatedTransactionHash
-                && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND))
+                && isProxyData(tx.data, ProxyType.CASHLINK, ProxyTransactionDirection.FUND))
             .slice(0).sort((a, b) =>
                 (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER)));
 
@@ -205,7 +205,7 @@ export default defineComponent({
                     ${tx.recipient.replace(/\s/g, '')}
                     ${senderLabel ? senderLabel.toUpperCase() : ''}
                     ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-                    ${parseData(tx.data.raw).toUpperCase()}
+                    ${parseData(tx.data).toUpperCase()}
                 `;
                 return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
             });
@@ -226,11 +226,11 @@ export default defineComponent({
             // Sort transactions by descending timestamp
             const txs = filteredTxs.value.slice(0).sort((a, b) => {
                 const aHeight = a.blockHeight
-                    || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
+                    || (false // (a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
                         && a.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
                 const bHeight = b.blockHeight
-                    || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
+                    || (false // (b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
                         && b.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
 
@@ -245,15 +245,15 @@ export default defineComponent({
             let n = 0;
             let hasThisMonthLabel = false;
 
-            if (txs[n].state === TransactionState.PENDING) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
-                isLatestMonth = false;
-                hasThisMonthLabel = true;
-                while (txs[n] && txs[n].state === TransactionState.PENDING) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                }
-            }
+            // if (txs[n].state === TransactionState.PENDING) {
+            //     transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+            //     isLatestMonth = false;
+            //     hasThisMonthLabel = true;
+            //     while (txs[n] && txs[n].state === TransactionState.PENDING) {
+            //         transactionsWithMonths.push(txs[n]);
+            //         n++;
+            //     }
+            // }
 
             // Skip expired & invalidated txs
             while (txs[n] && !txs[n].timestamp) {

@@ -41,14 +41,14 @@
             :class="{'active': $route.name === 'root'}"
             @click="navigateTo('/')"/>
 
-        <button
+        <!-- <button
             class="network reset flex-row"
             :class="{'active': $route.name === 'network'}"
             @click="navigateTo('/network')"
         >
             <ConsensusIcon/>
             <span class="label">{{ $t('Network') }}</span>
-        </button>
+        </button> -->
         <button
             class="settings reset flex-row"
             :class="{'active': $route.name === 'settings'}"

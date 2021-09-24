@@ -116,7 +116,7 @@ export default defineComponent({
         const { activeAddress, state: addresses$ } = useAddressStore();
         const { getLabel } = useContactsStore();
 
-        const state = computed(() => props.transaction.state);
+        const state = computed(() => TransactionState.MINED);
 
         const isIncoming = computed(() => {
             const haveSender = !!addresses$.addressInfos[props.transaction.sender];
@@ -145,7 +145,7 @@ export default defineComponent({
         useOasisPayoutStatusUpdater(swapData);
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
-        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
+        const isSwapProxy = computed(() => isProxyData(props.transaction.data, ProxyType.HTLC_PROXY));
         const isCancelledSwap = computed(() =>
             (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
             // Funded proxy and then refunded without creating an actual htlc?
@@ -154,7 +154,7 @@ export default defineComponent({
                 : props.transaction.sender === relatedTx.value?.recipient)));
 
         // Data
-        const isCashlink = computed(() => isProxyData(props.transaction.data.raw, ProxyType.CASHLINK));
+        const isCashlink = computed(() => isProxyData(props.transaction.data, ProxyType.CASHLINK));
         const data = computed(() => {
             if (isCashlink.value) {
                 const { state: proxies$ } = useProxyStore();
@@ -179,23 +179,23 @@ export default defineComponent({
                 return message;
             }
 
-            if ('hashRoot' in props.transaction.data
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
-                return context.root.$t('HTLC Creation') as string;
-            }
-            if ('hashRoot' in props.transaction.proof
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
-                return context.root.$t('HTLC Settlement') as string;
-            }
-            if ('creator' in props.transaction.proof
-                || (relatedTx.value && 'creator' in relatedTx.value.proof)
-                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
-                // tx are regular transactions and we regard the tx from the proxy as refund
-                || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
-                return context.root.$t('HTLC Refund') as string;
-            }
+            // if ('hashRoot' in props.transaction.data
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
+            //     return context.root.$t('HTLC Creation') as string;
+            // }
+            // if ('hashRoot' in props.transaction.proof
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
+            //     return context.root.$t('HTLC Settlement') as string;
+            // }
+            // if ('creator' in props.transaction.proof
+            //     || (relatedTx.value && 'creator' in relatedTx.value.proof)
+            //     // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
+            //     // tx are regular transactions and we regard the tx from the proxy as refund
+            //     || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+            //     return context.root.$t('HTLC Refund') as string;
+            // }
 
-            return parseData(props.transaction.data.raw);
+            return parseData(props.transaction.data);
         });
 
         // Peer

@@ -10,7 +10,9 @@ import { getNetworkClient } from '../network';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
 
-export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
+import { Transaction as RpcTransaction } from '../../../../github/albatross-remote/src/lib/server-types'
+
+export type Transaction = RpcTransaction & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     relatedTransactionHash?: string,
 };
@@ -69,160 +71,161 @@ export const useTransactionsStore = createStore({
             // Detect proxies and observe them for tx-history and new incoming txs.
             detectProxyTransactions(txs, this.state.transactions);
 
-            for (const plain of txs) {
-                // Detect swaps
-                if (!useSwapsStore().state.swapByTransaction[plain.transactionHash]) {
-                    // HTLC Creation
-                    if ('hashRoot' in plain.data) {
-                        const fundingData = plain.data as {
-                            sender: string,
-                            recipient: string,
-                            hashAlgorithm: string,
-                            hashRoot: string,
-                            hashCount: number,
-                            timeout: number,
-                            raw: string,
-                        };
-                        useSwapsStore().addFundingData(fundingData.hashRoot, {
-                            asset: SwapAsset.NIM,
-                            transactionHash: plain.transactionHash,
-                            htlc: {
-                                address: plain.recipient,
-                                refundAddress: fundingData.sender,
-                                redeemAddress: fundingData.recipient,
-                                timeoutBlockHeight: fundingData.timeout,
-                            },
-                        });
+            // for (const plain of txs) {
+            //     // Detect swaps
+            //     if (!useSwapsStore().state.swapByTransaction[plain.hash]) {
+            //         // HTLC Creation
+            //         if ('hashRoot' in plain.data) {
+            //             const fundingData = plain.data as {
+            //                 sender: string,
+            //                 recipient: string,
+            //                 hashAlgorithm: string,
+            //                 hashRoot: string,
+            //                 hashCount: number,
+            //                 timeout: number,
+            //                 raw: string,
+            //             };
+            //             useSwapsStore().addFundingData(fundingData.hashRoot, {
+            //                 asset: SwapAsset.NIM,
+            //                 transactionHash: plain.transactionHash,
+            //                 htlc: {
+            //                     address: plain.recipient,
+            //                     refundAddress: fundingData.sender,
+            //                     redeemAddress: fundingData.recipient,
+            //                     timeoutBlockHeight: fundingData.timeout,
+            //                 },
+            //             });
 
-                        if (!useSwapsStore().state.swaps[fundingData.hashRoot].out) {
-                            // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.NIM, plain.recipient).then((contractWithEstimate) => {
-                                if (contractWithEstimate.to.asset === SwapAsset.EUR) {
-                                    const exchangeRate = {
-                                        [CryptoCurrency.NIM]: {
-                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
-                                        },
-                                    };
-                                    const fiatFees = getFiatFees(
-                                        contractWithEstimate,
-                                        CryptoCurrency.NIM,
-                                        exchangeRate,
-                                        FiatCurrency.EUR,
-                                        null,
-                                    );
+            //             if (!useSwapsStore().state.swaps[fundingData.hashRoot].out) {
+            //                 // Check this swap with the Fastspot API to detect if this was a EUR swap
+            //                 getContract(SwapAsset.NIM, plain.recipient).then((contractWithEstimate) => {
+            //                     if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+            //                         const exchangeRate = {
+            //                             [CryptoCurrency.NIM]: {
+            //                                 [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
+            //                             },
+            //                         };
+            //                         const fiatFees = getFiatFees(
+            //                             contractWithEstimate,
+            //                             CryptoCurrency.NIM,
+            //                             exchangeRate,
+            //                             FiatCurrency.EUR,
+            //                             null,
+            //                         );
 
-                                    useSwapsStore().addSettlementData(fundingData.hashRoot, {
-                                        asset: SwapAsset.EUR,
-                                        amount: contractWithEstimate.to.amount,
-                                        // We cannot get bank info or EUR HTLC details from this.
-                                    }, {
-                                        fees: {
-                                            totalFee: fiatFees.funding.total,
-                                            asset: SwapAsset.EUR,
-                                        },
-                                    });
-                                }
-                            }).catch(() => undefined);
-                        }
-                    }
-                    // HTLC Refunding
-                    if ('creator' in plain.proof) {
-                        // async sub call to keep the main method synchronous to avoid race conditions and to avoid
-                        // await in loop (slow sequential processing).
-                        (async () => {
-                            // Find funding transaction
-                            const selector = (tx: Transaction) => tx.recipient === plain.sender
-                                && 'hashRoot' in tx.data;
+            //                         useSwapsStore().addSettlementData(fundingData.hashRoot, {
+            //                             asset: SwapAsset.EUR,
+            //                             amount: contractWithEstimate.to.amount,
+            //                             // We cannot get bank info or EUR HTLC details from this.
+            //                         }, {
+            //                             fees: {
+            //                                 totalFee: fiatFees.funding.total,
+            //                                 asset: SwapAsset.EUR,
+            //                             },
+            //                         });
+            //                     }
+            //                 }).catch(() => undefined);
+            //             }
+            //         }
+            //         // HTLC Refunding
+            //         if ('creator' in plain.proof) {
+            //             // async sub call to keep the main method synchronous to avoid race conditions and to avoid
+            //             // await in loop (slow sequential processing).
+            //             (async () => {
+            //                 // Find funding transaction
+            //                 const selector = (tx: Transaction) => tx.recipient === plain.sender
+            //                     && 'hashRoot' in tx.data;
 
-                            // First search known transactions
-                            let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
+            //                 // First search known transactions
+            //                 let fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);
 
-                            // Then get funding tx from the blockchain
-                            if (!fundingTx) {
-                                const client = await getNetworkClient();
-                                const chainTxs = await client.getTransactionsByAddress(plain.sender);
-                                fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
-                            }
+            //                     fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
+            //                 // Then get funding tx from the blockchain
+            //                 if (!fundingTx) {
+            //                     const client = await getNetworkClient();
+            //                     const chainTxs = await client.getTransactionsByAddress(plain.sender);
+            //                     fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
+            //                 }
 
-                            if (fundingTx) {
-                                const fundingData = fundingTx.data as any as {
-                                    sender: string,
-                                    recipient: string,
-                                    hashAlgorithm: string,
-                                    hashRoot: string,
-                                    hashCount: number,
-                                    timeout: number,
-                                };
-                                useSwapsStore().addSettlementData(fundingData.hashRoot, {
-                                    asset: SwapAsset.NIM,
-                                    transactionHash: plain.transactionHash,
-                                });
-                            }
-                        })();
-                    }
-                    // HTLC Settlement
-                    if ('hashRoot' in plain.proof) {
-                        const settlementData = plain.proof as {
-                            type: 'regular-transfer',
-                            hashAlgorithm: string,
-                            hashDepth: number,
-                            hashRoot: string,
-                            preImage: string,
-                            signer: string,
-                            signature: string,
-                            publicKey: string,
-                            pathLength: number,
-                            raw: string,
-                        };
-                        useSwapsStore().addSettlementData(settlementData.hashRoot, {
-                            asset: SwapAsset.NIM,
-                            transactionHash: plain.transactionHash,
-                        });
+            //                 if (fundingTx) {
+            //                     const fundingData = fundingTx.data as any as {
+            //                         sender: string,
+            //                         recipient: string,
+            //                         hashAlgorithm: string,
+            //                         hashRoot: string,
+            //                         hashCount: number,
+            //                         timeout: number,
+            //                     };
+            //                     useSwapsStore().addSettlementData(fundingData.hashRoot, {
+            //                         asset: SwapAsset.NIM,
+            //                         transactionHash: plain.transactionHash,
+            //                     });
+            //                 }
+            //             })();
+            //         }
+            //         // HTLC Settlement
+            //         if ('hashRoot' in plain.proof) {
+            //             const settlementData = plain.proof as {
+            //                 type: 'regular-transfer',
+            //                 hashAlgorithm: string,
+            //                 hashDepth: number,
+            //                 hashRoot: string,
+            //                 preImage: string,
+            //                 signer: string,
+            //                 signature: string,
+            //                 publicKey: string,
+            //                 pathLength: number,
+            //                 raw: string,
+            //             };
+            //             useSwapsStore().addSettlementData(settlementData.hashRoot, {
+            //                 asset: SwapAsset.NIM,
+            //                 transactionHash: plain.transactionHash,
+            //             });
 
-                        if (!useSwapsStore().state.swaps[settlementData.hashRoot].in) {
-                            // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
-                                if (contractWithEstimate.from.asset === SwapAsset.EUR) {
-                                    const exchangeRate = {
-                                        [CryptoCurrency.NIM]: {
-                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
-                                        },
-                                    };
-                                    const fiatFees = getFiatFees(
-                                        contractWithEstimate,
-                                        CryptoCurrency.NIM,
-                                        exchangeRate,
-                                        FiatCurrency.EUR,
-                                        null,
-                                    );
+            //             if (!useSwapsStore().state.swaps[settlementData.hashRoot].in) {
+            //                 // Check this swap with the Fastspot API to detect if this was a EUR swap
+            //                 getContract(SwapAsset.NIM, plain.sender).then((contractWithEstimate) => {
+            //                     if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+            //                         const exchangeRate = {
+            //                             [CryptoCurrency.NIM]: {
+            //                                 [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
+            //                             },
+            //                         };
+            //                         const fiatFees = getFiatFees(
+            //                             contractWithEstimate,
+            //                             CryptoCurrency.NIM,
+            //                             exchangeRate,
+            //                             FiatCurrency.EUR,
+            //                             null,
+            //                         );
 
-                                    useSwapsStore().addFundingData(settlementData.hashRoot, {
-                                        asset: SwapAsset.EUR,
-                                        amount: contractWithEstimate.from.amount,
-                                        // We cannot get bank info or EUR HTLC details from this.
-                                    }, {
-                                        fees: {
-                                            totalFee: fiatFees.settlement.total,
-                                            asset: SwapAsset.EUR,
-                                        },
-                                    });
-                                }
-                            }).catch(() => undefined);
-                        }
-                    }
-                }
-
-                // Prevent received tx from displaying as "not sent"
-                if (plain.state === TransactionState.NEW) {
-                    const addressStore = useAddressStore();
-                    const ourSender = addressStore.state.addressInfos[plain.sender] as AddressInfo | undefined;
-                    const ourRecipient = addressStore.state.addressInfos[plain.recipient] as AddressInfo | undefined;
-
-                    if (!ourSender && ourRecipient) {
-                        plain.state = TransactionState.PENDING;
-                    }
-                }
-            }
+            //                         useSwapsStore().addFundingData(settlementData.hashRoot, {
+            //                             asset: SwapAsset.EUR,
+            //                             amount: contractWithEstimate.from.amount,
+            //                             // We cannot get bank info or EUR HTLC details from this.
+            //                         }, {
+            //                             fees: {
+            //                                 totalFee: fiatFees.settlement.total,
+            //                                 asset: SwapAsset.EUR,
+            //                             },
+            //                         });
+            //                     }
+            //                 }).catch(() => undefined);
+            //             }
+            //         }
+            //     }
+            // 
+            //     // Prevent received tx from displaying as "not sent"
+            //     if (plain.state === TransactionState.NEW) {
+            //         const addressStore = useAddressStore();
+            //         const ourSender = addressStore.state.addressInfos[plain.sender] as AddressInfo | undefined;
+            //         const ourRecipient = addressStore.state.addressInfos[plain.recipient] as AddressInfo | undefined;
+            // 
+            //         if (!ourSender && ourRecipient) {
+            //             plain.state = TransactionState.PENDING;
+            //         }
+            //     }
+            // }
 
             // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.

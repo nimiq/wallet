@@ -53,7 +53,7 @@ let knownProxyTransactions: {[proxyAddress: string]: {[transactionHash: string]:
 
 function isProxyTransaction(tx: Transaction): boolean {
     return !!tx.relatedTransactionHash
-        || isProxyData(tx.data.raw)
+        || isProxyData(tx.data)
         // additional checks as proxy transactions are not guaranteed to hold the special proxy extra data
         || (!!knownProxyTransactions
             && (!!knownProxyTransactions[tx.sender] || !!knownProxyTransactions[tx.recipient]));
@@ -64,7 +64,7 @@ function getProxyAddress(tx: Transaction): string {
     const { state: addresses$ } = useAddressStore();
     // Note: cashlink transactions always hold the proxy extra data. Also swap proxy transactions from or to our address
     // hold the proxy extra data. Only the htlc creation transactions from a proxy hold the htlc data instead.
-    const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
+    const isFunding = isProxyData(tx.data, undefined, ProxyTransactionDirection.FUND)
         || !!addresses$.addressInfos[tx.sender] // sent from one of our addresses
         || useProxyStore().allProxies.value.some((proxy) => tx.recipient === proxy); // sent to proxy
     return isFunding ? tx.recipient : tx.sender;
@@ -149,8 +149,8 @@ export function detectProxyTransactions(
         // confirmed yet and not related to one of our addresses which we are observing anyways.
         const needToSubscribeToProxy = proxyTransactions.some((proxyTx) =>
             !proxyTx.relatedTransactionHash
-            || (proxyTx.state !== TransactionState.CONFIRMED
-            && !addresses$.addressInfos[proxyTx.sender] && !addresses$.addressInfos[proxyTx.recipient]),
+            || (/* proxyTx.state !== TransactionState.CONFIRMED
+            && */!addresses$.addressInfos[proxyTx.sender] && !addresses$.addressInfos[proxyTx.recipient]),
         );
 
         if (needToSubscribeToProxy) {
@@ -174,9 +174,10 @@ export function detectProxyTransactions(
 }
 
 function isHtlcTransaction(tx: Transaction): boolean {
-    return 'hashRoot' in tx.data // htlc creation
-        || 'creator' in tx.proof // htlc refunding
-        || 'hashRoot' in tx.proof; // htlc settlement
+    return false;
+    // return 'hashRoot' in tx.data // htlc creation
+    //     || 'creator' in tx.proof // htlc refunding
+    //     || 'hashRoot' in tx.proof; // htlc settlement
 }
 
 function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions: Transaction[]) {
@@ -210,14 +211,14 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         // Also note that our available potentialRelatedTxs depend on which transactions have already been fetched from
         // the network and which not.
         let relatedTx: Transaction | undefined;
-        const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
+        const isCashlink = isProxyData(tx.data, ProxyType.CASHLINK);
         const isFunding = proxyAddress === tx.recipient;
         const potentialRelatedTxs = proxyTransactions.filter((proxyTx) =>
             // only consider the ones not related to another transaction yet
             !proxyTx.relatedTransactionHash
             // ignore invalid or expired transactions
-            && proxyTx.state !== TransactionState.INVALIDATED
-            && proxyTx.state !== TransactionState.EXPIRED
+            // && proxyTx.state !== TransactionState.INVALIDATED
+            // && proxyTx.state !== TransactionState.EXPIRED
             // at least one of the transactions must be from or to one of our addresses
             && (!!addresses$.addressInfos[tx.sender] || !!addresses$.addressInfos[tx.recipient]
                 || !!addresses$.addressInfos[proxyTx.sender] || !!addresses$.addressInfos[proxyTx.recipient])

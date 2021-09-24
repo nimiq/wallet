@@ -3,9 +3,9 @@
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
-            <transition name="delay">
+            <!-- <transition name="delay">
                 <router-view name="basement"/>
-            </transition>
+            </transition> -->
 
             <transition name="slide-right">
                 <keep-alive>
@@ -14,7 +14,7 @@
             </transition>
         </main>
 
-        <SwapNotification/>
+        <!-- <SwapNotification/> -->
 
         <UpdateNotification/>
 
@@ -28,7 +28,7 @@
 import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import Sidebar from './components/layouts/Sidebar.vue';
-import SwapNotification from './components/swap/SwapNotification.vue';
+// import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
 import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
@@ -145,7 +145,7 @@ export default defineComponent({
     },
     components: {
         Sidebar,
-        SwapNotification,
+        // SwapNotification,
         UpdateNotification,
         LoadingSpinner,
     },

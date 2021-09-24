@@ -361,7 +361,7 @@ export default defineComponent({
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
         const { getLabel, setContact } = useContactsStore();
 
-        const state = computed(() => transaction.value.state);
+        const state = computed(() => TransactionState.MINED);
 
         const isIncoming = computed(() => {
             const haveSender = !!addresses$.addressInfos[transaction.value.sender];
@@ -380,7 +380,7 @@ export default defineComponent({
         ].label);
 
         // Data & Cashlink Data
-        const isCashlink = computed(() => isProxyData(transaction.value.data.raw, ProxyType.CASHLINK));
+        const isCashlink = computed(() => isProxyData(transaction.value.data, ProxyType.CASHLINK));
         const hubCashlink = computed(() => {
             if (!isCashlink.value) return null;
 
@@ -438,7 +438,7 @@ export default defineComponent({
         const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
-        const isSwapProxy = computed(() => isProxyData(transaction.value.data.raw, ProxyType.HTLC_PROXY));
+        const isSwapProxy = computed(() => isProxyData(transaction.value.data, ProxyType.HTLC_PROXY));
         const isCancelledSwap = computed(() =>
             (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
             // Funded proxy and then refunded without creating an actual htlc?
@@ -466,23 +466,23 @@ export default defineComponent({
 
             if (swapData.value && !isCancelledSwap.value) return '';
 
-            if ('hashRoot' in transaction.value.data
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
-                return context.root.$t('HTLC Creation');
-            }
-            if ('hashRoot' in transaction.value.proof
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
-                return context.root.$t('HTLC Settlement');
-            }
-            if ('creator' in transaction.value.proof
-                || (relatedTx.value && 'creator' in relatedTx.value.proof)
-                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
-                // tx are regular transactions and we regard the tx from the proxy as refund
-                || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
-                return context.root.$t('HTLC Refund');
-            }
+            // if ('hashRoot' in transaction.value.data
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
+            //     return context.root.$t('HTLC Creation');
+            // }
+            // if ('hashRoot' in transaction.value.proof
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
+            //     return context.root.$t('HTLC Settlement');
+            // }
+            // if ('creator' in transaction.value.proof
+            //     || (relatedTx.value && 'creator' in relatedTx.value.proof)
+            //     // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
+            //     // tx are regular transactions and we regard the tx from the proxy as refund
+            //     || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+            //     return context.root.$t('HTLC Refund');
+            // }
 
-            return parseData(transaction.value.data.raw);
+            return parseData(transaction.value.data);
         });
 
         // Peer
@@ -585,7 +585,7 @@ export default defineComponent({
                 // funded but not redeemed htlc proxy (no actual htlc had been created)
                 || (isSwapProxy.value
                 && !relatedTx.value
-                && transaction.value.state === TransactionState.CONFIRMED
+                // && transaction.value.state === TransactionState.CONFIRMED
                 && transaction.value.blockHeight! <= blockHeight.value - 15) // consider proxy "expired" after 15 blocks
             )
             // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.

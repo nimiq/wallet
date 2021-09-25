@@ -1,12 +1,17 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
+// @ts-expect-error no types
+import { createRemote } from '../../../github/gentle_rpc/client/dist/remote'
+// @ts-expect-error no types
+import { wsProxyHandler } from '../../../github/gentle_rpc/client/dist/proxy'
 import Config from 'config';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 // import { useProxyStore } from './stores/Proxy';
+
 
 import { Block } from '../../../github/albatross-remote/src/lib/server-types'
 
@@ -41,50 +46,33 @@ export type HeadChangedListener = (block: Block) => any;
 export type TransactionListener = (transaction: Transaction) => any;
 
 class AlbatrossRpcClient {
-    private textDecoder?: TextDecoder;
-    private url: string
-    private ws?: WebSocket
+    private url: string;
+    private remote?: Promise<any>;
     private blockSubscriptions: {
         [handle: number]: HeadChangedListener,
-    } = {}
+    } = {};
 
     private transactionSubscriptions: {
         [address: string]: TransactionListener[],
-    } = {}
+    } = {};
 
     constructor(url: string) {
         this.url = url;
 
-        this.ws = new WebSocket(`${this.url.replace('http', 'ws')}/ws`);
-        this.ws.addEventListener('open', () => {
-            this.ws!.send(JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'headSubscribe',
-                params: [],
-                id: 42,
-            }));
-        });
-        this.ws.addEventListener('message', async (event) => {
-            let msg: string;
-            if (event.data instanceof Blob) {
-                msg = this.getTextDecoder().decode(await event.data.arrayBuffer());
-            } else if (event.data instanceof ArrayBuffer) {
-                msg = this.getTextDecoder().decode(event.data);
-            } else {
-                msg = event.data;
+        this.getRemote().then(async remote => {
+            const id = await remote.headSubscribe([]);
+            const { generator } = remote.subscription.listen();
+            while (true) {
+                const params = (await generator.next()).value;
+                if (!params || params.subscription !== id) continue;
+
+                const blockHash = params.result as string;
+                const block = await remote.getBlockByHash([blockHash, true]) as Block;
+                if (!block) continue;
+
+                console.log(block);
+                // Trigger block and transaction listeners
             }
-
-            const msgObj = JSON.parse(msg)
-
-            if (msgObj.result) {
-                // const subscriptionId = msgObj.result as number;
-                return;
-            }
-
-            const blockHash = msgObj.params.result as string
-            console.log(blockHash)
-
-            // TODO: Get block for the hash
         });
     }
 
@@ -115,8 +103,10 @@ class AlbatrossRpcClient {
 
     public async sendTransaction(tx: string | Transaction) {
         if (typeof tx === 'string') {
-            const hash = await this.rpc('sendRawTransaction', [tx]) as Promise<string>;
+            const hash = await this.rpc<string>('sendRawTransaction', [tx]);
             do {
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise(res => setTimeout(res, 500));
                 try {
                     // eslint-disable-next-line no-await-in-loop
                     return await this.rpc('getTransactionByHash', [hash]) as Transaction;
@@ -130,7 +120,7 @@ class AlbatrossRpcClient {
     }
 
     public async getAccount(address: string): Promise<Account> {
-        return this.rpc('getAccount', [address]).catch(error => {
+        return this.rpc<Account>('getAccount', [address]).catch(error => {
             console.error(error);
             return {
                 Basic: {
@@ -140,23 +130,19 @@ class AlbatrossRpcClient {
         });
     }
 
-    private async rpc(method: string, params: any[]) {
-        return fetch(this.url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                method,
-                params,
-                id: 42,
-            }),
-        }).then((res) => res.json());
+    private async getRemote(): Promise<any> {
+        return this.remote || (this.remote = new Promise(async resolve => {
+            const proxy = new Proxy(
+                await createRemote(new WebSocket(`${this.url.replace('http', 'ws')}/ws`)),
+                wsProxyHandler,
+            );
+            resolve(proxy);
+        }))
     }
 
-    private getTextDecoder(): TextDecoder {
-        return this.textDecoder || (this.textDecoder = new TextDecoder());
+    private async rpc<T>(method: string, params: any[] = []): Promise<T> {
+        const remote = await this.getRemote()
+        return remote[method](params);
     }
 }
 

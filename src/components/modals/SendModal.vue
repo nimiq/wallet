@@ -62,7 +62,10 @@
                     class="nq-button light-blue"
                     @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
                     @mousedown.prevent
-                >{{ $t('Set Amount') }}</button>
+                >
+                    <template v-if="amount > 0">{{ $t('Continue') }}</template>
+                    <template v-else>{{ $t('Set Amount') }}</template>
+                </button>
             </PageBody>
         </div>
 
@@ -285,7 +288,7 @@ export default defineComponent({
         }
 
         const addressInputValue = ref(''); // Used for resetting the address input
-        function onAddressEntered(address: string) {
+        function onAddressEntered(address: string, skipRecipientDetails = false) {
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -308,10 +311,11 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (!label) {
-                recipientDetailsOpened.value = true;
-            } else {
+            if (label || skipRecipientDetails) {
+                // Go directly to the next screen
                 page.value = Pages.AMOUNT_INPUT;
+            } else {
+                recipientDetailsOpened.value = true;
             }
         }
 
@@ -442,7 +446,8 @@ export default defineComponent({
                 }
 
                 if (parsedRequestLink.recipient) {
-                    onAddressEntered(parsedRequestLink.recipient);
+                    const skipRecipientDetails = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
+                    onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
                     if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                         recipientWithLabel.value!.label = parsedRequestLink.label;
                     }

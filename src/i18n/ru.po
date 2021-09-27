@@ -166,7 +166,7 @@ msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 "Добавьте ярлык, чтобы быстро найти нужную транзакцию в истории транзакций."
 
-#: src/components/modals/SendModal.vue:153
+#: src/components/modals/SendModal.vue:156
 msgid "Add a public message..."
 msgstr "Добавить публичное сообщение... "
 
@@ -443,7 +443,7 @@ msgstr "Купить банковской картой"
 msgid "Buy with Simplex"
 msgstr "Купить через Simplex"
 
-#: src/components/modals/SendModal.vue:179
+#: src/components/modals/SendModal.vue:182
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -511,7 +511,7 @@ msgstr "Указать Получателя"
 
 #: src/components/modals/BuyCryptoModal.vue:238
 #: src/components/modals/SellCryptoModal.vue:243
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:172
 #: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
@@ -606,6 +606,7 @@ msgid "Contacts"
 msgstr "Контакты"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
+#: src/components/modals/SendModal.vue:66
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "Продолжить"
@@ -750,7 +751,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
 #: src/components/modals/BtcSendModal.vue:416
-#: src/components/modals/SendModal.vue:516
+#: src/components/modals/SendModal.vue:521
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
@@ -817,7 +818,7 @@ msgstr "истекла"
 msgid "Expired"
 msgstr "Истекла"
 
-#: src/components/modals/SendModal.vue:372
+#: src/components/modals/SendModal.vue:376
 msgid "express"
 msgstr "экспресс"
 
@@ -846,7 +847,7 @@ msgstr "Кран недоступен"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Кран недоступен (ошибка соединения)"
 
-#: src/components/modals/SendModal.vue:135
+#: src/components/modals/SendModal.vue:138
 msgid "fee"
 msgstr "комиссия"
 
@@ -883,7 +884,7 @@ msgstr "Завершаем обмен"
 msgid "For beginners"
 msgstr "Для начинающих"
 
-#: src/components/modals/SendModal.vue:362
+#: src/components/modals/SendModal.vue:366
 msgid "free"
 msgstr "свободно"
 
@@ -1034,7 +1035,7 @@ msgstr "Установить веб-приложение"
 
 #: src/components/modals/BtcSendModal.vue:70
 #: src/components/modals/SellCryptoModal.vue:165
-#: src/components/modals/SendModal.vue:143
+#: src/components/modals/SendModal.vue:146
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
 
@@ -1474,7 +1475,7 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
 #: src/components/modals/BtcSendModal.vue:415
-#: src/components/modals/SendModal.vue:515
+#: src/components/modals/SendModal.vue:520
 msgid "Retry"
 msgstr "Повторить"
 
@@ -1557,7 +1558,7 @@ msgid "Send"
 msgstr "Отправить"
 
 #: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:72
-#: src/components/modals/SendModal.vue:145
+#: src/components/modals/SendModal.vue:148
 msgid "Send all"
 msgstr "Отправить все"
 
@@ -1585,7 +1586,7 @@ msgstr "Отправить максимум"
 #: src/components/modals/BtcSendModal.vue:102
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:164
+#: src/components/modals/SendModal.vue:167
 msgid "Send Transaction"
 msgstr "Отправить транзакцию"
 
@@ -1594,7 +1595,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
 #: src/components/modals/BtcSendModal.vue:412
-#: src/components/modals/SendModal.vue:512
+#: src/components/modals/SendModal.vue:517
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
@@ -1611,11 +1612,11 @@ msgstr "Отправить {btc} BTC на адрес {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Отправлены {fromAsset} — получены {toAsset}"
 
-#: src/components/modals/SendModal.vue:547
+#: src/components/modals/SendModal.vue:552
 msgid "Sent {nim} NIM"
 msgstr "Отправить {nim} NIM"
 
-#: src/components/modals/SendModal.vue:543
+#: src/components/modals/SendModal.vue:548
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
@@ -1636,8 +1637,8 @@ msgstr "Только SEPA Instant"
 msgid "SEPA Instant transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:65
-#: src/components/modals/SendModal.vue:76
+#: src/components/modals/SendModal.vue:67
+#: src/components/modals/SendModal.vue:79
 msgid "Set Amount"
 msgstr "Укажите сумму"
 
@@ -1703,7 +1704,7 @@ msgid "Skip for now"
 msgstr "В данный момент пропустить"
 
 #: src/components/modals/BtcSendModal.vue:490
-#: src/components/modals/SendModal.vue:567
+#: src/components/modals/SendModal.vue:572
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -1711,7 +1712,7 @@ msgstr "Операция не удалась"
 msgid "Something went wrong with your transaction"
 msgstr "С вашей транзакцией что-то не то"
 
-#: src/components/modals/SendModal.vue:177
+#: src/components/modals/SendModal.vue:180
 msgid "Speed up your Transaction"
 msgstr "Ускорьте свою транзакцию"
 
@@ -1724,7 +1725,7 @@ msgstr ""
 msgid "Staking"
 msgstr " Стекинг"
 
-#: src/components/modals/SendModal.vue:367
+#: src/components/modals/SendModal.vue:371
 msgid "standard"
 msgstr "стандартный"
 
@@ -1842,7 +1843,7 @@ msgstr ""
 "Ставка комиссии может меняться \n"
 "в зависимости от суммы сделки."
 
-#: src/components/modals/SendModal.vue:96
+#: src/components/modals/SendModal.vue:99
 msgid "The sender and recipient cannot be identical."
 msgstr "Отправитель и получатель не могут совпадать."
 
@@ -2154,7 +2155,7 @@ msgstr "Вы завершите покупку, сделав банковски�
 msgid "You will send {amount}"
 msgstr "Вы перечисляете {amount}"
 
-#: src/components/modals/SendModal.vue:139
+#: src/components/modals/SendModal.vue:142
 msgid "You will send {amount} NIM"
 msgstr "Вы отправите {amount} NIM "
 

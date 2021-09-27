@@ -13,7 +13,7 @@ import { useNetworkStore } from './stores/Network';
 // import { useProxyStore } from './stores/Proxy';
 
 
-import { Block } from '../../../github/albatross-remote/src/lib/server-types'
+import { Account, Block } from '../../../github/albatross-remote/src/lib/server-types'
 
 let isLaunched = false;
 let clientPromise: Promise<AlbatrossRpcClient>;
@@ -22,22 +22,6 @@ export enum ConsensusState {
     CONNECTING = 'connecting',
     SYNCING = 'syncing',
     ESTABLISHED = 'established',
-}
-
-export type Account = {
-    Basic: {
-        balance: number,
-    }
-} | {
-    Vesting: {
-        balance: number,
-        // ...
-    }
-} | {
-    HTLC: {
-        balance: number,
-        // ...
-    }
 }
 
 export type Handle = number;
@@ -120,14 +104,7 @@ class AlbatrossRpcClient {
     }
 
     public async getAccount(address: string): Promise<Account> {
-        return this.rpc<Account>('getAccount', [address]).catch(error => {
-            console.error(error);
-            return {
-                Basic: {
-                    balance: 0,
-                },
-            };
-        });
+        return this.rpc<Account>('getAccount', [address]);
     }
 
     private async getRemote(): Promise<any> {
@@ -386,12 +363,9 @@ export async function launchNetwork() {
         for (const address of newAddresses) {
             client.addTransactionListener(transactionListener, address);
             client.getAccount(address).then(account => {
-                const balance = 'Basic' in account
-                    ? account.Basic.balance
-                    : 'Vesting' in account
-                        ? account.Vesting.balance
-                        : account.HTLC.balance;
-                addressStore.patchAddress(address, { balance });
+                addressStore.patchAddress(address, {
+                    balance: account.balance,
+                });
             });
         }
     });

@@ -2,9 +2,9 @@
 import { watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
 // @ts-expect-error no types
-import { createRemote } from '../../../github/gentle_rpc/client/dist/remote'
+import { createRemote } from './lib/gentle_rpc/remote'
 // @ts-expect-error no types
-import { wsProxyHandler } from '../../../github/gentle_rpc/client/dist/proxy'
+import { wsProxyHandler } from './lib/gentle_rpc/proxy'
 import Config from 'config';
 
 import { useAddressStore } from './stores/Address';
@@ -109,8 +109,9 @@ class AlbatrossRpcClient {
 
     private async getRemote(): Promise<any> {
         return this.remote || (this.remote = new Promise(async resolve => {
+            const ws = new WebSocket(`${this.url.replace('http', 'ws')}/ws`);
             const proxy = new Proxy(
-                await createRemote(new WebSocket(`${this.url.replace('http', 'ws')}/ws`)),
+                await createRemote(ws),
                 wsProxyHandler,
             );
             resolve(proxy);

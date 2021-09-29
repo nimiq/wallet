@@ -54,8 +54,26 @@ class AlbatrossRpcClient {
                 const block = await remote.getBlockByHash([blockHash, true]) as Block;
                 if (!block) continue;
 
-                console.log(block);
-                // Trigger block and transaction listeners
+                // Trigger block listeners
+                for (const listener of Object.values(this.blockSubscriptions)) {
+                    listener(block);
+                }
+
+                // Trigger transaction listeners
+                const addresses = Object.keys(this.transactionSubscriptions);
+                for (const tx of block.transactions || []) {
+                    let address = addresses.includes(tx.sender)
+                        ? tx.sender
+                        : addresses.includes(tx.recipient)
+                            ? tx.recipient
+                            : null;
+
+                    if (address) {
+                        for (const listener of this.transactionSubscriptions[address]){
+                            listener(tx);
+                        }
+                    }
+                }
             }
         });
     }
@@ -298,7 +316,7 @@ export async function launchNetwork() {
     // });
 
     client.addHeadChangedListener((block) => {
-        const height = block.blockNumber;
+        const height = block.height;
         console.debug('Head is now at', height);
         network$.height = height;
 
@@ -314,15 +332,16 @@ export async function launchNetwork() {
         const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
 
-        if (plain.state === TransactionState.MINED) {
-            const addresses: string[] = [];
-            if (balances.has(plain.sender)) {
-                addresses.push(plain.sender);
-            }
-            if (balances.has(plain.recipient)) {
-                addresses.push(plain.recipient);
-            }
-            updateBalances(addresses);
+        const affectedAddresses: string[] = [];
+        if (addressStore.state.addressInfos[plain.sender]) affectedAddresses.push(plain.sender);
+        if (addressStore.state.addressInfos[plain.recipient]) affectedAddresses.push(plain.recipient);
+
+        for (const address of affectedAddresses) {
+            client.getAccount(address).then(account => {
+                addressStore.patchAddress(address, {
+                    balance: account.balance,
+                });
+            });
         }
     }
 

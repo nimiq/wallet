@@ -2,7 +2,7 @@
     <div class="sidebar padding flex-column" ref="sidebar">
         <div v-if="isTestnet" class="testnet-notice flex-row">
             <StreetconeIcon/>
-            <span class="nq-label">{{ $t('Testnet') }}</span>
+            <span class="nq-label">{{ $t('Devnet') }}</span>
             <div class="flex-grow"></div>
             <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(0.5rem, 2rem)'}">
                 <InfoCircleIcon slot="trigger"/>
@@ -23,7 +23,7 @@
             <PriceChart currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
-        <div class="trade-actions" v-show="!isLegacyAccount">
+        <!-- <div class="trade-actions" v-show="!isLegacyAccount">
             <button class="nq-button-pill light-blue inverse"
                 @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap"
@@ -33,7 +33,7 @@
                 @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
             >{{ $t('Sell') }}</button>
-        </div>
+        </div> -->
 
         <div class="flex-grow"></div>
 

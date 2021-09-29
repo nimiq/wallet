@@ -162,7 +162,7 @@ msgstr "在发送交易后添加标签，可让你在历史记录中快速找到
 msgid "Add a label to quickly find the transaction in your history."
 msgstr "添加标签，在你的历史记录中快速检索交易"
 
-#: src/components/modals/SendModal.vue:156
+#: src/components/modals/SendModal.vue:170
 msgid "Add a public message..."
 msgstr "添加公开信息..."
 
@@ -191,7 +191,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "添加联络人"
 
-#: src/components/modals/SendModal.vue:28
+#: src/components/modals/SendModal.vue:42
 msgid "Address unavailable?"
 msgstr "地址无法使用？"
 
@@ -328,7 +328,7 @@ msgstr "BIC适用"
 msgid "Bitcoin"
 msgstr "比特币"
 
-#: src/components/modals/BtcSendModal.vue:106
+#: src/components/modals/BtcSendModal.vue:109
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -419,7 +419,7 @@ msgstr "用信用卡购买"
 msgid "Buy with Simplex"
 msgstr "用Simplex购买"
 
-#: src/components/modals/SendModal.vue:182
+#: src/components/modals/SendModal.vue:196
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -481,13 +481,13 @@ msgstr "更改密码"
 msgid "Change your language setting."
 msgstr "更改你的语言设置"
 
-#: src/components/modals/SendModal.vue:40
+#: src/components/modals/SendModal.vue:54
 msgid "Choose a Recipient"
 msgstr "选择接收者"
 
 #: src/components/modals/BuyCryptoModal.vue:238
 #: src/components/modals/SellCryptoModal.vue:243
-#: src/components/modals/SendModal.vue:172
+#: src/components/modals/SendModal.vue:186
 #: src/components/swap/SwapModal.vue:181
 msgid "Choose an Address"
 msgstr "选择地址"
@@ -581,7 +581,7 @@ msgid "Contacts"
 msgstr "联系信息"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/SendModal.vue:66
+#: src/components/modals/SendModal.vue:80
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "继续"
@@ -604,7 +604,7 @@ msgstr ""
 "将你的地址复制并粘贴到\n"
 "下面的Simplex界面"
 
-#: src/components/modals/SendModal.vue:30
+#: src/components/modals/SendModal.vue:44
 msgid "Create a Cashlink"
 msgstr "创建现金链接"
 
@@ -676,6 +676,11 @@ msgstr "开发者资源"
 msgid "Disclaimer"
 msgstr "免责声明"
 
+#: src/components/BtcAddressInput.vue:79
+#: src/components/modals/SendModal.vue:340
+msgid "Domain does not resolve to a valid address"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:292
 #: src/components/swap/SwapAnimation.vue:300
 msgid "Don't close your wallet until the swap is complete!"
@@ -697,7 +702,7 @@ msgstr "不要使用通用的IBAN！"
 msgid "Done"
 msgstr "完成"
 
-#: src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/BtcSendModal.vue:95
 msgid "Duration and fees are estimates."
 msgstr "工作时间和费用均为估计值"
 
@@ -719,8 +724,8 @@ msgstr "编辑比特币值可见的小数位数"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数"
 
-#: src/components/modals/BtcSendModal.vue:416
-#: src/components/modals/SendModal.vue:521
+#: src/components/modals/BtcSendModal.vue:438
+#: src/components/modals/SendModal.vue:584
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -784,7 +789,7 @@ msgstr "已过期"
 msgid "Expired"
 msgstr "已过期"
 
-#: src/components/modals/SendModal.vue:376
+#: src/components/modals/SendModal.vue:439
 msgid "express"
 msgstr "快速"
 
@@ -813,7 +818,7 @@ msgstr "水龙头无法使用"
 msgid "Faucet unavailable (wrong network)"
 msgstr "水龙头无法使用（网络错误）"
 
-#: src/components/modals/SendModal.vue:138
+#: src/components/modals/SendModal.vue:152
 msgid "fee"
 msgstr "费用"
 
@@ -850,7 +855,7 @@ msgstr "最后确认互换"
 msgid "For beginners"
 msgstr "初学者友好"
 
-#: src/components/modals/SendModal.vue:366
+#: src/components/modals/SendModal.vue:429
 msgid "free"
 msgstr "免费"
 
@@ -966,7 +971,7 @@ msgid ""
 "automatic refunds will only work for individual IBAN addresses."
 msgstr "如果出现任何问题，例如超出金额限制或资金不足，自动退款仅适用于个人IBAN地址"
 
-#: src/components/modals/BtcSendModal.vue:88
+#: src/components/modals/BtcSendModal.vue:91
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -988,9 +993,9 @@ msgstr "安裝"
 msgid "Install Web App"
 msgstr "安裝网络应用程序"
 
-#: src/components/modals/BtcSendModal.vue:70
+#: src/components/modals/BtcSendModal.vue:72
 #: src/components/modals/SellCryptoModal.vue:165
-#: src/components/modals/SendModal.vue:146
+#: src/components/modals/SendModal.vue:160
 msgid "Insufficient balance."
 msgstr "余额不足"
 
@@ -1135,7 +1140,7 @@ msgstr ""
 "多个地址和登录文件\n"
 "仅支持新帐户"
 
-#: src/components/modals/SendModal.vue:54
+#: src/components/modals/SendModal.vue:68
 msgid "Name this contact..."
 msgstr "命名此联系人..."
 
@@ -1151,7 +1156,7 @@ msgstr "为你的联系人命名"
 msgid "Network"
 msgstr "网络"
 
-#: src/components/modals/BtcSendModal.vue:85
+#: src/components/modals/BtcSendModal.vue:88
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
@@ -1176,7 +1181,7 @@ msgid ""
 "registration."
 msgstr "Nimiq正在开发PRO功能，用户在注册后可提高金额限制"
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
@@ -1419,8 +1424,13 @@ msgstr "重新扫描"
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置你的钱包设置，并从区块链重新加载数据"
 
-#: src/components/modals/BtcSendModal.vue:415
-#: src/components/modals/SendModal.vue:520
+#: src/components/BtcAddressInput.vue:17
+#: src/components/modals/SendModal.vue:31
+msgid "Resolving Unstoppable Domain..."
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:583
 msgid "Retry"
 msgstr "重试"
 
@@ -1501,8 +1511,8 @@ msgstr "出售功能现在可用了"
 msgid "Send"
 msgstr "发送"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:72
-#: src/components/modals/SendModal.vue:148
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:74
+#: src/components/modals/SendModal.vue:162
 msgid "Send all"
 msgstr "全部发送"
 
@@ -1525,10 +1535,10 @@ msgstr "将加密货币发送到智能合约"
 msgid "Send max"
 msgstr "发送 max"
 
-#: src/components/modals/BtcSendModal.vue:102
+#: src/components/modals/BtcSendModal.vue:105
 #: src/components/modals/BtcSendModal.vue:4
 #: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:167
+#: src/components/modals/SendModal.vue:181
 msgid "Send Transaction"
 msgstr "发送交易"
 
@@ -1536,16 +1546,16 @@ msgstr "发送交易"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/modals/BtcSendModal.vue:412
-#: src/components/modals/SendModal.vue:517
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:580
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/BtcSendModal.vue:470
+#: src/components/modals/BtcSendModal.vue:492
 msgid "Sent {btc} BTC"
 msgstr "已发送{btc} 比特币"
 
-#: src/components/modals/BtcSendModal.vue:466
+#: src/components/modals/BtcSendModal.vue:488
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
@@ -1554,11 +1564,11 @@ msgstr "已发送{btc} BTC到 {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
-#: src/components/modals/SendModal.vue:552
+#: src/components/modals/SendModal.vue:615
 msgid "Sent {nim} NIM"
 msgstr "发送{nim}NIM"
 
-#: src/components/modals/SendModal.vue:548
+#: src/components/modals/SendModal.vue:611
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
@@ -1579,8 +1589,8 @@ msgstr "仅支持SEPA Instant"
 msgid "SEPA Instant transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:67
-#: src/components/modals/SendModal.vue:79
+#: src/components/modals/SendModal.vue:81
+#: src/components/modals/SendModal.vue:93
 msgid "Set Amount"
 msgstr "设置金额"
 
@@ -1645,8 +1655,8 @@ msgstr "模拟欧元付款"
 msgid "Skip for now"
 msgstr "暂时跳过"
 
-#: src/components/modals/BtcSendModal.vue:490
-#: src/components/modals/SendModal.vue:572
+#: src/components/modals/BtcSendModal.vue:512
+#: src/components/modals/SendModal.vue:635
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -1654,7 +1664,7 @@ msgstr "出了些问题"
 msgid "Something went wrong with your transaction"
 msgstr "你的交易出错了"
 
-#: src/components/modals/SendModal.vue:180
+#: src/components/modals/SendModal.vue:194
 msgid "Speed up your Transaction"
 msgstr "加快交易"
 
@@ -1666,7 +1676,7 @@ msgstr "质押NIM取得奖励，并确保网络安全"
 msgid "Staking"
 msgstr "质押"
 
-#: src/components/modals/SendModal.vue:371
+#: src/components/modals/SendModal.vue:434
 msgid "standard"
 msgstr "标准"
 
@@ -1780,7 +1790,7 @@ msgstr "Nimiq钱包不仅是一个网络钱包，它还是一个网络节点"
 msgid "The rate might change depending on the swap volume."
 msgstr "汇率可能会依据交换数量改变"
 
-#: src/components/modals/SendModal.vue:99
+#: src/components/modals/SendModal.vue:113
 msgid "The sender and recipient cannot be identical."
 msgstr "发件人和收件人不能相同"
 
@@ -1818,7 +1828,7 @@ msgstr "这是一个传统账户"
 msgid "This is a single-use address"
 msgstr "这是一次性地址"
 
-#: src/components/BtcAddressInput.vue:15
+#: src/components/BtcAddressInput.vue:23
 msgid "This is not a valid address"
 msgstr "这不是一个有效地址"
 
@@ -1897,7 +1907,7 @@ msgstr "来自{address}的交易"
 msgid "Transaction to {address}"
 msgstr "发送到{address}的交易"
 
-#: src/components/modals/BtcSendModal.vue:109
+#: src/components/modals/BtcSendModal.vue:112
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr "由于比特币的出块时间，交易需要10分钟以上"
 
@@ -2063,11 +2073,11 @@ msgstr "你现在拥有加密货币了！"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "你将通过银行转帐完成购买"
 
-#: src/components/modals/BtcSendModal.vue:63
+#: src/components/modals/BtcSendModal.vue:65
 msgid "You will send {amount}"
 msgstr "你将发送 {amount}"
 
-#: src/components/modals/SendModal.vue:142
+#: src/components/modals/SendModal.vue:156
 msgid "You will send {amount} NIM"
 msgstr "你将发送{amount}NIM"
 

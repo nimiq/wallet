@@ -113,6 +113,7 @@ class AlbatrossRpcClient {
                     // eslint-disable-next-line no-await-in-loop
                     return await this.rpc('getTransactionByHash', [hash]) as Transaction;
                 } catch (error) {
+                    if (error.data && error.data.includes('Transaction not found')) continue;
                     console.error(error);
                 }
             } while (true); // eslint-disable-line no-constant-condition

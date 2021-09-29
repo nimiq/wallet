@@ -15,9 +15,10 @@
                         <BtcAddressInput
                             :placeholder="$t('Enter recipient address...')"
                             v-model="addressInputValue"
-                            @paste="(event, text) => parseRequestUri(text, event)"
+                            @paste="onPaste"
                             @input="resetAddress"
                             @address="onAddressEntered"
+                            @domain-address="onDomainEntered"
                             @scan="goToScanner"/>
                     </template>
                 </DoubleInput>
@@ -25,39 +26,40 @@
                 <div class="flex-grow"></div>
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'btc'}">
-                        <AmountInput v-if="activeCurrency === 'btc'"
+                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.BTC}">
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.BTC"
                             v-model="amount" :decimals="btcUnit.decimals" ref="amountInputRef"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
-                                currency="btc"
+                                :currency="CryptoCurrency.BTC"
                                 :activeCurrency="btcUnit.ticker.toLowerCase()"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
+                                @currency="onCurrencySelected"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
                         <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
-                                currency="btc"
+                                :currency="CryptoCurrency.BTC"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
+                                @currency="onCurrencySelected"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
-                        <span v-if="activeCurrency === 'btc'" key="fiat-amount">
-                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="btc"/>
+                        <span v-if="activeCurrency === CryptoCurrency.BTC" key="fiat-amount">
+                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount
+                                :amount="amount" :currency="CryptoCurrency.BTC"/>
                         </span>
                         <span v-else key="btc-amount">
                             {{ $t(
@@ -78,7 +80,8 @@
 
                 <section class="fee-section flex-row">
                     <FeeSelector :fees="feeOptions" @fee="updateFee"/>
-                    <span class="secondary-amount">~<FiatConvertedAmount :amount="fee" currency="btc"/></span>
+                    <span class="secondary-amount">~<FiatConvertedAmount
+                        :amount="fee" :currency="CryptoCurrency.BTC"/></span>
                     <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
                         <InfoCircleSmallIcon slot="trigger"/>
                         <span class="header">
@@ -152,7 +155,7 @@ import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
@@ -198,6 +201,8 @@ export default defineComponent({
         }
 
         function onAddressEntered(address: string) {
+            if (recipientWithLabel.value && recipientWithLabel.value.address === address) return;
+
             // Find label across recipient labels, own addresses
             let label = '';
             let type = RecipientType.NEW_CONTACT; // Can be stored as a new contact by default
@@ -225,6 +230,15 @@ export default defineComponent({
             // }
 
             recipientWithLabel.value = { address, label, type };
+        }
+
+        function onDomainEntered(domain: string, address: string) {
+            recipientWithLabel.value = {
+                address,
+                label: domain,
+                type: RecipientType.NEW_CONTACT,
+            };
+            addressInputValue.value = address;
         }
 
         const amount = ref(0);
@@ -276,8 +290,12 @@ export default defineComponent({
             window.clearTimeout(sucessCloseTimeout);
         });
 
-        const activeCurrency = ref('btc');
+        const activeCurrency = ref<CryptoCurrency | FiatCurrency>(CryptoCurrency.BTC);
         const fiatAmount = ref(0);
+
+        function onCurrencySelected(currency: CryptoCurrency | FiatCurrency) {
+            activeCurrency.value = currency;
+        }
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
         const otherFiatCurrencies = computed(() =>
@@ -342,6 +360,10 @@ export default defineComponent({
         );
 
         const addressInputValue = ref(''); // Used for setting the address from a request URI
+
+        function onPaste(event: ClipboardEvent, text: string) {
+            parseRequestUri(text, event);
+        }
 
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             try {
@@ -409,11 +431,11 @@ export default defineComponent({
          * Status Screen
          */
         const statusScreenOpened = ref(false);
-        const statusTitle = ref(context.root.$t('Sending Transaction'));
+        const statusTitle = ref(context.root.$t('Sending Transaction') as string);
         const statusState = ref(State.LOADING);
         const statusMessage = ref('');
-        const statusMainActionText = ref(context.root.$t('Retry'));
-        const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
+        const statusMainActionText = ref(context.root.$t('Retry') as string);
+        const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
 
         async function sign() {
             // Show loading screen
@@ -466,10 +488,10 @@ export default defineComponent({
                     ? context.root.$t('Sent {btc} BTC to {name}', {
                         btc: amount.value / 1e8,
                         name: recipientWithLabel.value!.label,
-                    })
+                    }) as string
                     : context.root.$t('Sent {btc} BTC', {
                         btc: amount.value / 1e8,
-                    });
+                    }) as string;
 
                 // Close modal
                 sucessCloseTimeout = window.setTimeout(async () => {
@@ -487,8 +509,8 @@ export default defineComponent({
 
                 // Show error screen
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong');
-                statusMessage.value = error.message;
+                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusMessage.value = (error as Error).message;
             }
         }
 
@@ -512,12 +534,16 @@ export default defineComponent({
         return {
             // General
             RecipientType,
+            CryptoCurrency,
+            FiatCurrency,
 
             // Recipient Input
             addressInputValue,
             resetAddress,
             onAddressEntered,
+            onDomainEntered,
             recipientWithLabel,
+            onPaste,
             parseRequestUri,
             goToScanner,
 
@@ -529,6 +555,7 @@ export default defineComponent({
             amountMenuOpened,
             feeOptions,
             activeCurrency,
+            onCurrencySelected,
             btcUnit,
             fiatAmount,
             fiatCurrencyInfo,

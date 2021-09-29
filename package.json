@@ -32,6 +32,7 @@
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",
     "@sentry/vue": "^6.3.0",
     "@types/iban": "^0.0.32",
+    "@unstoppabledomains/resolution": "^5.0.1",
     "@vue/composition-api": "^0.4.0",
     "core-js": "^3.6.4",
     "iban": "^0.0.14",

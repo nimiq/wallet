@@ -16,13 +16,27 @@
                     @contact-list-opened="contactListOpened = true"
                     @contact-selected="onContactSelected"
                 />
-                <section class="address-section">
+                <section class="address-section flex-column">
                     <label class="nq-label">{{ $t('Enter address') }}</label>
                     <AddressInput
                         v-model="addressInputValue"
+                        :allowDomains="true"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
+                    <span class="notice nq-orange"
+                        :style="{'opacity': isResolvingUnstoppableDomain || resolverError ? 1 : 0}"
+                    >
+                        <template v-if="isResolvingUnstoppableDomain">
+                            {{ $t('Resolving Unstoppable Domain...') }}
+                        </template>
+                        <template v-else-if="resolverError">
+                            {{ resolverError }}
+                        </template>
+                        <template v-else>
+                            &nbsp;
+                        </template>
+                    </span>
                 </section>
                 <section class="cashlink-section">
                     <span>{{ $t('Address unavailable?') }}</span>
@@ -43,7 +57,7 @@
             </PageBody>
         </div>
 
-        <div v-if="recipientDetailsOpened" slot="overlay" class="page flex-column">
+        <div v-if="recipientDetailsOpened && recipientWithLabel" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <div class="flex-grow"></div>
@@ -70,7 +84,7 @@
         </div>
 
         <div
-            v-if="page === Pages.AMOUNT_INPUT" class="page flex-column"
+            v-if="page === Pages.AMOUNT_INPUT && recipientWithLabel" class="page flex-column"
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
@@ -220,7 +234,7 @@ import {
     SelectBar,
     Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo } from '@nimiq/utils';
+import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -239,6 +253,10 @@ import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
+import {
+    isValidDomain as isValidUnstoppableDomain,
+    resolve as resolveUnstoppableDomain,
+} from '../../lib/UnstoppableDomains';
 
 export enum RecipientType {
     CONTACT,
@@ -288,6 +306,51 @@ export default defineComponent({
         }
 
         const addressInputValue = ref(''); // Used for resetting the address input
+        const isDomain = computed(() => {
+            const input = addressInputValue.value;
+            if (input.length < 3) return false;
+            if (input.toUpperCase().startsWith('NQ') && !Number.isNaN(parseInt(input[2], 10))) return false;
+            return true;
+        });
+        const isResolvingUnstoppableDomain = ref(false);
+        const resolverError = ref('');
+        watch(addressInputValue, (address) => {
+            resolverError.value = '';
+
+            // Detect unstoppable domains
+            if (isValidUnstoppableDomain(address)) {
+                isResolvingUnstoppableDomain.value = true;
+                const domain = address;
+                const ticker = 'NIM';
+                resolveUnstoppableDomain(domain, ticker)
+                    .then(async (resolvedAddress) => {
+                        if (resolvedAddress && ValidationUtils.isValidAddress(resolvedAddress)) {
+                            const formattedAddress = resolvedAddress
+                                .replace(/[ +-]|%20/g, '') // strip spaces and dashes
+                                .replace(/(.)(?=(.{4})+$)/g, '$1 '); // reformat with spaces, forming blocks of 4 chars
+                            const label = getLabel.value(formattedAddress);
+                            if (!label) setContact(formattedAddress, domain);
+                            recipientWithLabel.value = {
+                                address: formattedAddress,
+                                label: label || domain,
+                                type: RecipientType.CONTACT,
+                            };
+                            page.value = Pages.AMOUNT_INPUT;
+                        } else {
+                            resolverError.value = context.root.$t(
+                                'Domain does not resolve to a valid address') as string;
+                        }
+                    })
+                    .catch((error: Error) => {
+                        console.debug(error); // eslint-disable-line no-console
+                        let { message } = error;
+                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                        resolverError.value = message;
+                    })
+                    .finally(() => isResolvingUnstoppableDomain.value = false);
+            }
+        });
+
         function onAddressEntered(address: string, skipRecipientDetails = false) {
             // Find label across contacts, own addresses
             let label = '';
@@ -628,6 +691,9 @@ export default defineComponent({
             parseRequestUri,
             amountsHidden,
             goToScanner,
+            isDomain,
+            isResolvingUnstoppableDomain,
+            resolverError,
 
             // Amount Input
             resetRecipient,
@@ -757,11 +823,25 @@ export default defineComponent({
     }
 
     .address-section {
+        align-items: center;
         text-align: center;
         margin: 4rem 0;
 
+        .nq-label {
+            margin: 0;
+        }
+
         .address-input {
             margin-top: 2.25rem;
+        }
+
+        .notice {
+            margin-top: -3.5rem;
+            transition: opacity 0.3s var(--nimiq-ease), margin-top 0.3s var(--nimiq-ease);
+        }
+
+        .address-input.is-domain ~ .notice {
+            margin-top: 1rem;
         }
     }
 

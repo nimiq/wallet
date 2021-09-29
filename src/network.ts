@@ -62,6 +62,9 @@ class AlbatrossRpcClient {
                 // Trigger transaction listeners
                 const addresses = Object.keys(this.transactionSubscriptions);
                 for (const tx of block.transactions || []) {
+                    // Even if the transaction is between two of our own (and thus subscribed) addresses,
+                    // we only need to trigger one tx listener, as the tx is then added for both addresses
+                    // and the handler also updates the balances of both addresses.
                     let address = addresses.includes(tx.sender)
                         ? tx.sender
                         : addresses.includes(tx.recipient)

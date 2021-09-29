@@ -262,7 +262,7 @@ export default defineComponent({
 
         // Date
         const { language } = useSettingsStore();
-        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
+        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp));
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
         const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
         const dateMonth = computed(() => date.value && monthFormatter.value

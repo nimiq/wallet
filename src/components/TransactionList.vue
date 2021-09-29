@@ -264,7 +264,7 @@ export default defineComponent({
             if (!txs[n]) return transactionsWithMonths; // Address has no more txs
 
             // Inject month + year labels
-            let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
+            let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp!);
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
@@ -282,7 +282,7 @@ export default defineComponent({
                     continue;
                 }
 
-                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
+                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp!));
                 const txMonthYear = `${txMonth}.${txYear}`;
 
                 if (txMonthYear !== displayedMonthYear) {

@@ -558,7 +558,7 @@ export default defineComponent({
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date
-        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
+        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp));
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);

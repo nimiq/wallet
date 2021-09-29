@@ -274,11 +274,11 @@ export const useTransactionsStore = createStore({
 
             if (!transactionsToUpdate.length) return;
 
-            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp * 1000);
+            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp);
             const historicExchangeRates = await getHistoricExchangeRates(CryptoCurrency.NIM, fiatCurrency, timestamps);
 
             for (const tx of transactionsToUpdate) {
-                const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                const exchangeRate = historicExchangeRates.get(tx.timestamp);
                 // Set via Vue.set to let vue setup the reactivity. TODO this might be not necessary anymore with Vue3
                 if (!tx.fiatValue) Vue.set(tx, 'fiatValue', {});
                 Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined

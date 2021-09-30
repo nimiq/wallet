@@ -125,10 +125,6 @@ export default defineComponent({
                 }
             }
         }
-        /deep/ .page-header-back-button {
-            margin-top: 3.25rem;
-            margin-left: 1rem;
-        }
         &.fat-modal {
             /deep/ .small-page {
                 width: 63.5rem;

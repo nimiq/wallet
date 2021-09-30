@@ -17,7 +17,7 @@
                 </button>
             </div>
             <span>
-                {{ $t('Earn ~304 NIM a month by staking your NIM') }}
+                {{ $t('Earn NIM every month by staking your NIM') }}
             </span>
         </Tooltip>
         <div class="stake"
@@ -85,9 +85,8 @@ export default defineComponent({
         width: 6.75rem;
         height: 6.75rem;
 
-        animation: flicker 15s ease alternate infinite;
         path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            animation: fastwave 3s ease alternate infinite;
+            animation: fastwave 1s ease alternate infinite;
         }
         path:nth-child(1) {
             animation-delay: .5s;
@@ -114,21 +113,6 @@ export default defineComponent({
         path:nth-child(1), path:nth-child(2), path:nth-child(4) {
             stroke: white;
         }
-    }
-}
-
-@keyframes flicker {
-    0% {
-        opacity: 1.0;
-    }
-    97% {
-        opacity: 0.9;
-    }
-    98% {
-        opacity: 0.0;
-    }
-    100% {
-        opacity: 1.0;
     }
 }
 

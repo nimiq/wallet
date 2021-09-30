@@ -2,7 +2,6 @@
     <button
         class="validator-list-item reset flex-row"
         :class="{ 'wrapper-mini': isMini }"
-        @click="selectValidator(validatorData)"
         @focus="$emit('focus', true)"
         @blur="$emit('focus', false)">
 
@@ -79,29 +78,13 @@ const getPayoutText = (payout: number) => {
 };
 
 export default defineComponent({
-    setup(props) {
-        return {
-            payoutText: getPayoutText(props.validatorData.payout),
-            Helpers: {
-                capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
-            },
-        };
-    },
     props: {
         validatorData: {
             type: Object as () => ValidatorData,
             required: true,
         },
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
         stakingData: {
             type: Object as () => StakingData,
-            required: true,
-        },
-        selectValidator: {
-            type: Function as () => unknown,
             required: true,
         },
         isMini: {
@@ -109,6 +92,14 @@ export default defineComponent({
             required: false,
             default: false,
         },
+    },
+    setup(props) {
+        return {
+            payoutText: getPayoutText(props.validatorData.payout),
+            Helpers: {
+                capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
+            },
+        };
     },
     components: {
         LabelTooltip,
@@ -124,7 +115,7 @@ export default defineComponent({
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 
-    width: 48.5rem;
+    width: calc(100% - 4rem);
     line-height: 9rem;
     margin: auto;
     margin-bottom: -.25rem;
@@ -136,9 +127,7 @@ export default defineComponent({
     outline: none;
 
     &:focus {
-        width: 49.5rem;
-        border: 4px solid #f2f2f4;
-        margin: -.375rem -.5rem -.875rem .5rem;
+        outline: 4px solid #f2f2f4;
         box-shadow: none;
     }
 

@@ -15,16 +15,11 @@
         </PageHeader>
         <PageBody>
             <div class="staking-rounded-background">
-                <div class="staking-icons-lace" :class="{ necklace: ENABLED.necklace }">
+                <div class="staking-icons-lace">
                     <img v-for="(icon, index) in orderOfValidators"
                         :key="index"
                         :src="`/img/staking/providers/${icon}`"
-                        :style="{
-                            top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)
-                            + (ENABLED.necklace ? progression(index, orderOfValidators.length)*28 : 0)}px`,
-                            width: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
-                            height: ENABLED.necklace?`${progression(index, orderOfValidators.length) * 7.0}rem`:'',
-                        }"
+                        :style="{top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`}"
                     />
                 </div>
                 <div class="staking-under-icons-text">
@@ -43,7 +38,6 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { ValidatorData } from '../../stores/Staking';
-import { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
 const progression = (i:number, n:number) => {
@@ -61,7 +55,6 @@ export default defineComponent({
             (validator: ValidatorData) => validator.icon,
         );
         return {
-            ENABLED,
             progression,
             orderOfValidators: sortedSequence.reverse().concat(
                 sortedSequence.filter((item, index) => (index > 0)),
@@ -132,10 +125,7 @@ export default defineComponent({
                 white-space: nowrap;
                 width: 95%;
                 margin: auto;
-                &.necklace {
-                    top: -3.5rem;
-                    left: -2.5rem;
-                }
+
                 img {
                     position: relative;
                     width: 5.375rem;

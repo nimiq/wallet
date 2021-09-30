@@ -1,16 +1,15 @@
 <template>
-    <div>
+    <div class="stake-graph-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
                 {{ $t('Set an Amount') }}
             </template>
             <template #more>
-                <span class="nq-text nq-blue">
+                <p class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
-                </span>
+                </p>
                 <div class="tooltip-bar flex-row">
                     <LabelTooltip
-                        :isDry="true"
                         :validatorData="validator"
                         :stakingData="stakingData"
                         />
@@ -23,20 +22,21 @@
             <span class="estimated-rewards-overlay">
                 <Tooltip
                     preferredPosition="bottom right"
-                    :container="this">
-                    <div slot="trigger">
+                    :styles="{'width': '32rem', 'margin-left': '-6rem'}"
+                    :container="this"
+                >
+                    <div slot="trigger" class="flex-row">
                         Estimated rewards <InfoCircleSmallIcon />
                     </div>
-                    <div class="estimated-rewards">
-                        <div class="big">
-                            <img src="/img/staking/estimated-rewards-projection.svg" />
-                            Your reward is depending on how many people stake.
-                            The less people stake, the higher your rewards.
-                        </div>
-                        <div class="small">
-                            The corridor assumes that between 20% and 80% of all NIM holders stake.
-                        </div>
-                    </div>
+
+                    <img src="/img/staking/estimated-rewards-projection.svg" />
+                    <p>
+                        Your reward is depending on how many people stake.
+                        The less people stake, the higher your rewards.
+                    </p>
+                    <p class="explainer">
+                        The corridor assumes that between 20% and 80% of all NIM holders stake.
+                    </p>
                 </Tooltip>
             </span>
             <StakingGraph v-if="alreadyStaked === true"
@@ -58,13 +58,15 @@
                 :stakedAmount="preStaked"
                 @amount-staked="updateStaked"
                 @amount-unstaked="updateUnstaked" />
+
             <button class="nq-button light-blue stake-button" @click="performStaking">
-                {{ $t('confirm stake') }}
+                {{ $t('Confirm stake') }}
             </button>
-            <div class="stake-disclaimer" v-if="unstakedAmount === 0">
-                {{ $t('Unlock at any time. Your NIM will be available within 12 hours.') }}
+
+            <div class="disclaimer stake-disclaimer" v-if="unstakedAmount === 0">
+                {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
             </div>
-            <div class="unstake-disclaimer" v-else>
+            <div class="disclaimer unstake-disclaimer" v-else>
                 <Amount
                     :decimals="DISPLAYED_DECIMALS"
                     :amount="unstakedAmount"
@@ -144,8 +146,8 @@ export default defineComponent({
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
             unstakeDisclaimer: i18n.t(
-                'will be available within ~{duration}',
-                { duration: '12 hours' },
+                'will be available in ~{duration}.',
+                { duration: i18n.t('{hours} hours', { hours: 12 }) },
             ),
             preStaked,
             currentStake,
@@ -189,108 +191,76 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .page-header {
-        a.page-header-back-button {
-            margin-top: 0;
-            margin-left: .5rem;
-            //padding: 0;
-        }
+    .stake-graph-page {
+        flex-grow: 1;
     }
+
     .page-header {
-        position: relative;
-        padding-top: 3.125rem;
-        height: 17.5rem;
-        font-weight: 600;
-        /deep/ .nq-h1 {
-            font-size: 3rem;
-        }
+        padding-bottom: 3rem;
+
         .tooltip-bar {
             justify-content: center;
-            height: 3rem;
-            width: 100%;
-            margin-top: -1rem;
-            margin-bottom: -3rem;
-            z-index: 9001;
-            white-space: nowrap;
+
+            > * + * {
+                margin-left: 0.75rem;
+            }
         }
     }
     .page-body {
         padding: 0;
-        margin: 0;
-        height: 63.375rem;
-        overflow: hidden;
         position: relative;
-        .estimated-rewards {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            line-height: 130%;
-            .big {
-            }
-            .small {
-                opacity: .6;
-            }
-        }
+        flex-grow: 1;
+
         .estimated-rewards-overlay {
             position: absolute;
-            top: 2.375rem;
+            top: 2.675rem;
             left: 1.5rem;
-            z-index: 9001;
-            .tooltip {
-                /deep/ .tooltip-box {
-                    width: 32rem;
-                    max-width: 32rem;
-                }
-            }
+            z-index: 900;
+
             /deep/ .trigger {
-                line-height: 120%;
-                font-size: 1.75rem;
+                line-height: 1.2;
+                font-size: var(--small-size);
                 font-weight: 600;
-                color: var(--nim-blue);
-                opacity: 0.4;
-                border: .375rem solid white;
-                white-space: nowrap;
-                div svg, div img {
-                    display: inline-block;
+                color: var(--text-40);
+                background: white;
+                padding: 0.25rem 0.5rem;
+
+                div {
+                    align-items: center;
+
+                    svg {
+                        margin-left: 0.5rem;
+                    }
                 }
             }
         }
+
         .stake-amount-slider {
             margin-top: 9.875rem;
         }
 
         .stake-button {
-            margin: auto;
-            margin-top: 2rem;
             width: 40.5rem;
-            height: 8rem;
-            line-height: 2.5rem;
-            letter-spacing: 0.25rem;
-            font-weight: 700;
+        }
+
+        .disclaimer {
+            margin-top: 1.5rem;
+            font-weight: 600;
+            font-size: var(--small-size);
+            text-align: center;
         }
 
         .stake-disclaimer {
-            margin-top: 1.5rem;
-            font-weight: 600;
-            font-size: 1.75rem;
-            color: #1F2348;
-            opacity: 0.5;
-            text-align: center;
+            color: var(--text-50);
         }
 
         .unstake-disclaimer {
-            margin-top: 2rem;
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #0582CA;
-            text-align: center;
+            color: var(--nimiq-light-blue);
         }
     }
 
     .nq-text {
-        display: inline-block;
-        margin-top: 1rem;
-        font-size: 2rem;
+        margin: 1rem 0;
     }
 
     @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint

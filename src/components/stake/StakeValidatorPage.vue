@@ -26,6 +26,7 @@
                             @focus="onValidatorFocusChange"
                             sortable
                         />
+                        <div style="height: 1rem; flex-shrink: 0;"></div>
                     </div>
                 </div>
                 <div class="scroll-mask-bottom" :class="{ 'disabled-mask': !masks }"></div>
@@ -157,6 +158,7 @@ export default defineComponent({
             display: flex;
             flex-direction: column;
             width: 100%;
+            height: 46.5rem;
             padding-top: 1rem;
         }
     }

@@ -76,7 +76,6 @@
                             :stakingData="stakingData"
                             :validatorsList="validatorsList"
                             :selectValidator="() => {}"
-                            :isMini="true"
                         />
                     </div>
                     <div class="col right">
@@ -102,10 +101,6 @@ import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormat
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
-
-import LabelTooltip from './tooltips/LabelTooltip.vue';
-import ScoreTooltip from './tooltips/ScoreTooltip.vue';
-import RewardTooltip from './tooltips/RewardTooltip.vue';
 
 import { i18n } from '../../i18n/i18n-setup';
 
@@ -181,9 +176,6 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        LabelTooltip,
-        ScoreTooltip,
-        RewardTooltip,
         StakingIcon,
         StakingGraph,
         StakeValidatorListItem,

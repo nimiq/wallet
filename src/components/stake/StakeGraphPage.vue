@@ -8,22 +8,14 @@
                 <span class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </span>
-                <div class="tooltip-bar">
+                <div class="tooltip-bar flex-row">
                     <LabelTooltip
                         :isDry="true"
                         :validatorData="validator"
                         :stakingData="stakingData"
                         />
-                    <ScoreTooltip :isMini="false"
-                        :isDry="true"
-                        :validatorData="validator"
-                        :stakingData="stakingData"
-                        />
-                    <RewardTooltip :isMini="false"
-                        :isDry="true"
-                        :validatorData="validator"
-                        :stakingData="stakingData"
-                        />
+                    <ValidatorTrustScore :score="validator.trust" dry />
+                    <ValidatorRewardBubble :reward="validator.reward" dry />
                 </div>
             </template>
         </PageHeader>
@@ -96,8 +88,8 @@ import StakeAmountSlider from './StakeAmountSlider.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 import LabelTooltip from './tooltips/LabelTooltip.vue';
-import ScoreTooltip from './tooltips/ScoreTooltip.vue';
-import RewardTooltip from './tooltips/RewardTooltip.vue';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
 import { i18n } from '../../i18n/i18n-setup';
 
@@ -184,8 +176,8 @@ export default defineComponent({
         PageHeader,
         PageBody,
         LabelTooltip,
-        ScoreTooltip,
-        RewardTooltip,
+        ValidatorTrustScore,
+        ValidatorRewardBubble,
         StakingIcon,
         StakingGraph,
         StakeAmountSlider,
@@ -213,9 +205,10 @@ export default defineComponent({
             font-size: 3rem;
         }
         .tooltip-bar {
+            justify-content: center;
             height: 3rem;
             width: 100%;
-            margin-top: -4rem;
+            margin-top: -1rem;
             margin-bottom: -3rem;
             z-index: 9001;
             white-space: nowrap;

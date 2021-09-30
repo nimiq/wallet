@@ -60,8 +60,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .validator-label-trigger {
-    margin-top: -.25rem;
-    margin-left: 0.5rem;
     svg {
         width: 1.5rem;
         height: 1.5rem;

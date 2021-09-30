@@ -28,41 +28,10 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { StakingData, ValidatorData } from '../../stores/Staking';
-import { numberToLiteralTimes } from '../../lib/NumberFormatting';
-import { i18n } from '../../i18n/i18n-setup';
+import { getPayoutText } from '../../lib/StakingUtils';
 
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
-
-const getPayoutText = (payout: number) => {
-    const periods = {
-        year: (((3600 * 1000) * 24) * 30) * 12,
-        month: ((3600 * 1000) * 24) * 30,
-        week: ((3600 * 1000) * 24) * 7,
-        day: (3600 * 1000) * 24,
-        h: 3600 * 1000,
-    };
-    let index = 0;
-    let value = 0;
-    const periodNames = Object.keys(periods);
-
-    for (const [, period] of Object.entries(periods)) {
-        value = payout / period;
-        if (value >= 1) {
-            break;
-        }
-        index += 1;
-    }
-
-    if (index === periodNames.length - 1) {
-        return i18n.t('pays out every {hourCount}', { hourCount: `${value}${periodNames[index]}` });
-    }
-
-    return i18n.t('pays out {numberOfTimes} a {period}', {
-        numberOfTimes: numberToLiteralTimes(Math.floor(value)),
-        period: periodNames[index],
-    });
-};
 
 export default defineComponent({
     props: {

@@ -375,9 +375,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .slider-container {
-    width: 63.5rem;
-    height: 11.875rem;
-    margin: auto;
+    padding-top: 2.5rem;
+    height: 12rem;
+
     .slider-body {
         position: relative;
         margin: auto;
@@ -537,6 +537,7 @@ export default defineComponent({
                                 0rem 0.03rem .25rem rgba(0, 0, 0, 0.06);
                     svg {
                         width: 3.5rem;
+                        height: 3.5rem;
                         margin-left: 0.5rem;
                         line, path {
                             stroke-width: 1;

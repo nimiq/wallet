@@ -1,32 +1,27 @@
 <template>
-    <div>
+    <div class="staked-already-page flex-column">
         <PageHeader :backArrow="false">
-            <template #default>
-                {{
-                    $t('Staking with {validator}', {
-                        validator: validator.label,
-                    })
-                }}
-            </template>
-            <template #more>
-            </template>
+            {{ $t('Staking with {validator}', { validator: validator.label }) }}
         </PageHeader>
-        <PageBody>
+        <PageBody class="flex-column">
             <span class="estimated-rewards-overlay">
-                <Tooltip :container="this">
-                    <div slot="trigger">
+                <Tooltip
+                    preferredPosition="bottom right"
+                    :styles="{'width': '32rem', 'margin-left': '-6rem'}"
+                    :container="this"
+                >
+                    <div slot="trigger" class="flex-row">
                         Estimated rewards <InfoCircleSmallIcon />
                     </div>
-                    <div class="estimated-rewards">
-                        <div class="big">
-                            <img src="/img/staking/estimated-rewards-projection.svg" />
-                            Your reward is depending on how many people stake.
-                            The less people stake, the higher your rewards.
-                        </div>
-                        <div class="small">
-                            The corridor assumes that between 20% and 80% of all NIM holders stake.
-                        </div>
-                    </div>
+
+                    <img src="/img/staking/estimated-rewards-projection.svg" />
+                    <p>
+                        Your reward is depending on how many people stake.
+                        The less people stake, the higher your rewards.
+                    </p>
+                    <p class="explainer">
+                        The corridor assumes that between 20% and 80% of all NIM holders stake.
+                    </p>
                 </Tooltip>
             </span>
             <StakingGraph :stakedAmount="currentStake"
@@ -38,13 +33,13 @@
                 }"
                 :key="graphUpdate" />
 
-            <div class="already-staked-wrapper">
-                <div class="row">
-                    <div class="col">
-                        <div class="section-title">
-                            <StakingIcon />
-                            staked
-                        </div>
+            <div>
+                <span class="nq-label flex-row section-title">
+                    <StakingIcon />
+                    Staked
+                </span>
+                <div class="row flex-row">
+                    <div class="col flex-grow">
                         <div class="amount-staked">
                             {{ format(validator.stakedAmount, NIM_MAGNITUDE) }} NIM
                             <!-- <Amount ref="$stakedNIMAmount"
@@ -57,36 +52,41 @@
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
-                    <div class="col right">
-                        <button class="nq-button-s"
-                            @click="$emit('adjust-stake')">
-                                Adjust Stake</button>
-                        <button class="nq-button-s solid-red">Unstake all</button>
-                    </div>
-                </div>
-                <div class="horizontal-separator" />
-                <div class="row">
-                    <div class="col">
-                        <div class="section-title">
-                            validator
-                        </div>
-
-                        <StakeValidatorListItem
-                            :validatorData="validator"
-                            :stakingData="stakingData"
-                            :validatorsList="validatorsList"
-                            :selectValidator="() => {}"
-                        />
-                    </div>
-                    <div class="col right">
-                        <button class="nq-button-s"
-                            @click="$emit('switch-validator')">Switch Validator</button>
-                    </div>
-                </div>
-                <div class="rewards-history" @click="$emit('next')">
-                    {{ $t('Rewards history') }} &gt;
+                    <button class="nq-button-s" @click="$emit('adjust-stake')">Adjust Stake</button>
+                    <button class="nq-button-pill red">Unstake all</button>
                 </div>
             </div>
+
+            <div class="horizontal-separator" />
+
+            <div>
+                <span class="nq-label flex-row section-title">
+                    Validator
+                </span>
+                <div class="row flex-row">
+                    <div class="validator flex-grow">
+                        <div class="validator-top flex-row">
+                            <img class="validator-icon" :src="`/img/staking/providers/${validator.icon}`">
+                            {{ validator.label }}
+                            <ValidatorRewardBubble :reward="validator.reward" />
+                        </div>
+                        <div class="validator-bottom flex-row">
+                            <ValidatorTrustScore :score="validator.trust" />
+                            <img src="/img/staking/dot.svg" />
+                            <div class="validator-payout">
+                                {{ getPayoutText(validator.payout) }}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="nq-button-s switch-validator" @click="$emit('switch-validator')">
+                        Switch Validator
+                    </button>
+                </div>
+            </div>
+
+            <button class="nq-button-s rewards-history" @click="$emit('next')">
+                {{ $t('Rewards history') }} &gt;
+            </button>
         </PageBody>
     </div>
 </template>
@@ -97,12 +97,14 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
+import { i18n } from '../../i18n/i18n-setup';
+import { getPayoutText } from '../../lib/StakingUtils';
 
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
-
-import { i18n } from '../../i18n/i18n-setup';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
 import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 
@@ -157,6 +159,7 @@ export default defineComponent({
             updateUnstaked,
             updateGraph,
             percentage,
+            getPayoutText,
         };
     },
     props: {
@@ -182,182 +185,137 @@ export default defineComponent({
         Amount,
         Tooltip,
         InfoCircleSmallIcon,
+        ValidatorTrustScore,
+        ValidatorRewardBubble,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-    .page-header {
-        position: relative;
-        padding-top: 3.5rem;
-        height: 17rem;
-        /deep/ .nq-h1 {
-            font-size: 3rem;
-            font-weight: 700;
-        }
-        .tooltip-bar {
-            position: absolute;
-            bottom: 0rem;
-            width: 100%;
-            text-align: center;
-            z-index: 9001;
-            white-space: nowrap;
-        }
+    .staked-already-page {
+        flex-grow: 1;
     }
+
+    .page-header {
+        padding-bottom: 3rem;
+    }
+
     .page-body {
-        padding: 0;
-        margin: 0;
-        height: 59.875rem;
-        overflow: hidden;
+        padding: 0 2rem 2rem;
         position: relative;
-        .estimated-rewards {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            line-height: 130%;
-            .big {
-            }
-            .small {
-                opacity: .6;
-            }
-        }
+        justify-content: space-between;
+        flex-grow: 1;
+
         .estimated-rewards-overlay {
             position: absolute;
-            top: 1.375rem;
+            top: 2.675rem;
             left: 1.5rem;
-            .tooltip {
-                .tooltip-box {
-                    width: 32rem;
-                    max-width: 32rem;
-                }
-            }
+            z-index: 900;
+
             /deep/ .trigger {
-                line-height: 120%;
-                font-size: 1.75rem;
+                line-height: 1.2;
+                font-size: var(--small-size);
                 font-weight: 600;
-                color: var(--nim-blue);
-                opacity: 0.4;
-                border: .375rem solid white;
-                white-space: nowrap;
-                div svg, div img {
-                    display: inline-block;
+                color: var(--text-40);
+                background: white;
+                padding: 0.25rem 0.5rem;
+
+                div {
+                    align-items: center;
+
+                    svg {
+                        margin-left: 0.5rem;
+                    }
                 }
             }
         }
-        .stake-amount-slider {
-            margin-top: 12.125rem;
-        }
+    }
 
-        .stake-button {
-            margin: auto;
-            margin-top: 2rem;
-            width: 40.5rem;
-        }
+    .section-title {
+        padding-left: 2rem;
+        align-items: center;
 
-        .stake-disclaimer {
-            margin-top: 2rem;
-            font-weight: 600;
-            font-size: 1.75rem;
-            color: #1F2348;
-            opacity: 0.5;
-            text-align: center;
-        }
+        .nq-icon {
+            font-size: 3.25rem;
+            margin: -0.5rem 0.25rem 0 -0.75rem;
 
-        .unstake-disclaimer {
-            margin-top: 2rem;
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #0582CA;
-            text-align: center;
+            /deep/ path {
+                stroke-width: 1;
+            }
         }
     }
 
-    .nq-text {
-        display: inline-block;
+    .amount-staked {
+        font-size: var(--h2-size);
+        font-weight: bold;
+        line-height: 1;
+        margin-bottom: 1rem;
+    }
+
+    .amount-staked-proportional {
+        font-size: var(--small-size);
+        font-weight: 600;
+        color: var(--text-50);
+        line-height: 1;
+    }
+
+    .horizontal-separator {
+        width: 100%;
+        height: 0.1875rem;
+        border-top: 0.1875rem solid var(--nimiq-blue);
+        opacity: 0.2;
+
         margin-top: 1rem;
-        font-size: 2rem;
+        margin-bottom: 1rem;
     }
 
-    .already-staked-wrapper {
-        margin: 1.875rem;
-        padding-left: 0.1875rem;
-        .section-title {
-            font-size: 1.5rem;
+    .validator {
+        .flex-row {
+            align-items: center;
+        }
+
+        .validator-top {
+            font-size: var(--h2-size);
             font-weight: bold;
-            color: var(--nimiq-blue);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            opacity: 0.4;
-            margin-bottom: 1.125rem;
-            svg {
-                position: relative;
-                top: 0.375rem;
-                width: 2.5rem;
-                opacity: .7;
-                line, path {
-                    stroke:  var(--nimiq-blue);
-                    stroke-width: 1;
-                }
+
+            .validator-icon {
+                width: 3rem;
+                height: 3rem;
+                margin-right: 0.75rem;
+            }
+
+            .validator-reward-bubble {
+                margin-left: 0.75rem;
             }
         }
-        .amount-staked {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--nimiq-blue);
-        }
-        .amount-staked-proportional {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--nimiq-blue);
-            opacity: .5;
-        }
-        .horizontal-separator {
-            width: 100%;
-            height: 0.1875rem;
-            border-top: 0.1875rem solid var(--nimiq-blue);
-            opacity: 0.2;
 
-            margin-top: 4rem;
-            margin-bottom: 4rem;
-        }
-        .rewards-history {
+        .validator-bottom {
+            font-size: var(--small-size);
+            color: var(--text-50);
             font-weight: 600;
-            font-size: 1.75rem;
-            line-height: 2.625rem;
-            opacity: 0.4;
-            margin-top: 7rem;
-            text-align: center;
-            a {
-                color: var(--nimiq-blue);
-                text-decoration: none;
+            line-height: 1;
+            margin-top: 0.75rem;
+
+            .validator-trust-score,
+            img {
+                margin-right: 0.675rem;
             }
         }
     }
-    .solid-red {
-        background-color: var(--nimiq-red);
-        color: #fff;
+
+    .switch-validator {
+        flex-shrink: 0;
     }
+
+    .rewards-history {
+        align-self: center;
+    }
+
     .row {
-        display: flex;
-        flex-direction: row;
-        .col {
-            button {
-                margin-right: 2rem;
-            }
+        padding: 0 2rem;
+
+        button + button {
+            margin-left: 2rem;
         }
-    }
-    .centered {
-        display: flex;
-        justify-self: center;
-        justify-content: center;
-        margin: auto;
-    }
-    .right {
-        display: flex;
-        justify-self: center;
-        justify-content: center;
-        margin: auto;
-        padding-top: 1.125rem;
-        margin-right: 0;
     }
 </style>

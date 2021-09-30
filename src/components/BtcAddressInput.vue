@@ -12,7 +12,13 @@
                 <ScanQrCodeIcon/>
             </button>
         </transition>
-        <span class="notice nq-orange" :style="{'opacity': invalid || isResolvingUnstoppableDomain ? 1 : 0}">
+        <span class="notice"
+            :class="{
+                'resolving': isResolvingUnstoppableDomain,
+                'nq-orange': resolverError || invalid,
+            }"
+            :style="{'opacity': invalid || isResolvingUnstoppableDomain ? 1 : 0}"
+        >
             <template v-if="isResolvingUnstoppableDomain">
                 {{ $t('Resolving Unstoppable Domain...') }}
             </template>
@@ -257,5 +263,10 @@ export default defineComponent({
         font-weight: 600;
 
         transition: opacity 0.3s var(--nimiq-ease);
+
+        &.resolving {
+            font-size: var(--small-size);
+            opacity: 0.5 !important;
+        }
     }
 </style>

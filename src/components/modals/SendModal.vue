@@ -24,7 +24,11 @@
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
-                    <span class="notice nq-orange"
+                    <span class="notice"
+                        :class="{
+                            'resolving': isResolvingUnstoppableDomain,
+                            'nq-orange': resolverError,
+                        }"
                         :style="{'opacity': isResolvingUnstoppableDomain || resolverError ? 1 : 0}"
                     >
                         <template v-if="isResolvingUnstoppableDomain">
@@ -838,6 +842,12 @@ export default defineComponent({
         .notice {
             margin-top: -3.5rem;
             transition: opacity 0.3s var(--nimiq-ease), margin-top 0.3s var(--nimiq-ease);
+
+            &.resolving {
+                font-size: var(--small-size);
+                font-weight: 600;
+                opacity: 0.5 !important;
+            }
         }
 
         .address-input.is-domain ~ .notice {

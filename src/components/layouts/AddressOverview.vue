@@ -1,7 +1,6 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
-        <DevBar v-if="!isMobile" />
         <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -201,7 +200,6 @@ import StakeButtonPartial from '../stake/partials/StakeButtonPartial.vue';
 
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
-import DevBar from '../widgets/DevBar.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -317,7 +315,6 @@ export default defineComponent({
             onTransactionListScroll,
             $address,
             addressMasked,
-            isMobile,
         };
     },
     components: {

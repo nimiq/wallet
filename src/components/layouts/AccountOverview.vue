@@ -33,7 +33,6 @@
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
             </button>
-            <DevBar v-if="isMobile" />
             <button class="reset consensus" @click="$router.push('/network').catch(() => {})">
                 <ConsensusIcon/>
             </button>
@@ -141,8 +140,6 @@ import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
 
-import DevBar from '../widgets/DevBar.vue';
-
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
@@ -237,7 +234,6 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         AttentionDot,
-        DevBar,
         StakingSummary,
     },
 });

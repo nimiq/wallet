@@ -39,15 +39,12 @@
             <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
-                    <div class="slider-dual"
-                        v-if="ENABLED.dualSlider"
-                        ref="$dualSlider" />
                     <div class="slider-knob"
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafStakingIcon v-if="currentPercentage < 50 && !ENABLED.dualSlider" />
-                        <StakingIcon v-else-if="currentPercentage < 75 && !ENABLED.dualSlider" />
+                        <OneLeafStakingIcon v-if="currentPercentage < 50" />
+                        <StakingIcon v-else-if="currentPercentage < 75" />
                         <ThreeLeafStakingIcon v-else />
                     </div>
                 </div>
@@ -60,7 +57,6 @@
 import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
-import { ENABLED_FEATURES as ENABLED } from '../widgets/DevBar.vue';
 import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -115,6 +111,12 @@ const extractEventPosition = (e: MouseEvent | TouchEvent):Point => {
 };
 
 export default defineComponent({
+    props: {
+        stakedAmount: {
+            type: Number,
+            required: true,
+        },
+    },
     setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
 
@@ -161,7 +163,6 @@ export default defineComponent({
         const $container = ref<HTMLElement>(null);
         const $knob = ref<HTMLElement>(null);
         const $slide = ref<HTMLElement>(null);
-        const $dualSlider = ref<HTMLElement>(null);
         const $backgroundLinesLeft = ref<HTMLElement>(null);
         const $backgroundMiddlePlant = ref<HTMLElement>(null);
         const $backgroundLinesRight = ref<HTMLElement>(null);
@@ -249,31 +250,13 @@ export default defineComponent({
             const offsetX = getPointAtPercent(percent);
             currentAmount.value = (percent / 100) * availableAmount.value!;
 
-            if (alreadyStaked.value === true) {
+            if (alreadyStaked.value) {
                 if (percent < alreadyStakedPercentage.value) {
                     if (!skipSignals) {
                         context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
                     }
-                    if (ENABLED.dualSlider) {
-                        $dualSlider.value!.style.display = 'inline-block';
-                        $dualSlider.value!.style.width = `${(initialX + knobBox.width) - offsetX}px`;
-                        $dualSlider.value!.style.left = `${offsetX}px`;
-                        $dualSlider.value!.style.border = '0.25rem solid var(--nimiq-gold)';
-                        $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
-                        + ', rgba(33, 186, 163, 0.1) 0%, rgba(33, 186, 163, 0.9) 100%)';
-                    }
-                } else {
-                    if (ENABLED.dualSlider && percent > alreadyStakedPercentage.value) {
-                        $dualSlider.value!.style.display = 'inline-block';
-                        $dualSlider.value!.style.width = `${(offsetX - initialX) + knobBox.width}px`;
-                        $dualSlider.value!.style.left = `${initialX}px`;
-                        $dualSlider.value!.style.border = '0';
-                        $dualSlider.value!.style.background = 'radial-gradient(100% 100% at 100% 100%'
-                        + ', #15a2da 0%, #0582ca 100%)';
-                    }
-                    if (!skipSignals) {
-                        context.emit('amount-unstaked', 0);
-                    }
+                } else if (!skipSignals) {
+                    context.emit('amount-unstaked', 0);
                 }
             }
             if (!skipSignals) {
@@ -351,16 +334,13 @@ export default defineComponent({
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
                         + (knobBox.width / 2) - 5}px`;
-                if (!ENABLED.dualSlider) {
-                    fillBackground(0, alreadyStakedPercentage.value);
-                }
+                fillBackground(0, alreadyStakedPercentage.value);
             }
         });
         return {
             NIM_DECIMALS,
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(availableAmount.value!, CryptoCurrency.NIM),
-            ENABLED,
             readonly,
             atClick,
             onMove,
@@ -383,15 +363,8 @@ export default defineComponent({
             $backgroundRightPlant,
             $progressBar,
             $dotIndicator,
-            $dualSlider,
             buildSVG,
         };
-    },
-    props: {
-        stakedAmount: {
-            type: Number,
-            required: true,
-        },
     },
     components: {
         Amount,
@@ -548,16 +521,6 @@ export default defineComponent({
                     top: 0;
                     background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
                     height: 100%;
-                    border-radius: 3rem;
-                }
-                .slider-dual {
-                    display: none;
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    background: none;
-                    height: 100%;
-                    border: 0.25rem solid var(--nimiq-gold);
                     border-radius: 3rem;
                 }
                 .slider-knob {

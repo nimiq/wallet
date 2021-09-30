@@ -8,7 +8,6 @@
             <div slot="trigger">
                 <button class="stake"
                     :class="{
-                        stackattack: stackattack,
                         disabled: !activeAddressInfo || !activeAddressInfo.balance,
                         inverse: inversePalette,
                     }" @click="$router.push('/stake')"
@@ -24,7 +23,6 @@
         <div class="stake"
             v-if="!asButton"
             :class="{
-                stackattack: stackattack,
                 inverse: inversePalette,
             }">
             <StakingHeroIcon />
@@ -38,13 +36,11 @@ import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../../stores/Address';
 import { useAccountStore } from '../../../stores/Account';
 import { useStakingStore } from '../../../stores/Staking';
-import { ENABLED_FEATURES as ENABLED } from '../../widgets/DevBar.vue';
 
 import StakingHeroIcon from '../../icons/Staking/StakingHeroIcon.vue';
 
 export default defineComponent({
     setup() {
-        const stackattack = computed(() => ENABLED.stackattack);
         const { activeAddressInfo } = useAddressStore();
         const { activeCurrency } = useAccountStore();
         const { activeValidator } = useStakingStore();
@@ -53,7 +49,6 @@ export default defineComponent({
 
         return {
             visible,
-            stackattack,
             activeCurrency,
             activeAddressInfo,
         };
@@ -85,27 +80,26 @@ export default defineComponent({
     padding: 0;
     margin-left: 0.5rem;
     transition: opacity 1s ease-in-out;
+
     svg {
         width: 6.75rem;
         height: 6.75rem;
-    }
-    &.stackattack {
-        svg {
-            animation: flicker 15s ease alternate infinite;
-            path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-                animation: fastwave 3s ease alternate infinite;
-            }
-            path:nth-child(1) {
-                animation-delay: .5s;
-            }
-            path:nth-child(2) {
-                animation-delay: .7s;
-            }
-            path:nth-child(4) {
-                animation-delay: .9s;
-            }
+
+        animation: flicker 15s ease alternate infinite;
+        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+            animation: fastwave 3s ease alternate infinite;
+        }
+        path:nth-child(1) {
+            animation-delay: .5s;
+        }
+        path:nth-child(2) {
+            animation-delay: .7s;
+        }
+        path:nth-child(4) {
+            animation-delay: .9s;
         }
     }
+
     &.disabled {
         svg {
             animation: initial;

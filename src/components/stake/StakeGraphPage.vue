@@ -18,7 +18,7 @@
                 </div>
             </template>
         </PageHeader>
-        <PageBody>
+        <PageBody class="flex-column">
             <span class="estimated-rewards-overlay">
                 <Tooltip
                     preferredPosition="bottom right"
@@ -59,20 +59,22 @@
                 @amount-staked="updateStaked"
                 @amount-unstaked="updateUnstaked" />
 
-            <button class="nq-button light-blue stake-button" @click="performStaking">
-                {{ $t('Confirm stake') }}
-            </button>
+            <div>
+                <button class="nq-button light-blue stake-button" @click="performStaking">
+                    {{ $t('Confirm stake') }}
+                </button>
 
-            <div class="disclaimer stake-disclaimer" v-if="unstakedAmount === 0">
-                {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
-            </div>
-            <div class="disclaimer unstake-disclaimer" v-else>
-                <Amount
-                    :decimals="DISPLAYED_DECIMALS"
-                    :amount="unstakedAmount"
-                    :currency="STAKING_CURRENCY"
-                    :currencyDecimals="NIM_DECIMALS" />
-                {{ unstakeDisclaimer }}
+                <div class="disclaimer stake-disclaimer" v-if="unstakedAmount === 0">
+                    {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
+                </div>
+                <div class="disclaimer unstake-disclaimer" v-else>
+                    <Amount
+                        :decimals="DISPLAYED_DECIMALS"
+                        :amount="unstakedAmount"
+                        :currency="STAKING_CURRENCY"
+                        :currencyDecimals="NIM_DECIMALS" />
+                    {{ unstakeDisclaimer }}
+                </div>
             </div>
         </PageBody>
     </div>
@@ -207,8 +209,9 @@ export default defineComponent({
         }
     }
     .page-body {
-        padding: 0;
+        padding: 0 0 2rem 0;
         position: relative;
+        justify-content: space-between;
         flex-grow: 1;
 
         .estimated-rewards-overlay {
@@ -236,7 +239,6 @@ export default defineComponent({
         }
 
         .stake-amount-slider {
-            margin-top: 9.875rem;
         }
 
         .stake-button {
@@ -260,7 +262,7 @@ export default defineComponent({
     }
 
     .nq-text {
-        margin: 1rem 0;
+        margin: 1rem 0 1.5rem;
     }
 
     @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint

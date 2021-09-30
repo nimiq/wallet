@@ -231,7 +231,6 @@ export default defineComponent({
         width: 110rem;
         text-align: center;
         position: relative;
-        top: 1rem;
         left: -13.625rem;
         flex-direction: column;
         margin: 0;

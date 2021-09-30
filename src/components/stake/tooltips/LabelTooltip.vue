@@ -1,34 +1,30 @@
 <template>
     <Tooltip class="validator-label-tip"
-        preferredPosition="bottom right">
-        <div slot="trigger"
-            class="validator-label-trigger"
-            :class="{'dry-trigger': isDry}">
-            <InfoCircleSmallIcon v-if="!isDry" />
-            <span v-else>
-                <img :src="`/img/staking/providers/${validatorData.icon}`" />
-                <span class="label">
-                    {{ validatorData.label }}
-                </span>
-            </span>
+        preferredPosition="bottom right"
+        :styles="{width: '40rem', 'text-align': 'left'}"
+    >
+        <div slot="trigger" class="validator-label-trigger flex-row">
+            <img :src="`/img/staking/providers/${validatorData.icon}`" />
+            {{ validatorData.label }}
         </div>
-        <span class="validator-label-text">
-            {{ $t('{validatorDescription}', { validatorDescription: validatorData.labelHeaderText }) }}
-        </span>
+
+        <p class="validator-label-text">
+            {{ validatorData.labelHeaderText }}
+        </p>
         <p class="validator-label-explainer">
-            {{ $t('{disclaimer}', { disclaimer: stakingData.validatorLabelDisclaimer }) }}
+            {{ stakingData.validatorLabelDisclaimer }}
         </p>
         <br />
-        <a :href="validatorData.link" target="_blank" class="validator-website-link nq-light-blue">
-            {{ $t('{brandName} Website', { brandName: validatorData.label }) }}
-            <ArrowRightSmallIcon />
-        </a>
+        <BlueLink :href="validatorData.link" target="_blank" rel="noopener">
+            {{ $t('{poolName} Website', { poolName: validatorData.label }) }}
+        </BlueLink>
     </Tooltip>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { ArrowRightSmallIcon, InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
+import { Tooltip } from '@nimiq/vue-components';
+import BlueLink from '../../BlueLink.vue';
 import { ValidatorData, StakingData } from '../../../stores/Staking';
 
 export default defineComponent({
@@ -36,11 +32,6 @@ export default defineComponent({
         return {};
     },
     props: {
-        isDry: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
         validatorData: {
             type: Object as () => ValidatorData,
             required: true,
@@ -52,8 +43,7 @@ export default defineComponent({
     },
     components: {
         Tooltip,
-        ArrowRightSmallIcon,
-        InfoCircleSmallIcon,
+        BlueLink,
     },
 });
 </script>
@@ -65,48 +55,29 @@ export default defineComponent({
         height: 1.5rem;
         opacity: 0.6;
     }
-    &.dry-trigger {
-        border: .1875rem solid rgba(31, 35, 72, 0.15);
-        padding: .1rem;
-        padding-left: 0;
-        padding-right: 1rem;
-        margin-right: .75rem;
-        box-sizing: border-box;
-        border-radius: 1.75rem;
-        white-space: nowrap;
-        height: 3.25rem;
-        span {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
 
-            .label {
-                height: 1.75rem;
-                padding: .375rem;
-                padding-left: .5rem;
-                padding-right: 0rem;
-                font-size: 1.75rem;
-                font-weight: 600;
-                color: var(--nimiq-blue);
-                opacity: 0.6;
-                white-space: nowrap;
-            }
-            img {
-                display: inline-block;
-                width: 2.75rem;
-                height: 2.75rem;
-            }
-        }
+    align-items: center;
+    box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
+    padding: 0 1.375rem 0 0.25rem;
+    border-radius: 5rem;
+    white-space: nowrap;
+    height: 3.25rem;
+    line-height: 3.25rem;
+
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--text-60);
+
+    img {
+        width: 2.75rem;
+        height: 2.75rem;
+        margin-right: 0.75rem;
     }
 }
 .validator-label-text {
-    display: flex;
     margin-left: .75rem;
     padding-left: 1.25rem;
 
-    font-family: Muli, system-ui, sans-serif;
     font-weight: 600;
     font-size: 2rem;
     line-height: 130%;
@@ -125,17 +96,7 @@ export default defineComponent({
     width: 31.5rem;
 }
 
-.validator-website-link {
-    display: inline-block;
-    margin-top: 1rem;
-    align-self: center;
-    font-size: 2rem;
-    font-weight: bold;
-    text-decoration: none;
-    white-space: nowrap;
-    svg {
-        padding-top: 0.625rem;
-        display: inline-block;
-    }
+.blue-link {
+    color: var(--nimiq-light-blue-on-dark);
 }
 </style>

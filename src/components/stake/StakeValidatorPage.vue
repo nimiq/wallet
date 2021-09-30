@@ -5,9 +5,9 @@
                 {{ $t('Choose a Validator') }}
             </template>
             <template #more>
-                <span class="nq-text nq-blue">
+                <p class="nq-text nq-blue">
                     {{ $t('Earn rewards by locking NIM in a validator. Locked NIM stay in your wallet.') }}
-                </span>
+                </p>
             </template>
         </PageHeader>
         <PageBody>
@@ -163,12 +163,9 @@ export default defineComponent({
         }
     }
     .nq-text {
-        display: inline-block;
         margin-top: .875rem;
-        margin-bottom: .25rem;
-        font-size: 2rem;
+        margin-bottom: 0.5rem;
         line-height: 1.4;
-        color: var(--nimiq-blue);
     }
 
     @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint

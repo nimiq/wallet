@@ -1,5 +1,5 @@
 <template>
-    <div class="validator-filter">
+    <div class="stake-validator-filter">
         <div class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH">
             <button class="validator-switch" :class="{ selected: state === FilterState.TRUST }"
                 @click="state = FilterState.TRUST">
@@ -49,17 +49,18 @@ export default defineComponent({
         const $search = ref<HTMLInputElement>();
 
         watch(state, () => context.emit('changed', state.value));
+
+        function enableSearch() {
+            state.value = FilterState.SEARCH;
+            context.root.$nextTick(() => $search.value?.focus());
+        }
+
         return {
             state,
             FilterState,
             $search,
-            enableSearch: () => {
-                state.value = FilterState.SEARCH;
-                setTimeout(() => $search.value?.focus(), 0);
-            },
+            enableSearch,
         };
-    },
-    props: {
     },
     components: {
         FatSearchIcon,
@@ -70,7 +71,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validator-filter {
+.stake-validator-filter {
     width: 38rem;
     height: 3.75rem;
     margin: auto;
@@ -78,12 +79,13 @@ export default defineComponent({
     white-space: nowrap;
 
     .validator-filter-wrapper {
-        background-color: #f2f2f4;
+        background-color: var(--text-6);
         height: 3.75rem;
         border-radius: 2rem;
         padding: 0;
-        padding-top: .125rem;
+        padding-left: .25rem;
         white-space: nowrap;
+        overflow: hidden;
 
         .validator-switch {
             font-family: Muli, Helvetica, serif;
@@ -102,10 +104,18 @@ export default defineComponent({
             line-height: 1.75rem;
             text-align: center;
 
-            color: #9c9eae;
+            color: var(--text-50);
             cursor: pointer;
+
+            transition: color 0.3s;
+
             * {
                 select: none;
+            }
+
+            &:hover,
+            &:focus {
+                color: var(--text-80);
             }
 
             &.selected {
@@ -193,6 +203,7 @@ export default defineComponent({
             cursor: pointer;
             border: 0;
             background: transparent;
+            color: #0582CA;
         }
     }
 }

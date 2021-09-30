@@ -135,8 +135,6 @@ export default defineComponent({
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);
 
-        let initialX = 0;
-
         const estimateTextWidth = (text: string, defaultSize: number, options:Record<string, number> = { ' ': 3 }) => {
             let result = 0;
             let special = 0;
@@ -329,7 +327,6 @@ export default defineComponent({
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value!));
             pivotPoint = { x: 0, y: knobBox.y } as Point;
-            initialX = getPointAtPercent(alreadyStakedPercentage.value);
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)

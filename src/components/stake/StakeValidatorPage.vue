@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="stake-validator-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
                 {{ $t('Choose a Validator') }}
@@ -17,12 +17,12 @@
                 <div class="scroll-container">
                     <div class="validator-list">
                         <StakeValidatorListItem
-                            v-for="(validatorData) in sortedList" :key="validatorData.name"
+                            v-for="validatorData in sortedList" :key="validatorData.name"
                             :prop="validatorData.name"
                             :validatorData="validatorData"
                             :stakingData="stakingData"
                             :validatorsList="validatorsList"
-                            :selectValidator="selectValidator"
+                            @click.native="selectValidator(validatorData)"
                             @focus="onValidatorFocusChange"
                             sortable
                         />
@@ -43,12 +43,26 @@ import StakeValidatorFilter, { FilterState } from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 
 export default defineComponent({
+    props: {
+        validatorsList: {
+            type: Array as () => ValidatorData[],
+            required: true,
+        },
+        stakingData: {
+            type: Object as () => StakingData,
+            required: true,
+        },
+        setValidator: {
+            type: Function as () => unknown,
+            required: true,
+        },
+    },
     setup(props) {
         const masks = ref(true);
         const onValidatorFocusChange = (state:boolean) => {
             masks.value = !state;
         };
-        const sortedList = ref(props.validatorsList.map((i) => i));
+        const sortedList = ref(props.validatorsList.slice());
         const doSort = (state: FilterState) => {
             switch (state) {
                 case FilterState.TRUST: {
@@ -77,20 +91,6 @@ export default defineComponent({
             doSort,
         };
     },
-    props: {
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
-        setValidator: {
-            type: Function as () => unknown,
-            required: true,
-        },
-    },
     components: {
         PageHeader,
         PageBody,
@@ -103,22 +103,16 @@ export default defineComponent({
 <style lang="scss" scoped>
     @import '../../scss/mixins.scss';
 
-    .page-header {
-        padding-top: .5rem;
-        margin-left: -.25rem;
-        line-height: 1;
-        height: 16rem;
-        /deep/ .nq-h1 {
-            color: var(--nimiq-blue);
-            padding-top: 3.25rem;
-            font-size: 3rem;
-        }
+    .stake-validator-page {
+        flex-grow: 1;
     }
+
+    .page-header {
+        padding-bottom: 1rem;
+    }
+
     .page-body {
-        padding-top: 1rem;
-        padding-left: 1rem;
-        padding-right: 0;
-        max-height: 52.25rem;
+        padding: 1rem 0;
         overflow: hidden;
 
         .mask-container {
@@ -130,7 +124,6 @@ export default defineComponent({
 
         .scroll-container {
             overflow-y: auto;
-            height: 45.75rem;
             @extend %custom-scrollbar;
             &::-webkit-scrollbar {
                 width: 0.75rem;
@@ -172,7 +165,7 @@ export default defineComponent({
         margin-top: .875rem;
         margin-bottom: .25rem;
         font-size: 2rem;
-        line-height: 140%;
+        line-height: 1.4;
         color: var(--nimiq-blue);
     }
 

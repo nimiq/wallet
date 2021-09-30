@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="stake-info-page flex-column">
         <PageHeader>
             <template #default>
                 <div class="staking-icon">
@@ -8,18 +8,18 @@
                 {{ $t('Stake NIM to earn NIM') }}
             </template>
             <template #more>
-                <span class="nq-text nq-blue">
+                <p class="nq-text nq-blue">
                     {{ $t('Help secure the network by locking up NIM and get a percentage as a reward.') }}
-                </span>
+                </p>
             </template>
         </PageHeader>
         <PageBody>
-            <div class="staking-rounded-background">
+            <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
                     <img v-for="(icon, index) in orderOfValidators"
                         :key="index"
                         :src="`/img/staking/providers/${icon}`"
-                        :style="{top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`}"
+                        :style="{top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`}"
                     />
                 </div>
                 <div class="staking-under-icons-text">
@@ -27,7 +27,7 @@
                         + ' Choose one to stake on your behalf, set an amount and go.') }}
                 </div>
                 <button class="nq-button light-blue stake-button" @click="$emit('next')">
-                    {{ $t('let\'s go') }}
+                    {{ $t('Let\'s go') }}
                 </button>
             </div>
         </PageBody>
@@ -76,13 +76,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    .stake-info-page {
+        flex-grow: 1;
+    }
+
     .page-header {
         height: 36.625rem;
         padding-top: 3rem;
         line-height: 1;
+
         /deep/ .nq-h1 {
-            font-size: 3rem;
-            color: var(--nimiq-blue);
+            font-size: var(--h1-size);
         }
         .staking-icon {
             margin-top: .75rem;
@@ -96,35 +100,23 @@ export default defineComponent({
     .page-body {
         padding: 0;
         margin: 0;
-        height: 31rem;
+        flex-grow: 1;
+
         .staking-rounded-background {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             background-image: url('/img/staking/background-collar.svg');
             background-size: cover;
             background-position: 0rem -1rem;
             background-repeat: no-repeat;
-            text-align: center;
-            .staking-under-icons-text {
-                font-size: 1.75rem;
-                font-weight: 600;
-                padding: 7.625rem 2rem;
-                padding-bottom: 1.25rem;
-                line-height: 2.45rem;
-                text-align: center;
-                color: #231044;
-                opacity: 0.6;
-                width: 95%;
-                margin: auto;
-            }
+            padding-bottom: 2rem;
+            height: 100%;
+
             .staking-icons-lace {
                 position: relative;
-                top: 3.0rem;
-                left: -3.25rem;
+                left: -2rem;
+                margin-top: 3rem;
                 white-space: nowrap;
-                width: 95%;
-                margin: auto;
+                flex-grow: 1;
+                min-height: 9rem;
 
                 img {
                     position: relative;
@@ -133,34 +125,30 @@ export default defineComponent({
                     margin-left: .81rem;
                 }
             }
+
+            .staking-under-icons-text {
+                font-size: var(--small-size);
+                font-weight: 600;
+                padding: 0 4rem;
+                padding-bottom: 1.25rem;
+                line-height: 2.45rem;
+                text-align: center;
+                color: var(--text-60);
+            }
+
             .stake-button {
-                height: 8rem;
                 width: 31.5rem;
-                font-weight: bold;
-                font-size: 2rem;
-                line-height: 2.5rem;
-                letter-spacing: 0.1875rem;
             }
         }
     }
 
     .nq-text {
-        display: inline-block;
-        margin-top: 1.25rem;
+        margin: 1.25rem 0 0;
         padding: 0rem 1rem;
-        font-size: 2rem;
-        font-weight: 400;
-        line-height: 140%;
-        color: #231044;
-    }
-
-    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
     }
 
     @media (max-width: 700px) { // Full mobile breakpoint
         .page-header {
-            height: 36.625rem;
-            padding-top: 3.5rem;
             .staking-icon {
                 margin-top: 1.375rem;
                 margin-bottom: 1.25rem;
@@ -169,55 +157,25 @@ export default defineComponent({
                     height: 16rem;
                 }
             }
-            /deep/ .nq-h1 {
-                font-size: 2.75rem;
-                font-weight: 700;
-                line-height: 3.3rem;
-                color: var(--nimiq-blue);
-            }
         }
+
         .page-body {
-            padding: 0;
-            margin-top: -1.375rem;
-            height: 32.375rem;
             .staking-rounded-background {
-                .staking-under-icons-text {
-                    position: relative;
-                    left: .125rem;
-                    padding-top: 7.75rem;
-                    padding-bottom: .25rem;
-                    width: 37rem;
-                    font-weight: 600;
-                    font-size: 1.625rem;
-                    line-height: 140%;
-                }
                 .staking-icons-lace {
-                    position: relative;
-                    top: 2.5rem;
+                    margin-top: 2.5rem;
                     img {
                         margin-left: .65rem;
                         width: 4.75rem;
                         height: 4.75rem;
                     }
                 }
-                .stake-button {
-                    position: relative;
-                    top: -.25rem;
-                    left: .25rem;
-                    height: 7rem;
-                    width: 34rem;
-                    font-size: 1.875rem;
-                    letter-spacing: 0.1875rem;
+                .staking-under-icons-text {
+                    padding-bottom: .25rem;
                 }
             }
         }
         .nq-text {
-            font-size: 1.875rem;
-            margin-top: 1rem;
-            margin-left: .25rem;
-            line-height: 2.5rem;
-            font-weight: 600;
-            opacity: 0.8;
+            margin: 1rem 0 0;
         }
     }
 </style>

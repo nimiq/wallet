@@ -1,10 +1,10 @@
 <template>
-    <span v-if="visible">
+    <span v-if="stake">
         <div class="stake-preview"
-            :class="{ dark: validator.unstakePending }">
+            :class="{ dark: stake.inactiveStake }">
             <div class="stake-preview-background"
-                :class="{ dark: validator.unstakePending }">
-                <img :src="validator.unstakePending
+                :class="{ dark: stake.inactiveStake }">
+                <img :src="stake.inactiveStake
                     ? '/img/staking/graph-preview-white.png'
                     : '/img/staking/graph-preview-black.png'" />
             </div>
@@ -14,12 +14,12 @@
                         <StakingIcon /> staked
                     </div>
                     <div class="bottom-left">
-                        {{ formatAmount(validator.stakedAmount, NIM_MAGNITUDE) }} NIM
+                        <Amount :amount="stake.activeStake"/>
                     </div>
                 </div>
                 <div class="col">
                     <div class="top-right">
-                        + {{ formatAmount(validator.unclaimedReward, NIM_MAGNITUDE) }} NIM
+                        <Amount :amount="0"/>
                     </div>
                     <div class="bottom-right">
                         <a href="javascript:void(0)"
@@ -34,28 +34,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
+import { Amount } from '@nimiq/vue-components';
 import { useStakingStore } from '../../../stores/Staking';
-import { formatAmount } from '../../../lib/NumberFormatting';
-
 import StakingIcon from '../../icons/Staking/StakingIcon.vue';
-import { NIM_MAGNITUDE } from '../../../lib/Constants';
 
 export default defineComponent({
     setup() {
-        const { activeValidator } = useStakingStore();
-        const validator = activeValidator;
-        const visible = computed(() => validator.value && validator.value.stakedAmount > 0);
+        const { activeValidator: validator, activeStake: stake } = useStakingStore();
 
         return {
-            visible,
             validator,
-            formatAmount,
-            NIM_MAGNITUDE,
+            stake,
         };
     },
     components: {
         StakingIcon,
+        Amount,
     },
 });
 </script>

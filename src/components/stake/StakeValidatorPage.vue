@@ -11,18 +11,15 @@
             </template>
         </PageHeader>
         <PageBody>
-            <StakeValidatorFilter @changed="doSort" />
+            <StakeValidatorFilter @changed="changeFilter" />
             <div class="mask-container">
                 <div class="scroll-mask-top" :class="{ 'disabled-mask': !masks }"></div>
                 <div class="scroll-container">
                     <div class="validator-list">
                         <StakeValidatorListItem
-                            v-for="validatorData in sortedList" :key="validatorData.name"
-                            :prop="validatorData.name"
-                            :validatorData="validatorData"
-                            :stakingData="stakingData"
-                            :validatorsList="validatorsList"
-                            @click.native="selectValidator(validatorData)"
+                            v-for="validator in sortedList" :key="validator.address"
+                            :validatorData="validator"
+                            @click.native="selectValidator(validator.address)"
                             @focus="onValidatorFocusChange"
                             sortable
                         />
@@ -36,60 +33,66 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { StakingData, ValidatorData } from '../../stores/Staking';
+import { useStakingStore } from '../../stores/Staking';
 
 import StakeValidatorFilter, { FilterState } from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
-    props: {
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
-        setValidator: {
-            type: Function as () => unknown,
-            required: true,
-        },
-    },
-    setup(props) {
+    setup(props, context) {
         const masks = ref(true);
-        const onValidatorFocusChange = (state:boolean) => {
+        const onValidatorFocusChange = (state: boolean) => {
             masks.value = !state;
         };
-        const sortedList = ref(props.validatorsList.slice());
-        const doSort = (state: FilterState) => {
-            switch (state) {
-                case FilterState.TRUST: {
-                    sortedList.value.sort((a, b) => b.trust - a.trust);
-                    break;
-                }
-                case FilterState.PAYOUT: {
-                    sortedList.value.sort((a, b) => a.payout - b.payout);
-                    break;
-                }
-                case FilterState.REWARD: {
-                    sortedList.value.sort((a, b) => b.reward - a.reward);
-                    break;
-                }
-                default: {
-                    //
-                }
+
+        const filter = ref(FilterState.TRUST);
+
+        function changeFilter(newFilter: FilterState) {
+            filter.value = newFilter;
+        }
+
+        const { activeAddress } = useAddressStore();
+        const { validatorsList, activeStake, setStake } = useStakingStore();
+
+        const sortedList = computed(() => {
+            switch (filter.value) {
+                case FilterState.PAYOUT:
+                    return validatorsList.value.slice()
+                        .sort((a, b) => ('payout' in b ? b.payout : 0) - ('payout' in a ? a.payout : 0));
+                case FilterState.REWARD:
+                    return validatorsList.value.slice()
+                        .sort((a, b) => ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0));
+                default:
+                    return validatorsList.value.slice()
+                        .sort((a, b) => ('trust' in b ? b.trust : 0) - ('trust' in a ? a.trust : 0));
             }
-        };
+        });
+
+        function selectValidator(address: string) {
+            // TODO: Trigger rededicate tx signing
+
+            const currentStake = activeStake.value || {
+                address: activeAddress.value!,
+                activeStake: 0,
+                inactiveStake: 0,
+                validator: address,
+            };
+
+            currentStake.validator = address;
+            setStake(currentStake);
+
+            context.emit('next');
+        }
 
         return {
             masks,
+            changeFilter,
             sortedList,
-            selectValidator: props.setValidator,
+            selectValidator,
             onValidatorFocusChange,
-            doSort,
         };
     },
     components: {

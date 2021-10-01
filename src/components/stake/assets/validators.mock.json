@@ -1,12 +1,12 @@
 [
   {
-    "name": "overstake",
+    "address": "overstake",
     "icon": "overstake.svg",
     "label": "Overstake",
     "trust": 5.0,
     "payout": 43200000,
     "reward": 4.9,
-    "labelHeaderText": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
+    "description": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 2,
@@ -16,13 +16,13 @@
     "unstakePending": false
   },
   {
-    "name": "nimiq-watch",
+    "address": "nimiq-watch",
     "icon": "nimiq-watch.svg",
     "label": "Nimiq Watch",
     "trust": 4.99,
     "payout": 43200000,
     "reward": 5.1,
-    "labelHeaderText": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
+    "description": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 48,
@@ -32,13 +32,13 @@
     "unstakePending": false
   },
   {
-    "name": "nimpool",
+    "address": "nimpool",
     "icon": "nimpool.svg",
     "label": "NimPool",
     "trust": 4.98,
     "payout": 604800000,
     "reward": 2.4,
-    "labelHeaderText": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
+    "description": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
     "link": "https://www.nimiq.com",
     "uptime": 99,
     "monthsOld": 48,
@@ -48,13 +48,13 @@
     "unstakePending": false
   },
   {
-    "name": "icestaking",
+    "address": "icestaking",
     "icon": "icestaking.png",
     "label": "Icestaking",
     "trust": 1.28,
     "payout": 86400000,
     "reward": 8.3,
-    "labelHeaderText": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
+    "description": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
     "link": "https://www.nimiq.com",
     "uptime": 84,
     "monthsOld": 48,
@@ -64,13 +64,13 @@
     "unstakePending": false
   },
   {
-    "name": "acestaking",
+    "address": "acestaking",
     "icon": "ace-staking.png",
     "label": "Ace Staking",
     "trust": 1.28,
     "payout": 21600000,
     "reward": 7.1,
-    "labelHeaderText": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
+    "description": "We denounce with righteous indignation and dislike men who are so beguiled and. Demoralized by the charms of pleasure of the moment, so blinded by desire, that.",
     "link": "https://www.nimiq.com",
     "uptime": 80,
     "monthsOld": 48,

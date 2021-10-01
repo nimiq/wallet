@@ -1,29 +1,40 @@
 import { createStore } from 'pinia';
+import { useAddressStore } from './Address';
+
+import mockValidators from '../components/stake/assets/validators.mock.json';
 
 export type StakingState = {
-    activeValidator: ValidatorData | null,
+    validators: {[id: string]: ValidatorData},
+    addressStakes: {[address: string]: AddressStake},
 }
 
-export type ValidatorData = {
-    id: string | null,
-    name: string | null,
-    icon: string | null,
-    label: string | null,
-    trust: number | 0,
-    payout: number | 0,
-    reward: number | 0,
-    labelHeaderText: string | null,
-    link: string | null,
-    uptime: number | 0,
-    monthsOld: number | 0,
-    dominance: number | 0,
-    stakedAmount: number | 0,
-    unclaimedReward: number | 0,
-    stakeAge: number | 0, // in seconds
-    stakeSessionRewards: number | 0,
-    stakePending: boolean | false,
-    unstakePending: boolean | false,
+export type AddressStake = {
+    address: string,
+    activeStake: number,
+    inactiveStake: number,
+    validator: string,
 }
+
+export type RawValidator = {
+    address: string,
+    dominance: number, // Percentage
+}
+
+export type RegisteredValidator = {
+    address: string,
+    label: string,
+    icon: string,
+    trust: number,
+    payout: number,
+    reward: number,
+    description: string,
+    link: string | null,
+    uptime: number, // Percentage
+    monthsOld: number,
+    dominance: number, // Percentage
+}
+
+export type ValidatorData = RawValidator | RegisteredValidator;
 
 export type StakingScoringRules = any
 
@@ -37,14 +48,71 @@ export type StakingData = {
 export const useStakingStore = createStore({
     id: 'staking',
     state: () => ({
-        activeValidator: null,
+        // TODO: Remove mock data, replace with loader on network init
+        validators: Object.fromEntries(mockValidators
+            .map((validator) => [validator.address, validator])),
+        addressStakes: {},
     } as StakingState),
     getters: {
-        activeValidator: (state) => state.activeValidator,
+        validatorsList: (state) => Object.values(state.validators),
+        activeStake: (state) => {
+            const { activeAddress } = useAddressStore();
+            if (!activeAddress.value) return null;
+            return state.addressStakes[activeAddress.value] || null;
+        },
+        activeValidator: (state, { activeStake }): ValidatorData | null => {
+            const stake = activeStake.value as AddressStake | null;
+            if (!stake) return null;
+            return state.validators[stake.validator] || null;
+        },
     },
     actions: {
-        selectValidator(validator: ValidatorData) {
-            this.state.activeValidator = validator;
+        setStake(stake: AddressStake) {
+            // Need to assign whole object for change detection of new addresses.
+            // TODO: Simply set new stake in Vue 3.
+            this.state.addressStakes = {
+                ...this.state.addressStakes,
+                [stake.address]: stake,
+            };
+        },
+        setStakes(stakes: AddressStake[]) {
+            const newStakes: {[address: string]: AddressStake} = {};
+
+            for (const stake of stakes) {
+                newStakes[stake.address] = stake;
+            }
+
+            this.state.addressStakes = newStakes;
+        },
+        patchStake(address: string, patch: Partial<Omit<AddressStake, 'address'>>) {
+            if (!this.state.addressStakes[address]) return;
+
+            this.state.addressStakes[address] = {
+                ...this.state.addressStakes[address],
+                ...patch,
+            };
+        },
+        removeStake(address: string) {
+            const stakes = { ...this.state.addressStakes };
+            delete stakes[address];
+            this.state.addressStakes = stakes;
+        },
+        setValidator(validator: ValidatorData) {
+            // Need to assign whole object for change detection of new addresses.
+            // TODO: Simply set new validator in Vue 3.
+            this.state.validators = {
+                ...this.state.validators,
+                [validator.address]: validator,
+            };
+        },
+        setValidators(validators: ValidatorData[]) {
+            const newValidators: {[address: string]: ValidatorData} = {};
+
+            for (const validator of validators) {
+                newValidators[validator.address] = validator;
+            }
+
+            this.state.validators = newValidators;
         },
     },
 });

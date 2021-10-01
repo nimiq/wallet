@@ -1,7 +1,15 @@
 <template>
     <div class="staked-already-page flex-column">
         <PageHeader :backArrow="false">
-            {{ $t('Staking with {validator}', { validator: validator.label }) }}
+            <template v-if="validator">
+                {{ $t(
+                    'Staking with {validator}',
+                    { validator: 'label' in validator ? validator.label : validator.address.substr(0, 9) },
+                ) }}
+            </template>
+            <template v-else>
+                {{ $t('Staking') }}
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <span class="estimated-rewards-overlay">
@@ -24,8 +32,8 @@
                     </p>
                 </Tooltip>
             </span>
-            <StakingGraph :stakedAmount="currentStake"
-                :apy="validator.reward" :readonly="true"
+            <StakingGraph :stakedAmount="stake ? stake.activeStake : 0"
+                :apy="validator && 'reward' in validator ? validator.reward : 0" :readonly="true"
                 :period="{
                     s: NOW,
                     p: 12,
@@ -33,7 +41,7 @@
                 }"
                 :key="graphUpdate" />
 
-            <div>
+            <div v-if="stake">
                 <span class="nq-label flex-row section-title">
                     <StakingIcon />
                     Staked
@@ -41,12 +49,7 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            {{ format(validator.stakedAmount, NIM_MAGNITUDE) }} NIM
-                            <!-- <Amount ref="$stakedNIMAmount"
-                                :decimals="DISPLAYED_DECIMALS"
-                                :amount="validator.stakedAmount"
-                                :currency="STAKING_CURRENCY"
-                                :currencyDecimals="NIM_DECIMALS" /> -->
+                            <Amount :amount="stake.activeStake"/>
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
@@ -59,23 +62,25 @@
 
             <div class="horizontal-separator" />
 
-            <div>
+            <div v-if="validator">
                 <span class="nq-label flex-row section-title">
                     Validator
                 </span>
                 <div class="row flex-row">
                     <div class="validator flex-grow">
                         <div class="validator-top flex-row">
-                            <img class="validator-icon" :src="`/img/staking/providers/${validator.icon}`">
-                            {{ validator.label }}
-                            <ValidatorRewardBubble :reward="validator.reward" />
+                            <img v-if="'icon' in validator"
+                                class="validator-icon"
+                                :src="`/img/staking/providers/${validator.icon}`"
+                            />
+                            <Identicon v-else class="validator-icon" :address="validator.address"/>
+                            {{ 'label' in validator  ? validator.label : validatorData.address.substr(0, 9) }}
+                            <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
                         </div>
                         <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore :score="validator.trust" />
+                            <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
                             <img src="/img/staking/dot.svg" />
-                            <div class="validator-payout">
-                                {{ getPayoutText(validator.payout) }}
-                            </div>
+                            <div class="validator-payout">{{ payoutText }}</div>
                         </div>
                     </div>
                     <button class="nq-button-s switch-validator" @click="$emit('switch-validator')">
@@ -84,24 +89,22 @@
                 </div>
             </div>
 
-            <button class="nq-button-s rewards-history" @click="$emit('next')">
+            <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
                 {{ $t('Rewards history') }} &gt;
-            </button>
+            </button> -->
         </PageBody>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
-import { ValidatorData, StakingData } from '../../stores/Staking';
+import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
-import { i18n } from '../../i18n/i18n-setup';
 import { getPayoutText } from '../../lib/StakingUtils';
 
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
@@ -109,34 +112,25 @@ import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 
 export default defineComponent({
-    setup(props) {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
+        const { activeStake: stake, activeValidator: validator } = useStakingStore();
 
         const graphUpdate = ref(0);
-        const availableBalance = ref(activeAddressInfo.value?.balance || 0);
-        const validator = props.activeValidator;
-        //
-        const currentStake = ref(validator.stakedAmount);
+        const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
+
         const unstakedAmount = ref(0);
-        const alreadyStaked = ref(currentStake.value > 0.0 && validator !== null);
+        const alreadyStaked = ref(!!stake.value && !!validator);
 
-        const updateStaked = (amount: number) => {
-            if (amount !== currentStake.value) {
-                currentStake.value = amount;
-            }
-        };
-        const updateUnstaked = (amount: number) => {
-            if (amount !== unstakedAmount.value) {
-                unstakedAmount.value = amount;
-            }
-        };
-        const updateGraph = () => {
-            graphUpdate.value += 1;
-        };
-
-        const percentage = ref(
-            (availableBalance.value > 0) ? ((100 * validator.stakedAmount) / availableBalance.value) : 0,
+        const percentage = computed(() => availableBalance.value > 0
+            ? ((stake.value?.activeStake || 0) / availableBalance.value) * 100
+            : 0,
         );
+
+        const payoutText = computed(() => validator.value && 'payout' in validator.value
+            ? getPayoutText(validator.value.payout)
+            : context.root.$t('Unregistered validator'));
+
         return {
             NOW,
             MONTH,
@@ -144,44 +138,26 @@ export default defineComponent({
             NIM_MAGNITUDE,
             STAKING_CURRENCY: CryptoCurrency.NIM,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
-            unstakeDisclaimer: i18n.t(
+            unstakeDisclaimer: context.root.$t(
                 'will be available within ~{duration}',
                 { duration: '12 hours' },
             ),
             format: formatAmount,
             graphUpdate,
-            currentStake,
+            stake,
             validator,
             alreadyStaked,
             availableBalance,
             unstakedAmount,
-            updateStaked,
-            updateUnstaked,
-            updateGraph,
             percentage,
-            getPayoutText,
+            payoutText,
         };
-    },
-    props: {
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
-        activeValidator: {
-            type: Object as () => ValidatorData,
-            required: true,
-        },
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
     },
     components: {
         PageHeader,
         PageBody,
         StakingIcon,
         StakingGraph,
-        StakeValidatorListItem,
         Amount,
         Tooltip,
         InfoCircleSmallIcon,

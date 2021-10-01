@@ -16,7 +16,7 @@
         <PageBody>
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
-                    <img v-for="(icon, index) in orderOfValidators"
+                    <img v-for="(icon, index) in sortedIcons.slice().reverse().concat(sortedIcons.slice(1))"
                         :key="index"
                         :src="`/img/staking/providers/${icon}`"
                         :style="{top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`}"
@@ -35,37 +35,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { ValidatorData } from '../../stores/Staking';
+import { RegisteredValidator, useStakingStore } from '../../stores/Staking';
 import StakingHeroIcon from '../icons/Staking/StakingHeroIcon.vue';
 
-const progression = (i:number, n:number) => {
-    if (n % 2 === 0) {
-        throw new Error('Invalid progression scale(not an odd number)!');
-    }
-    const leg = (n - 1) / 2.0;
-    const d = Math.max(0, (i >= leg) ? ((leg + 1) - (n - i)) : (leg - i)) / n;
-    return 1.0 - d;
-};
+// const progression = (i:number, n:number) => {
+//     if (n % 2 === 0) {
+//         throw new Error('Invalid progression scale(not an odd number)!');
+//     }
+//     const leg = (n - 1) / 2.0;
+//     const d = Math.max(0, (i >= leg) ? ((leg + 1) - (n - i)) : (leg - i)) / n;
+//     return 1.0 - d;
+// };
 
 export default defineComponent({
-    setup(props) {
-        const sortedSequence = props.validatorsList.sort((a, b) => b.trust - a.trust).map(
-            (validator: ValidatorData) => validator.icon,
-        );
+    setup() {
+        const sortedIcons = computed(() => (useStakingStore().validatorsList.value
+            .filter((validator) => 'icon' in validator) as RegisteredValidator[])
+            .sort((a, b) => b.trust - a.trust)
+            .map((validator) => validator.icon));
+
         return {
-            progression,
-            orderOfValidators: sortedSequence.reverse().concat(
-                sortedSequence.filter((item, index) => (index > 0)),
-            ),
+            // progression,
+            sortedIcons,
         };
-    },
-    props: {
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
     },
     components: {
         PageHeader,

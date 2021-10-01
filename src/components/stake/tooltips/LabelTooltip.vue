@@ -4,45 +4,42 @@
         :styles="{width: '40rem', 'text-align': 'left'}"
     >
         <div slot="trigger" class="validator-label-trigger flex-row">
-            <img :src="`/img/staking/providers/${validatorData.icon}`" />
-            {{ validatorData.label }}
+            <img v-if="'icon' in validatorData" :src="`/img/staking/providers/${validatorData.icon}`" />
+            <Identicon v-else :address="validatorData.address"/>
+            {{ 'label' in validatorData ? validatorData.label : validatorData.address.substr(0, 9) }}
         </div>
 
-        <p class="validator-label-text">
-            {{ validatorData.labelHeaderText }}
-        </p>
-        <p class="validator-label-explainer">
-            {{ stakingData.validatorLabelDisclaimer }}
-        </p>
-        <br />
-        <BlueLink :href="validatorData.link" target="_blank" rel="noopener">
-            {{ $t('{poolName} Website', { poolName: validatorData.label }) }}
-        </BlueLink>
+        <template v-if="'description' in validatorData">
+            <p class="validator-label-text">
+                {{ validatorData.description }}
+            </p>
+            <p class="validator-label-explainer">
+                {{ $t('The validator is solely responsible for information provided above.') }}
+            </p>
+            <br />
+            <BlueLink v-if="validatorData.link" :href="validatorData.link" target="_blank" rel="noopener">
+                {{ $t('{poolName} Website', { poolName: validatorData.label }) }}
+            </BlueLink>
+        </template>
     </Tooltip>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { Tooltip } from '@nimiq/vue-components';
+import { Tooltip, Identicon } from '@nimiq/vue-components';
 import BlueLink from '../../BlueLink.vue';
-import { ValidatorData, StakingData } from '../../../stores/Staking';
+import { ValidatorData } from '../../../stores/Staking';
 
 export default defineComponent({
-    setup() {
-        return {};
-    },
     props: {
         validatorData: {
             type: Object as () => ValidatorData,
             required: true,
         },
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
     },
     components: {
         Tooltip,
+        Identicon,
         BlueLink,
     },
 });
@@ -68,7 +65,7 @@ export default defineComponent({
     font-weight: 600;
     color: var(--text-60);
 
-    img {
+    img, svg {
         width: 2.75rem;
         height: 2.75rem;
         margin-right: 0.75rem;

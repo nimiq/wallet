@@ -8,13 +8,10 @@
                 <p class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </p>
-                <div class="tooltip-bar flex-row">
-                    <LabelTooltip
-                        :validatorData="validator"
-                        :stakingData="stakingData"
-                        />
-                    <ValidatorTrustScore :score="validator.trust" dry />
-                    <ValidatorRewardBubble :reward="validator.reward" dry />
+                <div v-if="validator" class="tooltip-bar flex-row">
+                    <LabelTooltip :validatorData="validator" />
+                    <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
+                    <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" dry />
                 </div>
             </template>
         </PageHeader>
@@ -39,15 +36,15 @@
                     </p>
                 </Tooltip>
             </span>
-            <StakingGraph v-if="alreadyStaked === true"
-                :stakedAmount="currentStake.amount" :apy="validator.reward"
+            <StakingGraph v-if="validator && activeStake"
+                :stakedAmount="activeStake.activeStake" :apy="'reward' in validator ? validator.reward : 0"
                 :period="{
                     s: NOW,
                     p: 12,
                     m: MONTH,
                 }" />
             <StakingGraph v-else
-                :stakedAmount="currentStake.amount" :apy="validator.reward"
+                :stakedAmount="0" :apy="validator && 'reward' in validator ? validator.reward : 0"
                 :period="{
                     s: NOW,
                     p: 12,
@@ -55,24 +52,20 @@
                 }" />
 
             <StakeAmountSlider class="stake-amount-slider"
-                :stakedAmount="preStaked"
+                :stakedAmount="activeStake ? activeStake.activeStake : 0"
                 @amount-staked="updateStaked"
-                @amount-unstaked="updateUnstaked" />
+            />
 
             <div>
                 <button class="nq-button light-blue stake-button" @click="performStaking">
                     {{ $t('Confirm stake') }}
                 </button>
 
-                <div class="disclaimer stake-disclaimer" v-if="unstakedAmount === 0">
+                <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
                     {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
                 </div>
                 <div class="disclaimer unstake-disclaimer" v-else>
-                    <Amount
-                        :decimals="DISPLAYED_DECIMALS"
-                        :amount="unstakedAmount"
-                        :currency="STAKING_CURRENCY"
-                        :currencyDecimals="NIM_DECIMALS" />
+                    <Amount :amount="-stakeDelta" :decimals="DISPLAYED_DECIMALS" />
                     {{ unstakeDisclaimer }}
                 </div>
             </div>
@@ -81,11 +74,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
-import { ValidatorData, StakingData } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
+import { useStakingStore } from '../../stores/Staking';
 
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakeAmountSlider from './StakeAmountSlider.vue';
@@ -95,86 +87,58 @@ import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
-import { i18n } from '../../i18n/i18n-setup';
-
-import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
+import { CryptoCurrency } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAddressInfo } = useAddressStore();
-        const validator = props.activeValidator;
-        // whole amount, including staking, check with design
-        const availableBalance = ref(activeAddressInfo.value?.balance || 0);
+        const { activeAddress } = useAddressStore();
+        const { activeStake, activeValidator, removeStake, setStake } = useStakingStore();
 
-        const preStaked = ref(validator ? validator.stakedAmount : 0);
-        const currentStake = Vue.observable({ amount: preStaked.value });
-        const unstakedAmount = ref(0);
-        const alreadyStaked = ref(currentStake.amount > 0.0 && validator !== null);
+        const stakeDelta = ref(0);
 
         const updateStaked = (amount: number) => {
-            if (amount !== currentStake.amount) {
-                currentStake.amount = amount;
-            }
-        };
-
-        const updateUnstaked = (amount: number) => {
-            if (amount !== unstakedAmount.value) {
-                currentStake.amount = preStaked.value - amount;
-                unstakedAmount.value = amount;
-            }
-        };
-
-        const mockStakedAlready = () => {
-            validator.stakeAge = 60 * 60 * 24 * 110;
-            validator.stakeSessionRewards = 450 * NIM_MAGNITUDE;
+            stakeDelta.value = amount - activeStake.value!.activeStake;
         };
 
         const performStaking = () => {
-            validator.stakedAmount = currentStake.amount;
-            if (currentStake.amount < preStaked.value) {
-                validator.unstakePending = true;
-            } else if (currentStake.amount > preStaked.value) {
-                validator.stakePending = true;
+            // TODO: Trigger transaction signing
+
+            const currentStake = activeStake.value || {
+                address: activeAddress.value!,
+                activeStake: 0,
+                inactiveStake: 0,
+                validator: activeValidator.value!.address,
+            };
+
+            const newStake = currentStake.activeStake + stakeDelta.value;
+
+            if (!newStake) {
+                removeStake(activeAddress.value!);
+            } else {
+                setStake({
+                    ...currentStake,
+                    activeStake: currentStake.activeStake + stakeDelta.value,
+                });
             }
-            mockStakedAlready();
+
             context.emit('next');
         };
 
         return {
             NOW,
             MONTH,
-            NIM_DECIMALS,
-            STAKING_CURRENCY: CryptoCurrency.NIM,
-            DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
-            unstakeDisclaimer: i18n.t(
+            DISPLAYED_DECIMALS: calculateDisplayedDecimals(stakeDelta.value, CryptoCurrency.NIM),
+            unstakeDisclaimer: context.root.$t(
                 'will be available in ~{duration}.',
-                { duration: i18n.t('{hours} hours', { hours: 12 }) },
+                { duration: context.root.$t('{hours} hours', { hours: 12 }) },
             ),
-            preStaked,
-            currentStake,
-            validator,
-            alreadyStaked,
-            availableBalance,
-            unstakedAmount,
+            activeStake,
+            validator: activeValidator,
+            stakeDelta,
             updateStaked,
-            updateUnstaked,
             performStaking,
         };
-    },
-    props: {
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
-        activeValidator: {
-            type: Object as () => ValidatorData,
-            required: true,
-        },
-        validatorsList: {
-            type: Array as () => ValidatorData[],
-            required: true,
-        },
     },
     components: {
         PageHeader,
@@ -238,8 +202,7 @@ export default defineComponent({
             }
         }
 
-        .stake-amount-slider {
-        }
+        // .stake-amount-slider {}
 
         .stake-button {
             width: 40.5rem;

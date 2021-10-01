@@ -7,30 +7,21 @@
         :showOverlay="page === 2 && invalidAccount"
         >
         <template v-if="page === 1">
-            <StakeInfoPage @next="page += 1"
-                :validatorsList="validatorsList" />
+            <StakeInfoPage @next="page += 1" />
         </template>
         <template v-if="page === 2">
-            <StakeValidatorPage @back="page -= 1" @next="page += 1"
-                :stakingData="stakingData" :validatorsList="validatorsList"
-                :setValidator="setValidator" />
+            <StakeValidatorPage @back="page -= 1" @next="page += 1"/>
         </template>
         <template v-if="page === 3">
-            <StakeGraphPage @back="page -= 1" @next="page += 1"
-                :stakingData="stakingData" :validatorsList="validatorsList"
-                :activeValidator="activeValidator" />
+            <StakeGraphPage @back="page -= 1" @next="page += 1" />
         </template>
         <template v-if="page === 4">
             <StakedAlreadyPage @back="page -= 1" @next="page += 1"
                 @adjust-stake="adjustStake"
-                @switch-validator="switchValidator"
-                :stakingData="stakingData" :validatorsList="validatorsList"
-                :activeValidator="activeValidator" />
+                @switch-validator="switchValidator" />
         </template>
         <template v-if="page === 5">
-            <StakeRewardsHistoryPage @back="page -= 1" @next="page += 1"
-                :stakingData="stakingData" :validatorsList="validatorsList"
-                :activeValidator="activeValidator" />
+            <StakeRewardsHistoryPage @back="page -= 1" @next="page += 1" />
         </template>
         <SelectAccountOverlay slot="overlay" />
     </Modal>
@@ -38,9 +29,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import { useStakingStore, ValidatorData, StakingData, StakingScoringRules } from '../../stores/Staking';
+import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
-import { i18n } from '../../i18n/i18n-setup';
 import Modal from '../modals/Modal.vue';
 import StakeInfoPage from './StakeInfoPage.vue';
 import StakeValidatorPage from './StakeValidatorPage.vue';
@@ -49,23 +39,15 @@ import StakedAlreadyPage from './StakedAlreadyPage.vue';
 import StakeRewardsHistoryPage from './StakeRewardsHistoryPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 
-import stakingData from './assets/staking.json';
-import validatorsList from './assets/validators.mock.json';// mock data
-
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, selectValidator } = useStakingStore();
+        const { activeValidator } = useStakingStore();
         const page = ref(activeValidator.value ? 4 : 1);
 
         const invalidAccount = computed(() => activeAddressInfo.value
             ? !activeAddressInfo.value.balance
             : false);
-
-        const setValidator = (validator: ValidatorData) => {
-            selectValidator(validator);
-            page.value = 3;
-        };
 
         const adjustStake = () => {
             page.value = 3;
@@ -77,23 +59,9 @@ export default defineComponent({
 
         return {
             page,
-            setValidator,
             activeValidator,
             adjustStake,
             switchValidator,
-            stakingData: computed(() => Object.fromEntries(
-                Object.entries(stakingData as StakingData).map(([k, v]) => {
-                    if (k.endsWith('Rules')) {
-                        return [k, (v as StakingScoringRules).map(
-                            (rule: Array<string>) => rule.slice(0, -1).concat([
-                                i18n.t(rule.slice(-1)[0]).toString(),
-                            ]),
-                        )];
-                    }
-                    return [k, i18n.t(v as string).toString()];
-                }),
-            )),
-            validatorsList: computed(() => validatorsList),
             invalidAccount,
         };
     },

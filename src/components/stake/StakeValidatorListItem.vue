@@ -6,28 +6,28 @@
 
         <div class="validator-item-wrapper flex-row">
             <div class="validator-left validator-icon">
-                <img :src="`/img/staking/providers/${validatorData.icon}`" />
+                <img v-if="'icon' in validatorData" :src="`/img/staking/providers/${validatorData.icon}`" />
+                <Identicon v-else :address="validatorData.address"/>
             </div>
             <div class="validator-item-mid flex-column">
                 <div class="validator-item-inner-row validator-label">
-                    {{ validatorData.label }}
+                    {{ 'label' in validatorData ? validatorData.label : validatorData.address.substr(0, 9) }}
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
-                    <ValidatorTrustScore :score="validatorData.trust" />
+                    <ValidatorTrustScore v-if="'trust' in validatorData" :score="validatorData.trust" />
                     <img src="/img/staking/dot.svg" />
-                    <div class="validator-payout">
-                        {{ payoutText }}
-                    </div>
+                    <div class="validator-payout">{{ payoutText }}</div>
                 </div>
             </div>
-            <ValidatorRewardBubble :reward="validatorData.reward" />
+            <ValidatorRewardBubble v-if="'reward' in validatorData" :reward="validatorData.reward" />
         </div>
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { StakingData, ValidatorData } from '../../stores/Staking';
+import { computed, defineComponent } from '@vue/composition-api';
+import { Identicon } from '@nimiq/vue-components';
+import { ValidatorData } from '../../stores/Staking';
 import { getPayoutText } from '../../lib/StakingUtils';
 
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
@@ -39,20 +39,18 @@ export default defineComponent({
             type: Object as () => ValidatorData,
             required: true,
         },
-        stakingData: {
-            type: Object as () => StakingData,
-            required: true,
-        },
     },
-    setup(props) {
+    setup(props, context) {
+        const payoutText = computed(() => 'payout' in props.validatorData
+            ? getPayoutText(props.validatorData.payout)
+            : context.root.$t('Unregistered validator'));
+
         return {
-            payoutText: getPayoutText(props.validatorData.payout),
-            Helpers: {
-                capitalise: (string: string) => string.charAt(0).toUpperCase() + string.slice(1),
-            },
+            payoutText,
         };
     },
     components: {
+        Identicon,
         ValidatorTrustScore,
         ValidatorRewardBubble,
     },

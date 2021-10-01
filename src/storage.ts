@@ -16,6 +16,7 @@ import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
 import { useBankStore, BankState } from './stores/Bank';
+import { StakingState, useStakingStore } from './stores/Staking';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -29,6 +30,7 @@ const StorageKeys = {
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
+    STAKING: 'wallet_staking_dev_v01',
 };
 
 const PersistentStorageKeys = {
@@ -302,6 +304,21 @@ export async function initStorage() {
 
     unsubscriptions.push(
         bankStore.subscribe(() => Storage.set(StorageKeys.BANK, bankStore.state)),
+    );
+
+    /**
+     * Staking
+     */
+    const stakingStore = useStakingStore();
+    const storedStakingState = await Storage.get<StakingState>(StorageKeys.STAKING);
+    if (storedStakingState) {
+        const partialState: Partial<StakingState> = storedStakingState;
+        delete partialState.validators;
+        stakingStore.patch(partialState);
+    }
+
+    unsubscriptions.push(
+        stakingStore.subscribe(() => Storage.set(StorageKeys.STAKING, stakingStore.state)),
     );
 }
 

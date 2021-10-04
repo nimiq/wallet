@@ -79,12 +79,13 @@
                                 :src="`/img/staking/providers/${validator.icon}`"
                             />
                             <Identicon v-else class="validator-icon" :address="validator.address"/>
-                            {{ 'label' in validator  ? validator.label : validatorData.address.substr(0, 9) }}
+                            <span v-if="'label' in validator" class="validator-label">{{ validator.label }}</span>
+                            <ShortAddress v-else :address="validator.address"/>
                             <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
                         </div>
                         <div class="validator-bottom flex-row">
                             <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
-                            <img src="/img/staking/dot.svg" />
+                            <img v-if="'trust' in validator" class="dot" src="/img/staking/dot.svg">
                             <div class="validator-payout">{{ payoutText }}</div>
                         </div>
                     </div>
@@ -103,7 +104,15 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip, CircleSpinner } from '@nimiq/vue-components';
+import {
+    InfoCircleSmallIcon,
+    Amount,
+    PageHeader,
+    PageBody,
+    Tooltip,
+    CircleSpinner,
+    Identicon,
+} from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
@@ -113,6 +122,7 @@ import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import ShortAddress from '../ShortAddress.vue';
 
 import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
 
@@ -179,6 +189,8 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorRewardBubble,
         CircleSpinner,
+        Identicon,
+        ShortAddress,
     },
 });
 </script>
@@ -283,12 +295,19 @@ export default defineComponent({
 
         .validator-top {
             font-size: var(--h2-size);
-            font-weight: bold;
 
             .validator-icon {
                 width: 3rem;
                 height: 3rem;
                 margin-right: 0.75rem;
+            }
+
+            .validator-label {
+                font-weight: bold;
+            }
+
+            .short-address {
+                font-weight: 500;
             }
 
             .validator-reward-bubble {
@@ -303,9 +322,8 @@ export default defineComponent({
             line-height: 1;
             margin-top: 0.75rem;
 
-            .validator-trust-score,
-            img {
-                margin-right: 0.675rem;
+            .dot {
+                margin: 0 0.675rem;
             }
         }
     }

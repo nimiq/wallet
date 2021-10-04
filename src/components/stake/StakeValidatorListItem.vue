@@ -10,12 +10,13 @@
                 <Identicon v-else :address="validatorData.address"/>
             </div>
             <div class="validator-item-mid flex-column">
-                <div class="validator-item-inner-row validator-label">
-                    {{ 'label' in validatorData ? validatorData.label : validatorData.address.substr(0, 9) }}
+                <div class="validator-item-inner-row">
+                    <span v-if="'label' in validatorData" class="validator-label">{{ validatorData.label }}</span>
+                    <ShortAddress v-else :address="validatorData.address"/>
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
                     <ValidatorTrustScore v-if="'trust' in validatorData" :score="validatorData.trust" />
-                    <img src="/img/staking/dot.svg" />
+                    <img v-if="'trust' in validatorData" class="dot" src="/img/staking/dot.svg" />
                     <div class="validator-payout">{{ payoutText }}</div>
                 </div>
             </div>
@@ -32,6 +33,7 @@ import { getPayoutText } from '../../lib/StakingUtils';
 
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import ShortAddress from '../ShortAddress.vue';
 
 export default defineComponent({
     props: {
@@ -53,6 +55,7 @@ export default defineComponent({
         Identicon,
         ValidatorTrustScore,
         ValidatorRewardBubble,
+        ShortAddress,
     },
 });
 </script>
@@ -84,7 +87,7 @@ export default defineComponent({
     }
 
     .validator-icon {
-        img, svg {
+        img, .identicon {
             width: 5.5rem;
             height: 5.5rem;
             display: block;
@@ -111,11 +114,15 @@ export default defineComponent({
             line-height: 3rem;
             align-items: center;
             padding-right: 2rem;
-            font-weight: 600;
+            font-size: var(--body-size);
 
-            &.validator-label {
-                font-size: var(--body-size);
-           }
+            .validator-label {
+                font-weight: 600;
+            }
+
+            .short-address {
+                font-weight: 500;
+            }
         }
 
         .validator-trust {
@@ -123,13 +130,12 @@ export default defineComponent({
             color: var(--text-50);
         }
 
-        .validator-trust-score {
-            margin-right: 0.675rem;
+        .dot {
+            margin: 0 0.675rem;
         }
 
         .validator-payout {
             white-space: nowrap;
-            margin-left: 0.675rem;
         }
     }
 }

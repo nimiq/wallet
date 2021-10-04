@@ -1,19 +1,21 @@
 <template>
     <Tooltip class="validator-label-tip"
         preferredPosition="bottom right"
-        :styles="{width: '40rem', 'text-align': 'left'}"
+        :styles="{width: 'description' in validatorData ? '40rem' : '25rem', 'text-align': 'left'}"
     >
         <div slot="trigger" class="validator-label-trigger flex-row">
             <img v-if="'icon' in validatorData" :src="`/img/staking/providers/${validatorData.icon}`" />
             <Identicon v-else :address="validatorData.address"/>
-            {{ 'label' in validatorData ? validatorData.label : validatorData.address.substr(0, 9) }}
+
+            <span v-if="'label' in validatorData" class="validator-label">{{ validatorData.label }}</span>
+            <ShortAddress v-else :address="validatorData.address"/>
         </div>
 
         <template v-if="'description' in validatorData">
-            <p class="validator-label-text">
+            <p class="validator-description">
                 {{ validatorData.description }}
             </p>
-            <p class="validator-label-explainer">
+            <p class="validator-disclaimer">
                 {{ $t('The validator is solely responsible for information provided above.') }}
             </p>
             <br />
@@ -21,6 +23,7 @@
                 {{ $t('{poolName} Website', { poolName: validatorData.label }) }}
             </BlueLink>
         </template>
+        <p v-else>{{ $t('Unregistered validator') }}</p>
     </Tooltip>
 </template>
 
@@ -29,6 +32,7 @@ import { defineComponent } from '@vue/composition-api';
 import { Tooltip, Identicon } from '@nimiq/vue-components';
 import BlueLink from '../../BlueLink.vue';
 import { ValidatorData } from '../../../stores/Staking';
+import ShortAddress from '../../ShortAddress.vue';
 
 export default defineComponent({
     props: {
@@ -41,18 +45,13 @@ export default defineComponent({
         Tooltip,
         Identicon,
         BlueLink,
+        ShortAddress,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .validator-label-trigger {
-    svg {
-        width: 1.5rem;
-        height: 1.5rem;
-        opacity: 0.6;
-    }
-
     align-items: center;
     box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
     padding: 0 1.375rem 0 0.25rem;
@@ -62,16 +61,23 @@ export default defineComponent({
     line-height: 3.25rem;
 
     font-size: var(--small-size);
-    font-weight: 600;
     color: var(--text-60);
 
-    img, svg {
+    img, .identicon {
         width: 2.75rem;
         height: 2.75rem;
         margin-right: 0.75rem;
     }
+
+    .validator-label {
+        font-weight: 600;
+    }
+
+    .short-address {
+        font-weight: 500;
+    }
 }
-.validator-label-text {
+.validator-description {
     margin-left: .75rem;
     padding-left: 1.25rem;
 
@@ -83,7 +89,7 @@ export default defineComponent({
     border-left: .1875rem solid rgba(255, 255, 255, 0.4);
 }
 
-.validator-label-explainer {
+.validator-disclaimer {
     margin-bottom: -1rem;
     font-weight: 600;
     font-size: 1.75rem;

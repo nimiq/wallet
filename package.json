@@ -4,7 +4,7 @@
   "private": false,
   "author": "Nimiq (https://www.nimiq.com)",
   "scripts": {
-    "serve": "yarn pre && yarn vue-cli-service serve --port 8081",
+    "serve": "yarn pre && yarn vue-cli-service serve --port 8082",
     "build": "yarn pre && yarn vue-cli-service build",
     "lint": "vue-cli-service lint --no-fix",
     "build:bitcoinjs": "yarn --silent browserify bitcoinjs-parts.js -p common-shakeify -s BitcoinJS | yarn terser --compress --mangle --source-map --output public/bitcoin/BitcoinJS.min.js",

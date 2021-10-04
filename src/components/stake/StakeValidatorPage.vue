@@ -79,6 +79,7 @@ export default defineComponent({
                 activeStake: 0,
                 inactiveStake: 0,
                 validator: address,
+                retireTime: 0,
             };
 
             currentStake.validator = address;

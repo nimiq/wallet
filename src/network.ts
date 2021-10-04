@@ -12,8 +12,8 @@ import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 // import { useProxyStore } from './stores/Proxy';
 
-
-import { Account, Block } from '../../../github/albatross-remote/src/lib/server-types'
+import { Account, Block, Staker, Stakes } from '../../../github/albatross-remote/src/lib/server-types';
+import { RawValidator, useStakingStore } from './stores/Staking';
 
 let isLaunched = false;
 let clientPromise: Promise<AlbatrossRpcClient>;
@@ -127,6 +127,14 @@ class AlbatrossRpcClient {
 
     public async getAccount(address: string): Promise<Account> {
         return this.rpc<Account>('getAccount', [address]);
+    }
+
+    public async getStaker(address: string): Promise<Staker> {
+        return this.rpc<Staker>('getStaker', [address]);
+    }
+
+    public async listStakes(): Promise<Stakes> {
+        return this.rpc<Stakes>('listStakes');
     }
 
     private async getRemote(): Promise<any> {
@@ -253,6 +261,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -324,10 +333,9 @@ export async function launchNetwork() {
         console.debug('Head is now at', height);
         network$.height = height;
 
-        // The NanoApi did recheck all balances on every block
-        // I don't think we need to do this here, as wallet addresses are only expected to
-        // change in balance when sending or receiving a transaction, as they should not be mining
-        // directly.
+        if (block.type === 'macro' && block.is_election_block) {
+            updateValidators();
+        }
     });
 
     // client.on(NetworkClient.Events.PEER_COUNT, (peerCount) => network$.peerCount = peerCount);
@@ -347,13 +355,38 @@ export async function launchNetwork() {
                 });
             });
         }
+
+        // If the transaction touched the staking contract, update address's staking data
+        if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
+            const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
+            client.getStaker(address).then((staker) => {
+                stakingStore.setStake({
+                    address,
+                    activeStake: staker.activeStake,
+                    inactiveStake: staker.inactiveStake,
+                    validator: staker.delegation,
+                    retireTime: staker.retireTime,
+                });
+            });
+        }
     }
 
-    function subscribe(addresses: string[]) {
-        client.addTransactionListener(transactionListener, addresses);
-        updateBalances(addresses);
-        return true;
+    async function updateValidators() {
+        const stakes = await client.listStakes();
+        const totalStake = Object.values(stakes)
+            .reduce((sum, stake) => sum + stake, 0);
+
+        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => ({
+            address,
+            dominance: balance / totalStake,
+        }));
+
+        stakingStore.setValidators(validators);
     }
+    updateValidators();
+
+    const subscribedAddresses = new Set<string>();
+    const fetchedAddresses = new Set<string>();
 
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
@@ -390,6 +423,18 @@ export async function launchNetwork() {
                 addressStore.patchAddress(address, {
                     balance: account.balance,
                 });
+            });
+            client.getStaker(address).then((staker) => {
+                stakingStore.setStake({
+                    address,
+                    activeStake: staker.activeStake,
+                    inactiveStake: staker.inactiveStake,
+                    validator: staker.delegation,
+                    retireTime: staker.retireTime,
+                });
+            }).catch(() => {
+                // Staker not found
+                stakingStore.removeStake(address);
             });
         }
     });

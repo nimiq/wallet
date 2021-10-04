@@ -28,3 +28,5 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-modal-shown';
 
 export const NIM_DECIMALS = 5;
 export const NIM_MAGNITUDE = 1e5;
+
+export const STAKING_CONTRACT_ADDRESS = 'NQ38 STAK 1NG0 0000 0000 C0NT RACT 0000 0000';

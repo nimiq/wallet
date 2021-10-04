@@ -1,8 +1,6 @@
 import { createStore } from 'pinia';
 import { useAddressStore } from './Address';
 
-import mockValidators from '../components/stake/assets/validators.mock.json';
-
 export type StakingState = {
     validators: {[id: string]: ValidatorData},
     addressStakes: {[address: string]: AddressStake},
@@ -12,7 +10,8 @@ export type AddressStake = {
     address: string,
     activeStake: number,
     inactiveStake: number,
-    validator: string,
+    validator?: string,
+    retireTime: number,
 }
 
 export type RawValidator = {
@@ -48,9 +47,7 @@ export type StakingData = {
 export const useStakingStore = createStore({
     id: 'staking',
     state: () => ({
-        // TODO: Remove mock data, replace with loader on network init
-        validators: Object.fromEntries(mockValidators
-            .map((validator) => [validator.address, validator])),
+        validators: {},
         addressStakes: {},
     } as StakingState),
     getters: {
@@ -62,7 +59,7 @@ export const useStakingStore = createStore({
         },
         activeValidator: (state, { activeStake }): ValidatorData | null => {
             const stake = activeStake.value as AddressStake | null;
-            if (!stake) return null;
+            if (!stake || !stake.validator) return null;
             return state.validators[stake.validator] || null;
         },
     },

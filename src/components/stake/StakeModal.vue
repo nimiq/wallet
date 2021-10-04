@@ -40,7 +40,7 @@ import StakeRewardsHistoryPage from './StakeRewardsHistoryPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activeValidator } = useStakingStore();
         const page = ref(activeValidator.value ? 4 : 1);

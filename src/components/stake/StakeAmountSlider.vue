@@ -191,7 +191,7 @@ export default defineComponent({
                 0,
                 Math.min(availableAmount.value!, (value || 0) * NIM_MAGNITUDE),
             );
-            const percent = (100.0 * amount) / availableAmount.value!;
+            const percent = (100 * amount) / availableAmount.value!;
             currentAmount.value = amount;
 
             const offsetX = getPointAtPercent(percent);
@@ -246,7 +246,9 @@ export default defineComponent({
                 (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
             const offsetX = getPointAtPercent(percent);
-            currentAmount.value = (percent / 100) * availableAmount.value!;
+            currentAmount.value = Math.floor(
+                ((percent / 100) * availableAmount.value!) / NIM_MAGNITUDE,
+            ) * NIM_MAGNITUDE;
 
             if (alreadyStaked.value) {
                 if (percent < alreadyStakedPercentage.value) {

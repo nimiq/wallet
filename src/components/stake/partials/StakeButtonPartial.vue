@@ -43,9 +43,8 @@ export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activeCurrency } = useAccountStore();
-        const { activeValidator, activeStake } = useStakingStore();
-        const validator = activeValidator;
-        const visible = computed(() => !validator.value || activeStake.value?.activeStake === 0);
+        const { activeStake } = useStakingStore();
+        const visible = computed(() => !activeStake.value?.activeStake && !activeStake.value?.inactiveStake);
 
         return {
             visible,

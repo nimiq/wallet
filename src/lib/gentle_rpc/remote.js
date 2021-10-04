@@ -1,3 +1,4 @@
+/* eslint-disable */
 function generateId() {
     return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 }
@@ -127,7 +128,7 @@ class Remote {
                 [
                     "Authorization",
                     `Bearer ${jwt}`
-                ], 
+                ],
             ]) : this.fetchInit.headers,
             body: JSON.stringify(rpcRequestObj)
         }).then((rpcResponse)=>rpcResponse === undefined && isNotification ? undefined : validateResponse(rpcResponse).result
@@ -334,4 +335,3 @@ function createRemote1(resourceOrSocket, options) {
     ) : new Remote(resourceOrSocket, options);
 }
 export { createRemote1 as createRemote };
-

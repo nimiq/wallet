@@ -189,8 +189,9 @@ export default defineComponent({
             // }
             // if ('creator' in props.transaction.proof
             //     || (relatedTx.value && 'creator' in relatedTx.value.proof)
-            //     // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
-            //     // tx are regular transactions and we regard the tx from the proxy as refund
+            //     // if we have an incoming tx from a HTLC proxy but none of the above conditions met,
+            //     // the tx and related tx are regular transactions and we regard the tx from the proxy
+            //     // as refund
             //     || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
             //     return context.root.$t('HTLC Refund') as string;
             // }

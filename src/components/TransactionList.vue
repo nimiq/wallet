@@ -94,7 +94,7 @@ import Config from 'config';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore /* , Transaction */, TransactionState } from '../stores/Transactions';
+import { useTransactionsStore /* , Transaction, TransactionState */ } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
@@ -243,7 +243,7 @@ export default defineComponent({
 
             const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
-            let hasThisMonthLabel = false;
+            const hasThisMonthLabel = false;
 
             // if (txs[n].state === TransactionState.PENDING) {
             //     transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });

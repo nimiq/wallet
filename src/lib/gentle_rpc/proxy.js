@@ -1,3 +1,4 @@
+/* eslint-disable */
 const httpProxyHandler1 = {
     get (client, name) {
         if (client[name] !== undefined) {
@@ -44,4 +45,3 @@ const wsProxyHandler1 = {
 };
 export { httpProxyHandler1 as httpProxyHandler };
 export { wsProxyHandler1 as wsProxyHandler };
-

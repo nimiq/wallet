@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
-import { getContract, SwapAsset } from '@nimiq/fastspot-api';
+// import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
-import { getNetworkClient } from '../network';
-import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
+// import { getNetworkClient } from '../network';
+// import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
 
-import { Transaction as RpcTransaction } from '../../../../github/albatross-remote/src/lib/server-types'
+import { Transaction as RpcTransaction } from '../../../../github/albatross-remote/src/lib/server-types';
 
 export type Transaction = RpcTransaction & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },

@@ -1,19 +1,21 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-// @ts-expect-error no types
-import { createRemote } from './lib/gentle_rpc/remote'
-// @ts-expect-error no types
-import { wsProxyHandler } from './lib/gentle_rpc/proxy'
 import Config from 'config';
 
+// @ts-expect-error no types
+import { createRemote } from './lib/gentle_rpc/remote';
+// @ts-expect-error no types
+import { wsProxyHandler } from './lib/gentle_rpc/proxy';
+
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, TransactionState } from './stores/Transactions';
+import { useTransactionsStore, Transaction/* , TransactionState */ } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 // import { useProxyStore } from './stores/Proxy';
 
 import { Account, Block, Staker, Stakes } from '../../../github/albatross-remote/src/lib/server-types';
 import { RawValidator, useStakingStore } from './stores/Staking';
+import { STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 
 let isLaunched = false;
 let clientPromise: Promise<AlbatrossRpcClient>;
@@ -43,14 +45,14 @@ class AlbatrossRpcClient {
     constructor(url: string) {
         this.url = url;
 
-        this.getRemote().then(async remote => {
+        this.getRemote().then(async (remote) => {
             const id = await remote.headSubscribe([]);
             const { generator } = remote.subscription.listen();
-            while (true) {
-                const params = (await generator.next()).value;
+            for await (const params of generator) {
                 if (!params || params.subscription !== id) continue;
 
                 const blockHash = params.result as string;
+                // eslint-disable-next-line no-await-in-loop
                 const block = await remote.getBlockByHash([blockHash, true]) as Block;
                 if (!block) continue;
 
@@ -65,14 +67,14 @@ class AlbatrossRpcClient {
                     // Even if the transaction is between two of our own (and thus subscribed) addresses,
                     // we only need to trigger one tx listener, as the tx is then added for both addresses
                     // and the handler also updates the balances of both addresses.
-                    let address = addresses.includes(tx.sender)
+                    const address = addresses.includes(tx.sender)
                         ? tx.sender
                         : addresses.includes(tx.recipient)
                             ? tx.recipient
                             : null;
 
                     if (address) {
-                        for (const listener of this.transactionSubscriptions[address]){
+                        for (const listener of this.transactionSubscriptions[address]) {
                             listener(tx);
                         }
                     }
@@ -111,7 +113,7 @@ class AlbatrossRpcClient {
             const hash = await this.rpc<string>('sendRawTransaction', [tx]);
             do {
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise(res => setTimeout(res, 500));
+                await new Promise((res) => setTimeout(res, 500));
                 try {
                     // eslint-disable-next-line no-await-in-loop
                     return await this.rpc('getTransactionByHash', [hash]) as Transaction;
@@ -138,18 +140,20 @@ class AlbatrossRpcClient {
     }
 
     private async getRemote(): Promise<any> {
-        return this.remote || (this.remote = new Promise(async resolve => {
+        return this.remote || (this.remote = new Promise((resolve) => {
             const ws = new WebSocket(`${this.url.replace('http', 'ws')}/ws`);
-            const proxy = new Proxy(
-                await createRemote(ws),
-                wsProxyHandler,
-            );
-            resolve(proxy);
-        }))
+            createRemote(ws).then((remote: any) => {
+                const proxy = new Proxy(
+                    remote,
+                    wsProxyHandler,
+                );
+                resolve(proxy);
+            });
+        }));
     }
 
     private async rpc<T>(method: string, params: any[] = []): Promise<T> {
-        const remote = await this.getRemote()
+        const remote = await this.getRemote();
         return remote[method](params);
     }
 }
@@ -263,37 +267,12 @@ export async function launchNetwork() {
     const addressStore = useAddressStore();
     const stakingStore = useStakingStore();
 
-    const subscribedAddresses = new Set<string>();
-    const fetchedAddresses = new Set<string>();
-
-    const subscribedProxies = new Set<string>();
-    const seenProxies = new Set<string>();
-
-    async function updateBalances(addresses: string[] = [...balances.keys()]) {
-        if (!addresses.length) return;
-        await client.waitForConsensusEstablished();
-        const accounts = await client.getAccounts(addresses);
-        const newBalances: Balances = new Map(
-            accounts.map((account, i) => [addresses[i], account.balance]),
-        );
-
-        for (const [address, newBalance] of newBalances) {
-            if (balances.get(address) === newBalance) {
-                // Balance did not change since last check.
-                // Remove from newBalances Map to not update the store.
-                newBalances.delete(address);
-            } else {
-                // Update balances cache
-                balances.set(address, newBalance);
-            }
-        }
-
-        if (!newBalances.size) return;
-        console.debug('Got new balances for', [...newBalances.keys()]);
-        for (const [address, balance] of newBalances) {
-            addressStore.patchAddress(address, { balance });
-        }
-    }
+    // function balancesListener(balances: Map<string, number>) {
+    //     console.debug('Got new balances for', [...balances.keys()]);
+    //     for (const [address, balance] of balances) {
+    //         addressStore.patchAddress(address, { balance });
+    //     }
+    // }
     // client.on(NetworkClient.Events.BALANCES, balancesListener);
 
     // let consensusConnectingTimeout: number | undefined;
@@ -329,7 +308,7 @@ export async function launchNetwork() {
     // });
 
     client.addHeadChangedListener((block) => {
-        const height = block.height;
+        const { height } = block;
         console.debug('Head is now at', height);
         network$.height = height;
 
@@ -344,12 +323,12 @@ export async function launchNetwork() {
         const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
 
+        // Update affected address balances
         const affectedAddresses: string[] = [];
         if (addressStore.state.addressInfos[plain.sender]) affectedAddresses.push(plain.sender);
         if (addressStore.state.addressInfos[plain.recipient]) affectedAddresses.push(plain.recipient);
-
         for (const address of affectedAddresses) {
-            client.getAccount(address).then(account => {
+            client.getAccount(address).then((account) => {
                 addressStore.patchAddress(address, {
                     balance: account.balance,
                 });
@@ -419,7 +398,7 @@ export async function launchNetwork() {
         console.debug('Subscribing addresses', newAddresses);
         for (const address of newAddresses) {
             client.addTransactionListener(transactionListener, address);
-            client.getAccount(address).then(account => {
+            client.getAccount(address).then((account) => {
                 addressStore.patchAddress(address, {
                     balance: account.balance,
                 });
@@ -521,6 +500,7 @@ export async function launchNetwork() {
     //                     && !txDetails.find((tx) => tx.sender === proxyAddress
     //                         && tx.state === TransactionState.CONFIRMED)
     //                 ) {
+    /* eslint-disable max-len */
     //                     // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
     //                     // subscribe for updates.
     //                     // If we were triggered by a funding transaction, we have to subscribe in any case because we
@@ -532,6 +512,7 @@ export async function launchNetwork() {
     //                     // If the funding tx has not been known so far, it will be added to the transaction store below
     //                     // which in turn runs the ProxyDetection again and triggers the network and this watcher again
     //                     // for the second pass if needed.
+    /* eslint-enable max-len */
     //                     subscribedProxies.add(proxyAddress);
     //                     client.addTransactionListener(transactionListener, proxyAddress);
     //                 }

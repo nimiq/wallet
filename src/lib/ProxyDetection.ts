@@ -1,4 +1,4 @@
-import { useTransactionsStore, Transaction, TransactionState } from '@/stores/Transactions';
+import { useTransactionsStore, Transaction/* , TransactionState */ } from '@/stores/Transactions';
 import { useProxyStore } from '@/stores/Proxy';
 import { useAddressStore } from '@/stores/Address';
 
@@ -173,7 +173,7 @@ export function detectProxyTransactions(
     if (needToTriggerNetwork) triggerNetwork();
 }
 
-function isHtlcTransaction(tx: Transaction): boolean {
+function isHtlcTransaction(/* tx: Transaction */): boolean {
     return false;
     // return 'hashRoot' in tx.data // htlc creation
     //     || 'creator' in tx.proof // htlc refunding
@@ -190,8 +190,8 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
     // for them to find their match before remaining transactions are matched as proxy refunds.
     proxyTransactions.sort((tx1, tx2) => {
         // first sort by htlc involvement
-        const isTx1HtlcTransaction = isHtlcTransaction(tx1);
-        const isTx2HtlcTransaction = isHtlcTransaction(tx2);
+        const isTx1HtlcTransaction = isHtlcTransaction(/* tx1 */);
+        const isTx2HtlcTransaction = isHtlcTransaction(/* tx2 */);
         if (isTx1HtlcTransaction && !isTx2HtlcTransaction) return -1;
         if (!isTx1HtlcTransaction && isTx2HtlcTransaction) return 1;
         // then sort by date

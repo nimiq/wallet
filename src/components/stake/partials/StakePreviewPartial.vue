@@ -1,26 +1,22 @@
 <template>
-    <span v-if="stake">
+    <span v-if="stake && (stake.activeStake || stake.inactiveStake)">
         <div class="stake-preview"
-            :class="{ dark: stake.inactiveStake }">
+            :class="{ dark: isUnstaking }">
             <div class="stake-preview-background"
-                :class="{ dark: stake.inactiveStake }">
-                <img :src="stake.inactiveStake
+                :class="{ dark: isUnstaking }">
+                <img :src="isUnstaking
                     ? '/img/staking/graph-preview-white.png'
                     : '/img/staking/graph-preview-black.png'" />
             </div>
-            <div class="stake-preview-layout">
-                <div class="col">
-                    <div class="top-left">
-                        <StakingIcon /> staked
+            <div class="stake-preview-layout flex-row">
+                <div class="col flex-column">
+                    <div class="top-left flex-row">
+                        <StakingIcon /> <span class="nq-label">{{ $t('Staked') }}</span>
                     </div>
-                    <div class="bottom-left">
-                        <Amount :amount="stake.activeStake"/>
-                    </div>
+                    <Amount :amount="stake.activeStake" class="bottom-left"/>
                 </div>
-                <div class="col">
-                    <div class="top-right">
-                        <Amount :amount="0"/>
-                    </div>
+                <div class="col right flex-column">
+                    <Amount class="top-right" :amount="0"/>
                     <div class="bottom-right">
                         <a href="javascript:void(0)"
                             @click="$router.push('/stake')">
@@ -34,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import { Amount } from '@nimiq/vue-components';
 import { useStakingStore } from '../../../stores/Staking';
 import StakingIcon from '../../icons/Staking/StakingIcon.vue';
@@ -43,9 +39,12 @@ export default defineComponent({
     setup() {
         const { activeValidator: validator, activeStake: stake } = useStakingStore();
 
+        const isUnstaking = computed(() => stake.value?.inactiveStake && !stake.value.activeStake);
+
         return {
             validator,
             stake,
+            isUnstaking,
         };
     },
     components: {
@@ -58,89 +57,91 @@ export default defineComponent({
 <style lang="scss" scoped>
     .stake-preview {
         position: relative;
-        margin-left: 6rem;
-        margin-bottom: 3rem;
         width: 52.375rem;
         height: 10.25rem;
-        background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
+        background: var(--nimiq-green-bg);
         border-radius: .75rem;
-        &.dark {
-            background: #1F2348;
-            opacity: 0.6;
-        }
+
         .stake-preview-background {
             position: absolute;
         }
+
         .stake-preview-layout {
-            display: flex;
+            padding: 2rem;
             width: 100%;
             height: 100%;
-            flex-direction: row;
             color: white;
+            position: relative;
+
             .col {
-                display: flex;
-                flex-direction: column;
                 width: 50%;
+                justify-content: space-between;
+
+                &.right {
+                    align-items: flex-end;
+                    margin-bottom: -0.5rem;
+                }
             }
+
             .top-left {
-                font-size: 1.75rem;
-                line-height: 1.75rem;
-                padding-top: 1.125rem;
-                padding-left: 1.25rem;
-                letter-spacing: 0.125rem;
-                text-transform: uppercase;
+                align-items: center;
+
                 svg {
-                    position: relative;
-                    top: .75rem;
-                    left: .5rem;
-                    width: 3rem;
-                    height: 3rem;
                     margin-right: .25rem;
                     line, path {
                         stroke: white;
                         stroke-width: 1;
                     }
                 }
+
+                .nq-label {
+                    color: inherit;
+                    margin: 0;
+                }
             }
+
             .top-right {
-                position: absolute;
-                top: 2.125rem;
-                right: 2rem;
-                display: flex;
-                align-self: center;
                 color: var(--nimiq-green);
                 padding: .25rem 1.25rem;
                 background: white;
                 font-weight: bold;
-                font-size: 2rem;
+                font-size: var(--body-size);
                 line-height: 125%;
                 box-shadow: 0rem 0.40082625rem 1.6033rem rgba(0, 0, 0, 0.07),
                             0rem 0.15031rem 0.30062rem rgba(0, 0, 0, 0.05),
                             0rem 0.03377075rem 0.20041375rem rgba(0, 0, 0, 0.0254662);
-                border-radius: 2.4049625rem;
+                border-radius: 5rem;
             }
+
             .bottom-left {
-                margin-top: 1.25rem;
-                margin-left: 2.25rem;
                 font-weight: bold;
-                font-size: 2.5rem;
-                line-height: 100%;
+                font-size: var(--h2-size);
             }
+
             .bottom-right {
-                position: absolute;
-                top: 6.375rem;
-                right: 2.25rem;
                 font-weight: 600;
-                font-size: 1.75rem;
-                line-height: 2.625rem;
-                z-index: 1;
+                font-size: var(--label-size);
+
                 a {
-                    color: white;
+                    color: inherit;
                     text-decoration: none;
                 }
+
                 img {
                     padding-left: .25rem;
                 }
+            }
+        }
+
+        &.dark {
+            background: var(--text-60);
+
+            .stake-preview-background {
+                opacity: 0.4;
+            }
+
+            .top-right {
+                color: var(--text-60);
             }
         }
     }

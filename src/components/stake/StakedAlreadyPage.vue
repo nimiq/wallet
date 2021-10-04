@@ -49,14 +49,19 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.activeStake"/>
+                            <Amount :amount="stake.activeStake + stake.inactiveStake"/>
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
                     <button class="nq-button-s" @click="$emit('adjust-stake')">Adjust Stake</button>
-                    <button class="nq-button-pill red">Unstake all</button>
+                    <button class="nq-button-pill red"
+                        @click="unstakeAll" :disabled="!stake.activeStake"
+                    >Unstake all</button>
+                </div>
+                <div v-if="stake && stake.inactiveStake" class="unstaking row flex-row nq-light-blue">
+                    <CircleSpinner/> {{ $t('Unstaking') }} <Amount :amount="stake.inactiveStake"/>
                 </div>
             </div>
 
@@ -98,7 +103,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
+import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
@@ -113,14 +118,13 @@ import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator } = useStakingStore();
+        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { activeStake: stake, activeValidator: validator, patchStake } = useStakingStore();
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
 
         const unstakedAmount = ref(0);
-        const alreadyStaked = ref(!!stake.value && !!validator);
 
         const percentage = computed(() => availableBalance.value > 0
             ? ((stake.value?.activeStake || 0) / availableBalance.value) * 100
@@ -130,6 +134,17 @@ export default defineComponent({
         const payoutText = computed(() => validator.value && 'payout' in validator.value
             ? getPayoutText(validator.value.payout)
             : context.root.$t('Unregistered validator'));
+
+        function unstakeAll() {
+            // TODO: Trigger transaction signing
+
+            const currentStake = stake.value!;
+
+            patchStake(activeAddress.value!, {
+                activeStake: 0,
+                inactiveStake: currentStake.activeStake,
+            });
+        }
 
         return {
             NOW,
@@ -146,11 +161,11 @@ export default defineComponent({
             graphUpdate,
             stake,
             validator,
-            alreadyStaked,
             availableBalance,
             unstakedAmount,
             percentage,
             payoutText,
+            unstakeAll,
         };
     },
     components: {
@@ -163,6 +178,7 @@ export default defineComponent({
         InfoCircleSmallIcon,
         ValidatorTrustScore,
         ValidatorRewardBubble,
+        CircleSpinner,
     },
 });
 </script>
@@ -177,7 +193,7 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 2rem 2rem;
+        padding: 0 2rem 8rem;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
@@ -233,6 +249,21 @@ export default defineComponent({
         font-weight: 600;
         color: var(--text-50);
         line-height: 1;
+    }
+
+    .unstaking {
+        align-items: center;
+        font-size: var(--body-size);
+        font-weight: 600;
+        margin-top: 2rem;
+
+        /deep/ .circle-spinner {
+            margin-right: 1rem;
+        }
+
+        .amount {
+            margin-left: 0.25em;
+        }
     }
 
     .horizontal-separator {

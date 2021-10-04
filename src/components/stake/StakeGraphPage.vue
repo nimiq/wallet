@@ -36,20 +36,14 @@
                     </p>
                 </Tooltip>
             </span>
-            <StakingGraph v-if="validator && activeStake"
-                :stakedAmount="activeStake.activeStake" :apy="'reward' in validator ? validator.reward : 0"
+            <StakingGraph
+                :stakedAmount="newStake" :apy="validator && 'reward' in validator ? validator.reward : 0"
                 :period="{
                     s: NOW,
                     p: 12,
                     m: MONTH,
-                }" />
-            <StakingGraph v-else
-                :stakedAmount="0" :apy="validator && 'reward' in validator ? validator.reward : 0"
-                :period="{
-                    s: NOW,
-                    p: 12,
-                    m: MONTH,
-                }" />
+                }"
+            />
 
             <StakeAmountSlider class="stake-amount-slider"
                 :stakedAmount="activeStake ? activeStake.activeStake : 0"
@@ -93,15 +87,17 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 export default defineComponent({
     setup(props, context) {
         const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator, removeStake, setStake } = useStakingStore();
+        const { activeStake, activeValidator, setStake } = useStakingStore();
 
+        const newStake = ref(activeStake.value ? activeStake.value.activeStake : 0);
         const stakeDelta = ref(0);
 
-        const updateStaked = (amount: number) => {
-            stakeDelta.value = amount - activeStake.value!.activeStake;
-        };
+        function updateStaked(amount: number) {
+            newStake.value = amount;
+            stakeDelta.value = amount - (activeStake.value?.activeStake || 0);
+        }
 
-        const performStaking = () => {
+        function performStaking() {
             // TODO: Trigger transaction signing
 
             const currentStake = activeStake.value || {
@@ -111,19 +107,14 @@ export default defineComponent({
                 validator: activeValidator.value!.address,
             };
 
-            const newStake = currentStake.activeStake + stakeDelta.value;
-
-            if (!newStake) {
-                removeStake(activeAddress.value!);
-            } else {
-                setStake({
-                    ...currentStake,
-                    activeStake: currentStake.activeStake + stakeDelta.value,
-                });
-            }
+            setStake({
+                ...currentStake,
+                activeStake: newStake.value,
+                inactiveStake: stakeDelta.value < 0 ? -stakeDelta.value : 0,
+            });
 
             context.emit('next');
-        };
+        }
 
         return {
             NOW,
@@ -135,6 +126,7 @@ export default defineComponent({
             ),
             activeStake,
             validator: activeValidator,
+            newStake,
             stakeDelta,
             updateStaked,
             performStaking,

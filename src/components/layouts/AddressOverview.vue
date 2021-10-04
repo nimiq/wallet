@@ -569,6 +569,14 @@ export default defineComponent({
     }
 }
 
+.staking {
+    padding-top: 0;
+    padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: 3rem;
+    padding-left: calc(var(--padding) + 2rem);
+    margin-top: calc(-1 * var(--padding-bottom) / 2);
+}
+
 .actions,
 .actions-mobile {
     justify-content: space-between;

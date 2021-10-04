@@ -12,7 +12,7 @@ import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
 import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
-import { launchElectrum } from './electrum';
+// import { launchElectrum } from './electrum';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
@@ -80,7 +80,7 @@ async function start() {
     });
 
     launchNetwork();
-    launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
+    // launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
 
     router.onReady(() => {
         // console.debug(router.currentRoute, window.history.state);

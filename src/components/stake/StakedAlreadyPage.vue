@@ -44,7 +44,7 @@
             <div v-if="stake">
                 <span class="nq-label flex-row section-title">
                     <StakingIcon />
-                    Staked
+                    {{ $t('Staked') }}
                 </span>
                 <div class="row flex-row">
                     <div class="col flex-grow">
@@ -55,10 +55,10 @@
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
-                    <button class="nq-button-s" @click="$emit('adjust-stake')">Adjust Stake</button>
-                    <button class="nq-button-pill red"
-                        @click="unstakeAll" :disabled="!stake.activeStake"
-                    >Unstake all</button>
+                    <button class="nq-button-s" @click="$emit('adjust-stake')">{{ $t('Adjust Stake') }}</button>
+                    <button class="nq-button-pill red unstake-all"
+                        @click="unstakeAll" :disabled="!hasUnstakableStake"
+                    >{{ $t('Unstake') }}</button>
                 </div>
                 <div v-if="stake && stake.inactiveStake" class="unstaking row flex-row nq-light-blue">
                     <CircleSpinner/> {{ $t('Unstaking') }} <Amount :amount="stake.inactiveStake"/>
@@ -69,7 +69,7 @@
 
             <div v-if="validator">
                 <span class="nq-label flex-row section-title">
-                    Validator
+                    {{ $t('Validator') }}
                 </span>
                 <div class="row flex-row">
                     <div class="validator flex-grow">
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <button class="nq-button-s switch-validator" @click="$emit('switch-validator')">
-                        Switch Validator
+                        {{ $t('Switch Validator') }}
                     </button>
                 </div>
             </div>
@@ -124,12 +124,22 @@ import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 
-import { CryptoCurrency, NIM_DECIMALS, NIM_MAGNITUDE } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    EPOCH_LENGTH,
+    NIM_DECIMALS,
+    NIM_MAGNITUDE,
+    StakingTransactionType,
+    STAKING_CONTRACT_ADDRESS,
+} from '../../lib/Constants';
+import { sendStaking } from '../../hub';
+import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, patchStake } = useStakingStore();
+        const { activeStake: stake, activeValidator: validator } = useStakingStore();
+        const { height } = useNetworkStore();
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -145,14 +155,23 @@ export default defineComponent({
             ? getPayoutText(validator.value.payout)
             : context.root.$t('Unregistered validator'));
 
-        function unstakeAll() {
-            // TODO: Trigger transaction signing
+        const hasUnstakableStake = computed(() => {
+            if (!stake.value || !stake.value.inactiveStake) return false;
+            const nextElectionBlock = Math.floor(stake.value.retireTime / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+            if (height.value <= nextElectionBlock) return false;
+            return true;
+        });
 
-            const currentStake = stake.value!;
-
-            patchStake(activeAddress.value!, {
-                activeStake: 0,
-                inactiveStake: currentStake.activeStake,
+        async function unstakeAll() {
+            // TODO: This function should not trigger UNSTAKE, but RETIRE. Then queue UNSTAKE for later.
+            await sendStaking({
+                type: StakingTransactionType.UNSTAKE,
+                value: stake.value!.inactiveStake,
+                sender: STAKING_CONTRACT_ADDRESS,
+                recipient: activeAddress.value!,
+                validityStartHeight: height.value,
+            }).catch((error) => {
+                throw new Error(error.data);
             });
         }
 
@@ -175,6 +194,7 @@ export default defineComponent({
             unstakedAmount,
             percentage,
             payoutText,
+            hasUnstakableStake,
             unstakeAll,
         };
     },
@@ -254,6 +274,11 @@ export default defineComponent({
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
+    }
+
+    .unstake-all:disabled {
+        opacity: 0.5;
+        pointer-events: none;
     }
 
     .amount-staked-proportional {

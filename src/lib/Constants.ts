@@ -29,12 +29,18 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-modal-shown';
 export const NIM_DECIMALS = 5;
 export const NIM_MAGNITUDE = 1e5;
 
+export const BATCH_LENGTH = 32;
+export const BATCHES_PER_EPOCH = 4;
+export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
+
 export const STAKING_CONTRACT_ADDRESS = 'NQ38 STAK 1NG0 0000 0000 C0NT RACT 0000 0000';
 export const STAKING_ACCOUNT_TYPE = 3;
 export const StakingTransactionType = {
+    UNSTAKE: 1,
+
     CREATE_STAKER: 5,
     STAKE: 6,
     UPDATE_STAKER: 7,
     RETIRE_STAKER: 8,
     REACTIVATE_STAKER: 9,
-}
+};

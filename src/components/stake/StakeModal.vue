@@ -10,7 +10,7 @@
             <StakeInfoPage @next="page += 1" />
         </template>
         <template v-if="page === 2">
-            <StakeValidatorPage @back="page -= 1" @next="page += 1"/>
+            <StakeValidatorPage @back="page -= 1" @next="page += isStaking ? 2 : 1"/>
         </template>
         <template v-if="page === 3">
             <StakeGraphPage @back="page -= 1" @next="page += 1" />
@@ -42,7 +42,7 @@ import SelectAccountOverlay from './SelectAccountOverlay.vue';
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator } = useStakingStore();
+        const { activeValidator, activeStake } = useStakingStore();
         const page = ref(activeValidator.value ? 4 : 1);
 
         const invalidAccount = computed(() => activeAddressInfo.value
@@ -57,12 +57,17 @@ export default defineComponent({
             page.value = 2;
         };
 
+        const isStaking = computed(() => {
+            return activeStake.value && (activeStake.value.activeStake || activeStake.value.inactiveStake);
+        });
+
         return {
             page,
             activeValidator,
             adjustStake,
             switchValidator,
             invalidAccount,
+            isStaking,
         };
     },
     components: {

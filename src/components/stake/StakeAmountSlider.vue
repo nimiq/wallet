@@ -123,7 +123,7 @@ export default defineComponent({
         const readonly = ref(false);
         const alreadyStakedAmount = ref(props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
-        const availableAmount = ref(activeAddressInfo.value?.balance);
+        const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.stakedAmount);
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value!);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);

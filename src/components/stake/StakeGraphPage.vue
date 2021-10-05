@@ -51,7 +51,7 @@
             />
 
             <div>
-                <button class="nq-button light-blue stake-button" @click="performStaking">
+                <button class="nq-button light-blue stake-button" :disabled="!stakeDelta" @click="performStaking">
                     {{ $t('Confirm stake') }}
                 </button>
 
@@ -59,7 +59,7 @@
                     {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
                 </div>
                 <div class="disclaimer unstake-disclaimer" v-else>
-                    <Amount :amount="-stakeDelta" :decimals="DISPLAYED_DECIMALS" />
+                    <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
                     {{ unstakeDisclaimer }}
                 </div>
             </div>
@@ -81,13 +81,15 @@ import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
-import { CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, STAKING_CONTRACT_ADDRESS, StakingTransactionType, STAKING_ACCOUNT_TYPE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { sendStaking } from '../../hub';
+import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator, setStake } = useStakingStore();
+        const { activeStake, activeValidator/* , setStake */ } = useStakingStore();
 
         const newStake = ref(activeStake.value ? activeStake.value.activeStake : 0);
         const stakeDelta = ref(0);
@@ -97,22 +99,65 @@ export default defineComponent({
             stakeDelta.value = amount - (activeStake.value?.activeStake || 0);
         }
 
-        function performStaking() {
-            // TODO: Trigger transaction signing
+        async function performStaking() {
+            if (stakeDelta.value > 0) {
+                if (!activeStake.value || (!activeStake.value.activeStake && !activeStake.value.inactiveStake)) {
+                    await sendStaking({
+                        type: StakingTransactionType.CREATE_STAKER,
+                        delegation: activeValidator.value!.address,
+                        value: stakeDelta.value,
+                        sender: activeAddress.value!,
+                        recipient: STAKING_CONTRACT_ADDRESS,
+                        // @ts-expect-error Staking Account type not yet available
+                        recipientType: STAKING_ACCOUNT_TYPE,
+                        recipientLabel: context.root.$t('Staking Contract') as string,
+                        validityStartHeight: useNetworkStore().state.height,
+                    }).catch((error) => {
+                        throw new Error(error.data);
+                    });
+                } else if (stakeDelta.value <= activeStake.value.inactiveStake) {
+                    await sendStaking({
+                        type: StakingTransactionType.REACTIVATE_STAKER,
+                        value: stakeDelta.value,
+                        sender: activeAddress.value!,
+                        recipient: STAKING_CONTRACT_ADDRESS,
+                        // @ts-expect-error Staking Account type not yet available
+                        recipientType: STAKING_ACCOUNT_TYPE,
+                        recipientLabel: context.root.$t('Staking Contract') as string,
+                        validityStartHeight: useNetworkStore().state.height,
+                    }).catch((error) => {
+                        throw new Error(error.data);
+                    });
+                } else {
+                    await sendStaking({
+                        type: StakingTransactionType.STAKE,
+                        value: stakeDelta.value,
+                        sender: activeAddress.value!,
+                        recipient: STAKING_CONTRACT_ADDRESS,
+                        // @ts-expect-error Staking Account type not yet available
+                        recipientType: STAKING_ACCOUNT_TYPE,
+                        recipientLabel: context.root.$t('Staking Contract') as string,
+                        validityStartHeight: useNetworkStore().state.height,
+                    }).catch((error) => {
+                        throw new Error(error.data);
+                    });
+                }
+            } else {
+                await sendStaking({
+                    type: StakingTransactionType.RETIRE_STAKER,
+                    value: Math.abs(stakeDelta.value),
+                    sender: activeAddress.value!,
+                    recipient: STAKING_CONTRACT_ADDRESS,
+                    // @ts-expect-error Staking Account type not yet available
+                    recipientType: STAKING_ACCOUNT_TYPE,
+                    recipientLabel: context.root.$t('Staking Contract') as string,
+                    validityStartHeight: useNetworkStore().state.height,
+                }).catch((error) => {
+                    throw new Error(error.data);
+                });
 
-            const currentStake = activeStake.value || {
-                address: activeAddress.value!,
-                activeStake: 0,
-                inactiveStake: 0,
-                validator: activeValidator.value!.address,
-                retireTime: 0,
-            };
-
-            setStake({
-                ...currentStake,
-                activeStake: newStake.value,
-                inactiveStake: stakeDelta.value < 0 ? -stakeDelta.value : 0,
-            });
+                // TODO: Queue UNSTAKE transaction
+            }
 
             context.emit('next');
         }

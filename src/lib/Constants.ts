@@ -30,3 +30,11 @@ export const NIM_DECIMALS = 5;
 export const NIM_MAGNITUDE = 1e5;
 
 export const STAKING_CONTRACT_ADDRESS = 'NQ38 STAK 1NG0 0000 0000 C0NT RACT 0000 0000';
+export const STAKING_ACCOUNT_TYPE = 3;
+export const StakingTransactionType = {
+    CREATE_STAKER: 5,
+    STAKE: 6,
+    UPDATE_STAKER: 7,
+    RETIRE_STAKER: 8,
+    REACTIVATE_STAKER: 9,
+}

@@ -40,6 +40,9 @@ import { useStakingStore } from '../../stores/Staking';
 import StakeValidatorFilter, { FilterState } from './StakeValidatorFilter.vue';
 import StakeValidatorListItem from './StakeValidatorListItem.vue';
 import { useAddressStore } from '../../stores/Address';
+import { sendStaking } from '../../hub';
+import { StakingTransactionType, STAKING_ACCOUNT_TYPE, STAKING_CONTRACT_ADDRESS } from '../../lib/Constants';
+import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
     setup(props, context) {
@@ -71,19 +74,30 @@ export default defineComponent({
             }
         });
 
-        function selectValidator(address: string) {
-            // TODO: Trigger rededicate tx signing
-
-            const currentStake = activeStake.value || {
-                address: activeAddress.value!,
-                activeStake: 0,
-                inactiveStake: 0,
-                validator: address,
-                retireTime: 0,
-            };
-
-            currentStake.validator = address;
-            setStake(currentStake);
+        async function selectValidator(address: string) {
+            if (!activeStake.value) {
+                setStake({
+                    address: activeAddress.value!,
+                    activeStake: 0,
+                    inactiveStake: 0,
+                    validator: address,
+                    retireTime: 0,
+                });
+            } else {
+                await sendStaking({
+                    type: StakingTransactionType.UPDATE_STAKER,
+                    delegation: address,
+                    value: 1, // Unused in transaction
+                    sender: activeAddress.value!,
+                    recipient: STAKING_CONTRACT_ADDRESS,
+                    // @ts-expect-error Staking Account type not yet available
+                    recipientType: STAKING_ACCOUNT_TYPE,
+                    recipientLabel: context.root.$t('Staking Contract') as string,
+                    validityStartHeight: useNetworkStore().state.height,
+                }).catch((error) => {
+                    throw new Error(error.data);
+                });
+            }
 
             context.emit('next');
         }

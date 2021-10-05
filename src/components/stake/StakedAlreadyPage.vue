@@ -137,7 +137,7 @@ export default defineComponent({
         const unstakedAmount = ref(0);
 
         const percentage = computed(() => availableBalance.value > 0
-            ? ((stake.value?.activeStake || 0) / availableBalance.value) * 100
+            ? ((stake.value?.activeStake || 0) / (availableBalance.value + (stake.value?.activeStake || 0))) * 100
             : 0,
         );
 

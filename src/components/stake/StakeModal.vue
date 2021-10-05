@@ -10,10 +10,10 @@
             <StakeInfoPage @next="page += 1" />
         </template>
         <template v-if="page === 2">
-            <StakeValidatorPage @back="page -= 1" @next="page += isStaking ? 2 : 1"/>
+            <StakeValidatorPage @back="page += isStaking ? 2 : -1" @next="page += isStaking ? 2 : 1"/>
         </template>
         <template v-if="page === 3">
-            <StakeGraphPage @back="page -= 1" @next="page += 1" />
+            <StakeGraphPage @back="page += isStaking ? 1 : -1" @next="page += 1" />
         </template>
         <template v-if="page === 4">
             <StakedAlreadyPage @back="page -= 1" @next="page += 1"
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
@@ -60,6 +60,12 @@ export default defineComponent({
         const isStaking = computed(() => {
             return activeStake.value && (activeStake.value.activeStake || activeStake.value.inactiveStake);
         });
+
+        watch(activeStake, (stake) => {
+            if (!stake) {
+                page.value = 1;
+            }
+        }, { lazy: true });
 
         return {
             page,

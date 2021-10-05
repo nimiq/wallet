@@ -56,11 +56,17 @@
                 </button>
 
                 <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
-                    {{ $t('Unlock at any time. Your NIM will be available within {hours} hours.', { hours: 12 }) }}
+                    {{ $t(
+                        'Unlock at any time. Your NIM will be available within {hours} hours.',
+                        { hours: 12 },
+                    ) }}
                 </div>
                 <div class="disclaimer unstake-disclaimer" v-else>
                     <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
-                    {{ unstakeDisclaimer }}
+                    {{ $t(
+                        'will be available in {duration}.',
+                        { duration: unstakeAvailableDuration },
+                    ) }}
                 </div>
             </div>
         </PageBody>
@@ -68,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -81,7 +87,13 @@ import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
-import { CryptoCurrency, STAKING_CONTRACT_ADDRESS, StakingTransactionType, STAKING_ACCOUNT_TYPE } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    STAKING_CONTRACT_ADDRESS,
+    StakingTransactionType,
+    STAKING_ACCOUNT_TYPE,
+    nextElectionBlock,
+} from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
@@ -89,7 +101,8 @@ import { useNetworkStore } from '../../stores/Network';
 export default defineComponent({
     setup(props, context) {
         const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator/* , setStake */ } = useStakingStore();
+        const { activeStake, activeValidator } = useStakingStore();
+        const { height } = useNetworkStore();
 
         const newStake = ref(activeStake.value ? activeStake.value.activeStake : 0);
         const stakeDelta = ref(0);
@@ -98,6 +111,17 @@ export default defineComponent({
             newStake.value = amount;
             stakeDelta.value = amount - (activeStake.value?.activeStake || 0);
         }
+
+        const unstakeAvailableDuration = computed<string>(() => {
+            const blocksToGo = nextElectionBlock(height.value) + 1 - height.value;
+            if (blocksToGo < 60) {
+                return context.root.$t('seconds') as string;
+            }
+            if (blocksToGo < 60 * 60) {
+                return context.root.$tc('~one minute | ~{count} minutes', Math.ceil(blocksToGo / 60)) as string;
+            }
+            return context.root.$tc('~one hour | ~{count} hours', Math.ceil(blocksToGo / 60 / 60)) as string;
+        });
 
         async function performStaking() {
             if (stakeDelta.value > 0) {
@@ -166,16 +190,13 @@ export default defineComponent({
             NOW,
             MONTH,
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(stakeDelta.value, CryptoCurrency.NIM),
-            unstakeDisclaimer: context.root.$t(
-                'will be available in ~{duration}.',
-                { duration: context.root.$t('{hours} hours', { hours: 12 }) },
-            ),
             activeStake,
             validator: activeValidator,
             newStake,
             stakeDelta,
             updateStaked,
             performStaking,
+            unstakeAvailableDuration,
         };
     },
     components: {

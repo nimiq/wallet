@@ -49,19 +49,23 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.activeStake + stake.inactiveStake"/>
+                            <Amount :amount="stake.activeStake"/>
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
                     <button class="nq-button-s" @click="$emit('adjust-stake')">{{ $t('Adjust Stake') }}</button>
-                    <button class="nq-button-pill red unstake-all"
-                        @click="unstakeAll" :disabled="!hasUnstakableStake"
-                    >{{ $t('Unstake') }}</button>
                 </div>
-                <div v-if="stake && stake.inactiveStake" class="unstaking row flex-row nq-light-blue">
-                    <CircleSpinner/> {{ $t('Unstaking') }} <Amount :amount="stake.inactiveStake"/>
+                <div v-if="stake && stake.inactiveStake && hasUnstakableStake"
+                    class="unstaking row flex-row nq-light-blue"
+                >
+                    <Amount :amount="stake.inactiveStake"/>&nbsp;{{ $t('available to unstake') }}
+                    <div class="flex-grow"></div>
+                    <button class="nq-button-pill red unstake-all" @click="unstakeAll">{{ $t('Unstake') }}</button>
+                </div>
+                <div v-else-if="stake && stake.inactiveStake" class="unstaking row flex-row nq-light-blue">
+                    <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveStake"/>
                 </div>
             </div>
 
@@ -126,7 +130,7 @@ import ShortAddress from '../ShortAddress.vue';
 
 import {
     CryptoCurrency,
-    EPOCH_LENGTH,
+    nextElectionBlock,
     NIM_DECIMALS,
     NIM_MAGNITUDE,
     StakingTransactionType,
@@ -143,11 +147,12 @@ export default defineComponent({
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
+        const stakedBalance = computed(() => stake.value ? stake.value.activeStake + stake.value.inactiveStake : 0);
 
         const unstakedAmount = ref(0);
 
         const percentage = computed(() => availableBalance.value > 0
-            ? ((stake.value?.activeStake || 0) / (availableBalance.value + (stake.value?.activeStake || 0))) * 100
+            ? ((stake.value?.activeStake || 0) / (availableBalance.value + stakedBalance.value)) * 100
             : 0,
         );
 
@@ -157,9 +162,7 @@ export default defineComponent({
 
         const hasUnstakableStake = computed(() => {
             if (!stake.value || !stake.value.inactiveStake) return false;
-            const nextElectionBlock = Math.floor(stake.value.retireTime / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
-            if (height.value <= nextElectionBlock) return false;
-            return true;
+            return height.value > nextElectionBlock(stake.value.retireTime);
         });
 
         async function unstakeAll() {
@@ -296,10 +299,6 @@ export default defineComponent({
 
         /deep/ .circle-spinner {
             margin-right: 1rem;
-        }
-
-        .amount {
-            margin-left: 0.25em;
         }
     }
 

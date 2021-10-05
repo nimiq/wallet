@@ -33,6 +33,10 @@ export const BATCH_LENGTH = 32;
 export const BATCHES_PER_EPOCH = 4;
 export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
 
+export function nextElectionBlock(height: number): number {
+    return Math.floor(height / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+}
+
 export const STAKING_CONTRACT_ADDRESS = 'NQ38 STAK 1NG0 0000 0000 C0NT RACT 0000 0000';
 export const STAKING_ACCOUNT_TYPE = 3;
 export const StakingTransactionType = {

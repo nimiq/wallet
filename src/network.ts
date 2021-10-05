@@ -346,6 +346,9 @@ export async function launchNetwork() {
                     validator: staker.delegation,
                     retireTime: staker.retireTime,
                 });
+            }).catch(() => {
+                // Staker not found
+                stakingStore.removeStake(address);
             });
         }
     }

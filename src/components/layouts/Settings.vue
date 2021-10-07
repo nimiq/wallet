@@ -240,7 +240,6 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-import { BeforeInstallPromptEvent } from '../../pwa';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -371,17 +370,17 @@ export default defineComponent({
         window.enableVestingSetting = enableVestingSetting;
 
         /* Browser's install prompt */
-        const deferredPrompt = ref<BeforeInstallPromptEvent | null>(window.deferredInstallPrompt);
+        const deferredPrompt = ref(window.deferredInstallPrompt);
 
         /* Manually show the browser's PWA install prompt if available */
         function promptInstall() {
-            if (!deferredPrompt.value) return;
+            if (!deferredPrompt.value || typeof deferredPrompt.value === 'boolean') return;
             // Show the prompt
             deferredPrompt.value.prompt();
             // Wait for the user to respond to the prompt
-            deferredPrompt.value.userChoice.then(() => {
+            deferredPrompt.value.userChoice.then((choice) => {
                 // set deferredPrompt to null since deferredPrompt.prompt is one time use
-                deferredPrompt.value = null;
+                deferredPrompt.value = choice.outcome === 'accepted';
             });
         }
 

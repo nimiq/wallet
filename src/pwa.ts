@@ -32,7 +32,9 @@ export interface BeforeInstallPromptEvent extends Event {
 
 /* Browser's install prompt */
 declare global {
-    interface Window { deferredInstallPrompt: BeforeInstallPromptEvent | null }
+    // Null for uninitialized
+    // False for rejected user action
+    interface Window { deferredInstallPrompt: BeforeInstallPromptEvent | null | boolean }
 }
 window.deferredInstallPrompt = window.deferredInstallPrompt || null;
 

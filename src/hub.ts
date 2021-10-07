@@ -18,11 +18,15 @@ import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 
-let redirectBehavior: RequestBehavior<BehaviorType.REDIRECT> | RequestBehavior<BehaviorType.POPUP> | undefined;
-if (Math.random() < 2) {
-    redirectBehavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
+    // In Samsung Browser, use redirects in installed PWA
+    if (navigator.userAgent.includes('SamsungBrowser') && window.deferredInstallPrompt === null) {
+        return new HubApi.RedirectRequestBehavior(undefined, localState) as RequestBehavior<BehaviorType.REDIRECT>;
+    }
+
+    return undefined;
 }
-const hubApi = new HubApi(Config.hubEndpoint, redirectBehavior);
+const hubApi = new HubApi(Config.hubEndpoint);
 
 let welcomeRoute = '';
 
@@ -250,7 +254,7 @@ export async function onboard(asRedirect = false) {
         return null;
     }
 
-    const accounts = await hubApi.onboard({ appName: APP_NAME }).catch(onError);
+    const accounts = await hubApi.onboard({ appName: APP_NAME }, getBehavior()).catch(onError);
     if (!accounts) return false;
 
     processAndStoreAccounts(accounts);
@@ -266,7 +270,7 @@ export async function addAddress(accountId: string) {
     const addedAddress = await hubApi.addAddress({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!addedAddress) return false;
 
     const addressInfo: AddressInfo = {
@@ -291,7 +295,7 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
         appName: APP_NAME,
         accountId,
         ...options,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!exportResult) return false;
 
     const accountStore = useAccountStore();
@@ -304,7 +308,7 @@ export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...tx,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);
@@ -315,7 +319,7 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
         appName: APP_NAME,
         senderAddress,
         senderBalance,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!cashlink) return false;
 
     // Handle cashlink
@@ -329,7 +333,7 @@ export async function manageCashlink(cashlinkAddress: string) {
     const cashlink = await hubApi.manageCashlink({
         appName: APP_NAME,
         cashlinkAddress,
-    }).catch(onError).catch((error: null | Error) => {
+    }, getBehavior()).catch(onError).catch((error: null | Error) => {
         if (!error) return null;
         if (error.message.startsWith('Could not find Cashlink for address')) {
             return {
@@ -354,7 +358,7 @@ export async function rename(accountId: string, address?: string) {
         appName: APP_NAME,
         accountId,
         address,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     const accountStore = useAccountStore();
@@ -371,7 +375,7 @@ export async function rename(accountId: string, address?: string) {
 export async function addVestingContract() {
     const account = await hubApi.addVestingContract({
         appName: APP_NAME,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -383,14 +387,14 @@ export async function changePassword(accountId: string) {
     await hubApi.changePassword({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
 }
 
 export async function logout(accountId: string) {
     const loggedOut = await hubApi.logout({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!loggedOut) return false;
 
     if (!loggedOut.success) return false;
@@ -475,7 +479,7 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
     const signedTransaction = await hubApi.signBtcTransaction({
         appName: APP_NAME,
         ...tx,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);
@@ -485,7 +489,7 @@ export async function activateBitcoin(accountId: string) {
     const account = await hubApi.activateBitcoin({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -544,7 +548,7 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
             ...request,
             appName: APP_NAME,
         })).catch(reject);
-    })).catch(onError);
+    }), getBehavior()).catch(onError);
 }
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
@@ -553,5 +557,5 @@ export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest,
             ...request,
             appName: APP_NAME,
         })).catch(reject);
-    })).catch(onError);
+    }), getBehavior()).catch(onError);
 }

@@ -1131,14 +1131,15 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
   integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
 
-"@nimiq/hub-api@^1.5.0-beta.1":
-  version "1.5.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.5.0-beta.1.tgz#9d6eb46286df6756b601fa3630b82f4935d4e040"
-  integrity sha512-LCPgGo1LQ7/Ic4v4/dnAhAopXRvhrKDpLbg3m8ffsbZA73QwPmEavA2NasmZ7wdb6WxNKrJV4BeRUFGx7YNCaQ==
+"@nimiq/hub-api@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.5.0.tgz#8a28090f6f7aee0407eabd8c807d4b24c49755fb"
+  integrity sha512-DtHEcQRTd3wDvyR5KgQliIZ/xD+UQnj3b9kdMxgQDSBEFcrdHQWNxNhCPF+H46ts+ek8sYYVLxNRCK5NGAWKTw==
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.5.2"
     "@nimiq/rpc" "^0.4.0"
+    "@nimiq/utils" "^0.5.0"
     big-integer "^1.6.48"
 
 "@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":
@@ -1177,6 +1178,13 @@
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.3.tgz#a360c7aa13f1f18d801d7461a32bb28a6bc61c38"
   integrity sha512-NL/JeQ3f3koGqE0c6Q/ZyupAXvJfXGoZTkiCVnTGwgCN3lvUMHCJtp7qQPnvDldBLMORDA4Ck7wGgktKA9Fa9Q==
+
+"@nimiq/utils@^0.5.0":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.5.1.tgz#a5641e483e80b00066c3f2b0b85132974cf5c7e5"
+  integrity sha512-6p/oh6nzj/GVlcDn5WFJnSOoDgzGNoGLaR063wBvk+S672+p9sT4dhU2bCRWAY30cLhJsOL7X74QIus5weIpXA==
+  dependencies:
+    big-integer "^1.6.44"
 
 "@nimiq/utils@^0.6.0":
   version "0.6.0"

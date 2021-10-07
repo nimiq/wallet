@@ -18,7 +18,11 @@ import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 
-const hubApi = new HubApi(Config.hubEndpoint);
+let redirectBehavior: RequestBehavior<BehaviorType.REDIRECT> | RequestBehavior<BehaviorType.POPUP> | undefined;
+if (Math.random() < 2) {
+    redirectBehavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+}
+const hubApi = new HubApi(Config.hubEndpoint, redirectBehavior);
 
 let welcomeRoute = '';
 
@@ -38,6 +42,32 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
     welcomeRoute = '/migration-welcome';
+});
+
+hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
+    // TODO: Show status notification
+    await sendTx(tx);
+});
+
+hubApi.on(HubApi.RequestType.SIGN_BTC_TRANSACTION, async (tx) => {
+    // TODO: Show status notification
+    await sendBtcTx(tx);
+});
+
+hubApi.on(HubApi.RequestType.CREATE_CASHLINK, (cashlink) => {
+    const proxyStore = useProxyStore();
+    // TODO: Show status notification
+    proxyStore.addHubCashlink(cashlink);
+});
+
+hubApi.on(HubApi.RequestType.MANAGE_CASHLINK, (cashlink) => {
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
+});
+
+hubApi.on(HubApi.RequestType.SETUP_SWAP, (swapResult) => {
+    // TODO: Start swap process
+    console.log({ swapResult }); // eslint-disable-line no-console
 });
 
 export async function initHubApi() {

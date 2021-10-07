@@ -586,9 +586,10 @@ export default defineComponent({
                 resolve(request);
             });
 
-            let signedTransactions: SetupSwapResult | null = null;
+            let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
+                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

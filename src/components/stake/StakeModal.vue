@@ -57,9 +57,9 @@ export default defineComponent({
             page.value = 2;
         };
 
-        const isStaking = computed(() => {
-            return activeStake.value && (activeStake.value.activeStake || activeStake.value.inactiveStake);
-        });
+        const isStaking = computed(
+            () => activeStake.value && (activeStake.value.activeStake || activeStake.value.inactiveStake),
+        );
 
         watch(activeStake, (stake) => {
             if (!stake) {

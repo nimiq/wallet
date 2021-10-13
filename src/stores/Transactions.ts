@@ -10,7 +10,7 @@ import { useSwapsStore } from './Swaps';
 // import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
 
-import { Transaction as RpcTransaction } from '../../../../github/albatross-remote/src/lib/server-types';
+import { Transaction as RpcTransaction } from '../albatross';
 
 export type Transaction = RpcTransaction & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },

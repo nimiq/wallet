@@ -61,7 +61,7 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:131
+#: src/components/modals/BuyOptionsModal.vue:141
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr ""
@@ -110,7 +110,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:339
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -134,7 +134,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:198
 msgid "Add"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:194
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -251,6 +251,14 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
+#: src/components/layouts/Settings.vue:184
+msgid "Auto"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:177
+msgid "Automatic mode uses {behavior}."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:265
 msgid "Awaiting swap secret"
 msgstr ""
@@ -278,7 +286,7 @@ msgstr ""
 msgid "Bank Transfer"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:90
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
 
@@ -374,7 +382,7 @@ msgstr ""
 msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:161
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -419,7 +427,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:299
+#: src/components/layouts/Settings.vue:319
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -460,11 +468,11 @@ msgstr ""
 msgid "Claiming Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:189
+#: src/components/layouts/Settings.vue:210
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:204
 msgid "Clear Cache"
 msgstr ""
 
@@ -610,7 +618,7 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:99
+#: src/components/modals/BuyOptionsModal.vue:109
 msgid "Credit Card"
 msgstr ""
 
@@ -628,7 +636,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:227
+#: src/components/layouts/Settings.vue:248
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr ""
@@ -711,7 +719,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:197
+#: src/components/layouts/Settings.vue:218
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -794,7 +802,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:305
+#: src/components/layouts/Settings.vue:325
 msgid "File contains no contacts."
 msgstr ""
 
@@ -814,7 +822,7 @@ msgstr ""
 msgid "free"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:102
+#: src/components/modals/BuyOptionsModal.vue:112
 msgid "Full KYC required, high availability."
 msgstr ""
 
@@ -965,6 +973,10 @@ msgstr ""
 msgid "It's safe to close your wallet now"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:171
+msgid "Keyguard Mode"
+msgstr ""
+
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
 msgstr ""
@@ -1061,8 +1073,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
-#: src/components/modals/BuyOptionsModal.vue:127
+#: src/components/modals/BuyOptionsModal.vue:123
+#: src/components/modals/BuyOptionsModal.vue:137
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1150,8 +1162,12 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:76
+msgid "Not available in your browser"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:154
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr ""
 
@@ -1177,7 +1193,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:328
+#: src/components/layouts/Settings.vue:348
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1199,6 +1215,10 @@ msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:15
 msgid "Or buy BTC directly in the wallet."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:173
+msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:43
@@ -1246,6 +1266,14 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:7
 msgid "Please transfer"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:178
+msgid "popups"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:185
+msgid "Popups"
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
@@ -1303,7 +1331,19 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:174
+msgid "Redirect mode does not yet support swaps."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:178
+msgid "redirects"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:186
+msgid "Redirects"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:227
 msgid "Reference currency"
 msgstr ""
 
@@ -1320,7 +1360,7 @@ msgstr ""
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:246
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr ""
@@ -1345,7 +1385,7 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:206
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -1829,7 +1869,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:195
+#: src/components/layouts/Settings.vue:216
 msgid "Trials"
 msgstr ""
 
@@ -1891,7 +1931,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:171
+#: src/components/layouts/Settings.vue:192
 msgid "Vesting Contract"
 msgstr ""
 
@@ -2009,6 +2049,10 @@ msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:12
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:13

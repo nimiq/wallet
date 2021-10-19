@@ -31,6 +31,7 @@ export enum Trial {}
 export type NimDecimals = 0 | 2 | 5;
 export type BtcDecimals = 0 | 3 | 8;
 export type SwipingEnabled = -1 | 0 | 1;
+export type HubBehavior = 'auto' | 'popup' | 'redirect';
 
 export type SettingsState = {
     decimals: NimDecimals,
@@ -42,6 +43,7 @@ export type SettingsState = {
     swipingEnabled: SwipingEnabled,
     trials: Trial[],
     updateAvailable: boolean,
+    hubBehavior: HubBehavior,
 };
 
 export const useSettingsStore = createStore({
@@ -56,6 +58,7 @@ export const useSettingsStore = createStore({
         swipingEnabled: -1,
         trials: [],
         updateAvailable: false,
+        hubBehavior: 'auto',
     }),
     getters: {
         decimals: (state): Readonly<NimDecimals> => state.decimals,
@@ -67,6 +70,7 @@ export const useSettingsStore = createStore({
         swipingEnabled: (state): Readonly<SwipingEnabled> => state.swipingEnabled,
         trials: (state): Readonly<Trial[]> => state.trials,
         updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
+        hubBehavior: (state): Readonly<HubBehavior> => state.hubBehavior,
     },
     actions: {
         setDecimals(num: NimDecimals = 0) {
@@ -97,5 +101,8 @@ export const useSettingsStore = createStore({
             if (this.state.trials.includes(trial)) return;
             this.state.trials.push(trial);
         },
+        setHubBehavior(behavior: HubBehavior) {
+            this.state.hubBehavior = behavior;
+        }
     },
 });

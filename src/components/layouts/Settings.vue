@@ -166,6 +166,25 @@
                     </select>
                 </div>
 
+                <div class="setting hub-behavior-setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Keyguard Mode') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Overwrite how the Keyguard is opened.') }}
+                            {{ $t('Redirect mode does not yet support swaps.') }}
+                        </p>
+                        <p class="nq-text">
+                            {{ $t('Automatic mode uses {behavior}.', { behavior: shouldUseRedirects() ? $t('redirects') : $t('popups') }) }}
+                        </p>
+                    </div>
+
+                    <select id="hub-behavior" @input="setHubBehavior($event.target.value)">
+                        <option value="auto" :selected="hubBehavior === 'auto'">{{ $t('Auto') }}</option>
+                        <option value="popup" :selected="hubBehavior === 'popup'">{{ $t('Popups') }}</option>
+                        <option value="redirect" :selected="hubBehavior === 'redirect'">{{ $t('Redirects') }}</option>
+                    </select>
+                </div>
+
                 <div v-if="showVestingSetting" class="setting">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Vesting Contract') }}</label>
@@ -252,6 +271,7 @@ import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
 import { updateServiceWorker } from '../../registerServiceWorker';
+import { shouldUseRedirects } from '../../hub'
 
 declare global {
     function digestMessage(message: string): Promise<string>;
@@ -401,6 +421,7 @@ export default defineComponent({
             applyingWalletUpdate,
             deferredPrompt,
             promptInstall,
+            shouldUseRedirects,
         };
     },
     components: {
@@ -675,6 +696,12 @@ input[type="file"] {
 
     section {
         padding: 4rem 5rem;
+    }
+}
+
+@media (min-width: 1160px) { // Half mobile breakpoint
+    .hub-behavior-setting {
+        display: none;
     }
 }
 

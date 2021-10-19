@@ -17,19 +17,27 @@ import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
+import { useSettingsStore } from './stores/Settings';
 
-function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
-    // Only use redirects when not in PWA
-    if (window.deferredInstallPrompt !== null) return undefined;
-
-    let useRedirect = false;
+export function shouldUseRedirects(): boolean {
+    // When not in PWA, don't use redirects
+    if (window.deferredInstallPrompt !== null) return false;
 
     // Samsung Browser
-    if (navigator.userAgent.includes('SamsungBrowser')) useRedirect = true;
-    // Firefox Mobile
-    if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) useRedirect = true;
+    if (navigator.userAgent.includes('SamsungBrowser')) return true;
 
-    if (useRedirect) {
+    // Firefox does not reliably provide the beforeinstallprompt event, preventing detection of PWA installed status
+    // // Firefox Mobile
+    // if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) useRedirect = true;
+
+    return false;
+}
+
+function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
+    const { hubBehavior } = useSettingsStore();
+
+    if (hubBehavior.value === 'popup') return undefined;
+    if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
         return new HubApi.RedirectRequestBehavior(undefined, localState) as RequestBehavior<BehaviorType.REDIRECT>;
     }
 

@@ -71,6 +71,16 @@
                                     + 'scheduled maintenance until the 24th of March.') }} -->
                             </Tooltip>
                         </footer>
+                        <footer v-else-if="!canUseSwaps" class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your browser') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('Your browser does not support Keyguard popups, '
+                                    + 'or they are disabled in the Settings.') }}
+                            </Tooltip>
+                        </footer>
                         <footer v-else class="flex-row">
                             <ForbiddenIcon/>
                             {{ $t('Not available in your country') }}
@@ -210,6 +220,7 @@ import { FiatCurrency } from '../../lib/Constants';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
+import { useSettingsStore } from '../../stores/Settings';
 
 type Country = {
     code: string,
@@ -220,11 +231,13 @@ export default defineComponent({
     name: 'buy-options-modal',
     setup() {
         const { currency } = useFiatStore();
+        const { canUseSwaps } = useSettingsStore();
 
         const country = ref<Country>(null);
 
         const isOasisUnderMaintenance = ref(false);
         const isOasisAvailable = computed(() => {
+            if (!canUseSwaps.value) return false;
             if (isOasisUnderMaintenance.value) return false;
             if (!country.value) return true;
             return SEPA_COUNTRY_CODES.includes(country.value.code);
@@ -265,6 +278,7 @@ export default defineComponent({
             isSimplexAvailable,
             currency,
             FiatCurrency,
+            canUseSwaps,
         };
     },
     components: {

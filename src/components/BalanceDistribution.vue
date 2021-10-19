@@ -46,7 +46,7 @@
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
             <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
-                    :disabled="!totalFiatAccountBalance || hasActiveSwap"
+                    :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
                     @focus.stop="$refs.swapTooltip.show()"
                     @blur.stop="$refs.swapTooltip.hide()"
                     class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
@@ -120,7 +120,7 @@ export default defineComponent({
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit, canUseSwaps } = useSettingsStore();
 
         const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
             && (activeAccountInfo.value.btcAddresses || false)
@@ -197,6 +197,7 @@ export default defineComponent({
             $btcAmount,
             doElsTouch,
             hasActiveSwap,
+            canUseSwaps,
         };
     },
     components: {

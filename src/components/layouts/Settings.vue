@@ -174,7 +174,9 @@
                             {{ $t('Redirect mode does not yet support swaps.') }}
                         </p>
                         <p class="nq-text">
-                            {{ $t('Automatic mode uses {behavior}.', { behavior: shouldUseRedirects() ? $t('redirects') : $t('popups') }) }}
+                            {{ $t('Automatic mode uses {behavior}.', {
+                                behavior: shouldUseRedirects() ? $t('redirects') : $t('popups'),
+                            }) }}
                         </p>
                     </div>
 
@@ -266,12 +268,11 @@ import CountryFlag from '../CountryFlag.vue';
 import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
-import { addVestingContract } from '../../hub';
+import { addVestingContract, shouldUseRedirects } from '../../hub';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
 import { updateServiceWorker } from '../../registerServiceWorker';
-import { shouldUseRedirects } from '../../hub'
 
 declare global {
     function digestMessage(message: string): Promise<string>;

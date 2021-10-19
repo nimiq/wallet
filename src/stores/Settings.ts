@@ -1,4 +1,5 @@
 import { createStore } from 'pinia';
+import { shouldUseRedirects } from '../hub';
 import { detectLanguage, loadLanguage } from '../i18n/i18n-setup';
 
 export enum ColorMode {
@@ -71,6 +72,11 @@ export const useSettingsStore = createStore({
         trials: (state): Readonly<Trial[]> => state.trials,
         updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
         hubBehavior: (state): Readonly<HubBehavior> => state.hubBehavior,
+        canUseSwaps: (state) => {
+            if (state.hubBehavior === 'popup') return true;
+            if (state.hubBehavior === 'redirect') return false;
+            return !shouldUseRedirects();
+        },
     },
     actions: {
         setDecimals(num: NimDecimals = 0) {
@@ -103,6 +109,6 @@ export const useSettingsStore = createStore({
         },
         setHubBehavior(behavior: HubBehavior) {
             this.state.hubBehavior = behavior;
-        }
+        },
     },
 });

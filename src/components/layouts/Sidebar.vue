@@ -31,7 +31,7 @@
 
             <button class="nq-button-s inverse"
                 @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
-                :disabled="$route.name !== 'root' || hasActiveSwap"
+                :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
             >{{ $t('Sell') }}</button>
         </div>
 
@@ -115,7 +115,7 @@ export default defineComponent({
             }
         }
 
-        const { updateAvailable, trials } = useSettingsStore();
+        const { updateAvailable, trials, canUseSwaps } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -135,6 +135,7 @@ export default defineComponent({
             hasActiveSwap,
             trials,
             Trial,
+            canUseSwaps,
         };
     },
     components: {

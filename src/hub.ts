@@ -19,8 +19,17 @@ import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 
 function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
-    // In Samsung Browser, use redirects in installed PWA
-    if (navigator.userAgent.includes('SamsungBrowser') && window.deferredInstallPrompt === null) {
+    // Only use redirects when not in PWA
+    if (window.deferredInstallPrompt !== null) return undefined;
+
+    let useRedirect = false;
+
+    // Samsung Browser
+    if (navigator.userAgent.includes('SamsungBrowser')) useRedirect = true;
+    // Firefox Mobile
+    if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) useRedirect = true;
+
+    if (useRedirect) {
         return new HubApi.RedirectRequestBehavior(undefined, localState) as RequestBehavior<BehaviorType.REDIRECT>;
     }
 

@@ -70,7 +70,7 @@ export class EuroAssetAdapter implements AssetAdapter<SwapAsset.EUR> {
         return this.findTransaction(
             id,
             (htlc) => {
-                if (htlc.amount + htlc.fee !== value) return false;
+                // if (htlc.amount + htlc.fee !== value) return false;
 
                 if (htlc.status === HtlcStatus.CLEARED || htlc.status === HtlcStatus.SETTLED) return true;
 

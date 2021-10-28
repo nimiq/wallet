@@ -539,8 +539,8 @@ export default defineComponent({
                                 status: htlc.settlement.status,
                                 ...(htlc.settlement.status === SettlementStatus.ACCEPTED
                                     ? {
-                                        eta: (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
-                                            .detail.eta.seconds * 1e3,
+                                        eta: new Date((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
+                                            .detail.eta).getTime(),
                                         lastUpdated: Date.now(),
                                     }
                                     : {}

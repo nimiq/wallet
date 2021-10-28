@@ -301,11 +301,11 @@ msgstr "Les Swaps atomiques nécessitent 2 transactions BTC."
 
 #: src/components/layouts/Settings.vue:184
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: src/components/layouts/Settings.vue:177
 msgid "Automatic mode uses {behavior}."
-msgstr ""
+msgstr "Le mode automatique utilise {behavior}."
 
 #: src/components/swap/SwapAnimation.vue:265
 msgid "Awaiting swap secret"
@@ -1081,7 +1081,7 @@ msgstr "Vous pouvez maintenant fermer votre Wallet en toute sécurité"
 
 #: src/components/layouts/Settings.vue:171
 msgid "Keyguard Mode"
-msgstr ""
+msgstr "Mode Keyguard"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
@@ -1286,7 +1286,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:76
 msgid "Not available in your browser"
-msgstr ""
+msgstr "Pas disponible sur votre navigateur"
 
 #: src/components/modals/BuyOptionsModal.vue:154
 #: src/components/modals/BuyOptionsModal.vue:86
@@ -1341,7 +1341,7 @@ msgstr "Ou acheter du BTC directement dans le Wallet."
 
 #: src/components/layouts/Settings.vue:173
 msgid "Overwrite how the Keyguard is opened."
-msgstr ""
+msgstr "Remplace la manière dont le Keyguard s'ouvre."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1404,11 +1404,11 @@ msgstr "Veuillez transférer"
 
 #: src/components/layouts/Settings.vue:178
 msgid "popups"
-msgstr ""
+msgstr "pop-ups"
 
 #: src/components/layouts/Settings.vue:185
 msgid "Popups"
-msgstr ""
+msgstr "Pop-ups"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
@@ -1469,15 +1469,15 @@ msgstr "Destinataire"
 
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
-msgstr ""
+msgstr "Le mode de redirection ne supporte pas encore les swaps."
 
 #: src/components/layouts/Settings.vue:178
 msgid "redirects"
-msgstr ""
+msgstr "redirection"
 
 #: src/components/layouts/Settings.vue:186
 msgid "Redirects"
-msgstr ""
+msgstr "Redirection"
 
 #: src/components/layouts/Settings.vue:227
 msgid "Reference currency"
@@ -2267,6 +2267,8 @@ msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."
 msgstr ""
+"Votre navigateur ne prend pas en charge les fenêtres pop-up Keyguard ou bien"
+" celles-ci sont désactivées dans les paramètres."
 
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"

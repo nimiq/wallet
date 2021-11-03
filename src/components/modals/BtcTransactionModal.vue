@@ -197,7 +197,11 @@
                                     * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
                                 />
                             </template>
-                            {{ $t('Historic value') }}
+                            <span>{{ $t('Historic value') }}</span>
+                            <p class="explainer">
+                                {{ $t('This historic value is based on an average of cross-exchange prices.'
+                                    + ' It might vary due to market volatility and liquidity.') }}
+                            </p>
                         </Tooltip>
                     </div>
                     <transition v-else-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
@@ -219,7 +223,11 @@
                                         :currency="fiatCurrency"
                                         value-mask/>
                                 </template>
-                                {{ $t('Historic value') }}
+                                <span>{{ $t('Historic value') }}</span>
+                                <p class="explainer">
+                                    {{ $t('This historic value is based on an average of cross-exchange prices.'
+                                        + ' It might vary due to market volatility and liquidity.') }}
+                                </p>
                             </Tooltip>
                         </div>
                     </transition>
@@ -955,10 +963,8 @@ export default defineComponent({
             }
 
             /deep/ .tooltip-box {
-                white-space: nowrap;
-                line-height: 1;
-                padding: 1rem;
-                transform: translateY(-1.5rem);
+                width: 28rem;
+                transform: translate(-10rem, -1.5rem);
             }
 
             /deep/ [value-mask]::after{

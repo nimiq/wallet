@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { SettlementStatus } from '../lib/OasisApi';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { SwapEurData } from '../stores/Swaps';
 
 export default defineComponent({

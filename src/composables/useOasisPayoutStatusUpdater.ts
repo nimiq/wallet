@@ -1,7 +1,7 @@
 import { onUnmounted, Ref, watch } from '@vue/composition-api';
+import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
+import { SwapAsset } from '@nimiq/libswap';
 import { SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';
-import { SwapAsset } from '../lib/swap/IAssetAdapter';
-import { getHtlc, SettlementInfo, SettlementStatus } from '../lib/OasisApi';
 
 // TODO: Remove logging when stable
 /* eslint-disable no-console */

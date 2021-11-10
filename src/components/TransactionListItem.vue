@@ -81,6 +81,7 @@ import {
 } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
@@ -101,7 +102,6 @@ import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
 import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import { SettlementStatus } from '../lib/OasisApi';
 
 export default defineComponent({
     props: {

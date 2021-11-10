@@ -4,6 +4,7 @@ import VueCompositionApi from '@vue/composition-api';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
+import { init as initOasisApi } from '@nimiq/oasis-api';
 
 import Config from 'config';
 import App from './App.vue';
@@ -17,7 +18,6 @@ import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { startSentry } from './lib/Sentry';
-import { init as initOasisApi } from './lib/OasisApi';
 import { initPWA } from './pwa';
 
 import '@nimiq/style/nimiq-style.min.css';

@@ -315,6 +315,7 @@ import {
 } from '@nimiq/vue-components';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -347,7 +348,6 @@ import { sendTransaction } from '../../network';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
-import { SettlementStatus } from '../../lib/OasisApi';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 
 export default defineComponent({

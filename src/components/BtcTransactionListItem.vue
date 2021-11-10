@@ -89,6 +89,7 @@ import {
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction } from '../stores/BtcTransactions';
@@ -107,7 +108,6 @@ import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
 import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import { SettlementStatus } from '../lib/OasisApi';
 
 export default defineComponent({
     props: {

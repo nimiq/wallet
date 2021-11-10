@@ -37,7 +37,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import { CircleSpinner, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
-import { SettlementStatus } from '../lib/OasisApi';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { SwapEurData } from '../stores/Swaps';
 
 export default defineComponent({

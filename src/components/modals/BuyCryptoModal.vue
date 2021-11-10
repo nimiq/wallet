@@ -266,6 +266,14 @@ import {
     getSwap,
     Swap,
 } from '@nimiq/fastspot-api';
+import {
+    getHtlc,
+    Htlc as OasisHtlc,
+    HtlcStatus,
+    sandboxMockClearHtlc,
+    TransactionType,
+    SepaClearingInstruction,
+} from '@nimiq/oasis-api';
 import Config from 'config';
 import {
     EuroHtlcCreationInstructions,
@@ -284,14 +292,6 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
-import {
-    getHtlc,
-    Htlc as OasisHtlc,
-    HtlcStatus,
-    sandboxMockClearHtlc,
-    TransactionType,
-    SepaClearingInstruction,
-} from '@/lib/OasisApi';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
 import Modal from './Modal.vue';

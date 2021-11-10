@@ -1,16 +1,16 @@
 import { getEstimate, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
-import { computed } from '@vue/composition-api';
-import { useAccountStore } from '../../../stores/Account';
-import { useFiatStore } from '../../../stores/Fiat';
-import { useSwapsStore } from '../../../stores/Swaps';
-import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import {
     ClearingInfo,
     ClearingStatus,
     DeniedReason,
     Htlc as OasisHtlc,
     HtlcStatus,
-} from '../../OasisApi';
+} from '@nimiq/oasis-api';
+import { computed } from '@vue/composition-api';
+import { useAccountStore } from '../../../stores/Account';
+import { useFiatStore } from '../../../stores/Fiat';
+import { useSwapsStore } from '../../../stores/Swaps';
+import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { i18n } from '../../../i18n/i18n-setup';
 import { calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 

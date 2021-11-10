@@ -53,15 +53,6 @@ import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from 
 import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/vue';
-import Config from 'config';
-import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
-import { useNetworkStore } from '../../stores/Network';
-import { getElectrumClient, subscribeToAddresses } from '../../electrum';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
-import { getNetworkClient } from '../../network';
-import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
 import {
     ClearingInfo,
     ClearingStatus,
@@ -72,7 +63,16 @@ import {
     settleHtlc,
     SettlementInfo,
     SettlementStatus,
-} from '../../lib/OasisApi';
+} from '@nimiq/oasis-api';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
+import { captureException } from '@sentry/vue';
+import Config from 'config';
+import MaximizeIcon from '../icons/MaximizeIcon.vue';
+import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
+import { useNetworkStore } from '../../stores/Network';
+import { getElectrumClient, subscribeToAddresses } from '../../electrum';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { getNetworkClient } from '../../network';
 import Time from '../../lib/Time';
 import { useBankStore } from '../../stores/Bank';
 
@@ -237,7 +237,7 @@ export default defineComponent({
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
-                case SwapAsset.NIM: return getNetworkClient();
+                case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
                 case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);

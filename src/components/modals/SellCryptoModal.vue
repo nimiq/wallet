@@ -270,6 +270,11 @@ import {
     cancelSwap,
     getSwap,
 } from '@nimiq/fastspot-api';
+import {
+    getHtlc,
+    HtlcStatus,
+    TransactionType as OasisTransactionType,
+} from '@nimiq/oasis-api';
 import Config from 'config';
 import {
     HtlcCreationInstructions,
@@ -287,11 +292,6 @@ import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency, OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
-import {
-    getHtlc,
-    HtlcStatus,
-    TransactionType as OasisTransactionType,
-} from '../../lib/OasisApi';
 import { setupSwap } from '../../hub';
 import { getElectrumClient } from '../../electrum';
 import { selectOutputs } from '../../lib/BitcoinTransactionUtils';

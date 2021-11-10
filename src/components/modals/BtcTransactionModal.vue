@@ -314,6 +314,7 @@ import {
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -345,7 +346,6 @@ import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
-import { SettlementStatus } from '../../lib/OasisApi';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 
 export default defineComponent({

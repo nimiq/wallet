@@ -316,8 +316,8 @@ import MessageTransition from '../MessageTransition.vue';
 import {
     calculateFees,
     capDecimals,
-    currentLimitCrypto,
-    currentLimitFiat,
+    useCurrentLimitCrypto,
+    useCurrentLimitFiat,
     useSwapEstimate,
     eurPerBtc,
     eurPerNim,
@@ -349,6 +349,8 @@ export default defineComponent({
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
+        const currentLimitFiat = useCurrentLimitFiat(limits);
+        const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
         const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);

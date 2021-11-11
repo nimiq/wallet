@@ -13,11 +13,13 @@ const { activeCurrency } = useAccountStore();
 const { activeAddress } = useAddressStore();
 const { exchangeRates } = useFiatStore();
 
-const limits = ref<{
+export type SwapLimits = {
     current: { usd: number, luna: number, sat: number },
     monthly: { usd: number, luna: number, sat: number },
     remaining: { usd: number, luna: number, sat: number },
-} | undefined>(undefined);
+};
+
+const limits = ref<SwapLimits | undefined>(undefined);
 
 const nimAddress = ref<string | undefined>(undefined);
 const btcAddress = ref<string | undefined>(undefined);
@@ -165,6 +167,7 @@ export function useSwapLimits(options: {
 }) {
     nimAddress.value = options.nimAddress;
     btcAddress.value = options.btcAddress;
+    recalculate();
 
     return {
         limits,

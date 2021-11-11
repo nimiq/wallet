@@ -1,9 +1,8 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
-import { computed, onUnmounted, ref, getCurrentInstance } from '@vue/composition-api';
-import { useSwapLimits } from '../../../composables/useSwapLimits';
+import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
+import { SwapLimits } from '../../../composables/useSwapLimits';
 import { useAccountStore } from '../../../stores/Account';
-import { useAddressStore } from '../../../stores/Address';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
@@ -13,13 +12,10 @@ import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { btcMaxSendableAmount } from './SellUtils';
 import { FundingFees, getEurPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
 
-const { activeAddress } = useAddressStore();
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
 const { btcUnit } = useSettingsStore();
 const { accountUtxos } = useBtcAddressStore();
-
-const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
 
 /**
  * Common - everything common to Buy and Sell crypto
@@ -41,26 +37,30 @@ export const selectedFiatCurrency = ref(FiatCurrency.EUR);
  * Common - Computeds
  */
 
-export const currentLimitFiat = computed(() => {
-    if (!limits.value) return null;
+export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
+    return computed(() => {
+        if (!limits.value) return null;
 
-    const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-    if (!nimRate) return null;
+        const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
+        if (!nimRate) return null;
 
-    return Math.floor((limits.value.current.luna / 1e5) * nimRate);
-});
+        return Math.floor((limits.value.current.luna / 1e5) * nimRate);
+    });
+}
 
-export const currentLimitCrypto = computed(() => {
-    if (!currentLimitFiat.value) return null;
+export function useCurrentLimitCrypto(currentLimitFiat: Ref<number | null>) {
+    return computed(() => {
+        if (!currentLimitFiat.value) return null;
 
-    const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
-    if (!rate) return null;
+        const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
+        if (!rate) return null;
 
-    return capDecimals(
-        (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
-        activeCurrency.value.toUpperCase() as SwapAsset,
-    );
-});
+        return capDecimals(
+            (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
+            activeCurrency.value.toUpperCase() as SwapAsset,
+        );
+    });
+}
 
 export const fiatCurrencyInfo = computed(() =>
     new CurrencyInfo(selectedFiatCurrency.value),

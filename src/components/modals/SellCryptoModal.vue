@@ -317,8 +317,8 @@ import { BankAccount, Bank, useBankStore } from '../../stores/Bank';
 import {
     calculateFees,
     capDecimals,
-    currentLimitCrypto,
-    currentLimitFiat,
+    useCurrentLimitCrypto,
+    useCurrentLimitFiat,
     useSwapEstimate,
     eurPerBtc,
     eurPerNim,
@@ -357,6 +357,8 @@ export default defineComponent({
 
         const { width } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
+        const currentLimitFiat = useCurrentLimitFiat(limits);
+        const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
         const $cryptoAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);

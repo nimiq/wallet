@@ -8,6 +8,7 @@ import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 
 const { activeCurrency } = useAccountStore();
 const { activeAddress } = useAddressStore();
@@ -46,20 +47,30 @@ watch(async () => {
     await useTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
     await useBtcTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
 
+    const { accountAddresses } = useAddressStore();
+    const { activeAddresses } = useBtcAddressStore();
+
     const daysAgo30 = new Date();
     daysAgo30.setDate(daysAgo30.getDate() - 30);
     const cutOffTimestamp = daysAgo30.setHours(daysAgo30.getHours() - 3) / 1000;
 
     // Find NIM tx that were involved in a swap
     const swapNimTxs = Object.values(useTransactionsStore().state.transactions).map((tx) => {
+        // Ignore all transactions before the cut-off
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+
+        // Ignore all transactions that are not on the current account
+        if (![tx.sender, tx.recipient].some((address) => accountAddresses.value.includes(address))) return null;
+
         const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        // Ignore all transactions that are not part of a swap
         if (!swapHash) return null;
+
         return {
             tx,
             swapHash,
         };
-    }).filter((obj) => obj !== null) as ({
+    }).filter(Boolean) as ({
         tx: NimTransaction,
         swapHash: string,
     })[];
@@ -68,14 +79,21 @@ watch(async () => {
 
     // Find BTC tx that were involved in a swap, but not in a swap with NIM
     const swapBtcTxs = Object.values(useBtcTransactionsStore().state.transactions).map((tx) => {
+        // Ignore all transactions before the cut-off
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+
+        // Ignore all transactions that are not on the current account
+        if (!tx.addresses.some((address) => activeAddresses.value.includes(address))) return null;
+
         const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        // Ignore all transactions that are not part of a swap or whose swap is already part of the NIM transactions
         if (!swapHash || nimSwapHashes.includes(swapHash)) return null;
+
         return {
             tx,
             swapHash,
         };
-    }).filter((obj) => obj !== null) as ({
+    }).filter(Boolean) as ({
         tx: BtcTransaction,
         swapHash: string,
     })[];

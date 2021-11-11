@@ -39,7 +39,37 @@ export async function launchNetwork() {
     }
     client.on(NetworkClient.Events.BALANCES, balancesListener);
 
-    client.on(NetworkClient.Events.CONSENSUS, (consensus) => network$.consensus = consensus);
+    let consensusConnectingTimeout: number | undefined;
+    function startConnectingTimeout() {
+        consensusConnectingTimeout = window.setTimeout(() => {
+            network$.consensus = 'connecting';
+            consensusConnectingTimeout = undefined;
+        }, 5e3); // Show disconnected state after 5 seconds
+    }
+    function stopConnectingTimeout() {
+        window.clearTimeout(consensusConnectingTimeout);
+        consensusConnectingTimeout = undefined;
+    }
+
+    client.on(NetworkClient.Events.CONSENSUS, (consensus) => {
+        network$.consensus = consensus;
+
+        if (consensus === 'syncing' && !consensusConnectingTimeout) {
+            startConnectingTimeout();
+        } else {
+            stopConnectingTimeout();
+        }
+    });
+
+    window.addEventListener('offline', () => {
+        console.warn('Browser is OFFLINE');
+        startConnectingTimeout();
+    });
+    window.addEventListener('online', () => {
+        console.info('Browser is ONLINE');
+        stopConnectingTimeout();
+        client.resetConsensus();
+    });
 
     client.on(NetworkClient.Events.HEAD_HEIGHT, (height) => {
         console.debug('Head is now at', height);

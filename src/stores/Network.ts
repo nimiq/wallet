@@ -3,7 +3,7 @@ import { createStore } from 'pinia';
 export const useNetworkStore = createStore({
     id: 'network',
     state: () => ({
-        consensus: 'syncing',
+        consensus: navigator.onLine ? 'syncing' : 'connecting',
         peerCount: 0,
         height: 0,
         fetchingTxHistory: 0,

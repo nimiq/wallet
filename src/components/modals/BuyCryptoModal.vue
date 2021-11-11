@@ -348,7 +348,7 @@ export default defineComponent({
         const { banks, setBank } = useBankStore();
 
         const { width } = useWindowSize();
-        const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
+        const { limits } = useSwapLimits({ nimAddress: activeAddress.value!, isFiatToCrypto: true });
         const currentLimitFiat = useCurrentLimitFiat(limits);
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();

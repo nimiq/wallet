@@ -80,7 +80,7 @@
                                     <FiatAmount :amount="100" currency="eur" hideDecimals/>
                                 </div>
                                 <i18n class="explainer" path="{value} remaining" tag="p">
-                                    <FiatAmount slot="value" :amount="limits.current.eur" currency="eur" hideDecimals/>
+                                    <FiatAmount slot="value" :amount="currentLimitFiat" currency="eur" hideDecimals/>
                                 </i18n>
                                 <div class="price-breakdown">
                                     <label>{{ $t('After 72 hours') }}</label>

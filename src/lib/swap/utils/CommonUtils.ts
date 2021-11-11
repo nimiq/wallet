@@ -41,14 +41,16 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
     return computed(() => {
         if (!limits.value) return null;
 
-        if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {
-            return limits.value.current.eur;
-        }
-
         const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
         if (!nimRate) return null;
 
-        return Math.floor((limits.value.current.luna / 1e5) * nimRate);
+        const regularLimitFiat = Math.floor((limits.value.current.luna / 1e5) * nimRate);
+
+        if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {
+            return Math.min(regularLimitFiat, limits.value.current.eur);
+        }
+
+        return regularLimitFiat;
     });
 }
 

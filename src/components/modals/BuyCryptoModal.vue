@@ -74,19 +74,43 @@
                                     <CircleSpinner/>
                                 </template>
                             </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.monthly.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
-                                <span v-else>{{ $t('loading...') }}</span>
-                            </div>
-                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                                <FiatConvertedAmount slot="value"
-                                    :amount="limits.remaining.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
-                            </i18n>
-                            <div></div>
+                            <template v-if="limits && 'eur' in limits.current && limits.current.eur < Infinity">
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Initial Swap Limit') }}</label>
+                                    <FiatAmount :amount="100" currency="eur" hideDecimals/>
+                                </div>
+                                <i18n class="explainer" path="{value} remaining" tag="p">
+                                    <FiatAmount slot="value" :amount="limits.current.eur" currency="eur" hideDecimals/>
+                                </i18n>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('After 72 hours') }}</label>
+                                    <FiatConvertedAmount v-if="limits"
+                                        :amount="limits.monthly.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                    <span v-else>{{ $t('loading...') }}</span>
+                                </div>
+                                <div></div>
+                                <p class="explainer">
+                                    {{ $t('72 hours after your first buy, '
+                                        + 'your limit will be increased automatically.')
+                                    }}
+                                </p>
+                            </template>
+                            <template v-else>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('30-day Limit') }}</label>
+                                    <FiatConvertedAmount v-if="limits"
+                                        :amount="limits.monthly.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                    <span v-else>{{ $t('loading...') }}</span>
+                                </div>
+                                <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                    <FiatConvertedAmount slot="value"
+                                        :amount="limits.remaining.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                </i18n>
+                                <div></div>
+                            </template>
                             <p class="explainer">
                                 {{ $t('Nimiq is working on a PRO feature with '
                                     + 'increased limits after user registration.') }}

@@ -65,6 +65,7 @@ button.reset:disabled {
 }
 
 .tooltip .price-breakdown + .explainer,
+.tooltip .explainer + .price-breakdown,
 .tooltip .explainer + .explainer {
     margin-top: -1rem;
 }

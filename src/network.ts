@@ -212,5 +212,13 @@ export async function launchNetwork() {
 
 export async function sendTransaction(tx: SignedTransaction | string) {
     const client = await getNetworkClient();
-    return client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
+    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
+
+    if (plain.state !== TransactionState.PENDING) {
+        // Overwrite transaction status in the transactionStore,
+        // because it got added as PENDING before by the transactionListener.
+        useTransactionsStore().addTransactions([plain]);
+    }
+
+    return plain;
 }

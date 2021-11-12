@@ -18,6 +18,7 @@ import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
+import { useFiatStore } from './stores/Fiat';
 
 export function shouldUseRedirects(): boolean {
     // When not in PWA, don't use redirects
@@ -336,6 +337,7 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
         appName: APP_NAME,
         senderAddress,
         senderBalance,
+        fiatCurrency: useFiatStore().state.currency,
     }, getBehavior()).catch(onError);
     if (!cashlink) return false;
 

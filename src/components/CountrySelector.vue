@@ -52,6 +52,13 @@ type Country = {
     name: string,
 }
 
+function normalize(str: string) {
+    return str
+        .replace(/ä/ig, 'a')
+        .replace(/ö/ig, 'o')
+        .replace(/ü/ig, 'u');
+}
+
 export default defineComponent({
     props: {
         countryCodes: {
@@ -96,7 +103,7 @@ export default defineComponent({
 
         const i18nCountryName = new I18nDisplayNames('region');
         const filteredCountries = computed(() => {
-            const rgx = RegExp(searchTerm.value || '', 'i');
+            const rgx = RegExp(normalize(searchTerm.value || ''), 'i');
 
             const countries: Country[] = props.countryCodes.map((code) => ({
                 code,
@@ -110,7 +117,7 @@ export default defineComponent({
                 });
             }
 
-            return countries.filter((country) => country.name && rgx.test(country.name));
+            return countries.filter((country) => country.name && rgx.test(normalize(country.name)));
         });
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });

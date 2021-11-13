@@ -13,7 +13,7 @@ import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
     outputs: (PlainOutput & {
-        fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
+        fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     })[],
 };
 
@@ -200,7 +200,11 @@ export const useBtcTransactionsStore = createStore({
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
-                !!tx.timestamp && tx.outputs.some((output) => !output.fiatValue || !(fiatCurrency in output.fiatValue)),
+                // BTC transactions don't need to be filtered by age,
+                // as the BTC price is available far enough into the past.
+                tx.timestamp && tx.outputs.some((output) =>
+                    typeof output.fiatValue?.[fiatCurrency] !== 'number',
+                ),
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;

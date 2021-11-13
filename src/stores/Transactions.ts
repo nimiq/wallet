@@ -10,7 +10,7 @@ import { getNetworkClient } from '../network';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
-    fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
+    fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     relatedTransactionHash?: string,
 };
 
@@ -241,7 +241,9 @@ export const useTransactionsStore = createStore({
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatCurrency = fiat || useFiatStore().currency.value;
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
-                !!tx.timestamp && (!tx.fiatValue || !(fiatCurrency in tx.fiatValue)),
+                // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
+                // check prevents us from re-querying older transactions again and again.
+                tx.timestamp && tx.timestamp >= 1532736000 && typeof tx.fiatValue?.[fiatCurrency] !== 'number',
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;

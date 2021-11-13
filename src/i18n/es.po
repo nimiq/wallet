@@ -222,7 +222,7 @@ msgstr ""
 msgid "all"
 msgstr "todo"
 
-#: src/components/CountrySelector.vue:109
+#: src/components/CountrySelector.vue:116
 msgid "All countries"
 msgstr "Todos los países"
 

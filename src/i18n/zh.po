@@ -218,7 +218,7 @@ msgstr ""
 msgid "all"
 msgstr "全部"
 
-#: src/components/CountrySelector.vue:109
+#: src/components/CountrySelector.vue:116
 msgid "All countries"
 msgstr "所有国家"
 

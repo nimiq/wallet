@@ -1,7 +1,7 @@
 import { ENV_DEV } from '../lib/Constants';
 
 export default {
-    hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
+    hubEndpoint: `${window.location.protocol}//${window.location.hostname}:9000/hub`,
     environment: ENV_DEV,
     networkEndpoint: 'https://network.nimiq-testnet.com',
     reportToSentry: false,

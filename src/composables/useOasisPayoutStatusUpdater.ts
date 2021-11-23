@@ -20,8 +20,8 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         const settlement = data.htlc!.settlement!;
 
         // Determine check interval
-        const checkInterval = settlement.eta! - Date.now() < 5 * 60 * 1000
-            ? 30 * 1000 // If ETA is in less than 5 minutes, check every 30 seconds
+        const checkInterval = !settlement.eta || settlement.eta - Date.now() < 5 * 60 * 1000
+            ? 30 * 1000 // If no ETA, or ETA is in less than 5 minutes, check every 30 seconds
             : 30 * 60 * 1000; // Otherwise check every 30 minutes
         console.log('Check interval determined as', checkInterval / 1000, 'seconds');
 
@@ -35,8 +35,10 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
 
             settlement.status = htlc.settlement.status;
             if (htlc.settlement.status === SettlementStatus.ACCEPTED) {
-                settlement.eta = new Date((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
-                    .detail.eta).getTime();
+                const details = (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail;
+                if (details.eta) {
+                    settlement.eta = new Date(details.eta).getTime();
+                }
                 settlement.lastUpdated = Date.now();
             }
             useSwapsStore().addSettlementData(htlc.hash.value, data);

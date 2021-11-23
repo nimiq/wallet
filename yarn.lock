@@ -1149,12 +1149,12 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.0.0.tgz#584a5ecd424c1524e9a5533162675dcbdecba9d2"
-  integrity sha512-yWC085JdEHslhbw5xQSETLfdTNi/KCYlR33rgIn72qjk3OzqshftQ5GhYTx64CRVc3//w/jOHsaFu6YzdyzbuA==
+"@nimiq/libswap@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.0.1.tgz#fd11114f1dda4506c4d71716e796f3fb022e1df4"
+  integrity sha512-fBH3MYdCawn5IjAh7/Sh+BXd60lIaWgtaXQDyG+WahU8I4v1ouyKCI5rDsFKR2iibk/FTmZaj3arSwJf3CYA9g==
   dependencies:
-    "@nimiq/oasis-api" "^1.0.0"
+    "@nimiq/oasis-api" "^1.0.1"
     promise.prototype.finally "^3.1.3"
 
 "@nimiq/network-client@^0.6.5":
@@ -1165,10 +1165,10 @@
     "@nimiq/core-web" "1.5.3"
     "@nimiq/rpc-events" "^0.0.8"
 
-"@nimiq/oasis-api@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.0.0.tgz#f5a265cf2500284dc2077f82da305a5662223f55"
-  integrity sha512-JIcLbiZDKp+nBzdXOvNiHT05FJ1OCxcdRjWFHGZEnGMFN9R6VkzxSA37OFS7egT4VF+/S2SHWQtjNps1X+K/Mg==
+"@nimiq/oasis-api@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.0.1.tgz#f7037c361a74c3d715e2ae0a0dfe40a591a52f44"
+  integrity sha512-4wSGlnyROsaVCpVWMiJWTX3HUQD4/JEZA++qmJ9Ju3mhq92gbcmVzDUWa91dqe3j7acp2yajeFgNmJsNA3Mxlw==
 
 "@nimiq/rpc-events@^0.0.8":
   version "0.0.8"

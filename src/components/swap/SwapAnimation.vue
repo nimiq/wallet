@@ -8,7 +8,7 @@
     >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
             <CheckmarkIcon/>
-            <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
+            <h1 class="title nq-h1">{{ $t('Atomic Swap successful!') }}</h1>
         </div>
 
         <div class="expired-background flex-column nq-orange-bg" :class="{'visible': state === SwapState.EXPIRED}">
@@ -55,7 +55,7 @@
         </div>
 
         <div class="nq-card-header">
-            <h1 class="nq-h1">{{ $t('Performing Swap') }}</h1>
+            <h1 class="nq-h1">{{ $t('Performing Atomic Swap') }}</h1>
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
         </div>
 
@@ -84,7 +84,7 @@
                 <div class="header flex-row">
                     <strong class="nq-green flex-row">
                         <CheckmarkIcon/>
-                        {{ $t('Swap complete') }}
+                        {{ $t('Atomic Swap complete') }}
                     </strong>
                     <button class="nq-button-s inverse lighter" @click="$emit('cancel')" @mousedown.prevent>
                         {{ $t('Close') }}
@@ -253,7 +253,7 @@
 
         <div class="nq-card-footer">
             <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">
-                1/5 {{ $t('Setting up swap') }}
+                1/5 {{ $t('Setting up atomic swap') }}
             </div>
             <div v-if="state === SwapState.AWAIT_INCOMING" class="nq-h2">
                 2/5 {{ $t('Locking up {asset}', {asset: toAsset}) }}
@@ -281,7 +281,7 @@
                     }}</div>
                     <div v-else class="dont-close-wallet-notice nq-gray">{{
                         $t('This usually takes {time} seconds.', {
-                            time: toAsset === SwapAsset.NIM ? '30-60' : '10',
+                            time: toAsset === SwapAsset.NIM ? '60-90' : '10',
                         })
                     }}</div>
                 </template>

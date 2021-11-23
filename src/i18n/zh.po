@@ -286,6 +286,14 @@ msgid ""
 "bank account."
 msgstr "一旦加密货币准备就绪，你的欧元将会被进一步处理给卖家。如果出现问题或超时，你的支付款项将被退回到你的银行账户。"
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "原子交换需要两笔比特币交易"
@@ -1320,8 +1328,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr "每次交换限制提高到 {amount}"
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "进行交换"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1654,8 +1662,8 @@ msgid "Set fee"
 msgstr "设置费用"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "设置交换"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1749,10 +1757,6 @@ msgstr "存储、发送和接收NIM"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr "完成交换"
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "交换费用"
@@ -1774,7 +1778,6 @@ msgstr "交换NIM{arrow}BTC"
 msgid "Swap NIM and BTC"
 msgstr "交换NIM和BTC"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "交换成功！"

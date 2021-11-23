@@ -256,6 +256,14 @@ msgstr ""
 msgid "As soon as your crypto is available, your Euro is processed to the seller. In case of a problem or a time-out, your payment will be returned to your bank account."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
@@ -1254,7 +1262,7 @@ msgid "Per-swap limits raised to {amount}"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
+msgid "Performing Atomic Swap"
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
@@ -1575,7 +1583,7 @@ msgid "Set fee"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
+msgid "Setting up atomic swap"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
@@ -1668,10 +1676,6 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr ""
@@ -1693,7 +1697,6 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr ""

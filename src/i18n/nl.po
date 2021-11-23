@@ -301,6 +301,14 @@ msgstr ""
 " Bij een probleem of een time-out wordt je betaling teruggestort op jouw "
 "bankrekening."
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Atomic swaps vereisen twee BTC-transacties."
@@ -1360,8 +1368,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "Swap uitvoeren"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1704,8 +1712,8 @@ msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "Swap opzetten"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1800,10 +1808,6 @@ msgstr "Opslaan, verstuur en ontvang NIM."
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr "Swap voltooid"
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Swap vergoeding"
@@ -1825,7 +1829,6 @@ msgstr "Swap NIM {arrow} BTC"
 msgid "Swap NIM and BTC"
 msgstr "Swap NIM en BTC"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "Swap succesvol!"

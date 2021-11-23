@@ -304,6 +304,14 @@ msgstr ""
 " En caso de un problema o un error, su pago será devuelto a su cuenta "
 "bancaria."
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Los intercambios atómicos requieren dos transacciones BTC."
@@ -1371,8 +1379,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr "límites por intercambio se han incrementado a {amount}"
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "Ejecutando Intercambio"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1718,8 +1726,8 @@ msgid "Set fee"
 msgstr "Ingrese la cuota"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "Estableciendo intercambio"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1815,10 +1823,6 @@ msgstr "Almacene, envíe y reciba NIM."
 msgid "Swap"
 msgstr "Intercambio"
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr "Intercambio completo"
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Cuota del intercambio"
@@ -1840,7 +1844,6 @@ msgstr "Intercambiar NIM {arrow} BTC"
 msgid "Swap NIM and BTC"
 msgstr "Intercambiar NIM y BTC"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "¡Intercambio exitoso!"

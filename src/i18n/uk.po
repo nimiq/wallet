@@ -298,6 +298,14 @@ msgstr ""
 " У разі виникнення проблем ваш платіж буде повернено на ваш банківський "
 "рахунок."
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Атомарні обміни потребують дві BTC транзакції."
@@ -1351,8 +1359,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "Проводиться обмін"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1690,8 +1698,8 @@ msgid "Set fee"
 msgstr "Задати комісію"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "Обмін налаштовується"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1785,10 +1793,6 @@ msgstr "Зберігайте, надсилайте і отримуйте NIM."
 msgid "Swap"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Комісія за обмін"
@@ -1810,7 +1814,6 @@ msgstr ""
 msgid "Swap NIM and BTC"
 msgstr "Обмінюйте NIM і BTC"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "Обмін було проведено успішно!"

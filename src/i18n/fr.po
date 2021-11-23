@@ -127,6 +127,8 @@ msgstr "6h+"
 msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
+"72 heures après votre premier achat, votre limite sera augmentée "
+"automatiquement."
 
 #: src/components/layouts/Settings.vue:339
 msgid ""
@@ -217,7 +219,7 @@ msgstr "Avancé"
 
 #: src/components/modals/BuyCryptoModal.vue:86
 msgid "After 72 hours"
-msgstr ""
+msgstr "Après 72 heures"
 
 #: src/components/layouts/Settings.vue:132
 #: src/components/layouts/Settings.vue:72
@@ -304,6 +306,14 @@ msgstr ""
 "Dès que votre crypto est disponible, vos Euros sont transmis au vendeur. En "
 "cas de problème ou d'expiration du délai, votre paiement sera reversé sur "
 "votre compte bancaire."
+
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
@@ -1048,7 +1058,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:79
 msgid "Initial Swap Limit"
-msgstr ""
+msgstr "Limite de Swap initiale"
 
 #: src/components/modals/BuyOptionsModal.vue:59
 msgid ""
@@ -1377,8 +1387,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr "Les limites par swap ont été augmenté à {amount}."
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "Exécution du swap"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1725,8 +1735,8 @@ msgid "Set fee"
 msgstr "Définir les frais"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "Mise en place du Swap"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1820,10 +1830,6 @@ msgstr "Stockez, envoyez et recevez des NIM."
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr "Swap complété"
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Frais de Swap"
@@ -1845,7 +1851,6 @@ msgstr "Swap NIM {arrow} BTC"
 msgid "Swap NIM and BTC"
 msgstr "Swap NIM et BTC"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "Swap réussi !"

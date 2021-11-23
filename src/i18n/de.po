@@ -301,6 +301,14 @@ msgstr ""
 "Verkäufer weitergeleitet. Im Falle eines Problems oder einer "
 "Zeitüberschreitung wird deine Zahlung auf dein Bankkonto zurücküberwiesen."
 
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr ""
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Ein sicherer Tausch benötigt zwei BTC-Transaktionen."
@@ -1374,8 +1382,8 @@ msgid "Per-swap limits raised to {amount}"
 msgstr "Pro-Tausch-Grenze erhöht auf {amount}"
 
 #: src/components/swap/SwapAnimation.vue:58
-msgid "Performing Swap"
-msgstr "Tausch wird durchgeführt"
+msgid "Performing Atomic Swap"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1722,8 +1730,8 @@ msgid "Set fee"
 msgstr "Gebühr festlegen"
 
 #: src/components/swap/SwapAnimation.vue:256
-msgid "Setting up swap"
-msgstr "Tausch wird gestartet"
+msgid "Setting up atomic swap"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:71
 msgid "Setting up the {currency} side of the swap."
@@ -1817,10 +1825,6 @@ msgstr "Verwahre, sende und empfange NIM."
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/swap/SwapAnimation.vue:87
-msgid "Swap complete"
-msgstr "Tausch abgeschlossen"
-
 #: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Tauschgebühr"
@@ -1842,7 +1846,6 @@ msgstr "Tausche NIM {arrow} BTC"
 msgid "Swap NIM and BTC"
 msgstr "NIM und BTC tauschen"
 
-#: src/components/swap/SwapAnimation.vue:11
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "Tausch erfolgreich!"

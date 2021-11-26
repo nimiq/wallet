@@ -214,7 +214,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
                     :toFundingDurationMins="isMainnet ? OASIS_EUR_DETECTION_DELAY : 0"
-                    :oasisSellLimitExceeded="oasisSellLimitExceeded"
+                    :oasisLimitExceeded="oasisSellLimitExceeded"
                     :stateEnteredAt="swap.stateEnteredAt"
                     @finished="finishSwap"
                     @cancel="finishSwap"

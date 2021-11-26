@@ -216,7 +216,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
                     :manualFunding="true"
-                    :oasisBuyLimitExceeded="oasisBuyLimitExceeded"
+                    :oasisLimitExceeded="oasisBuyLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 >

@@ -68,6 +68,12 @@ export default defineComponent({
                 return;
             }
 
+            // Nimiq-controlled short-links
+            if (/https:\/\/nim\.id\/.+/.test(result)) {
+                window.location.href = result;
+                return;
+            }
+
             const { activeAccountInfo } = useAccountStore();
             if (
                 activeAccountInfo.value

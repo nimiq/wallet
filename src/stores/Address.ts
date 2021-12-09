@@ -1,5 +1,6 @@
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
+import { useTransactionsStore } from './Transactions';
 
 export type AddressState = {
     addressInfos: {[id: string]: AddressInfo},
@@ -40,15 +41,26 @@ export const useAddressStore = createStore({
     } as AddressState),
     getters: {
         addressInfos: (state): AddressInfo[] => {
-            const accountStore = useAccountStore();
-            return accountStore.activeAccountInfo.value
-                ? accountStore.activeAccountInfo.value.addresses
+            const { activeAccountInfo } = useAccountStore();
+            const { pendingTransactionsBySender } = useTransactionsStore();
+            return activeAccountInfo.value
+                ? activeAccountInfo.value.addresses
                     .map((addr) => state.addressInfos[addr])
                     .filter((addrInfo) => !!addrInfo)
+                    .map((ai) => {
+                        const pendingTxs = pendingTransactionsBySender.value[ai.address] || [];
+                        const outgoingPendingAmount = pendingTxs.reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+                        return {
+                            ...ai,
+                            balance: Math.max(0, (ai.balance || 0) - outgoingPendingAmount),
+                        };
+                    })
                 : [];
         },
         activeAddress: (state) => state.activeAddress,
-        activeAddressInfo: (state) => state.activeAddress ? state.addressInfos[state.activeAddress] : null,
+        activeAddressInfo: (state, { addressInfos }) => state.activeAddress
+            ? (addressInfos.value as AddressInfo[]).find((ai) => ai.address === state.activeAddress)
+            : null,
         accountBalance: (state, { addressInfos }) =>
             (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + ((!!acc && acc.balance) || 0), 0),
         accountAddresses: (state, { addressInfos }) =>

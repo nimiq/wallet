@@ -68,7 +68,7 @@ export class AlbatrossRpcClient {
 
         this.getRemote().then(async (remote) => {
             const id = await remote.headSubscribe([]);
-            const { generator } = remote.subscription.listen();
+            const { generator } = remote.headSubscribe.listen();
             for await (const params of generator) {
                 if (!params || params.subscription !== id) continue;
 
@@ -132,7 +132,7 @@ export class AlbatrossRpcClient {
 
     public async sendTransaction(tx: string | Transaction) {
         if (typeof tx === 'string') {
-            const hash = await this.rpc<string>('sendRawTransaction', [tx]);
+            const hash = await this.rpc<string>('pushTransaction', [tx]);
             do {
                 // eslint-disable-next-line no-await-in-loop
                 await new Promise((res) => setTimeout(res, 500));
@@ -151,7 +151,7 @@ export class AlbatrossRpcClient {
     }
 
     public async getAccount(address: string): Promise<Account> {
-        return this.rpc<Account>('getAccount', [address]);
+        return this.rpc<Account>('getAccountByAddress', [address]);
     }
 
     public async getStaker(address: string): Promise<Staker> {

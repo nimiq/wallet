@@ -146,14 +146,14 @@ export async function launchNetwork() {
 
     // client.on(NetworkClient.Events.CONSENSUS, (consensus) => {
     //     network$.consensus = consensus;
-    // 
+    //
     //     if (consensus === 'syncing' && !consensusConnectingTimeout) {
     //         startConnectingTimeout();
     //     } else {
     //         stopConnectingTimeout();
     //     }
     // });
-    // 
+    //
     // window.addEventListener('offline', () => {
     //     console.warn('Browser is OFFLINE');
     //     startConnectingTimeout();
@@ -198,10 +198,8 @@ export async function launchNetwork() {
             client.getStaker(address).then((staker) => {
                 stakingStore.setStake({
                     address,
-                    activeStake: staker.activeStake,
-                    inactiveStake: staker.inactiveStake,
+                    balance: staker.balance,
                     validator: staker.delegation,
-                    retireTime: staker.retireTime,
                 });
             }).catch(() => {
                 // Staker not found
@@ -266,10 +264,8 @@ export async function launchNetwork() {
             client.getStaker(address).then((staker) => {
                 stakingStore.setStake({
                     address,
-                    activeStake: staker.activeStake,
-                    inactiveStake: staker.inactiveStake,
+                    balance: staker.balance,
                     validator: staker.delegation,
-                    retireTime: staker.retireTime,
                 });
             }).catch(() => {
                 // Staker not found
@@ -389,11 +385,11 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx)
         .then((details) => details.toPlain());
 
-    if (plain.state !== TransactionState.PENDING) {
-        // Overwrite transaction status in the transactionStore,
-        // because it got added as PENDING before by the transactionListener.
-        useTransactionsStore().addTransactions([plain]);
-    }
+    // if (plain.state !== TransactionState.PENDING) {
+    //     // Overwrite transaction status in the transactionStore,
+    //     // because it got added as PENDING before by the transactionListener.
+    //     useTransactionsStore().addTransactions([plain]);
+    // }
 
     return plain;
 }

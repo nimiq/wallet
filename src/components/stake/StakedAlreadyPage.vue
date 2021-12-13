@@ -32,7 +32,7 @@
                     </p>
                 </Tooltip>
             </span>
-            <StakingGraph :stakedAmount="stake ? stake.activeStake : 0"
+            <StakingGraph :stakedAmount="stake ? stake.balance : 0"
                 :apy="validator && 'reward' in validator ? validator.reward : 0" :readonly="true"
                 :period="{
                     s: NOW,
@@ -49,23 +49,14 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.activeStake"/>
+                            <Amount :amount="stake.balance"/>
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
                     <button class="nq-button-s" @click="$emit('adjust-stake')">{{ $t('Adjust Stake') }}</button>
-                </div>
-                <div v-if="stake && stake.inactiveStake && hasUnstakableStake"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <Amount :amount="stake.inactiveStake"/>&nbsp;{{ $t('available to unstake') }}
-                    <div class="flex-grow"></div>
-                    <button class="nq-button-pill red unstake-all" @click="unstakeAll">{{ $t('Unstake') }}</button>
-                </div>
-                <div v-else-if="stake && stake.inactiveStake" class="unstaking row flex-row nq-light-blue">
-                    <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveStake"/>
+                    <button class="nq-button-pill red unstake-all" @click="unstakeAll">{{ $t('Unstake All') }}</button>
                 </div>
             </div>
 
@@ -119,7 +110,6 @@ import {
 } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
-import { calculateDisplayedDecimals, formatAmount } from '../../lib/NumberFormatting';
 import { getPayoutText } from '../../lib/StakingUtils';
 
 import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
@@ -129,10 +119,6 @@ import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 
 import {
-    CryptoCurrency,
-    nextElectionBlock,
-    NIM_DECIMALS,
-    NIM_MAGNITUDE,
     StakingTransactionType,
     STAKING_CONTRACT_ADDRESS,
 } from '../../lib/Constants';
@@ -147,12 +133,10 @@ export default defineComponent({
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.activeStake + stake.value.inactiveStake : 0);
-
-        const unstakedAmount = ref(0);
+        const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
 
         const percentage = computed(() => availableBalance.value > 0
-            ? ((stake.value?.activeStake || 0) / (availableBalance.value + stakedBalance.value)) * 100
+            ? ((stake.value?.balance || 0) / (availableBalance.value + stakedBalance.value)) * 100
             : 0,
         );
 
@@ -160,44 +144,29 @@ export default defineComponent({
             ? getPayoutText(validator.value.payout)
             : context.root.$t('Unregistered validator'));
 
-        const hasUnstakableStake = computed(() => {
-            if (!stake.value || !stake.value.inactiveStake) return false;
-            return height.value > nextElectionBlock(stake.value.retireTime);
-        });
-
         async function unstakeAll() {
-            // TODO: This function should not trigger UNSTAKE, but RETIRE. Then queue UNSTAKE for later.
             await sendStaking({
                 type: StakingTransactionType.UNSTAKE,
-                value: stake.value!.inactiveStake,
+                value: stake.value!.balance,
                 sender: STAKING_CONTRACT_ADDRESS,
                 recipient: activeAddress.value!,
                 validityStartHeight: height.value,
             }).catch((error) => {
                 throw new Error(error.data);
             });
+
+            // // Close staking modal
+            // context.root.$router.back();
         }
 
         return {
             NOW,
             MONTH,
-            NIM_DECIMALS,
-            NIM_MAGNITUDE,
-            STAKING_CURRENCY: CryptoCurrency.NIM,
-            DISPLAYED_DECIMALS: calculateDisplayedDecimals(unstakedAmount.value, CryptoCurrency.NIM),
-            unstakeDisclaimer: context.root.$t(
-                'will be available within ~{duration}',
-                { duration: '12 hours' },
-            ),
-            format: formatAmount,
             graphUpdate,
             stake,
             validator,
-            availableBalance,
-            unstakedAmount,
             percentage,
             payoutText,
-            hasUnstakableStake,
             unstakeAll,
         };
     },

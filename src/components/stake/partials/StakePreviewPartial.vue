@@ -1,19 +1,15 @@
 <template>
-    <span v-if="stake && (stake.activeStake || stake.inactiveStake)">
-        <div class="stake-preview"
-            :class="{ dark: isUnstaking }">
-            <div class="stake-preview-background"
-                :class="{ dark: isUnstaking }">
-                <img :src="isUnstaking
-                    ? '/img/staking/graph-preview-white.png'
-                    : '/img/staking/graph-preview-black.png'" />
+    <span v-if="stake && stake.balance">
+        <div class="stake-preview">
+            <div class="stake-preview-background">
+                <img src="/img/staking/graph-preview-black.png" />
             </div>
             <div class="stake-preview-layout flex-row">
                 <div class="col flex-column">
                     <div class="top-left flex-row">
                         <StakingIcon /> <span class="nq-label">{{ $t('Staked') }}</span>
                     </div>
-                    <Amount :amount="stake.activeStake" class="bottom-left"/>
+                    <Amount :amount="stake.balance" class="bottom-left"/>
                 </div>
                 <div class="col right flex-column">
                     <Amount class="top-right" :amount="0"/>
@@ -39,12 +35,9 @@ export default defineComponent({
     setup() {
         const { activeValidator: validator, activeStake: stake } = useStakingStore();
 
-        const isUnstaking = computed(() => stake.value?.inactiveStake && !stake.value.activeStake);
-
         return {
             validator,
             stake,
-            isUnstaking,
         };
     },
     components: {

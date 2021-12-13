@@ -78,10 +78,8 @@ export default defineComponent({
             if (!activeStake.value) {
                 setStake({
                     address: activeAddress.value!,
-                    activeStake: 0,
-                    inactiveStake: 0,
+                    balance: 0,
                     validator: address,
-                    retireTime: 0,
                 });
             } else {
                 await sendStaking({
@@ -90,7 +88,6 @@ export default defineComponent({
                     value: 1, // Unused in transaction
                     sender: activeAddress.value!,
                     recipient: STAKING_CONTRACT_ADDRESS,
-                    // @ts-expect-error Staking Account type not yet available
                     recipientType: STAKING_ACCOUNT_TYPE,
                     recipientLabel: context.root.$t('Staking Contract') as string,
                     validityStartHeight: useNetworkStore().state.height,

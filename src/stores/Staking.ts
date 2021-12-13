@@ -8,10 +8,8 @@ export type StakingState = {
 
 export type AddressStake = {
     address: string,
-    activeStake: number,
-    inactiveStake: number,
+    balance: number,
     validator?: string,
-    retireTime: number,
 }
 
 export type RawValidator = {

@@ -45,6 +45,4 @@ export const StakingTransactionType = {
     CREATE_STAKER: 5,
     STAKE: 6,
     UPDATE_STAKER: 7,
-    RETIRE_STAKER: 8,
-    REACTIVATE_STAKER: 9,
 };

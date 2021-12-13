@@ -466,7 +466,7 @@ export default defineComponent({
         });
 
         const data = computed(() => {
-            if (isCashlink.value) return hubCashlink.value ? hubCashlink.value.message : '';
+            if (hubCashlink.value && hubCashlink.value.message) return hubCashlink.value.message;
 
             if (swapData.value && !isCancelledSwap.value) return '';
 

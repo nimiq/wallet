@@ -160,7 +160,7 @@ export default defineComponent({
                 const { state: proxies$ } = useProxyStore();
                 const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
                 const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
-                return hubCashlink ? hubCashlink.message : '';
+                if (hubCashlink && hubCashlink.message) return hubCashlink.message;
             }
 
             if (swapData.value && !isCancelledSwap.value) {

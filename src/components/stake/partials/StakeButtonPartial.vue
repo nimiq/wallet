@@ -3,6 +3,7 @@
         <Tooltip
             v-if="asButton && visible && activeCurrency === 'nim'"
             class="staking-feature-tip"
+            :styles="{width: '25rem'}"
             preferredPosition="bottom left"
             :container="this.$parent">
             <div slot="trigger">

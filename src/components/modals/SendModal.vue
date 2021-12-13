@@ -239,6 +239,8 @@ import {
     Amount,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
+import { captureException } from '@sentry/vue';
+import Config from 'config';
 import Modal from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -632,7 +634,8 @@ export default defineComponent({
                     }
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error) {
-                // console.debug(error);
+                if (Config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
 
                 // Show error screen
                 statusState.value = State.WARNING;

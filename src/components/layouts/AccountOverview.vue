@@ -4,25 +4,27 @@
             v-if="activeAccountInfo && activeAccountInfo.type === AccountType.BIP39 && !activeAccountInfo.fileExported"
             class="backup-warning file nq-orange-bg flex-row"
         >
-            <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">{{ $t('Your account is not safe yet!') }}</span>
-            <div class="flex-grow"></div>
+            <span class="alert-text">
+                <AlertTriangleIcon class="alert-icon"/>
+                {{ $t('Your account is not safe yet!') }}
+            </span>
             <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)" @mousedown.prevent>
-                {{ $t('Save now') }}<ArrowRightSmallIcon/>
+                {{ $t('Login File') }}<ArrowRightSmallIcon/>
             </button>
         </div>
         <div
             v-else-if="activeAccountInfo && !activeAccountInfo.wordsExported"
             class="backup-warning words nq-orange flex-row"
         >
-            <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">{{ $t('There is no ‘forgot password’') }}</span>
-            <div class="flex-grow"></div>
+            <span class="alert-text">
+                <AlertTriangleIcon class="alert-icon"/>
+                {{ $t('There is no ‘forgot password’') }}
+            </span>
             <button
                 class="nq-button-pill orange"
                 @click="backup(activeAccountInfo.id, { wordsOnly: true })" @mousedown.prevent
             >
-                {{ $t('Backup') }}<ArrowRightSmallIcon/>
+                {{ $t('Recovery Words') }}<ArrowRightSmallIcon/>
             </button>
         </div>
 
@@ -286,22 +288,24 @@ export default defineComponent({
 }
 
 .backup-warning {
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     padding: 0.625rem 1rem;
     border-radius: 0.75rem;
     font-size: var(--body-size);
 
-    .alert-icon {
-        width: calc(1.0625 * var(--body-size)); // 1.0625 * 16px = 17px
-        margin: 0 calc(1rem - 0.0625 * var(--body-size)) 0 1rem;
-        flex-shrink: 0;
-    }
-
     .alert-text {
-        margin: 0.625rem 0;
+        margin: 0.625rem 0 0.625rem 1rem;
         font-weight: bold;
         line-height: 3.375rem; // Same height as .nq-button-s
+
+        .alert-icon {
+            width: calc(1.0625 * var(--body-size)); // 1.0625 * 16px = 17px
+            margin-bottom: -0.125em;
+            flex-shrink: 0;
+            display: inline;
+        }
     }
 
     button {

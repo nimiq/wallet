@@ -36,7 +36,7 @@
                     </button>
                     <button v-if="canExportWords" class="item reset flex-row"
                         @click="backup(activeAccountId, { wordsOnly: true })">
-                        <BackupIcon/>{{ $t('Create backup') }}
+                        <BackupIcon/>{{ $t('Show Recovery Words') }}
                         <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
                     </button>
                     <button class="item reset flex-row" @click="rename(activeAccountId)">

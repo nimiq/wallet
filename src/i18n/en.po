@@ -288,10 +288,6 @@ msgstr ""
 msgid "Back to Bank Details"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr ""
-
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/TransactionModal.vue:536
@@ -604,10 +600,6 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:63
 msgid "Create a new single-use address."
-msgstr ""
-
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:101
@@ -1070,6 +1062,10 @@ msgid ""
 "Nimiq Login Files."
 msgstr ""
 
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr ""
+
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
 msgstr ""
@@ -1353,6 +1349,10 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -1427,10 +1427,6 @@ msgstr ""
 
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
-msgstr ""
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
 msgstr ""
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
@@ -1623,6 +1619,10 @@ msgstr ""
 
 #: src/components/modals/TransactionModal.vue:169
 msgid "Show Link"
+msgstr ""
+
+#: src/components/AccountMenu.vue:39
+msgid "Show Recovery Words"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:137

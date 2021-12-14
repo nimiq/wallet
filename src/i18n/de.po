@@ -148,7 +148,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:84
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -229,7 +229,7 @@ msgstr "Alle Länder"
 msgid "All in one easy place."
 msgstr "Alles an einem Ort."
 
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -333,10 +333,6 @@ msgstr "Zurück zu Adressen"
 msgid "Back to Bank Details"
 msgstr "Zurück zu Bankdetails"
 
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr "Backup"
-
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/TransactionModal.vue:536
@@ -358,7 +354,7 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/BalanceDistribution.vue:77
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -679,10 +675,6 @@ msgstr ""
 msgid "Create a new single-use address."
 msgstr "Erstelle eine neue Einmaladdresse."
 
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
-msgstr "Backup erstellen"
-
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create request link"
@@ -734,7 +726,7 @@ msgid "Disclaimer"
 msgstr "Haftungsausschluss"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:344
+#: src/components/modals/SendModal.vue:346
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -786,7 +778,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
 #: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:588
+#: src/components/modals/SendModal.vue:590
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -853,7 +845,7 @@ msgstr "abgelaufen"
 msgid "Expired"
 msgstr "Abgelaufen"
 
-#: src/components/modals/SendModal.vue:443
+#: src/components/modals/SendModal.vue:445
 msgid "express"
 msgstr "Express"
 
@@ -919,7 +911,7 @@ msgstr "Tausch wird abgeschlossen"
 msgid "For beginners"
 msgstr "Für Anfänger"
 
-#: src/components/modals/SendModal.vue:433
+#: src/components/modals/SendModal.vue:435
 msgid "free"
 msgstr "gratis"
 
@@ -1178,6 +1170,10 @@ msgid ""
 msgstr ""
 "Mit den neuen Nimiq Login-Dateien kannst du dich auf all deinen Geräten "
 "anmelden."
+
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr ""
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -1488,6 +1484,10 @@ msgstr "Kürzlich kopiert"
 msgid "Recipient"
 msgstr "Empfänger"
 
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -1557,7 +1557,7 @@ msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:587
+#: src/components/modals/SendModal.vue:589
 msgid "Retry"
 msgstr "Erneut versuchen"
 
@@ -1568,10 +1568,6 @@ msgstr "Versuche erneut..."
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
 msgstr "Login-Datei speichern"
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
-msgstr "Jetzt sichern"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
@@ -1678,7 +1674,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:584
+#: src/components/modals/SendModal.vue:586
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
@@ -1695,11 +1691,11 @@ msgstr "{btc} BTC an {name} versendet"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "{fromAsset} gesendet – {toAsset} erhalten"
 
-#: src/components/modals/SendModal.vue:619
+#: src/components/modals/SendModal.vue:621
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM versendet"
 
-#: src/components/modals/SendModal.vue:615
+#: src/components/modals/SendModal.vue:617
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM an {name} versendet"
 
@@ -1774,6 +1770,10 @@ msgstr "Nachkommastellen"
 msgid "Show Link"
 msgstr "Link anzeigen"
 
+#: src/components/AccountMenu.vue:39
+msgid "Show Recovery Words"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"
 msgstr "Anmelden"
@@ -1787,7 +1787,7 @@ msgid "Skip for now"
 msgstr "Erstmal überspringen"
 
 #: src/components/modals/BtcSendModal.vue:512
-#: src/components/modals/SendModal.vue:639
+#: src/components/modals/SendModal.vue:642
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
@@ -1807,7 +1807,7 @@ msgstr "Stake deine NIM für Zinsen und um das Netzwerk zu sichern."
 msgid "Staking"
 msgstr "Staking"
 
-#: src/components/modals/SendModal.vue:438
+#: src/components/modals/SendModal.vue:440
 msgid "standard"
 msgstr "Standard"
 
@@ -1942,7 +1942,7 @@ msgstr ""
 "Es gibt viele Möglichkeiten, benutze deine Kreditkarte oder tausche mit "
 "anderen Kryptowährungen. Weitere Tauschbörsen findest du unter {link}"
 
-#: src/components/layouts/AccountOverview.vue:19
+#: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr "Es gibt kein \"Passwort vergessen\""
 
@@ -2246,7 +2246,7 @@ msgstr "Du wirst {amount} senden"
 msgid "You will send {amount} NIM"
 msgstr "Du sendest {amount} NIM"
 
-#: src/components/layouts/AccountOverview.vue:8
+#: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr "Dein Konto ist noch nicht sicher!"
 

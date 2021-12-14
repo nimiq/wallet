@@ -145,7 +145,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Рахунки"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:84
 msgid "Activate"
 msgstr "Активувати"
 
@@ -227,7 +227,7 @@ msgstr "Усі країни"
 msgid "All in one easy place."
 msgstr "Все в одному зручному місці."
 
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -330,10 +330,6 @@ msgstr "Повернутися до адрес"
 msgid "Back to Bank Details"
 msgstr "Назад до банкіських реквізитів"
 
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr "Способи відновлення доступу"
-
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/TransactionModal.vue:536
@@ -355,7 +351,7 @@ msgid "BIC works, too."
 msgstr "BIC працює також."
 
 #: src/components/BalanceDistribution.vue:77
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -669,10 +665,6 @@ msgstr ""
 msgid "Create a new single-use address."
 msgstr "Створити нову одноразову адресу."
 
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
-msgstr "Створити спосіб відновлення доступу"
-
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create request link"
@@ -722,7 +714,7 @@ msgid "Disclaimer"
 msgstr "Застереження"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:344
+#: src/components/modals/SendModal.vue:346
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -773,7 +765,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Змінити кількість знаків після коми для NIM."
 
 #: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:588
+#: src/components/modals/SendModal.vue:590
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
@@ -839,7 +831,7 @@ msgstr "прострочений"
 msgid "Expired"
 msgstr "Прострочений"
 
-#: src/components/modals/SendModal.vue:443
+#: src/components/modals/SendModal.vue:445
 msgid "express"
 msgstr "швидкий"
 
@@ -905,7 +897,7 @@ msgstr "Завершення обміну"
 msgid "For beginners"
 msgstr "Для початківців"
 
-#: src/components/modals/SendModal.vue:433
+#: src/components/modals/SendModal.vue:435
 msgid "free"
 msgstr "комісія"
 
@@ -1157,6 +1149,10 @@ msgid ""
 msgstr ""
 "Отримайте доступ до рахунків \n"
 "за допомогою файлу-ключа."
+
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr ""
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -1462,6 +1458,10 @@ msgstr "Скопійовано"
 msgid "Recipient"
 msgstr "Одержувач"
 
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -1529,7 +1529,7 @@ msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:587
+#: src/components/modals/SendModal.vue:589
 msgid "Retry"
 msgstr "Спробувати знову"
 
@@ -1540,10 +1540,6 @@ msgstr "Пробуємо ще..."
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
 msgstr "Зберегти файл-ключ"
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
-msgstr "Зберегти зараз"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
@@ -1646,7 +1642,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Переказуйте, отримуйте і зберігайте BTC у гаманці."
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:584
+#: src/components/modals/SendModal.vue:586
 msgid "Sending Transaction"
 msgstr "Відправляється"
 
@@ -1663,11 +1659,11 @@ msgstr "Надіслано {btc} BTC до {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Надіслано {fromAsset} – Отримано {toAsset}"
 
-#: src/components/modals/SendModal.vue:619
+#: src/components/modals/SendModal.vue:621
 msgid "Sent {nim} NIM"
 msgstr "Надіслано {nim} NIM"
 
-#: src/components/modals/SendModal.vue:615
+#: src/components/modals/SendModal.vue:617
 msgid "Sent {nim} NIM to {name}"
 msgstr "Надіслано {nim} NIM до {name}"
 
@@ -1742,6 +1738,10 @@ msgstr "Показувати десяткові значення"
 msgid "Show Link"
 msgstr "Показати"
 
+#: src/components/AccountMenu.vue:39
+msgid "Show Recovery Words"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"
 msgstr "Приєднатися"
@@ -1755,7 +1755,7 @@ msgid "Skip for now"
 msgstr "Попустити"
 
 #: src/components/modals/BtcSendModal.vue:512
-#: src/components/modals/SendModal.vue:639
+#: src/components/modals/SendModal.vue:642
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -1775,7 +1775,7 @@ msgstr "Стекайте NIM щоб отримати винагороду за �
 msgid "Staking"
 msgstr "Стекінг"
 
-#: src/components/modals/SendModal.vue:438
+#: src/components/modals/SendModal.vue:440
 msgid "standard"
 msgstr "звично"
 
@@ -1905,7 +1905,7 @@ msgstr ""
 "Існує багато варіантів - купуйте за допомогою банківської карти, або через біржу.\n"
 "Ви можете знайти більше крипто-бірж за посиланням: {link}"
 
-#: src/components/layouts/AccountOverview.vue:19
+#: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr "Функція \"відновлення паролю\" НЕ існує"
 
@@ -2199,7 +2199,7 @@ msgstr "Ви надішлете {amount}"
 msgid "You will send {amount} NIM"
 msgstr "Ви надішлете {amount} NIM"
 
-#: src/components/layouts/AccountOverview.vue:8
+#: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr "Ваш рахунок не є безпечним!"
 

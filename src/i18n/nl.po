@@ -4,12 +4,12 @@
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Jim <jimvendrig10@gmail.com>, 2021
 # Daniel, 2021
-# Stefan, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
+# Stefan, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2021\n"
+"Last-Translator: Stefan, 2021\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -126,7 +126,7 @@ msgstr "+ 6 uur"
 #: src/components/modals/BuyCryptoModal.vue:94
 msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
-msgstr ""
+msgstr "72 uur na je eerste aankoop wordt je limiet automatisch verhoogd."
 
 #: src/components/layouts/Settings.vue:339
 msgid ""
@@ -148,7 +148,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Accounts"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:84
 msgid "Activate"
 msgstr "Activeren"
 
@@ -216,7 +216,7 @@ msgstr "Geavanceerd"
 
 #: src/components/modals/BuyCryptoModal.vue:86
 msgid "After 72 hours"
-msgstr ""
+msgstr "Na 72 uur"
 
 #: src/components/layouts/Settings.vue:132
 #: src/components/layouts/Settings.vue:72
@@ -231,7 +231,7 @@ msgstr "Alle landen"
 msgid "All in one easy place."
 msgstr "Allemaal op één gemakkelijke plek."
 
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -245,6 +245,8 @@ msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
 msgstr ""
+"Alle swaps maken deel uit van je transactiegeschiedenis en hebben een klein "
+"swap-pictogram."
 
 #: src/components/modals/DisclaimerModal.vue:21
 msgid ""
@@ -303,11 +305,11 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:87
 msgid "Atomic Swap complete"
-msgstr ""
+msgstr "Atomic Swap voltooid"
 
 #: src/components/swap/SwapAnimation.vue:11
 msgid "Atomic Swap successful!"
-msgstr ""
+msgstr "Atomic Swap succesvol!"
 
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
@@ -315,11 +317,11 @@ msgstr "Atomic swaps vereisen twee BTC-transacties."
 
 #: src/components/layouts/Settings.vue:184
 msgid "Auto"
-msgstr ""
+msgstr "Automatisch"
 
 #: src/components/layouts/Settings.vue:177
 msgid "Automatic mode uses {behavior}."
-msgstr ""
+msgstr "De automatische modus gebruikt {behavior}."
 
 #: src/components/swap/SwapAnimation.vue:265
 msgid "Awaiting swap secret"
@@ -332,10 +334,6 @@ msgstr "Terug naar adressen"
 #: src/components/swap/SwapSepaFundingInstructions.vue:123
 msgid "Back to Bank Details"
 msgstr "Terug naar bankgegevens"
-
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr "Backup"
 
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:497
@@ -358,7 +356,7 @@ msgid "BIC works, too."
 msgstr "BIC werkt ook."
 
 #: src/components/BalanceDistribution.vue:77
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -672,10 +670,6 @@ msgstr ""
 msgid "Create a new single-use address."
 msgstr "Maak een nieuw adres voor eenmalig gebruik."
 
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
-msgstr "Maak een back up"
-
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create request link"
@@ -726,7 +720,7 @@ msgid "Disclaimer"
 msgstr "Disclaimer"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:344
+#: src/components/modals/SendModal.vue:346
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -777,7 +771,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
 #: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:588
+#: src/components/modals/SendModal.vue:590
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
@@ -843,7 +837,7 @@ msgstr "verlopen"
 msgid "Expired"
 msgstr "Verlopen"
 
-#: src/components/modals/SendModal.vue:443
+#: src/components/modals/SendModal.vue:445
 msgid "express"
 msgstr "express"
 
@@ -909,13 +903,13 @@ msgstr "Swap afronden"
 msgid "For beginners"
 msgstr "Voor beginners"
 
-#: src/components/modals/SendModal.vue:433
+#: src/components/modals/SendModal.vue:435
 msgid "free"
 msgstr "gratis"
 
 #: src/components/modals/BuyOptionsModal.vue:112
 msgid "Full KYC required, high availability."
-msgstr "Volledige KYC vereist, hoge beschikbaarheid."
+msgstr "Volledige verificatie vereist, hoge beschikbaarheid."
 
 #: src/components/NetworkMap.vue:30
 msgid "Full Node"
@@ -1166,6 +1160,10 @@ msgid ""
 msgstr ""
 "Log in op je apparaten met de nieuwe\n"
 "Nimiq Login Files."
+
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr ""
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -1474,6 +1472,10 @@ msgstr "Zojuist gekopieerd "
 msgid "Recipient"
 msgstr "Ontvanger"
 
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -1541,7 +1543,7 @@ msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:587
+#: src/components/modals/SendModal.vue:589
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
@@ -1552,10 +1554,6 @@ msgstr "Opnieuw proberen..."
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
 msgstr "Login File opslaan"
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
-msgstr "Nu opslaan"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
@@ -1660,7 +1658,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:584
+#: src/components/modals/SendModal.vue:586
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
@@ -1677,11 +1675,11 @@ msgstr "Stuur {btc} BTC naar {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Verzonden {fromAsset} - Ontvangen {toAsset}"
 
-#: src/components/modals/SendModal.vue:619
+#: src/components/modals/SendModal.vue:621
 msgid "Sent {nim} NIM"
 msgstr "Stuur {nim} NIM"
 
-#: src/components/modals/SendModal.vue:615
+#: src/components/modals/SendModal.vue:617
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
@@ -1756,6 +1754,10 @@ msgstr "Laat decimalen zien"
 msgid "Show Link"
 msgstr "Laat de link zien"
 
+#: src/components/AccountMenu.vue:39
+msgid "Show Recovery Words"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"
 msgstr "Aanmelden"
@@ -1769,7 +1771,7 @@ msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
 #: src/components/modals/BtcSendModal.vue:512
-#: src/components/modals/SendModal.vue:639
+#: src/components/modals/SendModal.vue:642
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
 
@@ -1790,7 +1792,7 @@ msgstr ""
 msgid "Staking"
 msgstr "Inzetten"
 
-#: src/components/modals/SendModal.vue:438
+#: src/components/modals/SendModal.vue:440
 msgid "standard"
 msgstr "Standaard"
 
@@ -1922,7 +1924,7 @@ msgstr ""
 "Er zijn vele opties, gebruik een credit card of verhandel crypto. Vind meer "
 "opties via {link}"
 
-#: src/components/layouts/AccountOverview.vue:19
+#: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr "Er is geen \"wachtwoord vergeten\""
 
@@ -2225,7 +2227,7 @@ msgstr "Je zal {amount} versturen"
 msgid "You will send {amount} NIM"
 msgstr "Je verstuurd nu {amount} NIM"
 
-#: src/components/layouts/AccountOverview.vue:8
+#: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr "Je account is nog niet veilig!"
 

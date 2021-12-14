@@ -146,7 +146,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:84
 msgid "Activate"
 msgstr "激活"
 
@@ -226,7 +226,7 @@ msgstr "所有国家"
 msgid "All in one easy place."
 msgstr "全部都可以在这里实现！"
 
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -318,10 +318,6 @@ msgstr "返回地址"
 msgid "Back to Bank Details"
 msgstr "返回银行详情"
 
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr "备份"
-
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/TransactionModal.vue:536
@@ -343,7 +339,7 @@ msgid "BIC works, too."
 msgstr "BIC适用"
 
 #: src/components/BalanceDistribution.vue:77
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -648,10 +644,6 @@ msgstr "建立一个新帐户并转移你的资金，我们有更多新功能和
 msgid "Create a new single-use address."
 msgstr "创建一个新的一次性地址"
 
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
-msgstr "建立备份"
-
 #: src/components/modals/BtcReceiveModal.vue:101
 #: src/components/modals/ReceiveModal.vue:28
 msgid "Create request link"
@@ -703,7 +695,7 @@ msgid "Disclaimer"
 msgstr "免责声明"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:344
+#: src/components/modals/SendModal.vue:346
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -751,7 +743,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数"
 
 #: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:588
+#: src/components/modals/SendModal.vue:590
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -815,7 +807,7 @@ msgstr "已过期"
 msgid "Expired"
 msgstr "已过期"
 
-#: src/components/modals/SendModal.vue:443
+#: src/components/modals/SendModal.vue:445
 msgid "express"
 msgstr "快速"
 
@@ -881,7 +873,7 @@ msgstr "最后确认互换"
 msgid "For beginners"
 msgstr "初学者友好"
 
-#: src/components/modals/SendModal.vue:433
+#: src/components/modals/SendModal.vue:435
 msgid "free"
 msgstr "免费"
 
@@ -1127,6 +1119,10 @@ msgid ""
 msgstr ""
 "使用新版的Nimiq登录文件\n"
 "登录设备"
+
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr ""
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -1428,6 +1424,10 @@ msgstr "最近复制"
 msgid "Recipient"
 msgstr "接收者"
 
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -1493,7 +1493,7 @@ msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:587
+#: src/components/modals/SendModal.vue:589
 msgid "Retry"
 msgstr "重试"
 
@@ -1504,10 +1504,6 @@ msgstr "重试..."
 #: src/components/AccountMenu.vue:34
 msgid "Save Login File"
 msgstr "储存登录文件"
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
-msgstr "马上储存账户"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
@@ -1610,7 +1606,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
 #: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:584
+#: src/components/modals/SendModal.vue:586
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
@@ -1627,11 +1623,11 @@ msgstr "已发送{btc} BTC到 {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
-#: src/components/modals/SendModal.vue:619
+#: src/components/modals/SendModal.vue:621
 msgid "Sent {nim} NIM"
 msgstr "发送{nim}NIM"
 
-#: src/components/modals/SendModal.vue:615
+#: src/components/modals/SendModal.vue:617
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
@@ -1706,6 +1702,10 @@ msgstr "显示小数"
 msgid "Show Link"
 msgstr "显示链接"
 
+#: src/components/AccountMenu.vue:39
+msgid "Show Recovery Words"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"
 msgstr "注册"
@@ -1719,7 +1719,7 @@ msgid "Skip for now"
 msgstr "暂时跳过"
 
 #: src/components/modals/BtcSendModal.vue:512
-#: src/components/modals/SendModal.vue:639
+#: src/components/modals/SendModal.vue:642
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -1739,7 +1739,7 @@ msgstr "质押NIM取得奖励，并确保网络安全"
 msgid "Staking"
 msgstr "质押"
 
-#: src/components/modals/SendModal.vue:438
+#: src/components/modals/SendModal.vue:440
 msgid "standard"
 msgstr "标准"
 
@@ -1866,7 +1866,7 @@ msgid ""
 " exchanges on {link}"
 msgstr "我们有多种选择，你可以使用信用卡或交易加密货币，也可以在 {link} 上找到更多的交易所"
 
-#: src/components/layouts/AccountOverview.vue:19
+#: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr "没有 “忘记密码” 的选项"
 
@@ -2148,7 +2148,7 @@ msgstr "你将发送 {amount}"
 msgid "You will send {amount} NIM"
 msgstr "你将发送{amount}NIM"
 
-#: src/components/layouts/AccountOverview.vue:8
+#: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr "你的帐户还不够安全！"
 

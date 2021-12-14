@@ -174,6 +174,7 @@ export async function initStorage() {
         settingsStore.patch({
             ...storedSettings,
             updateAvailable: false,
+            btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
         });
     }
 

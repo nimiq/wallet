@@ -30,7 +30,7 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
 export enum Trial {}
 
 export type NimDecimals = 0 | 2 | 5;
-export type BtcDecimals = 0 | 3 | 8;
+export type BtcDecimals = 0 | 3 | 5 | 8;
 export type SwipingEnabled = -1 | 0 | 1;
 export type HubBehavior = 'auto' | 'popup' | 'redirect';
 
@@ -54,7 +54,7 @@ export const useSettingsStore = createStore({
         language: detectLanguage(),
         colorMode: ColorMode.AUTOMATIC,
         amountsHidden: false,
-        btcDecimals: 0,
+        btcDecimals: 5,
         btcUnit: BtcUnits.btc,
         swipingEnabled: -1,
         trials: [],

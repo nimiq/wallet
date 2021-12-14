@@ -128,7 +128,7 @@
 
                     <select id="btc-decimals" @input="setBtcDecimals(parseInt($event.target.value))">
                         <option value="0" :selected="btcDecimals === 0">{{ $t('None') }}</option>
-                        <option value="3" :selected="btcDecimals === 3">3</option>
+                        <option value="5" :selected="btcDecimals === 5">5</option>
                         <option value="8" :selected="btcDecimals === 8">{{ $t('all') }}</option>
                     </select>
                 </div>

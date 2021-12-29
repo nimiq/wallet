@@ -1175,7 +1175,7 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:12
 msgid "Login File"
-msgstr ""
+msgstr "Fichier de connexion"
 
 #: src/components/AccountMenu.vue:53
 msgid "Logout"
@@ -1490,7 +1490,7 @@ msgstr "Destinataire"
 
 #: src/components/layouts/AccountOverview.vue:27
 msgid "Recovery Words"
-msgstr ""
+msgstr "Mots de récupération"
 
 #: src/components/layouts/Settings.vue:174
 msgid "Redirect mode does not yet support swaps."
@@ -1777,7 +1777,7 @@ msgstr "Afficher le lien"
 
 #: src/components/AccountMenu.vue:39
 msgid "Show Recovery Words"
-msgstr ""
+msgstr "Montrer les mots de récupération"
 
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"

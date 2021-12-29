@@ -419,7 +419,7 @@
     "KREDBEBB": { "name": "KBC Bank" },
     "LHVBEE22": { "support": { "sepa": { "outbound": "full" } } },
     "LUHSDE6A": { "support": { "sepa": { "outbound": "full" } } },
-    "MALADE51MYN": { "support": { "sepa": { "outbound": "no" } } },
+    "MALADE51MYN": { "support": { "sepa": { "outbound": "full" } } },
     "MALADE51ROK": { "support": { "sepa": { "outbound": "full" } } },
     "MANSDE66": { "support": { "sepa": { "outbound": "full" } } },
     "NASSDE55": { "support": { "sepa": { "outbound": "full" } } },

@@ -241,7 +241,7 @@
         </div>
 
         <div class="copyright">
-            &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
+            &copy; 2017-{{ copyrightYear }} Nimiq Foundation
             <strong>&middot;</strong>
             <router-link to="release-notes">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
@@ -405,6 +405,11 @@ export default defineComponent({
             });
         }
 
+        const copyrightYear = Math.max(
+            Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
+            new Date().getFullYear(), // user year
+        );
+
         return {
             addVestingContract,
             clearCache,
@@ -423,6 +428,7 @@ export default defineComponent({
             deferredPrompt,
             promptInstall,
             shouldUseRedirects,
+            copyrightYear,
         };
     },
     components: {

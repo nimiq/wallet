@@ -26,11 +26,12 @@ if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
 }
 
-// Accesible within client code via process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH,
+// Accesible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
 process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = `sha256-${createHash('sha256')
     .update(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')))
     .digest('base64')}`;
+process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 

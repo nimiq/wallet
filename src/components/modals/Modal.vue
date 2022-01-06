@@ -1,5 +1,8 @@
 <template>
-    <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
+    <div
+    class="modal backdrop flex-column"
+    v-pointerdown="checkTouchStart"
+    @click.self="onBackdropClick">
         <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
             <SmallPage
                 class="main"
@@ -26,12 +29,21 @@
 </template>
 
 <script lang="ts">
+import { CloseButton, SmallPage } from '@nimiq/vue-components';
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
-import { SmallPage, CloseButton } from '@nimiq/vue-components';
-import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
-import { useSettingsStore } from '../../stores/Settings';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { pointerdown } from '../../directives/PointerEvents';
+import { useSettingsStore } from '../../stores/Settings';
+
+export function enableModalTransition() {
+    document.body.classList.remove('modal-transition-disabled');
+}
+
+export function disableNextModalTransition() {
+    document.body.classList.add('modal-transition-disabled');
+    // the modal transitions are enabled again in onMounted in the next modal component instance
+}
 
 export default defineComponent({
     props: {
@@ -149,6 +161,12 @@ export default defineComponent({
             if (!touchStartedOnBackdrop) return;
             close();
         }
+
+        onMounted(() => {
+            setTimeout(() => {
+                enableModalTransition();
+            }, 100);
+        });
 
         return {
             close,
@@ -293,6 +311,10 @@ export default defineComponent({
 :root {
     --modal-transition-time: 0.45s;
     --overlay-transition-time: 0.65s;
+}
+
+.modal-transition-disabled {
+    --modal-transition-time: 0;
 }
 
 .wrapper {

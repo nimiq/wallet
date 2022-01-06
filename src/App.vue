@@ -1,6 +1,6 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="routeClass" ref="$main">
+        <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
             <transition name="delay">
@@ -25,52 +25,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
-
+import { computed, defineComponent, onMounted, ref, Ref, watch } from '@vue/composition-api';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
-import router, { provideRouter, Columns } from './router';
+import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
+import { useSwipes } from './composables/useSwipes';
+import { useWindowSize } from './composables/useWindowSize';
+import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
-import { useWindowSize } from './composables/useWindowSize';
-import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
 
-        const routeClass = ref('');
-
-        watch(() => context.root.$route.meta, (meta) => {
-            if (!meta) return;
-            // Using a watcher, because the routeClass should only change when a route is visited
-            // that may require a column navigation. When opening modals, we don't want to change
-            // column.
-            switch (meta.column) {
-                case Columns.DYNAMIC:
-                    switch (context.root.$route.path) {
-                        case '/': routeClass.value = 'column-account'; break;
-                        case '/transactions': routeClass.value = 'column-address'; break;
-                        default: break; // Don't change column
-                    }
-                    break;
-                case Columns.ACCOUNT: routeClass.value = 'column-account'; break;
-                case Columns.ADDRESS: routeClass.value = 'column-address'; break;
-                default: break;
-            }
-        });
-
-        watch(() => context.root.$route.query, (newQuery, oldQuery) => {
-            if (!newQuery) return;
-            if (newQuery.sidebar) {
-                routeClass.value = 'column-sidebar';
-            } else if (oldQuery && oldQuery.sidebar) {
-                routeClass.value = 'column-account';
-            }
-        });
+        const { activeMobileColumn } = useActiveMobileColumn();
 
         const { accountInfos } = useAccountStore();
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
@@ -165,7 +137,7 @@ export default defineComponent({
         });
 
         return {
-            routeClass,
+            activeMobileColumn,
             hasAccounts,
             amountsHidden,
             $main,

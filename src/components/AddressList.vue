@@ -7,13 +7,6 @@
             :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
             :ref="`address-button-${addressInfo.address}`"/>
-        <hr class="separator" v-if="showBitcoin"/>
-        <AddressListItem
-            v-if="showBitcoin"
-            :addressInfo="btcInfos"
-            :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
-            @click="selectBtcAddress()"
-            :ref="`address-button-${btcInfos.address}`"/>
         <button
             v-if="showAddAddressButton"
             class="address-button add-address-button reset flex-row"
@@ -24,12 +17,19 @@
             </div>
             <span class="label add-address-label">{{ $t('Add\u00a0address') }}</span>
         </button>
+        <div class="scroll-mask bottom"></div>
+        <hr class="separator" v-if="showBitcoin"/>
+        <AddressListItem
+            v-if="showBitcoin"
+            :addressInfo="btcInfos"
+            :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
+            @click="selectBtcAddress()"
+            :ref="`address-button-${btcInfos.address}`"/>
         <div v-if="!embedded"
             class="active-box"
             :class="{ enabled: activeCurrency === CryptoCurrency.NIM }"
             :style="`--backgroundYScale: ${backgroundYScale}; --backgroundYOffset: ${backgroundYOffset}px`"
         ></div>
-        <div class="scroll-mask bottom"></div>
     </div>
 </template>
 
@@ -212,6 +212,7 @@ export default defineComponent({
     }
 
     .address-list {
+        height: 100%;
         display: flex;
         flex-direction: column;
         position: relative;
@@ -230,6 +231,7 @@ export default defineComponent({
 
         hr.separator {
             margin: 15px 0 15px 0;
+            margin-top: auto;
             border-top: 1.5px solid var(--nimiq-blue);
             opacity: 0.14;
         }
@@ -378,6 +380,10 @@ export default defineComponent({
 
         .add-address-button {
             padding: 1.5rem;
+        }
+
+        .embedded /deep/ .mobile-arrow {
+            display: inherit;
         }
     }
 </style>

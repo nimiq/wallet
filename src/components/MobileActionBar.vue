@@ -18,6 +18,8 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { useWindowSize } from '@/composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import { useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
@@ -28,6 +30,9 @@ export default defineComponent({
         const { activeAddressInfo } = useAddressStore();
         const { activeCurrency } = useAccountStore();
         const { accountBalance } = useBtcAddressStore();
+        const { width } = useWindowSize();
+
+        const { activeMobileColumn } = useActiveMobileColumn();
 
         function nimOrBtc<T>(nim: T, btc: T): T {
             switch (activeCurrency.value) {
@@ -38,7 +43,11 @@ export default defineComponent({
         }
 
         function receive() {
-            context.root.$router.push(nimOrBtc<string>('/receive', '/btc-receive'));
+            if (width.value <= 700 /* Full mobile breakpoint */ && activeMobileColumn.value !== ColumnType.ADDRESS) {
+                context.root.$router.push('/receive');
+            } else {
+                context.root.$router.push(nimOrBtc<string>('/receive/nim', '/receive/btc'));
+            }
         }
 
         function send() {

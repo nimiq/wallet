@@ -1,9 +1,11 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
+        emit-close
         @close-overlay="closeOverlays"
+        @close="close"
     >
-        <PageHeader>
+        <PageHeader :backArrow="canUserGoBack" @back="back">
             {{ $t('Receive NIM') }}
             <div slot="more">{{ $t('Share your address with the sender.') }}</div>
         </PageHeader>
@@ -40,31 +42,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
+import { useWindowSize } from '@/composables/useWindowSize';
 import {
-    PageHeader,
-    PageBody,
-    Identicon,
-    AddressDisplay,
-    QrCodeIcon,
-    QrCode,
-    Copyable,
+    AddressDisplay, Copyable, Identicon, PageBody, PageHeader, QrCode, QrCodeIcon,
 } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
-import { useAddressStore, AddressType } from '../../stores/Address';
+import { defineComponent, ref } from '@vue/composition-api';
+import { AddressType, useAddressStore } from '../../stores/Address';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
-    setup() {
+    setup(props, context) {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
+
+        const { width } = useWindowSize();
+        const { activeMobileColumn } = useActiveMobileColumn();
         const { activeAddressInfo } = useAddressStore();
+
+        async function close() {
+            while (context.root.$router.currentRoute.path.startsWith('/receive')) {
+                context.root.$router.back();
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+            }
+        }
 
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
+        }
+
+        // User only can go back to the address selection if is mobile and the column shown is the account
+        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
         }
 
         return {
@@ -73,6 +91,9 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             AddressType,
             closeOverlays,
+            close,
+            canUserGoBack,
+            back,
         };
     },
     components: {

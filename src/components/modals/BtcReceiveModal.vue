@@ -1,31 +1,39 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
+        emit-close
+        @close="close"
         @close-overlay="closeOverlay"
     >
-        <Tooltip class="info-tooltip" preferredPosition="bottom right">
+        <PageHeader :backArrow="canUserGoBack" @back="back">
             <InfoCircleSmallIcon slot="trigger"/>
-            <div class="flex-column">
-                <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                    + ' Reuse of addresses does not result in a loss of funds.') }}</p>
-                <div class="flex-column">
-                    <div class="flex-row">
-                        <RefreshIcon />
-                        <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
-                    </div>
-                    <div class="flex-row">
-                        <BracketsIcon />
-                        <p>{{
-                            $t('Use labels instead of contacts to easily identify transactions in your history.')
-                        }}</p>
-                    </div>
-                </div>
-            </div>
-        </Tooltip>
 
-        <PageHeader>
             {{ $t('Receive BTC') }}
-            <div slot="more">{{ $t('Share a single-use address with the sender.') }}</div>
+            <div slot="more" class="receive-btc__description">
+                <p>
+                    {{ $t('Share a single-use address with the sender.') }}
+                    <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                        <InfoCircleSmallIcon slot="trigger"/>
+                        <div class="flex-column">
+                            <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
+                                + ' Reuse of addresses does not result in a loss of funds.') }}</p>
+                            <div class="flex-column">
+                                <div class="flex-row">
+                                    <RefreshIcon />
+                                    <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                                </div>
+                                <div class="flex-row">
+                                    <BracketsIcon />
+                                    <p>
+                                        {{ $t('Use labels instead of contacts to easily '
+                                        + 'identify transactions in your history.') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </Tooltip>
+                </p>
+            </div>
         </PageHeader>
         <PageBody class="flex-column">
             <Copyable class="address"
@@ -128,7 +136,9 @@ import {
     QrCodeIcon,
     QrCode,
 } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import { useWindowSize } from '@/composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import RefreshIcon from '../icons/RefreshIcon.vue';
@@ -151,6 +161,9 @@ export default defineComponent({
             senderLabels,
             setSenderLabel,
         } = useBtcLabelsStore();
+
+        const { width } = useWindowSize();
+        const { activeMobileColumn } = useActiveMobileColumn();
 
         const second = 1000;
         const minute = 60 * second;
@@ -262,6 +275,14 @@ export default defineComponent({
             receiveLinkOverlayOpened.value = false;
         }
 
+        async function close() {
+            while (context.root.$router.currentRoute.path.startsWith('/receive')) {
+                context.root.$router.back();
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+            }
+        }
+
         // Watching for sub-modals openings to set the actively shown address as copied
         watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
             (booleans, prevBooleans) => {
@@ -300,10 +321,10 @@ export default defineComponent({
             addressFontSizeScaleFactor.value = 1;
             await context.root.$nextTick();
 
-            const width = $addressWidthFinder.value.clientWidth;
+            const addressWidth = $addressWidthFinder.value.clientWidth;
             const maxWidth = $availableAddressCopyable.value.$el.clientWidth - (addressPadding * 2);
 
-            addressFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
+            addressFontSizeScaleFactor.value = Math.min(maxWidth / addressWidth, 1);
 
             return addressFontSizeScaleFactor.value;
         }
@@ -317,10 +338,19 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
+        // User only can go back to the address selection if is mobile and the column shown is the account
+        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
+        }
+
         return {
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
             closeOverlay,
+            close,
             copyActiveAddressCallback,
             $copiedAddresses,
             addressCopied,
@@ -332,6 +362,8 @@ export default defineComponent({
             $addressWidthFinder,
             addressFontSizeScaleFactor,
             BTC_MAX_COPYABLE_ADDRESSES,
+            canUserGoBack,
+            back,
         };
     },
     components: {
@@ -362,16 +394,159 @@ export default defineComponent({
 .page-header {
     padding-bottom: 0;
 
-    div {
+    .receive-btc__description > p {
         font-size: var(--body-size);
         line-height: 1.4;
         font-weight: 600;
-        opacity: 0.6;
+        color: var(--text-60);
         margin-top: 2rem;
+
+        > .info-tooltip {
+            position: absolute;
+            margin-top: 0.4rem;
+            margin-left: 0.75rem;
+            z-index: 4;
+
+            ::v-deep .trigger svg {
+                height: 2rem;
+                color: var(--text-60);
+                transition: opacity var(--short-transition-duration) var(--nimiq-ease);
+            }
+
+            & ::v-deep .trigger:hover svg,
+            & ::v-deep .trigger:focus svg,
+            &.shown ::v-deep .trigger svg {
+                color: var(--text-90);
+            }
+
+            ::v-deep .tooltip-box {
+                width: 26.25rem;
+                font-size: var(--small-size);
+                font-weight: 600;
+                transform: translate(-2rem, 2rem);
+
+                @media (max-width: 700px) { // Full mobile breakpoint
+                    transform: translate(0.5rem, 2rem);
+                }
+
+                p {
+                    margin: 0;
+                }
+
+                p:first-child,
+                .flex-row:first-child {
+                    margin-bottom: 1rem;
+                }
+
+                .flex-row {
+                    align-items: flex-start;
+
+                    p {
+                        flex-basis: 80%;
+                        margin-left: 1.25rem;
+                    }
+
+                    svg {
+                        opacity: 0.6;
+                    }
+                }
+
+                .flex-row:first-child {
+                    svg {
+                        width: 2.75rem;
+                        height: 2.75rem;
+                        margin-top: 0.25rem;
+                    }
+                }
+
+                .flex-row:last-child {
+                    svg {
+                        width: 2.25rem;
+                        height: 2.25rem;
+                        margin: 0.25rem 0.25rem 0;
+                    }
+                }
+            }
+        }
     }
 }
 
-.page-body {
+.recently-copied-addresses {
+    flex-grow: 1;
+    align-self: stretch;
+    position: relative;
+    min-height: 24rem; /* Fits two copied addresses without scrolling */
+}
+
+.no-recently-copied-address {
+    color: var(--text-40);
+    font-size: var(--body-size);
+    font-weight: 600;
+    padding: 0 4.75rem;
+    text-align: center;
+    margin: auto 0;
+}
+
+.address-list {
+    flex-grow: 1;
+    align-items: center;
+    min-height: 0;
+
+    &.fade-enter-active,
+    &.fade-leave-active {
+        position: absolute;
+        width: 100%;
+    }
+
+    .nq-label {
+        text-align: center;
+        margin: 4rem 0 0;
+    }
+
+    .list {
+        @extend %custom-scrollbar;
+        $paddingTop: 2.5rem;
+
+        flex: 1 1 0;
+        width: calc(100% + 8rem);
+        padding: $paddingTop 4rem 0;
+        margin-top: 0.5rem;
+
+        &.scroll {
+            overflow-y: auto;
+        }
+
+        .scroll-mask.top {
+            transform: translateY(-#{$paddingTop});
+        }
+    }
+}
+
+footer {
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+
+    .qr-button {
+        position: absolute;
+        right: 3rem;
+        bottom: 3rem;
+        opacity: .4;
+        transition: opacity 250ms var(--nimiq-ease);
+
+        svg {
+            width: 4rem;
+            height: auto;
+        }
+
+        &:hover,
+        &:focus {
+            opacity: 0.8;
+        }
+    }
+}
+
+ .page-body {
     --short-transition-duration: 300ms;
     --long-transition-duration: 600ms;
 
@@ -397,6 +572,7 @@ export default defineComponent({
     color: var(--text-100);
     height: calc(var(--body-size) + 4px + (var(--padding) * 2));
     padding: 0;
+    overflow: hidden;
 
     transition: {
         property: background-color, color, font-size;
@@ -513,150 +689,6 @@ export default defineComponent({
 
         .header {
             font-size: var(--small-size);
-        }
-    }
-}
-
-.recently-copied-addresses {
-    flex-grow: 1;
-    align-self: stretch;
-    position: relative;
-    min-height: 24rem; /* Fits two copied addresses without scrolling */
-}
-
-.no-recently-copied-address {
-    color: var(--text-40);
-    font-size: var(--body-size);
-    font-weight: 600;
-    padding: 0 4.75rem;
-    text-align: center;
-    margin: auto 0;
-}
-
-.address-list {
-    flex-grow: 1;
-    align-items: center;
-    min-height: 0;
-
-    &.fade-enter-active,
-    &.fade-leave-active {
-        position: absolute;
-        width: 100%;
-    }
-
-    .nq-label {
-        text-align: center;
-        margin: 4rem 0 0;
-    }
-
-    .list {
-        @extend %custom-scrollbar;
-        $paddingTop: 2.5rem;
-
-        flex: 1 1 0;
-        width: calc(100% + 8rem);
-        padding: $paddingTop 4rem 0;
-        margin-top: 0.5rem;
-
-        &.scroll {
-            overflow-y: auto;
-        }
-
-        .scroll-mask.top {
-            transform: translateY(-#{$paddingTop});
-        }
-    }
-}
-
-footer {
-    width: 100%;
-    justify-content: center;
-    margin-top: 2rem;
-
-    .qr-button {
-        position: absolute;
-        right: 3rem;
-        bottom: 3rem;
-        opacity: .4;
-        transition: opacity 250ms var(--nimiq-ease);
-
-        svg {
-            width: 4rem;
-            height: auto;
-        }
-
-        &:hover,
-        &:focus {
-            opacity: 0.8;
-        }
-    }
-}
-
-.info-tooltip {
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-    z-index: 3;
-
-    ::v-deep .trigger svg {
-        height: 2rem;
-        opacity: .3;
-
-        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
-    }
-
-    & ::v-deep .trigger:hover svg,
-    & ::v-deep .trigger:focus svg,
-    &.shown ::v-deep .trigger svg {
-        opacity: .6;
-    }
-
-    ::v-deep .tooltip-box {
-        width: 26.25rem;
-        font-size: var(--small-size);
-        font-weight: 600;
-        transform: translate(-2rem, 2rem);
-
-        @media (max-width: 700px) { // Full mobile breakpoint
-            transform: translate(0.5rem, 2rem);
-        }
-
-        p {
-            margin: 0;
-        }
-
-        p:first-child,
-        .flex-row:first-child {
-            margin-bottom: 1rem;
-        }
-
-        .flex-row {
-            align-items: flex-start;
-
-            p {
-                flex-basis: 80%;
-                margin-left: 1.25rem;
-            }
-
-            svg {
-                opacity: 0.6;
-            }
-        }
-
-        .flex-row:first-child {
-            svg {
-                width: 2.75rem;
-                height: 2.75rem;
-                margin-top: 0.25rem;
-            }
-        }
-
-        .flex-row:last-child {
-            svg {
-                width: 2.25rem;
-                height: 2.25rem;
-                margin: 0.25rem 0.25rem 0;
-            }
         }
     }
 }

@@ -179,7 +179,7 @@ $inputHeight: 6rem;
     width: calc(100% - #{$inputBoxShadowSize});
 
     position: absolute;
-    left: #{$inputBoxShadowSize / 2};
+    left: #{calc($inputBoxShadowSize / 2)};
     z-index: 3;
 
     border-radius: 0;
@@ -198,8 +198,8 @@ $inputHeight: 6rem;
         border-top-left-radius: #{$inputBoxShadowSize};
         border-top-right-radius: #{$inputBoxShadowSize};
         box-shadow:
-            0 #{($borderSize / 2 + $inputBoxShadowSize) * -1}
-            0 #{$borderSize / 2}
+            0 #{calc(($borderSize / 2 + $inputBoxShadowSize) * -1)}
+            0 #{calc($borderSize / 2)}
             $borderColor;
     }
 
@@ -207,8 +207,8 @@ $inputHeight: 6rem;
         border-bottom-left-radius: $inputBoxShadowSize;
         border-bottom-right-radius: $inputBoxShadowSize;
         box-shadow:
-            0 #{$borderSize / 2 + $inputBoxShadowSize}
-            0 #{$borderSize / 2}
+            0 #{calc($borderSize / 2 + $inputBoxShadowSize)}
+            0 #{calc($borderSize / 2)}
             $borderColor;
     }
 

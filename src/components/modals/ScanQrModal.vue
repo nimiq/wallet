@@ -136,6 +136,7 @@ export default defineComponent({
             height: 100%;
             max-height: 100%;
             border-radius: 0;
+            min-width: 100vw;
         }
 
         .swipe-bar {

@@ -155,6 +155,10 @@ export default defineComponent({
         ::v-deep .cancel-button {
             bottom: 6rem;
         }
+
+        ::v-deep .access-denied-instructions {
+            bottom: 13rem;
+        }
     }
 }
 </style>

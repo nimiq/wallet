@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
-import { useWindowSize } from '@/composables/useWindowSize';
 import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
-import { useAddressStore } from '../stores/Address';
-import { useAccountStore } from '../stores/Account';
+import { useWindowSize } from '@/composables/useWindowSize';
+import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { computed, defineComponent } from '@vue/composition-api';
 import { CryptoCurrency } from '../lib/Constants';
+import { useAccountStore } from '../stores/Account';
+import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 
 export default defineComponent({
@@ -44,6 +44,7 @@ export default defineComponent({
 
         function receive() {
             if (width.value <= 700 /* Full mobile breakpoint */ && activeMobileColumn.value !== ColumnType.ADDRESS) {
+                // redirect to the address selector
                 context.root.$router.push('/receive');
             } else {
                 context.root.$router.push(nimOrBtc<string>('/receive/nim', '/receive/btc'));
@@ -51,10 +52,15 @@ export default defineComponent({
         }
 
         function send() {
-            context.root.$router.push(nimOrBtc<string>('/send', '/btc-send'));
+            if (width.value <= 700 /* Full mobile breakpoint */ && activeMobileColumn.value !== ColumnType.ADDRESS) {
+                // redirect to the address selector
+                context.root.$router.push('/send');
+            } else {
+                context.root.$router.push(nimOrBtc<string>('/send/nim', '/send/btc'));
+            }
         }
 
-        const sendDisabled = computed(() => nimOrBtc(
+        const sendDisabled = computed(() => context.root.$route.path !== '/' && nimOrBtc(
             !activeAddressInfo.value || !activeAddressInfo.value.balance,
             !accountBalance.value,
         ));

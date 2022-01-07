@@ -1,7 +1,9 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened">
+    <Modal :showOverlay="statusScreenOpened" emit-close @close="close">
         <div class="page flex-column" @click="amountMenuOpened = false">
-            <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
+            <PageHeader :backArrow="canUserGoBack" @back="back">
+                {{ $t('Send Transaction') }}
+            </PageHeader>
             <PageBody class="flex-column">
                 <DoubleInput :extended="!!recipientWithLabel">
                     <template #second v-if="recipientWithLabel">
@@ -130,37 +132,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
-import {
-    PageHeader,
-    PageBody,
-    AlertTriangleIcon,
-    ScanQrCodeIcon,
-    LabelInput,
-    Tooltip,
-    InfoCircleSmallIcon,
-} from '@nimiq/vue-components';
+import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
-import Modal from './Modal.vue';
-import BtcAddressInput from '../BtcAddressInput.vue';
-import BtcLabelInput from '../BtcLabelInput.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import FeeSelector from '../FeeSelector.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import {
+    AlertTriangleIcon, InfoCircleSmallIcon, LabelInput, PageBody, PageHeader, ScanQrCodeIcon, Tooltip,
+} from '@nimiq/vue-components';
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, Ref, watch } from '@vue/composition-api';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { getElectrumClient } from '../../electrum';
+import { sendBtcTransaction } from '../../hub';
+import { estimateFees, parseBitcoinUrl, selectOutputs } from '../../lib/BitcoinTransactionUtils';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
-import { sendBtcTransaction } from '../../hub';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
-import { getElectrumClient } from '../../electrum';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import BtcAddressInput from '../BtcAddressInput.vue';
+import BtcLabelInput from '../BtcLabelInput.vue';
 import DoubleInput from '../DoubleInput.vue';
+import FeeSelector from '../FeeSelector.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     NEW_CONTACT,
@@ -531,11 +528,31 @@ export default defineComponent({
             });
         }
 
+        const { activeMobileColumn } = useActiveMobileColumn();
+
+        // User only can go back to the address selection if is mobile and the column shown is the account
+        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
+        }
+
+        async function close() {
+            while (context.root.$router.currentRoute.path.startsWith('/send')) {
+                context.root.$router.back();
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+            }
+        }
+
         return {
             // General
             RecipientType,
             CryptoCurrency,
             FiatCurrency,
+            close,
 
             // Recipient Input
             addressInputValue,
@@ -580,6 +597,10 @@ export default defineComponent({
             statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
+
+            // User can choose address in mobile
+            canUserGoBack,
+            back,
         };
     },
     components: {

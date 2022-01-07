@@ -104,7 +104,7 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
+                    @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                         || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >

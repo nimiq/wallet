@@ -4,11 +4,15 @@
         || addressListOpened
         || feeSelectionOpened
         || statusScreenOpened"
+        emit-close
         @close-overlay="onCloseOverlay"
+        @close="close"
         :class="{'value-masked': amountsHidden}"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
-            <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
+            <PageHeader :backArrow="canUserGoBackToAddressSelection" @back="back">
+                {{ $t('Send Transaction') }}
+            </PageHeader>
             <PageBody class="page__recipient-input flex-column">
                 <ContactShortcuts
                     :contacts="recentContacts"
@@ -225,44 +229,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
+import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
+import { AddressBook, CurrencyInfo, parseRequestLink, Utf8Tools, ValidationUtils } from '@nimiq/utils';
 import {
-    PageHeader,
-    PageBody,
-    AddressInput,
-    ScanQrCodeIcon,
-    Identicon,
-    LabelInput,
-    Copyable,
-    AddressDisplay,
-    SelectBar,
-    Amount,
+    AddressDisplay, AddressInput, Amount, Copyable, Identicon,
+    LabelInput, PageBody, PageHeader, ScanQrCodeIcon, SelectBar,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import Config from 'config';
-import Modal from './Modal.vue';
-import ContactShortcuts from '../ContactShortcuts.vue';
-import ContactBook from '../ContactBook.vue';
-import IdenticonButton from '../IdenticonButton.vue';
-import AddressList from '../AddressList.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { useContactsStore } from '../../stores/Contacts';
-import { useAddressStore } from '../../stores/Address';
-import { useNetworkStore } from '../../stores/Network';
-import { useFiatStore } from '../../stores/Fiat';
-import { useSettingsStore } from '../../stores/Settings';
-import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
-import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { createCashlink, sendTransaction } from '../../hub';
 import { i18n } from '../../i18n/i18n-setup';
+import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
+import { useAddressStore } from '../../stores/Address';
+import { useContactsStore } from '../../stores/Contacts';
+import { useFiatStore } from '../../stores/Fiat';
+import { useNetworkStore } from '../../stores/Network';
+import { useSettingsStore } from '../../stores/Settings';
+import AddressList from '../AddressList.vue';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import ContactBook from '../ContactBook.vue';
+import ContactShortcuts from '../ContactShortcuts.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import IdenticonButton from '../IdenticonButton.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     CONTACT,
@@ -633,7 +630,7 @@ export default defineComponent({
                         context.root.$router.back();
                     }
                 }, SUCCESS_REDIRECT_DELAY);
-            } catch (error) {
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
 
@@ -670,6 +667,26 @@ export default defineComponent({
                 // Set a flag that we need to go back 2 history entries on success
                 window.history.state.cameFromSend = true;
             });
+        }
+
+        const { activeMobileColumn } = useActiveMobileColumn();
+
+        async function close() {
+            while (context.root.$router.currentRoute.path.startsWith('/send')) {
+                context.root.$router.back();
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+            }
+        }
+
+        // User only can go back to the address selection if is mobile and the column shown is the account
+        const canUserGoBackToAddressSelection = ref(width.value <= 700
+            && activeMobileColumn.value !== ColumnType.ADDRESS);
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
         }
 
         let sucessCloseTimeout = 0;
@@ -743,7 +760,12 @@ export default defineComponent({
             onStatusMainAction,
             onStatusAlternativeAction,
 
+            // User can choose address in mobile
+            canUserGoBackToAddressSelection,
+            back,
+
             onCloseOverlay,
+            close,
         };
     },
     components: {

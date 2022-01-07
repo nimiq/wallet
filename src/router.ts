@@ -80,9 +80,23 @@ const routes: RouteConfig[] = [{
         children: [{
             path: '/send',
             components: {
-                modal: SendModal,
+                modal: AddressSelectorModal,
             },
             name: 'send',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+                path: '/send/nim',
+                components: {
+                modal: SendModal,
+            },
+                name: 'send-nim',
+                meta: { column: Columns.DYNAMIC },
+            }, {
+                path: '/send/btc',
+                components: {
+                    modal: BtcSendModal,
+                },
+                name: 'send-btc',
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive',
@@ -184,13 +198,6 @@ const routes: RouteConfig[] = [{
             name: 'btc-activation',
             props: { modal: true },
             meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/btc-send',
-            components: {
-                modal: BtcSendModal,
-            },
-            name: 'btc-send',
-            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/btc-transaction/:hash',
             components: {

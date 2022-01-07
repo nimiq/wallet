@@ -95,7 +95,7 @@
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
-                :backArrow="true"
+                :backArrow="!!requestUri"
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
@@ -530,8 +530,11 @@ export default defineComponent({
             }
         }
 
-        if (props.requestUri) {
-            parseRequestUri(props.requestUri);
+        const { requestUri } = props;
+        const hasRequestUri = !!requestUri;
+
+        if (hasRequestUri) {
+            parseRequestUri(requestUri);
         }
 
         /**
@@ -695,6 +698,7 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
+            hasRequestUri,
             parseRequestUri,
             amountsHidden,
             goToScanner,

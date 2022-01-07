@@ -1,0 +1,24 @@
+{
+    "validatorLabelDisclaimer": "The validator is solely responsible for information provided above.",
+    "uptimeRules": [
+        ["80", "4.68", "The validator is extremely unreliable, which leads to reduced rewards."],
+        ["94", "4.68", "The validator is unreliable, which might lead to reduced rewards."],
+        ["96", "4.68", "The validator was occasionally offline, which might lead to reduced rewards."],
+        ["99", "4.68", "The validator is consistantly available and likely to receive the full reward potential."],
+        ["Infinity", "4.68", "The validator is reliably available and will receive the full reward potential."]
+    ],
+    "ageRules": [
+        ["1", "4.99", "The validator just started and might not be very experienced."],
+        ["2", "4.99", "The validator is relatively young and might not be very experienced."],
+        ["3", "4.99", "The validator is sufficiently experienced"],
+        ["6", "4.99", "The validator is decently experienced."],
+        ["Infinity", "4.99", "The validator is very experienced."]
+    ],
+    "dominanceRules": [
+        ["Infinity", "4.28", "Do not stake with this validator!\n\nThe validator controls a substantial share of the total stake. This makes it a potential threat to the network."],
+        ["22", "4.28", "Staking with this validator is not recommended!\n\nThe validator controls a substantial share of the total stake. This makes it a potential threat to the network."],
+        ["18", "4.28", "The validator controls a large share of the total stake.\n\nConsider choosing a smaller validator to improve the network’s security."],
+        ["12", "4.28", "The validator controls a sizeable share of the total stake. You can support the network by staking with a smaller validator."],
+        ["-1", "4.28", "The validator controls a healthy share of the total stake. Staking with this validator improves the network’s security."]
+    ]
+}

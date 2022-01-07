@@ -87,6 +87,9 @@
                     </div>
                 </div>
             </div>
+            <div class="staking flex-row">
+                <StakePreviewPartial v-if="activeCurrency === 'nim'"/>
+            </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -103,17 +106,20 @@
                     ) }}
                 </button>
 
+                <StakeButtonPartial />
+
+                <button class="receive nq-button-s flex-row"
+                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
+                >
+                    <ArrowRightSmallIcon />{{ $t('Receive') }}
+                </button>
+
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                         || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
-                </button>
-                <button class="receive nq-button-s flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
-                >
-                    <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
             <div class="scroll-mask top"></div>
@@ -194,6 +200,9 @@ import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
+import StakePreviewPartial from '../stake/partials/StakePreviewPartial.vue';
+import StakeButtonPartial from '../stake/partials/StakeButtonPartial.vue';
+
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 
@@ -324,6 +333,8 @@ export default defineComponent({
         EventIcon,
         CrossIcon,
         CrossCloseButton,
+        StakePreviewPartial,
+        StakeButtonPartial,
     },
     directives: {
         responsive: ResponsiveDirective,
@@ -379,6 +390,16 @@ export default defineComponent({
     @media (min-width: 2000px) {
         --padding: 9rem;
         --padding-bottom: 6rem;
+    }
+
+    .dev-bar {
+        display: flex;
+        flex-direction: row;
+        white-space: nowrap;
+    }
+
+    .feature-bar {
+        height: 2rem;
     }
 
     &.no-accounts {
@@ -536,6 +557,14 @@ export default defineComponent({
     }
 }
 
+.staking {
+    padding-top: 0;
+    padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: 3rem;
+    padding-left: calc(var(--padding) + 2rem);
+    margin-top: calc(-1 * var(--padding-bottom) / 2);
+}
+
 .actions,
 .actions-mobile {
     justify-content: space-between;
@@ -613,6 +642,25 @@ export default defineComponent({
     left: -0.25rem;
 }
 
+.tooltip.staking-feature-tip {
+    /deep/ .trigger::after {
+        background-color: var(--nimiq-green);
+    }
+
+    /deep/ .tooltip-box {
+        background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
+        white-space: nowrap;
+        box-shadow:
+            0rem 2.25rem 4.75rem rgba(31, 35, 72, 0.07),
+            0rem 0.875rem 1.0625rem rgba(31, 35, 72, 0.04),
+            0rem .25rem 0.3125rem rgba(31, 35, 72, 0.02);
+        color: #fff;
+        font-size: 1.75rem;
+        font-weight: bold;
+        line-height: .5rem;
+    }
+}
+
 .send, .receive {
     margin: 0 0.5rem;
     align-items: center;
@@ -650,10 +698,6 @@ export default defineComponent({
     .nq-icon {
         transform: rotateZ(90deg);
     }
-}
-
-.search-bar {
-    margin-right: 3rem;
 }
 
 .unclaimed-cashlinks {

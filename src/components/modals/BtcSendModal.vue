@@ -522,7 +522,8 @@ export default defineComponent({
         const { activeMobileColumn } = useActiveMobileColumn();
 
         // User only can go back to the address selection if is mobile and the column shown is the account
-        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
+        const canUserGoBack = ref(
+            width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS && !props.requestUri);
 
         function back() {
             disableNextModalTransition();

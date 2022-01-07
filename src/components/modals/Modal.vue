@@ -78,7 +78,20 @@ export default defineComponent({
             if (props.emitClose) {
                 context.emit('close');
             } else {
+                forceClose();
+            }
+        }
+
+        async function forceClose() {
+            // ensures that we close all the modals, so flows that opens multiple modals in different steps
+            // are closed one after the other
+            // For example: choose a sender -> choose a recipient -> set amount
+
+            while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components)) {
                 context.root.$router.back();
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
             }
         }
 
@@ -170,6 +183,7 @@ export default defineComponent({
 
         return {
             close,
+            forceClose, // used by other components
             $main,
             $handle,
             showSwipeHandle,

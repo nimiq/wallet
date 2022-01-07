@@ -85,18 +85,18 @@ const routes: RouteConfig[] = [{
             name: 'send',
             meta: { column: Columns.DYNAMIC },
         }, {
-                path: '/send/nim',
-                components: {
+            path: '/send/nim',
+            components: {
                 modal: SendModal,
             },
-                name: 'send-nim',
-                meta: { column: Columns.DYNAMIC },
-            }, {
-                path: '/send/btc',
-                components: {
-                    modal: BtcSendModal,
-                },
-                name: 'send-btc',
+            name: 'send-nim',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/send/btc',
+            components: {
+                modal: BtcSendModal,
+            },
+            name: 'send-btc',
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive',

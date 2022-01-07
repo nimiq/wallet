@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened" emit-close @close="close">
+    <Modal :showOverlay="statusScreenOpened" ref="$modal">
         <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader :backArrow="canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
@@ -433,6 +433,7 @@ export default defineComponent({
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry') as string);
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
+        const $modal = ref<any | null>(null);
 
         async function sign() {
             // Show loading screen
@@ -492,14 +493,7 @@ export default defineComponent({
 
                 // Close modal
                 sucessCloseTimeout = window.setTimeout(async () => {
-                    if (window.history.state.cameFromSend) {
-                        // This is required when going to the QR scanner from within /btc-send, as a sucessful
-                        // scan _replaces_ the /scan route with the result, meaning the original /btc-send is
-                        // the previous history entry.
-                        context.root.$router.go(-2);
-                    } else {
-                        context.root.$router.back();
-                    }
+                    $modal.value!.forceClose();
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
@@ -522,10 +516,7 @@ export default defineComponent({
         const { btcUnit } = useSettingsStore();
 
         function goToScanner() {
-            context.root.$router.push('/scan', () => {
-                // Set a flag that we need to go back 2 history entries on success
-                window.history.state.cameFromSend = true;
-            });
+            context.root.$router.push('/scan');
         }
 
         const { activeMobileColumn } = useActiveMobileColumn();
@@ -538,21 +529,12 @@ export default defineComponent({
             context.root.$router.back();
         }
 
-        async function close() {
-            while (context.root.$router.currentRoute.path.startsWith('/send')) {
-                context.root.$router.back();
-
-                // eslint-disable-next-line no-await-in-loop
-                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
-            }
-        }
-
         return {
             // General
             RecipientType,
             CryptoCurrency,
             FiatCurrency,
-            close,
+            $modal,
 
             // Recipient Input
             addressInputValue,

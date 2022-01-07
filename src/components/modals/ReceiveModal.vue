@@ -1,9 +1,7 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
-        emit-close
         @close-overlay="closeOverlays"
-        @close="close"
     >
         <PageHeader :backArrow="canUserGoBack" @back="back">
             {{ $t('Receive NIM') }}
@@ -63,15 +61,6 @@ export default defineComponent({
         const { activeMobileColumn } = useActiveMobileColumn();
         const { activeAddressInfo } = useAddressStore();
 
-        async function close() {
-            while (context.root.$router.currentRoute.path.startsWith('/receive')) {
-                context.root.$router.back();
-
-                // eslint-disable-next-line no-await-in-loop
-                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
-            }
-        }
-
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
@@ -91,7 +80,6 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             AddressType,
             closeOverlays,
-            close,
             canUserGoBack,
             back,
         };

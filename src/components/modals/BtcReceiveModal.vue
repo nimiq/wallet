@@ -1,8 +1,6 @@
 <template>
     <Modal class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
-        emit-close
-        @close="close"
         @close-overlay="closeOverlay"
     >
         <PageHeader :backArrow="canUserGoBack" @back="back">
@@ -275,14 +273,6 @@ export default defineComponent({
             receiveLinkOverlayOpened.value = false;
         }
 
-        async function close() {
-            while (context.root.$router.currentRoute.path.startsWith('/receive')) {
-                context.root.$router.back();
-                // eslint-disable-next-line no-await-in-loop
-                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
-            }
-        }
-
         // Watching for sub-modals openings to set the actively shown address as copied
         watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
             (booleans, prevBooleans) => {
@@ -350,7 +340,6 @@ export default defineComponent({
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
             closeOverlay,
-            close,
             copyActiveAddressCallback,
             $copiedAddresses,
             addressCopied,

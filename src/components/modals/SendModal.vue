@@ -4,10 +4,9 @@
         || addressListOpened
         || feeSelectionOpened
         || statusScreenOpened"
-        emit-close
         @close-overlay="onCloseOverlay"
-        @close="close"
         :class="{'value-masked': amountsHidden}"
+        ref="$modal"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader :backArrow="canUserGoBackToAddressSelection" @back="back">
@@ -281,6 +280,8 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
         const page = ref(Pages.RECIPIENT_INPUT);
+
+        const $modal = ref<any | null>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -621,14 +622,7 @@ export default defineComponent({
 
                 // Close modal
                 sucessCloseTimeout = window.setTimeout(async () => {
-                    if (window.history.state.cameFromSend) {
-                        // This is required when going to the QR scanner from within /send, as a sucessful
-                        // scan _replaces_ the /scan route with the result, meaning the original /send is
-                        // the previous history entry.
-                        context.root.$router.go(-2);
-                    } else {
-                        context.root.$router.back();
-                    }
+                    $modal.value!.forceClose();
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
@@ -663,22 +657,10 @@ export default defineComponent({
         const { amountsHidden } = useSettingsStore();
 
         function goToScanner() {
-            context.root.$router.push('/scan', () => {
-                // Set a flag that we need to go back 2 history entries on success
-                window.history.state.cameFromSend = true;
-            });
+            context.root.$router.push('/scan');
         }
 
         const { activeMobileColumn } = useActiveMobileColumn();
-
-        async function close() {
-            while (context.root.$router.currentRoute.path.startsWith('/send')) {
-                context.root.$router.back();
-
-                // eslint-disable-next-line no-await-in-loop
-                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
-            }
-        }
 
         // User only can go back to the address selection if is mobile and the column shown is the account
         const canUserGoBackToAddressSelection = ref(width.value <= 700
@@ -700,6 +682,7 @@ export default defineComponent({
             Pages,
             RecipientType,
             page,
+            $modal,
 
             // Recipient Input
             recentContacts,
@@ -765,7 +748,6 @@ export default defineComponent({
             back,
 
             onCloseOverlay,
-            close,
         };
     },
     components: {

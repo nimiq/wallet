@@ -51,7 +51,7 @@
                         {{ $t('Create a Cashlink') }}
                     </button>
                 </section>
-                <button class="reset scan-qr-button" @click="goToScanner">
+                <button class="reset scan-qr-button" @click="$router.push('/scan')">
                     <ScanQrCodeIcon/>
                 </button>
             </PageBody>
@@ -95,7 +95,7 @@
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
-                :backArrow="!!requestUri"
+                :backArrow="!gotValidRequestUri"
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
@@ -231,8 +231,16 @@
 import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import { AddressBook, CurrencyInfo, parseRequestLink, Utf8Tools, ValidationUtils } from '@nimiq/utils';
 import {
-    AddressDisplay, AddressInput, Amount, Copyable, Identicon,
-    LabelInput, PageBody, PageHeader, ScanQrCodeIcon, SelectBar,
+    AddressDisplay,
+    AddressInput,
+    Amount,
+    Copyable,
+    Identicon,
+    LabelInput,
+    PageBody,
+    PageHeader,
+    ScanQrCodeIcon,
+    SelectBar,
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
@@ -503,6 +511,7 @@ export default defineComponent({
 
         const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
 
+        const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             uri = uri.replace(`${window.location.origin}/`, '');
             const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
@@ -527,14 +536,13 @@ export default defineComponent({
                 if (parsedRequestLink.message) {
                     message.value = parsedRequestLink.message;
                 }
+
+                gotValidRequestUri.value = true;
             }
         }
 
-        const { requestUri } = props;
-        const hasRequestUri = !!requestUri;
-
-        if (hasRequestUri) {
-            parseRequestUri(requestUri);
+        if (props.requestUri) {
+            parseRequestUri(props.requestUri);
         }
 
         /**
@@ -624,9 +632,7 @@ export default defineComponent({
                     });
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(async () => {
-                    $modal.value!.forceClose();
-                }, SUCCESS_REDIRECT_DELAY);
+                sucessCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -658,10 +664,6 @@ export default defineComponent({
         }
 
         const { amountsHidden } = useSettingsStore();
-
-        function goToScanner() {
-            context.root.$router.push('/scan');
-        }
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -698,10 +700,9 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
-            hasRequestUri,
+            gotValidRequestUri,
             parseRequestUri,
             amountsHidden,
-            goToScanner,
             isDomain,
             isResolvingUnstoppableDomain,
             resolverError,

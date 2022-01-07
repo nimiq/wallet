@@ -1,8 +1,5 @@
 <template>
-    <div
-    class="modal backdrop flex-column"
-    v-pointerdown="checkTouchStart"
-    @click.self="onBackdropClick">
+    <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
         <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
             <SmallPage
                 class="main"
@@ -83,11 +80,15 @@ export default defineComponent({
         }
 
         async function forceClose() {
-            // ensures that we close all the modals, so flows that opens multiple modals in different steps
-            // are closed one after the other
-            // For example: choose a sender -> choose a recipient -> set amount
+            // Ensures that we close all the modals that we navigated through, so flows that opens multiple modals in
+            // different steps are closed one after the other.
+            // For example: choose a sender via AddressSelectorModal -> open qr scanner from SendModal -> after scan in
+            // ScanQrModal return to SendModal -> abort the action in SendModal
 
-            while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components)) {
+            while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components
+                || 'persistent-modal' in routeRecord.components
+                || Object.values(routeRecord.components).some((component) => /modal/i.test(component.name || '')))
+            ) {
                 context.root.$router.back();
 
                 // eslint-disable-next-line no-await-in-loop

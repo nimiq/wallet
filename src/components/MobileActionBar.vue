@@ -31,7 +31,6 @@ export default defineComponent({
         const { activeCurrency } = useAccountStore();
         const { accountBalance } = useBtcAddressStore();
         const { width } = useWindowSize();
-
         const { activeMobileColumn } = useActiveMobileColumn();
 
         function nimOrBtc<T>(nim: T, btc: T): T {

@@ -4,33 +4,29 @@
         @close-overlay="closeOverlay"
     >
         <PageHeader :backArrow="canUserGoBack" @back="back">
-            <InfoCircleSmallIcon slot="trigger"/>
-
             {{ $t('Receive BTC') }}
-            <div slot="more" class="receive-btc__description">
-                <p>
-                    {{ $t('Share a single-use address with the sender.') }}
-                    <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                        <InfoCircleSmallIcon slot="trigger"/>
+            <div slot="more" class="subheader">
+                {{ $t('Share a single-use address with the sender.') }}
+                <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                    <InfoCircleSmallIcon slot="trigger"/>
+                    <div class="flex-column">
+                        <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
+                            + ' Reuse of addresses does not result in a loss of funds.') }}</p>
                         <div class="flex-column">
-                            <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                                + ' Reuse of addresses does not result in a loss of funds.') }}</p>
-                            <div class="flex-column">
-                                <div class="flex-row">
-                                    <RefreshIcon />
-                                    <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
-                                </div>
-                                <div class="flex-row">
-                                    <BracketsIcon />
-                                    <p>
-                                        {{ $t('Use labels instead of contacts to easily '
-                                        + 'identify transactions in your history.') }}
-                                    </p>
-                                </div>
+                            <div class="flex-row">
+                                <RefreshIcon />
+                                <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                            </div>
+                            <div class="flex-row">
+                                <BracketsIcon />
+                                <p>
+                                    {{ $t('Use labels instead of contacts to easily '
+                                    + 'identify transactions in your history.') }}
+                                </p>
                             </div>
                         </div>
-                    </Tooltip>
-                </p>
+                    </div>
+                </Tooltip>
             </div>
         </PageHeader>
         <PageBody class="flex-column">
@@ -383,39 +379,41 @@ export default defineComponent({
 .page-header {
     padding-bottom: 0;
 
-    .receive-btc__description > p {
+    .subheader {
+        display: flex;
+        margin-top: 1.5rem;
+        justify-content: center;
+        align-items: center;
         font-size: var(--body-size);
         line-height: 1.4;
         font-weight: 600;
+        text-align: initial;
         color: var(--text-60);
-        margin-top: 2rem;
 
         > .info-tooltip {
-            position: absolute;
-            margin-top: 0.4rem;
-            margin-left: 0.75rem;
+            margin-left: 1rem;
             z-index: 4;
 
             ::v-deep .trigger svg {
                 height: 2rem;
                 color: var(--text-60);
-                transition: opacity var(--short-transition-duration) var(--nimiq-ease);
+                transition: color var(--short-transition-duration) var(--nimiq-ease);
             }
 
             & ::v-deep .trigger:hover svg,
             & ::v-deep .trigger:focus svg,
             &.shown ::v-deep .trigger svg {
-                color: var(--text-90);
+                color: var(--text-80);
             }
 
             ::v-deep .tooltip-box {
                 width: 26.25rem;
                 font-size: var(--small-size);
                 font-weight: 600;
-                transform: translate(-2rem, 2rem);
+                transform: translate(1rem, 2rem);
 
                 @media (max-width: 700px) { // Full mobile breakpoint
-                    transform: translate(0.5rem, 2rem);
+                    transform: translate(0, 2rem);
                 }
 
                 p {
@@ -438,18 +436,13 @@ export default defineComponent({
                     svg {
                         opacity: 0.6;
                     }
-                }
 
-                .flex-row:first-child {
-                    svg {
+                    &:first-child svg {
                         width: 2.75rem;
                         height: 2.75rem;
                         margin-top: 0.25rem;
                     }
-                }
-
-                .flex-row:last-child {
-                    svg {
+                    &:last-child svg {
                         width: 2.25rem;
                         height: 2.25rem;
                         margin: 0.25rem 0.25rem 0;
@@ -460,82 +453,7 @@ export default defineComponent({
     }
 }
 
-.recently-copied-addresses {
-    flex-grow: 1;
-    align-self: stretch;
-    position: relative;
-    min-height: 24rem; /* Fits two copied addresses without scrolling */
-}
-
-.no-recently-copied-address {
-    color: var(--text-40);
-    font-size: var(--body-size);
-    font-weight: 600;
-    padding: 0 4.75rem;
-    text-align: center;
-    margin: auto 0;
-}
-
-.address-list {
-    flex-grow: 1;
-    align-items: center;
-    min-height: 0;
-
-    &.fade-enter-active,
-    &.fade-leave-active {
-        position: absolute;
-        width: 100%;
-    }
-
-    .nq-label {
-        text-align: center;
-        margin: 4rem 0 0;
-    }
-
-    .list {
-        @extend %custom-scrollbar;
-        $paddingTop: 2.5rem;
-
-        flex: 1 1 0;
-        width: calc(100% + 8rem);
-        padding: $paddingTop 4rem 0;
-        margin-top: 0.5rem;
-
-        &.scroll {
-            overflow-y: auto;
-        }
-
-        .scroll-mask.top {
-            transform: translateY(-#{$paddingTop});
-        }
-    }
-}
-
-footer {
-    width: 100%;
-    justify-content: center;
-    margin-top: 2rem;
-
-    .qr-button {
-        position: absolute;
-        right: 3rem;
-        bottom: 3rem;
-        opacity: .4;
-        transition: opacity 250ms var(--nimiq-ease);
-
-        svg {
-            width: 4rem;
-            height: auto;
-        }
-
-        &:hover,
-        &:focus {
-            opacity: 0.8;
-        }
-    }
-}
-
- .page-body {
+.page-body {
     --short-transition-duration: 300ms;
     --long-transition-duration: 600ms;
 
@@ -678,6 +596,81 @@ footer {
 
         .header {
             font-size: var(--small-size);
+        }
+    }
+}
+
+.recently-copied-addresses {
+    flex-grow: 1;
+    align-self: stretch;
+    position: relative;
+    min-height: 24rem; /* Fits two copied addresses without scrolling */
+}
+
+.no-recently-copied-address {
+    color: var(--text-40);
+    font-size: var(--body-size);
+    font-weight: 600;
+    padding: 0 4.75rem;
+    text-align: center;
+    margin: auto 0;
+}
+
+.address-list {
+    flex-grow: 1;
+    align-items: center;
+    min-height: 0;
+
+    &.fade-enter-active,
+    &.fade-leave-active {
+        position: absolute;
+        width: 100%;
+    }
+
+    .nq-label {
+        text-align: center;
+        margin: 4rem 0 0;
+    }
+
+    .list {
+        @extend %custom-scrollbar;
+        $paddingTop: 2.5rem;
+
+        flex: 1 1 0;
+        width: calc(100% + 8rem);
+        padding: $paddingTop 4rem 0;
+        margin-top: 0.5rem;
+
+        &.scroll {
+            overflow-y: auto;
+        }
+
+        .scroll-mask.top {
+            transform: translateY(-#{$paddingTop});
+        }
+    }
+}
+
+footer {
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+
+    .qr-button {
+        position: absolute;
+        right: 3rem;
+        bottom: 3rem;
+        opacity: .4;
+        transition: opacity 250ms var(--nimiq-ease);
+
+        svg {
+            width: 4rem;
+            height: auto;
+        }
+
+        &:hover,
+        &:focus {
+            opacity: 0.8;
         }
     }
 }

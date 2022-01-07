@@ -21,7 +21,7 @@
                             @input="resetAddress"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
-                            @scan="goToScanner"/>
+                            @scan="$router.push('/scan')"/>
                     </template>
                 </DoubleInput>
 
@@ -135,7 +135,13 @@
 import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
 import {
-    AlertTriangleIcon, InfoCircleSmallIcon, LabelInput, PageBody, PageHeader, ScanQrCodeIcon, Tooltip,
+    AlertTriangleIcon,
+    InfoCircleSmallIcon,
+    LabelInput,
+    PageBody,
+    PageHeader,
+    ScanQrCodeIcon,
+    Tooltip,
 } from '@nimiq/vue-components';
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, Ref, watch } from '@vue/composition-api';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -492,9 +498,7 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(async () => {
-                    $modal.value!.forceClose();
-                }, SUCCESS_REDIRECT_DELAY);
+                sucessCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -514,10 +518,6 @@ export default defineComponent({
         }
 
         const { btcUnit } = useSettingsStore();
-
-        function goToScanner() {
-            context.root.$router.push('/scan');
-        }
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -544,7 +544,6 @@ export default defineComponent({
             recipientWithLabel,
             onPaste,
             parseRequestUri,
-            goToScanner,
 
             // Amount Input
             amount,

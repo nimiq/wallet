@@ -175,7 +175,13 @@
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import {
-    ArrowLeftIcon, ArrowRightSmallIcon, Copyable, CrossIcon, GearIcon, Identicon, MenuDotsIcon,
+    ArrowLeftIcon,
+    ArrowRightSmallIcon,
+    Copyable,
+    CrossIcon,
+    GearIcon,
+    Identicon,
+    MenuDotsIcon,
 } from '@nimiq/vue-components';
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 // @ts-expect-error missing types for this package

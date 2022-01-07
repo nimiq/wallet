@@ -43,7 +43,13 @@
 import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import { useWindowSize } from '@/composables/useWindowSize';
 import {
-    AddressDisplay, Copyable, Identicon, PageBody, PageHeader, QrCode, QrCodeIcon,
+    AddressDisplay,
+    Copyable,
+    Identicon,
+    PageBody,
+    PageHeader,
+    QrCode,
+    QrCodeIcon,
 } from '@nimiq/vue-components';
 import { defineComponent, ref } from '@vue/composition-api';
 import { AddressType, useAddressStore } from '../../stores/Address';

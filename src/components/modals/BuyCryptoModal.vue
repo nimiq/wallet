@@ -922,7 +922,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    &.wider-overlay /deep/ .overlay {
+    &.wider-overlay ::v-deep .overlay {
         width: 63.5rem;
         margin-left: calc((63.5rem - 52.5rem) / -2);
 
@@ -937,7 +937,7 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay .animation-overlay + .close-button {
+.modal ::v-deep .overlay .animation-overlay + .close-button {
     display: none;
 }
 
@@ -1044,7 +1044,7 @@ export default defineComponent({
         --padding-sides: 2rem;
         max-height: 100%;
 
-        /deep/ .scroll-mask.bottom {
+        ::v-deep .scroll-mask.bottom {
             bottom: -1px;
         }
     }
@@ -1102,7 +1102,7 @@ export default defineComponent({
             color: rgb(234, 166, 23);
             box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-            /deep/ svg {
+            ::v-deep svg {
                 margin-left: 0.75rem;
                 height: 1.75rem;
                 width: 1.75rem;
@@ -1182,9 +1182,9 @@ export default defineComponent({
                     color: var(--nimiq-orange);
                     transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
-                    /deep/ .nq-input,
-                    /deep/ .label-input + span,
-                    /deep/ .label-input:focus-within + span {
+                    ::v-deep .nq-input,
+                    ::v-deep .label-input + span,
+                    ::v-deep .label-input:focus-within + span {
                         --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
                         color: var(--nimiq-orange);
 
@@ -1208,12 +1208,12 @@ export default defineComponent({
                 max-width: 100%;
                 font-weight: bold;
 
-                /deep/ .ticker {
+                ::v-deep .ticker {
                     font-size: 2.5rem;
                     margin-left: 1.25rem;
                 }
 
-                /deep/ .label-input * {
+                ::v-deep .label-input * {
                     font-weight: 600;
                     font-size: 4rem !important;
                     padding: .5rem 1rem;
@@ -1237,12 +1237,12 @@ export default defineComponent({
                     color: var(--text-60);
                 }
 
-                /deep/ .ticker {
+                ::v-deep .ticker {
                     font-weight: bold;
                     font-size: 2rem;
                 }
 
-                /deep/ .label-input * {
+                ::v-deep .label-input * {
                     font-weight: 600;
                     font-size: 2.5rem !important;
                     padding: 0.375rem 0.75rem;
@@ -1265,7 +1265,7 @@ export default defineComponent({
             cursor: pointer;
         }
 
-        & /deep/ {
+        & ::v-deep {
             .fadeY-enter {
                 transform: translateY(calc(21px / 4)) !important;
             }
@@ -1311,7 +1311,7 @@ export default defineComponent({
         top: 2.5rem;
         right: 2.5rem;
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             font-size: var(--small-size);
             padding: 1.25rem 1.5rem;
         }
@@ -1320,7 +1320,7 @@ export default defineComponent({
 
 @media (max-width: 730px) {
     .modal {
-        /deep/ .small-page {
+        ::v-deep .small-page {
             width: 52.5rem; // reset
             background-image: none;
         }

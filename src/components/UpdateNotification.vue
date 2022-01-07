@@ -63,13 +63,13 @@ export default defineComponent({
         border-radius: 1rem 1rem 0 0;
     }
 
-    /deep/ .close-button {
+    ::v-deep .close-button {
         position: relative;
         top: 0;
         right: 0;
     }
 
-    &.hide-close-button /deep/ .close-button {
+    &.hide-close-button ::v-deep .close-button {
         display: none;
     }
 }
@@ -81,12 +81,12 @@ export default defineComponent({
 }
 
 .nq-button-s,
-/deep/ svg {
+::v-deep svg {
     margin-left: 1.5rem;
     white-space: nowrap;
 }
 
-/deep/ svg.circle-spinner path {
+::v-deep svg.circle-spinner path {
     stroke: white;
 }
 </style>

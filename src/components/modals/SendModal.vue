@@ -910,7 +910,7 @@ export default defineComponent({
             padding: 0.5rem;
             margin-bottom: 4rem;
 
-            /deep/ .background {
+            ::v-deep .background {
                 border-radius: 0.625rem;
             }
 
@@ -938,7 +938,7 @@ export default defineComponent({
         .identicon-button {
             width: 14rem;
 
-            /deep/ .identicon {
+            ::v-deep .identicon {
                 width: 9rem;
                 height: 9rem;
             }
@@ -1069,12 +1069,12 @@ export default defineComponent({
             }
         }
 
-        .amount-menu /deep/ .button {
+        .amount-menu ::v-deep .button {
             margin-left: 1rem;
             margin-bottom: 1rem;
         }
 
-        .amount-menu /deep/ .menu {
+        .amount-menu ::v-deep .menu {
             position: absolute;
             right: 3rem;
             bottom: 3rem;
@@ -1102,12 +1102,12 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input /deep/,
-            .amount-input /deep/ .ticker {
+            .amount-input ::v-deep,
+            .amount-input ::v-deep .ticker {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input /deep/ .nq-input {
+            .amount-input ::v-deep .nq-input {
                 color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }

@@ -306,7 +306,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
@@ -319,7 +319,7 @@ export default defineComponent({
     left: 3rem;
     top: 3rem;
 
-        /deep/ {
+        ::v-deep {
         .trigger {
             color: var(--text-30);
         }
@@ -382,7 +382,7 @@ export default defineComponent({
     flex-grow: 1;
 
     #checkout-element,
-    /deep/ iframe {
+    ::v-deep iframe {
         height: 100%;
     }
 }

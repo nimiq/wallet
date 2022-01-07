@@ -74,7 +74,7 @@ $inputHeight: 6rem;
     .second-input-wrapper {
         margin-bottom: -0.25rem;
 
-        & /deep/ form {
+        & ::v-deep form {
             background-color: white;
         }
 
@@ -109,11 +109,11 @@ $inputHeight: 6rem;
         font-size: 15px;
         position: relative; // For correct z-index positioning
 
-        & /deep/ input {
+        & ::v-deep input {
             transition: all 200ms, width 50ms;
         }
 
-        & /deep/ form {
+        & ::v-deep form {
             background-color: white;
         }
     }
@@ -125,31 +125,31 @@ $inputHeight: 6rem;
 
     &.extended {
         .second-input-wrapper {
-            /deep/ input {
+            ::v-deep input {
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
             }
 
             &:hover,
             &:focus-within {
-                /deep/ .label-input,
-                /deep/ .avatar {
+                ::v-deep .label-input,
+                ::v-deep .avatar {
                     z-index: 2;
                 }
 
-                /deep/ .label-autocomplete {
+                ::v-deep .label-autocomplete {
                     z-index: 4;
                 }
             }
 
-            &:focus-within /deep/ input {
+            &:focus-within ::v-deep input {
                 border-bottom-left-radius: .5rem;
                 border-bottom-right-radius: .5rem;
             }
         }
 
         .main-input-wrapper {
-            /deep/ input {
+            ::v-deep input {
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
             }
@@ -157,7 +157,7 @@ $inputHeight: 6rem;
             &:focus-within {
                 z-index: 2;
 
-                /deep/ input {
+                ::v-deep input {
                     border-top-left-radius: .5rem;
                     border-top-right-radius: .5rem;
                 }

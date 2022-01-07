@@ -79,7 +79,7 @@ export default defineComponent({
         text-align: left;
         font-size: 1.75rem;
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             width: 28rem;
 
             box-shadow:

@@ -90,12 +90,12 @@ export default defineComponent({
         justify-content: center;
         text-align: center;
 
-        /deep/ .nq-link {
+        ::v-deep .nq-link {
             color: inherit;
             text-decoration: underline;
         }
 
-        /deep/ .circle-spinner {
+        ::v-deep .circle-spinner {
             margin-right: 1rem;
         }
     }

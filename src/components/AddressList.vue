@@ -357,7 +357,7 @@ export default defineComponent({
         }
     }
 
-    .embedded /deep/ .mobile-arrow {
+    .embedded ::v-deep .mobile-arrow {
         display: none;
     }
 

@@ -284,7 +284,7 @@ export default defineComponent({
         color: white !important;
     }
 
-    /deep/ .background {
+    ::v-deep .background {
         pointer-events: none;
         background: white;
     }
@@ -347,7 +347,7 @@ export default defineComponent({
     }
 
     .text,
-    .tooltip /deep/ .trigger {
+    .tooltip ::v-deep .trigger {
         color: var(--nimiq-orange);
 
         .nq-icon {

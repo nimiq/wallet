@@ -260,7 +260,7 @@ export default defineComponent({
             }
         }
 
-        .tooltip /deep/ .tooltip-box {
+        .tooltip ::v-deep .tooltip-box {
             padding: 1rem;
             transform: translate(calc(26px - 50%), -2rem);
             white-space: nowrap;
@@ -295,15 +295,15 @@ export default defineComponent({
             .tooltip {
                 width: 100%;
 
-                /deep/ .trigger {
+                ::v-deep .trigger {
                     display: block;
                 }
 
-                /deep/ .trigger::after {
+                ::v-deep .trigger::after {
                     background: white;
                 }
 
-                /deep/ .tooltip-box {
+                ::v-deep .tooltip-box {
                     background: white;
                     color: var(--nimiq-blue);
                 }

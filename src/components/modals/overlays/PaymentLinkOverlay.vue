@@ -219,22 +219,22 @@ export default defineComponent({
         .amount-input {
             font-size: 5rem;
 
-            /deep/ .nim {
+            ::v-deep .nim {
                 font-size: 0.5em;
                 margin-left: 0.5rem;
                 margin-right: calc(-1.9em - 0.5rem);
             }
 
-            /deep/ .nq-input {
+            ::v-deep .nq-input {
                 padding: 0;
             }
 
-            /deep/ .width-finder {
+            ::v-deep .width-finder {
                 padding: 0 1rem;
             }
         }
 
-        .amount-menu /deep/ .menu {
+        .amount-menu ::v-deep .menu {
             position: absolute;
             right: 3rem;
             bottom: 3rem;

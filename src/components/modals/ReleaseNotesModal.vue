@@ -62,7 +62,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
 
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     width: 65rem !important;
     padding-bottom: 1rem;
 }
@@ -115,7 +115,7 @@ details .nq-text {
     color: var(--text-80);
     line-height: 1.5;
 
-    /deep/ ul {
+    ::v-deep ul {
         padding: 2rem 0 2rem 3rem;
         margin: 0;
 

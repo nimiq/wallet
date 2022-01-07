@@ -246,7 +246,7 @@ export default defineComponent({
 
         overflow-y: auto;
 
-        /deep/ .page-body {
+        ::v-deep .page-body {
             overflow-y: unset;
         }
     }

@@ -16,6 +16,9 @@
 
         <BitcoinIcon class="primary"
             v-else-if="activeCurrency === CryptoCurrency.BTC" />
+
+        <TriangleDownIcon class="triangle"/>
+
         <label>
             {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
         </label>
@@ -29,6 +32,7 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import TriangleDownIcon from './icons/TriangleDownIcon.vue';
 
 export default defineComponent({
     props: {
@@ -61,6 +65,7 @@ export default defineComponent({
     components: {
         Identicon,
         BitcoinIcon,
+        TriangleDownIcon,
     },
 });
 </script>
@@ -124,6 +129,15 @@ export default defineComponent({
             width: 7rem;
             margin-top: 0.25rem;
         }
+    }
+
+    .triangle {
+        position: absolute;
+        right: 2.5rem;
+        top: 8rem;
+        width: 1.25rem;
+        height: 1rem;
+        opacity: 0.25;
     }
 
     &.interactive {

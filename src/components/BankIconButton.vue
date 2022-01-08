@@ -1,6 +1,7 @@
 <template>
     <button class="reset bank-icon-button flex-column" v-on="$listeners">
         <BankIcon/>
+        <TriangleDownIcon class="triangle"/>
         <label>{{ bankName || '' }}</label>
     </button>
 </template>
@@ -8,6 +9,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import BankIcon from './icons/BankIcon.vue';
+import TriangleDownIcon from './icons/TriangleDownIcon.vue';
 
 export default defineComponent({
     props: {
@@ -15,12 +17,14 @@ export default defineComponent({
     },
     components: {
         BankIcon,
+        TriangleDownIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .bank-icon-button {
+    position: relative;
     align-items: center;
     width: 18rem;
     border-radius: 0.75rem;
@@ -32,9 +36,17 @@ export default defineComponent({
     }
 
     svg {
-        height: 9rem;
+        height: 8.25rem;
         width: auto;
-        margin-top: -.5rem;
+    }
+
+    .triangle {
+        position: absolute;
+        right: 4rem;
+        top: 8rem;
+        width: 1.25rem;
+        height: 1rem;
+        opacity: 0.25;
     }
 
     label {

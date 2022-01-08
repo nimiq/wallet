@@ -104,6 +104,7 @@
                         <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                         <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
+                        <TriangleDownIcon class="triangle"/>
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
                     <div class="separator-wrapper">
@@ -248,6 +249,7 @@ import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
+import TriangleDownIcon from '../icons/TriangleDownIcon.vue';
 import AddressList from '../AddressList.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
@@ -759,6 +761,7 @@ export default defineComponent({
         Copyable,
         AddressDisplay,
         IdenticonButton,
+        TriangleDownIcon,
         AddressList,
         AmountInput,
         AmountMenu,
@@ -1021,6 +1024,15 @@ export default defineComponent({
                 transform: translateX(0.375rem) scale(1.05);
                 opacity: 0.5;
             }
+        }
+
+        .triangle {
+            position: absolute;
+            right: 0.375rem;
+            top: 8rem;
+            width: 1.25rem;
+            height: 1rem;
+            opacity: 0.25;
         }
 
         label {

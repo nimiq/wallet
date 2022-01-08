@@ -382,7 +382,7 @@ export default defineComponent({
             padding: 1.5rem;
         }
 
-        .embedded /deep/ .mobile-arrow {
+        .embedded ::v-deep .mobile-arrow {
             display: inherit;
         }
     }

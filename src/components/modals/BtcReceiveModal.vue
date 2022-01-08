@@ -130,11 +130,11 @@ import {
     QrCodeIcon,
     QrCode,
 } from '@nimiq/vue-components';
-import { useWindowSize } from '@/composables/useWindowSize';
-import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';

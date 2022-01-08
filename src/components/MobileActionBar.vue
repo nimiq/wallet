@@ -16,14 +16,14 @@
 </template>
 
 <script lang="ts">
-import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
-import { useWindowSize } from '@/composables/useWindowSize';
+import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
-import { CryptoCurrency } from '../lib/Constants';
-import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
+import { useAccountStore } from '../stores/Account';
+import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useWindowSize } from '../composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
 
 export default defineComponent({
     setup(props, context) {

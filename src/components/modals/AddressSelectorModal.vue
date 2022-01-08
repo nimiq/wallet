@@ -22,11 +22,11 @@
 </template>
 
 <script lang="ts">
-import { useAccountStore } from '@/stores/Account';
 import { PageBody, PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
-import AddressList from '../AddressList.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
+import AddressList from '../AddressList.vue';
+import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     setup(props, context) {

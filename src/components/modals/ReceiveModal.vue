@@ -40,20 +40,20 @@
 </template>
 
 <script lang="ts">
-import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
-import { useWindowSize } from '@/composables/useWindowSize';
-import {
-    AddressDisplay,
-    Copyable,
-    Identicon,
-    PageBody,
-    PageHeader,
-    QrCode,
-    QrCodeIcon,
-} from '@nimiq/vue-components';
 import { defineComponent, ref } from '@vue/composition-api';
-import { AddressType, useAddressStore } from '../../stores/Address';
+import {
+    PageHeader,
+    PageBody,
+    Identicon,
+    AddressDisplay,
+    QrCodeIcon,
+    QrCode,
+    Copyable,
+} from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
+import { useAddressStore, AddressType } from '../../stores/Address';
+import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
+import { useWindowSize } from '../../composables/useWindowSize';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 

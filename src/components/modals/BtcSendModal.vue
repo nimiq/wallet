@@ -132,38 +132,38 @@
 </template>
 
 <script lang="ts">
-import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
-import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
+import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import {
-    AlertTriangleIcon,
-    InfoCircleSmallIcon,
-    LabelInput,
-    PageBody,
     PageHeader,
+    PageBody,
+    AlertTriangleIcon,
     ScanQrCodeIcon,
+    LabelInput,
     Tooltip,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref, Ref, watch } from '@vue/composition-api';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { getElectrumClient } from '../../electrum';
-import { sendBtcTransaction } from '../../hub';
-import { estimateFees, parseBitcoinUrl, selectOutputs } from '../../lib/BitcoinTransactionUtils';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
+import Modal, { disableNextModalTransition } from './Modal.vue';
+import BtcAddressInput from '../BtcAddressInput.vue';
+import BtcLabelInput from '../BtcLabelInput.vue';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import FeeSelector from '../FeeSelector.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import BtcAddressInput from '../BtcAddressInput.vue';
-import BtcLabelInput from '../BtcLabelInput.vue';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { sendBtcTransaction } from '../../hub';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
+import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
+import { getElectrumClient } from '../../electrum';
 import DoubleInput from '../DoubleInput.vue';
-import FeeSelector from '../FeeSelector.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     NEW_CONTACT,

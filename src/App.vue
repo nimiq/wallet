@@ -25,17 +25,17 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
-import { computed, defineComponent, onMounted, ref, Ref, watch } from '@vue/composition-api';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
-import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
-import { useSwipes } from './composables/useSwipes';
-import { useWindowSize } from './composables/useWindowSize';
 import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useWindowSize } from './composables/useWindowSize';
+import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
+import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',

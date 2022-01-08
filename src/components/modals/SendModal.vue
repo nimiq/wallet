@@ -228,45 +228,45 @@
 </template>
 
 <script lang="ts">
-import { ColumnType, useActiveMobileColumn } from '@/composables/useActiveMobileColumn';
-import { AddressBook, CurrencyInfo, parseRequestLink, Utf8Tools, ValidationUtils } from '@nimiq/utils';
+import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
 import {
-    AddressDisplay,
+    PageHeader,
+    PageBody,
     AddressInput,
-    Amount,
-    Copyable,
+    ScanQrCodeIcon,
     Identicon,
     LabelInput,
-    PageBody,
-    PageHeader,
-    ScanQrCodeIcon,
+    Copyable,
+    AddressDisplay,
     SelectBar,
+    Amount,
 } from '@nimiq/vue-components';
+import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import Config from 'config';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { createCashlink, sendTransaction } from '../../hub';
-import { i18n } from '../../i18n/i18n-setup';
+import Modal, { disableNextModalTransition } from './Modal.vue';
+import ContactShortcuts from '../ContactShortcuts.vue';
+import ContactBook from '../ContactBook.vue';
+import IdenticonButton from '../IdenticonButton.vue';
+import AddressList from '../AddressList.vue';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import { useContactsStore } from '../../stores/Contacts';
+import { useAddressStore } from '../../stores/Address';
+import { useNetworkStore } from '../../stores/Network';
+import { useFiatStore } from '../../stores/Fiat';
+import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { createCashlink, sendTransaction } from '../../hub';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
+import { i18n } from '../../i18n/i18n-setup';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
-import { useAddressStore } from '../../stores/Address';
-import { useContactsStore } from '../../stores/Contacts';
-import { useFiatStore } from '../../stores/Fiat';
-import { useNetworkStore } from '../../stores/Network';
-import { useSettingsStore } from '../../stores/Settings';
-import AddressList from '../AddressList.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import ContactBook from '../ContactBook.vue';
-import ContactShortcuts from '../ContactShortcuts.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import IdenticonButton from '../IdenticonButton.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     CONTACT,

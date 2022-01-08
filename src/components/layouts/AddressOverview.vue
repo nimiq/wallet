@@ -172,40 +172,42 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import {
+    Identicon,
+    GearIcon,
+    Copyable,
+    ArrowRightSmallIcon,
+    ArrowLeftIcon,
+    MenuDotsIcon,
+    CrossIcon,
+} from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-import {
-    ArrowLeftIcon,
-    ArrowRightSmallIcon,
-    Copyable,
-    CrossIcon,
-    GearIcon,
-    Identicon,
-    MenuDotsIcon,
-} from '@nimiq/vue-components';
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 // @ts-expect-error missing types for this package
 import { ResponsiveDirective } from 'vue-responsive-components';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { checkHistory } from '../../electrum';
-import { onboard, rename } from '../../hub';
-import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
+
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import Amount from '../Amount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import SearchBar from '../SearchBar.vue';
+import TransactionList from '../TransactionList.vue';
+import BtcTransactionList from '../BtcTransactionList.vue';
+import MobileActionBar from '../MobileActionBar.vue';
+import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
+import RefreshIcon from '../icons/RefreshIcon.vue';
+
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useSwapsStore } from '../../stores/Swaps';
-import Amount from '../Amount.vue';
-import BtcTransactionList from '../BtcTransactionList.vue';
-import CrossCloseButton from '../CrossCloseButton.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import EventIcon from '../icons/EventIcon.vue';
+import { onboard, rename } from '../../hub';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
+import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
-import RefreshIcon from '../icons/RefreshIcon.vue';
-import MobileActionBar from '../MobileActionBar.vue';
-import SearchBar from '../SearchBar.vue';
-import TransactionList from '../TransactionList.vue';
+import EventIcon from '../icons/EventIcon.vue';
+import { useSwapsStore } from '../../stores/Swaps';
+import CrossCloseButton from '../CrossCloseButton.vue';
 
 export default defineComponent({
     name: 'address-overview',

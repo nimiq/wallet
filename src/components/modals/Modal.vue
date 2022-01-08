@@ -26,12 +26,12 @@
 </template>
 
 <script lang="ts">
-import { CloseButton, SmallPage } from '@nimiq/vue-components';
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
-import { useSwipes } from '../../composables/useSwipes';
+import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { pointerdown } from '../../directives/PointerEvents';
+import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
+import { pointerdown } from '../../directives/PointerEvents';
 
 export function enableModalTransition() {
     document.body.classList.remove('modal-transition-disabled');

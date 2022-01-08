@@ -1,5 +1,5 @@
-import router, { Columns } from '@/router';
 import { Ref, ref } from '@vue/composition-api';
+import router, { Columns } from '../router';
 
 export enum ColumnType {
     ADDRESS = 'column-address',

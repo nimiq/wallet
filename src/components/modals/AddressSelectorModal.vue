@@ -5,7 +5,7 @@
                 {{ $t("Choose a Sender")}}
             </template>
             <template v-else-if="path === '/receive'">
-                {{ $t("Choose a Receiver")}}
+                {{ $t("Choose a Recipient")}}
             </template>
             <template v-else>
                 {{ $t("Choose an Address")}}
@@ -14,7 +14,7 @@
         <PageBody>
             <AddressList
                 embedded
-                showBitcoin
+                :showBitcoin="showBitcoin"
                 @address-selected="addressSelected"
             />
         </PageBody>
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -37,12 +37,23 @@ export default defineComponent({
         function addressSelected() {
             disableNextModalTransition();
 
-            context.root.$router.push(`${path}/${activeCurrency.value}`);
+            context.root.$router.push({
+                name: `receive-${activeCurrency.value}`,
+                params: {
+                    canUserGoBack: 'true',
+                },
+            });
         }
+
+        const { activeAccountInfo } = useAccountStore();
+        const showBitcoin = computed(() => Boolean(activeAccountInfo.value
+            && activeAccountInfo.value.btcAddresses
+            && activeAccountInfo.value.btcAddresses.external.length));
 
         return {
             path,
             addressSelected,
+            showBitcoin,
         };
     },
     components: {

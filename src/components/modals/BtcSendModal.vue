@@ -286,11 +286,11 @@ export default defineComponent({
         fetchFeeEstimates();
 
         const feeEstimatesInterval = setInterval(fetchFeeEstimates, 60 * 1000); // Update every 60 seconds
-        let sucessCloseTimeout = 0;
+        let successCloseTimeout = 0;
 
         onBeforeUnmount(() => {
             clearInterval(feeEstimatesInterval);
-            window.clearTimeout(sucessCloseTimeout);
+            window.clearTimeout(successCloseTimeout);
         });
 
         const activeCurrency = ref<CryptoCurrency | FiatCurrency>(CryptoCurrency.BTC);
@@ -498,7 +498,7 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -521,7 +521,7 @@ export default defineComponent({
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        // User only can go back to the address selection if is mobile and the column shown is the account
+        // User can only go back to the address selection if is mobile and the column shown is the account
         const canUserGoBack = ref(
             width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS && !props.requestUri);
 

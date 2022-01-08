@@ -467,9 +467,6 @@ msgid "Change your language setting."
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
-msgid "Choose a Receiver"
-msgstr ""
-
 #: src/components/modals/SendModal.vue:61
 msgid "Choose a Recipient"
 msgstr ""
@@ -616,23 +613,23 @@ msgstr ""
 msgid "Create request link"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:200
+#: src/components/modals/BtcReceiveModal.vue:202
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:190
+#: src/components/modals/BtcReceiveModal.vue:192
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:184
+#: src/components/modals/BtcReceiveModal.vue:186
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:181
+#: src/components/modals/BtcReceiveModal.vue:183
 msgid "Created just now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:198
+#: src/components/modals/BtcReceiveModal.vue:200
 msgid "Created yesterday"
 msgstr ""
 

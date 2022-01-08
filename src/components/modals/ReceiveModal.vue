@@ -3,7 +3,7 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlays"
     >
-        <PageHeader :backArrow="canUserGoBack" @back="back">
+        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive NIM') }}
             <div slot="more">{{ $t('Share your address with the sender.') }}</div>
         </PageHeader>
@@ -52,28 +52,28 @@ import {
 } from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
-import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
-import { useWindowSize } from '../../composables/useWindowSize';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
+    props: {
+        canUserGoBack: {
+            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
+            type: String,
+            default: '',
+        },
+    },
     setup(props, context) {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
 
-        const { width } = useWindowSize();
-        const { activeMobileColumn } = useActiveMobileColumn();
         const { activeAddressInfo } = useAddressStore();
 
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
         }
-
-        // User only can go back to the address selection if is mobile and the column shown is the account
-        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
 
         function back() {
             disableNextModalTransition();
@@ -86,7 +86,6 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             AddressType,
             closeOverlays,
-            canUserGoBack,
             back,
         };
     },

@@ -3,7 +3,7 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlay"
     >
-        <PageHeader :backArrow="canUserGoBack" @back="back">
+        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive BTC') }}
             <div slot="more" class="subheader">
                 {{ $t('Share a single-use address with the sender.') }}
@@ -133,8 +133,6 @@ import {
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
 import AmountInput from '../AmountInput.vue';
@@ -144,6 +142,13 @@ import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
+    props: {
+        canUserGoBack: {
+            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
+            type: String,
+            default: '',
+        },
+    },
     setup(props, context) {
         const {
             availableExternalAddresses,
@@ -155,9 +160,6 @@ export default defineComponent({
             senderLabels,
             setSenderLabel,
         } = useBtcLabelsStore();
-
-        const { width } = useWindowSize();
-        const { activeMobileColumn } = useActiveMobileColumn();
 
         const second = 1000;
         const minute = 60 * second;
@@ -324,9 +326,6 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
-        // User only can go back to the address selection if is mobile and the column shown is the account
-        const canUserGoBack = ref(width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS);
-
         function back() {
             disableNextModalTransition();
             context.root.$router.back();
@@ -347,7 +346,6 @@ export default defineComponent({
             $addressWidthFinder,
             addressFontSizeScaleFactor,
             BTC_MAX_COPYABLE_ADDRESSES,
-            canUserGoBack,
             back,
         };
     },

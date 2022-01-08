@@ -632,7 +632,7 @@ export default defineComponent({
                     });
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -660,14 +660,14 @@ export default defineComponent({
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
 
-            // Do nothing when the success status overlay is shown, it will be closed by sucessCloseTimeout
+            // Do nothing when the success status overlay is shown, it will be closed by successCloseTimeout
         }
 
         const { amountsHidden } = useSettingsStore();
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        // User only can go back to the address selection if is mobile and the column shown is the account
+        // User can only go back to the address selection if is mobile and the column shown is the account
         const canUserGoBackToAddressSelection = ref(width.value <= 700
             && activeMobileColumn.value !== ColumnType.ADDRESS);
 
@@ -676,10 +676,10 @@ export default defineComponent({
             context.root.$router.back();
         }
 
-        let sucessCloseTimeout = 0;
+        let successCloseTimeout = 0;
 
         onBeforeUnmount(() => {
-            window.clearTimeout(sucessCloseTimeout);
+            window.clearTimeout(successCloseTimeout);
         });
 
         return {

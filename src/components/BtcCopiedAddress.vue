@@ -126,7 +126,7 @@ export default defineComponent({
 .label-input {
     margin-left: 0.375rem;
 
-    /deep/ {
+    ::v-deep {
         .nq-input,
         .width-finder {
             padding: 0.25rem .75rem;
@@ -181,7 +181,7 @@ export default defineComponent({
 }
 
 .copyable-short-address {
-    &.tooltip /deep/ {
+    &.tooltip ::v-deep {
         .trigger {
             transition: transform var(--short-transition-duration) var(--nimiq-ease);
             transform: translateX(4rem);
@@ -230,7 +230,7 @@ export default defineComponent({
             color: var(--nimiq-light-blue);
         }
 
-        /deep/ .tooltip {
+        ::v-deep .tooltip {
             z-index: 4;
         }
     }
@@ -251,7 +251,7 @@ export default defineComponent({
     transition: background var(--short-transition-duration) var(--nimiq-ease),
                 opacity var(--short-transition-duration) var(--nimiq-ease);
 
-    /deep/ svg {
+    ::v-deep svg {
         width: auto;
         height: 2rem;
 
@@ -265,7 +265,7 @@ export default defineComponent({
     &:hover {
         background: rgba(#D94432/*Nimiq red*/, .12);
 
-        /deep/ svg g {
+        ::v-deep svg g {
             stroke: var(--nimiq-red)
         }
     }

@@ -114,7 +114,7 @@ export default defineComponent({
     text-align: right;
     flex-shrink: 0;
 
-    /deep/ .circle-spinner {
+    ::v-deep .circle-spinner {
         display: block;
     }
 }

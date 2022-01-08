@@ -526,7 +526,7 @@ export default defineComponent({
                 color: var(--text-30);
             }
 
-            /deep/ svg {
+            ::v-deep svg {
                 width: 3.25rem;
                 height: 3rem;
             }

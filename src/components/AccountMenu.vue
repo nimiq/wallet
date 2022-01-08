@@ -266,7 +266,7 @@ export default defineComponent({
     .menu {
         display: block;
 
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             position: absolute;
             left: calc(var(--sidebar-width) - 1rem);
             bottom: 2rem;
@@ -278,7 +278,7 @@ export default defineComponent({
             }
         }
 
-        /deep/ .close-button {
+        ::v-deep .close-button {
             display: none;
         }
     }
@@ -288,7 +288,7 @@ export default defineComponent({
     position: fixed;
     cursor: auto;
 
-    /deep/ .wrapper {
+    ::v-deep .wrapper {
         .small-page {
             padding: 1rem;
             min-height: unset;
@@ -305,7 +305,7 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.current-account .account-menu-item /deep/ .nq-icon {
+.current-account .account-menu-item ::v-deep .nq-icon {
     display: none;
 }
 
@@ -378,7 +378,7 @@ export default defineComponent({
         color var(--attr-duration) var(--nimiq-ease),
         background var(--attr-duration) var(--nimiq-ease);
 
-    /deep/ .icon {
+    ::v-deep .icon {
         opacity: 0.8;
 
         transition: opacity var(--attr-duration) var(--nimiq-ease),
@@ -390,7 +390,7 @@ export default defineComponent({
     background: var(--nimiq-highlight-bg);
     color: var(--text-100);
 
-    /deep/ .icon {
+    ::v-deep .icon {
         opacity: 1;
     }
 }
@@ -404,11 +404,11 @@ export default defineComponent({
     .backdrop {
         background-color: rgba(31, 35, 72, 0.3);
 
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             transform-origin: left center;
         }
 
-        /deep/ .nq-card {
+        ::v-deep .nq-card {
             box-shadow:
                 0px 2px 2.5px rgba(31, 35, 72, 0.02),
                 0px 7px 8.5px rgba(31, 35, 72, 0.04),
@@ -418,7 +418,7 @@ export default defineComponent({
 
     // Special transition for Account Menu modal
     .modal-enter, .modal-leave-to {
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             transform: translate3D(1rem, 0, 0) scale(0.99);
         }
     }
@@ -426,7 +426,7 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .menu {
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             .small-page {
                 padding: 2rem;
                 font-size: 2.25rem;

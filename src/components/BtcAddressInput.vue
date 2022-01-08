@@ -218,7 +218,7 @@ export default defineComponent({
     .label-input {
         font-family: 'Fira Mono', monospace;
 
-        /deep/ input {
+        ::v-deep input {
             width: 100% !important;
             padding: 1.75rem 2rem;
             line-height: 2.5rem;
@@ -236,7 +236,7 @@ export default defineComponent({
             }
         }
 
-        /deep/ .width-finder {
+        ::v-deep .width-finder {
             padding: 0 2rem;
         }
     }

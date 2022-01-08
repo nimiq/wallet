@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.interactive-short-address.tooltip /deep/ {
+.interactive-short-address.tooltip ::v-deep {
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -63,11 +63,11 @@ export default defineComponent({
     }
 }
 
-.tooltip.right /deep/ .tooltip-box {
+.tooltip.right ::v-deep .tooltip-box {
     transform: translate(-20%, 2rem);
 }
 
-.tooltip.left /deep/ .tooltip-box {
+.tooltip.left ::v-deep .tooltip-box {
     transform: translate(20%, 2rem);
 }
 

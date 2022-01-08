@@ -66,14 +66,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    /deep/ .small-page {
+    ::v-deep .small-page {
         background-image: url('../../assets/oasis-launch-background.svg');
         background-position: top left;
         background-repeat: no-repeat;
         background-size: 100% auto;
     }
 
-    /deep/ .close-button {
+    ::v-deep .close-button {
         display: none;
     }
 }

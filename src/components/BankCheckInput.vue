@@ -448,7 +448,7 @@ export default defineComponent({
     .label-input {
         font-size: 3rem !important;
 
-        /deep/ input {
+        ::v-deep input {
             width: 100% !important;
             padding: 1.75rem 2rem;
             padding-right: 6.5rem;
@@ -475,11 +475,11 @@ export default defineComponent({
     top: 50%;
     transform: translateY(-50%);
 
-    /deep/ .trigger {
+    ::v-deep .trigger {
         padding: 1.5rem 1rem;
     }
 
-    /deep/ .dropdown {
+    ::v-deep .dropdown {
         left: unset;
         right: 0.25rem;
         top: 0;
@@ -613,7 +613,7 @@ export default defineComponent({
             flex-shrink: 0;
             flex-grow: 0;
 
-            &.tooltip /deep/ .tooltip-box {
+            &.tooltip ::v-deep .tooltip-box {
                 width: 32rem;
                 box-shadow:
                     0px 18px 38px rgba(31, 35, 72, 0.14),

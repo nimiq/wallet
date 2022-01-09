@@ -116,15 +116,11 @@ import { useSwapsStore } from '../stores/Swaps';
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
-        const { activeAccountInfo } = useAccountStore();
+        const { hasBitcoinAddresses } = useAccountStore();
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { btcUnit, canUseSwaps } = useSettingsStore();
-
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);

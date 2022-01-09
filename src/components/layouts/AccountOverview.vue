@@ -140,7 +140,13 @@ import { useSettingsStore } from '../../stores/Settings';
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
-        const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
+        const {
+            activeAccountInfo,
+            activeAccountId,
+            setActiveCurrency,
+            activeCurrency,
+            hasBitcoinAddresses,
+        } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -148,10 +154,6 @@ export default defineComponent({
 
         const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type !== AccountType.LEGACY);
-
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
 
         const { width } = useWindowSize();
 

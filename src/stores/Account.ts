@@ -37,20 +37,21 @@ export const useAccountStore = createStore({
             ? state.accountInfos[state.activeAccountId]
             : null,
         activeCurrency: (state) => state.activeCurrency,
+        hasBitcoinAddresses: (state, { activeAccountInfo }) =>
+            Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
     },
     actions: {
         selectAccount(accountId: string) {
             this.state.activeAccountId = accountId;
 
             // If the selected account does not support Bitcoin (or has it not enabled), switch active currency to NIM
-            const activeAccountInfo = this.activeAccountInfo.value!;
-            if (!activeAccountInfo.btcAddresses || !activeAccountInfo.btcAddresses.external.length) {
+            if (!this.hasBitcoinAddresses.value) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }
 
             const { selectAddress } = useAddressStore();
             // FIXME: Instead of always selecting the first address, store which address was selected per account.
-            selectAddress(activeAccountInfo.addresses[0]);
+            selectAddress(this.activeAccountInfo.value!.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to assign whole object for change detection of new accounts.

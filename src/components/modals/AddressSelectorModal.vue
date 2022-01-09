@@ -1,10 +1,10 @@
 <template>
     <Modal>
         <PageHeader>
-            <template v-if="path === '/send'">
+            <template v-if="name === 'send'">
                 {{ $t("Choose a Sender")}}
             </template>
-            <template v-else-if="path === '/receive'">
+            <template v-else-if="name === 'receive'">
                 {{ $t("Choose a Recipient")}}
             </template>
             <template v-else>
@@ -32,13 +32,13 @@ export default defineComponent({
     setup(props, context) {
         const { activeCurrency } = useAccountStore();
 
-        const { path } = context.root.$router.currentRoute;
+        const { name } = context.root.$router.currentRoute;
 
         function addressSelected() {
             disableNextModalTransition();
 
             context.root.$router.push({
-                name: `receive-${activeCurrency.value}`,
+                name: `${name}-${activeCurrency.value}`,
                 params: {
                     canUserGoBack: 'true',
                 },
@@ -51,7 +51,7 @@ export default defineComponent({
             && activeAccountInfo.value.btcAddresses.external.length));
 
         return {
-            path,
+            name,
             addressSelected,
             showBitcoin,
         };

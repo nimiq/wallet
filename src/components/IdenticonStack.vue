@@ -38,7 +38,7 @@ export default defineComponent({
         },
     },
     setup() {
-        const { activeAccountInfo, activeCurrency } = useAccountStore();
+        const { activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { addressInfos, activeAddressInfo } = useAddressStore();
 
         const backgroundAddresses = computed(() =>
@@ -49,10 +49,6 @@ export default defineComponent({
                 .slice(0, 2)
                 .map((addressInfo) => addressInfo.address),
         );
-
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
 
         return {
             backgroundAddresses,

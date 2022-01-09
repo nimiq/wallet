@@ -28,7 +28,7 @@ import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobil
 export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo, addressInfos } = useAddressStore();
-        const { activeCurrency, activeAccountInfo } = useAccountStore();
+        const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance } = useBtcAddressStore();
         const { width } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
@@ -41,16 +41,13 @@ export default defineComponent({
             }
         }
 
-        const hasBitcoin = computed(() => Boolean(activeAccountInfo.value
-                && activeAccountInfo.value.btcAddresses && activeAccountInfo.value.btcAddresses.external.length));
-
         const hasMultipleReceivableAddresses = computed(() => (
             addressInfos.value.filter(({ type }) => type === AddressType.BASIC).length > 1));
 
         function receive() {
             if (width.value <= 700 /* Full mobile breakpoint */
                 && activeMobileColumn.value !== ColumnType.ADDRESS
-                && (hasMultipleReceivableAddresses.value || hasBitcoin.value)
+                && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
                 context.root.$router.push('/receive');
@@ -65,7 +62,7 @@ export default defineComponent({
         function send() {
             if (width.value <= 700 /* Full mobile breakpoint */
                 && activeMobileColumn.value !== ColumnType.ADDRESS
-                && (hasMultipleSendableAddresses.value || hasBitcoin.value)
+                && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
                 context.root.$router.push('/send');

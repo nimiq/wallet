@@ -14,7 +14,7 @@
         <PageBody>
             <AddressList
                 embedded
-                :showBitcoin="showBitcoin"
+                :showBitcoin="hasBitcoinAddresses"
                 @address-selected="addressSelected"
             />
         </PageBody>
@@ -23,14 +23,14 @@
 
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeCurrency } = useAccountStore();
+        const { activeCurrency, hasBitcoinAddresses } = useAccountStore();
 
         const { name } = context.root.$router.currentRoute;
 
@@ -48,15 +48,10 @@ export default defineComponent({
             });
         }
 
-        const { activeAccountInfo } = useAccountStore();
-        const showBitcoin = computed(() => Boolean(activeAccountInfo.value
-            && activeAccountInfo.value.btcAddresses
-            && activeAccountInfo.value.btcAddresses.external.length));
-
         return {
             name,
             addressSelected,
-            showBitcoin,
+            hasBitcoinAddresses,
         };
     },
     components: {

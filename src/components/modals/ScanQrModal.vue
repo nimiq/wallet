@@ -74,12 +74,8 @@ export default defineComponent({
                 return;
             }
 
-            const { activeAccountInfo } = useAccountStore();
-            if (
-                activeAccountInfo.value
-                && activeAccountInfo.value.btcAddresses
-                && activeAccountInfo.value.btcAddresses.external.length > 0
-            ) {
+            const { hasBitcoinAddresses } = useAccountStore();
+            if (hasBitcoinAddresses.value) {
                 await loadBitcoinJS();
 
                 // BTC Address

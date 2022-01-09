@@ -57,13 +57,6 @@ import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
-    props: {
-        canUserGoBack: {
-            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
-            type: String,
-            default: '',
-        },
-    },
     setup(props, context) {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);

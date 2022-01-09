@@ -1,7 +1,7 @@
 <template>
     <Modal :showOverlay="statusScreenOpened" ref="$modal">
         <div class="page flex-column" @click="amountMenuOpened = false">
-            <PageHeader :backArrow="canUserGoBack" @back="back">
+            <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
             </PageHeader>
             <PageBody class="flex-column">
@@ -160,7 +160,6 @@ import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
 import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
 import DoubleInput from '../DoubleInput.vue';
@@ -519,12 +518,6 @@ export default defineComponent({
 
         const { btcUnit } = useSettingsStore();
 
-        const { activeMobileColumn } = useActiveMobileColumn();
-
-        // User can only go back to the address selection if is mobile and the column shown is the account
-        const canUserGoBack = ref(
-            width.value <= 700 && activeMobileColumn.value !== ColumnType.ADDRESS && !props.requestUri);
-
         function back() {
             disableNextModalTransition();
             context.root.$router.back();
@@ -580,8 +573,6 @@ export default defineComponent({
             onStatusMainAction,
             onStatusAlternativeAction,
 
-            // User can choose address in mobile
-            canUserGoBack,
             back,
         };
     },

@@ -142,13 +142,6 @@ import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
-    props: {
-        canUserGoBack: {
-            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
-            type: String,
-            default: '',
-        },
-    },
     setup(props, context) {
         const {
             availableExternalAddresses,

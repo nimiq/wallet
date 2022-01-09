@@ -9,7 +9,7 @@
         ref="$modal"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
-            <PageHeader :backArrow="canUserGoBackToAddressSelection" @back="back">
+            <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
             </PageHeader>
             <PageBody class="page__recipient-input flex-column">
@@ -261,7 +261,6 @@ import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { ColumnType, useActiveMobileColumn } from '../../composables/useActiveMobileColumn';
 import { i18n } from '../../i18n/i18n-setup';
 import {
     isValidDomain as isValidUnstoppableDomain,
@@ -665,12 +664,6 @@ export default defineComponent({
 
         const { amountsHidden } = useSettingsStore();
 
-        const { activeMobileColumn } = useActiveMobileColumn();
-
-        // User can only go back to the address selection if is mobile and the column shown is the account
-        const canUserGoBackToAddressSelection = ref(width.value <= 700
-            && activeMobileColumn.value !== ColumnType.ADDRESS);
-
         function back() {
             disableNextModalTransition();
             context.root.$router.back();
@@ -748,8 +741,6 @@ export default defineComponent({
             onStatusMainAction,
             onStatusAlternativeAction,
 
-            // User can choose address in mobile
-            canUserGoBackToAddressSelection,
             back,
 
             onCloseOverlay,

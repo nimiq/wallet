@@ -59,12 +59,13 @@ export default defineComponent({
             }
         }
 
-        const hasMultipleSendableAddress = computed(() => activeAccountInfo.value!.addresses.length > 1);
+        const hasMultipleSendableAddresses = computed(() =>
+            activeAccountInfo.value && activeAccountInfo.value.addresses.length > 1);
 
         function send() {
             if (width.value <= 700 /* Full mobile breakpoint */
                 && activeMobileColumn.value !== ColumnType.ADDRESS
-                && (hasMultipleSendableAddress.value || hasBitcoin.value)
+                && (hasMultipleSendableAddresses.value || hasBitcoin.value)
             ) {
                 // redirect to the address selector
                 context.root.$router.push('/send');

@@ -63,8 +63,8 @@ export default defineComponent({
         const $fiatAmountContainer = ref<HTMLDivElement>(null);
         const $fiatAmount = ref<Vue>(null);
 
-        const { width: windowWidth } = useWindowSize();
-        const fiatAmountMaxSize = computed(() => windowWidth.value > 1160 ? 7 : 5.5); // rem
+        const { isFullDesktop } = useWindowSize();
+        const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
         const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
 
         async function updateFontSize() {

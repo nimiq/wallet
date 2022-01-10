@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref, computed } from '@vue/composition-api';
 
 let numberOfListeners = 0;
 
@@ -8,6 +8,10 @@ let numberOfListeners = 0;
 let width: Ref<number> | null = null;
 let height: Ref<number> | null = null;
 
+let isMobile: Readonly<Ref<boolean>> | null = null;
+let isTablet: Readonly<Ref<boolean>> | null = null;
+let isFullDesktop: Readonly<Ref<boolean>> | null = null;
+
 function listener() {
     width!.value = window.innerWidth;
     height!.value = window.innerHeight;
@@ -15,10 +19,13 @@ function listener() {
 
 export function useWindowSize() {
     // First-time setup
-    if (!width || !height) {
+    if (!width || !height || !isMobile || !isTablet || !isFullDesktop) {
         width = ref(0);
         height = ref(0);
         listener();
+        isMobile = computed(() => width!.value <= 700); // Full mobile breakpoint
+        isTablet = computed(() => width!.value <= 960); // Tablet breakpoint
+        isFullDesktop = computed(() => width!.value > 1160); // Desktop breakpoint
     }
 
     onMounted(() => {
@@ -39,5 +46,8 @@ export function useWindowSize() {
     return {
         width,
         height,
+        isMobile,
+        isTablet,
+        isFullDesktop,
     };
 }

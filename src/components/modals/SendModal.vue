@@ -558,11 +558,11 @@ export default defineComponent({
         const amountInputRef: Ref<AmountInput | null> = ref(null);
         const messageInputRef: Ref<LabelInput | null> = ref(null);
 
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
 
         async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
-            if (width.value <= 700) return; // Full mobile breakpoint
+            if (isMobile.value) return;
 
             await context.root.$nextTick();
             if (!elementRef.value) return;

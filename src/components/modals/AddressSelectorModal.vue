@@ -40,6 +40,9 @@ export default defineComponent({
             context.root.$router.push({
                 name: `${name}-${activeCurrency.value}`,
                 params: {
+                    // It has to be a string since it is a value encapsulated in Location.params
+                    // which is Dictionary<string>. Using a 'false' value will lead to the same
+                    // behaviour
                     canUserGoBack: 'true',
                 },
             });

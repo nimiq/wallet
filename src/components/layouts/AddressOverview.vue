@@ -104,14 +104,14 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
+                    @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                         || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
                 <button class="receive nq-button-s flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
+                    @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
                 >
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>

@@ -6,9 +6,12 @@
         || statusScreenOpened"
         @close-overlay="onCloseOverlay"
         :class="{'value-masked': amountsHidden}"
+        ref="$modal"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
-            <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
+            <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
+                {{ $t('Send Transaction') }}
+            </PageHeader>
             <PageBody class="page__recipient-input flex-column">
                 <ContactShortcuts
                     :contacts="recentContacts"
@@ -48,7 +51,7 @@
                         {{ $t('Create a Cashlink') }}
                     </button>
                 </section>
-                <button class="reset scan-qr-button" @click="goToScanner">
+                <button class="reset scan-qr-button" @click="$router.push('/scan')">
                     <ScanQrCodeIcon/>
                 </button>
             </PageBody>
@@ -92,7 +95,7 @@
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
-                :backArrow="true"
+                :backArrow="!gotValidRequestUri"
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
@@ -241,7 +244,7 @@ import {
 import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
-import Modal from './Modal.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
@@ -284,6 +287,8 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
         const page = ref(Pages.RECIPIENT_INPUT);
+
+        const $modal = ref<any | null>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -505,6 +510,7 @@ export default defineComponent({
 
         const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
 
+        const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             uri = uri.replace(`${window.location.origin}/`, '');
             const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
@@ -529,6 +535,8 @@ export default defineComponent({
                 if (parsedRequestLink.message) {
                     message.value = parsedRequestLink.message;
                 }
+
+                gotValidRequestUri.value = true;
             }
         }
 
@@ -623,17 +631,8 @@ export default defineComponent({
                     });
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(async () => {
-                    if (window.history.state.cameFromSend) {
-                        // This is required when going to the QR scanner from within /send, as a sucessful
-                        // scan _replaces_ the /scan route with the result, meaning the original /send is
-                        // the previous history entry.
-                        context.root.$router.go(-2);
-                    } else {
-                        context.root.$router.back();
-                    }
-                }, SUCCESS_REDIRECT_DELAY);
-            } catch (error) {
+                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
 
@@ -660,22 +659,20 @@ export default defineComponent({
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
 
-            // Do nothing when the success status overlay is shown, it will be closed by sucessCloseTimeout
+            // Do nothing when the success status overlay is shown, it will be closed by successCloseTimeout
         }
 
         const { amountsHidden } = useSettingsStore();
 
-        function goToScanner() {
-            context.root.$router.push('/scan', () => {
-                // Set a flag that we need to go back 2 history entries on success
-                window.history.state.cameFromSend = true;
-            });
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
         }
 
-        let sucessCloseTimeout = 0;
+        let successCloseTimeout = 0;
 
         onBeforeUnmount(() => {
-            window.clearTimeout(sucessCloseTimeout);
+            window.clearTimeout(successCloseTimeout);
         });
 
         return {
@@ -683,6 +680,7 @@ export default defineComponent({
             Pages,
             RecipientType,
             page,
+            $modal,
 
             // Recipient Input
             recentContacts,
@@ -695,9 +693,9 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
+            gotValidRequestUri,
             parseRequestUri,
             amountsHidden,
-            goToScanner,
             isDomain,
             isResolvingUnstoppableDomain,
             resolverError,
@@ -742,6 +740,8 @@ export default defineComponent({
             statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
+
+            back,
 
             onCloseOverlay,
         };

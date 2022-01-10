@@ -3,7 +3,7 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlays"
     >
-        <PageHeader>
+        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive NIM') }}
             <div slot="more">{{ $t('Share your address with the sender.') }}</div>
         </PageHeader>
@@ -50,21 +50,27 @@ import {
     QrCode,
     Copyable,
 } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
-    setup() {
+    setup(props, context) {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
+
         const { activeAddressInfo } = useAddressStore();
 
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
+        }
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
         }
 
         return {
@@ -73,6 +79,7 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             AddressType,
             closeOverlays,
+            back,
         };
     },
     components: {

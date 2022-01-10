@@ -1,7 +1,9 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened">
+    <Modal :showOverlay="statusScreenOpened" ref="$modal">
         <div class="page flex-column" @click="amountMenuOpened = false">
-            <PageHeader>{{ $t('Send Transaction') }}</PageHeader>
+            <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
+                {{ $t('Send Transaction') }}
+            </PageHeader>
             <PageBody class="flex-column">
                 <DoubleInput :extended="!!recipientWithLabel">
                     <template #second v-if="recipientWithLabel">
@@ -19,7 +21,7 @@
                             @input="resetAddress"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
-                            @scan="goToScanner"/>
+                            @scan="$router.push('/scan')"/>
                     </template>
                 </DoubleInput>
 
@@ -141,7 +143,7 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
-import Modal from './Modal.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
 import AmountInput from '../AmountInput.vue';
@@ -283,11 +285,11 @@ export default defineComponent({
         fetchFeeEstimates();
 
         const feeEstimatesInterval = setInterval(fetchFeeEstimates, 60 * 1000); // Update every 60 seconds
-        let sucessCloseTimeout = 0;
+        let successCloseTimeout = 0;
 
         onBeforeUnmount(() => {
             clearInterval(feeEstimatesInterval);
-            window.clearTimeout(sucessCloseTimeout);
+            window.clearTimeout(successCloseTimeout);
         });
 
         const activeCurrency = ref<CryptoCurrency | FiatCurrency>(CryptoCurrency.BTC);
@@ -436,6 +438,7 @@ export default defineComponent({
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry') as string);
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
+        const $modal = ref<any | null>(null);
 
         async function sign() {
             // Show loading screen
@@ -494,16 +497,7 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                sucessCloseTimeout = window.setTimeout(async () => {
-                    if (window.history.state.cameFromSend) {
-                        // This is required when going to the QR scanner from within /btc-send, as a sucessful
-                        // scan _replaces_ the /scan route with the result, meaning the original /btc-send is
-                        // the previous history entry.
-                        context.root.$router.go(-2);
-                    } else {
-                        context.root.$router.back();
-                    }
-                }, SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -524,11 +518,9 @@ export default defineComponent({
 
         const { btcUnit } = useSettingsStore();
 
-        function goToScanner() {
-            context.root.$router.push('/scan', () => {
-                // Set a flag that we need to go back 2 history entries on success
-                window.history.state.cameFromSend = true;
-            });
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
         }
 
         return {
@@ -536,6 +528,7 @@ export default defineComponent({
             RecipientType,
             CryptoCurrency,
             FiatCurrency,
+            $modal,
 
             // Recipient Input
             addressInputValue,
@@ -545,7 +538,6 @@ export default defineComponent({
             recipientWithLabel,
             onPaste,
             parseRequestUri,
-            goToScanner,
 
             // Amount Input
             amount,
@@ -580,6 +572,8 @@ export default defineComponent({
             statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
+
+            back,
         };
     },
     components: {

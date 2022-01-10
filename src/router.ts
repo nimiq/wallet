@@ -16,6 +16,8 @@ const Network = () =>
 // Modals
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
+const AddressSelectorModal = () =>
+    import(/* webpackChunkName: "address-selector-modal" */ './components/modals/AddressSelectorModal.vue');
 const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
 const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
@@ -78,16 +80,44 @@ const routes: RouteConfig[] = [{
         children: [{
             path: '/send',
             components: {
-                modal: SendModal,
+                modal: AddressSelectorModal,
             },
             name: 'send',
             meta: { column: Columns.DYNAMIC },
         }, {
+            path: '/send/nim',
+            components: {
+                modal: SendModal,
+            },
+            name: 'send-nim',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/send/btc',
+            components: {
+                modal: BtcSendModal,
+            },
+            name: 'send-btc',
+            meta: { column: Columns.DYNAMIC },
+        }, {
             path: '/receive',
+            components: {
+                modal: AddressSelectorModal,
+            },
+            name: 'receive',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/receive/nim',
             components: {
                 modal: ReceiveModal,
             },
-            name: 'receive',
+            name: 'receive-nim',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/receive/btc',
+            components: {
+                modal: BtcReceiveModal,
+            },
+            name: 'receive-btc',
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/transaction/:hash',
@@ -168,20 +198,6 @@ const routes: RouteConfig[] = [{
             name: 'btc-activation',
             props: { modal: true },
             meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/btc-send',
-            components: {
-                modal: BtcSendModal,
-            },
-            name: 'btc-send',
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/btc-receive',
-            components: {
-                modal: BtcReceiveModal,
-            },
-            name: 'btc-receive',
-            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/btc-transaction/:hash',
             components: {

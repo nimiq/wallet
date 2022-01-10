@@ -30,7 +30,7 @@ export default defineComponent({
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance } = useBtcAddressStore();
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
         function nimOrBtc<T>(nim: T, btc: T): T {
@@ -45,7 +45,7 @@ export default defineComponent({
             addressInfos.value.filter(({ type }) => type === AddressType.BASIC).length > 1));
 
         function receive() {
-            if (width.value <= 700 /* Full mobile breakpoint */
+            if (isMobile.value
                 && activeMobileColumn.value !== ColumnType.ADDRESS
                 && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
             ) {
@@ -60,7 +60,7 @@ export default defineComponent({
             activeAccountInfo.value && activeAccountInfo.value.addresses.length > 1);
 
         function send() {
-            if (width.value <= 700 /* Full mobile breakpoint */
+            if (isMobile.value
                 && activeMobileColumn.value !== ColumnType.ADDRESS
                 && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
             ) {

@@ -155,12 +155,12 @@ export default defineComponent({
         const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type !== AccountType.LEGACY);
 
-        const { width } = useWindowSize();
+        const { isMobile, isTablet } = useWindowSize();
 
         function onAddressSelected() {
             setActiveCurrency(CryptoCurrency.NIM);
 
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.push('/transactions');
             }
         }
@@ -168,7 +168,7 @@ export default defineComponent({
         function selectBitcoin() {
             setActiveCurrency(CryptoCurrency.BTC);
 
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.push('/transactions');
             }
         }
@@ -176,12 +176,12 @@ export default defineComponent({
         const showFullLegacyAccountNotice = computed(() =>
             isLegacyAccount.value
             && activeAccountInfo.value!.addresses.length === 1
-            && width.value > 960); // Tablet breakpoint
+            && !isTablet.value);
 
         const showModalLegacyAccountNotice = ref(false);
 
         function determineIfShowModalLegacyAccountNotice() {
-            showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
+            showModalLegacyAccountNotice.value = isLegacyAccount.value && isTablet.value;
         }
 
         function determineModalToShow() {

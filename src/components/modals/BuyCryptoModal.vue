@@ -371,7 +371,7 @@ export default defineComponent({
         const { activeSwap: swap } = useSwapsStore();
         const { banks, setBank } = useBankStore();
 
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value!, isFiatToCrypto: true });
         const currentLimitFiat = useCurrentLimitFiat(limits);
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
@@ -439,8 +439,8 @@ export default defineComponent({
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
-                if (width.value > 700) {
-                    if ($eurAmountInput.value) $eurAmountInput.value.focus();
+                if (!isMobile.value && $eurAmountInput.value) {
+                    $eurAmountInput.value.focus();
                 }
             }
         });

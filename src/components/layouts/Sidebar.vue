@@ -84,10 +84,10 @@ import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 export default defineComponent({
     name: 'sidebar',
     setup(props, context) {
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
 
         function navigateTo(path: string) {
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.replace(path);
             } else {
                 context.root.$router.push(path).catch(() => { /* ignore */ });

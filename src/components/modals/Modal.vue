@@ -136,7 +136,7 @@ export default defineComponent({
         }
 
         if (props.swipeToClose) {
-            const { width, height } = useWindowSize();
+            const { isMobile, height } = useWindowSize();
             const { swipingEnabled } = useSettingsStore();
 
             const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
@@ -146,19 +146,19 @@ export default defineComponent({
                 handle: $handle as Ref<HTMLDivElement>,
             });
 
-            watch(width, (newWidth, oldWidth) => {
+            watch(isMobile, (isMobileNow, wasMobile) => {
                 if (!$main.value) return;
 
-                if (newWidth <= 700 && oldWidth > 700 && swipingEnabled.value === 1) {
+                if (isMobileNow && !wasMobile && swipingEnabled.value === 1) {
                     showSwipeHandle.value = true;
                     context.root.$nextTick(attachSwipe);
-                } else if (newWidth > 700 && showSwipeHandle.value) {
+                } else if (!isMobileNow && showSwipeHandle.value) {
                     detachSwipe();
                     showSwipeHandle.value = false;
                 }
             }, { lazy: true });
 
-            if (width.value <= 700 && swipingEnabled.value === 1) {
+            if (isMobile.value && swipingEnabled.value === 1) {
                 showSwipeHandle.value = true;
                 onMounted(attachSwipe);
             }

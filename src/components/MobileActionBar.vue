@@ -94,7 +94,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
-    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
     background: white;
 
     display: none;

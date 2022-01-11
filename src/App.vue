@@ -328,6 +328,10 @@ body {
     display: block;
 }
 
+.nq-card {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
 .fade-enter-active, .fade-leave-active {
     transition: opacity var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
 

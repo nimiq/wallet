@@ -137,7 +137,6 @@ module.exports = {
     },
     pwa: {
         name: 'Nimiq Wallet',
-        themeColor: null,
         msTileColor: '#1F2348',
         manifestOptions: {
             start_url: '/',

@@ -165,7 +165,7 @@ export default defineComponent({
     --padding-sides: 1.5rem;
     --padding-bottom: 2rem;
 
-    padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
+    padding: var(--padding-top) var(--padding-sides) calc(var(--padding-bottom) + env(safe-area-inset-bottom));
 }
 
 .testnet-notice {

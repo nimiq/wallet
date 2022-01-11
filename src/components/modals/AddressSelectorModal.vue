@@ -70,5 +70,11 @@ export default defineComponent({
 
 .page-body {
     padding: 0.375rem 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+
+    .address-list {
+        flex-grow: 1;
+    }
 }
 </style>

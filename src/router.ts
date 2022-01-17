@@ -57,6 +57,10 @@ const MoonpayModal = () =>
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
+// Tour modals
+const StartOnBoardingTourModal = () =>
+    import(/* webpackChunkName: "start-onboarding-tour-modal" */ './components/modals/StartOnBoardingTourModal.vue');
+
 Vue.use(VueRouter);
 
 export enum Columns {
@@ -281,6 +285,15 @@ const routes: RouteConfig[] = [{
             name: 'release-notes',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            // TODO change this route
+            path: '/welcome-2',
+            components: {
+                modal: StartOnBoardingTourModal,
+            },
+            name: 'welcome',
+            props: { modal: true },
+            meta: { column: Columns.ACCOUNT },
         }],
     }],
 }, {

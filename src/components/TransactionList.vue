@@ -61,15 +61,17 @@
                     >
                         <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
                     </i18n>
-                    <router-link to="buy" class="nq-button light-blue">
-                        {{ $t('Buy NIM') }}
+                    <router-link to="buy">
+                        <button class="nq-button light-blue">
+                            {{ $t('Buy NIM') }}
+                        </button>
                     </router-link>
                 </div>
             </template>
         </RecycleScroller>
 
         <div v-else-if="!searchString" class="empty-state flex-column">
-            <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
+            <h2 class="nq-h1">{{ $t('Nothing here yet') }}</h2>
             <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
             <a v-if="isMainnet"
@@ -607,11 +609,11 @@ export default defineComponent({
         color: var(--text-60);
         font-weight: 600;
         margin-bottom: 1rem;
+    }
 
-        a {
-            color: inherit;
-            text-decoration: underline;
-        }
+    a {
+        color: inherit;
+        text-decoration: none;
     }
 }
 

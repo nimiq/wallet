@@ -9,7 +9,7 @@
                     <div class="swipe-bar"></div>
                 </div>
                 <slot/>
-                <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                <CloseButton v-if="showCloseIcon" class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
                 <transition name="fade">
                     <div v-if="showOverlay" class="cover"></div>
                 </transition>
@@ -64,8 +64,14 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        showCloseIcon: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, context) {
+        const { showCloseIcon } = props;
+
         function close() {
             if (props.showOverlay) {
                 context.emit('close-overlay');

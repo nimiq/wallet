@@ -1,5 +1,11 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
+        <!-- (?) This could be moved to Groundfloor.vue -->
+        <!-- TODO Remove '|| true' -->
+        <transition v-if="!!$route.params.doOnboardingTour || true" name="delay">
+            <Tour />
+        </transition>
+
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
@@ -39,6 +45,13 @@ import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
+    props: {
+        doOnboardingTour: {
+            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
+            type: String,
+            default: '',
+        },
+    },
     setup(props, context) {
         provideRouter(router);
 
@@ -148,6 +161,9 @@ export default defineComponent({
         SwapNotification,
         UpdateNotification,
         LoadingSpinner,
+
+        // lazy loading
+        Tour: () => import(/* webpackChunkName: "tour" */ './components/Tour.vue'),
     },
 });
 </script>
@@ -157,7 +173,9 @@ export default defineComponent({
 #app {
     @include flex-full-height;
     @include ios-flex;
-    overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+
+    // TODO: Find another alternative.
+    // overflow: hidden; // To prevent horizontal scrollbars during panel sliding
     touch-action: pan-y;
 
     /* Default: >= 1500px */

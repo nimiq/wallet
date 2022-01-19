@@ -362,8 +362,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
         ...steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle,
 
         // TODO Maybe it could be possible without async/await
-        // eslint-disable-next-line no-async-promise-executor
-        onMountedStep: async () => new Promise(async (resolve) => {
+        onMountedStep: async () => new Promise((resolve) => {
             root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
                 if (Object.values(txs).length > 0) {
                     // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST is modified

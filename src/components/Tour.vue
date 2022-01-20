@@ -119,7 +119,7 @@ export default defineComponent({
         // TODO This will be a prop
         const steps = useOnboardingTourSteps(context);
 
-        const currentStep: Ref<TourStepIndex> = ref(0);
+        const currentStep: Ref<TourStepIndex> = ref(6);
         const nSteps = Object.keys(steps).length; // TODO Might be a ref/computed instead
         const disableNextStep = ref(currentStep.value >= nSteps - 1 || !!steps[currentStep.value].ui.disabledNextStep);
 
@@ -164,9 +164,9 @@ export default defineComponent({
 
             // changePage
             if (!goingForward && currentLifecycle && currentLifecycle.prepareDOMPrevPage) {
-                currentLifecycle.prepareDOMPrevPage();
+                await currentLifecycle.prepareDOMPrevPage();
             } else if (goingForward && currentLifecycle && currentLifecycle.prepareDOMNextPage) {
-                currentLifecycle.prepareDOMNextPage();
+                await currentLifecycle.prepareDOMNextPage();
             } else if (futurePage !== currentPage && currentPage.startsWith(context.root.$route.path)) {
                 // Default prepare DOM
                 context.root.$router.push(futurePage);
@@ -179,12 +179,6 @@ export default defineComponent({
                 await sleep(500);
             }
 
-            // onBeforeMountedToFutureStep
-            if (goingForward && currentLifecycle?.onBeforeMountedNextStep) {
-                await currentLifecycle.onBeforeMountedNextStep();
-            } else if (!goingForward && currentLifecycle?.onBeforeMountedPrevStep) {
-                await currentLifecycle.onBeforeMountedPrevStep();
-            }
             _removeClasses(currentStepIndex);
 
             tour!.start(futureStepIndex.toString());

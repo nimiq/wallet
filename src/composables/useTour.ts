@@ -45,8 +45,6 @@ export interface TourStep {
     lifecycle?: {
         prepareDOMPrevPage?: () => Promise<void>,
         prepareDOMNextPage?: () => Promise<void>,
-        onBeforeMountedNextStep?: () => Promise<void>,
-        onBeforeMountedPrevStep?: () => Promise<void>,
         onMountedStep?: (cbu: () => void) => void,
     };
 
@@ -105,7 +103,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
         const closeBtn = (document.querySelector('.modal .close-button') as HTMLDivElement);
         closeBtn.click();
 
-        await sleep(400);
+        await sleep(500); // TODO Check this random value
     };
 
     const openAccountOptionsModal = async () => {
@@ -282,7 +280,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
                 },
             },
             lifecycle: {
-                onBeforeMountedNextStep: async () => {
+                prepareDOMNextPage: async () => {
                     await openAccountOptionsModal();
                 },
                 onMountedStep: (cbu: () => void) => {
@@ -352,7 +350,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
                 ],
             },
             lifecycle: {
-                onBeforeMountedPrevStep: async () => {
+                prepareDOMPrevPage: async () => {
                     await openAccountOptionsModal();
                 },
             },

@@ -2,6 +2,7 @@ import { Transaction, useTransactionsStore } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
 
+export type TourName = 'onboarding' | 'network'
 type OnboardingTourPages = '/' | '/transactions' | '/?sidebar=true'
 
 enum MobileOnboardingTourStep {
@@ -59,8 +60,8 @@ export interface TourStep {
     };
 }
 
-export type TourSteps = {
-    [x in TourStepIndex]: TourStep;
+export type TourSteps<T extends number> = {
+    [x in T]: TourStep;
 };
 
 // TODO Remove me
@@ -92,7 +93,7 @@ export function useFakeTx(): Transaction {
         state: 'confirmed',
     };
 }
-export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
+function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboardingTourStep> {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const closeAccountOptionsModal = async () => {
@@ -112,7 +113,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
         await sleep(500); // TODO Check this random value
     };
 
-    const steps: TourSteps = {
+    const steps: TourSteps<MobileOnboardingTourStep> = {
         [MobileOnboardingTourStep.FIRST_ADDRESS]: {
             page: '/',
             tooltip: {
@@ -359,8 +360,7 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
     steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle = {
         ...steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle,
 
-        // TODO Maybe it could be possible without async/await
-        onMountedStep: async () => new Promise((resolve) => {
+        onMountedStep: () => {
             root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
                 if (Object.values(txs).length > 0) {
                     // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST is modified
@@ -373,9 +373,15 @@ export function useOnboardingTourSteps({ root }: SetupContext): TourSteps {
                     };
                     steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].ui.disabledNextStep = false;
                 }
-                resolve();
             });
-        }),
+        },
     };
     return steps;
+}
+export function useTour(tour: TourName, context: SetupContext)
+    : TourSteps<MobileOnboardingTourStep> | TourSteps<NetworkTourStep> | undefined {
+    if (tour === 'onboarding') {
+        return getOnboardingTourSteps(context);
+    }
+    return undefined;
 }

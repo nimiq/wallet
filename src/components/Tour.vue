@@ -2,7 +2,7 @@
     <div>
         <v-tour
             class="tour"
-            name="onboarding-tour"
+            name="nimiq-tour"
             :steps="Object.values(steps).map((s) => s.tooltip)"
         >
             <template slot-scope="tour">
@@ -94,7 +94,7 @@ import {
 } from '@vue/composition-api';
 import Vue from 'vue';
 import VueTour from 'vue-tour';
-import { TourStep, TourStepIndex, useFakeTx, useOnboardingTourSteps } from '../composables/useTour';
+import { TourName, TourStep, TourStepIndex, TourSteps, useFakeTx, useTour } from '../composables/useTour';
 import { useWindowSize } from '../composables/useWindowSize';
 import CaretRightIcon from './icons/CaretRightIcon.vue';
 
@@ -104,6 +104,13 @@ require('vue-tour/dist/vue-tour.css');
 
 export default defineComponent({
     name: 'tour',
+    props: {
+        tourName: {
+            type: String,
+            required: true,
+            validator: (tour: TourName) => (['onboarding', 'network'] as TourName[]).indexOf(tour) !== -1,
+        },
+    },
     setup(props, context) {
         // TODO Use isMobile
         const { width } = useWindowSize();
@@ -112,30 +119,39 @@ export default defineComponent({
         const disconnected = computed(
             () => $network.consensus !== 'established',
         );
-        const loading = ref(false);
 
         let tour: VueTour.Tour | null = null;
+        const steps: TourSteps<any> = useTour(props.tourName as TourName, context) || {};
 
-        // TODO This will be a prop
-        const steps = useOnboardingTourSteps(context);
-
-        const currentStep: Ref<TourStepIndex> = ref(6);
-        const nSteps = Object.keys(steps).length; // TODO Might be a ref/computed instead
-        const disableNextStep = ref(currentStep.value >= nSteps - 1 || !!steps[currentStep.value].ui.disabledNextStep);
+        // Initial state
+        const loading = ref(true);
+        const currentStep: Ref<TourStepIndex> = ref(0);
+        const nSteps: Ref<number> = ref(0);
+        const disableNextStep = ref(true);
 
         onMounted(() => {
-            tour = context.root.$tours['onboarding-tour'];
-
-            _addAttributes(steps[currentStep.value].ui, currentStep.value);
-            // eslint-disable-next-line no-unused-expressions
-            steps[currentStep.value].lifecycle?.onMountedStep?.(goToNextStep);
-
-            tour!.start(`${currentStep.value}`);
+            tourSetup();
 
             // REMOVE ME
             const { removeTransactions } = useTransactionsStore();
             removeTransactions([useFakeTx()]);
         });
+
+        async function tourSetup() {
+            // Update state
+            nSteps.value = Object.keys(steps).length;
+            disableNextStep.value = currentStep.value >= nSteps.value - 1
+                || !!steps[currentStep.value].ui.disabledNextStep;
+            _addAttributes(steps[currentStep.value].ui, currentStep.value);
+            // eslint-disable-next-line no-unused-expressions
+            steps[currentStep.value].lifecycle?.onMountedStep?.(goToNextStep);
+
+            await sleep(500);
+
+            tour = context.root.$tours['nimiq-tour'];
+            tour!.start(`${currentStep.value}`);
+            loading.value = false;
+        }
 
         function goToPrevStep() {
             if (currentStep.value <= 0) return;
@@ -143,7 +159,7 @@ export default defineComponent({
         }
 
         function goToNextStep() {
-            if (currentStep.value + 1 >= nSteps) return;
+            if (currentStep.value + 1 >= nSteps.value) return;
             _moveToFutureStep(currentStep.value, currentStep.value + 1);
         }
 
@@ -191,7 +207,7 @@ export default defineComponent({
 
             // onMountedStep
             loading.value = false;
-            disableNextStep.value = futureStepIndex >= nSteps - 1 || !!futureUI.disabledNextStep;
+            disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.disabledNextStep;
 
             // eslint-disable-next-line no-unused-expressions
             futureLifecycle?.onMountedStep?.(goToNextStep);

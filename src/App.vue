@@ -1,9 +1,8 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
         <!-- (?) This could be moved to Groundfloor.vue -->
-        <!-- TODO Remove '|| true' -->
-        <transition v-if="!!$route.params.doOnboardingTour || true" name="delay">
-            <Tour />
+        <transition v-if="!!$route.params.tourName" name="delay">
+            <Tour :tourName="$route.params.tourName" />
         </transition>
 
         <main :class="activeMobileColumn" ref="$main">
@@ -45,13 +44,6 @@ import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
-    props: {
-        doOnboardingTour: {
-            // It has to be a string since it is a value encapsulated in Location.params which is Dictionary<string>.
-            type: String,
-            default: '',
-        },
-    },
     setup(props, context) {
         provideRouter(router);
 

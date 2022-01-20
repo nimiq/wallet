@@ -87,6 +87,19 @@
                     </label>
                 </div>
 
+                <div class="setting">
+                    <div class="description">
+                        <label class="nq-h2" for="product-tour">{{ $t('Product Tour') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Go through the product again') }}
+                        </p>
+                    </div>
+
+                    <router-link :to="{ name: 'root', params: { tourName: 'onboarding' } }">
+                        <button class="nq-button-pill light-blue">{{ $t('Start Tour') }}</button>
+                    </router-link>
+                </div>
+
                 <!-- <div class="setting">
                     <div class="description">
                         <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>

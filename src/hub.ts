@@ -231,7 +231,7 @@ export async function syncFromHub() {
         // throwing a "Must call init() first" error (which then fails both requests).
         listedAccounts = await hubApi.list();
         listedCashlinks = await hubApi.cashlinks();
-    } catch (error) {
+    } catch (error: any) {
         if (error.message === 'MIGRATION_REQUIRED') {
             const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
             hubApi.migrate(behavior);

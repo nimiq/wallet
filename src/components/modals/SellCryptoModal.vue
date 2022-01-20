@@ -523,7 +523,7 @@ export default defineComponent({
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
                     swapError.value = null;
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error); // eslint-disable-line no-console
                     swapError.value = error.message;
                     reject(error);
@@ -654,7 +654,7 @@ export default defineComponent({
             try {
                 signedTransactions = await setupSwap(hubRequest);
                 if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
-            } catch (error) {
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;

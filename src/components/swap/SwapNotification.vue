@@ -410,7 +410,7 @@ export default defineComponent({
                                 stateEnteredAt: Date.now(),
                                 fundingTx,
                             });
-                        } catch (error) {
+                        } catch (error: any) {
                             if (error.message === SwapError.EXPIRED) return;
                             if (error.message === SwapError.DELETED) return;
 
@@ -539,10 +539,10 @@ export default defineComponent({
                                 status: htlc.settlement.status,
                                 ...(htlc.settlement.status === SettlementStatus.ACCEPTED
                                     ? {
-                                        ...((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail.eta
+                                        ...((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail?.eta
                                             ? { eta: new Date(
                                                 (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
-                                                    .detail.eta!).getTime() }
+                                                    .detail!.eta!).getTime() }
                                             : {}
                                         ),
                                         lastUpdated: Date.now(),
@@ -568,7 +568,7 @@ export default defineComponent({
                             stateEnteredAt: Date.now(),
                             settlementTx,
                         });
-                    } catch (error) {
+                    } catch (error: any) {
                         if (error.message === SwapError.EXPIRED) return;
                         if (error.message === SwapError.DELETED) return;
 

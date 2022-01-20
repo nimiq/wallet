@@ -519,7 +519,7 @@ export default defineComponent({
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error); // eslint-disable-line no-console
                     estimateError.value = error.message;
                     if (swapSuggestion!) cancelSwap(swapSuggestion);
@@ -616,7 +616,7 @@ export default defineComponent({
             try {
                 signedTransactions = await setupSwap(hubRequest);
                 if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
-            } catch (error) {
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;

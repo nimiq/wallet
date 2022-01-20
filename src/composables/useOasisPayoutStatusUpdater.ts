@@ -36,7 +36,7 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
             settlement.status = htlc.settlement.status;
             if (htlc.settlement.status === SettlementStatus.ACCEPTED) {
                 const details = (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail;
-                if (details.eta) {
+                if (details && details.eta) {
                     settlement.eta = new Date(details.eta).getTime();
                 }
                 settlement.lastUpdated = Date.now();

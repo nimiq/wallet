@@ -303,7 +303,6 @@ import {
     SetupSwapRequest,
     SetupSwapResult,
 } from '@nimiq/hub-api';
-import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/vue';
 import { getNetworkClient } from '@/network';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
@@ -528,13 +527,9 @@ export default defineComponent({
 
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
-                    const nimiqClient = await getNetworkClient();
                     if (useNetworkStore().state.consensus !== 'established') {
-                        await new Promise<void>((res) => {
-                            nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                                if (state === 'established') res();
-                            });
-                        });
+                        const nimiqClient = await getNetworkClient();
+                        await nimiqClient.waitForConsensusEstablished();
                     }
                 }
                 if (activeCurrency.value === CryptoCurrency.BTC) {

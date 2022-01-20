@@ -9,7 +9,7 @@ import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 
-export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
+export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     relatedTransactionHash?: string,
 };
@@ -139,7 +139,7 @@ export const useTransactionsStore = createStore({
                             if (!fundingTx) {
                                 const client = await getNetworkClient();
                                 const chainTxs = await client.getTransactionsByAddress(plain.sender);
-                                fundingTx = chainTxs.find(selector);
+                                fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
                             }
 
                             if (fundingTx) {

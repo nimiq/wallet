@@ -1,4 +1,3 @@
-import { PlainAddressInfo } from '@nimiq/network-client';
 import bitmap from '../data/NetworkBitMap';
 import { useGeoIp, GeoIpResponse } from '../composables/useGeoIp';
 import RobinsonProjection from './RobinsonProjection';
@@ -63,6 +62,7 @@ export { NodeType };
 /**
  * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
  */
+type PlainAddressInfo = ReturnType<Nimiq.Client.AddressInfo['toPlain']>;
 export type Node = PlainAddressInfo & {
     hexagon: NodeHexagon,
     type: NodeType,

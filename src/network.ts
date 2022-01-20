@@ -1,24 +1,41 @@
 /* eslint-disable no-console */
 import { watch } from '@vue/composition-api';
-import { NetworkClient } from '@nimiq/network-client';
 import { SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, Transaction, TransactionState } from './stores/Transactions';
+import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
+import { loadNimiqJS } from './lib/NimiqJSLoader';
+import { ENV_MAIN } from './lib/Constants';
 
 let isLaunched = false;
-let clientPromise: Promise<NetworkClient>;
+let clientPromise: Promise<Nimiq.Client>;
+
+type Balances = Map<string, number>;
+const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
 export async function getNetworkClient() {
-    clientPromise = clientPromise || new Promise((resolve) => {
-        const client = NetworkClient.createInstance(Config.networkEndpoint);
-        client.init().then(() => resolve(client));
+    // eslint-disable-next-line no-async-promise-executor
+    clientPromise = clientPromise || new Promise(async (resolve) => {
+        await loadNimiqJS();
+        Nimiq.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+        await Nimiq.WasmHelper.doImport();
+        const client = Nimiq.Client.Configuration.builder().instantiateClient();
+        resolve(client);
     });
 
     return clientPromise;
+}
+
+export async function onPeersUpdated(callback: () => any) {
+    const client = await getNetworkClient();
+    // @ts-expect-error Private property access
+    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+
+    consensus.network.on('peers-changed', callback);
+    consensus.network.addresses.on('added', callback);
 }
 
 export async function launchNetwork() {
@@ -31,13 +48,37 @@ export async function launchNetwork() {
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
 
-    function balancesListener(balances: Map<string, number>) {
-        console.debug('Got new balances for', [...balances.keys()]);
-        for (const [address, balance] of balances) {
+    async function updateBalances(addresses: string[] = [...balances.keys()]) {
+        if (!addresses.length) return;
+        await client.waitForConsensusEstablished();
+        const accounts = await client.getAccounts(addresses);
+        const newBalances: Balances = new Map(
+            accounts.map((account, i) => [addresses[i], account.balance]),
+        );
+
+        for (const [address, newBalance] of newBalances) {
+            if (balances.get(address) === newBalance) {
+                // Balance did not change since last check.
+                // Remove from newBalances Map to not update the store.
+                newBalances.delete(address);
+            } else {
+                // Update balances cache
+                balances.set(address, newBalance);
+            }
+        }
+
+        if (!newBalances.size) return;
+        console.debug('Got new balances for', [...newBalances.keys()]);
+        for (const [address, balance] of newBalances) {
             addressStore.patchAddress(address, { balance });
         }
     }
-    client.on(NetworkClient.Events.BALANCES, balancesListener);
+
+    function forgetBalances(addresses: string[]) {
+        for (const address of addresses) {
+            balances.delete(address);
+        }
+    }
 
     let consensusConnectingTimeout: number | undefined;
     function startConnectingTimeout() {
@@ -51,7 +92,7 @@ export async function launchNetwork() {
         consensusConnectingTimeout = undefined;
     }
 
-    client.on(NetworkClient.Events.CONSENSUS, (consensus) => {
+    client.addConsensusChangedListener((consensus) => {
         network$.consensus = consensus;
 
         if (consensus === 'syncing' && !consensusConnectingTimeout) {
@@ -68,20 +109,52 @@ export async function launchNetwork() {
     window.addEventListener('online', () => {
         console.info('Browser is ONLINE');
         stopConnectingTimeout();
+        // @ts-expect-error This method is part of Nimiq 1.5.8, but the types were not updated
         client.resetConsensus();
     });
 
-    client.on(NetworkClient.Events.HEAD_HEIGHT, (height) => {
+    client.addHeadChangedListener(async (hash) => {
+        const { height } = await client.getBlock(hash, false);
         console.debug('Head is now at', height);
         network$.height = height;
+
+        // The NanoApi did recheck all balances on every block
+        // I don't think we need to do this here, as wallet addresses are only expected to
+        // change in balance when sending or receiving a transaction, as they should not be mining
+        // directly.
     });
 
-    client.on(NetworkClient.Events.PEER_COUNT, (peerCount) => network$.peerCount = peerCount);
+    (async () => {
+        // @ts-expect-error Private property access
+        const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
 
-    function transactionListener(plain: Transaction) {
+        consensus.network.on('peers-changed', async () => {
+            const statistics = await client.network.getStatistics();
+            network$.peerCount = statistics.totalPeerCount;
+        });
+    })();
+
+    function transactionListener(tx: Nimiq.Client.TransactionDetails) {
+        const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
+
+        if (plain.state === TransactionState.MINED) {
+            const addresses: string[] = [];
+            if (balances.has(plain.sender)) {
+                addresses.push(plain.sender);
+            }
+            if (balances.has(plain.recipient)) {
+                addresses.push(plain.recipient);
+            }
+            updateBalances(addresses);
+        }
     }
-    client.on(NetworkClient.Events.TRANSACTION, transactionListener);
+
+    function subscribe(addresses: string[]) {
+        client.addTransactionListener(transactionListener, addresses);
+        updateBalances(addresses);
+        return true;
+    }
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -109,13 +182,13 @@ export async function launchNetwork() {
             }
             // Let the network forget the balances of the removed addresses,
             // so that they are reported as new again at re-login.
-            client.forgetBalances([...removedAddresses]);
+            forgetBalances([...removedAddresses]);
         }
 
         if (!newAddresses.length) return;
 
         console.debug('Subscribing addresses', newAddresses);
-        client.subscribe(newAddresses);
+        subscribe(newAddresses);
     });
 
     // Fetch transactions for active address
@@ -132,12 +205,15 @@ export async function launchNetwork() {
 
         network$.fetchingTxHistory++;
 
-        console.debug('Fetching transaction history for', address, knownTxDetails);
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
-        client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
+        client.waitForConsensusEstablished()
+            .then(() => {
+                console.debug('Fetching transaction history for', address, knownTxDetails);
+                return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
+            })
             .then((txDetails) => {
-                transactionsStore.addTransactions(txDetails);
+                transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
             })
             .catch(() => fetchedAddresses.delete(address))
             .then(() => network$.fetchingTxHistory--);
@@ -168,7 +244,7 @@ export async function launchNetwork() {
                 addressesToSubscribe.push(proxyAddress);
             }
         }
-        if (addressesToSubscribe.length) client.subscribe(addressesToSubscribe);
+        if (addressesToSubscribe.length) subscribe(addressesToSubscribe);
         if (!newProxies.length) return;
 
         console.debug(`Fetching history for ${newProxies.length} proxies`);
@@ -179,13 +255,16 @@ export async function launchNetwork() {
 
             network$.fetchingTxHistory++;
 
-            console.debug('Fetching transaction history for', proxyAddress, knownTxDetails);
-            client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails)
+            client.waitForConsensusEstablished()
+                .then(() => {
+                    console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
+                    return client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails);
+                })
                 .then((txDetails) => {
                     if (
                         proxyStore.state.funded.includes(proxyAddress)
                         && !subscribedProxies.has(proxyAddress)
-                        && !txDetails.find((tx) => tx.sender === proxyAddress
+                        && !txDetails.find((tx) => tx.sender.toUserFriendlyAddress() === proxyAddress
                             && tx.state === TransactionState.CONFIRMED)
                     ) {
                         // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
@@ -200,9 +279,9 @@ export async function launchNetwork() {
                         // which in turn runs the ProxyDetection again and triggers the network and this watcher again
                         // for the second pass if needed.
                         subscribedProxies.add(proxyAddress);
-                        client.subscribe(proxyAddress);
+                        subscribe([proxyAddress]);
                     }
-                    transactionsStore.addTransactions(txDetails);
+                    transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
                 })
                 .catch(() => seenProxies.delete(proxyAddress))
                 .then(() => network$.fetchingTxHistory--);
@@ -212,7 +291,8 @@ export async function launchNetwork() {
 
 export async function sendTransaction(tx: SignedTransaction | string) {
     const client = await getNetworkClient();
-    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
+    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx)
+        .then((details) => details.toPlain());
 
     if (plain.state !== TransactionState.PENDING) {
         // Overwrite transaction status in the transactionStore,

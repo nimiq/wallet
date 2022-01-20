@@ -3,7 +3,7 @@ import { ENV_TEST } from '../lib/Constants';
 export default {
     hubEndpoint: 'https://hub.nimiq-testnet.com',
     environment: ENV_TEST,
-    networkEndpoint: 'https://network.nimiq-testnet.com',
+    nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: true,
     enableBitcoin: true,
 

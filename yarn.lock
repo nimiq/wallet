@@ -1379,11 +1379,6 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core-web@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.3.tgz#f0a4de59394f210f2c2d9cda8ee35c716847d40e"
-  integrity sha512-W66SS9n3ygYgD52r1GJr1WtYYOkcZsqdtMmDCEwDvkrmeARnHs2sAvj77Wt4PQG8JA7GwK5svIJr6rGccCaekw==
-
 "@nimiq/core-web@1.5.8", "@nimiq/core-web@^1.5.8":
   version "1.5.8"
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
@@ -1426,30 +1421,10 @@
     "@nimiq/oasis-api" "^1.0.1"
     promise.prototype.finally "^3.1.3"
 
-"@nimiq/network-client@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@nimiq/network-client/-/network-client-0.6.5.tgz#b2cf024ac33d947691c39835983a528fdb141085"
-  integrity sha512-nan6SWRbczzHkkVRTZ1ByDuaUokLWq+DobHZa9ODpqGFd6hvpW8iv8i4B5nIr+/7bO6arIMF2Hhz/qVYel/7Xg==
-  dependencies:
-    "@nimiq/core-web" "1.5.3"
-    "@nimiq/rpc-events" "^0.0.8"
-
 "@nimiq/oasis-api@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.0.1.tgz#f7037c361a74c3d715e2ae0a0dfe40a591a52f44"
   integrity sha512-4wSGlnyROsaVCpVWMiJWTX3HUQD4/JEZA++qmJ9Ju3mhq92gbcmVzDUWa91dqe3j7acp2yajeFgNmJsNA3Mxlw==
-
-"@nimiq/rpc-events@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@nimiq/rpc-events/-/rpc-events-0.0.8.tgz#bb03bb98e6450de3b858260c73dfabca0e4cbce8"
-  integrity sha512-2KYmey23WD1yV/61N+ZdUmHsxXhhie9kZOwDf1PqKbYBEHHJaoqyQb1fEptja6yyVlnZc5tv806JhHWBjJNCVA==
-  dependencies:
-    "@nimiq/rpc" "^0.1.4"
-
-"@nimiq/rpc@^0.1.4":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@nimiq/rpc/-/rpc-0.1.5.tgz#53919b0a3a9abcdfebee0e865f4c663f72a8b8c2"
-  integrity sha512-oTRThXzpbQOY8jz8h+2KXucWzW40nVfYBWROKXKBrSozhTG0nR+rzCbEm4ZyTC26b4RnmB6y4nYabUXi7gNWcA==
 
 "@nimiq/rpc@^0.4.0":
   version "0.4.1"

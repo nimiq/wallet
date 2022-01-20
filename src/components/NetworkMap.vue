@@ -44,10 +44,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import { NetworkClient } from '@nimiq/network-client';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
-import { getNetworkClient } from '../network';
+import { getNetworkClient, onPeersUpdated } from '../network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -89,7 +88,7 @@ export default defineComponent({
         };
 
         onMounted(async () => {
-            await getNetworkClient();
+            const client = await getNetworkClient();
 
             const networkMap = new NetworkMap($network.value!, $overlay.value!, (n) => nodes.value = n);
 
@@ -98,7 +97,8 @@ export default defineComponent({
             const updateKnownAddresses = async () => {
                 if (!askForAddressesTimeout) {
                     askForAddressesTimeout = window.setTimeout(async () => {
-                        const newKnownAddresses = await NetworkClient.Instance.getPeerAddresses();
+                        const peerAddressInfos = await client.network.getAddresses();
+                        const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
                         if (networkMap.updateNodes(newKnownAddresses)) {
                             networkMap.draw();
                         }
@@ -107,13 +107,9 @@ export default defineComponent({
                 }
             };
 
-            NetworkClient.Instance.on(NetworkClient.Events.PEER_ADDRESSES_ADDED, updateKnownAddresses);
-            NetworkClient.Instance.on(NetworkClient.Events.PEERS_CHANGED, updateKnownAddresses);
+            onPeersUpdated(updateKnownAddresses);
 
-            // If no consensus is established, one of the other events will trigger the update
-            if (NetworkClient.Instance.consensusState === 'established') {
-                updateKnownAddresses();
-            }
+            updateKnownAddresses();
 
             window.addEventListener('resize', setDimensions);
             requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting

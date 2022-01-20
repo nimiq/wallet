@@ -50,7 +50,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
-import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
 import {
@@ -265,11 +264,7 @@ export default defineComponent({
             // Await Nimiq and Bitcoin consensus
             if (swapsNim && useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
-                await new Promise<void>((resolve) => {
-                    nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                        if (state === 'established') resolve();
-                    });
-                });
+                await nimiqClient.waitForConsensusEstablished();
             }
             if (swapsBtc && useBtcNetworkStore().state.consensus !== 'established') {
                 const electrum = await getElectrumClient();

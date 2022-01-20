@@ -95,9 +95,9 @@
                         </p>
                     </div>
 
-                    <router-link :to="{ name: 'root', params: { tourName: 'onboarding' } }">
-                        <button class="nq-button-pill light-blue">{{ $t('Start Tour') }}</button>
-                    </router-link>
+                    <button class="nq-button-pill light-blue" @click="goToOnboardingTour()">
+                        {{ $t('Start Tour') }}
+                    </button>
                 </div>
 
                 <!-- <div class="setting">
@@ -275,6 +275,7 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
+import { useAccountStore } from '@/stores/Account';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -372,6 +373,12 @@ export default defineComponent({
             reader.readAsText(file);
         }
 
+        function goToOnboardingTour() {
+            const { setTour } = useAccountStore();
+            setTour('onboarding');
+            context.root.$router.push('/');
+        }
+
         async function onTrialPassword(el: HTMLInputElement) {
             let hash: string;
             try {
@@ -434,6 +441,7 @@ export default defineComponent({
             ...settings,
             $fileInput,
             loadFile,
+            goToOnboardingTour,
             showVestingSetting,
             onTrialPassword,
             applyWalletUpdate,

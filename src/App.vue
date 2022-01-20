@@ -1,8 +1,8 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
         <!-- (?) This could be moved to Groundfloor.vue -->
-        <transition v-if="!!$route.params.tourName" name="delay">
-            <Tour :tourName="$route.params.tourName" />
+        <transition v-if="showTour" name="delay">
+            <Tour/>
         </transition>
 
         <main :class="activeMobileColumn" ref="$main">
@@ -49,7 +49,13 @@ export default defineComponent({
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        const { accountInfos } = useAccountStore();
+        const { accountInfos, state: accountState, removeTour } = useAccountStore();
+        if (!['root', 'transactions'].includes(context.root.$route.name as string)
+            && accountState.tour?.name === 'onboarding') {
+            removeTour();
+        }
+        const showTour = computed(() => !!accountState.tour);
+
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
@@ -142,6 +148,7 @@ export default defineComponent({
         });
 
         return {
+            showTour,
             activeMobileColumn,
             hasAccounts,
             amountsHidden,

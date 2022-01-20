@@ -3,7 +3,6 @@ import { SetupContext } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
 
 export type TourName = 'onboarding' | 'network'
-type OnboardingTourPages = '/' | '/transactions' | '/?sidebar=true'
 
 enum MobileOnboardingTourStep {
     FIRST_ADDRESS,
@@ -17,7 +16,6 @@ enum MobileOnboardingTourStep {
     ONBOARDING_COMPLETED
 }
 
-type NetworkTourPages = '/network'
 enum NetworkTourStep {
     TODO,
 }
@@ -32,7 +30,7 @@ type AlignedPlacement = `${BasePlacement}-${Alignment}`;
 export type Placement = BasePlacement | AlignedPlacement;
 
 export interface TourStep {
-    page: OnboardingTourPages | NetworkTourPages;
+    path: '/' | '/transactions' | '/?sidebar=true' | '/network';
 
     // data for the steps of v-tour
     tooltip: {
@@ -115,7 +113,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
 
     const steps: TourSteps<MobileOnboardingTourStep> = {
         [MobileOnboardingTourStep.FIRST_ADDRESS]: {
-            page: '/',
+            path: '/',
             tooltip: {
                 target: '.address-list > .address-button .identicon img',
                 content: [
@@ -127,6 +125,13 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             lifecycle: {
+                prepareDOMNextPage: async () => {
+                    if (root.$route.path === '/') {
+                        const addressButton = document
+                            .querySelector('.address-list > .address-button') as HTMLButtonElement;
+                        addressButton.click();
+                    }
+                },
                 onMountedStep: (cbu: () => void) => {
                     const addressButton = document.querySelector('.address-list > .address-button');
 
@@ -146,7 +151,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.TRANSACTIONS_LIST]: {
-            page: '/transactions',
+            path: '/transactions',
             tooltip: {
                 target: '.transaction-list > .empty-state h2',
                 content: [
@@ -169,7 +174,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.FIRST_TRANSACTION]: {
-            page: '/transactions',
+            path: '/transactions',
             tooltip: {
                 target: '.transaction-list .list-element > .transaction > .identicon',
                 content: [
@@ -198,7 +203,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.BITCOIN_ADDRESS]: {
-            page: '/',
+            path: '/',
             tooltip: {
                 target: '.account-overview .bitcoin-account > .bitcoin-account-item > svg',
                 content: [
@@ -222,7 +227,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.WALLET_BALANCE]: {
-            page: '/',
+            path: '/',
             tooltip: {
                 target: '.account-overview .account-balance-container .amount',
                 content: [
@@ -247,7 +252,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.RECOVERY_WORDS_ALERT]: {
-            page: '/',
+            path: '/',
             tooltip: {
                 target: '.account-overview .backup-warning button',
                 content: [
@@ -270,7 +275,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.MENU_ICON]: {
-            page: '/',
+            path: '/',
             tooltip: {
                 target: '.account-overview .mobile-menu-bar > button.reset',
                 content: [
@@ -305,7 +310,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.ACCOUNT_OPTIONS]: {
-            page: '/?sidebar=true',
+            path: '/?sidebar=true',
             tooltip: {
                 target: '.modal .small-page',
                 content: [
@@ -334,7 +339,7 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
             },
         },
         [MobileOnboardingTourStep.ONBOARDING_COMPLETED]: {
-            page: '/?sidebar=true',
+            path: '/?sidebar=true',
             tooltip: {
                 target: '.column-sidebar .network .consensus-icon',
                 content: [
@@ -378,10 +383,11 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
     };
     return steps;
 }
-export function useTour(tour: TourName, context: SetupContext)
+export function useTour(tour: TourName | null, context: SetupContext)
     : TourSteps<MobileOnboardingTourStep> | TourSteps<NetworkTourStep> | undefined {
     if (tour === 'onboarding') {
         return getOnboardingTourSteps(context);
     }
+
     return undefined;
 }

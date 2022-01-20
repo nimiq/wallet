@@ -1,5 +1,6 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
+import { TourName } from '@/composables/useTour';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
 
@@ -7,6 +8,7 @@ export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
     activeAccountId: string | null,
     activeCurrency: CryptoCurrency,
+    tour: TourName | null,
 }
 
 // Mirror of Hub WalletType, which is not exported
@@ -29,6 +31,7 @@ export const useAccountStore = createStore({
         accountInfos: {},
         activeAccountId: null,
         activeCurrency: CryptoCurrency.NIM,
+        tour: null,
     } as AccountState),
     getters: {
         accountInfos: (state) => state.accountInfos,
@@ -104,6 +107,12 @@ export const useAccountStore = createStore({
         },
         setActiveCurrency(currency: CryptoCurrency) {
             this.state.activeCurrency = currency;
+        },
+        setTour(tour: AccountState['tour']) {
+            this.state.tour = tour;
+        },
+        removeTour() {
+            this.state.tour = null;
         },
     },
 });

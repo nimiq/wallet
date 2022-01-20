@@ -126,7 +126,7 @@ export default defineComponent({
         onMounted(() => {
             tour = context.root.$tours['onboarding-tour'];
 
-            _addClasses(steps[currentStep.value].ui, currentStep.value);
+            _addAttributes(steps[currentStep.value].ui, currentStep.value);
             // eslint-disable-next-line no-unused-expressions
             steps[currentStep.value].lifecycle?.onMountedStep?.(goToNextStep);
 
@@ -173,13 +173,13 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
-            _addClasses(futureUI, futureStepIndex);
+            _addAttributes(futureUI, futureStepIndex);
 
             if (futurePage !== currentPage) {
                 await sleep(500);
             }
 
-            _removeClasses(currentStepIndex);
+            _removeAttributes(currentStepIndex);
 
             tour!.start(futureStepIndex.toString());
 
@@ -199,7 +199,7 @@ export default defineComponent({
             currentStep.value = futureStepIndex;
         }
 
-        function _addClasses(uiConfig: TourStep['ui'], stepIndex: TourStepIndex) {
+        function _addAttributes(uiConfig: TourStep['ui'], stepIndex: TourStepIndex) {
             const elementsWithOpacity = uiConfig.elementsWithOpacity || [];
             const elementsWithoutInteractivity = uiConfig.elementsWithoutInteractivity || [];
 
@@ -217,7 +217,7 @@ export default defineComponent({
             });
         }
 
-        function _removeClasses(stepIndex: TourStepIndex) {
+        function _removeAttributes(stepIndex: TourStepIndex) {
             document.querySelectorAll(`[data-non-interactable="${stepIndex}"]`).forEach((el) => {
                 el.removeAttribute('data-non-interactable');
             });
@@ -262,7 +262,7 @@ export default defineComponent({
 <style lang="scss">
 // Using data attribute instead of classes because it is easier to track which elements should be
 // updated with opacity and non-interactivity properties as data attributes allow to use a value like
-// [data-opaified="1"] although the CSS selector that we can use is [data-opacified]. @see _removeClasses
+// [data-opaified="1"] although the CSS selector that we can use is [data-opacified]. @see _removeAttributes
 
 [data-opacified] {
     filter: opacity(0.3);

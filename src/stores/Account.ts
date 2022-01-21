@@ -111,8 +111,5 @@ export const useAccountStore = createStore({
         setTour(tour: AccountState['tour']) {
             this.state.tour = tour;
         },
-        removeTour() {
-            this.state.tour = null;
-        },
     },
 });

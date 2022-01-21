@@ -62,7 +62,7 @@
         </RecycleScroller>
 
         <div v-else-if="!searchString" class="empty-state flex-column">
-            <h2 class="nq-h1">{{ $t('Nothing here yet') }}</h2>
+            <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
             <!-- <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
             <a v-if="isMainnet"

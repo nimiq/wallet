@@ -1,6 +1,8 @@
+import { useAccountStore } from '@/stores/Account';
 import { Transaction, useTransactionsStore } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
+import { CryptoCurrency } from '../lib/Constants';
 
 export type TourName = 'onboarding' | 'network'
 
@@ -29,6 +31,18 @@ type BasePlacement = 'top' | 'right' | 'bottom' | 'left';
 type AlignedPlacement = `${BasePlacement}-${Alignment}`;
 export type Placement = BasePlacement | AlignedPlacement;
 
+export interface LifecycleArgs {
+    goToNextStep: () => void;
+    goingForward: boolean;
+}
+
+export type MountedFnReturn =
+    Promise<(args?: { goingForward: boolean, ending?: boolean }) => Promise<null>>
+    | Promise<(args?: { goingForward: boolean, ending?: boolean }) => null>
+    | ((args?: { goingForward: boolean, ending?: boolean }) => Promise<null>)
+    | Promise<null>
+    | null;
+
 export interface TourStep {
     path: '/' | '/transactions' | '/?sidebar=true' | '/network';
 
@@ -36,25 +50,28 @@ export interface TourStep {
     tooltip: {
         target: string,
         content: string[],
-        params: Readonly<{
+        params: {
             placement: BasePlacement | AlignedPlacement,
-        }>,
+        },
+        button?: {
+            text: string,
+            fn: () => void,
+        },
     };
 
     lifecycle?: {
-        prepareDOMPrevPage?: () => Promise<void>,
-        prepareDOMNextPage?: () => Promise<void>,
-        onMountedStep?: (cbu: () => void) => void,
+        created?: (args: LifecycleArgs) => Promise<void> | void,
+        mounted?: (args: LifecycleArgs) => MountedFnReturn,
     };
 
     ui: {
         // Elements that must have opacity to focus attention in other elements in screen
-        elementsWithOpacity?: string[], // array of selectors
+        fadedElements?: string[], // array of selectors
 
         // Elements that shouldn't allow interactivity
-        elementsWithoutInteractivity?: string[], // array of selectors
+        disabledElements?: string[], // array of selectors
 
-        disabledNextStep?: boolean,
+        isNextStepDisabled?: boolean,
     };
 }
 
@@ -94,21 +111,12 @@ export function useFakeTx(): Transaction {
 function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboardingTourStep> {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    const closeAccountOptionsModal = async () => {
-        const sidebar = (document.querySelector('.column-sidebar') as HTMLDivElement);
-        sidebar!.removeAttribute('data-non-interactable');
-        await root.$nextTick();
-
-        const closeBtn = (document.querySelector('.modal .close-button') as HTMLDivElement);
-        closeBtn.click();
-
-        await sleep(500); // TODO Check this random value
-    };
-
-    const openAccountOptionsModal = async () => {
-        const account = document.querySelector('.sidebar .account-menu') as HTMLButtonElement;
-        account.click();
-        await sleep(500); // TODO Check this random value
+    const toggleDisabledAttribute = async (selector: string, disabled: boolean) => {
+        const el = document.querySelector(selector) as HTMLButtonElement;
+        if (el) {
+            el.disabled = disabled;
+            await root.$nextTick();
+        }
     };
 
     const steps: TourSteps<MobileOnboardingTourStep> = {
@@ -125,23 +133,39 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             lifecycle: {
-                prepareDOMNextPage: async () => {
-                    if (root.$route.path === '/') {
-                        const addressButton = document
-                            .querySelector('.address-list > .address-button') as HTMLButtonElement;
-                        addressButton.click();
-                    }
+                created: () => {
+                    const { setActiveCurrency } = useAccountStore();
+                    const { addressInfos, selectAddress } = useAddressStore();
+                    setActiveCurrency(CryptoCurrency.NIM);
+                    selectAddress(addressInfos.value[0].address);
                 },
-                onMountedStep: (cbu: () => void) => {
-                    const addressButton = document.querySelector('.address-list > .address-button');
+                mounted: ({ goToNextStep }) => {
+                    const addressButton = document
+                        .querySelector('.address-list > .address-button') as HTMLButtonElement;
 
-                    // eslint-disable-next-line no-unused-expressions
-                    addressButton?.addEventListener('click', () => cbu(), { once: true });
-                    // TODO Remove listener somehow if user clicks on the '>' button instead on the address item
+                    let addressClicked = false;
+                    const onClick = (e: MouseEvent) => {
+                        addressClicked = true;
+                        goToNextStep();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    };
+
+                    addressButton!.addEventListener('click', onClick, { once: true, capture: true });
+
+                    return async (args) => {
+                        if (!args?.ending && !addressClicked
+                            && root.$route.path === steps[MobileOnboardingTourStep.FIRST_ADDRESS].path) {
+                            addressButton!.click();
+                            await root.$nextTick();
+                        }
+                        addressButton!.removeEventListener('click', onClick, true);
+                        return null;
+                    };
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.account-overview .backup-warning',
                     '.account-overview .mobile-menu-bar',
                     '.account-overview .bitcoin-account',
@@ -162,15 +186,57 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                     placement: 'top',
                 },
             },
+            lifecycle: {
+                mounted: () => {
+                    const { transactions } = useTransactionsStore().state;
+
+                    if (Object.values(transactions.value || []).length === 0) {
+                        const unwatch = root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
+                            if (Object.values(txs).length > 0) {
+                                // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST
+                                // is modified
+                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].tooltip = {
+                                    target: '.vue-recycle-scroller__item-wrapper',
+                                    content: ['This is where all your transactions will appear.'],
+                                    params: {
+                                        placement: 'bottom',
+                                    },
+                                };
+                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].ui.isNextStepDisabled = false;
+                                toggleDisabledAttribute('.address-overview .transaction-list a button', true);
+                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle = {
+                                    created: async () => {
+                                        await toggleDisabledAttribute(
+                                            '.address-overview .transaction-list a button', true);
+                                    },
+                                    async mounted() {
+                                        return (args) => {
+                                            if (args?.ending || !args?.goingForward) {
+                                                setTimeout(() => {
+                                                    toggleDisabledAttribute(
+                                                        '.address-overview .transaction-list a button', false);
+                                                }, args?.ending ? 0 : 1000);
+                                            }
+                                            return null;
+                                        };
+                                    },
+                                };
+                            }
+                            unwatch();
+                        });
+                    }
+                    return null;
+                },
+            },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.address-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.address-overview .actions-mobile',
                     '.address-overview .active-address',
                 ],
-                disabledNextStep: true,
+                isNextStepDisabled: true,
             },
         },
         [MobileOnboardingTourStep.FIRST_TRANSACTION]: {
@@ -186,18 +252,25 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             lifecycle: {
-                onMountedStep: () => {
-                    const buyNimBtn = document
-                        .querySelector('.address-overview .transaction-list a button') as HTMLButtonElement;
-                    if (!buyNimBtn) return;
-                    buyNimBtn.disabled = true;
+                created: async () => {
+                    await toggleDisabledAttribute('.address-overview .transaction-list a button', true);
+                },
+                async mounted() {
+                    return (args) => {
+                        if (args?.ending || args?.goingForward) {
+                            setTimeout(() => {
+                                toggleDisabledAttribute('.address-overview .transaction-list a button', false);
+                            }, args?.ending ? 0 : 1000);
+                        }
+                        return null;
+                    };
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.address-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.address-overview',
                 ],
             },
@@ -214,14 +287,14 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.account-overview .backup-warning',
                     '.account-overview .mobile-menu-bar',
                     '.account-overview .account-balance-container',
                     '.account-overview .address-list',
                     '.account-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.account-overview .bitcoin-account',
                 ],
             },
@@ -239,11 +312,11 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.account-overview .backup-warning',
                     '.account-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.account-overview .mobile-menu-bar',
                     '.account-overview .account-balance-container',
                     '.account-overview .address-list',
@@ -264,10 +337,10 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.account-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.account-overview .account-balance-container',
                     '.account-overview .address-list',
                     '.account-overview .bitcoin-account',
@@ -286,27 +359,25 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             lifecycle: {
-                prepareDOMNextPage: async () => {
-                    await openAccountOptionsModal();
-                },
-                onMountedStep: (cbu: () => void) => {
-                    const addressButton = document
-                        .querySelector('.account-overview .mobile-menu-bar > button.reset');
+                mounted: async ({ goToNextStep }) => {
+                    const hamburguerIcon = document
+                        .querySelector('.account-overview .mobile-menu-bar > button.reset') as HTMLButtonElement;
 
-                    // eslint-disable-next-line no-unused-expressions
-                    addressButton?.addEventListener('click', () => cbu(), { once: true });
+                    hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
+
+                    return null;
                 },
             },
             ui: {
-                elementsWithOpacity: [
+                fadedElements: [
                     '.account-overview .mobile-action-bar',
                 ],
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.account-overview .account-balance-container',
                     '.account-overview .address-list',
                     '.account-overview .bitcoin-account',
                 ],
-                disabledNextStep: true,
+                isNextStepDisabled: true,
             },
         },
         [MobileOnboardingTourStep.ACCOUNT_OPTIONS]: {
@@ -322,19 +393,29 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 },
             },
             ui: {
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.column-sidebar',
                 ],
             },
             lifecycle: {
-                prepareDOMPrevPage: async () => {
-                    await closeAccountOptionsModal();
-
-                    root.$router.push('/');
+                created: async () => {
+                    await sleep(500);
+                    const account = document.querySelector('.sidebar .account-menu') as HTMLButtonElement;
+                    account.click();
                     await sleep(500); // TODO Check this random value
                 },
-                prepareDOMNextPage: async () => {
-                    await closeAccountOptionsModal();
+                mounted: async () => {
+                    const sidebar = (document.querySelector('.column-sidebar') as HTMLDivElement);
+                    sidebar!.removeAttribute('data-non-interactable');
+                    await root.$nextTick();
+
+                    return async () => {
+                        const closeBtn = (document.querySelector('.modal .close-button') as HTMLDivElement);
+                        closeBtn.click();
+
+                        await sleep(500); // TODO Check this random value
+                        return null;
+                    };
                 },
             },
         },
@@ -349,45 +430,53 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 params: {
                     placement: 'top-start',
                 },
+                button: {
+                    text: 'Go to Network',
+                    fn: () => {
+                        const { setTour } = useAccountStore();
+                        setTour(null);
+                        root.$router.push('/network');
+                    },
+                },
             },
             ui: {
-                elementsWithoutInteractivity: [
+                disabledElements: [
                     '.column-sidebar',
                 ],
             },
-            lifecycle: {
-                prepareDOMPrevPage: async () => {
-                    await openAccountOptionsModal();
-                },
-            },
-        },
-    };
-    steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle = {
-        ...steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle,
-
-        onMountedStep: () => {
-            root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
-                if (Object.values(txs).length > 0) {
-                    // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST is modified
-                    steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].tooltip = {
-                        target: '.vue-recycle-scroller__item-wrapper',
-                        content: ['This is where all your transactions will appear.'],
-                        params: {
-                            placement: 'bottom',
-                        },
-                    };
-                    steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].ui.disabledNextStep = false;
-                }
-            });
         },
     };
     return steps;
 }
+
+function getNetworkTourSteps({ root }: SetupContext): TourSteps<NetworkTourStep> {
+    return {
+        [NetworkTourStep.TODO]: {
+            path: '/network',
+            tooltip: {
+                target: '.network-overview .network-name',
+                content: [
+                    'Welcome to the {WORLD} Network!',
+                    'This is the main network where all Nimiq transactions take place.',
+                    'You can switch between networks by clicking on the {WORLD} Network icon in the top right corner.',
+                ],
+                params: {
+                    placement: 'bottom',
+                },
+            },
+            ui: {},
+        },
+    };
+}
+
 export function useTour(tour: TourName | null, context: SetupContext)
     : TourSteps<MobileOnboardingTourStep> | TourSteps<NetworkTourStep> | undefined {
-    if (tour === 'onboarding') {
-        return getOnboardingTourSteps(context);
+    switch (tour) {
+        case 'onboarding':
+            return getOnboardingTourSteps(context);
+        case 'network':
+            return getNetworkTourSteps(context);
+        default:
+            return undefined;
     }
-
-    return undefined;
 }

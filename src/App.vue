@@ -49,10 +49,10 @@ export default defineComponent({
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        const { accountInfos, state: accountState, removeTour } = useAccountStore();
+        const { accountInfos, state: accountState, setTour } = useAccountStore();
         if (!['root', 'transactions'].includes(context.root.$route.name as string)
-            && accountState.tour?.name === 'onboarding') {
-            removeTour();
+            && accountState.tour === 'onboarding') {
+            setTour(null);
         }
         const showTour = computed(() => !!accountState.tour);
 

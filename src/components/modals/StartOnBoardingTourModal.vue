@@ -1,5 +1,5 @@
 <template>
-    <Modal class="start-onboarding-tour-modal" :showCloseIcon="false">
+    <Modal class="start-onboarding-tour-modal" :showCloseButton="false">
         <!-- TODO: Add nimiq SVG logo in the background -->
 
         <!-- TODO: Add language selector and dark mode switcher -->
@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+import { useAccountStore } from '@/stores/Account';
 import { PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
 import GreenNimiqLogoOutlineWithStars from '../icons/GreenNimiqLogoOutlineWithStars.vue';
@@ -40,15 +41,9 @@ import Modal from './Modal.vue';
 export default defineComponent({
     setup(props, context) {
         function startTour() {
-            context.root.$router.push({
-                name: 'root',
-                params: {
-                    // It has to be a string since it is a value encapsulated in Location.params
-                    // which is Dictionary<string>. Using a 'false' value will lead to the same
-                    // behaviour
-                    doOnboardingTour: 'true',
-                },
-            });
+            const { setTour } = useAccountStore();
+            setTour('onboarding');
+            context.root.$router.push('/');
         }
 
         return {
@@ -80,6 +75,10 @@ export default defineComponent({
             justify-content: center;
             align-items: center;
             max-width: 175px;
+
+            ::v-deep svg {
+                color: var(--nimiq-green);
+            }
 
             // TODO Add correct dimensions
 

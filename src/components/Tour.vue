@@ -34,7 +34,7 @@
                             <button @click="tour.previousStep" v-if="!isMobile">
                                 {{ $t("Previous step") }}
                             </button>
-                            <button class="right" @click="alert"
+                            <button class="right" @click="tour.steps[tour.currentStep].button.fn()"
                                 v-if="tour.steps[tour.currentStep].button">
                                 {{ $t(tour.steps[tour.currentStep].button.text) }}
                             </button>
@@ -48,7 +48,7 @@
             </template>
         </v-tour>
         <transition name="fade">
-            <div class="tour-control-bar">
+            <div class="tour-control-bar" v-if="isMobile">
                 <button @click="endTour()">
                     {{ $t("End Tour") }}
                 </button>
@@ -117,16 +117,22 @@ export default defineComponent({
             () => $network.consensus !== 'established',
         );
 
-        const { state: tourStore, removeTour } = useAccountStore();
+        const { state: tourStore, setTour } = useAccountStore();
 
         let tour: VueTour.Tour | null = null;
         const steps: TourSteps<any> = useTour(tourStore.tour, context) || {};
 
         // Initial state
         const loading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(8);
+        const currentStep: Ref<TourStepIndex> = ref(0);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
+
+        let unmounted: (
+            (args?: { goingForward: boolean, ending?: boolean }) => Promise<null>)
+            | Promise<null>
+            | ((args?: { goingForward: boolean, ending?: boolean }) => null)
+            | null = null;
 
         onMounted(() => {
             tourSetup();
@@ -137,14 +143,22 @@ export default defineComponent({
         });
 
         async function tourSetup() {
+            await context.root.$nextTick(); // to ensure the DOM is ready
+
             // Update state
             nSteps.value = Object.keys(steps).length;
             disableNextStep.value = currentStep.value >= nSteps.value - 1
-                || !!steps[currentStep.value].ui.disabledNextStep;
+                || !!steps[currentStep.value].ui.isNextStepDisabled;
+
+            if (steps[currentStep.value].lifecycle?.created) {
+                await steps[currentStep.value].lifecycle!.created!({ goToNextStep, goingForward: true });
+            }
 
             _addAttributes(steps[currentStep.value].ui, currentStep.value);
-            // eslint-disable-next-line no-unused-expressions
-            steps[currentStep.value].lifecycle?.onMountedStep?.(goToNextStep);
+
+            if (steps[currentStep.value].lifecycle?.mounted) {
+                unmounted = await steps[currentStep.value].lifecycle!.mounted!({ goToNextStep, goingForward: true });
+            }
 
             if (context.root.$route.path !== steps[currentStep.value].path) {
                 context.root.$router.push(steps[currentStep.value].path);
@@ -163,11 +177,9 @@ export default defineComponent({
             const app = document.querySelector('#app main') as HTMLDivElement;
 
             if (loading.value || disconnected.value) {
-                // eslint-disable-next-line no-unused-expressions
-                app?.setAttribute('data-non-interactable', '');
+                app!.setAttribute('data-non-interactable', '');
             } else {
-                // eslint-disable-next-line no-unused-expressions
-                app?.removeAttribute('data-non-interactable');
+                app!.removeAttribute('data-non-interactable');
             }
         });
 
@@ -189,19 +201,21 @@ export default defineComponent({
         ) {
             const goingForward = futureStepIndex > currentStepIndex;
 
-            const { path: currentPage, lifecycle: currentLifecycle } = steps[currentStepIndex];
+            const { path: currentPage } = steps[currentStepIndex];
             const { path: futurePage, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex];
 
             loading.value = true;
             tour!.stop();
-            await sleep(500);
 
-            // changePage
-            if (!goingForward && currentLifecycle && currentLifecycle.prepareDOMPrevPage) {
-                await currentLifecycle.prepareDOMPrevPage();
-            } else if (goingForward && currentLifecycle && currentLifecycle.prepareDOMNextPage) {
-                await currentLifecycle.prepareDOMNextPage();
-            } else if (futurePage !== currentPage) {
+            if (unmounted) {
+                await (await unmounted)!({ goingForward });
+            }
+
+            if (futureLifecycle?.created) {
+                await (futureLifecycle.created!)({ goToNextStep, goingForward });
+            }
+
+            if (futurePage !== currentPage && context.root.$route.fullPath !== futurePage) {
                 try {
                     // Default prepare DOM
                     context.root.$router.push(futurePage);
@@ -224,30 +238,32 @@ export default defineComponent({
             // FIXME Instead of doing tour!.end and tour!.start, we could also use .nextStep() or previsousStep()
             // The problem with this solution is that some animations glitch the UI so it needs further
             // investigation
-            // eslint-disable-next-line no-unused-expressions
             // goingForward ? tour!.nextStep() : tour!.previousStep();
 
             // onMountedStep
             loading.value = false;
-            disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.disabledNextStep;
+            disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.isNextStepDisabled;
 
-            // eslint-disable-next-line no-unused-expressions
-            futureLifecycle?.onMountedStep?.(goToNextStep);
+            if (futureLifecycle?.mounted) {
+                unmounted = await futureLifecycle!.mounted!({ goToNextStep, goingForward });
+            } else {
+                unmounted = null;
+            }
 
             currentStep.value = futureStepIndex;
         }
 
         function _addAttributes(uiConfig: TourStep['ui'], stepIndex: TourStepIndex) {
-            const elementsWithOpacity = uiConfig.elementsWithOpacity || [];
-            const elementsWithoutInteractivity = uiConfig.elementsWithoutInteractivity || [];
+            const fadedElements = uiConfig.fadedElements || [];
+            const disabledElements = uiConfig.disabledElements || [];
 
-            elementsWithoutInteractivity.forEach((element) => {
+            disabledElements.forEach((element) => {
                 const el = document.querySelector(element);
                 if (!el) return;
                 el.setAttribute('data-non-interactable', stepIndex.toString());
             });
 
-            elementsWithOpacity.forEach((element) => {
+            fadedElements.forEach((element) => {
                 const el = document.querySelector(element);
                 if (!el) return;
                 el.setAttribute('data-opacified', stepIndex.toString());
@@ -265,14 +281,18 @@ export default defineComponent({
             });
         }
 
-        function endTour() {
+        async function endTour() {
             _removeAttributes(currentStep.value);
 
-            // If user finalizes tour while it is loading, allow then interaction
+            if (unmounted) {
+                await (await unmounted)!({ ending: true, goingForward: false });
+            }
+
+            // If user finalizes tour while it is loading, allow interaction again
             const app = document.querySelector('#app main') as HTMLDivElement;
             app.removeAttribute('data-non-interactable');
 
-            removeTour();
+            setTour(null);
         }
 
         // TODO REMOVE ME - Simulate tx

@@ -36,12 +36,7 @@ export interface LifecycleArgs {
     goingForward: boolean;
 }
 
-export type MountedFnReturn =
-    Promise<(args?: { goingForward: boolean, ending?: boolean }) => Promise<null>>
-    | Promise<(args?: { goingForward: boolean, ending?: boolean }) => null>
-    | ((args?: { goingForward: boolean, ending?: boolean }) => Promise<null>)
-    | Promise<null>
-    | null;
+export type MountedReturnFn = ((args?: { goingForward: boolean, ending?: boolean }) => Promise<void> | void);
 
 export interface TourStep {
     path: '/' | '/transactions' | '/?sidebar=true' | '/network';
@@ -61,7 +56,7 @@ export interface TourStep {
 
     lifecycle?: {
         created?: (args: LifecycleArgs) => Promise<void> | void,
-        mounted?: (args: LifecycleArgs) => MountedFnReturn,
+        mounted?: (args: LifecycleArgs) => MountedReturnFn | Promise<MountedReturnFn | void> | void,
     };
 
     ui: {
@@ -83,12 +78,12 @@ export type TourSteps<T extends number> = {
 export function useFakeTx(): Transaction {
     return {
         transactionHash: '0x123',
-        format: 'nim',
+        format: 'basic',
         timestamp: 1532739000,
-        sender: useAddressStore().activeAddress.value || '',
-        recipient: '0x123',
-        senderType: 'nim',
-        recipientType: 'nim',
+        sender: 'NQ02 YP68 BA76 0KR3 QY9C SF0K LP8Q THB6 LTKU',
+        recipient: useAddressStore().activeAddress.value || 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000',
+        senderType: 'basic',
+        recipientType: 'basic',
         blockHeight: 1,
         blockHash: '0x123456789ABCDEF',
         value: 100_000,
@@ -160,7 +155,6 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                             await root.$nextTick();
                         }
                         addressButton!.removeEventListener('click', onClick, true);
-                        return null;
                     };
                 },
             },
@@ -192,40 +186,41 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
 
                     if (Object.values(transactions.value || []).length === 0) {
                         const unwatch = root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
-                            if (Object.values(txs).length > 0) {
-                                // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST
-                                // is modified
-                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].tooltip = {
-                                    target: '.vue-recycle-scroller__item-wrapper',
-                                    content: ['This is where all your transactions will appear.'],
-                                    params: {
-                                        placement: 'bottom',
-                                    },
-                                };
-                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].ui.isNextStepDisabled = false;
-                                toggleDisabledAttribute('.address-overview .transaction-list a button', true);
-                                steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle = {
-                                    created: async () => {
-                                        await toggleDisabledAttribute(
-                                            '.address-overview .transaction-list a button', true);
-                                    },
-                                    async mounted() {
-                                        return (args) => {
-                                            if (args?.ending || !args?.goingForward) {
-                                                setTimeout(() => {
-                                                    toggleDisabledAttribute(
-                                                        '.address-overview .transaction-list a button', false);
-                                                }, args?.ending ? 0 : 1000);
-                                            }
-                                            return null;
-                                        };
-                                    },
-                                };
+                            if (!Object.values(txs).length) {
+                                unwatch();
+                                return;
                             }
+
+                            // Once the user has at least one transaction, tooltip in step TRANSACTIONS_LIST
+                            // is modified
+                            steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].tooltip = {
+                                target: '.vue-recycle-scroller__item-wrapper',
+                                content: ['This is where all your transactions will appear.'],
+                                params: {
+                                    placement: 'bottom',
+                                },
+                            };
+                            steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].ui.isNextStepDisabled = false;
+                            toggleDisabledAttribute('.address-overview .transaction-list a button', true);
+                            steps[MobileOnboardingTourStep.TRANSACTIONS_LIST].lifecycle = {
+                                created: async () => {
+                                    await toggleDisabledAttribute(
+                                        '.address-overview .transaction-list a button', true);
+                                },
+                                mounted() {
+                                    return (args) => {
+                                        if (args?.ending || !args?.goingForward) {
+                                            setTimeout(() => {
+                                                toggleDisabledAttribute(
+                                                    '.address-overview .transaction-list a button', false);
+                                            }, args?.ending ? 0 : 1000);
+                                        }
+                                    };
+                                },
+                            };
                             unwatch();
                         });
                     }
-                    return null;
                 },
             },
             ui: {
@@ -255,14 +250,13 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                 created: async () => {
                     await toggleDisabledAttribute('.address-overview .transaction-list a button', true);
                 },
-                async mounted() {
+                mounted() {
                     return (args) => {
                         if (args?.ending || args?.goingForward) {
                             setTimeout(() => {
                                 toggleDisabledAttribute('.address-overview .transaction-list a button', false);
                             }, args?.ending ? 0 : 1000);
                         }
-                        return null;
                     };
                 },
             },
@@ -364,8 +358,6 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                         .querySelector('.account-overview .mobile-menu-bar > button.reset') as HTMLButtonElement;
 
                     hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
-
-                    return null;
                 },
             },
             ui: {
@@ -414,7 +406,6 @@ function getOnboardingTourSteps({ root }: SetupContext): TourSteps<MobileOnboard
                         closeBtn.click();
 
                         await sleep(500); // TODO Check this random value
-                        return null;
                     };
                 },
             },

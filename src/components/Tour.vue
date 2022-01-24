@@ -34,7 +34,7 @@
                             <button @click="tour.previousStep" v-if="!isMobile">
                                 {{ $t("Previous step") }}
                             </button>
-                            <button class="right" @click="tour.steps[tour.currentStep].button.fn()"
+                            <button class="right" @click="() => tour.steps[tour.currentStep].button.fn()"
                                 v-if="tour.steps[tour.currentStep].button">
                                 {{ $t(tour.steps[tour.currentStep].button.text) }}
                             </button>
@@ -98,7 +98,7 @@ import {
 } from '@vue/composition-api';
 import Vue from 'vue';
 import VueTour from 'vue-tour';
-import { TourStep, TourStepIndex, TourSteps, useFakeTx, useTour } from '../composables/useTour';
+import { MountedReturnFn, TourStep, TourStepIndex, TourSteps, useFakeTx, useTour } from '../composables/useTour';
 import { useWindowSize } from '../composables/useWindowSize';
 import CaretRightIcon from './icons/CaretRightIcon.vue';
 
@@ -128,11 +128,7 @@ export default defineComponent({
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
 
-        let unmounted: (
-            (args?: { goingForward: boolean, ending?: boolean }) => Promise<null>)
-            | Promise<null>
-            | ((args?: { goingForward: boolean, ending?: boolean }) => null)
-            | null = null;
+        let unmounted: MountedReturnFn | void;
 
         onMounted(() => {
             tourSetup();
@@ -145,29 +141,27 @@ export default defineComponent({
         async function tourSetup() {
             await context.root.$nextTick(); // to ensure the DOM is ready
 
+            const step = steps[currentStep.value];
+
             // Update state
             nSteps.value = Object.keys(steps).length;
             disableNextStep.value = currentStep.value >= nSteps.value - 1
-                || !!steps[currentStep.value].ui.isNextStepDisabled;
+                || !!step.ui.isNextStepDisabled;
 
-            if (steps[currentStep.value].lifecycle?.created) {
-                await steps[currentStep.value].lifecycle!.created!({ goToNextStep, goingForward: true });
-            }
+            await step.lifecycle?.created?.({ goToNextStep, goingForward: true });
 
-            _addAttributes(steps[currentStep.value].ui, currentStep.value);
+            _addAttributes(step.ui, currentStep.value);
 
-            if (steps[currentStep.value].lifecycle?.mounted) {
-                unmounted = await steps[currentStep.value].lifecycle!.mounted!({ goToNextStep, goingForward: true });
-            }
+            unmounted = await step.lifecycle?.mounted?.({ goToNextStep, goingForward: true });
 
-            if (context.root.$route.path !== steps[currentStep.value].path) {
-                context.root.$router.push(steps[currentStep.value].path);
+            if (context.root.$route.path !== step.path) {
+                context.root.$router.push(step.path);
             }
 
             await sleep(500);
 
             tour = context.root.$tours['nimiq-tour'];
-            tour!.start(`${currentStep.value}`);
+            tour.start(`${currentStep.value}`);
             loading.value = false;
         }
 
@@ -177,9 +171,9 @@ export default defineComponent({
             const app = document.querySelector('#app main') as HTMLDivElement;
 
             if (loading.value || disconnected.value) {
-                app!.setAttribute('data-non-interactable', '');
+                app.setAttribute('data-non-interactable', '');
             } else {
-                app!.removeAttribute('data-non-interactable');
+                app.removeAttribute('data-non-interactable');
             }
         });
 
@@ -201,24 +195,20 @@ export default defineComponent({
         ) {
             const goingForward = futureStepIndex > currentStepIndex;
 
-            const { path: currentPage } = steps[currentStepIndex];
-            const { path: futurePage, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex];
+            const { path: currentPath } = steps[currentStepIndex];
+            const { path: futurePath, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex];
 
             loading.value = true;
             tour!.stop();
 
-            if (unmounted) {
-                await (await unmounted)!({ goingForward });
-            }
+            await unmounted?.({ goingForward });
 
-            if (futureLifecycle?.created) {
-                await (futureLifecycle.created!)({ goToNextStep, goingForward });
-            }
+            await futureLifecycle?.created?.({ goToNextStep, goingForward });
 
-            if (futurePage !== currentPage && context.root.$route.fullPath !== futurePage) {
+            if (futurePath !== currentPath && context.root.$route.fullPath !== futurePath) {
                 try {
                     // Default prepare DOM
-                    context.root.$router.push(futurePage);
+                    context.root.$router.push(futurePath);
                     await context.root.$nextTick();
                 } catch {
                     // Ignore error
@@ -227,7 +217,7 @@ export default defineComponent({
 
             _addAttributes(futureUI, futureStepIndex);
 
-            if (futurePage !== currentPage) {
+            if (futurePath !== currentPath) {
                 await sleep(500);
             }
 
@@ -244,11 +234,7 @@ export default defineComponent({
             loading.value = false;
             disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.isNextStepDisabled;
 
-            if (futureLifecycle?.mounted) {
-                unmounted = await futureLifecycle!.mounted!({ goToNextStep, goingForward });
-            } else {
-                unmounted = null;
-            }
+            unmounted = await futureLifecycle?.mounted?.({ goToNextStep, goingForward });
 
             currentStep.value = futureStepIndex;
         }
@@ -285,7 +271,7 @@ export default defineComponent({
             _removeAttributes(currentStep.value);
 
             if (unmounted) {
-                await (await unmounted)!({ ending: true, goingForward: false });
+                await unmounted({ ending: true, goingForward: false });
             }
 
             // If user finalizes tour while it is loading, allow interaction again

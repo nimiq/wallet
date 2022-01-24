@@ -115,7 +115,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:353
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:211
 msgid "Add"
 msgstr ""
 
@@ -163,7 +163,7 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:194
+#: src/components/layouts/Settings.vue:207
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -186,7 +186,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:152
+#: src/components/layouts/Settings.vue:165
 msgid "Advanced"
 msgstr ""
 
@@ -194,7 +194,7 @@ msgstr ""
 msgid "After 72 hours"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:132
+#: src/components/layouts/Settings.vue:145
 #: src/components/layouts/Settings.vue:72
 msgid "all"
 msgstr ""
@@ -264,11 +264,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:184
+#: src/components/layouts/Settings.vue:197
 msgid "Auto"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:190
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
@@ -307,7 +307,7 @@ msgstr ""
 #: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:119
+#: src/components/layouts/Settings.vue:132
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
@@ -320,7 +320,7 @@ msgstr ""
 msgid "Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:151
 msgid "Bitcoin Unit"
 msgstr ""
 
@@ -379,7 +379,7 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:66
 msgid "Buy NIM"
 msgstr ""
 
@@ -436,7 +436,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:333
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -483,11 +483,11 @@ msgstr ""
 msgid "Claiming Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:223
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:217
 msgid "Clear Cache"
 msgstr ""
 
@@ -651,9 +651,13 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:261
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
+msgstr ""
+
+#: src/components/modals/StartOnBoardingTourModal.vue:14
+msgid "Discover the Nimiq Wallet!"
 msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
@@ -690,7 +694,7 @@ msgstr ""
 msgid "Edit contacts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:138
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr ""
 
@@ -703,8 +707,12 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:158
+#: src/components/layouts/Settings.vue:171
 msgid "Enable experimental support for swiping gestures on mobile."
+msgstr ""
+
+#: src/components/Tour.vue:71
+msgid "End Tour"
 msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
@@ -730,7 +738,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:218
+#: src/components/layouts/Settings.vue:231
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -813,7 +821,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:325
+#: src/components/layouts/Settings.vue:339
 msgid "File contains no contacts."
 msgstr ""
 
@@ -852,6 +860,10 @@ msgstr ""
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:94
+msgid "Go through the product again"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:92
@@ -988,11 +1000,15 @@ msgstr ""
 msgid "It is fast, safe and makes you truly independent."
 msgstr ""
 
+#: src/components/modals/StartOnBoardingTourModal.vue:16
+msgid "It's free, does not collect data and is controlled by no one but you."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:171
+#: src/components/layouts/Settings.vue:184
 msgid "Keyguard Mode"
 msgstr ""
 
@@ -1138,6 +1154,10 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
+#: src/components/Tour.vue:58
+msgid "Next"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr ""
@@ -1173,11 +1193,11 @@ msgid "No registration – not even email."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:85
 msgid "No transactions found"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:130
+#: src/components/layouts/Settings.vue:143
 #: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr ""
@@ -1213,11 +1233,11 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:178
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:348
+#: src/components/layouts/Settings.vue:362
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1225,7 +1245,7 @@ msgstr ""
 msgid "Old and new Accounts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:164
+#: src/components/layouts/Settings.vue:177
 msgid "On"
 msgstr ""
 
@@ -1241,7 +1261,7 @@ msgstr ""
 msgid "Or buy BTC directly in the wallet."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:186
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
@@ -1292,12 +1312,16 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:191
 msgid "popups"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:198
 msgid "Popups"
+msgstr ""
+
+#: src/components/Tour.vue:44
+msgid "Previous"
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
@@ -1306,6 +1330,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:92
+msgid "Product Tour"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
@@ -1326,7 +1354,7 @@ msgid "Receive fiat to your bank account."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:79
+#: src/components/TransactionList.vue:81
 msgid "Receive free NIM"
 msgstr ""
 
@@ -1334,7 +1362,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:73
+#: src/components/TransactionList.vue:75
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -1359,19 +1387,19 @@ msgstr ""
 msgid "Recovery Words"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:187
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:191
 msgid "redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:186
+#: src/components/layouts/Settings.vue:199
 msgid "Redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:227
+#: src/components/layouts/Settings.vue:240
 msgid "Reference currency"
 msgstr ""
 
@@ -1388,7 +1416,7 @@ msgstr ""
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:246
+#: src/components/layouts/Settings.vue:259
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr ""
@@ -1413,7 +1441,7 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:219
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -1459,7 +1487,7 @@ msgstr ""
 msgid "Select a currency and an amount."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:153
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
@@ -1618,7 +1646,7 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:136
 #: src/components/layouts/Settings.vue:63
 msgid "Show Decimals"
 msgstr ""
@@ -1668,6 +1696,14 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:99
+msgid "Start Tour"
+msgstr ""
+
+#: src/components/modals/StartOnBoardingTourModal.vue:21
+msgid "Start Wallet tour"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:7
 msgid "Store, send and receive NIM."
 msgstr ""
@@ -1712,7 +1748,7 @@ msgstr ""
 msgid "Swap to {address}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:156
+#: src/components/layouts/Settings.vue:169
 msgid "Swiping Gestures"
 msgstr ""
 
@@ -1830,8 +1866,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:238
 #: src/components/BtcTransactionList.vue:260
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/TransactionList.vue:251
+#: src/components/TransactionList.vue:273
 msgid "This month"
 msgstr ""
 
@@ -1899,7 +1935,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:229
 msgid "Trials"
 msgstr ""
 
@@ -1957,7 +1993,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/layouts/Settings.vue:205
 msgid "Vesting Contract"
 msgstr ""
 
@@ -1985,7 +2021,7 @@ msgstr ""
 msgid "What is your bank called?"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:163
+#: src/components/layouts/Settings.vue:176
 msgid "When ready"
 msgstr ""
 
@@ -2117,6 +2153,6 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:74
 msgid "Your transactions will appear here"
 msgstr ""

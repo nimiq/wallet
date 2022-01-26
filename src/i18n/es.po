@@ -3,12 +3,12 @@
 # Daniel, 2020
 # Rhody Lugo, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
-# Ricardo Barquero Carranza <richy@nimiq.com>, 2021
 # Max, 2022
+# Ricardo Barquero Carranza <richy@nimiq.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Max, 2022\n"
+"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -542,7 +542,7 @@ msgstr "Elija un Destinatario"
 
 #: src/components/modals/AddressSelectorModal.vue:5
 msgid "Choose a Sender"
-msgstr ""
+msgstr "Seleccione un Emisor"
 
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:262

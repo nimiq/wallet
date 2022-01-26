@@ -5,11 +5,11 @@
 # Sören Schwert <hello@soerenschwert.de>, 2021
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
 # Matheo <matheo@nimiq.com>, 2021
-# Robinson BARAIS, 2021
+# Robinson BARAIS, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Robinson BARAIS, 2021\n"
+"Last-Translator: Robinson BARAIS, 2022\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -540,7 +540,7 @@ msgstr "Choisissez un destinataire"
 
 #: src/components/modals/AddressSelectorModal.vue:5
 msgid "Choose a Sender"
-msgstr ""
+msgstr "Choisir un expéditeur"
 
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:262

@@ -100,7 +100,8 @@ export default defineComponent({
                 context.root.$router.back();
             } else {
                 page.value += 1;
-                (event.target as HTMLButtonElement | null)?.blur();
+                const target = (event.target as HTMLButtonElement | null);
+                if (target) target.blur();
             }
         }
 

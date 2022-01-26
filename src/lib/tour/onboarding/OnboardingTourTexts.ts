@@ -28,8 +28,7 @@ export const onboardingTexts: TourStepTexts<OnboardingTourStep> = {
     },
     [OnboardingTourStep.BITCOIN_ADDRESS]: {
         default: [
-            'Check the bar-chart to see how your addresses compose your total balance.',
-            'Currently you have 100% NIM, and no BTC.',
+            'This is your Bitcoin wallet. You get one with every Nimiq account.',
         ],
     },
     [OnboardingTourStep.WALLET_BALANCE]: {
@@ -40,8 +39,7 @@ export const onboardingTexts: TourStepTexts<OnboardingTourStep> = {
     },
     [OnboardingTourStep.BACKUP_ALERT]: {
         default: [
-            'There is no \'forgot password\'.',
-            'Create a backup to make sure you stay in control.',
+            'There is no \'forgot password\'. Create a backup to make sure you stay in control.',
         ],
     },
     [OnboardingTourStep.MENU_ICON]: {

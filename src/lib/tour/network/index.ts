@@ -16,6 +16,7 @@ export function getNetworkTourSteps(): TourSteps<NetworkTourStep> {
                 },
             },
             ui: {},
+            lifecycle: {},
         },
     };
 }

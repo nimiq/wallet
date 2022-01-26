@@ -17,6 +17,7 @@
         </header>
 
         <AnnouncementBox/>
+        <TourLargeScreenManager/>
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
@@ -68,6 +69,7 @@ import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import Config from 'config';
 
 import AnnouncementBox from '../AnnouncementBox.vue';
+import TourLargeScreenManager from '../TourLargeScreenManager.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
@@ -140,6 +142,7 @@ export default defineComponent({
     },
     components: {
         AnnouncementBox,
+        TourLargeScreenManager,
         GearIcon,
         PriceChart,
         AccountMenu,

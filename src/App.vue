@@ -53,6 +53,9 @@ export default defineComponent({
         if (!['root', 'transactions'].includes(context.root.$route.name as string)
             && accountState.tour === 'onboarding') {
             setTour(null);
+        } else if (!['network'].includes(context.root.$route.name as string)
+            && accountState.tour === 'network') {
+            setTour(null);
         }
         const showTour = computed(() => !!accountState.tour);
 

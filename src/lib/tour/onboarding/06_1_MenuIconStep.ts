@@ -27,6 +27,10 @@ export function getMenuIconStep(): TourStep {
                 '.account-overview .account-balance-container',
                 '.account-overview .address-list',
                 '.account-overview .bitcoin-account',
+                '.address-overview',
+            ],
+            disabledButtons: [
+                '.address-overview .transaction-list a button',
             ],
             isNextStepDisabled: true,
         },

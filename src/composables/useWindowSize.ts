@@ -23,8 +23,8 @@ export function useWindowSize() {
         width = ref(0);
         height = ref(0);
         listener();
-        isMobile = computed(() => width!.value <= 700); // Full mobile breakpoint
-        isTablet = computed(() => width!.value <= 960); // Tablet breakpoint
+        isMobile = computed(() => width!.value <= 960); // Full mobile breakpoint
+        isTablet = computed(() => width!.value <= 1160); // Tablet breakpoint
         isFullDesktop = computed(() => width!.value > 1160); // Desktop breakpoint
     }
 

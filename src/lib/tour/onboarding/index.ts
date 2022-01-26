@@ -40,10 +40,12 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     steps[OnboardingTourStep.FIRST_ADDRESS] = getFirstAddressStep(args);
     steps[OnboardingTourStep.TRANSACTIONS_LIST] = getTransactionListStep(args);
     steps[OnboardingTourStep.FIRST_TRANSACTION] = getFirstTransactionStep(args);
-    steps[OnboardingTourStep.BITCOIN_ADDRESS] = getBitcoinAddressStep();
-    steps[OnboardingTourStep.WALLET_BALANCE] = getWalletBalanceStep();
-    steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep();
-    steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
+    steps[OnboardingTourStep.BITCOIN_ADDRESS] = getBitcoinAddressStep(args);
+    steps[OnboardingTourStep.WALLET_BALANCE] = getWalletBalanceStep(args);
+    steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
+    if (!isFullDesktop.value) {
+        steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
+    }
     steps[OnboardingTourStep.ACCOUNT_OPTIONS] = getAccountOptionsStep(args);
     steps[OnboardingTourStep.ONBOARDING_COMPLETED] = getOnboardingCompletedStep(args);
 

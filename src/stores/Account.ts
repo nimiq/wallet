@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
-import { TourName } from '@/composables/useTour';
+import { TourName } from '@/lib/tour';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
 

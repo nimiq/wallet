@@ -1,5 +1,5 @@
 import { useWindowSize } from '@/composables/useWindowSize';
-import { SetupContext } from '@vue/composition-api';
+import { computed, SetupContext } from '@vue/composition-api';
 
 export type TourName = 'onboarding' | 'network'
 
@@ -12,8 +12,7 @@ export enum OnboardingTourStep {
     BACKUP_ALERT,
     MENU_ICON,
     ACCOUNT_OPTIONS,
-    ONBOARDING_COMPLETED,
-    BI
+    ONBOARDING_COMPLETED
 }
 
 export enum NetworkTourStep {
@@ -32,9 +31,10 @@ export type Placement = BasePlacement | AlignedPlacement;
 export interface LifecycleArgs {
     goToNextStep: () => void;
     goingForward: boolean;
+    ending: boolean;
 }
 
-export type MountedReturnFn = ((args?: { goingForward: boolean, ending?: boolean }) => Promise<void> | void);
+export type MountedReturnFn = ((args: Omit<LifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
 
 export interface TourStep {
     path: '/' | '/transactions' | '/?sidebar=true' | '/network';
@@ -48,13 +48,14 @@ export interface TourStep {
         },
         button?: {
             text: string,
-            fn: () => void,
+            fn: (callback?: () => Promise<void>) => void,
         },
     };
 
     lifecycle?: {
-        created?: (args: LifecycleArgs) => Promise<void> | void,
-        mounted?: (args: LifecycleArgs) => MountedReturnFn | Promise<MountedReturnFn | void> | void,
+        created?: (args: Omit<LifecycleArgs, 'ending'>) => Promise<void> | void,
+        mounted?: (args: LifecycleArgs) =>
+            MountedReturnFn | Promise<MountedReturnFn | void> | void,
     };
 
     ui: {
@@ -65,6 +66,8 @@ export interface TourStep {
         disabledElements?: string[], // array of selectors
 
         isNextStepDisabled?: boolean,
+
+        disabledButtons?: string[],
     };
 }
 
@@ -80,3 +83,8 @@ export type GetStepFnArgs<T extends number> =
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
     };
+
+export interface TourDataBroadcast {
+    currentStep: TourStepIndex;
+    nSteps: number;
+}

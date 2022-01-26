@@ -1,29 +1,14 @@
 import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { onboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep(
-    { toggleDisabledAttribute }: GetStepFnArgs<OnboardingTourStep>): TourStep {
-    return {
+export function getFirstTransactionStep({ isMobile }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    const stepForMobile = {
         path: '/transactions',
         tooltip: {
             target: '.transaction-list .list-element > .transaction > .identicon',
             content: onboardingTexts[OnboardingTourStep.FIRST_TRANSACTION].default,
             params: {
                 placement: 'bottom-start',
-            },
-        },
-        lifecycle: {
-            created: async () => {
-                await toggleDisabledAttribute('.address-overview .transaction-list a button', true);
-            },
-            mounted() {
-                return (args) => {
-                    if (args?.ending || args?.goingForward) {
-                        setTimeout(() => {
-                            toggleDisabledAttribute('.address-overview .transaction-list a button', false);
-                        }, args?.ending ? 0 : 1000);
-                    }
-                };
             },
         },
         ui: {
@@ -33,6 +18,33 @@ export function getFirstTransactionStep(
             disabledElements: [
                 '.address-overview',
             ],
+            disabledButtons: ['.address-overview .transaction-list a button'],
         },
     } as TourStep;
+
+    const stepForNotMobile = {
+        path: '/transactions',
+        tooltip: {
+            target: '.address-overview .transaction-list .vue-recycle-scroller__item-view:nth-child(2)',
+            content: onboardingTexts[OnboardingTourStep.FIRST_TRANSACTION].default,
+            params: {
+                placement: 'left',
+            },
+        },
+        ui: {
+            disabledElements: [
+                '.address-overview',
+            ],
+            fadedElements: [
+                '.sidebar',
+                '.account-overview .backup-warning',
+                '.account-overview .account-balance-container',
+                '.account-overview .address-list',
+                '.account-overview .bitcoin-account',
+            ],
+            disabledButtons: ['.address-overview .transaction-list a button'],
+        },
+    } as TourStep;
+
+    return isMobile.value ? stepForMobile : stepForNotMobile;
 }

@@ -711,7 +711,7 @@ msgstr ""
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
-#: src/components/Tour.vue:71
+#: src/components/Tour.vue:64
 msgid "End Tour"
 msgstr ""
 
@@ -1154,7 +1154,7 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/Tour.vue:58
+#: src/components/Tour.vue:51
 msgid "Next"
 msgstr ""
 
@@ -1320,7 +1320,7 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/Tour.vue:44
+#: src/components/Tour.vue:38
 msgid "Previous"
 msgstr ""
 

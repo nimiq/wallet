@@ -1,8 +1,8 @@
-import { OnboardingTourStep, TourStep } from '../types';
+import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { onboardingTexts } from './OnboardingTourTexts';
 
-export function getBackupAlertStep(): TourStep {
-    return {
+export function getBackupAlertStep({ isMobile }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    return isMobile.value ? {
         path: '/',
         tooltip: {
             target: '.account-overview .backup-warning button',
@@ -21,5 +21,21 @@ export function getBackupAlertStep(): TourStep {
                 '.account-overview .bitcoin-account',
             ],
         },
-    } as TourStep;
+    } : {
+        path: '/',
+        tooltip: {
+            target: '.account-overview .backup-warning',
+            content: onboardingTexts[OnboardingTourStep.BACKUP_ALERT].default,
+            params: {
+                placement: 'right',
+            },
+        },
+        ui: {
+            fadedElements: ['.sidebar'],
+            disabledElements: [
+                '.account-overview',
+            ],
+            disabledButtons: ['.address-overview .transaction-list a button'],
+        },
+    };
 }

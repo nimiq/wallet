@@ -175,9 +175,6 @@
                     title="Changelly" target="_blank" rel="noopener"
                 ><img src="../../assets/exchanges/changelly.svg">
                 </a>
-                <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/bitladon.svg">
-                </a>
                 <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/changehero.svg">
                 </a>

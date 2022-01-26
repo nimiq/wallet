@@ -19,6 +19,7 @@ import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 
 export function shouldUseRedirects(): boolean {
     // When not in PWA, don't use redirects
@@ -53,12 +54,10 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    const accountStore = useAccountStore();
+    const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
-    if (Object.keys(accountStore.state.accountInfos).length === 1) {
+    if (!welcomeModalAlreadyShown) {
         welcomeRoute = '/welcome';
-    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
-        welcomeRoute = '/btc-activation/activated';
     }
 });
 
@@ -276,10 +275,6 @@ export async function onboard(asRedirect = false) {
     if (!accounts) return false;
 
     processAndStoreAccounts(accounts);
-
-    if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
-        router.push('/btc-activation/activated');
-    }
 
     return true;
 }

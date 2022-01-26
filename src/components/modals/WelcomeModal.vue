@@ -88,16 +88,19 @@ import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
         const page = ref(1);
 
-        async function onButtonClick() {
+        async function onButtonClick(event: MouseEvent) {
             if (page.value === 2) {
+                window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
                 context.root.$router.back();
             } else {
                 page.value += 1;
+                (event.target as HTMLButtonElement | null)?.blur();
             }
         }
 
@@ -163,7 +166,7 @@ export default defineComponent({
     }
 
     .page-body.network-page {
-        max-height: 39.5rem;
+        max-height: 41.5rem;
     }
 
     .text,

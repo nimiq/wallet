@@ -23,3 +23,5 @@ export const BTC_MAX_COPYABLE_ADDRESSES = 5; // TODO: Update to 10 when BTC_ADDR
 export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 
 export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
+
+export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-modal-shown';

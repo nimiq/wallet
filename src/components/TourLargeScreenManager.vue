@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isFullDesktop && isTourActive" class="tour-manager" ref="$originalManager">
+    <div v-if="isLargeScreen && isTourActive" class="tour-manager" ref="$originalManager">
         <p>
             {{$t('Use the tooltips to navigate your tour.')}}
         </p>
@@ -14,13 +14,14 @@
 
 <script lang="ts">
 import { useWindowSize } from '@/composables/useWindowSize';
-import { TourDataBroadcast } from '@/lib/tour';
+import { TourDataBroadcast, WalletHTMLElements } from '@/lib/tour';
 import { useAccountStore } from '@/stores/Account';
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 
 export default defineComponent({
+    name: 'tour-large-screen-manager',
     setup(props, context) {
-        const { isFullDesktop } = useWindowSize();
+        const { isLargeScreen } = useWindowSize();
 
         const { state: accountState } = useAccountStore();
         const isTourActive = computed(() => accountState.tour !== null);
@@ -34,25 +35,36 @@ export default defineComponent({
         });
 
         const $originalManager = ref<HTMLDivElement>(null);
-        onMounted(() => {
-            // duplicateManager();
-        });
 
         watch([nSteps, currentStep], () => {
-            // duplicateManager();
+            if (!isLargeScreen.value) return;
+
+            const modalIsOpen = document.querySelector(WalletHTMLElements.MODAL_CONTAINER) !== null;
+            if (modalIsOpen) {
+                _duplicateManager();
+            } else {
+                _removeClonedManager();
+            }
         });
 
-        function duplicateManager() {
+        function _removeClonedManager() {
             const tourManager = document.querySelector('body > .tour-manager');
             if (tourManager) {
                 tourManager.remove();
             }
             const original = $originalManager.value!;
             if (!original) return;
+            original.style.visibility = 'initial';
+        }
 
-            document.querySelector('.sidebar')!.removeAttribute('data-non-interactable');
+        function _duplicateManager() {
+            _removeClonedManager();
+            const original = $originalManager.value!;
+            if (!original) return;
+
+            original.style.visibility = 'hidden';
+
             const manager = original.cloneNode(true) as HTMLDivElement;
-            document.querySelector('.sidebar')!.setAttribute('data-non-interactable', '5');
 
             if (!manager) {
                 return;
@@ -67,15 +79,19 @@ export default defineComponent({
             manager.style.visibility = 'inherit';
             manager.style.zIndex = '10';
             document.body.appendChild(manager);
+
+            manager.querySelector('button')!.addEventListener('click', () => endTour());
         }
 
         function endTour() {
+            _removeClonedManager();
+            // TODO Cannot end tour while loading
             context.root.$emit('tour-end');
         }
 
         return {
             isTourActive,
-            isFullDesktop,
+            isLargeScreen,
             nSteps,
             currentStep,
             endTour,
@@ -93,9 +109,9 @@ export default defineComponent({
     flex-direction: column;
     padding: 12px;
     gap: 2rem;
-    // background-color: rgba(255, 255, 255, 0.12);#3a3d5e // TODO Move to a variable??
-    background-color: #3a3d5e; // TODO Check this
+    background-color: rgba(255, 255, 255, 0.12); // TODO Move to a variable??
     border-radius: 4px;
+    cursor: initial !important;
 
     p {
         margin: 0;
@@ -114,7 +130,9 @@ export default defineComponent({
             color: var(--nimiq-white);
             white-space: nowrap;
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
+            letter-spacing: -0.4px;
+            font-variant-numeric: tabular-nums;
         }
 
         button {

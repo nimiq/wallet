@@ -86,10 +86,10 @@ import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 export default defineComponent({
     name: 'sidebar',
     setup(props, context) {
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
 
         function navigateTo(path: string) {
-            if (isMobile.value) {
+            if (isSmallScreen.value) {
                 context.root.$router.replace(path);
             } else {
                 context.root.$router.push(path).catch(() => { /* ignore */ });

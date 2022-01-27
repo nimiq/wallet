@@ -21,19 +21,21 @@
                     :labels="tour.labels"
                 >
                     <div slot="content" class="content">
-                        <p v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i" v-html="$t(content)">
-                        </p>
+                        <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
+                            <PartyConfettiIcon v-if="currentStep === nSteps - 1 && i === 0" />
+                            <p>{{ $t(content) }}</p>
+                        </div>
                         <!-- TODO REMOVE ME -->
-                        <div class="remove_me" v-if="currentStep === 1" @click="simulate()">
+                        <div class="remove_me" v-if="currentStep === 1 && disableNextStep" @click="simulate()">
                             Simulate Receive NIM
                         </div>
                     </div>
                     <div slot="actions">
                         <div
-                            v-if="tour.steps[tour.currentStep].button || isFullDesktop"
+                            v-if="tour.steps[tour.currentStep].button || isLargeScreen"
                             class="actions"
                         >
-                            <button @click="goToPrevStep()" v-if="currentStep > 0 && isFullDesktop" class="left">
+                            <button @click="goToPrevStep()" v-if="currentStep > 0 && isLargeScreen" class="left">
                                 <TourPreviousLeftArrowIcon />
                                 {{ $t("Previous") }}
                             </button>
@@ -44,13 +46,13 @@
                                 {{ $t(tour.steps[tour.currentStep].button.text) }}
                             </button>
                             <button
-                                v-else-if="isFullDesktop && !disableNextStep && !isLoading"
+                                v-else-if="isLargeScreen && !disableNextStep && !isLoading"
                                 class="right"
                                 @click="goToNextStep()"
                             >
                                 <span>{{ $t("Next") }}</span>
                             </button>
-                            <button v-if="isLoading && isFullDesktop" class="circle-spinner right">
+                            <button v-if="isLoading && isLargeScreen" class="circle-spinner right">
                                 <CircleSpinner />
                             </button>
                         </div>
@@ -59,7 +61,7 @@
             </transition>
         </template>
     </v-tour>
-        <div class="tour-control-bar" v-if="isMobile || isTablet">
+        <div class="tour-control-bar" v-if="isSmallScreen || isMediumScreen">
             <button @click="endTour()">
                 {{ $t("End Tour") }}
             </button>
@@ -112,15 +114,16 @@ import {
 } from '../lib/tour';
 import CaretRightIcon from './icons/CaretRightIcon.vue';
 import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
+import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
 
 Vue.use(VueTour);
 
 require('vue-tour/dist/vue-tour.css');
 
 export default defineComponent({
-    name: 'tour',
+    name: 'nimiq-tour',
     setup(props, context) {
-        const { isMobile, isTablet, isFullDesktop } = useWindowSize();
+        const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
 
         const { state: $network } = useNetworkStore();
         const disconnected = computed(() => $network.consensus !== 'established');
@@ -150,11 +153,13 @@ export default defineComponent({
 
         // Initial state
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = tourStore.tour === 'onboarding' ? ref(5) : ref(0); // TODO Remove
+        const currentStep: Ref<TourStepIndex> = ref(0);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
 
         let unmounted: MountedReturnFn | void;
+
+        const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
         onMounted(async () => {
             await tourSetup();
@@ -177,6 +182,7 @@ export default defineComponent({
                 await step.lifecycle.created({ goToNextStep, goingForward: true });
             }
 
+            _toggleDisabledButtons(step.ui.disabledButtons, true);
             _addAttributes(step.ui, currentStep.value);
 
             unmounted = await step.lifecycle?.mounted?.({
@@ -189,12 +195,16 @@ export default defineComponent({
                 context.root.$router.push(step.path);
             }
 
-            await sleep(500);
+            // ensures animation ends
+            await sleep(1000);
 
             tour = context.root.$tours['nimiq-tour'];
             tour.start(`${currentStep.value}`);
             isLoading.value = false;
 
+            window.addEventListener('keyup', onKeyDown);
+
+            // This is to communicate with TourLargeScreenManager
             _broadcastTourData();
             context.root.$on('tour-end', () => {
                 endTour();
@@ -203,7 +213,7 @@ export default defineComponent({
 
         // Dont allow user to interact with the page while it is loading
         // But allow to end it
-        watch([isLoading, disconnected], () => {
+        watch([isLoading, disconnected], async () => {
             const app = document.querySelector('#app main') as HTMLDivElement;
 
             if (isLoading.value || disconnected.value) {
@@ -211,25 +221,30 @@ export default defineComponent({
             } else {
                 app.removeAttribute('data-non-interactable');
             }
+
+            // FIXME we should wait until the button is rendered and the we could
+            // execute _toggleDisabledButtons but it is kind of random the amount of time
+            // it takes to render the button. I don't know how to fix it.
+
+            // Ensure that we disabled 'Receive Free NIM' button
+            await sleep(500);
+            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, true);
         });
 
         function goToPrevStep() {
-            if (currentStep.value <= 0) return;
+            if (currentStep.value <= 0 || disconnected.value || isLoading.value) return;
             _moveToFutureStep(currentStep.value, currentStep.value - 1);
         }
 
         function goToNextStep() {
-            if (currentStep.value + 1 >= nSteps.value) return;
+            if (currentStep.value + 1 >= nSteps.value || disconnected.value || isLoading.value) return;
             _moveToFutureStep(currentStep.value, currentStep.value + 1);
         }
-
-        const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
         async function _moveToFutureStep(
             currentStepIndex: TourStepIndex,
             futureStepIndex: TourStepIndex,
         ) {
-            // TODO https://stackoverflow.com/questions/42990308/vue-js-how-to-call-method-from-another-component
             const goingForward = futureStepIndex > currentStepIndex;
 
             const { path: currentPath, ui: currentUI } = steps[currentStepIndex]!;
@@ -284,19 +299,40 @@ export default defineComponent({
         }
 
         function _broadcastTourData() {
+            // Send data to TourLargeScreenManager
             context.root.$emit('tour-data', {
                 nSteps: nSteps.value,
                 currentStep: currentStep.value,
             });
         }
 
+        // TODO In tablets 'buy nim' in sidebar does not get its original state
+        let _buttonNimClasses: {[x:string]: string} = {};
         function _toggleDisabledButtons(disabledButtons: TourStep['ui']['disabledButtons'], disabled:boolean) {
             if (!disabledButtons) return;
+
+            // Classes that have to be removed while the tour is shown
+            const btnNimiqClasses = ['light-blue', 'green', 'orange', 'red', 'gold'];
             disabledButtons.forEach((element) => {
                 const el = document.querySelector(element) as HTMLButtonElement;
                 if (!el) return;
                 el.disabled = disabled;
+
+                for (const className of el.classList.values() ?? []) {
+                    if (disabled && btnNimiqClasses.includes(className)) {
+                        el.classList.remove(className);
+                        _buttonNimClasses[element] = className;
+                    }
+                }
             });
+            if (!disabled) {
+                Object.keys(_buttonNimClasses).forEach((el) => {
+                    const btn = document.querySelector(el) as HTMLButtonElement;
+                    if (!btn) return;
+                    btn.classList.add(_buttonNimClasses[el]);
+                });
+                _buttonNimClasses = {};
+            }
         }
 
         function _addAttributes(
@@ -337,6 +373,7 @@ export default defineComponent({
         async function endTour() {
             _removeAttributes(currentStep.value);
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
+            window.removeEventListener('keyup', onKeyDown);
 
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
@@ -350,6 +387,24 @@ export default defineComponent({
             context.root.$off('tour-end');
         }
 
+        function onKeyDown(event: KeyboardEvent) {
+            switch (event.key) {
+                case 'ArrowRight':
+                    if (!disableNextStep.value) {
+                        goToNextStep();
+                    }
+                    break;
+                case 'ArrowLeft':
+                    goToPrevStep();
+                    break;
+                case 'Escape':
+                    endTour();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         // TODO REMOVE ME - Simulate tx
         function simulate() {
             const { addTransactions } = useTransactionsStore();
@@ -358,9 +413,9 @@ export default defineComponent({
         }
 
         return {
-            isMobile,
-            isTablet,
-            isFullDesktop,
+            isSmallScreen,
+            isMediumScreen,
+            isLargeScreen,
 
             // tour
             tourOptions,
@@ -379,11 +434,13 @@ export default defineComponent({
 
             // TODO REMOVE ME
             simulate,
+            _buttonNimClasses,
         };
     },
     components: {
         CaretRightIcon,
         TourPreviousLeftArrowIcon,
+        PartyConfettiIcon,
         CircleSpinner,
     },
 });
@@ -404,8 +461,16 @@ export default defineComponent({
   pointer-events: none !important;
 }
 
-#app > *:not(.tour) {
+#app > *:not(.tour):not(.tour-manager) {
   cursor: not-allowed;
+}
+
+button.highlighted {
+    background: linear-gradient(
+            274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%, rgba(255, 255, 255, 0) 53.12%,
+            rgba(255, 255, 255, 0.2) 81.25%, rgba(255, 255, 255, 0) 100%
+        ),
+        radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%) !important;
 }
 </style>
 
@@ -423,17 +488,12 @@ export default defineComponent({
         background: #ffffff33; // TODO Maybe move this to a CSS variable (?)
         color: var(--nimiq-white);
         border: none;
-        outline: var(--nimiq-);
         border-radius: 9999px;
         cursor: pointer;
     }
 
     .tooltip {
-        background: radial-gradient(
-            100% 100% at 100% 100%,
-            #265dd7 0%,
-            #0582ca 100%
-        );
+        background: var(--nimiq-light-blue-bg);
         box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.07),
         0px 1.5px 3px rgba(0, 0, 0, 0.05),
         0px 0.337011px 2px rgba(0, 0, 0, 0.0254662);
@@ -446,14 +506,30 @@ export default defineComponent({
             flex-direction: column;
             gap: 1rem;
 
-            p {
-                margin: 0;
-                font-size: 15px;
-                line-height: 21px;
-                text-align: left;
+            & > div {
+                display: flex;
+                align-items: center;
 
-                br {
-                    margin: 4rem 0;
+                p {
+                    margin: 0;
+                    font-size: 15px;
+                    line-height: 21px;
+                    text-align: left;
+
+                    br {
+                        margin: 4rem 0;
+                    }
+                }
+
+                p::selection {
+                    color: var(--nimiq-light-blue);
+                    background: var(--nimiq-light-gray);
+                }
+
+                ::v-deep svg {
+                    float: left;
+                    margin-right: 2rem;
+                    margin-top: -5px;
                 }
             }
         }
@@ -551,6 +627,7 @@ export default defineComponent({
 
                 &.loading {
                     padding-left: 0;
+                    cursor: inherit;
 
                     & ::v-deep svg path:nth-child(1) {
                         stroke: var(--nimiq-white);
@@ -566,6 +643,8 @@ export default defineComponent({
         white-space: nowrap;
         text-align: center;
         font-size: 13px;
+        letter-spacing: -0.4px;
+        font-variant-numeric: tabular-nums;
     }
 }
 

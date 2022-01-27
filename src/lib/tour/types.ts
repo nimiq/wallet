@@ -1,5 +1,5 @@
 import { useWindowSize } from '@/composables/useWindowSize';
-import { computed, SetupContext } from '@vue/composition-api';
+import { SetupContext } from '@vue/composition-api';
 
 export type TourName = 'onboarding' | 'network'
 
@@ -76,7 +76,7 @@ export type TourSteps<T extends number> = {
 };
 
 export type GetStepFnArgs<T extends number> =
-    Pick<ReturnType<typeof useWindowSize>, 'isMobile' | 'isTablet' | 'isFullDesktop'> &
+    Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> &
     {
         root: SetupContext['root'],
         steps: TourSteps<T>,
@@ -87,4 +87,40 @@ export type GetStepFnArgs<T extends number> =
 export interface TourDataBroadcast {
     currentStep: TourStepIndex;
     nSteps: number;
+}
+
+export enum WalletHTMLElements {
+    SIDEBAR_TESTNET = '.sidebar .testnet-notice',
+    SIDEBAR_LOGO = '.sidebar .logo',
+    SIDEBAR_PRICE_CHARTS = '.sidebar .price-chart-wrapper',
+    SIDEBAR_TRADE_ACTIONS = '.sidebar .trade-actions',
+    SIDEBAR_ACCOUNT_MENU = '.sidebar .account-menu',
+    SIDEBAR_NETWORK = '.sidebar .network',
+    SIDEBAR_SETTINGS = '.sidebar .settings',
+
+    ACCOUNT_OVERVIEW_BACKUP_ALERT = '.account-overview .backup-warning',
+    ACCOUNT_OVERVIEW_TABLET_MENU_BAR = '.account-overview .mobile-menu-bar',
+    ACCOUNT_OVERVIEW_BALANCE = '.account-overview .account-balance-container',
+    ACCOUNT_OVERVIEW_ADDRESS_LIST = '.account-overview .address-list',
+    ACCOUNT_OVERVIEW_BITCOIN = '.account-overview .bitcoin-account',
+    ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR = '.account-overview .mobile-action-bar',
+
+    ADDRESS_OVERVIEW = '.address-overview',
+    ADDRESS_OVERVIEW_ACTIONS_MOBILE = '.address-overview .actions-mobile',
+    ADDRESS_OVERVIEW_ACTIVE_ADDRESS = '.address-overview .active-address',
+    ADDRESS_OVERVIEW_ACTIONS = '.address-overview .actions',
+    ADDRESS_OVERVIEW_TRANSACTIONS = '.address-overview .transaction-list',
+    ADDRESS_OVERVIEW_MOBILE_ACTION_BAR = '.address-overview .mobile-action-bar',
+
+    BUTTON_SIDEBAR_BUY = '.sidebar .trade-actions button:nth-child(1)',
+    BUTTON_SIDEBAR_SELL = '.sidebar .trade-actions button:nth-child(2)',
+    BUTTON_ADDRESS_OVERVIEW_BUY = '.address-overview .transaction-list .after-first-tx button',
+    BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM = '.address-overview .transaction-list .empty-state button',
+
+    MODAL_CONTAINER = '.modal.backdrop',
+    MODAL_WRAPPER = '.modal .wrapper',
+    MODAL_PAGE = '.modal .small-page',
+    MODAL_CLOSE_BUTTON = '.modal .close-button'
+
+    // TODO: NETWORK
 }

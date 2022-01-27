@@ -17,6 +17,19 @@ export function getTour(tour: TourName | null, context: SetupContext)
     }
 }
 
+// Finds the component instance given its name in the Vue tree
+export function searchComponentByName(c: Vue, name: string): Vue | undefined {
+    if (c.$options.name === name) {
+        return c;
+    }
+    for (const cc of c.$children) {
+        const found = searchComponentByName(cc, name);
+        if (found) return found;
+    }
+
+    return undefined;
+}
+
 // TODO Remove me
 export function getFakeTx(): Transaction {
     return {

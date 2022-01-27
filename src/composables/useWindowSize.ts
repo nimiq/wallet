@@ -8,9 +8,9 @@ let numberOfListeners = 0;
 let width: Ref<number> | null = null;
 let height: Ref<number> | null = null;
 
-let isMobile: Readonly<Ref<boolean>> | null = null;
-let isTablet: Readonly<Ref<boolean>> | null = null;
-let isFullDesktop: Readonly<Ref<boolean>> | null = null;
+let isSmallScreen: Readonly<Ref<boolean>> | null = null;
+let isMediumScreen: Readonly<Ref<boolean>> | null = null;
+let isLargeScreen: Readonly<Ref<boolean>> | null = null;
 
 function listener() {
     width!.value = window.innerWidth;
@@ -19,13 +19,13 @@ function listener() {
 
 export function useWindowSize() {
     // First-time setup
-    if (!width || !height || !isMobile || !isTablet || !isFullDesktop) {
+    if (!width || !height || !isSmallScreen || !isMediumScreen || !isLargeScreen) {
         width = ref(0);
         height = ref(0);
         listener();
-        isMobile = computed(() => width!.value <= 960); // Full mobile breakpoint
-        isTablet = computed(() => width!.value <= 1160); // Tablet breakpoint
-        isFullDesktop = computed(() => width!.value > 1160); // Desktop breakpoint
+        isSmallScreen = computed(() => width!.value <= 700); // Small screen breakpoint
+        isMediumScreen = computed(() => width!.value > 700 && width!.value <= 1160); // Small screen breakpoint
+        isLargeScreen = computed(() => width!.value > 1160); // Small screen breakpoint
     }
 
     onMounted(() => {
@@ -46,8 +46,8 @@ export function useWindowSize() {
     return {
         width,
         height,
-        isMobile,
-        isTablet,
-        isFullDesktop,
+        isSmallScreen,
+        isMediumScreen,
+        isLargeScreen,
     };
 }

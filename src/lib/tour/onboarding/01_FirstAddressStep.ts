@@ -1,10 +1,11 @@
 import { CryptoCurrency } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
 import { useAddressStore } from '@/stores/Address';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { onboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstAddressStep({ isMobile, root }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getFirstAddressStep(
+    { isSmallScreen, isLargeScreen, root }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const created = () => {
         const { setActiveCurrency } = useAccountStore();
         const { addressInfos, selectAddress } = useAddressStore();
@@ -13,11 +14,40 @@ export function getFirstAddressStep({ isMobile, root }: GetStepFnArgs<Onboarding
     };
     const path = '/';
 
-    return isMobile.value
-        ? {
+    const ui: TourStep['ui'] = {
+        fadedElements: [
+            WalletHTMLElements.SIDEBAR_TESTNET,
+            WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+            WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
+            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            WalletHTMLElements.SIDEBAR_NETWORK,
+            WalletHTMLElements.SIDEBAR_SETTINGS,
+
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+
+            !isSmallScreen.value ? WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST : '',
+        ],
+        disabledElements: [
+            WalletHTMLElements.ADDRESS_OVERVIEW,
+        ],
+        disabledButtons: [
+            WalletHTMLElements.BUTTON_SIDEBAR_BUY,
+            WalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM,
+        ],
+    };
+
+    if (isSmallScreen.value) {
+        return {
             path,
             tooltip: {
-                target: '.address-list > .address-button .identicon img',
+                target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .address-button .identicon img`,
                 content: onboardingTexts[OnboardingTourStep.FIRST_ADDRESS].default,
                 params: {
                     placement: 'bottom-start',
@@ -26,7 +56,7 @@ export function getFirstAddressStep({ isMobile, root }: GetStepFnArgs<Onboarding
             lifecycle: {
                 created,
                 mounted: ({ goToNextStep }) => {
-                    if (!isMobile) {
+                    if (!isSmallScreen.value) {
                         return undefined;
                     }
 
@@ -54,44 +84,23 @@ export function getFirstAddressStep({ isMobile, root }: GetStepFnArgs<Onboarding
                     };
                 },
             },
-            ui: {
-                fadedElements: [
-                    '.account-overview .backup-warning',
-                    '.account-overview .mobile-menu-bar',
-                    '.account-overview .bitcoin-account',
-                    '.account-overview .account-balance-container',
-                    '.account-overview .mobile-action-bar',
-                ],
-            },
-        } as TourStep
-
-        // Not mobile
-        : {
-            path,
-            tooltip: {
-                target: '.address-overview .active-address',
-                content: onboardingTexts[OnboardingTourStep.FIRST_ADDRESS].default,
-                params: {
-                    placement: 'left-start',
-                },
-            },
-            lifecycle: {
-                created,
-            },
-            ui: {
-                disabledElements: [
-                    '.address-overview',
-                ],
-                fadedElements: [
-                    '.sidebar',
-                    '.account-overview .backup-warning',
-                    '.account-overview .account-balance-container',
-                    '.account-overview .address-list',
-                    '.account-overview .bitcoin-account',
-                ],
-                disabledButtons: [
-                    '.address-overview .transaction-list a button',
-                ],
-            },
+            ui,
         } as TourStep;
+    }
+
+    // Not mobile
+    return {
+        path,
+        tooltip: {
+            target: `${WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon`,
+            content: onboardingTexts[OnboardingTourStep.FIRST_ADDRESS].default,
+            params: {
+                placement: 'left-start',
+            },
+        },
+        lifecycle: {
+            created,
+        },
+        ui,
+    } as TourStep;
 }

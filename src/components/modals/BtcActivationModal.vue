@@ -49,7 +49,7 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountId, setActiveCurrency } = useAccountStore();
 
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
 
         let activated = false;
 
@@ -62,7 +62,7 @@ export default defineComponent({
         }
 
         onUnmounted(() => {
-            if (activated && isMobile.value) {
+            if (activated && isSmallScreen.value) {
                 context.root.$router.push('/transactions');
             }
         });

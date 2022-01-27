@@ -414,11 +414,11 @@ export default defineComponent({
         const addressInputRef = ref<BtcAddressInput>(null);
         const amountInputRef = ref<AmountInput>(null);
 
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
 
         async function focus(elementRef: Ref<LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
-            if (isMobile.value) return;
+            if (isSmallScreen.value) return;
 
             await context.root.$nextTick();
             if (!elementRef.value) return;

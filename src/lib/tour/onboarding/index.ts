@@ -22,7 +22,7 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         }
     };
 
-    const { isMobile, isTablet, isFullDesktop } = useWindowSize();
+    const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
 
     // Declaring steps here so we can reference it in the lifecycle functions
     const steps: TourSteps<OnboardingTourStep> = {};
@@ -32,9 +32,9 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         steps,
         toggleDisabledAttribute,
         root,
-        isMobile,
-        isTablet,
-        isFullDesktop,
+        isSmallScreen,
+        isMediumScreen,
+        isLargeScreen,
     };
 
     steps[OnboardingTourStep.FIRST_ADDRESS] = getFirstAddressStep(args);
@@ -43,11 +43,10 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     steps[OnboardingTourStep.BITCOIN_ADDRESS] = getBitcoinAddressStep(args);
     steps[OnboardingTourStep.WALLET_BALANCE] = getWalletBalanceStep(args);
     steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
-    if (!isFullDesktop.value) {
+    if (!isLargeScreen.value) {
         steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
     }
     steps[OnboardingTourStep.ACCOUNT_OPTIONS] = getAccountOptionsStep(args);
     steps[OnboardingTourStep.ONBOARDING_COMPLETED] = getOnboardingCompletedStep(args);
-
     return steps;
 }

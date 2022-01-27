@@ -1,44 +1,44 @@
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { onboardingTexts } from './OnboardingTourTexts';
 
-export function getWalletBalanceStep({ isMobile }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getWalletBalanceStep({ isSmallScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    const ui: TourStep['ui'] = {
+        fadedElements: [
+            WalletHTMLElements.SIDEBAR_TESTNET,
+            WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+            WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
+            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            WalletHTMLElements.SIDEBAR_NETWORK,
+            WalletHTMLElements.SIDEBAR_SETTINGS,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+        ],
+        disabledElements: [
+            WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+            WalletHTMLElements.ADDRESS_OVERVIEW,
+        ],
+        disabledButtons: [
+            WalletHTMLElements.BUTTON_SIDEBAR_BUY,
+            WalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+        ],
+    };
+
     return {
         path: '/',
         tooltip: {
-            target: `.account-overview .account-balance-container 
-                    ${isMobile.value ? '.amount' : '.balance-distribution'}`,
+            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE}
+                    ${isSmallScreen.value ? '.amount' : '.balance-distribution'}`,
             content: onboardingTexts[OnboardingTourStep.WALLET_BALANCE].default,
             params: {
-                placement: isMobile.value ? 'bottom' : 'right',
+                placement: isSmallScreen.value ? 'bottom' : 'right',
             },
         },
-        ui: isMobile.value ? {
-            fadedElements: [
-                '.sidebar',
-                '.account-overview .backup-warning',
-                '.account-overview .mobile-action-bar',
-                '.address-overview',
-            ],
-            disabledElements: [
-                '.account-overview .mobile-menu-bar',
-                '.account-overview .account-balance-container',
-                '.account-overview .address-list',
-                '.account-overview .bitcoin-account',
-            ],
-        } : {
-            fadedElements: [
-                '.sidebar',
-                '.account-overview .backup-warning',
-            ],
-            disabledButtons: [
-                '.address-overview .transaction-list a button',
-            ],
-            disabledElements: [
-                '.account-overview .account-balance-container',
-                '.account-overview .address-list',
-                '.account-overview .bitcoin-account',
-                '.address-overview',
-            ],
-        },
+        ui,
     } as TourStep;
 }

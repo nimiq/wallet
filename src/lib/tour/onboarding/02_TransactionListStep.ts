@@ -1,8 +1,18 @@
 import { useTransactionsStore } from '@/stores/Transactions';
+import { WalletHTMLElements } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { onboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
-    { root, steps, isMobile }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { root, steps, isSmallScreen, isLargeScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    let userHasClicked = false;
+    const highlightButton = (highlight: boolean) => {
+        if (userHasClicked) return;
+
+        const receiveNim = document
+            .querySelector(WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM) as HTMLButtonElement;
+        receiveNim.classList[highlight ? 'add' : 'remove']('highlighted');
+    };
     const mounted = () => {
         const { transactions } = useTransactionsStore().state;
 
@@ -13,84 +23,83 @@ export function getTransactionListStep(
                     return;
                 }
 
+                userHasClicked = true;
+
                 const buyNimBtn = document
-                    .querySelector('.address-overview .transaction-list a button') as HTMLButtonElement;
+                    .querySelector(`${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} a button`) as HTMLButtonElement;
                 buyNimBtn.disabled = true;
 
                 // Once the user has at least one transaction, step TRANSACTIONS_LIST is modified
-                steps[OnboardingTourStep.TRANSACTIONS_LIST] = {
-                    path: steps[OnboardingTourStep.TRANSACTIONS_LIST]?.path,
-                    tooltip: {
+                if (isSmallScreen.value) {
+                    steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip = {
                         target: '.vue-recycle-scroller__item-wrapper',
-                        content: ['This is where all your transactions will appear.'],
+                        content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].alternative || [],
                         params: {
                             placement: 'bottom',
                         },
-                    },
-                    ui: {
-                        ...steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui,
-                        isNextStepDisabled: false,
-                    },
-                } as TourStep;
+                    };
+                } else {
+                    steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip = {
+                        ...steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip,
+                        content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].alternative || [],
+                    };
+                }
+                steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui = {
+                    ...steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui,
+                    isNextStepDisabled: false,
+                };
+                steps[OnboardingTourStep.TRANSACTIONS_LIST]!.lifecycle = {};
+
                 unwatch();
             });
         }
+        highlightButton(true);
+        return () => highlightButton(false);
     };
 
-    const stepForMobile: TourStep = {
-        path: '/transactions',
+    const ui: TourStep['ui'] = {
+        fadedElements: [
+            WalletHTMLElements.SIDEBAR_TESTNET,
+            WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+            WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
+            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            WalletHTMLElements.SIDEBAR_NETWORK,
+            WalletHTMLElements.SIDEBAR_SETTINGS,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+        ],
+        disabledElements: [
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+        ],
+        disabledButtons: [
+            WalletHTMLElements.BUTTON_SIDEBAR_BUY,
+            WalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+        ],
+        isNextStepDisabled: true,
+    };
+
+    return {
+        path: isSmallScreen.value ? '/transactions' : '/',
         tooltip: {
-            target: '.transaction-list > .empty-state h2',
-            content: [
-                'This is where all your transactions will appear.',
-                'Click the green button to receive a free NIM from Team Nimiq.',
-            ],
+            target: isSmallScreen.value
+                ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} > .empty-state h2`
+                : WalletHTMLElements.ADDRESS_OVERVIEW,
+            content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].default,
             params: {
-                placement: 'top',
+                placement: isSmallScreen.value ? 'top' : 'left',
             },
         },
         lifecycle: { mounted },
-        ui: {
-            fadedElements: [
-                '.address-overview .mobile-action-bar',
-            ],
-            disabledElements: [
-                '.address-overview .actions-mobile',
-                '.address-overview .active-address',
-            ],
-            isNextStepDisabled: true,
-            disabledButtons: ['.address-overview .transaction-list a button'],
-        },
+        ui,
     };
-
-    const stepForNotMobile: TourStep = {
-        path: '/',
-        tooltip: {
-            target: '.address-overview',
-            content: [
-                'This is where all your transactions will appear.',
-                'Click the green button to receive a free NIM from Team Nimiq.',
-            ],
-            params: {
-                placement: 'left',
-            },
-        },
-        lifecycle: { mounted },
-        ui: {
-            disabledElements: [
-                '.address-overview',
-            ],
-            fadedElements: [
-                '.sidebar',
-                '.account-overview .backup-warning',
-                '.account-overview .account-balance-container',
-                '.account-overview .address-list',
-                '.account-overview .bitcoin-account',
-            ],
-            isNextStepDisabled: true,
-            disabledButtons: ['.address-overview .transaction-list a button'],
-        },
-    };
-
-    return isMobile.value ? stepForMobile : stepForNotMobile;
 }

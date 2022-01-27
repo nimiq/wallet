@@ -165,8 +165,8 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Height of items in pixel
-        const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const { isSmallScreen } = useWindowSize();
+        const itemSize = computed(() => isSmallScreen.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)

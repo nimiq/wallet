@@ -1,3 +1,4 @@
+import { WalletHTMLElements } from '..';
 import { OnboardingTourStep, TourStep } from '../types';
 import { onboardingTexts } from './OnboardingTourTexts';
 
@@ -5,7 +6,7 @@ export function getMenuIconStep(): TourStep {
     return {
         path: '/',
         tooltip: {
-            target: '.account-overview .mobile-menu-bar > button.reset',
+            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR} > button.reset`,
             content: onboardingTexts[OnboardingTourStep.MENU_ICON].default,
             params: {
                 placement: 'bottom-start',
@@ -13,24 +14,24 @@ export function getMenuIconStep(): TourStep {
         },
         lifecycle: {
             mounted: async ({ goToNextStep }) => {
-                const hamburguerIcon = document
-                    .querySelector('.account-overview .mobile-menu-bar > button.reset') as HTMLButtonElement;
+                const hamburguerIcon = document.querySelector(
+                    `${WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR} > button.reset`) as HTMLButtonElement;
 
                 hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
             },
         },
         ui: {
             fadedElements: [
-                '.account-overview .mobile-action-bar',
+                WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
             ],
             disabledElements: [
-                '.account-overview .account-balance-container',
-                '.account-overview .address-list',
-                '.account-overview .bitcoin-account',
-                '.address-overview',
+                WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+                WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+                WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+                WalletHTMLElements.ADDRESS_OVERVIEW,
             ],
             disabledButtons: [
-                '.address-overview .transaction-list a button',
+                WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
             ],
             isNextStepDisabled: true,
         },

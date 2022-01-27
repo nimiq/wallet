@@ -9,7 +9,9 @@
                     <div class="swipe-bar"></div>
                 </div>
                 <slot/>
-                <CloseButton v-if="showCloseButton" class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                <CloseButton
+                    v-if="showCloseButton" class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"
+                />
                 <transition name="fade">
                     <div v-if="showOverlay" class="cover"></div>
                 </transition>
@@ -140,7 +142,7 @@ export default defineComponent({
         }
 
         if (props.swipeToClose) {
-            const { isMobile, height } = useWindowSize();
+            const { isSmallScreen, height } = useWindowSize();
             const { swipingEnabled } = useSettingsStore();
 
             const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
@@ -150,19 +152,19 @@ export default defineComponent({
                 handle: $handle as Ref<HTMLDivElement>,
             });
 
-            watch(isMobile, (isMobileNow, wasMobile) => {
+            watch(isSmallScreen, (isSmallScreenNow, wasMobile) => {
                 if (!$main.value) return;
 
-                if (isMobileNow && !wasMobile && swipingEnabled.value === 1) {
+                if (isSmallScreenNow && !wasMobile && swipingEnabled.value === 1) {
                     showSwipeHandle.value = true;
                     context.root.$nextTick(attachSwipe);
-                } else if (!isMobileNow && showSwipeHandle.value) {
+                } else if (!isSmallScreenNow && showSwipeHandle.value) {
                     detachSwipe();
                     showSwipeHandle.value = false;
                 }
             }, { lazy: true });
 
-            if (isMobile.value && swipingEnabled.value === 1) {
+            if (isSmallScreen.value && swipingEnabled.value === 1) {
                 showSwipeHandle.value = true;
                 onMounted(attachSwipe);
             }

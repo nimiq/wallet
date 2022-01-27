@@ -67,7 +67,7 @@ export default defineComponent({
         // Swiping
         const $main = ref<HTMLDivElement>(null);
         let $mobileTapArea: HTMLDivElement | null = null;
-        const { width, isMobile } = useWindowSize();
+        const { width, isSmallScreen } = useWindowSize();
 
         async function updateSwipeRestPosition(
             velocityDistance: number,
@@ -136,18 +136,18 @@ export default defineComponent({
             excludeSelector: '.scroller, .scroller *',
         });
 
-        watch([isMobile, swipingEnabled], ([isMobileNow, newSwiping], [wasMobile, oldSwiping]) => {
+        watch([isSmallScreen, swipingEnabled], ([isSmallScreenNow, newSwiping], [wasMobile, oldSwiping]) => {
             if (!$main.value) return;
 
-            if ((isMobileNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
+            if ((isSmallScreenNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
                 attachSwipe();
-            } else if (!isMobileNow || newSwiping !== 1) {
+            } else if (!isSmallScreenNow || newSwiping !== 1) {
                 detachSwipe();
             }
         }, { lazy: true });
 
         onMounted(() => {
-            if (isMobile.value && swipingEnabled.value === 1) attachSwipe();
+            if (isSmallScreen.value && swipingEnabled.value === 1) attachSwipe();
         });
 
         return {

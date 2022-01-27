@@ -65,7 +65,7 @@
             </button>
             <div v-if="page === 1" class="flex-row flags">
                 <Tooltip v-for="lang in Languages" :key="lang.code"
-                    :preferredPosition="isMobile ? 'top' : 'bottom'"
+                    :preferredPosition="isSmallScreen ? 'top' : 'bottom'"
                     :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
                     @click="setLanguage(lang.code)"
                 >
@@ -109,7 +109,7 @@ export default defineComponent({
 
         const { activeAddress } = useAddressStore();
 
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
 
         return {
             page,
@@ -118,7 +118,7 @@ export default defineComponent({
             settings$,
             setLanguage,
             activeAddress,
-            isMobile,
+            isSmallScreen,
         };
     },
     components: {

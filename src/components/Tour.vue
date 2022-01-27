@@ -109,12 +109,12 @@ import { useWindowSize } from '../composables/useWindowSize';
 import {
     getFakeTx,
     getTour,
-    MountedReturnFn, TourStep,
+    MountedReturnFn, TourBroadcast, TourStep,
     TourStepIndex,
 } from '../lib/tour';
 import CaretRightIcon from './icons/CaretRightIcon.vue';
-import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
 import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
+import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
 
 Vue.use(VueTour);
 
@@ -204,10 +204,13 @@ export default defineComponent({
 
             window.addEventListener('keyup', onKeyDown);
 
-            // This is to communicate with TourLargeScreenManager
-            _broadcastTourData();
-            context.root.$on('tour-end', () => {
-                endTour();
+            _receiveEvents();
+            _broadcast({
+                type: 'tour-step-changed',
+                payload: {
+                    currentStep: currentStep.value,
+                    nSteps: nSteps.value,
+                },
             });
         }
 
@@ -295,14 +298,24 @@ export default defineComponent({
             });
 
             currentStep.value = futureStepIndex;
-            _broadcastTourData();
+            _broadcast({
+                type: 'tour-step-changed',
+                payload: {
+                    currentStep: currentStep.value,
+                    nSteps: nSteps.value,
+                },
+            });
         }
 
-        function _broadcastTourData() {
+        function _broadcast(data: TourBroadcast) {
             // Send data to TourLargeScreenManager
-            context.root.$emit('tour-data', {
-                nSteps: nSteps.value,
-                currentStep: currentStep.value,
+            context.root.$emit('nimiq-tour-event', data);
+        }
+
+        function _receiveEvents() {
+            // events emitted by TourLargeScreenManager
+            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+                if (data.type === 'end-tour') endTour();
             });
         }
 
@@ -373,7 +386,9 @@ export default defineComponent({
         async function endTour() {
             _removeAttributes(currentStep.value);
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
+
             window.removeEventListener('keyup', onKeyDown);
+            context.root.$off('nimiq-tour-event');
 
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
@@ -384,7 +399,6 @@ export default defineComponent({
             app.removeAttribute('data-non-interactable');
 
             setTour(null);
-            context.root.$off('tour-end');
         }
 
         function onKeyDown(event: KeyboardEvent) {

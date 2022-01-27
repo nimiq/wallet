@@ -14,9 +14,9 @@
 
 <script lang="ts">
 import { useWindowSize } from '@/composables/useWindowSize';
-import { TourDataBroadcast, WalletHTMLElements } from '@/lib/tour';
+import { TourBroadcast, TourBroadcastStepChanged, TourStepIndex, WalletHTMLElements } from '@/lib/tour';
 import { useAccountStore } from '@/stores/Account';
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, Ref, ref } from '@vue/composition-api';
 
 export default defineComponent({
     name: 'tour-large-screen-manager',
@@ -26,17 +26,19 @@ export default defineComponent({
         const { state: accountState } = useAccountStore();
         const isTourActive = computed(() => accountState.tour !== null);
 
-        const nSteps = ref(-1);
-        const currentStep = ref(-1);
-
-        context.root.$on('tour-data', (tourData: TourDataBroadcast) => {
-            nSteps.value = tourData.nSteps;
-            currentStep.value = tourData.currentStep;
-        });
+        const nSteps: Ref<number> = ref(-1);
+        const currentStep:Ref<TourStepIndex> = ref(-1);
 
         const $originalManager = ref<HTMLDivElement>(null);
+        onMounted(() => {
+            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+                if (data.type === 'tour-step-changed') stepChanged(data.payload);
+            });
+        });
 
-        watch([nSteps, currentStep], () => {
+        function stepChanged({ nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
+            nSteps.value = newNSteps;
+            currentStep.value = newCurrentStep;
             if (!isLargeScreen.value) return;
 
             const modalIsOpen = document.querySelector(WalletHTMLElements.MODAL_CONTAINER) !== null;
@@ -45,7 +47,7 @@ export default defineComponent({
             } else {
                 _removeClonedManager();
             }
-        });
+        }
 
         function _removeClonedManager() {
             const tourManager = document.querySelector('body > .tour-manager');
@@ -85,8 +87,7 @@ export default defineComponent({
 
         function endTour() {
             _removeClonedManager();
-            // TODO Cannot end tour while loading
-            context.root.$emit('tour-end');
+            context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as TourBroadcast);
         }
 
         return {

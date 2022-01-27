@@ -1,5 +1,5 @@
 import { useWindowSize } from '@/composables/useWindowSize';
-import { SetupContext } from '@vue/composition-api';
+import { Ref, SetupContext } from '@vue/composition-api';
 
 export type TourName = 'onboarding' | 'network'
 
@@ -84,9 +84,18 @@ export type GetStepFnArgs<T extends number> =
         sleep: (ms: number) => Promise<unknown>,
     };
 
-export interface TourDataBroadcast {
-    currentStep: TourStepIndex;
-    nSteps: number;
+export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged
+
+interface TourBroadcastEnd {
+    type: 'end-tour';
+}
+
+export interface TourBroadcastStepChanged {
+    type: 'tour-step-changed';
+    payload: {
+        currentStep: TourStepIndex,
+        nSteps: number,
+    };
 }
 
 export enum WalletHTMLElements {

@@ -32,11 +32,12 @@ export default defineComponent({
         const $originalManager = ref<HTMLDivElement>(null);
         onMounted(() => {
             context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
-                if (data.type === 'tour-step-changed') stepChanged(data.payload);
+                if (data.type === 'tour-step-changed') _stepChanged(data.payload);
+                if (data.type === 'clicked-outside-tour') _flash();
             });
         });
 
-        function stepChanged({ nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
+        function _stepChanged({ nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
             nSteps.value = newNSteps;
             currentStep.value = newCurrentStep;
             if (!isLargeScreen.value) return;
@@ -90,6 +91,16 @@ export default defineComponent({
             context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as TourBroadcast);
         }
 
+        function _flash() {
+            const tourManager = document.querySelector('body .tour-manager');
+            if (tourManager) {
+                tourManager.classList.add('flash');
+                setTimeout(() => {
+                    tourManager.classList.remove('flash');
+                }, 500);
+            }
+        }
+
         return {
             isTourActive,
             isLargeScreen,
@@ -110,7 +121,9 @@ export default defineComponent({
     flex-direction: column;
     padding: 12px;
     gap: 2rem;
-    background-color: rgba(255, 255, 255, 0.12); // TODO Move to a variable??
+    background-color: rgba(255, 255, 255, 0.12); // TODO This should be var(--text-12)
+    transition-property: background-color;
+    transition-timing-function: ease-in-out;
     border-radius: 4px;
     cursor: initial !important;
 
@@ -147,6 +160,16 @@ export default defineComponent({
             font-size: 14px;
             font-weight: 700;
         }
+    }
+
+    &.flash {
+        animation: flash 0.4s;
+    }
+
+    @keyframes flash {
+        from { background-color: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
+        50% { background-color: rgba(255, 255, 255, 0.30); } // TODO This should be var(--text-30)
+        to { background-color: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
     }
 }
 </style>

@@ -9,6 +9,7 @@
             <transition name="fade">
                 <v-step
                     class="tooltip"
+                    :class="tour.steps[tour.currentStep].params.placement || ''"
                     v-if="tour.steps[tour.currentStep]"
                     :key="tour.currentStep"
                     :step="tour.steps[tour.currentStep]"
@@ -154,7 +155,7 @@ export default defineComponent({
 
         // Initial state
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(4);
+        const currentStep: Ref<TourStepIndex> = ref(0);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
 
@@ -206,7 +207,8 @@ export default defineComponent({
             tour.start(`${currentStep.value}`);
             isLoading.value = false;
 
-            window.addEventListener('keyup', onKeyDown);
+            window.addEventListener('keyup', _onKeyDown);
+            window.addEventListener('click', _userClicked());
 
             _receiveEvents();
             _broadcast({
@@ -323,6 +325,16 @@ export default defineComponent({
             });
         }
 
+        function _userClicked() {
+            const userCanClick = ['.tour', '.tour-manager'].map((s) => document.querySelector(s) as HTMLElement);
+            return ({ target }: MouseEvent) => {
+                if (!target) return;
+                if (!userCanClick.some((el) => el.contains(target as Node))) {
+                    _broadcast({ type: 'clicked-outside-tour' });
+                }
+            };
+        }
+
         // TODO In tablets 'buy nim' in sidebar does not get its original state
         let _buttonNimClasses: {[x:string]: string} = {};
         function _toggleDisabledButtons(disabledButtons: TourStep['ui']['disabledButtons'], disabled:boolean) {
@@ -391,7 +403,9 @@ export default defineComponent({
             _removeAttributes(currentStep.value);
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
 
-            window.removeEventListener('keyup', onKeyDown);
+            window.removeEventListener('keyup', _onKeyDown);
+            window.addEventListener('click', _userClicked());
+
             context.root.$off('nimiq-tour-event');
 
             if (unmounted) {
@@ -405,7 +419,7 @@ export default defineComponent({
             setTour(null);
         }
 
-        function onKeyDown(event: KeyboardEvent) {
+        function _onKeyDown(event: KeyboardEvent) {
             switch (event.key) {
                 case 'ArrowRight':
                     if (!disableNextStep.value) {
@@ -589,6 +603,38 @@ button.highlighted {
                     }
                 }
             }
+        }
+        ::v-deep .v-step__arrow {
+            background: var(--nimiq-light-blue);
+        }
+
+        &.bottom-start ::v-deep .v-step__arrow, &.right-start ::v-deep .v-step__arrow,
+        &.bottom ::v-deep .v-step__arrow, &.right ::v-deep .v-step__arrow, &.right-end ::v-deep .v-step__arrow {
+            background: #0582ca !important;
+        }
+
+        &.bottom-end ::v-deep .v-step__arrow {
+            background: #0681ca !important;
+        }
+
+        &.top-start ::v-deep .v-step__arrow {
+            background: #087ecb !important;
+        }
+
+        &.left-start ::v-deep .v-step__arrow {
+            background: #0a7ccc !important;
+        }
+
+        &.left ::v-deep .v-step__arrow {
+            background: #1570d0 !important;
+        }
+
+        &.top ::v-deep .v-step__arrow {
+            background: #1570d0 !important;
+        }
+
+        &.left-end ::v-deep .v-step__arrow, &.top-end ::v-deep .v-step__arrow {
+            background: #2163d5 !important;
         }
     }
 }

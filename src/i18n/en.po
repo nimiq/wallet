@@ -203,10 +203,6 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
-msgid "All in one easy place."
-msgstr ""
-
 #: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
@@ -230,10 +226,6 @@ msgstr ""
 
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:27
-msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:30
@@ -348,7 +340,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:31
 msgid "Buy"
 msgstr ""
 
@@ -524,12 +516,6 @@ msgstr ""
 msgid "Congrats"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:15
-msgid ""
-"Connect directly to the Nimiq blockchain.\n"
-"Be independent from any middleman."
-msgstr ""
-
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
 msgstr ""
@@ -568,7 +554,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/SendModal.vue:87
-#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr ""
 
@@ -711,7 +696,7 @@ msgstr ""
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
-#: src/components/Tour.vue:64
+#: src/components/Tour.vue:67
 msgid "End Tour"
 msgstr ""
 
@@ -876,10 +861,6 @@ msgstr ""
 msgid "Got it!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:5
-msgid "Great, you’re here!"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
@@ -996,10 +977,6 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:53
-msgid "It is fast, safe and makes you truly independent."
-msgstr ""
-
 #: src/components/modals/StartOnBoardingTourModal.vue:16
 msgid "It's free, does not collect data and is controlled by no one but you."
 msgstr ""
@@ -1035,10 +1012,6 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
 msgid "Let's go"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:64
-msgid "Let's go!"
 msgstr ""
 
 #: src/components/NetworkMap.vue:30
@@ -1146,7 +1119,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:51
 msgid "Network"
 msgstr ""
 
@@ -1154,7 +1127,7 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/Tour.vue:51
+#: src/components/Tour.vue:54
 msgid "Next"
 msgstr ""
 
@@ -1320,7 +1293,7 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/Tour.vue:38
+#: src/components/Tour.vue:41
 msgid "Previous"
 msgstr ""
 
@@ -1491,7 +1464,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:36
 msgid "Sell"
 msgstr ""
 
@@ -1529,10 +1502,6 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SendModal.vue:172
 msgid "Send all"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:50
-msgid "Send and receive NIM directly on the blockchain."
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:16
@@ -1620,7 +1589,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:59
 msgid "Settings"
 msgstr ""
 
@@ -1702,10 +1671,6 @@ msgstr ""
 
 #: src/components/modals/StartOnBoardingTourModal.vue:21
 msgid "Start Wallet tour"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:7
-msgid "Store, send and receive NIM."
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
@@ -1795,10 +1760,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:51
 msgid "The new Login Files are an easy and convenient way to gain access to your account and its addresses."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:47
-msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:44
@@ -1973,8 +1934,8 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:22
-msgid "Use {NIM}, the super performant and browser- based payment coin."
+#: src/components/modals/BtcReceiveModal.vue:55
+msgid "Use a new Bitcoin address for every transaction to improve privacy."
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
@@ -1991,6 +1952,10 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
+msgstr ""
+
+#: src/components/TourLargeScreenManager.vue:4
+msgid "Use the tooltips to navigate your tour."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:205
@@ -2115,10 +2080,6 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:80
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:13
-msgid "Your browser is a Node"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:98

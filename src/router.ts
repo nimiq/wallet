@@ -16,6 +16,9 @@ const Network = () =>
 // Modals
 const AccountMenuModal = () =>
     import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
+const DiscoverTheNimiqWalletModal = () =>
+    import(/* webpackChunkName: "discover-the-nimiq-wallet-modal" */
+        './components/modals/DiscoverTheNimiqWalletModal.vue');
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
@@ -26,8 +29,6 @@ const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './compone
 const BuyOptionsModal = () =>
     import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
-const WelcomeModal = () =>
-    import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
 const DisclaimerModal = () =>
@@ -56,10 +57,6 @@ const MoonpayModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
-
-// Tour modals
-const StartOnBoardingTourModal = () =>
-    import(/* webpackChunkName: "start-onboarding-tour-modal" */ './components/modals/StartOnBoardingTourModal.vue');
 
 Vue.use(VueRouter);
 
@@ -193,7 +190,7 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/welcome',
             components: {
-                modal: WelcomeModal,
+                modal: DiscoverTheNimiqWalletModal,
             },
             name: 'welcome',
             meta: { column: Columns.ACCOUNT },
@@ -285,15 +282,6 @@ const routes: RouteConfig[] = [{
             name: 'release-notes',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
-        }, {
-            // TODO change this route
-            path: '/welcome-2',
-            components: {
-                modal: StartOnBoardingTourModal,
-            },
-            name: 'welcome',
-            props: { modal: true },
-            meta: { column: Columns.ACCOUNT },
         }],
     }],
 }, {

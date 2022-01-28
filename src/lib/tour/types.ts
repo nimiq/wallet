@@ -89,10 +89,14 @@ export type GetStepFnArgs<T extends number> =
         closeAccountOptions: () => Promise<void>,
     };
 
-export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged
+export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged | TourBroadcastClickedOutsideTour
 
 interface TourBroadcastEnd {
     type: 'end-tour';
+}
+
+interface TourBroadcastClickedOutsideTour {
+    type: 'clicked-outside-tour';
 }
 
 export interface TourBroadcastStepChanged {

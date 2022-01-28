@@ -42,7 +42,7 @@ export default defineComponent({
     setup(props, context) {
         function startTour() {
             const { setTour } = useAccountStore();
-            setTour('onboarding');
+            setTour({ name: 'onboarding', isANewUser: true });
             context.root.$router.push('/');
         }
 

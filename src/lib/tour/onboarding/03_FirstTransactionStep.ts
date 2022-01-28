@@ -1,8 +1,8 @@
 import { WalletHTMLElements } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep({ isSmallScreen, isLargeScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getFirstTransactionStep({ isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -36,7 +36,7 @@ export function getFirstTransactionStep({ isSmallScreen, isLargeScreen }: GetSte
             target: isSmallScreen.value
                 ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .transaction > .identicon`
                 : `${WalletHTMLElements.ADDRESS_OVERVIEW} .vue-recycle-scroller__item-view:nth-child(2)`,
-            content: onboardingTexts[OnboardingTourStep.FIRST_TRANSACTION].default,
+            content: getOnboardingTexts(OnboardingTourStep.FIRST_TRANSACTION, isANewUser).default,
             params: {
                 placement: isSmallScreen.value ? 'bottom-start' : 'left',
             },

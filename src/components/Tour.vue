@@ -128,7 +128,8 @@ export default defineComponent({
         const { state: $network } = useNetworkStore();
         const disconnected = computed(() => $network.consensus !== 'established');
 
-        const { state: tourStore, setTour } = useAccountStore();
+        const { state: tourStore, setTour, activeAccountInfo } = useAccountStore();
+        activeAccountInfo.value!.fileExported = false;
 
         let tour: VueTour.Tour | null = null;
         const tourOptions: any = {
@@ -149,11 +150,11 @@ export default defineComponent({
             useKeyboardNavigation: false, // handled by us
         };
         // TODO Go back to index
-        const steps: TourStep[] = Object.values(getTour(tourStore.tour, context) ?? []);
+        const steps = Object.values(getTour(tourStore.tour?.name, context));
 
         // Initial state
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(0);
+        const currentStep: Ref<TourStepIndex> = ref(4);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
 
@@ -165,14 +166,16 @@ export default defineComponent({
             await tourSetup();
 
             // REMOVE ME
-            const { removeTransactions } = useTransactionsStore();
-            removeTransactions([getFakeTx()]);
+            const { removeTransactions, addTransactions } = useTransactionsStore();
+            // removeTransactions([getFakeTx()]);
+            addTransactions([getFakeTx()]);
         });
 
         async function tourSetup() {
             await context.root.$nextTick(); // to ensure the DOM is ready
 
-            const step = steps[currentStep.value]!;
+            const step = steps[currentStep.value];
+            if (!step) return;
 
             // Update state
             nSteps.value = Object.keys(steps).length;
@@ -191,8 +194,9 @@ export default defineComponent({
                 ending: false,
             });
 
-            if (context.root.$route.path !== step.path) {
+            if (!context.root.$route.fullPath.endsWith(step.path)) {
                 context.root.$router.push(step.path);
+                await context.root.$nextTick();
             }
 
             // ensures animation ends
@@ -355,13 +359,13 @@ export default defineComponent({
             const fadedElements = uiConfig.fadedElements || [];
             const disabledElements = uiConfig.disabledElements || [];
 
-            disabledElements.forEach((element) => {
+            disabledElements.filter((e) => e).forEach((element) => {
                 const el = document.querySelector(element);
                 if (!el) return;
                 el.setAttribute('data-non-interactable', stepIndex.toString());
             });
 
-            fadedElements.forEach((element) => {
+            fadedElements.filter((e) => e).forEach((element) => {
                 const el = document.querySelector(element);
                 if (!el) return;
                 el.setAttribute('data-opacified', stepIndex.toString());

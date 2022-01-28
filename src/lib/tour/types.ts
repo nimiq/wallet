@@ -1,5 +1,5 @@
 import { useWindowSize } from '@/composables/useWindowSize';
-import { Ref, SetupContext } from '@vue/composition-api';
+import { SetupContext } from '@vue/composition-api';
 
 export type TourName = 'onboarding' | 'network'
 
@@ -11,7 +11,9 @@ export enum OnboardingTourStep {
     WALLET_BALANCE,
     BACKUP_ALERT,
     MENU_ICON,
+    BACKUP_OPTION_LARGE_SCREENS,
     ACCOUNT_OPTIONS,
+    BACKUP_OPTION_NOT_LARGE_SCREENS,
     ONBOARDING_COMPLETED
 }
 
@@ -82,6 +84,9 @@ export type GetStepFnArgs<T extends number> =
         steps: TourSteps<T>,
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
+        isANewUser: boolean,
+        openAccountOptions: () => Promise<void>,
+        closeAccountOptions: () => Promise<void>,
     };
 
 export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged
@@ -106,6 +111,7 @@ export enum WalletHTMLElements {
     SIDEBAR_ACCOUNT_MENU = '.sidebar .account-menu',
     SIDEBAR_NETWORK = '.sidebar .network',
     SIDEBAR_SETTINGS = '.sidebar .settings',
+    SIDEBAR_MOBILE_TAP_AREA = '.mobile-tap-area',
 
     ACCOUNT_OVERVIEW_BACKUP_ALERT = '.account-overview .backup-warning',
     ACCOUNT_OVERVIEW_TABLET_MENU_BAR = '.account-overview .mobile-menu-bar',

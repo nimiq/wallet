@@ -2,21 +2,23 @@ import { WalletHTMLElements } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getBackupAlertStep(
-    { isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getBackupOptionLargeScreenStep(
+    { isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
-            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
             WalletHTMLElements.SIDEBAR_NETWORK,
             WalletHTMLElements.SIDEBAR_SETTINGS,
             WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
             WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledElements: [
+            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            WalletHTMLElements.SIDEBAR_MOBILE_TAP_AREA,
+            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
             WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
             WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
@@ -29,17 +31,16 @@ export function getBackupAlertStep(
             WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
     };
+
     return {
         path: '/',
         tooltip: {
-            target: isSmallScreen.value
-                ? `${WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT} button`
-                : WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
-            content: getOnboardingTexts(OnboardingTourStep.BACKUP_ALERT, isANewUser).default,
+            target: WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS, isANewUser).default,
             params: {
-                placement: isSmallScreen.value ? 'bottom' : 'right',
+                placement: 'right',
             },
         },
         ui,
-    };
+    } as TourStep;
 }

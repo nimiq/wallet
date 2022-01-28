@@ -1,8 +1,8 @@
 import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBitcoinAddressStep(
-    { isSmallScreen, isMediumScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { isSmallScreen, isMediumScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -35,7 +35,7 @@ export function getBitcoinAddressStep(
         tooltip: {
             target: `.account-overview .bitcoin-account ${isSmallScreen.value || isMediumScreen.value
                 ? '> .bitcoin-account-item > svg' : ''}`,
-            content: onboardingTexts[OnboardingTourStep.BITCOIN_ADDRESS].default,
+            content: getOnboardingTexts(OnboardingTourStep.BITCOIN_ADDRESS, isANewUser).default,
             params: {
                 placement: isSmallScreen.value || isMediumScreen.value ? 'top-start' : 'right-end',
                 // TODO Add margin in large screens

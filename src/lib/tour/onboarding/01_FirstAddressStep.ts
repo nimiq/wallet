@@ -2,10 +2,10 @@ import { CryptoCurrency } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
 import { useAddressStore } from '@/stores/Address';
 import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getFirstAddressStep(
-    { isSmallScreen, isLargeScreen, root }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { isSmallScreen, isANewUser, root }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const created = () => {
         const { setActiveCurrency } = useAccountStore();
         const { addressInfos, selectAddress } = useAddressStore();
@@ -48,7 +48,7 @@ export function getFirstAddressStep(
             path,
             tooltip: {
                 target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .address-button .identicon img`,
-                content: onboardingTexts[OnboardingTourStep.FIRST_ADDRESS].default,
+                content: getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS, isANewUser).default,
                 params: {
                     placement: 'bottom-start',
                 },
@@ -93,7 +93,7 @@ export function getFirstAddressStep(
         path,
         tooltip: {
             target: `${WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon`,
-            content: onboardingTexts[OnboardingTourStep.FIRST_ADDRESS].default,
+            content: getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS, isANewUser).default,
             params: {
                 placement: 'left-start',
             },

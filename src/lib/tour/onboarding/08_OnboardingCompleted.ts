@@ -1,9 +1,9 @@
 import { useAccountStore } from '@/stores/Account';
 import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getOnboardingCompletedStep(
-    { root, isMediumScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { root, isLargeScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -17,6 +17,7 @@ export function getOnboardingCompletedStep(
         ],
         disabledElements: [
             WalletHTMLElements.SIDEBAR_NETWORK,
+            WalletHTMLElements.SIDEBAR_MOBILE_TAP_AREA,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
             WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
@@ -31,12 +32,12 @@ export function getOnboardingCompletedStep(
         ],
     };
     return {
-        path: isMediumScreen.value ? '/?sidebar=true' : '/',
+        path: isLargeScreen.value ? '/' : '/?sidebar=true',
         tooltip: {
-            target: `${WalletHTMLElements.SIDEBAR_NETWORK} ${isMediumScreen.value ? '.consensus-icon' : 'span'}`,
-            content: onboardingTexts[OnboardingTourStep.ONBOARDING_COMPLETED].default,
+            target: `${WalletHTMLElements.SIDEBAR_NETWORK} ${isLargeScreen.value ? 'span' : '.consensus-icon'}`,
+            content: getOnboardingTexts(OnboardingTourStep.ONBOARDING_COMPLETED, isANewUser).default,
             params: {
-                placement: isMediumScreen.value ? 'top-start' : 'right',
+                placement: isLargeScreen.value ? 'right' : 'top-start',
             },
             button: {
                 text: 'Go to Network',
@@ -45,7 +46,7 @@ export function getOnboardingCompletedStep(
                         await endTour();
                     }
                     const { setTour } = useAccountStore();
-                    setTour('network');
+                    setTour({ name: 'network', isANewUser: false });
                     root.$router.push('/network');
                 },
             },

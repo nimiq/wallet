@@ -45,6 +45,7 @@ export function disableNextModalTransition() {
 }
 
 export default defineComponent({
+    name: 'modal',
     props: {
         emitClose: {
             type: Boolean,

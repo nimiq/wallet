@@ -1,13 +1,13 @@
 import { WalletHTMLElements } from '..';
-import { OnboardingTourStep, TourStep } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getMenuIconStep(): TourStep {
+export function getMenuIconStep({ isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
     return {
         path: '/',
         tooltip: {
             target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR} > button.reset`,
-            content: onboardingTexts[OnboardingTourStep.MENU_ICON].default,
+            content: getOnboardingTexts(OnboardingTourStep.MENU_ICON, isANewUser).default,
             params: {
                 placement: 'bottom-start',
             },

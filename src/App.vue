@@ -51,10 +51,10 @@ export default defineComponent({
 
         const { accountInfos, state: accountState, setTour } = useAccountStore();
         if (!['root', 'transactions'].includes(context.root.$route.name as string)
-            && accountState.tour === 'onboarding') {
+            && accountState.tour?.name === 'onboarding') {
             setTour(null);
         } else if (!['network'].includes(context.root.$route.name as string)
-            && accountState.tour === 'network') {
+            && accountState.tour?.name === 'network') {
             setTour(null);
         }
         const showTour = computed(() => !!accountState.tour);
@@ -136,10 +136,10 @@ export default defineComponent({
             excludeSelector: '.scroller, .scroller *',
         });
 
-        watch([isSmallScreen, swipingEnabled], ([isSmallScreenNow, newSwiping], [wasMobile, oldSwiping]) => {
+        watch([isSmallScreen, swipingEnabled], ([isSmallScreenNow, newSwiping], [wasSmallScreen, oldSwiping]) => {
             if (!$main.value) return;
 
-            if ((isSmallScreenNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
+            if ((isSmallScreenNow && !wasSmallScreen) || (newSwiping === 1 && oldSwiping !== 1)) {
                 attachSwipe();
             } else if (!isSmallScreenNow || newSwiping !== 1) {
                 detachSwipe();

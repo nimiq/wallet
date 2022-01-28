@@ -1,23 +1,46 @@
 import { useTransactionsStore } from '@/stores/Transactions';
 import { WalletHTMLElements } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
-import { onboardingTexts } from './OnboardingTourTexts';
+import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
-    { root, steps, isSmallScreen, isLargeScreen }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { root, steps, isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    const txs = useTransactionsStore().state.transactions;
+    const startsWithNoTransactions = Object.values(txs).length === 0;
+
+    const tooltipWhenNoTx: TourStep['tooltip'] = {
+        target: isSmallScreen.value
+            ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} > .empty-state h2`
+            : WalletHTMLElements.ADDRESS_OVERVIEW,
+        content: getOnboardingTexts(OnboardingTourStep.TRANSACTIONS_LIST, isANewUser).default,
+        params: {
+            placement: isSmallScreen.value ? 'top' : 'left',
+        },
+    };
+    const tooltipWhenAtLeastOneTx: TourStep['tooltip'] = {
+        target: isSmallScreen.value
+            ? '.vue-recycle-scroller__item-wrapper'
+            : WalletHTMLElements.ADDRESS_OVERVIEW,
+        content: getOnboardingTexts(OnboardingTourStep.TRANSACTIONS_LIST, isANewUser).alternative || [],
+        params: {
+            placement: isSmallScreen.value ? 'bottom' : 'left',
+        },
+    };
+
     let userHasClicked = false;
     const highlightButton = (highlight: boolean) => {
         if (userHasClicked) return;
 
         const receiveNim = document
             .querySelector(WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM) as HTMLButtonElement;
+        if (!receiveNim) return;
         receiveNim.classList[highlight ? 'add' : 'remove']('highlighted');
     };
     const mounted = () => {
         const { transactions } = useTransactionsStore().state;
 
         if (Object.values(transactions.value || []).length === 0) {
-            const unwatch = root.$watch(() => useTransactionsStore().state.transactions, (txs) => {
+            const unwatch = root.$watch(() => txs, () => {
                 if (!Object.values(txs).length) {
                     unwatch();
                     return;
@@ -30,24 +53,8 @@ export function getTransactionListStep(
                 buyNimBtn.disabled = true;
 
                 // Once the user has at least one transaction, step TRANSACTIONS_LIST is modified
-                if (isSmallScreen.value) {
-                    steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip = {
-                        target: '.vue-recycle-scroller__item-wrapper',
-                        content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].alternative || [],
-                        params: {
-                            placement: 'bottom',
-                        },
-                    };
-                } else {
-                    steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip = {
-                        ...steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip,
-                        content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].alternative || [],
-                    };
-                }
-                steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui = {
-                    ...steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui,
-                    isNextStepDisabled: false,
-                };
+                steps[OnboardingTourStep.TRANSACTIONS_LIST]!.tooltip = tooltipWhenAtLeastOneTx;
+                steps[OnboardingTourStep.TRANSACTIONS_LIST]!.ui.isNextStepDisabled = false;
                 steps[OnboardingTourStep.TRANSACTIONS_LIST]!.lifecycle = {};
 
                 unwatch();
@@ -85,21 +92,13 @@ export function getTransactionListStep(
             WalletHTMLElements.BUTTON_SIDEBAR_SELL,
             WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
-        isNextStepDisabled: true,
+        isNextStepDisabled: startsWithNoTransactions,
     };
 
     return {
         path: isSmallScreen.value ? '/transactions' : '/',
-        tooltip: {
-            target: isSmallScreen.value
-                ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} > .empty-state h2`
-                : WalletHTMLElements.ADDRESS_OVERVIEW,
-            content: onboardingTexts[OnboardingTourStep.TRANSACTIONS_LIST].default,
-            params: {
-                placement: isSmallScreen.value ? 'top' : 'left',
-            },
-        },
-        lifecycle: { mounted },
+        tooltip: startsWithNoTransactions ? tooltipWhenNoTx : tooltipWhenAtLeastOneTx,
+        lifecycle: startsWithNoTransactions ? { mounted } : {},
         ui,
     };
 }

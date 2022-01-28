@@ -5,15 +5,15 @@ import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
 import { NetworkTourStep, OnboardingTourStep, TourName, TourSteps } from './types';
 
-export function getTour(tour: TourName | null, context: SetupContext)
-    : TourSteps<OnboardingTourStep> | TourSteps<NetworkTourStep> | undefined {
+export function getTour(tour: TourName | undefined, context: SetupContext)
+    : TourSteps<OnboardingTourStep> | TourSteps<NetworkTourStep> {
     switch (tour) {
         case 'onboarding':
             return getOnboardingTourSteps(context);
         case 'network':
             return getNetworkTourSteps();
         default:
-            return undefined;
+            return {};
     }
 }
 

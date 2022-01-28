@@ -1,5 +1,7 @@
 import { useWindowSize } from '@/composables/useWindowSize';
+import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
+import { searchComponentByName } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
 import { getTransactionListStep } from './02_TransactionListStep';
@@ -8,6 +10,8 @@ import { getBitcoinAddressStep } from './04_BitcoinAddressStep';
 import { getWalletBalanceStep } from './05_WalletBalanceStep';
 import { getBackupAlertStep } from './06_0_BackupAlertStep';
 import { getMenuIconStep } from './06_1_MenuIconStep';
+import { getBackupOptionNotLargeScreenStep } from './07_1_BackupOptionNotLargeScreenStep';
+import { getBackupOptionLargeScreenStep } from './07_2_BackupOptionLargeScreenStep';
 import { getAccountOptionsStep } from './07_AccountOptionsStep';
 import { getOnboardingCompletedStep } from './08_OnboardingCompleted';
 
@@ -23,9 +27,31 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     };
 
     const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
+    const { state, activeAccountInfo } = useAccountStore();
+    const { isANewUser } = state.tour || { isANewUser: false };
+    const { type: accountType, fileExported: _fileExported } = activeAccountInfo.value || {};
+    const fileExported = (accountType === AccountType.BIP39 && !_fileExported);
 
     // Declaring steps here so we can reference it in the lifecycle functions
     const steps: TourSteps<OnboardingTourStep> = {};
+
+    const openAccountOptions = async () => {
+        const accountMenu = searchComponentByName(root, 'account-menu') as any;
+        if (!accountMenu || !('closeMenu' in accountMenu)
+            || !('menuOpen' in accountMenu) || accountMenu.menuOpen) {
+            return;
+        }
+        accountMenu.openMenu();
+        await sleep(500);
+    };
+    const closeAccountOptions = async () => {
+        const modal = searchComponentByName(root, 'modal') as any;
+
+        if ('close' in modal) {
+            modal.close();
+            await sleep(500);
+        }
+    };
 
     const args: GetStepFnArgs<OnboardingTourStep> = {
         sleep,
@@ -35,6 +61,9 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         isSmallScreen,
         isMediumScreen,
         isLargeScreen,
+        isANewUser,
+        openAccountOptions,
+        closeAccountOptions,
     };
 
     steps[OnboardingTourStep.FIRST_ADDRESS] = getFirstAddressStep(args);
@@ -42,11 +71,21 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     steps[OnboardingTourStep.FIRST_TRANSACTION] = getFirstTransactionStep(args);
     steps[OnboardingTourStep.BITCOIN_ADDRESS] = getBitcoinAddressStep(args);
     steps[OnboardingTourStep.WALLET_BALANCE] = getWalletBalanceStep(args);
-    steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
-    if (!isLargeScreen.value) {
-        steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
+    if (!fileExported) {
+        steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
     }
-    steps[OnboardingTourStep.ACCOUNT_OPTIONS] = getAccountOptionsStep(args);
+    if (!isLargeScreen.value && isANewUser) {
+        steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep(args);
+    }
+    if (fileExported && isLargeScreen.value) {
+        steps[OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS] = getBackupOptionLargeScreenStep(args);
+    }
+    steps[OnboardingTourStep.ACCOUNT_OPTIONS] = getAccountOptionsStep(
+        { ...args, keepMenuOpenOnForward: fileExported && !isLargeScreen.value });
+    if (fileExported && !isLargeScreen.value) {
+        steps[OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS] = getBackupOptionNotLargeScreenStep(args);
+    }
     steps[OnboardingTourStep.ONBOARDING_COMPLETED] = getOnboardingCompletedStep(args);
+
     return steps;
 }

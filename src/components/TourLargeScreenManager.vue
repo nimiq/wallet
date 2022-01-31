@@ -55,6 +55,9 @@ export default defineComponent({
             original.style.visibility = 'initial';
         }
 
+        // at some steps, a modal will be openened in the tour and we still need to show the tour
+        // manager to the user, therefore, we need to duplicate the manager and set it to the body
+        // positionated over the modal
         function _duplicateManager() {
             _removeClonedManager();
             const original = $originalManager.value!;
@@ -69,8 +72,7 @@ export default defineComponent({
             }
 
             manager.style.position = 'absolute';
-            // manager.style.top = `${original.offsetTop}px`; // FIXME: it is getting 114px instead of 98px
-            manager.style.top = '98px';
+            manager.style.top = `${original.offsetTop - 16}px`; // TODO Test this with other announcements
             manager.style.left = `${original.offsetLeft}px`;
             manager.style.width = `${original.offsetWidth}px`;
             manager.style.height = `${original.offsetHeight}px`;

@@ -1,8 +1,8 @@
-import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBitcoinAddressStep(
-    { isSmallScreen, isMediumScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { isLargeScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -33,12 +33,16 @@ export function getBitcoinAddressStep(
     return {
         path: '/',
         tooltip: {
-            target: `.account-overview .bitcoin-account ${isSmallScreen.value || isMediumScreen.value
-                ? '> .bitcoin-account-item > svg' : ''}`,
+            get target() {
+                return `.account-overview .bitcoin-account ${!isLargeScreen.value
+                    ? '> .bitcoin-account-item > svg' : ''}`;
+            },
             content: getOnboardingTexts(OnboardingTourStep.BITCOIN_ADDRESS, isANewUser).default,
             params: {
-                placement: isSmallScreen.value || isMediumScreen.value ? 'top-start' : 'right-end',
-                // TODO Add margin in large screens
+                get placement() {
+                    // TODO Add margin in large screens
+                    return !isLargeScreen.value ? 'bottom-start' : 'left';
+                },
             },
         },
         ui,

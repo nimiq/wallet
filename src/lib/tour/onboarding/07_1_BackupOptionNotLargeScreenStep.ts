@@ -1,10 +1,10 @@
 import { WalletHTMLElements } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBackupOptionNotLargeScreenStep(
     { closeAccountOptions, openAccountOptions, isANewUser, isSmallScreen }
-        : GetStepFnArgs<OnboardingTourStep>): TourStep {
+        : OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -41,7 +41,9 @@ export function getBackupOptionNotLargeScreenStep(
             content: getOnboardingTexts(
                 OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS, isANewUser).default,
             params: {
-                placement: isSmallScreen.value ? 'top-start' : 'right',
+                get placement() {
+                    return isSmallScreen.value ? 'top-start' : 'right';
+                },
             },
         },
         ui,

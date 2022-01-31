@@ -81,8 +81,7 @@ export type TourSteps<T extends number> = {
     [x in T]?: TourStep;
 };
 
-// TODO Rename or mix with NetworkGetStepFnArgs
-export type GetStepFnArgs<T extends number> =
+export type OnboardingGetStepFnArgs =
     Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> &
     {
         root: SetupContext['root'],

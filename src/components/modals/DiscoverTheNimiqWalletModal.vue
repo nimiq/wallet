@@ -15,7 +15,7 @@
 
         <div class="content">
             <div class="description">
-                <GreenNimiqLogoOutlineWithStars />
+                <NimiqLogoOutlineWithStars />
                 <h1 class="nq-h1">{{ $t('Discover the Nimiq Wallet!') }}</h1>
                 <p class="nq-text">
                     {{ $t('It\'s free, does not collect data and is controlled by no one but you.') }}
@@ -43,7 +43,7 @@ import { PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
 import { TourName } from '@/lib/tour';
 import { Languages } from '../../i18n/i18n-setup';
-import GreenNimiqLogoOutlineWithStars from '../icons/GreenNimiqLogoOutlineWithStars.vue';
+import NimiqLogoOutlineWithStars from '../icons/NimiqLogoOutlineWithStars.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import Modal from './Modal.vue';
 
@@ -73,7 +73,7 @@ export default defineComponent({
     components: {
         Modal,
         PageHeader,
-        GreenNimiqLogoOutlineWithStars,
+        NimiqLogoOutlineWithStars,
         CaretRightIcon,
     },
 });

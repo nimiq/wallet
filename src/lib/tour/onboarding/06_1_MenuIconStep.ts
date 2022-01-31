@@ -1,12 +1,12 @@
 import { WalletHTMLElements } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getMenuIconStep({ isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getMenuIconStep({ isANewUser }: OnboardingGetStepFnArgs): TourStep {
     return {
         path: '/',
         tooltip: {
-            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR} > button.reset`,
+            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`,
             content: getOnboardingTexts(OnboardingTourStep.MENU_ICON, isANewUser).default,
             params: {
                 placement: 'bottom-start',
@@ -15,7 +15,7 @@ export function getMenuIconStep({ isANewUser }: GetStepFnArgs<OnboardingTourStep
         lifecycle: {
             mounted: async ({ goToNextStep }) => {
                 const hamburguerIcon = document.querySelector(
-                    `${WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR} > button.reset`) as HTMLButtonElement;
+                    `${WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
 
                 hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
             },

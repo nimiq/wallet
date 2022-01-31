@@ -57,8 +57,8 @@ const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
     setup(props, context) {
-        const showNetworkInfo = ref(true // TOOD Remove me
-            || !window.localStorage.getItem(LOCALSTORAGE_KEY) || !!context.root.$route.params.showNetworkInfo);
+        const showNetworkInfo = ref(
+            !window.localStorage.getItem(LOCALSTORAGE_KEY) || !!context.root.$route.params.showNetworkInfo);
 
         function onNetworkInfoClosed() {
             window.localStorage.setItem(LOCALSTORAGE_KEY, '1');

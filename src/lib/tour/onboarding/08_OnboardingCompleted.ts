@@ -1,9 +1,8 @@
-import { useAccountStore } from '@/stores/Account';
-import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getOnboardingCompletedStep(
-    { root, isLargeScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { root, isLargeScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -32,12 +31,18 @@ export function getOnboardingCompletedStep(
         ],
     };
     return {
-        path: isLargeScreen.value ? '/' : '/?sidebar=true',
+        get path() {
+            return isLargeScreen.value ? '/' : '/?sidebar=true';
+        },
         tooltip: {
-            target: `${WalletHTMLElements.SIDEBAR_NETWORK} ${isLargeScreen.value ? 'span' : '.consensus-icon'}`,
+            get target() {
+                return `${WalletHTMLElements.SIDEBAR_NETWORK} ${isLargeScreen.value ? 'span' : '.consensus-icon'}`;
+            },
             content: getOnboardingTexts(OnboardingTourStep.ONBOARDING_COMPLETED, isANewUser).default,
             params: {
-                placement: isLargeScreen.value ? 'right' : 'top-start',
+                get placement() {
+                    return isLargeScreen.value ? 'right' : 'top-start';
+                },
             },
             button: {
                 text: 'Go to Network',
@@ -45,9 +50,12 @@ export function getOnboardingCompletedStep(
                     if (endTour) {
                         await endTour();
                     }
-                    const { setTour } = useAccountStore();
-                    setTour({ name: 'network', isANewUser: false });
-                    root.$router.push('/network');
+                    root.$router.push({
+                        name: 'network',
+                        params: {
+                            showNetworkInfo: 'true',
+                        },
+                    });
                 },
             },
         },

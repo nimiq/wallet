@@ -1,9 +1,9 @@
 import { WalletHTMLElements } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBackupAlertStep(
-    { isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+    { isSmallScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,

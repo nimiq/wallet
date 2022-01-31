@@ -2,7 +2,7 @@ import { useWindowSize } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
 import { searchComponentByName, TourName } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
 import { getTransactionListStep } from './02_TransactionListStep';
 import { getFirstTransactionStep } from './03_FirstTransactionStep';
@@ -51,7 +51,7 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         }
     };
 
-    const args: GetStepFnArgs<OnboardingTourStep> = {
+    const args: OnboardingGetStepFnArgs = {
         sleep,
         toggleDisabledAttribute,
         root,

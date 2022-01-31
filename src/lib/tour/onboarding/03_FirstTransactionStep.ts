@@ -1,8 +1,8 @@
 import { WalletHTMLElements } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep({ isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getFirstTransactionStep({ isSmallScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -31,14 +31,20 @@ export function getFirstTransactionStep({ isSmallScreen, isANewUser }: GetStepFn
     };
 
     return {
-        path: isSmallScreen.value ? '/transactions' : '/',
+        get path() {
+            return isSmallScreen.value ? '/transactions' : '/';
+        },
         tooltip: {
-            target: isSmallScreen.value
-                ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .transaction > .identicon`
-                : `${WalletHTMLElements.ADDRESS_OVERVIEW} .vue-recycle-scroller__item-view:nth-child(2)`,
+            get target() {
+                return isSmallScreen.value
+                    ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .transaction > .identicon`
+                    : `${WalletHTMLElements.ADDRESS_OVERVIEW} .vue-recycle-scroller__item-view:nth-child(2)`;
+            },
             content: getOnboardingTexts(OnboardingTourStep.FIRST_TRANSACTION, isANewUser).default,
             params: {
-                placement: isSmallScreen.value ? 'bottom-start' : 'left',
+                get placement() {
+                    return isSmallScreen.value ? 'bottom-start' : 'left';
+                },
             },
         },
         ui,

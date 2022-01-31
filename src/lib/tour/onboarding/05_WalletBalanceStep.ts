@@ -1,7 +1,7 @@
-import { GetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getWalletBalanceStep({ isSmallScreen, isANewUser }: GetStepFnArgs<OnboardingTourStep>): TourStep {
+export function getWalletBalanceStep({ isSmallScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
@@ -32,11 +32,15 @@ export function getWalletBalanceStep({ isSmallScreen, isANewUser }: GetStepFnArg
     return {
         path: '/',
         tooltip: {
-            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE}
-                    ${isSmallScreen.value ? '.amount' : '.balance-distribution'}`,
+            get target() {
+                return `${WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE}
+                ${isSmallScreen.value ? '.amount' : '.balance-distribution'}`;
+            },
             content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE, isANewUser).default,
             params: {
-                placement: isSmallScreen.value ? 'bottom' : 'right',
+                get placement() {
+                    return isSmallScreen.value ? 'bottom' : 'right';
+                },
             },
         },
         ui,

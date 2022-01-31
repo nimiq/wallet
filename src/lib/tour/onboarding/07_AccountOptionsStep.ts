@@ -1,8 +1,8 @@
 import { WalletHTMLElements } from '..';
-import { GetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-type AccountStep = GetStepFnArgs<OnboardingTourStep> & { keepMenuOpenOnForward: boolean };
+type AccountStep = OnboardingGetStepFnArgs & { keepMenuOpenOnForward: boolean };
 export function getAccountOptionsStep(
     { isSmallScreen, isLargeScreen, isANewUser, openAccountOptions, closeAccountOptions, keepMenuOpenOnForward }
         : AccountStep): TourStep {
@@ -35,12 +35,16 @@ export function getAccountOptionsStep(
     };
 
     return {
-        path: isLargeScreen.value ? '/' : '/?sidebar=true',
+        get path() {
+            return isLargeScreen.value ? '/' : '/?sidebar=true';
+        },
         tooltip: {
             target: WalletHTMLElements.MODAL_PAGE,
             content: getOnboardingTexts(OnboardingTourStep.ACCOUNT_OPTIONS, isANewUser).default,
             params: {
-                placement: isSmallScreen.value ? 'top' : 'right',
+                get placement() {
+                    return isSmallScreen.value ? 'top' : 'right';
+                },
             },
         },
         ui,

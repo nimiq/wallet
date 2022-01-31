@@ -24,7 +24,14 @@
                     <div slot="content" class="content">
                         <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
                             <PartyConfettiIcon v-if="currentStep === nSteps - 1 && i === 0" />
-                            <p>{{ $t(content) }}</p>
+                            <hr v-if="content === 'HR'" />
+                            <p v-else-if="typeof content === 'string'" v-html="$t(content)"></p>
+                            <ul v-else-if="content.length">
+                                <li v-for="(item, i) in content" :key="i">
+                                    <span class="dash">-</span>
+                                    <span v-html="$t(item)"></span>
+                                </li>
+                            </ul>
                         </div>
                         <!-- TODO REMOVE ME -->
                         <div class="remove_me" v-if="currentStep === 1 && disableNextStep" @click="simulate()">
@@ -100,6 +107,7 @@ import {
     computed,
     defineComponent,
     onMounted,
+    onUnmounted,
     Ref,
     ref,
     watch,
@@ -142,16 +150,10 @@ export default defineComponent({
                 buttonNext: false,
                 buttonStop: false,
             },
-            labels: {
-                buttonSkip: 'Skip tour',
-                buttonPrevious: 'Previous',
-                buttonNext: 'Next',
-                buttonStop: 'Finish',
-            },
+            // TODO Add padding to arrow
             useKeyboardNavigation: false, // handled by us
         };
-        // TODO Go back to index
-        const steps = Object.values(getTour(tourStore.tour?.name, context));
+        let steps = Object.values(getTour(tourStore.tour?.name, context));
 
         // Initial state
         const isLoading = ref(true);
@@ -168,9 +170,11 @@ export default defineComponent({
 
             // REMOVE ME
             const { removeTransactions, addTransactions } = useTransactionsStore();
-            // removeTransactions([getFakeTx()]);
-            addTransactions([getFakeTx()]);
+            removeTransactions([getFakeTx()]);
+            // addTransactions([getFakeTx()]);
         });
+
+        onUnmounted(() => endTour());
 
         async function tourSetup() {
             await context.root.$nextTick(); // to ensure the DOM is ready
@@ -184,6 +188,11 @@ export default defineComponent({
 
             if (step.lifecycle?.created) {
                 await step.lifecycle.created({ goToNextStep, goingForward: true });
+            }
+
+            if (context.root.$route.fullPath !== step.path) {
+                context.root.$router.push(step.path);
+                await context.root.$nextTick();
             }
 
             _toggleDisabledButtons(step.ui.disabledButtons, true);
@@ -209,6 +218,10 @@ export default defineComponent({
 
             window.addEventListener('keyup', _onKeyDown);
             window.addEventListener('click', _userClicked());
+            // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
+
+            const app = document.querySelector('#app');
+            app!.setAttribute('data-tour-active', '');
 
             _receiveEvents();
             _broadcast({
@@ -236,7 +249,9 @@ export default defineComponent({
             // it takes to render the button. I don't know how to fix it.
 
             // Ensure that we disabled 'Receive Free NIM' button
-            await sleep(500);
+            await sleep(500); // TODO
+            // TODO Remove this code for the network, find other way
+            // steps = Object.values(getTour(tourStore.tour?.name, context));
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, true);
         });
 
@@ -326,7 +341,10 @@ export default defineComponent({
         }
 
         function _userClicked() {
-            const userCanClick = ['.tour', '.tour-manager'].map((s) => document.querySelector(s) as HTMLElement);
+            const userCanClick = ['.tour', '.tour-manager']
+                .map((s) => document.querySelector(s) as HTMLElement)
+                .filter((e) => !!e);
+
             return ({ target }: MouseEvent) => {
                 if (!target) return;
                 if (!userCanClick.some((el) => el.contains(target as Node))) {
@@ -399,24 +417,45 @@ export default defineComponent({
                 });
         }
 
-        async function endTour() {
-            _removeAttributes(currentStep.value);
-            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
-
+        async function endTour(soft = false) {
             window.removeEventListener('keyup', _onKeyDown);
-            window.addEventListener('click', _userClicked());
-
-            context.root.$off('nimiq-tour-event');
+            window.removeEventListener('click', () => _userClicked());
 
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
             }
+            if (soft) {
+                return;
+            }
+
+            window.removeEventListener('resize', () => _OnResize(_OnResizeEnd));
+
+            _removeAttributes(currentStep.value);
+            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
+
+            context.root.$off('nimiq-tour-event');
 
             // If user finalizes tour while it is loading, allow interaction again
-            const app = document.querySelector('#app main') as HTMLDivElement;
-            app.removeAttribute('data-non-interactable');
+            const app = document.querySelector('#app') as HTMLDivElement;
+            app.removeAttribute('data-tour-active');
+            app.querySelector('main')!.removeAttribute('data-non-interactable');
 
             setTour(null);
+        }
+
+        function _OnResize(func: () => void) {
+            endTour(true);
+            tour!.stop();
+            let timer: ReturnType<typeof setTimeout> | null = null;
+            return () => {
+                if (timer) clearTimeout(timer);
+                timer = setTimeout(func, 100);
+            };
+        }
+
+        function _OnResizeEnd() {
+            steps = Object.values(getTour(tourStore.tour?.name, context));
+            tourSetup();
         }
 
         function _onKeyDown(event: KeyboardEvent) {
@@ -483,21 +522,21 @@ export default defineComponent({
 // updated with opacity and non-interactivity properties as data attributes allow to use a value like
 // [data-opaified="1"] although the CSS selector that we can use is [data-opacified]. @see _removeAttributes
 
-[data-opacified] {
+[data-tour-active] [data-opacified] {
   filter: opacity(0.3);
 }
 
-[data-non-interactable],
-[data-non-interactable] * {
+[data-tour-active] [data-non-interactable],
+[data-tour-active] [data-non-interactable] * {
   user-select: none !important;
   pointer-events: none !important;
 }
 
-#app > *:not(.tour):not(.tour-manager) {
+[data-tour-active]#app > *:not(.tour):not(.tour-manager) {
   cursor: not-allowed;
 }
 
-button.highlighted {
+[data-tour-active] button.highlighted {
     background: linear-gradient(
             274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%, rgba(255, 255, 255, 0) 53.12%,
             rgba(255, 255, 255, 0.2) 81.25%, rgba(255, 255, 255, 0) 100%
@@ -542,7 +581,23 @@ button.highlighted {
                 display: flex;
                 align-items: center;
 
-                p {
+                ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding-left: 0;
+
+                    li {
+                        display: flex;
+                        gap: 1rem;
+                        margin-top: 1rem;
+
+                        .dash {
+                            user-select: none;
+                        }
+                    }
+                }
+
+                p, li {
                     margin: 0;
                     font-size: 15px;
                     line-height: 21px;
@@ -553,9 +608,15 @@ button.highlighted {
                     }
                 }
 
-                p::selection {
+                p::selection, li::selection {
                     color: var(--nimiq-light-blue);
                     background: var(--nimiq-light-gray);
+                }
+
+                hr {
+                    width: 100%;
+                    opacity: 0.2;
+                    height: 1.5px;
                 }
 
                 ::v-deep svg {
@@ -569,6 +630,7 @@ button.highlighted {
         .actions {
             margin-top: 2rem;
             display: flex;
+            gap: 1rem;
 
             button {
                 font-weight: 700;

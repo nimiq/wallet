@@ -1,22 +1,43 @@
-import { NetworkTourStep, TourSteps } from '../types';
+import { useWindowSize } from '@/composables/useWindowSize';
+import { NodeHexagon, NodeType, WIDTH } from '@/lib/NetworkMap';
+import { SetupContext } from '@vue/composition-api';
+import { searchComponentByName } from '..';
+import { NetworkGetStepFnArgs, NetworkTourStep, TourSteps, WalletHTMLElements } from '../types';
+import { getYourLocationStep } from './01_YourLocationStep';
+import { getBackboneNodeStep } from './02_BackboneNodeStep';
+import { getNetworkMetricsStep } from './03_NetworkMetricsStep';
+import { getNetworkCompletedStep } from './04_NetworkCompletedStep';
 
-export function getNetworkTourSteps(): TourSteps<NetworkTourStep> {
+export function getNetworkTourSteps({ root }: SetupContext): TourSteps<NetworkTourStep> {
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
+
+    const networkMapInstance = searchComponentByName(root, 'network-map') as any;
+    const nodes = () => networkMapInstance?.nodes as NodeHexagon[] || [];
+    const selfNodeIndex = nodes().findIndex((node) => [...node.peers].find((p) => p.type === NodeType.SELF));
+
+    const scrollIntoView = async (x: number) => {
+        const map = document.querySelector(WalletHTMLElements.NETWORK_SCROLLER) as HTMLElement;
+        const mapWidth = map.children[0]!.clientWidth;
+        const adjustedX = x * (mapWidth / WIDTH);
+        const scrollTarget = adjustedX - (window.innerWidth / 2);
+        map.scrollTo(scrollTarget, 0);
+    };
+
+    const args: NetworkGetStepFnArgs = {
+        nodes,
+        selfNodeIndex,
+        isSmallScreen,
+        isMediumScreen,
+        isLargeScreen,
+        scrollIntoView,
+        sleep,
+    };
+
     return {
-        [NetworkTourStep.TODO]: {
-            path: '/network',
-            tooltip: {
-                target: '.network-overview .network-name',
-                content: [
-                    'Welcome to the {WORLD} Network!',
-                    'This is the main network where all Nimiq transactions take place.',
-                    'You can switch between networks by clicking on the {WORLD} Network icon in the top right corner.',
-                ],
-                params: {
-                    placement: 'bottom',
-                },
-            },
-            ui: {},
-            lifecycle: {},
-        },
+        [NetworkTourStep.YOUR_LOCATION]: getYourLocationStep(args),
+        [NetworkTourStep.BACKBONE_NODE]: getBackboneNodeStep(args),
+        [NetworkTourStep.METRICS]: getNetworkMetricsStep(),
+        [NetworkTourStep.NETWORK_COMPLETED]: getNetworkCompletedStep(args),
     };
 }

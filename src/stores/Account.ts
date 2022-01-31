@@ -8,7 +8,7 @@ export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
     activeAccountId: string | null,
     activeCurrency: CryptoCurrency,
-    tour: { name: TourName, isANewUser: boolean } | null,
+    tour: { name: TourName.NETWORK } | { name: TourName.ONBOARDING, isANewUser: boolean } | null,
 }
 
 // Mirror of Hub WalletType, which is not exported

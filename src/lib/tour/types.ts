@@ -1,11 +1,12 @@
 import { useWindowSize } from '@/composables/useWindowSize';
 import { SetupContext } from '@vue/composition-api';
+import { NodeHexagon } from '../NetworkMap';
 
-export type TourName = 'onboarding' | 'network'
+export enum TourName { ONBOARDING = 'onboarding', NETWORK = 'network' }
 
 export enum OnboardingTourStep {
     FIRST_ADDRESS,
-    TRANSACTIONS_LIST,
+    TRANSACTION_LIST,
     FIRST_TRANSACTION,
     BITCOIN_ADDRESS,
     WALLET_BALANCE,
@@ -18,7 +19,10 @@ export enum OnboardingTourStep {
 }
 
 export enum NetworkTourStep {
-    TODO,
+    YOUR_LOCATION,
+    BACKBONE_NODE,
+    METRICS,
+    NETWORK_COMPLETED
 }
 
 export type TourStepIndex = OnboardingTourStep | NetworkTourStep;
@@ -44,7 +48,7 @@ export interface TourStep {
     // data for the steps of v-tour
     tooltip: {
         target: string,
-        content: string[],
+        content: (string | string[])[],
         params: {
             placement: BasePlacement | AlignedPlacement,
         },
@@ -77,17 +81,25 @@ export type TourSteps<T extends number> = {
     [x in T]?: TourStep;
 };
 
+// TODO Rename or mix with NetworkGetStepFnArgs
 export type GetStepFnArgs<T extends number> =
     Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> &
     {
         root: SetupContext['root'],
-        steps: TourSteps<T>,
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
         isANewUser: boolean,
         openAccountOptions: () => Promise<void>,
         closeAccountOptions: () => Promise<void>,
     };
+
+export type NetworkGetStepFnArgs =
+    Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> & {
+        nodes: () => NodeHexagon[],
+        selfNodeIndex: number,
+        scrollIntoView: (x: number) => void,
+        sleep: (ms: number) => Promise<unknown>,
+    }
 
 export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged | TourBroadcastClickedOutsideTour
 
@@ -139,7 +151,11 @@ export enum WalletHTMLElements {
     MODAL_CONTAINER = '.modal.backdrop',
     MODAL_WRAPPER = '.modal .wrapper',
     MODAL_PAGE = '.modal .small-page',
-    MODAL_CLOSE_BUTTON = '.modal .close-button'
+    MODAL_CLOSE_BUTTON = '.modal .close-button',
 
-    // TODO: NETWORK
+    NETWORK_STATS = '.network .network-stats',
+    NETWORK_MAP = '.network .network-map',
+    NETWORK_NODES = '.network .network-map .nodes',
+    NETWORK_SCROLLER = '.network .scroller',
+    NETWORK_TABLET_MENU_BAR = '.network .menu-bar',
 }

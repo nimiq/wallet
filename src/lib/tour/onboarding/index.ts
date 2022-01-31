@@ -1,7 +1,7 @@
 import { useWindowSize } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
-import { searchComponentByName } from '..';
+import { searchComponentByName, TourName } from '..';
 import { GetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
 import { getTransactionListStep } from './02_TransactionListStep';
@@ -27,13 +27,11 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     };
 
     const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
+
     const { state, activeAccountInfo } = useAccountStore();
-    const { isANewUser } = state.tour || { isANewUser: false };
+    const isANewUser = (state.tour?.name === TourName.ONBOARDING && state.tour?.isANewUser);
     const { type: accountType, fileExported: _fileExported } = activeAccountInfo.value || {};
     const fileExported = (accountType === AccountType.BIP39 && !_fileExported);
-
-    // Declaring steps here so we can reference it in the lifecycle functions
-    const steps: TourSteps<OnboardingTourStep> = {};
 
     const openAccountOptions = async () => {
         const accountMenu = searchComponentByName(root, 'account-menu') as any;
@@ -55,7 +53,6 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
 
     const args: GetStepFnArgs<OnboardingTourStep> = {
         sleep,
-        steps,
         toggleDisabledAttribute,
         root,
         isSmallScreen,
@@ -66,11 +63,16 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         closeAccountOptions,
     };
 
-    steps[OnboardingTourStep.FIRST_ADDRESS] = getFirstAddressStep(args);
-    steps[OnboardingTourStep.TRANSACTIONS_LIST] = getTransactionListStep(args);
-    steps[OnboardingTourStep.FIRST_TRANSACTION] = getFirstTransactionStep(args);
-    steps[OnboardingTourStep.BITCOIN_ADDRESS] = getBitcoinAddressStep(args);
-    steps[OnboardingTourStep.WALLET_BALANCE] = getWalletBalanceStep(args);
+    const steps: TourSteps<OnboardingTourStep> = {
+        [OnboardingTourStep.FIRST_ADDRESS]: getFirstAddressStep(args),
+        [OnboardingTourStep.TRANSACTION_LIST]: getTransactionListStep(args),
+        [OnboardingTourStep.FIRST_TRANSACTION]: getFirstTransactionStep(args),
+        [OnboardingTourStep.BITCOIN_ADDRESS]: getBitcoinAddressStep(args),
+        [OnboardingTourStep.WALLET_BALANCE]: getWalletBalanceStep(args),
+        [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(
+            { ...args, keepMenuOpenOnForward: fileExported && !isLargeScreen.value }),
+        [OnboardingTourStep.ONBOARDING_COMPLETED]: getOnboardingCompletedStep(args),
+    };
     if (!fileExported) {
         steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
     }
@@ -80,12 +82,8 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     if (fileExported && isLargeScreen.value) {
         steps[OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS] = getBackupOptionLargeScreenStep(args);
     }
-    steps[OnboardingTourStep.ACCOUNT_OPTIONS] = getAccountOptionsStep(
-        { ...args, keepMenuOpenOnForward: fileExported && !isLargeScreen.value });
     if (fileExported && !isLargeScreen.value) {
         steps[OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS] = getBackupOptionNotLargeScreenStep(args);
     }
-    steps[OnboardingTourStep.ONBOARDING_COMPLETED] = getOnboardingCompletedStep(args);
-
     return steps;
 }

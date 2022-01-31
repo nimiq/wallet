@@ -23,9 +23,9 @@ export function useWindowSize() {
         width = ref(0);
         height = ref(0);
         listener();
-        isSmallScreen = computed(() => width!.value <= 700); // Small screen breakpoint
-        isMediumScreen = computed(() => width!.value > 700 && width!.value <= 1160); // Small screen breakpoint
-        isLargeScreen = computed(() => width!.value > 1160); // Small screen breakpoint
+        isSmallScreen = computed(() => width!.value <= 700);
+        isMediumScreen = computed(() => width!.value > 700 && width!.value <= 1160);
+        isLargeScreen = computed(() => width!.value > 1160);
     }
 
     onMounted(() => {

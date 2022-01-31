@@ -17,7 +17,7 @@
         </header>
 
         <AnnouncementBox/>
-        <TourLargeScreenManager/>
+        <TourLargeScreenManager v-if="isLargeScreen && isTourActive"/>
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
@@ -86,7 +86,7 @@ import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 export default defineComponent({
     name: 'sidebar',
     setup(props, context) {
-        const { isSmallScreen } = useWindowSize();
+        const { isSmallScreen, isLargeScreen } = useWindowSize();
 
         function navigateTo(path: string) {
             if (isSmallScreen.value) {
@@ -119,11 +119,13 @@ export default defineComponent({
 
         const { updateAvailable, trials, canUseSwaps } = useSettingsStore();
 
-        const { activeAccountInfo } = useAccountStore();
+        const { activeAccountInfo, state: accountState } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
+
+        const isTourActive = computed(() => accountState.tour !== null);
 
         return {
             navigateTo,
@@ -138,6 +140,8 @@ export default defineComponent({
             trials,
             Trial,
             canUseSwaps,
+            isLargeScreen,
+            isTourActive,
         };
     },
     components: {

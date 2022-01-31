@@ -14,7 +14,7 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
                 'You can click on the address to copy and share it.',
             ],
         },
-        [OnboardingTourStep.TRANSACTIONS_LIST]: {
+        [OnboardingTourStep.TRANSACTION_LIST]: {
             default: [
                 'This is where all your transactions will appear.',
                 'Click the green button to receive a free NIM from Team Nimiq.',
@@ -23,7 +23,7 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
         },
         [OnboardingTourStep.FIRST_TRANSACTION]: {
             default: [
-                "Here's your first transaction with your first NIM.",
+                'Here’s your first transaction with your first NIM.',
                 'Every NIM address comes with an avatar. They help to make sure you got the right one.',
             ],
         },
@@ -40,9 +40,9 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
         },
         [OnboardingTourStep.BACKUP_ALERT]: {
             default: isANewUser ? [
-                'There is no \'forgot password\'. Create a backup to make sure you stay in control.',
+                'There is no ‘forgot password’. Create a backup to make sure you stay in control.',
             ] : [
-                'Seriously! There is no \'forgot password\'! Create a backup to make sure you stay in control.',
+                'Seriously! There is no ‘forgot password’! Create a backup to make sure you stay in control.',
             ],
         },
         [OnboardingTourStep.MENU_ICON]: {
@@ -52,7 +52,7 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
         },
         [OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS]: {
             default: [
-                'You can always create a new backup. Simply click your account and select \'Create backup\'.',
+                'You can always create a new backup. Simply click your account and select ‘Create backup’.',
             ],
         },
         [OnboardingTourStep.ACCOUNT_OPTIONS]: {
@@ -64,7 +64,7 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
         [OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS]: {
             default: [
                 'You can always create a new backup.',
-                'Simply click your account and select \'Create backup\'.',
+                'Simply click your account and select ‘Create backup’.',
             ],
         },
         [OnboardingTourStep.ONBOARDING_COMPLETED]: {

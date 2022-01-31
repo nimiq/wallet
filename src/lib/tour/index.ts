@@ -1,6 +1,6 @@
 import { useAddressStore } from '@/stores/Address';
-import { SetupContext } from '@vue/composition-api';
 import { Transaction } from '@/stores/Transactions';
+import { SetupContext } from '@vue/composition-api';
 import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
 import { NetworkTourStep, OnboardingTourStep, TourName, TourSteps } from './types';
@@ -11,7 +11,7 @@ export function getTour(tour: TourName | undefined, context: SetupContext)
         case 'onboarding':
             return getOnboardingTourSteps(context);
         case 'network':
-            return getNetworkTourSteps();
+            return getNetworkTourSteps(context);
         default:
             return {};
     }

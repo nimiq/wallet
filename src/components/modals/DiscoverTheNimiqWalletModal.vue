@@ -41,6 +41,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
+import { TourName } from '@/lib/tour';
 import { Languages } from '../../i18n/i18n-setup';
 import GreenNimiqLogoOutlineWithStars from '../icons/GreenNimiqLogoOutlineWithStars.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
@@ -52,7 +53,7 @@ export default defineComponent({
         const { setTour } = useAccountStore();
 
         function startTour() {
-            setTour({ name: 'onboarding', isANewUser: true });
+            setTour({ name: TourName.ONBOARDING, isANewUser: true });
             context.root.$router.push('/');
         }
 

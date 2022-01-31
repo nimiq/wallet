@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLargeScreen && isTourActive" class="tour-manager" ref="$originalManager">
+    <div class="tour-manager" ref="$originalManager">
         <p>
             {{$t('Use the tooltips to navigate your tour.')}}
         </p>
@@ -13,19 +13,12 @@
 </template>
 
 <script lang="ts">
-import { useWindowSize } from '@/composables/useWindowSize';
 import { TourBroadcast, TourBroadcastStepChanged, TourStepIndex, WalletHTMLElements } from '@/lib/tour';
-import { useAccountStore } from '@/stores/Account';
-import { computed, defineComponent, onMounted, Ref, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, Ref, ref } from '@vue/composition-api';
 
 export default defineComponent({
     name: 'tour-large-screen-manager',
     setup(props, context) {
-        const { isLargeScreen } = useWindowSize();
-
-        const { state: accountState } = useAccountStore();
-        const isTourActive = computed(() => accountState.tour !== null);
-
         const nSteps: Ref<number> = ref(-1);
         const currentStep:Ref<TourStepIndex> = ref(-1);
 
@@ -37,10 +30,12 @@ export default defineComponent({
             });
         });
 
-        function _stepChanged({ nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
+        async function _stepChanged(
+            { nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
             nSteps.value = newNSteps;
             currentStep.value = newCurrentStep;
-            if (!isLargeScreen.value) return;
+
+            await context.root.$nextTick();
 
             const modalIsOpen = document.querySelector(WalletHTMLElements.MODAL_CONTAINER) !== null;
             if (modalIsOpen) {
@@ -102,8 +97,6 @@ export default defineComponent({
         }
 
         return {
-            isTourActive,
-            isLargeScreen,
             nSteps,
             currentStep,
             endTour,

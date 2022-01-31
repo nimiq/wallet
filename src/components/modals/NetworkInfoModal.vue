@@ -6,7 +6,7 @@
                 <img src="../../assets/browser-network.png" alt="Browser Network Graph" />
             </div>
 
-            <div ref="$textDiv">
+            <div ref="$textDiv" class="content">
                 <h1 class="nq-h1">{{ $t('You are a part of the Nimiq Blockchain.') }}</h1>
                 <p>
                     {{ $t('Your browser connects directly to a set of peers from all around the world. ' +
@@ -15,9 +15,10 @@
                 <p>
                     {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
                 </p>
-                <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank" rel="noopener">
-                    {{ $t('Learn more') }}
-                </BlueLink>
+                <button class="nq-button-pill light-blue" @click="goToNetworkTour()">
+                    {{ $t('Start Network Tour') }}
+                    <ArrowRightSmallIcon/>
+                </button>
             </div>
         </PageBody>
     </Modal>
@@ -25,9 +26,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
-import { PageBody } from '@nimiq/vue-components';
+import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { useAccountStore } from '@/stores/Account';
+import { TourName } from '@/lib/tour';
 import Modal from './Modal.vue';
-import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -53,6 +55,11 @@ export default defineComponent({
             await updateHeight(); // Needs to be called twice due to the `shape-outside` property
         }
 
+        function goToNetworkTour() {
+            useAccountStore().setTour({ name: TourName.NETWORK });
+            context.emit('close');
+        }
+
         onMounted(() => {
             onResize();
             window.addEventListener('resize', onResize);
@@ -63,12 +70,13 @@ export default defineComponent({
         return {
             $textDiv,
             height,
+            goToNetworkTour,
         };
     },
     components: {
         Modal,
         PageBody,
-        BlueLink,
+        ArrowRightSmallIcon,
     },
 });
 </script>
@@ -134,19 +142,30 @@ export default defineComponent({
             max-height: 38rem;
         }
     }
-}
 
-.nq-h1 {
-    margin-top: 0;
-    margin-bottom: 2rem;
-}
+    .content {
+        .nq-h1 {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            margin-right: 5rem;
+        }
 
-p, a {
-    font-size: var(--body-size);
-}
+        p, button {
+            font-size: var(--body-size);
+        }
 
-a {
-    display: inline-flex;
+        button {
+            margin-top: 1.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: margin 0.2s ease-in-out;
+        }
+
+        button:hover svg {
+            left: 10px;
+        }
+    }
 }
 
 @media (min-width: 700px) { // Full mobile breakpoint
@@ -166,6 +185,10 @@ a {
 
     .page-body {
         --padding: 3rem;
+
+        button {
+            margin-top: 1.5rem;
+        }
     }
 }
 

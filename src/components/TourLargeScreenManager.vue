@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { TourBroadcast, TourBroadcastStepChanged, TourStepIndex, WalletHTMLElements } from '@/lib/tour';
-import { defineComponent, onMounted, Ref, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
 
 export default defineComponent({
     name: 'tour-large-screen-manager',
@@ -24,11 +24,20 @@ export default defineComponent({
 
         const $originalManager = ref<HTMLDivElement>(null);
         onMounted(() => {
+            const tourManager = document.querySelector('.tour-manager') as HTMLDivElement;
+            if (tourManager) {
+                tourManager.style.maxHeight = '150px';
+            }
+            _checkIfModalIsOpen();
+
             context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+                // TODO The event should be triggered also when resizing the window
                 if (data.type === 'tour-step-changed') _stepChanged(data.payload);
                 if (data.type === 'clicked-outside-tour') _flash();
             });
         });
+
+        onUnmounted(() => _removeClonedManager());
 
         async function _stepChanged(
             { nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
@@ -37,6 +46,10 @@ export default defineComponent({
 
             await context.root.$nextTick();
 
+            _checkIfModalIsOpen();
+        }
+
+        function _checkIfModalIsOpen() {
             const modalIsOpen = document.querySelector(WalletHTMLElements.MODAL_CONTAINER) !== null;
             if (modalIsOpen) {
                 _duplicateManager();
@@ -72,7 +85,7 @@ export default defineComponent({
             }
 
             manager.style.position = 'absolute';
-            manager.style.top = `${original.offsetTop - 16}px`; // TODO Test this with other announcements
+            manager.style.top = `${original.offsetTop}px`;
             manager.style.left = `${original.offsetLeft}px`;
             manager.style.width = `${original.offsetWidth}px`;
             manager.style.height = `${original.offsetHeight}px`;
@@ -89,12 +102,12 @@ export default defineComponent({
         }
 
         function _flash() {
-            const tourManager = document.querySelector('body .tour-manager');
+            const tourManager = document.querySelector('[data-tour-active] .tour-manager');
             if (tourManager) {
                 tourManager.classList.add('flash');
                 setTimeout(() => {
                     tourManager.classList.remove('flash');
-                }, 500);
+                }, 400);
             }
         }
 
@@ -110,29 +123,33 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tour-manager {
-    margin: 2rem 0;
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 12px;
     gap: 2rem;
+    max-height: 0;
     background-color: rgba(255, 255, 255, 0.12); // TODO This should be var(--text-12)
-    transition-property: background-color;
-    transition-timing-function: ease-in-out;
+    transition-property: background-color 0.4s ease-in-out;
+    transition: max-height 0.15s ease-in-out;
     border-radius: 4px;
-    cursor: initial !important;
+    font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 
     p {
         margin: 0;
         font-size: 18px;
         line-height: 26px;
         color: var(--nimiq-white);
+        padding: 12px;
+        padding-bottom: 0;
     }
 
-    div {
+    > div {
         display: flex;
         align-items: baseline;
         width: 100%;
+        padding: 12px;
+        padding-top: 0;
 
         .progress {
             opacity: 0.7;
@@ -150,21 +167,21 @@ export default defineComponent({
             color: var(--nimiq-white);
             background-color: rgba(255, 255, 255, 0.2); // TODO Move to a variable??
             border: none;
-            cursor: pointer;
+            cursor: pointer !important;
             border-radius: 9999px;
             font-size: 14px;
             font-weight: 700;
         }
     }
 
-    &.flash {
-        animation: flash 0.4s;
-    }
+}
+.flash  {
+    animation: flash 0.4s;
+}
 
-    @keyframes flash {
-        from { background-color: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
-        50% { background-color: rgba(255, 255, 255, 0.30); } // TODO This should be var(--text-30)
-        to { background-color: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
-    }
+@keyframes flash {
+    from { background: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
+    50% { background: rgba(255, 255, 255, 0.30); } // TODO This should be var(--text-30)
+    to { background: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
 }
 </style>

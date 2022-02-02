@@ -176,8 +176,7 @@ export default defineComponent({
     @include flex-full-height;
     @include ios-flex;
 
-    // TODO: Find another alternative.
-    // overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+    overflow: hidden; // To prevent horizontal scrollbars during panel sliding
     touch-action: pan-y;
 
     /* Default: >= 1500px */

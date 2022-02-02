@@ -1,12 +1,12 @@
 import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getBitcoinAddressStep(
-    { isLargeScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
+export function getBitcoinAddressStep({ isLargeScreen }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
@@ -21,7 +21,11 @@ export function getBitcoinAddressStep(
         ],
         disabledElements: [
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -37,12 +41,21 @@ export function getBitcoinAddressStep(
                 return `.account-overview .bitcoin-account ${!isLargeScreen.value
                     ? '> .bitcoin-account-item > svg' : ''}`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.BITCOIN_ADDRESS, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.BITCOIN_ADDRESS).default,
             params: {
                 get placement() {
                     // TODO Add margin in large screens
                     return !isLargeScreen.value ? 'bottom-start' : 'left';
                 },
+                // get modifiers() {
+                //     if (isLargeScreen.value) { return []; }
+                //     return [{
+                //         name: 'offset',
+                //         options: {
+                //             offset: [0, -48],
+                //         },
+                //     }];
+                // },
             },
         },
         ui,

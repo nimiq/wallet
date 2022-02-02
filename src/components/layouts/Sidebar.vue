@@ -16,8 +16,10 @@
             <span class="logo-wordmark">Nimiq</span>
         </header>
 
-        <AnnouncementBox/>
-        <TourLargeScreenManager v-if="isLargeScreen && isTourActive"/>
+        <div class="panels">
+            <TourLargeScreenManager v-if="isLargeScreen && isTourActive"/>
+            <AnnouncementBox/>
+        </div>
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
@@ -230,10 +232,16 @@ export default defineComponent({
     cursor: pointer;
 }
 
-.announcement-box {
+.panels {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     margin-bottom: 2.5rem;
     margin-top: 2rem;
-    align-self: stretch;
+
+    ::v-deep .announcement-box, ::v-deep .tour-manager {
+        align-self: stretch;
+    }
 }
 
 .price-chart-wrapper {

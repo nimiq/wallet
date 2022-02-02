@@ -276,7 +276,7 @@ import { CircleSpinner } from '@nimiq/vue-components';
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import { useAccountStore } from '@/stores/Account';
-import { TourName } from '@/lib/tour';
+import { TourName, TourOrigin } from '@/lib/tour';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -375,7 +375,7 @@ export default defineComponent({
         }
 
         function goToOnboardingTour() {
-            useAccountStore().setTour({ name: TourName.ONBOARDING, isANewUser: false });
+            useAccountStore().setTour({ name: TourName.ONBOARDING, startedFrom: TourOrigin.SETTINGS });
             context.root.$router.push('/');
         }
 

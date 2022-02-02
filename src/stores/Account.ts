@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { Account } from '@nimiq/hub-api';
-import { TourName } from '@/lib/tour';
+import { TourName, TourOrigin } from '@/lib/tour';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
 
@@ -8,7 +8,7 @@ export type AccountState = {
     accountInfos: {[id: string]: AccountInfo},
     activeAccountId: string | null,
     activeCurrency: CryptoCurrency,
-    tour: { name: TourName.NETWORK } | { name: TourName.ONBOARDING, isANewUser: boolean } | null,
+    tour: { name: TourName.NETWORK } | { name: TourName.ONBOARDING, startedFrom: TourOrigin } | null,
 }
 
 // Mirror of Hub WalletType, which is not exported

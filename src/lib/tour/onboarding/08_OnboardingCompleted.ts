@@ -2,11 +2,12 @@ import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElemen
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getOnboardingCompletedStep(
-    { root, isLargeScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
+    { root, isLargeScreen }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
@@ -22,7 +23,11 @@ export function getOnboardingCompletedStep(
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
             WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -38,7 +43,7 @@ export function getOnboardingCompletedStep(
             get target() {
                 return `${WalletHTMLElements.SIDEBAR_NETWORK} ${isLargeScreen.value ? 'span' : '.consensus-icon'}`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.ONBOARDING_COMPLETED, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.ONBOARDING_COMPLETED).default,
             params: {
                 get placement() {
                     return isLargeScreen.value ? 'right' : 'top-start';

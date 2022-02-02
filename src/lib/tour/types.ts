@@ -42,6 +42,7 @@ export interface LifecycleArgs {
 
 export type MountedReturnFn = ((args: Omit<LifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
 
+// TODO Change to ITourStep
 export interface TourStep {
     path: '/' | '/transactions' | '/?sidebar=true' | '/network';
 
@@ -51,6 +52,7 @@ export interface TourStep {
         content: (string | string[])[],
         params: {
             placement: BasePlacement | AlignedPlacement,
+            modifiers?: { name: 'preventOverflow' | 'offset', options: any }[] | void,
         },
         button?: {
             text: string,
@@ -74,6 +76,8 @@ export interface TourStep {
         isNextStepDisabled?: boolean,
 
         disabledButtons?: string[],
+
+        scrollLockedElements?: string[],
     };
 }
 
@@ -81,15 +85,21 @@ export type TourSteps<T extends number> = {
     [x in T]?: TourStep;
 };
 
+export enum TourOrigin {
+    SETTINGS = 'settings',
+    WELCOME_MODAL = 'welcome-modal',
+}
+
 export type OnboardingGetStepFnArgs =
     Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> &
     {
         root: SetupContext['root'],
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
-        isANewUser: boolean,
+        startedFrom: TourOrigin,
         openAccountOptions: () => Promise<void>,
         closeAccountOptions: () => Promise<void>,
+        toggleHighlightButton: (selector: string, highlight: boolean, color: 'gray' | 'organge' | 'green') => void,
     };
 
 export type NetworkGetStepFnArgs =
@@ -121,6 +131,7 @@ export interface TourBroadcastStepChanged {
 export enum WalletHTMLElements {
     SIDEBAR_TESTNET = '.sidebar .testnet-notice',
     SIDEBAR_LOGO = '.sidebar .logo',
+    SIDEBAR_ANNOUNCMENT_BOX = '.sidebar .announcement-box',
     SIDEBAR_PRICE_CHARTS = '.sidebar .price-chart-wrapper',
     SIDEBAR_TRADE_ACTIONS = '.sidebar .trade-actions',
     SIDEBAR_ACCOUNT_MENU = '.sidebar .account-menu',
@@ -135,7 +146,6 @@ export enum WalletHTMLElements {
     ACCOUNT_OVERVIEW_BITCOIN = '.account-overview .bitcoin-account',
     ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR = '.account-overview .mobile-action-bar',
 
-    ADDRESS_OVERVIEW = '.address-overview',
     ADDRESS_OVERVIEW_ACTIONS_MOBILE = '.address-overview .actions-mobile',
     ADDRESS_OVERVIEW_ACTIVE_ADDRESS = '.address-overview .active-address',
     ADDRESS_OVERVIEW_ACTIONS = '.address-overview .actions',

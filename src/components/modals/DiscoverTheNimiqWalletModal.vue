@@ -2,7 +2,6 @@
     <Modal class="discover-nimiq-wallet-modal" :showCloseButton="false">
         <!-- TODO: Add nimiq SVG logo in the background -->
 
-        <!-- TODO: Add language selector and dark mode switcher -->
         <header>
             <select @input="setLanguage($event.target.value)">
                 <option
@@ -24,11 +23,9 @@
 
             <div class="call-to-action">
                 <button class="nq-button light-blue" @click="() => startTour()">{{ $t('Start Wallet tour') }}</button>
-                <!-- TODO It is an a element? -->
                 <a @click="() => skipTour()" class="skip-tour">
                     Skip tour
-                    <!-- TODO Add icon -->
-                    <CaretRightIcon />
+                    <CaretRightSmallIcon />
                 </a>
             </div>
         </div>
@@ -39,12 +36,11 @@
 <script lang="ts">
 import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
-import { PageHeader } from '@nimiq/vue-components';
+import { PageHeader, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
-import { TourName } from '@/lib/tour';
+import { TourName, TourOrigin } from '@/lib/tour';
 import { Languages } from '../../i18n/i18n-setup';
 import NimiqLogoOutlineWithStars from '../icons/NimiqLogoOutlineWithStars.vue';
-import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({
@@ -53,7 +49,7 @@ export default defineComponent({
         const { setTour } = useAccountStore();
 
         function startTour() {
-            setTour({ name: TourName.ONBOARDING, isANewUser: true });
+            setTour({ name: TourName.ONBOARDING, startedFrom: TourOrigin.WELCOME_MODAL });
             context.root.$router.push('/');
         }
 
@@ -74,7 +70,7 @@ export default defineComponent({
         Modal,
         PageHeader,
         NimiqLogoOutlineWithStars,
-        CaretRightIcon,
+        CaretRightSmallIcon,
     },
 });
 </script>

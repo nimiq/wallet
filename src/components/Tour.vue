@@ -82,7 +82,7 @@
                     @click="goToPrevStep()"
                     style="transform: rotate(180deg)"
                 >
-                    <CaretRightIcon />
+                    <CaretRightSmallIcon />
                 </button>
                 <button
                     class="next"
@@ -90,7 +90,7 @@
                     :disabled="disableNextStep"
                     @click="!isLoading && goToNextStep()"
                 >
-                    <CaretRightIcon v-if="!isLoading" />
+                    <CaretRightSmallIcon v-if="!isLoading" />
                     <CircleSpinner v-else class="circle-spinner" />
                 </button>
             </div>
@@ -102,7 +102,7 @@
 import { useAccountStore } from '@/stores/Account';
 import { useNetworkStore } from '@/stores/Network';
 import { useTransactionsStore } from '@/stores/Transactions';
-import { CircleSpinner } from '@nimiq/vue-components';
+import { CircleSpinner, CaretRightSmallIcon } from '@nimiq/vue-components';
 import {
     computed,
     defineComponent,
@@ -121,7 +121,6 @@ import {
     MountedReturnFn, TourBroadcast, TourStep,
     TourStepIndex,
 } from '../lib/tour';
-import CaretRightIcon from './icons/CaretRightIcon.vue';
 import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
 import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
 
@@ -137,8 +136,7 @@ export default defineComponent({
         const { state: $network } = useNetworkStore();
         const disconnected = computed(() => $network.consensus !== 'established');
 
-        const { state: tourStore, setTour, activeAccountInfo } = useAccountStore();
-        activeAccountInfo.value!.fileExported = false;
+        const { state: tourStore, setTour } = useAccountStore();
 
         let tour: VueTour.Tour | null = null;
         const tourOptions: any = {
@@ -217,7 +215,10 @@ export default defineComponent({
             isLoading.value = false;
 
             window.addEventListener('keyup', _onKeyDown);
-            window.addEventListener('click', _userClicked());
+            setTimeout(() => {
+                window.addEventListener('click', _userClicked());
+            }, 100); // avoid click event to be triggered by the setting button
+
             // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
 
             const app = document.querySelector('#app');
@@ -236,22 +237,26 @@ export default defineComponent({
         // Dont allow user to interact with the page while it is loading
         // But allow to end it
         watch([isLoading, disconnected], async () => {
-            const app = document.querySelector('#app main') as HTMLDivElement;
+            // TODO Avoid interaction with any of the elements when loading except tour elements (bar, manager and tooltip)
+            // const elements = Object.values(WalletHTMLElements).filter((e) => e);
+            // if (isLoading.value || disconnected.value) {
+            //     elements.forEach((element) => {
+            //         const el = document.querySelector(element);
+            //         if (!el) return;
+            //         el.setAttribute('data-non-interactable', 'loading');
+            //     });
+            // } else {
+            //     elements.forEach((element) => {
+            //         const el = document.querySelector(element);
+            //         if (!el) return;
+            //         el.removeAttribute('data-non-interactable');
+            //     });
+            // }
 
-            if (isLoading.value || disconnected.value) {
-                app.setAttribute('data-non-interactable', '');
-            } else {
-                app.removeAttribute('data-non-interactable');
-            }
-
-            // FIXME we should wait until the button is rendered and the we could
+            // FIXME we should wait until the buttons are rendered and the we could
             // execute _toggleDisabledButtons but it is kind of random the amount of time
-            // it takes to render the button. I don't know how to fix it.
-
-            // Ensure that we disabled 'Receive Free NIM' button
-            await sleep(500); // TODO
-            // TODO Remove this code for the network, find other way
-            // steps = Object.values(getTour(tourStore.tour?.name, context));
+            // it takes to render the button. I don't know how to fix it. Waiting 500ms works.
+            await sleep(500);
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, true);
         });
 
@@ -274,7 +279,6 @@ export default defineComponent({
             const { path: currentPath, ui: currentUI } = steps[currentStepIndex]!;
             const { path: futurePath, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex]!;
 
-            isLoading.value = true;
             tour!.stop();
 
             await sleep(500);
@@ -294,6 +298,7 @@ export default defineComponent({
             _toggleDisabledButtons(currentUI.disabledButtons, false);
             _toggleDisabledButtons(futureUI.disabledButtons, true);
             _addAttributes(futureUI, futureStepIndex);
+            await context.root.$nextTick();
 
             if (futurePath !== currentPath) {
                 await sleep(500);
@@ -302,6 +307,7 @@ export default defineComponent({
             _removeAttributes(currentStepIndex);
 
             tour!.start(futureStepIndex.toString());
+            await context.root.$nextTick();
 
             // FIXME Instead of doing tour!.end and tour!.start, we could also use .nextStep() or previsousStep()
             // The problem with this solution is that some animations glitch the UI so it needs further
@@ -309,7 +315,6 @@ export default defineComponent({
             // goingForward ? tour!.nextStep() : tour!.previousStep();
 
             // mounted
-            isLoading.value = false;
             disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.isNextStepDisabled;
 
             unmounted = await futureLifecycle?.mounted?.({
@@ -337,6 +342,17 @@ export default defineComponent({
             // events emitted by TourLargeScreenManager
             context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
                 if (data.type === 'end-tour') endTour();
+            });
+            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+                if (data.type === 'clicked-outside-tour') {
+                    const tourManager = document.querySelector('.tour-control-bar');
+                    if (tourManager) {
+                        tourManager.classList.add('flash');
+                        setTimeout(() => {
+                            tourManager.classList.remove('flash');
+                        }, 400);
+                    }
+                }
             });
         }
 
@@ -382,12 +398,17 @@ export default defineComponent({
             }
         }
 
+        function _onScrollLockedElement(e: Event, el: Element) {
+            e.preventDefault();
+            el.scrollTop = 0;
+        }
         function _addAttributes(
             uiConfig: TourStep['ui'],
             stepIndex: TourStepIndex,
         ) {
             const fadedElements = uiConfig.fadedElements || [];
             const disabledElements = uiConfig.disabledElements || [];
+            const scrollLockedElements = uiConfig.scrollLockedElements || [];
 
             disabledElements.filter((e) => e).forEach((element) => {
                 const el = document.querySelector(element);
@@ -401,19 +422,32 @@ export default defineComponent({
                 el.setAttribute('data-opacified', stepIndex.toString());
                 el.setAttribute('data-non-interactable', stepIndex.toString());
             });
+
+            scrollLockedElements.filter((e) => e).forEach((element) => {
+                const el = document.querySelector(element);
+                if (!el) return;
+                el.setAttribute('data-scroll-locked', stepIndex.toString());
+                // Avoid scrolling when tooltip is instantiated
+                el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
+                el.scrollTop = 0;
+            });
         }
 
         function _removeAttributes(stepIndex: TourStepIndex) {
-            document
-                .querySelectorAll(`[data-non-interactable="${stepIndex}"]`)
+            document.querySelectorAll(`[data-non-interactable="${stepIndex}"]`)
                 .forEach((el) => {
                     el.removeAttribute('data-non-interactable');
                 });
 
-            document
-                .querySelectorAll(`[data-opacified="${stepIndex}"]`)
+            document.querySelectorAll(`[data-opacified="${stepIndex}"]`)
                 .forEach((el) => {
                     el.removeAttribute('data-opacified');
+                });
+
+            document.querySelectorAll(`[data-scroll-locked="${stepIndex}"]`)
+                .forEach((el) => {
+                    el.removeAttribute('data-scroll-locked');
+                    el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
                 });
         }
 
@@ -495,7 +529,7 @@ export default defineComponent({
             // control bar
             currentStep,
             nSteps,
-            isLoading: disconnected || isLoading,
+            isLoading: computed(() => disconnected.value || isLoading.value),
             disableNextStep,
 
             // actions
@@ -509,7 +543,7 @@ export default defineComponent({
         };
     },
     components: {
-        CaretRightIcon,
+        CaretRightSmallIcon,
         TourPreviousLeftArrowIcon,
         PartyConfettiIcon,
         CircleSpinner,
@@ -530,24 +564,43 @@ export default defineComponent({
 [data-tour-active] [data-non-interactable] * {
   user-select: none !important;
   pointer-events: none !important;
-}
-
-[data-tour-active]#app > *:not(.tour):not(.tour-manager) {
   cursor: not-allowed;
 }
 
-[data-tour-active] button.highlighted {
+[data-tour-active] [data-scroll-locked],
+[data-tour-active] [data-scroll-locked] * {
+    overflow: hidden;
+}
+
+[data-tour-active] button.green-highlight {
     background: linear-gradient(
             274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%, rgba(255, 255, 255, 0) 53.12%,
             rgba(255, 255, 255, 0.2) 81.25%, rgba(255, 255, 255, 0) 100%
-        ),
-        radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%) !important;
+        ), var(--nimiq-green-bg) !important;
+    background-blend-mode: hard-light, normal !important;
+}
+
+[data-tour-active] button.gray-highlight {
+    background: linear-gradient(
+            274.28deg, rgba(31, 35, 72, 0) 0%, rgba(31, 35, 72, 0.07) 27.6%, rgba(31, 35, 72, 0) 53.12%,
+            rgba(31, 35, 72, 0.07) 81.25%, rgba(31, 35, 72, 0) 100%) !important;
+    background-blend-mode: hard-light, normal !important;
 }
 </style>
 
 <style lang="scss" scoped>
 .tour {
-    position: relative;
+    font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+
+    > * {
+        pointer-events: initial;
+    }
 
     button {
         width: min-content;
@@ -571,6 +624,7 @@ export default defineComponent({
         border-radius: 1rem;
         width: clamp(200px, 255px, calc(100vw - 2rem));
         padding: 2rem;
+        z-index: 10;
 
         .content {
             display: flex;
@@ -714,9 +768,7 @@ export default defineComponent({
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     z-index: 6;
-
-    // TODO Cannot use CSS variables here
-    background: radial-gradient(100% 100% at 100% 100%, #265dd7 0%, #0582ca 100%);
+    background: var(--nimiq-light-blue-bg);
 
     button {
         padding: 1.4rem 1.6rem 1rem 1.6rem;
@@ -749,14 +801,15 @@ export default defineComponent({
             }
 
             &.next {
-                padding-left: 0.75rem;
-
                 &.loading {
-                    padding-left: 0;
                     cursor: inherit;
 
-                    & ::v-deep svg path:nth-child(1) {
+                    & ::v-deep svg path {
                         stroke: var(--nimiq-white);
+
+                        &:nth-child(2) {
+                            opacity: 0.3;
+                        }
                     }
                 }
             }
@@ -772,6 +825,17 @@ export default defineComponent({
         letter-spacing: -0.4px;
         font-variant-numeric: tabular-nums;
     }
+
+}
+
+[data-tour-active] .flash  {
+    animation: flash 0.4s;
+}
+
+@keyframes flash {
+    from { background: var(--nimiq-light-blue-bg); }
+    50% { background: radial-gradient(100% 100% at bottom right, hsl(221, 70%, 70%), hsl(202, 95%, 61%)); }
+    to { background: var(--nimiq-light-blue-bg); }
 }
 
 .remove_me {

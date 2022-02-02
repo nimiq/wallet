@@ -22,6 +22,7 @@ export function getBackboneNodeStep(
             fadedElements: [
                 WalletHTMLElements.SIDEBAR_TESTNET,
                 WalletHTMLElements.SIDEBAR_LOGO,
+                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
                 WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
                 WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
                 WalletHTMLElements.SIDEBAR_NETWORK,

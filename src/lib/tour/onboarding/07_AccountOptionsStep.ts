@@ -4,12 +4,13 @@ import { getOnboardingTexts } from './OnboardingTourTexts';
 
 type AccountStep = OnboardingGetStepFnArgs & { keepMenuOpenOnForward: boolean };
 export function getAccountOptionsStep(
-    { isSmallScreen, isLargeScreen, isANewUser, openAccountOptions, closeAccountOptions, keepMenuOpenOnForward }
+    { isSmallScreen, isLargeScreen, openAccountOptions, closeAccountOptions, keepMenuOpenOnForward }
         : AccountStep): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_NETWORK,
@@ -25,7 +26,11 @@ export function getAccountOptionsStep(
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
             WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -40,7 +45,7 @@ export function getAccountOptionsStep(
         },
         tooltip: {
             target: WalletHTMLElements.MODAL_PAGE,
-            content: getOnboardingTexts(OnboardingTourStep.ACCOUNT_OPTIONS, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.ACCOUNT_OPTIONS).default,
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'top' : 'right';

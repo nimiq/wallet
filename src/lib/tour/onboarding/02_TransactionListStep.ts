@@ -4,20 +4,14 @@ import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types'
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
-    { isSmallScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
+    { isSmallScreen, toggleHighlightButton }: OnboardingGetStepFnArgs): TourStep {
     const txsLen = () => Object.values(useTransactionsStore().state.transactions).length;
-
-    const highlightButton = (highlight: boolean) => {
-        const receiveNim = document
-            .querySelector(WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM) as HTMLButtonElement;
-        if (!receiveNim) return;
-        receiveNim.classList[highlight ? 'add' : 'remove']('highlighted');
-    };
 
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
@@ -42,6 +36,7 @@ export function getTransactionListStep(
             WalletHTMLElements.BUTTON_SIDEBAR_SELL,
             WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [`${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller `],
     };
 
     return {
@@ -52,17 +47,17 @@ export function getTransactionListStep(
             get target() {
                 if (txsLen() > 0) {
                     return isSmallScreen.value
-                        ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller__item-wrapper`
-                        : WalletHTMLElements.ADDRESS_OVERVIEW;
+                        ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS}
+                                .vue-recycle-scroller__item-view:nth-child(2)`
+                        : '.address-overview';
                 }
                 return isSmallScreen.value
                     ? `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} > .empty-state h2`
-                    : WalletHTMLElements.ADDRESS_OVERVIEW;
+                    : '.address-overview';
             },
             get content() {
-                return txsLen() > 0
-                    ? getOnboardingTexts(OnboardingTourStep.TRANSACTION_LIST, isANewUser).alternative || []
-                    : getOnboardingTexts(OnboardingTourStep.TRANSACTION_LIST, isANewUser).default || [];
+                return getOnboardingTexts(
+                    OnboardingTourStep.TRANSACTION_LIST)[txsLen() === 0 ? 'default' : 'alternative'] || [];
             },
             params: {
                 get placement() {
@@ -76,8 +71,9 @@ export function getTransactionListStep(
         lifecycle: {
             mounted: () => {
                 if (txsLen() > 0) return undefined;
-                highlightButton(true);
-                return () => highlightButton(false);
+                toggleHighlightButton(WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, true, 'green');
+                return () => toggleHighlightButton(
+                    WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, false, 'green');
             },
         },
         get ui() {

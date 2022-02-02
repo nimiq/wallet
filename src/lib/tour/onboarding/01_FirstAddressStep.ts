@@ -5,10 +5,11 @@ import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElemen
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getFirstAddressStep(
-    { isSmallScreen, isANewUser, root }: OnboardingGetStepFnArgs): TourStep {
+    { isSmallScreen, root, toggleHighlightButton }: OnboardingGetStepFnArgs): TourStep {
+    const { setActiveCurrency } = useAccountStore();
+    const { addressInfos, selectAddress } = useAddressStore();
+
     const created = () => {
-        const { setActiveCurrency } = useAccountStore();
-        const { addressInfos, selectAddress } = useAddressStore();
         setActiveCurrency(CryptoCurrency.NIM);
         selectAddress(addressInfos.value[0].address);
     };
@@ -18,6 +19,7 @@ export function getFirstAddressStep(
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
@@ -30,10 +32,21 @@ export function getFirstAddressStep(
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
             WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
 
-            !isSmallScreen.value ? WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST : '',
+            ...(!isSmallScreen.value
+                ? [
+                    WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+                ] : [
+                    ...Array.from({ length: addressInfos.value.length }).map(
+                        (_, i) => `${WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} button:nth-child(${i + 3})`),
+                ]
+            ),
         ],
         disabledElements: [
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -41,6 +54,7 @@ export function getFirstAddressStep(
             WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
             WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM,
         ],
+        scrollLockedElements: [WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST],
     };
 
     return {
@@ -51,7 +65,7 @@ export function getFirstAddressStep(
                     ? `${WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .address-button .identicon img`
                     : `${WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS).default,
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom-start' : 'left-start';
@@ -65,10 +79,12 @@ export function getFirstAddressStep(
                     return undefined;
                 }
 
+                const button = `${WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} button:nth-child(2)`;
+                toggleHighlightButton(button, true, 'gray');
+
                 // Listener for the first address button only for mobile
 
-                const addressButton = document
-                    .querySelector('.address-list > .address-button') as HTMLButtonElement;
+                const addressButton = document.querySelector(button) as HTMLButtonElement;
 
                 let addressClicked = false;
                 const onClick = (e: MouseEvent) => {
@@ -86,6 +102,7 @@ export function getFirstAddressStep(
                         await root.$nextTick();
                     }
                     addressButton!.removeEventListener('click', onClick, true);
+                    setTimeout(() => toggleHighlightButton(button, false, 'gray'), 500);
                 };
             },
         },

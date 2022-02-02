@@ -1,13 +1,13 @@
 import { WalletHTMLElements } from '..';
-import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getBackupOptionLargeScreenStep(
-    { isANewUser }: OnboardingGetStepFnArgs): TourStep {
+export function getBackupOptionLargeScreenStep(): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_NETWORK,
@@ -23,7 +23,11 @@ export function getBackupOptionLargeScreenStep(
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
             WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -36,7 +40,7 @@ export function getBackupOptionLargeScreenStep(
         path: '/',
         tooltip: {
             target: WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-            content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS).default,
             params: {
                 placement: 'right',
             },

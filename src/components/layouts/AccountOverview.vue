@@ -155,7 +155,7 @@ export default defineComponent({
         const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type !== AccountType.LEGACY);
 
-        const { isSmallScreen, isMediumScreen } = useWindowSize();
+        const { isSmallScreen, isLargeScreen } = useWindowSize();
 
         function onAddressSelected() {
             setActiveCurrency(CryptoCurrency.NIM);
@@ -176,12 +176,12 @@ export default defineComponent({
         const showFullLegacyAccountNotice = computed(() =>
             isLegacyAccount.value
             && activeAccountInfo.value!.addresses.length === 1
-            && !isMediumScreen.value);
+            && isLargeScreen.value);
 
         const showModalLegacyAccountNotice = ref(false);
 
         function determineIfShowModalLegacyAccountNotice() {
-            showModalLegacyAccountNotice.value = isLegacyAccount.value && isMediumScreen.value;
+            showModalLegacyAccountNotice.value = isLegacyAccount.value && !isLargeScreen.value;
         }
 
         function determineModalToShow() {

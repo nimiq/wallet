@@ -29,6 +29,7 @@ export function getNetworkCompletedStep({ isLargeScreen }: NetworkGetStepFnArgs)
             fadedElements: [
                 WalletHTMLElements.SIDEBAR_TESTNET,
                 WalletHTMLElements.SIDEBAR_LOGO,
+                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
                 WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
                 WalletHTMLElements.SIDEBAR_NETWORK,
                 WalletHTMLElements.SIDEBAR_SETTINGS,

@@ -1,13 +1,14 @@
-import { WalletHTMLElements } from '..';
+import { TourOrigin, WalletHTMLElements } from '..';
 import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBackupAlertStep(
-    { isSmallScreen, isANewUser }: OnboardingGetStepFnArgs): TourStep {
+    { isSmallScreen, startedFrom }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,
             WalletHTMLElements.SIDEBAR_LOGO,
+            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
             WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
             WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
             WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
@@ -21,7 +22,11 @@ export function getBackupAlertStep(
             WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
             WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
             WalletHTMLElements.BUTTON_SIDEBAR_BUY,
@@ -35,7 +40,8 @@ export function getBackupAlertStep(
             target: isSmallScreen.value
                 ? `${WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT} button`
                 : WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
-            content: getOnboardingTexts(OnboardingTourStep.BACKUP_ALERT, isANewUser).default,
+            content: getOnboardingTexts(OnboardingTourStep.BACKUP_ALERT)[
+                startedFrom === TourOrigin.WELCOME_MODAL ? 'default' : 'alternative'] || [],
             params: {
                 placement: isSmallScreen.value ? 'bottom' : 'right',
             },

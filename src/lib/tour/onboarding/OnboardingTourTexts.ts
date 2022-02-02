@@ -6,7 +6,7 @@ type TourStepTexts<T extends number> = {
     }
 }
 
-export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
+export function getOnboardingTexts(i: OnboardingTourStep) {
     return ({
         [OnboardingTourStep.FIRST_ADDRESS]: {
             default: [
@@ -26,6 +26,10 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
                 'Here’s your first transaction with your first NIM.',
                 'Every NIM address comes with an avatar. They help to make sure you got the right one.',
             ],
+            alternative: [
+                'Here are your transactions.',
+                'Every NIM address comes with an avatar. They help to make sure you got the right one.',
+            ],
         },
         [OnboardingTourStep.BITCOIN_ADDRESS]: {
             default: [
@@ -37,11 +41,16 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
                 'Check the bar-chart to see how your addresses compose your total balance.',
                 'Currently you have 100% NIM, and no BTC.',
             ],
+            alternative: [
+                // TODO Implement this
+                'Check the bar-chart to see how your addresses compose your total balance.',
+            ],
         },
         [OnboardingTourStep.BACKUP_ALERT]: {
-            default: isANewUser ? [
+            default: [
                 'There is no ‘forgot password’. Create a backup to make sure you stay in control.',
-            ] : [
+            ],
+            alternative: [
                 'Seriously! There is no ‘forgot password’! Create a backup to make sure you stay in control.',
             ],
         },
@@ -50,6 +59,8 @@ export function getOnboardingTexts(i: OnboardingTourStep, isANewUser: boolean) {
                 'Tap on the menu icon to access your account and wallet settings.',
             ],
         },
+
+        // TODO Review these
         [OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS]: {
             default: [
                 'You can always create a new backup. Simply click your account and select ‘Create backup’.',

@@ -32,7 +32,7 @@ export const useTransactionsStore = createStore({
     getters: {
         // activeAccount: state => state.accounts[state.activeAccountId],
         pendingTransactionsBySender: (state) => {
-            const pendingTxs = Object.values(state.transactions).filter((tx) => !tx.confirmations);
+            const pendingTxs = Object.values(state.transactions).filter((tx) => tx.state === 'pending');
             const txsBySender: {[address: string]: Transaction[] | undefined} = {};
             for (const tx of pendingTxs) {
                 const array = txsBySender[tx.sender] || [];

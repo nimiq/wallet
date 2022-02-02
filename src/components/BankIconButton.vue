@@ -1,7 +1,7 @@
 <template>
     <button class="reset bank-icon-button flex-column" v-on="$listeners">
         <BankIcon/>
-        <TriangleDownIcon class="triangle"/>
+        <TriangleDownIcon/>
         <label>{{ bankName || '' }}</label>
     </button>
 </template>
@@ -29,24 +29,28 @@ export default defineComponent({
     width: 18rem;
     border-radius: 0.75rem;
     padding: 1rem;
+    transition: background var(--attr-duration) var(--nimiq-ease);
+
+    ::v-deep svg.triangle-down-icon {
+        position: absolute;
+        right: 4rem;
+        top: 8rem;
+        opacity: 0.25;
+        transition: opacity var(--attr-duration) var(--nimiq-ease);
+    }
 
     &:hover,
     &:focus {
         background: var(--nimiq-highlight-bg);
+
+        ::v-deep svg.triangle-down-icon {
+            opacity: 0.4;
+        }
     }
 
-    svg {
+    svg.bank-icon {
         height: 8.25rem;
         width: auto;
-    }
-
-    .triangle {
-        position: absolute;
-        right: 4rem;
-        top: 8rem;
-        width: 1.25rem;
-        height: 1rem;
-        opacity: 0.25;
     }
 
     label {

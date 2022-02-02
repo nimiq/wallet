@@ -100,11 +100,13 @@
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="identicon-section flex-row">
-                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
+                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true" :class="{
+                        'triangle-indented': backgroundAddresses.length === 1,
+                    }">
                         <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                         <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
-                        <TriangleDownIcon class="triangle"/>
+                        <TriangleDownIcon v-if="backgroundAddresses.length"/>
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
                     <div class="separator-wrapper">
@@ -984,6 +986,7 @@ export default defineComponent({
         padding: 1rem;
         position: relative;
         width: 14rem;
+        transition: background var(--attr-duration) var(--nimiq-ease);
 
         .primary {
             position: relative;
@@ -1011,6 +1014,18 @@ export default defineComponent({
             }
         }
 
+        ::v-deep svg.triangle-down-icon {
+            position: absolute;
+            right: 0.375rem;
+            top: 8rem;
+            opacity: 0.25;
+            transition: opacity var(--attr-duration) var(--nimiq-ease);
+        }
+
+        &.triangle-indented ::v-deep svg.triangle-down-icon {
+            right: 2rem;
+        }
+
         &:hover,
         &:focus {
             background: var(--nimiq-highlight-bg);
@@ -1024,15 +1039,10 @@ export default defineComponent({
                 transform: translateX(0.375rem) scale(1.05);
                 opacity: 0.5;
             }
-        }
 
-        .triangle {
-            position: absolute;
-            right: 0.375rem;
-            top: 8rem;
-            width: 1.25rem;
-            height: 1rem;
-            opacity: 0.25;
+            ::v-deep svg.triangle-down-icon {
+                opacity: 0.4;
+            }
         }
 
         label {

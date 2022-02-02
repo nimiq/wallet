@@ -1,5 +1,10 @@
 <template>
-    <button class="reset identicon-stack flex-column" v-on="$listeners" :class="{ interactive }">
+    <button class="reset identicon-stack flex-column" v-on="$listeners" :class="{
+        interactive,
+        'triangle-indented': (!hasBitcoinAddresses && backgroundAddresses.length === 1)
+            || (hasBitcoinAddresses && backgroundAddresses.length === 0)
+            || (activeCurrency === CryptoCurrency.BTC && backgroundAddresses.length === 1),
+    }">
         <Identicon class="secondary"
             v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
 
@@ -17,7 +22,7 @@
         <BitcoinIcon class="primary"
             v-else-if="activeCurrency === CryptoCurrency.BTC" />
 
-        <TriangleDownIcon class="triangle"/>
+        <TriangleDownIcon v-if="backgroundAddresses.length || hasBitcoinAddresses"/>
 
         <label>
             {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
@@ -131,13 +136,16 @@ export default defineComponent({
         }
     }
 
-    .triangle {
+    ::v-deep svg.triangle-down-icon {
         position: absolute;
         right: 2.5rem;
         top: 8rem;
-        width: 1.25rem;
-        height: 1rem;
         opacity: 0.25;
+        transition: opacity var(--attr-duration) var(--nimiq-ease);
+    }
+
+    &.triangle-indented ::v-deep svg.triangle-down-icon {
+        right: 3.75rem;
     }
 
     &.interactive {
@@ -153,6 +161,10 @@ export default defineComponent({
             .secondary:nth-child(2) {
                 transform: translateX(0.375rem) scale(1.05);
                 opacity: 0.5;
+            }
+
+            ::v-deep svg.triangle-down-icon {
+                opacity: 0.4;
             }
         }
 

@@ -42,20 +42,24 @@ export const useAddressStore = createStore({
     getters: {
         addressInfos: (state): AddressInfo[] => {
             const { activeAccountInfo } = useAccountStore();
+            if (!activeAccountInfo.value) return [];
+
             const { pendingTransactionsBySender } = useTransactionsStore();
-            return activeAccountInfo.value
-                ? activeAccountInfo.value.addresses
-                    .map((addr) => state.addressInfos[addr])
-                    .filter((addrInfo) => !!addrInfo)
-                    .map((ai) => {
-                        const pendingTxs = pendingTransactionsBySender.value[ai.address] || [];
-                        const outgoingPendingAmount = pendingTxs.reduce((sum, tx) => sum + tx.value + tx.fee, 0);
-                        return {
-                            ...ai,
-                            balance: Math.max(0, (ai.balance || 0) - outgoingPendingAmount),
-                        };
-                    })
-                : [];
+
+            return activeAccountInfo.value.addresses
+                .map((addr) => state.addressInfos[addr])
+                .map((ai) => {
+                    const pendingTxs = pendingTransactionsBySender.value[ai.address] || [];
+                    const outgoingPendingAmount = pendingTxs
+                        // Do not consider pending transactions to our own addresses, to prevent the account
+                        // balance from getting reduced when sending between own accounts.
+                        .filter((tx) => !activeAccountInfo.value!.addresses.includes(tx.recipient))
+                        .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+                    return {
+                        ...ai,
+                        balance: Math.max(0, (ai.balance || 0) - outgoingPendingAmount),
+                    };
+                });
         },
         activeAddress: (state) => state.activeAddress,
         activeAddressInfo: (state, { addressInfos }) => state.activeAddress

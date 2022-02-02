@@ -58,10 +58,16 @@ export default defineComponent({
         const backgroundClass = computed(() => getBackgroundClass(firstAddressInfo.value.address));
         const outgoingPendingAmount = computed(() => {
             const pendingTxs: Transaction[] = [];
+            const addresses: string[] = [];
             for (const ai of addressInfos.value) {
                 pendingTxs.push(...(pendingTransactionsBySender.value[ai.address] || []));
+                addresses.push(ai.address);
             }
-            return pendingTxs.reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+            return pendingTxs
+                // Do not consider pending transactions to our own addresses, to prevent the account
+                // balance from getting reduced when sending between own accounts.
+                .filter((tx) => !addresses.includes(tx.recipient))
+                .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
         });
         const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
             sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0));

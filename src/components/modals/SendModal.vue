@@ -100,10 +100,13 @@
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="identicon-section flex-row">
-                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
+                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true" :class="{
+                        'triangle-indented': backgroundAddresses.length === 1,
+                    }">
                         <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                         <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                         <Identicon class="primary" :address="activeAddressInfo.address"/>
+                        <TriangleDownIcon v-if="backgroundAddresses.length"/>
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
                     <div class="separator-wrapper">
@@ -248,6 +251,7 @@ import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
 import IdenticonButton from '../IdenticonButton.vue';
+import TriangleDownIcon from '../icons/TriangleDownIcon.vue';
 import AddressList from '../AddressList.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
@@ -759,6 +763,7 @@ export default defineComponent({
         Copyable,
         AddressDisplay,
         IdenticonButton,
+        TriangleDownIcon,
         AddressList,
         AmountInput,
         AmountMenu,
@@ -981,6 +986,7 @@ export default defineComponent({
         padding: 1rem;
         position: relative;
         width: 14rem;
+        transition: background var(--attr-duration) var(--nimiq-ease);
 
         .primary {
             position: relative;
@@ -1008,6 +1014,18 @@ export default defineComponent({
             }
         }
 
+        ::v-deep svg.triangle-down-icon {
+            position: absolute;
+            right: 0.375rem;
+            top: 8rem;
+            opacity: 0.25;
+            transition: opacity var(--attr-duration) var(--nimiq-ease);
+        }
+
+        &.triangle-indented ::v-deep svg.triangle-down-icon {
+            right: 2rem;
+        }
+
         &:hover,
         &:focus {
             background: var(--nimiq-highlight-bg);
@@ -1020,6 +1038,10 @@ export default defineComponent({
             .secondary:nth-child(2) {
                 transform: translateX(0.375rem) scale(1.05);
                 opacity: 0.5;
+            }
+
+            ::v-deep svg.triangle-down-icon {
+                opacity: 0.4;
             }
         }
 

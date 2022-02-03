@@ -38,7 +38,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { PageHeader, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
-import { TourName, TourOrigin } from '@/lib/tour';
+import { TourName, ITourOrigin } from '@/lib/tour';
 import { Languages } from '../../i18n/i18n-setup';
 import NimiqLogoOutlineWithStars from '../icons/NimiqLogoOutlineWithStars.vue';
 import Modal from './Modal.vue';
@@ -49,7 +49,7 @@ export default defineComponent({
         const { setTour } = useAccountStore();
 
         function startTour() {
-            setTour({ name: TourName.ONBOARDING, startedFrom: TourOrigin.WELCOME_MODAL });
+            setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.WELCOME_MODAL });
             context.root.$router.push('/');
         }
 

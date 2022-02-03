@@ -1,13 +1,13 @@
 import { SCALING_FACTOR } from '@/lib/NetworkMap';
-import { NetworkGetStepFnArgs, NetworkTourStep, TourStep, WalletHTMLElements } from '..';
+import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
-export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeIndex }: NetworkGetStepFnArgs): TourStep {
+export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeIndex }: INetworkGetStepFnArgs): ITourStep {
     return {
         path: '/network',
         tooltip: {
-            target: `${WalletHTMLElements.NETWORK_NODES} span:nth-child(${selfNodeIndex + 1})`,
-            content: getNetworkTexts(NetworkTourStep.YOUR_LOCATION),
+            target: `${IWalletHTMLElements.NETWORK_NODES} span:nth-child(${selfNodeIndex + 1})`,
+            content: getNetworkTexts(NetworkTourStep.YOUR_LOCATION).default,
             params: {
                 // TODO On mobile phones if the node is in the south, the tooltip might break the web
                 placement: 'bottom',
@@ -15,20 +15,20 @@ export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeInde
         },
         ui: {
             fadedElements: [
-                WalletHTMLElements.SIDEBAR_TESTNET,
-                WalletHTMLElements.SIDEBAR_LOGO,
-                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-                WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-                WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-                WalletHTMLElements.SIDEBAR_NETWORK,
-                WalletHTMLElements.SIDEBAR_SETTINGS,
-                WalletHTMLElements.NETWORK_STATS,
+                IWalletHTMLElements.SIDEBAR_TESTNET,
+                IWalletHTMLElements.SIDEBAR_LOGO,
+                IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+                IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+                IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+                IWalletHTMLElements.SIDEBAR_NETWORK,
+                IWalletHTMLElements.SIDEBAR_SETTINGS,
+                IWalletHTMLElements.NETWORK_STATS,
             ],
             disabledElements: [
-                WalletHTMLElements.NETWORK_TABLET_MENU_BAR,
-                WalletHTMLElements.NETWORK_MAP,
+                IWalletHTMLElements.NETWORK_TABLET_MENU_BAR,
+                IWalletHTMLElements.NETWORK_MAP,
             ],
-            disabledButtons: [WalletHTMLElements.BUTTON_SIDEBAR_BUY, WalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
         },
         lifecycle: {
             created: (async ({ goingForward }) => {
@@ -38,5 +38,5 @@ export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeInde
                 }
             }),
         },
-    } as TourStep;
+    } as ITourStep;
 }

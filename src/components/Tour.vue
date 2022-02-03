@@ -5,7 +5,7 @@
       :steps="steps.map((s) => s.tooltip)"
       :options="tourOptions"
     >
-        <template slot-scope="tour">
+        <template v-slot="tour">
             <transition name="fade">
                 <v-step
                     class="tooltip"
@@ -24,7 +24,22 @@
                     <div slot="content" class="content">
                         <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
                             <PartyConfettiIcon v-if="currentStep === nSteps - 1 && i === 0" />
-                            <hr v-if="content === 'HR'" />
+                            <hr v-if="content === IContentSpecialItem.HR" />
+                            <i18n v-else-if="content.includes(IContentSpecialItem.ICON_NETWORK_WORLD)"
+                                :path="content" tag="p">
+                                <template v-slot:network_icon>
+                                    <WorldCheckIcon />
+                                </template>
+                                <template v-slot:account_icon>
+                                    <svg width="14" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity=".7">
+                                            <rect x=".75" y=".75" width="12.5" height="19.5"
+                                                rx="2.5" stroke="#fff" stroke-width="1.5"/>
+                                            <circle cx="7" cy="7" r="2" fill="#fff"/>
+                                        </g>
+                                    </svg>
+                                </template>
+                            </i18n>
                             <p v-else-if="typeof content === 'string'" v-html="$t(content)"></p>
                             <ul v-else-if="content.length">
                                 <li v-for="(item, i) in content" :key="i">
@@ -51,6 +66,7 @@
                                 class="right" v-if="tour.steps[tour.currentStep].button && !isLoading"
                                 @click="() => tour.steps[tour.currentStep].button.fn(endTour)"
                             >
+                                <!--  TODO Move $t to logic -->
                                 {{ $t(tour.steps[tour.currentStep].button.text) }}
                             </button>
                             <button
@@ -116,13 +132,15 @@ import Vue from 'vue';
 import VueTour from 'vue-tour';
 import { useWindowSize } from '../composables/useWindowSize';
 import {
+    IContentSpecialItem,
     getFakeTx,
     getTour,
-    MountedReturnFn, TourBroadcast, TourStep,
+    IMountedReturnFn, ITourBroadcast, ITourStep,
     TourStepIndex,
 } from '../lib/tour';
 import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
 import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
+import WorldCheckIcon from './icons/WorldCheckIcon.vue';
 
 Vue.use(VueTour);
 
@@ -159,7 +177,7 @@ export default defineComponent({
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
 
-        let unmounted: MountedReturnFn | void;
+        let unmounted: IMountedReturnFn | void;
 
         const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -240,7 +258,7 @@ export default defineComponent({
         watch([isLoading, disconnected], async () => {
             // TODO
             // Avoid interaction with any of the elements when loading except tour elements (bar, manager and tooltip)
-            // const elements = Object.values(WalletHTMLElements).filter((e) => e);
+            // const elements = Object.values(IWalletHTMLElements).filter((e) => e);
             // if (isLoading.value || disconnected.value) {
             //     elements.forEach((element) => {
             //         const el = document.querySelector(element);
@@ -335,17 +353,17 @@ export default defineComponent({
             });
         }
 
-        function _broadcast(data: TourBroadcast) {
+        function _broadcast(data: ITourBroadcast) {
             // Send data to TourLargeScreenManager
             context.root.$emit('nimiq-tour-event', data);
         }
 
         function _receiveEvents() {
             // events emitted by TourLargeScreenManager
-            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+            context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 if (data.type === 'end-tour') endTour();
             });
-            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+            context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 if (data.type === 'clicked-outside-tour') {
                     const tourManager = document.querySelector('.tour-control-bar');
                     if (tourManager) {
@@ -373,7 +391,7 @@ export default defineComponent({
 
         // TODO In tablets 'buy nim' in sidebar does not get its original state
         let _buttonNimClasses: {[x:string]: string} = {};
-        function _toggleDisabledButtons(disabledButtons: TourStep['ui']['disabledButtons'], disabled:boolean) {
+        function _toggleDisabledButtons(disabledButtons: ITourStep['ui']['disabledButtons'], disabled:boolean) {
             if (!disabledButtons) return;
 
             // Classes that have to be removed while the tour is shown
@@ -405,7 +423,7 @@ export default defineComponent({
             el.scrollTop = 0;
         }
         function _addAttributes(
-            uiConfig: TourStep['ui'],
+            uiConfig: ITourStep['ui'],
             stepIndex: TourStepIndex,
         ) {
             const fadedElements = uiConfig.fadedElements || [];
@@ -523,6 +541,7 @@ export default defineComponent({
             isSmallScreen,
             isMediumScreen,
             isLargeScreen,
+            IContentSpecialItem,
 
             // tour
             tourOptions,
@@ -549,6 +568,7 @@ export default defineComponent({
         TourPreviousLeftArrowIcon,
         PartyConfettiIcon,
         CircleSpinner,
+        WorldCheckIcon,
     },
 });
 </script>
@@ -597,7 +617,7 @@ export default defineComponent({
 
     position: absolute;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     pointer-events: none;
 
     > * {

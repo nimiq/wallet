@@ -1,32 +1,32 @@
-import { NetworkTourStep, TourStep, WalletHTMLElements } from '..';
+import { NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
-export function getNetworkMetricsStep(): TourStep {
+export function getNetworkMetricsStep(): ITourStep {
     return {
         path: '/network',
         tooltip: {
-            target: WalletHTMLElements.NETWORK_STATS,
-            content: getNetworkTexts(NetworkTourStep.METRICS),
+            target: IWalletHTMLElements.NETWORK_STATS,
+            content: getNetworkTexts(NetworkTourStep.METRICS).default,
             params: {
                 placement: 'top',
             },
         },
         ui: {
             fadedElements: [
-                WalletHTMLElements.SIDEBAR_TESTNET,
-                WalletHTMLElements.SIDEBAR_LOGO,
-                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-                WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-                WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-                WalletHTMLElements.SIDEBAR_NETWORK,
-                WalletHTMLElements.SIDEBAR_SETTINGS,
+                IWalletHTMLElements.SIDEBAR_TESTNET,
+                IWalletHTMLElements.SIDEBAR_LOGO,
+                IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+                IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+                IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+                IWalletHTMLElements.SIDEBAR_NETWORK,
+                IWalletHTMLElements.SIDEBAR_SETTINGS,
             ],
             disabledElements: [
-                WalletHTMLElements.NETWORK_TABLET_MENU_BAR,
-                WalletHTMLElements.NETWORK_MAP,
-                WalletHTMLElements.NETWORK_STATS,
+                IWalletHTMLElements.NETWORK_TABLET_MENU_BAR,
+                IWalletHTMLElements.NETWORK_MAP,
+                IWalletHTMLElements.NETWORK_STATS,
             ],
-            disabledButtons: [WalletHTMLElements.BUTTON_SIDEBAR_BUY, WalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
         },
-    } as TourStep;
+    } as ITourStep;
 }

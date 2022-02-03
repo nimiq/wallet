@@ -1,37 +1,37 @@
 import { searchComponentByName } from '..';
-import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep, WalletHTMLElements } from '../types';
+import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getWalletBalanceStep({ isSmallScreen, root }: OnboardingGetStepFnArgs): TourStep {
-    const ui: TourStep['ui'] = {
+export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStepFnArgs): ITourStep {
+    const ui: ITourStep['ui'] = {
         fadedElements: [
-            WalletHTMLElements.SIDEBAR_TESTNET,
-            WalletHTMLElements.SIDEBAR_LOGO,
-            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-            WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-            WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
-            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-            WalletHTMLElements.SIDEBAR_NETWORK,
-            WalletHTMLElements.SIDEBAR_SETTINGS,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
-            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.SIDEBAR_TESTNET,
+            IWalletHTMLElements.SIDEBAR_LOGO,
+            IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+            IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+            IWalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
+            IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            IWalletHTMLElements.SIDEBAR_NETWORK,
+            IWalletHTMLElements.SIDEBAR_SETTINGS,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledElements: [
-            WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
-            WalletHTMLElements.BUTTON_SIDEBAR_BUY,
-            WalletHTMLElements.BUTTON_SIDEBAR_SELL,
-            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
+            IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
     };
     const instance = searchComponentByName(root, 'balance-distribution') as any;
@@ -41,7 +41,7 @@ export function getWalletBalanceStep({ isSmallScreen, root }: OnboardingGetStepF
         path: '/',
         tooltip: {
             get target() {
-                return `${WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution`;
+                return `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution`;
             },
             content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[!hasBitcoin ? 'default' : 'alternative'],
             params: {
@@ -63,5 +63,5 @@ export function getWalletBalanceStep({ isSmallScreen, root }: OnboardingGetStepF
             },
         },
         ui,
-    } as TourStep;
+    } as ITourStep;
 }

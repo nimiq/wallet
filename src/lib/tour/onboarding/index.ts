@@ -1,8 +1,8 @@
 import { useWindowSize } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
-import { searchComponentByName, TourOrigin } from '..';
-import { OnboardingGetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
+import { ITourOrigin } from '..';
+import { IOnboardingGetStepFnArgs, ITourSteps, OnboardingTourStep } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
 import { getTransactionListStep } from './02_TransactionListStep';
 import { getFirstTransactionStep } from './03_FirstTransactionStep';
@@ -15,7 +15,7 @@ import { getBackupOptionLargeScreenStep } from './07_2_BackupOptionLargeScreenSt
 import { getAccountOptionsStep } from './07_AccountOptionsStep';
 import { getOnboardingCompletedStep } from './08_OnboardingCompleted';
 
-export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<OnboardingTourStep> {
+export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<OnboardingTourStep> {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const toggleDisabledAttribute = async (selector: string, disabled: boolean) => {
@@ -36,29 +36,11 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
     const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
 
     const { state, activeAccountInfo } = useAccountStore();
-    const { startedFrom } = (state.tour as { startedFrom: TourOrigin });
+    const { startedFrom } = (state.tour as { startedFrom: ITourOrigin });
     const { type: accountType, wordsExported } = activeAccountInfo.value || {};
     const accountIsSecured = accountType === AccountType.BIP39 && !!wordsExported;
 
-    const openAccountOptions = async () => {
-        const accountMenu = searchComponentByName(root, 'account-menu') as any;
-        if (!accountMenu || !('closeMenu' in accountMenu)
-            || !('menuOpen' in accountMenu) || accountMenu.menuOpen) {
-            return;
-        }
-        accountMenu.openMenu();
-        await sleep(500);
-    };
-    const closeAccountOptions = async () => {
-        const modal = searchComponentByName(root, 'modal') as any;
-
-        if ('close' in modal) {
-            modal.close();
-            await sleep(500);
-        }
-    };
-
-    const args: OnboardingGetStepFnArgs = {
+    const args: IOnboardingGetStepFnArgs = {
         sleep,
         toggleDisabledAttribute,
         root,
@@ -66,25 +48,22 @@ export function getOnboardingTourSteps({ root }: SetupContext): TourSteps<Onboar
         isMediumScreen,
         isLargeScreen,
         startedFrom,
-        openAccountOptions,
-        closeAccountOptions,
         toggleHighlightButton,
     };
 
-    const steps: TourSteps<OnboardingTourStep> = {
+    const steps: ITourSteps<OnboardingTourStep> = {
         [OnboardingTourStep.FIRST_ADDRESS]: getFirstAddressStep(args),
         [OnboardingTourStep.TRANSACTION_LIST]: getTransactionListStep(args),
         [OnboardingTourStep.FIRST_TRANSACTION]: getFirstTransactionStep(args),
         [OnboardingTourStep.BITCOIN_ADDRESS]: getBitcoinAddressStep(args),
         [OnboardingTourStep.WALLET_BALANCE]: getWalletBalanceStep(args),
-        [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(
-            { ...args, keepMenuOpenOnForward: accountIsSecured && !isLargeScreen.value }),
+        [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(args),
         [OnboardingTourStep.ONBOARDING_COMPLETED]: getOnboardingCompletedStep(args),
     };
     if (!accountIsSecured) {
         steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
     }
-    if (!isLargeScreen.value && startedFrom === TourOrigin.WELCOME_MODAL) {
+    if (!isLargeScreen.value && startedFrom === ITourOrigin.WELCOME_MODAL) {
         steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
     }
     if (accountIsSecured && isLargeScreen.value) {

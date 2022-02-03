@@ -3,10 +3,10 @@ import { Transaction } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
-import { NetworkTourStep, OnboardingTourStep, TourName, TourSteps } from './types';
+import { NetworkTourStep, OnboardingTourStep, TourName, ITourSteps } from './types';
 
 export function getTour(tour: TourName | undefined, context: SetupContext)
-    : TourSteps<OnboardingTourStep> | TourSteps<NetworkTourStep> {
+    : ITourSteps<OnboardingTourStep> | ITourSteps<NetworkTourStep> {
     switch (tour) {
         case 'onboarding':
             return getOnboardingTourSteps(context);

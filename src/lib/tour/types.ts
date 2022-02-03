@@ -34,22 +34,26 @@ type BasePlacement = 'top' | 'right' | 'bottom' | 'left';
 type AlignedPlacement = `${BasePlacement}-${Alignment}`;
 export type Placement = BasePlacement | AlignedPlacement;
 
-export interface LifecycleArgs {
+export interface ILifecycleArgs {
     goToNextStep: () => void;
     goingForward: boolean;
     ending: boolean;
 }
 
-export type MountedReturnFn = ((args: Omit<LifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
+export type IMountedReturnFn = ((args: Omit<ILifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
 
-// TODO Change to ITourStep
-export interface TourStep {
-    path: '/' | '/transactions' | '/?sidebar=true' | '/network';
+export enum IContentSpecialItem {
+    HR = 'HR',
+    ICON_NETWORK_WORLD = '{network_icon}',
+    ICON_ACCOUNT = '{account_icon}',
+}
+export interface ITourStep {
+    path: `/${'' | 'transactions' | 'accounts' | 'network'}${'' | '?sidebar=true'}`;
 
     // data for the steps of v-tour
     tooltip: {
         target: string,
-        content: (string | string[])[],
+        content: (string | string[] | IContentSpecialItem)[],
         params: {
             placement: BasePlacement | AlignedPlacement,
             modifiers?: { name: 'preventOverflow' | 'offset', options: any }[] | void,
@@ -61,9 +65,9 @@ export interface TourStep {
     };
 
     lifecycle?: {
-        created?: (args: Omit<LifecycleArgs, 'ending'>) => Promise<void> | void,
-        mounted?: (args: LifecycleArgs) =>
-            MountedReturnFn | Promise<MountedReturnFn | void> | void,
+        created?: (args: Omit<ILifecycleArgs, 'ending'>) => Promise<void> | void,
+        mounted?: (args: ILifecycleArgs) =>
+            IMountedReturnFn | Promise<IMountedReturnFn | void> | void,
     };
 
     ui: {
@@ -81,28 +85,32 @@ export interface TourStep {
     };
 }
 
-export type TourSteps<T extends number> = {
-    [x in T]?: TourStep;
+export type ITourSteps<T extends number> = {
+    [x in T]?: ITourStep;
 };
 
-export enum TourOrigin {
+export enum ITourOrigin {
     SETTINGS = 'settings',
     WELCOME_MODAL = 'welcome-modal',
 }
 
-export type OnboardingGetStepFnArgs =
+export type ITourStepTexts<T extends number> = {
+    [x in T]: {
+        default: (string | string[])[], alternative?: string[],
+    }
+}
+
+export type IOnboardingGetStepFnArgs =
     Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> &
     {
         root: SetupContext['root'],
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
-        startedFrom: TourOrigin,
-        openAccountOptions: () => Promise<void>,
-        closeAccountOptions: () => Promise<void>,
+        startedFrom: ITourOrigin,
         toggleHighlightButton: (selector: string, highlight: boolean, color: 'gray' | 'organge' | 'green') => void,
     };
 
-export type NetworkGetStepFnArgs =
+export type INetworkGetStepFnArgs =
     Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'> & {
         nodes: () => NodeHexagon[],
         selfNodeIndex: number,
@@ -110,17 +118,17 @@ export type NetworkGetStepFnArgs =
         sleep: (ms: number) => Promise<unknown>,
     }
 
-export type TourBroadcast = TourBroadcastEnd | TourBroadcastStepChanged | TourBroadcastClickedOutsideTour
+export type ITourBroadcast = ITourBroadcastEnd | ITourBroadcastStepChanged | ITourBroadcastClickedOutsideTour
 
-interface TourBroadcastEnd {
+interface ITourBroadcastEnd {
     type: 'end-tour';
 }
 
-interface TourBroadcastClickedOutsideTour {
+interface ITourBroadcastClickedOutsideTour {
     type: 'clicked-outside-tour';
 }
 
-export interface TourBroadcastStepChanged {
+export interface ITourBroadcastStepChanged {
     type: 'tour-step-changed';
     payload: {
         currentStep: TourStepIndex,
@@ -128,7 +136,7 @@ export interface TourBroadcastStepChanged {
     };
 }
 
-export enum WalletHTMLElements {
+export enum IWalletHTMLElements {
     SIDEBAR_TESTNET = '.sidebar .testnet-notice',
     SIDEBAR_LOGO = '.sidebar .logo',
     SIDEBAR_ANNOUNCMENT_BOX = '.sidebar .announcement-box',

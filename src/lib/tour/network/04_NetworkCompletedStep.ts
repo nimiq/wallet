@@ -1,16 +1,17 @@
-import { NetworkGetStepFnArgs, NetworkTourStep, TourStep, WalletHTMLElements } from '..';
+import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
-export function getNetworkCompletedStep({ isLargeScreen }: NetworkGetStepFnArgs): TourStep {
+export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs): ITourStep {
     return {
         path: '/network',
         tooltip: {
             get target() {
                 return isLargeScreen.value
-                    ? WalletHTMLElements.SIDEBAR_ACCOUNT_MENU
-                    : `${WalletHTMLElements.NETWORK_TABLET_MENU_BAR} .account-button`;
+                    ? IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU
+                    : `${IWalletHTMLElements.NETWORK_TABLET_MENU_BAR} .account-button`;
             },
-            content: getNetworkTexts(NetworkTourStep.NETWORK_COMPLETED, isLargeScreen.value),
+            content: getNetworkTexts(NetworkTourStep.NETWORK_COMPLETED)[
+                isLargeScreen.value ? 'alternative' : 'default'],
             params: {
                 get placement() {
                     return isLargeScreen.value ? 'right' : 'top';
@@ -27,20 +28,20 @@ export function getNetworkCompletedStep({ isLargeScreen }: NetworkGetStepFnArgs)
         },
         ui: {
             fadedElements: [
-                WalletHTMLElements.SIDEBAR_TESTNET,
-                WalletHTMLElements.SIDEBAR_LOGO,
-                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-                WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-                WalletHTMLElements.SIDEBAR_NETWORK,
-                WalletHTMLElements.SIDEBAR_SETTINGS,
+                IWalletHTMLElements.SIDEBAR_TESTNET,
+                IWalletHTMLElements.SIDEBAR_LOGO,
+                IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+                IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+                IWalletHTMLElements.SIDEBAR_NETWORK,
+                IWalletHTMLElements.SIDEBAR_SETTINGS,
             ],
             disabledElements: [
-                WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-                WalletHTMLElements.NETWORK_TABLET_MENU_BAR,
-                WalletHTMLElements.NETWORK_MAP,
-                WalletHTMLElements.NETWORK_STATS,
+                IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+                IWalletHTMLElements.NETWORK_TABLET_MENU_BAR,
+                IWalletHTMLElements.NETWORK_MAP,
+                IWalletHTMLElements.NETWORK_STATS,
             ],
-            disabledButtons: [WalletHTMLElements.BUTTON_SIDEBAR_BUY, WalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
         },
-    } as TourStep;
+    } as ITourStep;
 }

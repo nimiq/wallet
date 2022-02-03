@@ -1,18 +1,18 @@
 import { SCALING_FACTOR } from '@/lib/NetworkMap';
 import { ref } from '@vue/composition-api';
-import { NetworkGetStepFnArgs, NetworkTourStep, TourStep, WalletHTMLElements } from '..';
+import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
 export function getBackboneNodeStep(
-    { nodes, selfNodeIndex, isLargeScreen, scrollIntoView, sleep }: NetworkGetStepFnArgs): TourStep {
+    { nodes, selfNodeIndex, isLargeScreen, scrollIntoView, sleep }: INetworkGetStepFnArgs): ITourStep {
     const selectedNode = ref(-1);
     return {
         path: '/network',
         tooltip: {
             get target() {
-                return `${WalletHTMLElements.NETWORK_NODES} span:nth-child(${selectedNode.value + 1})`;
+                return `${IWalletHTMLElements.NETWORK_NODES} span:nth-child(${selectedNode.value + 1})`;
             },
-            content: getNetworkTexts(NetworkTourStep.BACKBONE_NODE),
+            content: getNetworkTexts(NetworkTourStep.BACKBONE_NODE).default,
             params: {
                 // TODO On mobile phones if the node is in the south, the tooltip might break the web
                 placement: isLargeScreen.value ? 'right' : 'bottom',
@@ -20,20 +20,20 @@ export function getBackboneNodeStep(
         },
         ui: {
             fadedElements: [
-                WalletHTMLElements.SIDEBAR_TESTNET,
-                WalletHTMLElements.SIDEBAR_LOGO,
-                WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-                WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-                WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-                WalletHTMLElements.SIDEBAR_NETWORK,
-                WalletHTMLElements.SIDEBAR_SETTINGS,
-                WalletHTMLElements.NETWORK_STATS,
+                IWalletHTMLElements.SIDEBAR_TESTNET,
+                IWalletHTMLElements.SIDEBAR_LOGO,
+                IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+                IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+                IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+                IWalletHTMLElements.SIDEBAR_NETWORK,
+                IWalletHTMLElements.SIDEBAR_SETTINGS,
+                IWalletHTMLElements.NETWORK_STATS,
             ],
             disabledElements: [
-                WalletHTMLElements.NETWORK_TABLET_MENU_BAR,
-                WalletHTMLElements.NETWORK_MAP,
+                IWalletHTMLElements.NETWORK_TABLET_MENU_BAR,
+                IWalletHTMLElements.NETWORK_MAP,
             ],
-            disabledButtons: [WalletHTMLElements.BUTTON_SIDEBAR_BUY, WalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
         },
         lifecycle: {
             created: (async () => {
@@ -53,5 +53,5 @@ export function getBackboneNodeStep(
                 await sleep(500);
             }),
         },
-    } as TourStep;
+    } as ITourStep;
 }

@@ -1,40 +1,40 @@
 import { useTransactionsStore } from '@/stores/Transactions';
-import { WalletHTMLElements } from '..';
-import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
+import { IWalletHTMLElements } from '..';
+import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep({ isSmallScreen }: OnboardingGetStepFnArgs): TourStep {
-    const ui: TourStep['ui'] = {
+export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnArgs): ITourStep {
+    const ui: ITourStep['ui'] = {
         fadedElements: [
-            WalletHTMLElements.SIDEBAR_TESTNET,
-            WalletHTMLElements.SIDEBAR_LOGO,
-            WalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
-            WalletHTMLElements.SIDEBAR_PRICE_CHARTS,
-            WalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
-            WalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-            WalletHTMLElements.SIDEBAR_NETWORK,
-            WalletHTMLElements.SIDEBAR_SETTINGS,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
-            WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.SIDEBAR_TESTNET,
+            IWalletHTMLElements.SIDEBAR_LOGO,
+            IWalletHTMLElements.SIDEBAR_ANNOUNCMENT_BOX,
+            IWalletHTMLElements.SIDEBAR_PRICE_CHARTS,
+            IWalletHTMLElements.SIDEBAR_TRADE_ACTIONS,
+            IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
+            IWalletHTMLElements.SIDEBAR_NETWORK,
+            IWalletHTMLElements.SIDEBAR_SETTINGS,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledElements: [
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
-            WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+            IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledButtons: [
-            WalletHTMLElements.BUTTON_SIDEBAR_BUY,
-            WalletHTMLElements.BUTTON_SIDEBAR_SELL,
-            WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
+            IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
-        scrollLockedElements: [`${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller `],
+        scrollLockedElements: [`${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller `],
     };
     const txsLen = () => Object.values(useTransactionsStore().state.transactions).length;
 
@@ -44,7 +44,7 @@ export function getFirstTransactionStep({ isSmallScreen }: OnboardingGetStepFnAr
         },
         tooltip: {
             get target() {
-                return `${WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} ${isSmallScreen.value
+                return `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} ${isSmallScreen.value
                     ? '.transaction > .identicon'
                     : '.vue-recycle-scroller__item-view:nth-child(2)'}`;
             },
@@ -57,5 +57,5 @@ export function getFirstTransactionStep({ isSmallScreen }: OnboardingGetStepFnAr
             },
         },
         ui,
-    } as TourStep;
+    } as ITourStep;
 }

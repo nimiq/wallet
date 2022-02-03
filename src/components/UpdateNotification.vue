@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
+import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '../stores/Settings';
 import { updateServiceWorker } from '../registerServiceWorker';
 
@@ -26,8 +27,9 @@ export default defineComponent({
         const isShown = ref(false);
 
         const { updateAvailable } = useSettingsStore();
+        const { state } = useAccountStore();
         watch(updateAvailable, (isAvailable) => {
-            if (isAvailable) isShown.value = true;
+            isShown.value = isAvailable && state.tour !== null; // Only show if the user is not in the tour
         });
 
         const applyingWalletUpdate = ref(false);

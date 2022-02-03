@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { TourBroadcast, TourBroadcastStepChanged, TourStepIndex, WalletHTMLElements } from '@/lib/tour';
+import { ITourBroadcast, ITourBroadcastStepChanged, TourStepIndex, IWalletHTMLElements } from '@/lib/tour';
 import { defineComponent, onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
 
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
             }
             _checkIfModalIsOpen();
 
-            context.root.$on('nimiq-tour-event', (data: TourBroadcast) => {
+            context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 // TODO The event should be triggered also when resizing the window
                 if (data.type === 'tour-step-changed') _stepChanged(data.payload);
                 if (data.type === 'clicked-outside-tour') _flash();
@@ -40,7 +40,7 @@ export default defineComponent({
         onUnmounted(() => _removeClonedManager());
 
         async function _stepChanged(
-            { nSteps: newNSteps, currentStep: newCurrentStep }:TourBroadcastStepChanged['payload']) {
+            { nSteps: newNSteps, currentStep: newCurrentStep }:ITourBroadcastStepChanged['payload']) {
             nSteps.value = newNSteps;
             currentStep.value = newCurrentStep;
 
@@ -50,7 +50,7 @@ export default defineComponent({
         }
 
         function _checkIfModalIsOpen() {
-            const modalIsOpen = document.querySelector(WalletHTMLElements.MODAL_CONTAINER) !== null;
+            const modalIsOpen = document.querySelector(IWalletHTMLElements.MODAL_CONTAINER) !== null;
             if (modalIsOpen) {
                 _duplicateManager();
             } else {
@@ -98,7 +98,7 @@ export default defineComponent({
 
         function endTour() {
             _removeClonedManager();
-            context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as TourBroadcast);
+            context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as ITourBroadcast);
         }
 
         function _flash() {

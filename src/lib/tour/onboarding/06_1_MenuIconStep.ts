@@ -1,12 +1,12 @@
-import { WalletHTMLElements } from '..';
-import { OnboardingTourStep, TourStep } from '../types';
+import { IWalletHTMLElements } from '..';
+import { OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getMenuIconStep(): TourStep {
+export function getMenuIconStep(): ITourStep {
     return {
         path: '/',
         tooltip: {
-            target: `${WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`,
+            target: `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`,
             content: getOnboardingTexts(OnboardingTourStep.MENU_ICON).default,
             params: {
                 placement: 'bottom-start',
@@ -15,29 +15,29 @@ export function getMenuIconStep(): TourStep {
         lifecycle: {
             mounted: async ({ goToNextStep }) => {
                 const hamburguerIcon = document.querySelector(
-                    `${WalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
+                    `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
 
                 hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
             },
         },
         ui: {
             fadedElements: [
-                WalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
+                IWalletHTMLElements.ACCOUNT_OVERVIEW_MOBILE_ACTION_BAR,
             ],
             disabledElements: [
-                WalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
-                WalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
-                WalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
-                WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
-                WalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
-                WalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
-                WalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
-                WalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+                IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE,
+                IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+                IWalletHTMLElements.ACCOUNT_OVERVIEW_BITCOIN,
+                IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+                IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+                IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
+                IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
+                IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
             ],
             disabledButtons: [
-                WalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+                IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
             ],
             isNextStepDisabled: true,
         },
-    } as TourStep;
+    } as ITourStep;
 }

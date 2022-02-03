@@ -167,8 +167,9 @@ export default defineComponent({
             await tourSetup();
 
             // REMOVE ME
-            const { removeTransactions, addTransactions } = useTransactionsStore();
+            const { removeTransactions } = useTransactionsStore();
             removeTransactions([getFakeTx()]);
+            // const { addTransactions } = useTransactionsStore();
             // addTransactions([getFakeTx()]);
         });
 
@@ -237,7 +238,8 @@ export default defineComponent({
         // Dont allow user to interact with the page while it is loading
         // But allow to end it
         watch([isLoading, disconnected], async () => {
-            // TODO Avoid interaction with any of the elements when loading except tour elements (bar, manager and tooltip)
+            // TODO
+            // Avoid interaction with any of the elements when loading except tour elements (bar, manager and tooltip)
             // const elements = Object.values(WalletHTMLElements).filter((e) => e);
             // if (isLoading.value || disconnected.value) {
             //     elements.forEach((element) => {

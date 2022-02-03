@@ -1,9 +1,9 @@
 import { useTransactionsStore } from '@/stores/Transactions';
-import { TourOrigin, WalletHTMLElements } from '..';
+import { WalletHTMLElements } from '..';
 import { OnboardingGetStepFnArgs, OnboardingTourStep, TourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep({ isSmallScreen, startedFrom }: OnboardingGetStepFnArgs): TourStep {
+export function getFirstTransactionStep({ isSmallScreen }: OnboardingGetStepFnArgs): TourStep {
     const ui: TourStep['ui'] = {
         fadedElements: [
             WalletHTMLElements.SIDEBAR_TESTNET,

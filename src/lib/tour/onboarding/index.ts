@@ -1,7 +1,7 @@
 import { useWindowSize } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
-import { searchComponentByName, TourName, TourOrigin } from '..';
+import { searchComponentByName, TourOrigin } from '..';
 import { OnboardingGetStepFnArgs, OnboardingTourStep, TourSteps } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
 import { getTransactionListStep } from './02_TransactionListStep';

@@ -23,107 +23,38 @@
         <button class="reset menu-button" @click.stop="openMenu">
             <MenuDotsIcon/>
         </button>
-
-        <!-- Submenu -->
-        <transition name="modal">
-            <Modal v-if="menuOpen" class="menu" :swipeToClose="false" emitClose @close="closeMenu" @click.native.stop>
-                <div class="current-account">
-                    <AccountMenuItem :id="activeAccountId"/>
-                    <button v-if="canExportFile" class="item reset flex-row"
-                        @click="backup(activeAccountId, { fileOnly: true })">
-                        <LoginFileDownloadIcon/>{{ $t('Save Login File') }}
-                        <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
-                    </button>
-                    <button v-if="canExportWords" class="item reset flex-row"
-                        @click="backup(activeAccountId, { wordsOnly: true })">
-                        <BackupIcon/>{{ $t('Show Recovery Words') }}
-                        <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
-                    </button>
-                    <button class="item reset flex-row" @click="rename(activeAccountId)">
-                        <RenameIcon/>{{ $t('Rename') }}
-                    </button>
-                    <button
-                        v-if="canChangePassword"
-                        class="item reset flex-row"
-                        @click="changePassword(activeAccountId)"
-                    >
-                        <ChangePasswordIcon/>{{ $t('Change password') }}
-                    </button>
-                    <button class="item reset logout flex-row" @click="logout(activeAccountId)">
-                        <LogoutArrowIcon/>{{ $t('Logout') }}
-                    </button>
-                </div>
-
-                <div class="separator" v-if="otherAccountIds.length"></div>
-
-                <div class="account-list" v-if="otherAccountIds.length">
-                    <AccountMenuItem
-                        v-for="id of otherAccountIds" :key="id"
-                        :id="id"
-                        tag="button"
-                        class="reset"
-                        @click.native.stop="onAccountSelected(id)"
-                    />
-                </div>
-
-                <button class="nq-button-s add-account" @click="onboard" @mousedown.prevent>
-                    {{ $t('Add account') }}
-                </button>
-            </Modal>
-        </transition>
     </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { AlertTriangleIcon, Identicon, MenuDotsIcon } from '@nimiq/vue-components';
-// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
-import vClickOutside from 'v-click-outside';
+import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
-import AccountMenuItem from './AccountMenuItem.vue';
-import Modal from './modals/Modal.vue';
-import LoginFileDownloadIcon from './icons/AccountMenu/LoginFileDownloadIcon.vue';
-import BackupIcon from './icons/AccountMenu/BackupIcon.vue';
-import RenameIcon from './icons/AccountMenu/RenameIcon.vue';
-import ChangePasswordIcon from './icons/AccountMenu/ChangePasswordIcon.vue';
-import LogoutArrowIcon from './icons/AccountMenu/LogoutArrowIcon.vue';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
-import { backup, rename, changePassword, logout, onboard } from '../hub';
 import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     setup(props, context) {
-        const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
-        const { state: addressState, accountBalance } = useAddressStore();
+        const { activeAccountInfo } = useAccountStore();
+        const { state: addressState } = useAddressStore();
 
         const $button = ref<HTMLButtonElement>(null);
 
-        const menuOpen = ref(false);
         function openMenu() {
-            menuOpen.value = true;
+            context.root.$router.push({
+                name: `${context.root.$route.name}-accounts`,
+                query: { sidebar: 'true' },
+            });
         }
-        function closeMenu() {
-            menuOpen.value = false;
-            $button.value!.blur();
-        }
-
-        const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
-        const isNotLedger = computed(() =>
-            !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
-        const canExportWords = isNotLedger;
-        const canChangePassword = isNotLedger;
 
         const backgroundColor = computed(() => !!activeAccountInfo.value
             && getBackgroundClass(activeAccountInfo.value.addresses[0]));
 
         const firstAddressInfo = computed(() => activeAccountInfo.value
             && addressState.addressInfos[activeAccountInfo.value.addresses[0]]);
-
-        const otherAccountIds = computed(() => Object.keys(accountInfos.value)
-            .filter((id) => id !== activeAccountId.value));
 
         function goToAccount(testForMenuOpening = true) {
             if (testForMenuOpening && context.root.$route.name === 'root') {
@@ -133,34 +64,13 @@ export default defineComponent({
             context.emit('click');
         }
 
-        function onAccountSelected(id: string) {
-            selectAccount(id);
-            closeMenu();
-            goToAccount(false);
-        }
-
         return {
-            otherAccountIds,
             activeAccountInfo,
-            activeAccountId,
             backgroundColor,
-            accountBalance,
-            menuOpen,
             openMenu,
-            closeMenu,
-            selectAccount,
-            canExportFile,
-            canExportWords,
-            canChangePassword,
-            backup,
-            rename,
-            changePassword,
-            logout,
-            onboard,
             AccountType,
             firstAddressInfo,
             goToAccount,
-            onAccountSelected,
             $button,
         };
     },
@@ -168,18 +78,7 @@ export default defineComponent({
         LoginFileIcon,
         LedgerIcon,
         MenuDotsIcon,
-        AlertTriangleIcon,
-        AccountMenuItem,
         Identicon,
-        Modal,
-        LoginFileDownloadIcon,
-        BackupIcon,
-        RenameIcon,
-        ChangePasswordIcon,
-        LogoutArrowIcon,
-    },
-    directives: {
-        ClickOutside: vClickOutside.directive,
     },
 });
 </script>
@@ -260,187 +159,5 @@ export default defineComponent({
     &:focus {
         opacity: 1;
     }
-}
-
-@media (min-width: 700px) { // Full mobile breakpoint
-    .menu {
-        display: block;
-
-        ::v-deep .wrapper {
-            position: absolute;
-            left: calc(var(--sidebar-width) - 1rem);
-            bottom: 2rem;
-
-            .small-page {
-                width: 34rem;
-                border-radius: 0.75rem;
-                max-height: calc(100vh - 4rem);
-            }
-        }
-
-        ::v-deep .close-button {
-            display: none;
-        }
-    }
-}
-
-.menu {
-    position: fixed;
-    cursor: auto;
-
-    ::v-deep .wrapper {
-        .small-page {
-            padding: 1rem;
-            min-height: unset;
-        }
-    }
-}
-
-.current-account {
-    margin-bottom: 0.75rem;
-}
-
-.current-account .account-menu-item {
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
-
-.current-account .account-menu-item ::v-deep .nq-icon {
-    display: none;
-}
-
-.separator {
-    margin: 0 0.5rem 0.5rem 0.5rem;
-    height: 2px;
-    box-shadow: inset 0 1.5px 0 var(--text-14);
-    flex-shrink: 0;
-    border-radius: 2px;
-}
-
-.menu .item {
-    align-items: center;
-    line-height: 1.2;
-    width: 100%;
-    padding: 1.125rem 1.25rem;
-    border-radius: 0.5rem;
-    color: var(--text-70);
-
-    transition:
-        color var(--attr-duration) var(--nimiq-ease),
-        background var(--attr-duration) var(--nimiq-ease);
-}
-
-.menu .logout {
-    margin-bottom: 0;
-}
-
-.menu .item:hover,
-.menu .item:focus {
-    color: var(--text-100);
-    background: var(--nimiq-highlight-bg);
-}
-
-.menu .logout:hover,
-.menu .logout:focus {
-    color: var(--nimiq-red);
-    background: rgba(216, 65, 51, 0.12); // Based on Nimiq Red
-}
-
-.menu .item .alert {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: 2.5rem;
-    color: var(--nimiq-orange);
-}
-
-.menu button svg:first-child {
-    width: 2.75rem;
-    height: 3rem;
-    margin: -0.125rem 1rem -0.125rem 0;
-    flex-shrink: 0;
-    opacity: 0.6;
-}
-
-.account-list {
-    margin: 1rem 0;
-    overflow-y: auto;
-
-    @extend %custom-scrollbar;
-}
-
-.account-list .account-menu-item {
-    padding: 1rem;
-    width: 100%;
-    border-radius: 0.5rem;
-    color: var(--text-70);
-
-    transition:
-        color var(--attr-duration) var(--nimiq-ease),
-        background var(--attr-duration) var(--nimiq-ease);
-
-    ::v-deep .icon {
-        opacity: 0.8;
-
-        transition: opacity var(--attr-duration) var(--nimiq-ease),
-    }
-}
-
-.account-list .account-menu-item:hover,
-.account-list .account-menu-item:focus {
-    background: var(--nimiq-highlight-bg);
-    color: var(--text-100);
-
-    ::v-deep .icon {
-        opacity: 1;
-    }
-}
-
-.menu .add-account {
-    margin: 1rem;
-    align-self: flex-start;
-}
-
-@media (min-width: 700px) { // Full mobile breakpoint
-    .backdrop {
-        background-color: rgba(31, 35, 72, 0.3);
-
-        ::v-deep .wrapper {
-            transform-origin: left center;
-        }
-
-        ::v-deep .nq-card {
-            box-shadow:
-                0px 2px 2.5px rgba(31, 35, 72, 0.02),
-                0px 7px 8.5px rgba(31, 35, 72, 0.04),
-                0px 18px 38px rgba(31, 35, 72, 0.07);
-        }
-    }
-
-    // Special transition for Account Menu modal
-    .modal-enter, .modal-leave-to {
-        ::v-deep .wrapper {
-            transform: translate3D(1rem, 0, 0) scale(0.99);
-        }
-    }
-}
-
-@media (max-width: 700px) { // Full mobile breakpoint
-    .menu {
-        ::v-deep .wrapper {
-            .small-page {
-                padding: 2rem;
-                font-size: 2.25rem;
-            }
-        }
-
-        .item {
-            padding-top: 0.875rem;
-            padding-bottom: 0.875rem;
-        }
-    }
-
-    // .account-list .account-menu-item {
-    //     opacity: 1;
-    // }
 }
 </style>

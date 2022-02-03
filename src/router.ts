@@ -14,6 +14,8 @@ const Network = () =>
     import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
 
 // Modals
+const AccountMenuModal = () =>
+    import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
@@ -78,6 +80,14 @@ const routes: RouteConfig[] = [{
         alias: '/transactions',
         meta: { column: Columns.DYNAMIC },
         children: [{
+            path: '/accounts',
+            components: {
+                modal: AccountMenuModal,
+            },
+            name: 'root-accounts',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
             path: '/send',
             components: {
                 modal: AddressSelectorModal,
@@ -249,6 +259,14 @@ const routes: RouteConfig[] = [{
         name: 'settings',
         meta: { column: Columns.ACCOUNT },
         children: [{
+            path: '/accounts',
+            components: {
+                modal: AccountMenuModal,
+            },
+            name: 'settings-accounts',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
             path: '/disclaimer',
             components: {
                 modal: DisclaimerModal,
@@ -272,6 +290,15 @@ const routes: RouteConfig[] = [{
     },
     name: 'network',
     meta: { column: Columns.ACCOUNT },
+    children: [{
+        path: '/accounts',
+        components: {
+            modal: AccountMenuModal,
+        },
+        name: 'network-accounts',
+        props: { modal: true },
+        meta: { column: Columns.DYNAMIC },
+    }],
 }];
 
 const router = new VueRouter({

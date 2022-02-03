@@ -29,7 +29,7 @@
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
+            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: 'true'}})">
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
             </button>

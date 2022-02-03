@@ -10,18 +10,18 @@
                 <Tooltip class="info-tooltip" preferredPosition="bottom left">
                     <InfoCircleSmallIcon slot="trigger"/>
                     <div class="flex-column">
-                        <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                            + ' Reuse of addresses does not result in a loss of funds.') }}</p>
+                        <p>{{
+                            $t('With Bitcoin, a new address can be used for every transaction to improve privacy.')
+                        }}</p>
                         <div class="flex-column">
                             <div class="flex-row">
                                 <RefreshIcon />
-                                <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
+                                <p>{{ $t('Create a new address for every transaction.') }}</p>
                             </div>
                             <div class="flex-row">
                                 <BracketsIcon />
                                 <p>
-                                    {{ $t('Use labels instead of contacts to easily '
-                                    + 'identify transactions in your history.') }}
+                                    {{ $t('Use labels to easily identify transactions.') }}
                                 </p>
                             </div>
                         </div>
@@ -52,10 +52,9 @@
                         >
                             <template slot="trigger"><InfoCircleSmallIcon /></template>
                             <span class="header">
-                                {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                                {{ $t('Improve your privacy by creating a new address for every transaction. '
+                                    + 'Old addresses still work.') }}
                             </span>
-                            <p class="explainer">{{ $t('Although reusing addresses won’t result in a loss of funds,'
-                                + ' it is highly recommended not to do so.') }}</p>
                         </Tooltip>
                     </div>
 

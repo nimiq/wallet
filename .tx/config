@@ -7,4 +7,3 @@ minimum_perc = 0
 source_file = src/i18n/en.po
 source_lang = en
 type = PO
-

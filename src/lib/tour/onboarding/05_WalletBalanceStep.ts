@@ -1,3 +1,4 @@
+import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { defaultTooltipModifiers, searchComponentByName } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
@@ -38,7 +39,9 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
     };
-    let hasBitcoin = false;
+
+    const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+    let hasBitcoin = btcAccountBalance.value > 0;
 
     return {
         path: '/',

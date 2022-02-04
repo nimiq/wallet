@@ -1,117 +1,126 @@
 <template>
-  <div class="tour">
-    <v-tour
-      name="nimiq-tour"
-      :steps="steps.map((s) => s.tooltip)"
-      :options="tourOptions"
-    >
-        <template v-slot="tour">
-            <transition name="fade">
-                <v-step
-                    class="tooltip"
-                    :class="tour.steps[tour.currentStep].params.placement || ''"
-                    v-if="tour.steps[tour.currentStep]"
-                    :key="tour.currentStep"
-                    :step="tour.steps[tour.currentStep]"
-                    :previous-step="tour.previousStep"
-                    :next-step="tour.goToNextStep"
-                    :stop="tour.stop"
-                    :skip="tour.skip"
-                    :is-first="tour.isFirst"
-                    :is-last="tour.isLast"
-                    :labels="tour.labels"
-                >
-                    <div slot="content" class="content">
-                        <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
-                            <PartyConfettiIcon v-if="currentStep === nSteps - 1 && i === 0" />
-                            <hr v-if="content === IContentSpecialItem.HR" />
-                            <i18n v-else-if="content.includes(IContentSpecialItem.ICON_NETWORK_WORLD)"
-                                :path="content" tag="p">
-                                <template v-slot:network_icon>
-                                    <WorldCheckIcon />
-                                </template>
-                                <template v-slot:account_icon>
-                                    <svg width="14" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g opacity=".7">
-                                            <rect x=".75" y=".75" width="12.5" height="19.5"
-                                                rx="2.5" stroke="#fff" stroke-width="1.5"/>
-                                            <circle cx="7" cy="7" r="2" fill="#fff"/>
-                                        </g>
-                                    </svg>
-                                </template>
-                            </i18n>
-                            <p v-else-if="typeof content === 'string'" v-html="$t(content)"></p>
-                            <ul v-else-if="content.length">
-                                <li v-for="(item, i) in content" :key="i">
-                                    <span class="dash">-</span>
-                                    <span v-html="$t(item)"></span>
-                                </li>
-                            </ul>
+    <div class="tour">
+        <v-tour
+        name="nimiq-tour"
+        :steps="steps.map((s) => s.tooltip)"
+        :options="tourOptions"
+        >
+            <template v-slot="tour">
+                <transition name="fade">
+                    <v-step
+                        class="tooltip"
+                        :class="tour.steps[tour.currentStep].params.placement || ''"
+                        v-if="showTour && tour.steps[tour.currentStep]"
+                        :key="tour.currentStep"
+                        :step="tour.steps[tour.currentStep]"
+                        :previous-step="tour.previousStep"
+                        :next-step="tour.goToNextStep"
+                        :stop="tour.stop"
+                        :skip="tour.skip"
+                        :is-first="tour.isFirst"
+                        :is-last="tour.isLast"
+                        :labels="tour.labels"
+                    >
+                        <div slot="content" class="content">
+                            <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
+                                <!--  Confetti only visible in last tooltip (currentStep === nSteps - 1)
+                                        and first paragraph (i === 0) -->
+                                <PartyConfettiIcon class="confetti" v-if="currentStep === nSteps - 1 && i === 0" />
+                                <hr v-if="content === IContentSpecialItem.HR" />
+                                <i18n
+                                    v-else-if="new RegExp(
+                                            Object.values(IContentSpecialItem).join('|'), 'gmi').test(content)"
+                                    :path="content" tag="p">
+                                    <template v-slot:network_icon>
+                                        <WorldCheckIcon />
+                                        <!-- TODO Add Icon + network in same line as a span -->
+                                    </template>
+                                    <template v-slot:account_icon>
+                                        <svg width="14" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g opacity=".7">
+                                                <rect x=".75" y=".75" width="12.5" height="19.5"
+                                                    rx="2.5" stroke="#fff" stroke-width="1.5"/>
+                                                <circle cx="7" cy="7" r="2" fill="#fff"/>
+                                            </g>
+                                        </svg>
+                                        <!-- TODO Add Icon + Account in same line as a span -->
+                                    </template>
+                                    <!-- TODO Add bold template -->
+                                </i18n>
+                                <p v-else-if="typeof content === 'string'">{{ $t(content) }}</p>
+                                <ul v-else-if="content.length">
+                                    <li v-for="(item, i) in content" :key="i">
+                                        <span class="dash">-</span>
+                                        <span>{{ $t(item) }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- TODO REMOVE ME -->
+                            <div class="remove_me" v-if="currentStep === 1 && disableNextStep" @click="simulate()">
+                                Simulate Receive NIM
+                            </div>
                         </div>
-                        <!-- TODO REMOVE ME -->
-                        <div class="remove_me" v-if="currentStep === 1 && disableNextStep" @click="simulate()">
-                            Simulate Receive NIM
-                        </div>
-                    </div>
-                    <div slot="actions">
-                        <div
-                            v-if="tour.steps[tour.currentStep].button || isLargeScreen"
-                            class="actions"
-                        >
-                            <button @click="goToPrevStep()" v-if="currentStep > 0 && isLargeScreen" class="left">
-                                <TourPreviousLeftArrowIcon />
-                                {{ $t("Previous") }}
-                            </button>
-                            <button
-                                class="right" v-if="tour.steps[tour.currentStep].button && !isLoading"
-                                @click="() => tour.steps[tour.currentStep].button.fn(endTour)"
+                        <div slot="actions">
+                            <div
+                                v-if="tour.steps[tour.currentStep].button || isLargeScreen"
+                                class="actions"
                             >
-                                <!--  TODO Move $t to logic -->
-                                {{ $t(tour.steps[tour.currentStep].button.text) }}
-                            </button>
-                            <button
-                                v-else-if="isLargeScreen && !disableNextStep && !isLoading"
-                                class="right"
-                                @click="goToNextStep()"
-                            >
-                                <span>{{ $t("Next") }}</span>
-                            </button>
-                            <button v-if="isLoading && isLargeScreen" class="circle-spinner right">
-                                <CircleSpinner />
-                            </button>
+                                <button @click="goToPrevStep()" v-if="currentStep > 0 && isLargeScreen" class="left">
+                                    <TourPreviousLeftArrowIcon />
+                                    {{ $t("Previous") }}
+                                </button>
+                                <button
+                                    class="right" v-if="tour.steps[tour.currentStep].button && !isLoading"
+                                    @click="() => tour.steps[tour.currentStep].button.fn(endTour)"
+                                >
+                                    <!--  TODO Move $t to logic -->
+                                    {{ $t(tour.steps[tour.currentStep].button.text) }}
+                                </button>
+                                <button
+                                    v-else-if="isLargeScreen && !disableNextStep && !isLoading"
+                                    class="right"
+                                    @click="goToNextStep()"
+                                >
+                                    <span>{{ $t("Next") }}</span>
+                                </button>
+                                <button v-if="isLoading && isLargeScreen" class="circle-spinner right">
+                                    <CircleSpinner />
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </v-step>
-            </transition>
-        </template>
-    </v-tour>
-        <div class="tour-control-bar" v-if="isSmallScreen || isMediumScreen">
-            <button @click="endTour()">
-                {{ $t("End Tour") }}
-            </button>
-            <span class="progress"> {{ currentStep + 1 }} / {{ nSteps }} </span>
-            <div class="arrows">
-                <button
-                    v-if="!isLoading"
-                    class="prev"
-                    :class="{ hidden: currentStep === 0}"
-                    @click="goToPrevStep()"
-                    style="transform: rotate(180deg)"
-                >
-                    <CaretRightSmallIcon />
+                    </v-step>
+                </transition>
+            </template>
+        </v-tour>
+        <transition name="slide-vertical">
+            <div class="tour-control-bar" v-if="showTour && (isSmallScreen || isMediumScreen)">
+                <button @click="endTour()">
+                    {{ $t("End Tour") }}
                 </button>
-                <button
-                    class="next"
-                    :class="{ loading: isLoading }"
-                    :disabled="disableNextStep"
-                    @click="!isLoading && goToNextStep()"
-                >
-                    <CaretRightSmallIcon v-if="!isLoading" />
-                    <CircleSpinner v-else class="circle-spinner" />
-                </button>
+                <span class="progress"> {{ currentStep + 1 }} / {{ nSteps }} </span>
+                <div class="arrows">
+                    <button
+                        v-if="!isLoading"
+                        class="prev"
+                        :class="{ hidden: currentStep === 0}"
+                        @click="goToPrevStep()"
+                        style="transform: rotate(180deg)"
+                    >
+                        <CaretRightSmallIcon />
+                    </button>
+                    <button
+                        class="next"
+                        :class="{ loading: isLoading }"
+                        :disabled="disableNextStep"
+                        @click="!isLoading && goToNextStep()"
+                    >
+                        <CaretRightSmallIcon v-if="!isLoading" />
+                        <CircleSpinner v-else class="circle-spinner" />
+                    </button>
+                </div>
             </div>
-        </div>
-  </div>
+        </transition>
+    </div>
 </template>
 
 <script lang="ts">
@@ -166,9 +175,10 @@ export default defineComponent({
 
         // Initial state
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(0);
+        const currentStep: Ref<TourStepIndex> = ref(7);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
+        const showTour = ref(false);
 
         let unmounted: IMountedReturnFn | void;
 
@@ -224,6 +234,8 @@ export default defineComponent({
 
             // ensures animation ends
             await sleep(1000);
+
+            showTour.value = true;
 
             tour = context.root.$tours['nimiq-tour'];
             tour.start(`${currentStep.value}`);
@@ -338,6 +350,7 @@ export default defineComponent({
             });
 
             currentStep.value = futureStepIndex;
+
             _broadcast({
                 type: 'tour-step-changed',
                 payload: {
@@ -371,13 +384,19 @@ export default defineComponent({
         }
 
         function _userClicked() {
-            const userCanClick = ['.tour', '.tour-manager', '.tooltip']
+            const userCanClickTourElements = ['.tour', '.tour-manager', '.tooltip']
                 .map((s) => document.querySelector(s) as HTMLElement)
                 .filter((e) => !!e);
 
             return ({ target }: MouseEvent) => {
                 if (!target) return;
-                if (!userCanClick.some((el) => el.contains(target as Node))) {
+                const explicitInteractableElements = (steps[currentStep.value]?.ui.explicitInteractableElements
+                    || [] as string[])
+                    .map((s) => document.querySelector(s) as HTMLElement)
+                    .filter((e) => !!e);
+                const interactableElements = [...userCanClickTourElements, ...explicitInteractableElements];
+
+                if (!interactableElements.some((el) => el.contains(target as Node))) {
                     _broadcast({ type: 'clicked-outside-tour' });
                 }
             };
@@ -423,6 +442,7 @@ export default defineComponent({
             const fadedElements = uiConfig.fadedElements || [];
             const disabledElements = uiConfig.disabledElements || [];
             const scrollLockedElements = uiConfig.scrollLockedElements || [];
+            const explicitInteractableElements = uiConfig.explicitInteractableElements || [];
 
             disabledElements.filter((e) => e).forEach((element) => {
                 const el = document.querySelector(element);
@@ -445,6 +465,12 @@ export default defineComponent({
                 el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
                 el.scrollTop = 0;
             });
+
+            explicitInteractableElements.filter((e) => e).forEach((element) => {
+                const el = document.querySelector(element) as HTMLElement;
+                if (!el) return;
+                el.setAttribute('data-explicit-interactable', stepIndex.toString());
+            });
         }
 
         function _removeAttributes(stepIndex: TourStepIndex) {
@@ -463,36 +489,43 @@ export default defineComponent({
                     el.removeAttribute('data-scroll-locked');
                     el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
                 });
+
+            document.querySelectorAll(`[data-explicit-interactable="${stepIndex}"]`)
+                .forEach((el) => {
+                    el.removeAttribute('data-explicit-interactable');
+                });
         }
 
-        async function endTour(soft = false) {
-            window.removeEventListener('keyup', _onKeyDown);
-            window.removeEventListener('click', () => _userClicked());
-
+        async function endTour() {
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
             }
-            if (soft) {
-                return;
-            }
-
-            window.removeEventListener('resize', () => _OnResize(_OnResizeEnd));
-
-            _removeAttributes(currentStep.value);
-            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
-
-            context.root.$off('nimiq-tour-event');
 
             // If user finalizes tour while it is loading, allow interaction again
             const app = document.querySelector('#app') as HTMLDivElement;
             app.removeAttribute('data-tour-active');
             app.querySelector('main')!.removeAttribute('data-non-interactable');
 
+            // Remove event listeners
+            window.removeEventListener('keyup', _onKeyDown);
+            window.removeEventListener('click', () => _userClicked());
+            window.removeEventListener('resize', () => _OnResize(_OnResizeEnd));
+            context.root.$off('nimiq-tour-event');
+
+            if (tour) {
+                showTour.value = false; // This way, we can trigger the animation as v-step will be removed
+            }
+
+            // wait until longest leave transition finishes
+            await sleep(1150);
+
+            // Update UI
+            _removeAttributes(currentStep.value);
+            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
             setTour(null);
         }
 
         function _OnResize(func: () => void) {
-            endTour(true);
             tour!.stop();
             let timer: ReturnType<typeof setTimeout> | null = null;
             return () => {
@@ -540,6 +573,7 @@ export default defineComponent({
             // tour
             tourOptions,
             steps,
+            showTour,
 
             // control bar
             currentStep,
@@ -590,6 +624,12 @@ export default defineComponent({
 #app[data-tour-active] [data-scroll-locked],
 #app[data-tour-active] [data-scroll-locked] * {
     overflow: hidden;
+}
+
+#app[data-tour-active] [data-explicit-interactable],
+#app[data-tour-active] [data-explicit-interactable] * {
+  pointer-events: initial !important;
+  cursor: pointer;
 }
 
 #app[data-tour-active] button.green-highlight {
@@ -701,10 +741,15 @@ export default defineComponent({
                     height: 1.5px;
                 }
 
-                ::v-deep svg {
+                ::v-deep svg.confetti {
                     float: left;
                     margin-right: 2rem;
                     margin-top: -5px;
+                }
+
+                ::v-deep svg:not(.confetti) {
+                    margin: 0 .25rem;
+                    height: 2.25rem;
                 }
             }
         }
@@ -864,6 +909,25 @@ export default defineComponent({
     from { background: var(--nimiq-light-blue-bg); }
     50% { background: radial-gradient(100% 100% at bottom right, hsl(221, 70%, 70%), hsl(202, 95%, 61%)); }
     to { background: var(--nimiq-light-blue-bg); }
+}
+
+.slide-vertical-enter-active {
+    animation: slidevertical 0.4s ease-in-out;
+    animation-delay: 0.6s;
+    bottom: -56px;
+    transform: scale(0.8);
+}
+
+.slide-vertical-leave-active {
+    animation: slidevertical 0.4s ease-in-out reverse;
+    animation-delay: 0.75s;
+}
+
+@keyframes slidevertical {
+    from { bottom: -56px; transform: scale(0.8); }
+    60% { bottom: 10px; transform: scale(0.8); }
+    75% { bottom: 10px; transform: scale(0.8); }
+    to { bottom: 10px; transform: scale(1); }
 }
 
 .remove_me {

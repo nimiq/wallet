@@ -43,7 +43,7 @@ export interface ILifecycleArgs {
 export type IMountedReturnFn = ((args: Omit<ILifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
 
 export enum IContentSpecialItem {
-    HR = 'HR',
+    HR = '{HR}',
     ICON_NETWORK_WORLD = '{network_icon}',
     ICON_ACCOUNT = '{account_icon}',
 }
@@ -86,6 +86,10 @@ export interface ITourStep {
         disabledButtons?: string[],
 
         scrollLockedElements?: string[],
+
+        // Elements that are expected to be clicked by the user. If they are clicked, the tour
+        // will ignore them and will not make the flash animation
+        explicitInteractableElements?: string[],
     };
 }
 

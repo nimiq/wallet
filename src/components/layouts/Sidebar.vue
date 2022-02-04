@@ -235,7 +235,6 @@ export default defineComponent({
 .panels {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
     margin-bottom: 2.5rem;
     margin-top: 2rem;
 

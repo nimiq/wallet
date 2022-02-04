@@ -3,6 +3,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useAddressStore } from '@/stores/Address';
 import { defaultTooltipModifiers } from '..';
 import {
+    ILifecycleArgs,
     IOnboardingGetStepFnArgs, ITourStep,
     IWalletHTMLElements, OnboardingTourStep,
 } from '../types';
@@ -46,8 +47,16 @@ export function getFirstAddressStep(
             ),
         ],
         disabledElements: [
-            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
+            // Disable all active address element except copyable address
+            // to prevent the user from copying the address as it is told in the tooltip
+            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon-wrapper`,
+            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .label`,
+            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .amount`,
+            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .fiat-amount`,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
+
+            // Rest of elements
+            IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
@@ -62,6 +71,47 @@ export function getFirstAddressStep(
             IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
+        explicitInteractableElements: [
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .copyable`,
+        ],
+    };
+
+    const mountedFnForSmallScreen = ({ goToNextStep }: ILifecycleArgs) => {
+        const button = `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} button:nth-child(2)`;
+        toggleHighlightButton(button, true, 'gray');
+
+        // Listener for the first address button only for mobile
+
+        const addressButton = document.querySelector(button) as HTMLButtonElement;
+
+        let addressClicked = false;
+        const onClick = (e: MouseEvent) => {
+            addressClicked = true;
+            goToNextStep();
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        addressButton!.addEventListener('click', onClick, { once: true, capture: true });
+
+        return async (args: Omit<ILifecycleArgs, 'goToNextStep'>) => {
+            if (!args?.ending && !addressClicked && root.$route.path === path) {
+                addressButton!.click();
+                await root.$nextTick();
+            }
+            addressButton!.removeEventListener('click', onClick, true);
+            setTimeout(() => toggleHighlightButton(button, false, 'gray'), 500);
+        };
+    };
+
+    const mountedFnForNotSmallScreen = () => {
+        // Not show identicon menu when user hover the active address
+        const identiconMenu = document.querySelector(
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon-wrapper .identicon-menu`) as HTMLElement;
+        identiconMenu.style.display = 'none';
+        return () => {
+            identiconMenu.style.display = 'flex';
+        };
     };
 
     return {
@@ -95,36 +145,11 @@ export function getFirstAddressStep(
         },
         lifecycle: {
             created,
-            mounted: ({ goToNextStep }) => {
-                if (!isSmallScreen.value) {
-                    return undefined;
+            mounted: (args) => {
+                if (isSmallScreen.value) {
+                    return mountedFnForSmallScreen(args);
                 }
-
-                const button = `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} button:nth-child(2)`;
-                toggleHighlightButton(button, true, 'gray');
-
-                // Listener for the first address button only for mobile
-
-                const addressButton = document.querySelector(button) as HTMLButtonElement;
-
-                let addressClicked = false;
-                const onClick = (e: MouseEvent) => {
-                    addressClicked = true;
-                    goToNextStep();
-                    e.preventDefault();
-                    e.stopPropagation();
-                };
-
-                addressButton!.addEventListener('click', onClick, { once: true, capture: true });
-
-                return async (args) => {
-                    if (!args?.ending && !addressClicked && root.$route.path === path) {
-                        addressButton!.click();
-                        await root.$nextTick();
-                    }
-                    addressButton!.removeEventListener('click', onClick, true);
-                    setTimeout(() => toggleHighlightButton(button, false, 'gray'), 500);
-                };
+                return mountedFnForNotSmallScreen();
             },
         },
         ui,

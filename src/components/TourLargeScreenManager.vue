@@ -1,15 +1,17 @@
 <template>
-    <div class="tour-manager" ref="$originalManager">
-        <p>
-            {{$t('Use the tooltips to navigate your tour.')}}
-        </p>
-        <div>
-            <span class="progress" v-if="currentStep >= 0 && nSteps > 0">
-                {{ currentStep + 1 }} / {{ nSteps }}
-            </span>
-            <button @click="() => endTour()">End tour</button>
+    <transition name="grow">
+        <div class="tour-manager" ref="$originalManager" v-if="show">
+            <p>
+                {{$t('Use the tooltips to navigate your tour.')}}
+            </p>
+            <div>
+                <span class="progress" v-if="currentStep >= 0 && nSteps > 0">
+                    {{ currentStep + 1 }} / {{ nSteps }}
+                </span>
+                <button @click="() => endTour()">End tour</button>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <script lang="ts">
@@ -21,14 +23,11 @@ export default defineComponent({
     setup(props, context) {
         const nSteps: Ref<number> = ref(-1);
         const currentStep:Ref<TourStepIndex> = ref(-1);
+        const show: Ref<boolean> = ref(false);
 
         const $originalManager = ref<HTMLDivElement>(null);
-        onMounted(() => {
-            const tourManager = document.querySelector('.tour-manager') as HTMLDivElement;
-            if (tourManager) {
-                tourManager.style.maxHeight = '150px';
-            }
-            _checkIfModalIsOpen();
+        onMounted(async () => {
+            show.value = true;
 
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 // TODO The event should be triggered also when resizing the window
@@ -40,7 +39,7 @@ export default defineComponent({
         onUnmounted(() => _removeClonedManager());
 
         async function _stepChanged(
-            { nSteps: newNSteps, currentStep: newCurrentStep }:ITourBroadcastStepChanged['payload']) {
+            { nSteps: newNSteps, currentStep: newCurrentStep }: ITourBroadcastStepChanged['payload']) {
             nSteps.value = newNSteps;
             currentStep.value = newCurrentStep;
 
@@ -116,6 +115,7 @@ export default defineComponent({
             currentStep,
             endTour,
             $originalManager,
+            show,
         };
     },
 });
@@ -124,16 +124,28 @@ export default defineComponent({
 <style lang="scss" scoped>
 .tour-manager {
     width: 100%;
+    overflow: hidden;
+
+    margin-bottom: 2rem;
+
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    max-height: 0;
-    background-color: rgba(255, 255, 255, 0.12); // TODO This should be var(--text-12)
-    transition-property: background-color 0.4s ease-in-out;
-    transition: max-height 0.15s ease-in-out;
     border-radius: 4px;
+    gap: 2rem;
+
+    background-color: rgba(255, 255, 255, 0.12); // TODO This should be var(--text-12) ?
+
+    // TODO Having multiple transitions seems not to work
+    transition: background-color 0.4s ease-in-out;
+    // transition: background-color 0.4s ease-in-out,
+    //              max-height 0.25s ease-in-out 0.4s;
+
     font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
             Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+    &.flash  {
+        animation: flash 0.4s;
+    }
 
     p {
         margin: 0;
@@ -175,13 +187,28 @@ export default defineComponent({
     }
 
 }
-.flash  {
-    animation: flash 0.4s;
-}
 
 @keyframes flash {
     from { background: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
     50% { background: rgba(255, 255, 255, 0.30); } // TODO This should be var(--text-30)
     to { background: rgba(255, 255, 255, 0.12); } // TODO This should be var(--text-12)
+}
+
+.grow-enter-active {
+    transition: max-height 0.4s ease-in-out 1.5s, margin-bottom 0.4s ease-in-out 1.5s;
+}
+
+.grow-leave-active {
+    transition: max-height 0.4s ease-in-out 0.2s, margin-bottom 0.4s ease-in-out 0.2s;
+}
+
+.grow-enter-to, .grow-leave {
+    max-height: 150px;
+    margin-bottom: 2rem;
+}
+
+.grow-enter, .grow-leave-to {
+    max-height: 0;
+    margin-bottom: 0;
 }
 </style>

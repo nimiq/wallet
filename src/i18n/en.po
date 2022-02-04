@@ -115,7 +115,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:353
+#: src/components/layouts/Settings.vue:354
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -155,7 +155,7 @@ msgstr ""
 msgid "Add a public message..."
 msgstr ""
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr ""
 
@@ -340,7 +340,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:31
+#: src/components/layouts/Sidebar.vue:33
 msgid "Buy"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:333
+#: src/components/layouts/Settings.vue:334
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -446,7 +446,7 @@ msgstr ""
 msgid "Cashlink to {address}"
 msgstr ""
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr ""
 
@@ -641,7 +641,7 @@ msgstr ""
 msgid "Disclaimer"
 msgstr ""
 
-#: src/components/modals/StartOnBoardingTourModal.vue:14
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:18
 msgid "Discover the Nimiq Wallet!"
 msgstr ""
 
@@ -696,7 +696,7 @@ msgstr ""
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
-#: src/components/Tour.vue:67
+#: src/components/Tour.vue:98
 msgid "End Tour"
 msgstr ""
 
@@ -806,7 +806,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:340
 msgid "File contains no contacts."
 msgstr ""
 
@@ -977,7 +977,7 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr ""
 
-#: src/components/modals/StartOnBoardingTourModal.vue:16
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:20
 msgid "It's free, does not collect data and is controlled by no one but you."
 msgstr ""
 
@@ -995,10 +995,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:48
 msgid "Language"
-msgstr ""
-
-#: src/components/modals/NetworkInfoModal.vue:19
-msgid "Learn more"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
@@ -1061,7 +1057,7 @@ msgstr ""
 msgid "Login File"
 msgstr ""
 
-#: src/components/AccountMenu.vue:53
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr ""
 
@@ -1119,7 +1115,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr ""
 
@@ -1127,12 +1123,16 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/Tour.vue:54
+#: src/components/Tour.vue:84
 msgid "Next"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:83
+msgid "Nimiq is not just any crypto - Click on {network_icon} Network and discover true decentralization."
 msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
@@ -1210,7 +1210,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:362
+#: src/components/layouts/Settings.vue:363
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1293,7 +1293,7 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/Tour.vue:41
+#: src/components/Tour.vue:70
 msgid "Previous"
 msgstr ""
 
@@ -1394,9 +1394,9 @@ msgstr ""
 msgid "Release Notes"
 msgstr ""
 
-#: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr ""
 
@@ -1432,7 +1432,7 @@ msgstr ""
 msgid "Retrying..."
 msgstr ""
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr ""
 
@@ -1464,7 +1464,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:36
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr ""
 
@@ -1589,7 +1589,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr ""
 
@@ -1624,7 +1624,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/AccountMenu.vue:39
+#: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr ""
 
@@ -1665,11 +1665,15 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
+#: src/components/modals/NetworkInfoModal.vue:19
+msgid "Start Network Tour"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:99
 msgid "Start Tour"
 msgstr ""
 
-#: src/components/modals/StartOnBoardingTourModal.vue:21
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:25
 msgid "Start Wallet tour"
 msgstr ""
 
@@ -1934,10 +1938,6 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/BtcReceiveModal.vue:55
-msgid "Use a new Bitcoin address for every transaction to improve privacy."
-msgstr ""
-
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
@@ -1954,7 +1954,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/TourLargeScreenManager.vue:4
+#: src/components/TourLargeScreenManager.vue:5
 msgid "Use the tooltips to navigate your tour."
 msgstr ""
 
@@ -1972,6 +1972,10 @@ msgstr ""
 
 #: src/components/swap/SwapModalFooter.vue:50
 msgid "Waiting for Nimiq network informations"
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:82
+msgid "Wallet tour completed!"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14

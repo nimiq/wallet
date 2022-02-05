@@ -9,6 +9,10 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
             t('This is your first address, represented by your avatar.'),
             t('You can click on the address to copy and share it.'),
         ],
+        alternative: [
+            t('This is your first address, represented by your avatar.'),
+            t('Tap it to open the address details.'),
+        ],
     },
     [OnboardingTourStep.TRANSACTION_LIST]: {
         default: [

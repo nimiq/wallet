@@ -1,4 +1,4 @@
-import { NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
+import { NetworkTourStep, ITourStep, IWalletHTMLElements, defaultTooltipModifiers } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
 export function getNetworkMetricsStep(): ITourStep {
@@ -9,6 +9,17 @@ export function getNetworkMetricsStep(): ITourStep {
             content: getNetworkTexts(NetworkTourStep.METRICS).default,
             params: {
                 placement: 'top',
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
+                },
             },
         },
         ui: {
@@ -26,7 +37,13 @@ export function getNetworkMetricsStep(): ITourStep {
                 IWalletHTMLElements.NETWORK_MAP,
                 IWalletHTMLElements.NETWORK_STATS,
             ],
-            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [
+                IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
+                IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            ],
+            scrollLockedElements: [
+                IWalletHTMLElements.NETWORK_SCROLLER,
+            ],
         },
     } as ITourStep;
 }

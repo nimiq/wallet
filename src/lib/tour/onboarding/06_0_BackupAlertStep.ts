@@ -1,9 +1,9 @@
-import { ITourOrigin, IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, ITourOrigin, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBackupAlertStep(
-    { isSmallScreen, startedFrom }: IOnboardingGetStepFnArgs): ITourStep {
+    { isSmallScreen, startedFrom, toggleHighlightButton }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -33,19 +33,51 @@ export function getBackupAlertStep(
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
     return {
         path: '/',
         tooltip: {
-            target: isSmallScreen.value
-                ? `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT} button`
-                : IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT,
+            get target() {
+                return isSmallScreen.value
+                    ? `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT} button`
+                    : IWalletHTMLElements.ACCOUNT_OVERVIEW_BACKUP_ALERT;
+            },
             content: getOnboardingTexts(OnboardingTourStep.BACKUP_ALERT)[
                 startedFrom === ITourOrigin.WELCOME_MODAL ? 'default' : 'alternative'] || [],
             params: {
-                placement: isSmallScreen.value ? 'bottom' : 'right',
+                get placement() {
+                    return isSmallScreen.value ? 'bottom' : 'right';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                altAxis: false,
+                                padding: 8,
+                            },
+                        },
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: isSmallScreen.value ? [0, 10] : [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => !['preventOverflow', 'offset'].includes(name)),
+                    ];
+                },
             },
         },
         ui,
-    };
+        lifecycle: {
+            mounted: () => {
+                toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, true, 'orange');
+                return () => toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, false, 'orange');
+            },
+        },
+    } as ITourStep;
 }

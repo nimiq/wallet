@@ -1,6 +1,5 @@
-import { SCALING_FACTOR } from '@/lib/NetworkMap';
 import { ref } from '@vue/composition-api';
-import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, INetworkGetStepFnArgs, ITourStep, IWalletHTMLElements, NetworkTourStep } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
 export function getBackboneNodeStep(
@@ -14,8 +13,27 @@ export function getBackboneNodeStep(
             },
             content: getNetworkTexts(NetworkTourStep.BACKBONE_NODE).default,
             params: {
-                // TODO On mobile phones if the node is in the south, the tooltip might break the web
-                placement: isLargeScreen.value ? 'right' : 'bottom',
+                get placement() {
+                    const { position } = nodes()[selectedNode.value] || { position: undefined };
+                    if (!position) return 'bottom';
+                    if (isLargeScreen.value) {
+                        // If node is far away in the eastern hemisphere, the tooltip will be on the left
+                        return position.x > 100 ? 'left' : 'right';
+                    }
+                    // If node is far away in the south hemisphere, the tooltip will be on the top
+                    return position.y > 25 ? 'top' : 'bottom';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
+                },
             },
         },
         ui: {
@@ -33,7 +51,13 @@ export function getBackboneNodeStep(
                 IWalletHTMLElements.NETWORK_TABLET_MENU_BAR,
                 IWalletHTMLElements.NETWORK_MAP,
             ],
-            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [
+                IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
+                IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            ],
+            scrollLockedElements: [
+                IWalletHTMLElements.NETWORK_SCROLLER,
+            ],
         },
         lifecycle: {
             created: (async () => {
@@ -43,13 +67,22 @@ export function getBackboneNodeStep(
 
                 // get closest west node minimum distance of 5
                 const node = _nodes
-                    .map((n, i) => ({ ...n, i, x: n.x })) // add index
+                    // add index
+                    .map((n, i) => ({ ...n, i, x: n.x }))
+                    // remove self
                     .filter((_, i) => i !== selfNodeIndex)
+                    // compute distance
                     .map((n) => ({ ...n, d: distance([n.position.x, n.position.y], [pSelf.x, pSelf.y]) }))
+                    // at least 5 distance away
                     .filter(({ d }) => d > 5)
+                    // get closest
                     .sort((a, b) => a.d - b.d)[0];
+
+                // get the index so we can select the correct child in the dom to show the tooltip
                 selectedNode.value = node.i;
-                scrollIntoView((node.x / 2) * SCALING_FACTOR);
+
+                scrollIntoView(node.x);
+
                 await sleep(500);
             }),
         },

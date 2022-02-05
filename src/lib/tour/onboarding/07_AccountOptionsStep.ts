@@ -1,4 +1,4 @@
-import { IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
 import { OnboardingTourStep, ITourStep, IOnboardingGetStepFnArgs } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -28,11 +28,16 @@ export function getAccountOptionsStep({ isSmallScreen, isLargeScreen }: IOnboard
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.MODAL_CONTAINER,
         ],
         disabledButtons: [
             IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+        ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
     };
 
@@ -46,6 +51,17 @@ export function getAccountOptionsStep({ isSmallScreen, isLargeScreen }: IOnboard
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'top' : 'right';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => name !== 'offset'),
+                    ];
                 },
             },
         },

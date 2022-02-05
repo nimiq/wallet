@@ -3,18 +3,44 @@ import { Transaction } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
-import { NetworkTourStep, OnboardingTourStep, TourName, ITourSteps } from './types';
+import { ITooltipModifier, ITourSteps, NetworkTourStep, OnboardingTourStep, TourName } from './types';
+
+export const defaultTooltipModifiers: ITooltipModifier[] = [
+    {
+        name: 'arrow',
+        options: {
+            element: '.v-step__arrow',
+            padding: 16,
+        },
+    },
+    {
+        name: 'preventOverflow',
+        options: {
+            rootBoundary: 'window',
+        },
+    },
+    {
+        name: 'offset',
+        options: {
+            offset: [0, 10],
+        },
+    },
+];
 
 export function getTour(tour: TourName | undefined, context: SetupContext)
-    : ITourSteps<OnboardingTourStep> | ITourSteps<NetworkTourStep> {
+    : ITourSteps<OnboardingTourStep | NetworkTourStep> {
+    let steps: ITourSteps<OnboardingTourStep | NetworkTourStep> = {};
     switch (tour) {
         case 'onboarding':
-            return getOnboardingTourSteps(context);
+            steps = getOnboardingTourSteps(context);
+            break;
         case 'network':
-            return getNetworkTourSteps(context);
+            steps = getNetworkTourSteps(context);
+            break;
         default:
-            return {};
     }
+
+    return steps;
 }
 
 // Finds the component instance given its name in the Vue tree

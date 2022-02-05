@@ -1,4 +1,4 @@
-import { IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -28,11 +28,16 @@ export function getBackupOptionNotLargeScreenStep({ isSmallScreen }: IOnboarding
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
+            IWalletHTMLElements.MODAL_CONTAINER,
         ],
         disabledButtons: [
             IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+        ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
     };
 
@@ -40,12 +45,23 @@ export function getBackupOptionNotLargeScreenStep({ isSmallScreen }: IOnboarding
         path: '/accounts?sidebar=true',
         tooltip: {
             target: `${IWalletHTMLElements.MODAL_PAGE} .current-account .item:nth-child(3)
-                    ${isSmallScreen.value ? 'svg' : ''}`,
+                    ${isSmallScreen.value ? 'svg path:nth-child(2)' : ''}`,
             content: getOnboardingTexts(
                 OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS).default,
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'top-start' : 'right';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: isSmallScreen.value ? [-20, 16] : [0, -40],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => name !== 'offset'),
+                    ];
                 },
             },
         },

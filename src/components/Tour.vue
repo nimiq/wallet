@@ -154,22 +154,15 @@ export default defineComponent({
         const { state: $network } = useNetworkStore();
         const disconnected = computed(() => $network.consensus !== 'established');
 
-        const { state: tourStore, setTour } = useAccountStore();
+        const { state: accountStore, setTour } = useAccountStore();
 
         let tour: VueTour.Tour | null = null;
         const tourOptions: any = {
             // eslint-disable-next-line max-len
             // see example: https://github.com/pulsardev/vue-tour/blob/6ee85afdae3a4cb8689959b3b0c2035e165072fa/src/shared/constants.js
-            enabledButtons: {
-                buttonSkip: false,
-                buttonPrevious: false,
-                buttonNext: false,
-                buttonStop: false,
-            },
-            // TODO Add padding to arrow
             useKeyboardNavigation: false, // handled by us
         };
-        let steps = Object.values(getTour(tourStore.tour?.name, context));
+        let steps = Object.values(getTour(accountStore.tour?.name, context));
 
         // Initial state
         const isLoading = ref(true);
@@ -194,7 +187,10 @@ export default defineComponent({
         onUnmounted(() => endTour());
 
         async function tourSetup() {
-            await context.root.$nextTick(); // to ensure the DOM is ready
+            const app = document.querySelector('#app');
+            app!.setAttribute('data-tour-active', '');
+
+            await context.root.$nextTick(); // to ensure DOM is ready
 
             const step = steps[currentStep.value];
             if (!step) return;
@@ -238,10 +234,8 @@ export default defineComponent({
                 window.addEventListener('click', _userClicked());
             }, 100); // avoid click event to be triggered by the setting button
 
+            // TODO
             // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
-
-            const app = document.querySelector('#app');
-            app!.setAttribute('data-tour-active', '');
 
             _receiveEvents();
             _broadcast({
@@ -321,7 +315,7 @@ export default defineComponent({
             await context.root.$nextTick();
 
             if (futurePath !== currentPath) {
-                await sleep(500);
+                await sleep(250);
             }
 
             _removeAttributes(currentStepIndex);
@@ -377,7 +371,7 @@ export default defineComponent({
         }
 
         function _userClicked() {
-            const userCanClick = ['.tour', '.tour-manager']
+            const userCanClick = ['.tour', '.tour-manager', '.tooltip']
                 .map((s) => document.querySelector(s) as HTMLElement)
                 .filter((e) => !!e);
 
@@ -508,7 +502,7 @@ export default defineComponent({
         }
 
         function _OnResizeEnd() {
-            steps = Object.values(getTour(tourStore.tour?.name, context));
+            steps = Object.values(getTour(accountStore.tour?.name, context));
             tourSetup();
         }
 
@@ -578,23 +572,27 @@ export default defineComponent({
 // updated with opacity and non-interactivity properties as data attributes allow to use a value like
 // [data-opaified="1"] although the CSS selector that we can use is [data-opacified]. @see _removeAttributes
 
-[data-tour-active] [data-opacified] {
+#app[data-tour-active] [data-opacified],
+#app[data-tour-active] ~ div [data-opacified] {
   filter: opacity(0.3);
 }
 
-[data-tour-active] [data-non-interactable],
-[data-tour-active] [data-non-interactable] * {
+#app[data-tour-active] [data-non-interactable],
+#app[data-tour-active] [data-non-interactable] *,
+#app[data-tour-active] ~ div [data-non-interactable],
+#app[data-tour-active] ~ div [data-non-interactable] * // Select also modals which are not children of #app but siblings
+{
   user-select: none !important;
   pointer-events: none !important;
   cursor: not-allowed;
 }
 
-[data-tour-active] [data-scroll-locked],
-[data-tour-active] [data-scroll-locked] * {
+#app[data-tour-active] [data-scroll-locked],
+#app[data-tour-active] [data-scroll-locked] * {
     overflow: hidden;
 }
 
-[data-tour-active] button.green-highlight {
+#app[data-tour-active] button.green-highlight {
     background: linear-gradient(
             274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%, rgba(255, 255, 255, 0) 53.12%,
             rgba(255, 255, 255, 0.2) 81.25%, rgba(255, 255, 255, 0) 100%
@@ -602,10 +600,18 @@ export default defineComponent({
     background-blend-mode: hard-light, normal !important;
 }
 
-[data-tour-active] button.gray-highlight {
+#app[data-tour-active] button.gray-highlight {
     background: linear-gradient(
             274.28deg, rgba(31, 35, 72, 0) 0%, rgba(31, 35, 72, 0.07) 27.6%, rgba(31, 35, 72, 0) 53.12%,
             rgba(31, 35, 72, 0.07) 81.25%, rgba(31, 35, 72, 0) 100%) !important;
+    background-blend-mode: hard-light, normal !important;
+}
+
+#app[data-tour-active] button.orange-highlight {
+    background: linear-gradient(274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%,
+            rgba(255, 255, 255, 0) 53.12%, rgba(255, 255, 255, 0.2) 81.25%,
+            rgba(255, 255, 255, 0) 100%),
+            var(--nimiq-orange-bg) !important;
     background-blend-mode: hard-light, normal !important;
 }
 </style>

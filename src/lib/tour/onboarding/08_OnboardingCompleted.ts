@@ -1,3 +1,4 @@
+import { defaultTooltipModifiers } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -34,6 +35,10 @@ export function getOnboardingCompletedStep(
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
 
     return {
@@ -48,6 +53,24 @@ export function getOnboardingCompletedStep(
             params: {
                 get placement() {
                     return isLargeScreen.value ? 'right' : 'top-start';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                altAxis: false,
+                                padding: 8,
+                            },
+                        },
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [-20, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => !['offset', 'preventOverflow'].includes(name)),
+                    ];
                 },
             },
             button: {

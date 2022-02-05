@@ -1,16 +1,35 @@
-import { SCALING_FACTOR } from '@/lib/NetworkMap';
-import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, INetworkGetStepFnArgs, ITourStep, IWalletHTMLElements, NetworkTourStep } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
-export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeIndex }: INetworkGetStepFnArgs): ITourStep {
+export function getYourLocationStep(
+    { isLargeScreen, nodes, scrollIntoView, sleep, selfNodeIndex }: INetworkGetStepFnArgs): ITourStep {
     return {
         path: '/network',
         tooltip: {
             target: `${IWalletHTMLElements.NETWORK_NODES} span:nth-child(${selfNodeIndex + 1})`,
             content: getNetworkTexts(NetworkTourStep.YOUR_LOCATION).default,
             params: {
-                // TODO On mobile phones if the node is in the south, the tooltip might break the web
-                placement: 'bottom',
+                get placement() {
+                    const { position } = nodes()[selfNodeIndex] || { position: undefined };
+                    if (!position) return 'bottom';
+                    if (isLargeScreen.value) {
+                        // If node is far away in the eastern hemisphere, the tooltip will be on the left
+                        return position.x > 80 ? 'left' : 'right';
+                    }
+                    // If node is far away in the south hemisphere, the tooltip will be on the top
+                    return position.y > 25 ? 'top' : 'bottom';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: isLargeScreen.value ? [0, 12] : [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
+                },
             },
         },
         ui: {
@@ -29,10 +48,13 @@ export function getYourLocationStep({ nodes, scrollIntoView, sleep, selfNodeInde
                 IWalletHTMLElements.NETWORK_MAP,
             ],
             disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            scrollLockedElements: [
+                IWalletHTMLElements.NETWORK_SCROLLER,
+            ],
         },
         lifecycle: {
             created: (async ({ goingForward }) => {
-                scrollIntoView((nodes()[selfNodeIndex].x / 2) * SCALING_FACTOR);
+                scrollIntoView(nodes()[selfNodeIndex].x);
                 if (!goingForward) {
                     await sleep(500);
                 }

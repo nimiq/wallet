@@ -1,4 +1,4 @@
-import { IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
 import { OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -34,6 +34,10 @@ export function getBackupOptionLargeScreenStep(): ITourStep {
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
 
     return {
@@ -43,6 +47,15 @@ export function getBackupOptionLargeScreenStep(): ITourStep {
             content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS).default,
             params: {
                 placement: 'right',
+                modifiers: [
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 32],
+                        },
+                    },
+                    ...defaultTooltipModifiers.filter(({ name }) => name !== 'offset'),
+                ],
             },
         },
         ui,

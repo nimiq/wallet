@@ -1,6 +1,6 @@
 import { useTransactionsStore } from '@/stores/Transactions';
-import { IWalletHTMLElements } from '..';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
+import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
+import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, ITooltipModifier } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnArgs): ITourStep {
@@ -34,7 +34,10 @@ export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnA
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
-        scrollLockedElements: [`${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller `],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
     const txsLen = () => Object.values(useTransactionsStore().state.transactions).length;
 
@@ -53,6 +56,17 @@ export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnA
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom-start' : 'left';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: isSmallScreen.value ? [0, 10] : [0, -4],
+                            },
+                        } as ITooltipModifier,
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
                 },
             },
         },

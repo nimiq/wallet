@@ -1,5 +1,5 @@
 import { useTransactionsStore } from '@/stores/Transactions';
-import { IWalletHTMLElements } from '..';
+import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -36,7 +36,10 @@ export function getTransactionListStep(
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
-        scrollLockedElements: [`${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller `],
+        scrollLockedElements: [
+            `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .vue-recycle-scroller`,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
 
     return {
@@ -65,6 +68,17 @@ export function getTransactionListStep(
                         return isSmallScreen.value ? 'bottom' : 'left';
                     }
                     return isSmallScreen.value ? 'top' : 'left';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: txsLen() > 0 && isSmallScreen.value ? [0, 32] : [0, 20],
+                            },
+                        } as ITooltipModifier,
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
                 },
             },
         },

@@ -47,6 +47,10 @@ export enum IContentSpecialItem {
     ICON_NETWORK_WORLD = '{network_icon}',
     ICON_ACCOUNT = '{account_icon}',
 }
+export interface ITooltipModifier {
+    name: 'preventOverflow' | 'offset' | 'arrow';
+    options: any;
+}
 export interface ITourStep {
     path: `/${'' | 'transactions' | 'accounts' | 'network'}${'' | '?sidebar=true'}`;
 
@@ -56,7 +60,7 @@ export interface ITourStep {
         content: (string | string[] | IContentSpecialItem)[],
         params: {
             placement: BasePlacement | AlignedPlacement,
-            modifiers?: { name: 'preventOverflow' | 'offset', options: any }[] | void,
+            modifiers?: ITooltipModifier[] | void,
         },
         button?: {
             text: string,
@@ -107,7 +111,7 @@ export type IOnboardingGetStepFnArgs =
         toggleDisabledAttribute: (selector: string, disabled: boolean) => Promise<void>,
         sleep: (ms: number) => Promise<unknown>,
         startedFrom: ITourOrigin,
-        toggleHighlightButton: (selector: string, highlight: boolean, color: 'gray' | 'organge' | 'green') => void,
+        toggleHighlightButton: (selector: string, highlight: boolean, color: 'gray' | 'orange' | 'green') => void,
     };
 
 export type INetworkGetStepFnArgs =
@@ -164,6 +168,7 @@ export enum IWalletHTMLElements {
     BUTTON_SIDEBAR_SELL = '.sidebar .trade-actions button:nth-child(2)',
     BUTTON_ADDRESS_OVERVIEW_BUY = '.address-overview .transaction-list .after-first-tx button',
     BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM = '.address-overview .transaction-list .empty-state button',
+    BUTTON_ADDRESS_BACKUP_ALERT = '.account-overview .backup-warning button',
 
     MODAL_CONTAINER = '.modal.backdrop',
     MODAL_WRAPPER = '.modal .wrapper',

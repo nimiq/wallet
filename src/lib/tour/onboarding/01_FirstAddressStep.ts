@@ -1,7 +1,11 @@
 import { CryptoCurrency } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
 import { useAddressStore } from '@/stores/Address';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
+import { defaultTooltipModifiers } from '..';
+import {
+    IOnboardingGetStepFnArgs, ITourStep,
+    IWalletHTMLElements, OnboardingTourStep,
+} from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getFirstAddressStep(
@@ -54,7 +58,10 @@ export function getFirstAddressStep(
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM,
         ],
-        scrollLockedElements: [IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
 
     return {
@@ -65,10 +72,24 @@ export function getFirstAddressStep(
                     ? `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .address-button .identicon img`
                     : `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS).default,
+            get content() {
+                return getOnboardingTexts(OnboardingTourStep.FIRST_ADDRESS)[
+                    isSmallScreen.value ? 'alternative' : 'default'];
+            },
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom-start' : 'left-start';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: isSmallScreen.value ? [0, 12] : [0, 20],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
                 },
             },
         },

@@ -50,10 +50,10 @@ export default defineComponent({
         const { activeMobileColumn } = useActiveMobileColumn();
 
         const { accountInfos, state: accountState, setTour } = useAccountStore();
-        if (!['root', 'transactions'].includes(context.root.$route.name as string)
+        if (!['/', '/transactions', '/accounts'].includes(context.root.$route.path as string)
             && accountState.tour?.name === 'onboarding') {
             setTour(null);
-        } else if (!['network'].includes(context.root.$route.name as string)
+        } else if (!['/network'].includes(context.root.$route.path as string)
             && accountState.tour?.name === 'network') {
             setTour(null);
         }

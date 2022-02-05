@@ -26,7 +26,7 @@ export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<Onboa
         }
     };
 
-    const toggleHighlightButton = (element: string, highlight: boolean, color: 'gray' | 'organge' | 'green') => {
+    const toggleHighlightButton = (element: string, highlight: boolean, color: 'gray' | 'orange' | 'green') => {
         const receiveNim = document
             .querySelector(element) as HTMLButtonElement;
         if (!receiveNim) return;
@@ -73,5 +73,6 @@ export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<Onboa
     if (accountIsSecured && !isLargeScreen.value) {
         steps[OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS] = getBackupOptionNotLargeScreenStep(args);
     }
+
     return steps;
 }

@@ -1,5 +1,5 @@
-import { IWalletHTMLElements } from '..';
-import { OnboardingTourStep, ITourStep } from '../types';
+import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
+import { ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getMenuIconStep(): ITourStep {
@@ -10,6 +10,22 @@ export function getMenuIconStep(): ITourStep {
             content: getOnboardingTexts(OnboardingTourStep.MENU_ICON).default,
             params: {
                 placement: 'bottom-start',
+                modifiers: [
+                    {
+                        name: 'preventOverflow',
+                        options: {
+                            mainAxis: false,
+                            padding: 8,
+                        },
+                    },
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [-20, 10],
+                        },
+                    },
+                    ...defaultTooltipModifiers.filter(({ name }) => ['offset', 'preventOverflow'].includes(name)),
+                ],
             },
         },
         lifecycle: {
@@ -17,7 +33,12 @@ export function getMenuIconStep(): ITourStep {
                 const hamburguerIcon = document.querySelector(
                     `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
 
-                hamburguerIcon!.addEventListener('click', () => goToNextStep(), { once: true, capture: true });
+                const onHamburguerClick = () => goToNextStep();
+                hamburguerIcon!.addEventListener('click', onHamburguerClick, true);
+
+                return () => {
+                    hamburguerIcon!.removeEventListener('click', onHamburguerClick, true);
+                };
             },
         },
         ui: {
@@ -36,6 +57,10 @@ export function getMenuIconStep(): ITourStep {
             ],
             disabledButtons: [
                 IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            ],
+            scrollLockedElements: [
+                IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+                `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
             ],
             isNextStepDisabled: true,
         },

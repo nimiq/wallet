@@ -1,4 +1,4 @@
-import { searchComponentByName } from '..';
+import { defaultTooltipModifiers, searchComponentByName } from '..';
 import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
@@ -33,15 +33,19 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
-    const instance = searchComponentByName(root, 'balance-distribution') as any;
-    const hasBitcoin = instance.btcAccountBalance > 0;
+    let hasBitcoin = false;
 
     return {
         path: '/',
         tooltip: {
             get target() {
-                return `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution`;
+                return `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution  
+                ${!isSmallScreen.value ? '.btc .tooltip .bar' : ''}`;
             },
             content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[!hasBitcoin ? 'default' : 'alternative'],
             params: {
@@ -49,19 +53,31 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
                     return isSmallScreen.value ? 'bottom' : 'right';
                 },
                 get modifiers() {
-                    // if (isSmallScreen.value) {
-                    return [{
-                        name: 'preventOverflow',
-                        options: {
-                            mainAxis: false,
-                            padding: 8,
+                    return [
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                mainAxis: false,
+                                padding: 8,
+                            },
                         },
-                    }];
-                    // }
-                    // return undefined;
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => !['offset', 'preventOverflow'].includes(name)),
+                    ];
                 },
             },
         },
         ui,
+        lifecycle: {
+            created: () => {
+                const instance = searchComponentByName(root, 'balance-distribution') as any;
+                hasBitcoin = instance.btcAccountBalance > 0;
+            },
+        },
     } as ITourStep;
 }

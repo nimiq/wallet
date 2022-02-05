@@ -1,7 +1,15 @@
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
+import { defaultTooltipModifiers } from '..';
+import {
+    IOnboardingGetStepFnArgs,
+    ITooltipModifier,
+    ITourStep,
+    IWalletHTMLElements,
+    OnboardingTourStep,
+} from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getBitcoinAddressStep({ isLargeScreen }: IOnboardingGetStepFnArgs): ITourStep {
+export function getBitcoinAddressStep(
+    { isSmallScreen, isMediumScreen, isLargeScreen }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -32,6 +40,10 @@ export function getBitcoinAddressStep({ isLargeScreen }: IOnboardingGetStepFnArg
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
             IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
+        scrollLockedElements: [
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
+            `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
     };
 
     return {
@@ -47,15 +59,27 @@ export function getBitcoinAddressStep({ isLargeScreen }: IOnboardingGetStepFnArg
                     // TODO Add margin in large screens
                     return !isLargeScreen.value ? 'bottom-start' : 'left';
                 },
-                // get modifiers() {
-                //     if (isLargeScreen.value) { return []; }
-                //     return [{
-                //         name: 'offset',
-                //         options: {
-                //             offset: [0, -48],
-                //         },
-                //     }];
-                // },
+                get modifiers() {
+                    let offset;
+                    if (isSmallScreen.value) offset = [0, 40];
+                    else if (isMediumScreen.value) offset = [0, 20];
+                    else offset = [0, 40];
+
+                    return [
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                altAxis: false,
+                                padding: 24,
+                            },
+                        },
+                        {
+                            name: 'offset',
+                            options: { offset },
+                        } as ITooltipModifier,
+                        ...defaultTooltipModifiers.filter(({ name }) => !['offset', 'preventOverflow'].includes(name)),
+                    ];
+                },
             },
         },
         ui,

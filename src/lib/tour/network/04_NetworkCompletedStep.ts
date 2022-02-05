@@ -1,4 +1,4 @@
-import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements } from '..';
+import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements, defaultTooltipModifiers } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
 export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs): ITourStep {
@@ -11,10 +11,21 @@ export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs
                     : `${IWalletHTMLElements.NETWORK_TABLET_MENU_BAR} .account-button`;
             },
             content: getNetworkTexts(NetworkTourStep.NETWORK_COMPLETED)[
-                isLargeScreen.value ? 'alternative' : 'default'],
+                isLargeScreen.value ? 'default' : 'alternative'],
             params: {
                 get placement() {
                     return isLargeScreen.value ? 'right' : 'top';
+                },
+                get modifiers() {
+                    return [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 16],
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
+                    ];
                 },
             },
             button: {
@@ -41,7 +52,13 @@ export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs
                 IWalletHTMLElements.NETWORK_MAP,
                 IWalletHTMLElements.NETWORK_STATS,
             ],
-            disabledButtons: [IWalletHTMLElements.BUTTON_SIDEBAR_BUY, IWalletHTMLElements.BUTTON_SIDEBAR_SELL],
+            disabledButtons: [
+                IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
+                IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
+            ],
+            scrollLockedElements: [
+                IWalletHTMLElements.NETWORK_SCROLLER,
+            ],
         },
     } as ITourStep;
 }

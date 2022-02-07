@@ -1,6 +1,6 @@
 import { ITourStepTexts, OnboardingTourStep } from '../types';
 
-const $t = (input: string) => input as string;
+const $t = (s: string) => s; // This is used to trick the translation extraction script into extracting those strings
 
 const texts: ITourStepTexts<OnboardingTourStep> = {
     [OnboardingTourStep.FIRST_ADDRESS]: {

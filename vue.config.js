@@ -159,6 +159,39 @@ module.exports = {
                     type: "image/png"
                 },
             ],
+            description: "Securely manage your Nimiq and Bitcoin accounts. Send and receive NIM and BTC, view balances, swap between NIM and BTC, and buy and sell with Nimiq OASIS.",
+            screenshots: [
+                {
+                    src: "./img/screenshots/01-Send-and-receive.png",
+                    sizes: "490x836",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/screenshots/02-More-than-NIM.png",
+                    sizes: "490x836",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/screenshots/03-Buy-and-sell.png",
+                    sizes: "490x836",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/screenshots/04-Your-keys-your-coins.png",
+                    sizes: "490x836",
+                    type: "image/png"
+                },
+                {
+                    src: "./img/screenshots/05-Security-first.png",
+                    sizes: "490x836",
+                    type: "image/png"
+                },
+                // {
+                //     src: "./img/screenshots/06-Stake-NIM.png",
+                //     sizes: "490x836",
+                //     type: "image/png"
+                // },
+            ]
         },
     },
 };

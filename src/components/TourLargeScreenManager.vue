@@ -1,6 +1,6 @@
 <template>
     <transition name="grow">
-        <div class="tour-manager" ref="$originalManager" v-if="show">
+        <div class="tour-manager" ref="$originalManager" v-if="show" role="toolbar">
             <p>
                 {{$t('Use the tooltips to navigate your tour.')}}
             </p>
@@ -8,7 +8,7 @@
                 <span class="progress" v-if="currentStep >= 0 && nSteps > 0">
                     {{ currentStep + 1 }} / {{ nSteps }}
                 </span>
-                <button @click="() => endTour()">End tour</button>
+                <button @click="() => endTour()" tabindex="0">End tour</button>
             </div>
         </div>
     </transition>
@@ -33,6 +33,7 @@ export default defineComponent({
                 // TODO The event should be triggered also when resizing the window
                 if (data.type === 'tour-step-changed') _stepChanged(data.payload);
                 if (data.type === 'clicked-outside-tour') _flash();
+                if (data.type === 'end-tour') endTour(false);
             });
         });
 
@@ -95,9 +96,12 @@ export default defineComponent({
             manager.querySelector('button')!.addEventListener('click', () => endTour());
         }
 
-        function endTour() {
+        function endTour(emit = true) {
             _removeClonedManager();
-            context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as ITourBroadcast);
+            show.value = false;
+            if (emit) {
+                context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as ITourBroadcast);
+            }
         }
 
         function _flash() {
@@ -178,11 +182,15 @@ export default defineComponent({
             padding: 8px 12px;
             color: var(--nimiq-white);
             background-color: rgba(255, 255, 255, 0.2); // TODO Move to a variable??
-            border: none;
+            border: 1px solid transparent;
             cursor: pointer !important;
             border-radius: 9999px;
             font-size: 14px;
             font-weight: 700;
+
+            &:focus {
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
         }
     }
 
@@ -199,7 +207,7 @@ export default defineComponent({
 }
 
 .grow-leave-active {
-    transition: max-height 0.4s ease-in-out 0.2s, margin-bottom 0.4s ease-in-out 0.2s;
+    transition: max-height 0.4s ease-in-out, margin-bottom 0.4s ease-in-out;
 }
 
 .grow-enter-to, .grow-leave {

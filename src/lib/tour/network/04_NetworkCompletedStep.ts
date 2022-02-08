@@ -1,7 +1,7 @@
 import { INetworkGetStepFnArgs, NetworkTourStep, ITourStep, IWalletHTMLElements, defaultTooltipModifiers } from '..';
 import { getNetworkTexts } from './NetworkTourTexts';
 
-export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs): ITourStep {
+export function getNetworkCompletedStep({ root, isLargeScreen }: INetworkGetStepFnArgs): ITourStep {
     return {
         path: '/network',
         tooltip: {
@@ -29,7 +29,7 @@ export function getNetworkCompletedStep({ isLargeScreen }: INetworkGetStepFnArgs
                 },
             },
             button: {
-                text: 'End Tour',
+                text: root.$t('End Tour'),
                 fn: async (endTour) => {
                     if (endTour) {
                         await endTour();

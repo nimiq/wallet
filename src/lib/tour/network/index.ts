@@ -33,6 +33,7 @@ export function getNetworkTourSteps({ root }: SetupContext): ITourSteps<NetworkT
         isLargeScreen,
         scrollIntoView,
         sleep,
+        root,
     };
 
     return {

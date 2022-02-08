@@ -124,6 +124,7 @@ export type INetworkGetStepFnArgs =
         selfNodeIndex: number,
         scrollIntoView: (x: number) => void,
         sleep: (ms: number) => Promise<unknown>,
+        root: SetupContext['root'],
     }
 
 export type ITourBroadcast = ITourBroadcastEnd | ITourBroadcastStepChanged | ITourBroadcastClickedOutsideTour

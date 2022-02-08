@@ -74,7 +74,7 @@ export function getOnboardingCompletedStep(
                 },
             },
             button: {
-                text: 'Go to Network',
+                text: root.$t('Go to Network'),
                 fn: async (endTour) => {
                     if (endTour) {
                         await endTour();

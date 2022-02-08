@@ -20,6 +20,7 @@
                         :is-first="tour.isFirst"
                         :is-last="tour.isLast"
                         :labels="tour.labels"
+                        role="tooltip"
                     >
                         <div slot="content" class="content">
                             <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
@@ -65,21 +66,27 @@
                                 v-if="tour.steps[tour.currentStep].button || isLargeScreen"
                                 class="actions"
                             >
-                                <button @click="goToPrevStep()" v-if="currentStep > 0 && isLargeScreen" class="left">
+                                <button
+                                    v-if="currentStep > 0 && isLargeScreen"
+                                    @click="goToPrevStep()"
+                                    class="left"
+                                    tabindex="0"
+                                >
                                     <TourPreviousLeftArrowIcon />
                                     {{ $t("Previous") }}
                                 </button>
                                 <button
                                     class="right" v-if="tour.steps[tour.currentStep].button && !isLoading"
                                     @click="() => tour.steps[tour.currentStep].button.fn(endTour)"
+                                    tabindex="0"
                                 >
-                                    <!--  TODO Move $t to logic -->
-                                    {{ $t(tour.steps[tour.currentStep].button.text) }}
+                                    {{ tour.steps[tour.currentStep].button.text }}
                                 </button>
                                 <button
                                     v-else-if="isLargeScreen && !disableNextStep && !isLoading"
                                     class="right"
                                     @click="goToNextStep()"
+                                    tabindex="0"
                                 >
                                     <span>{{ $t("Next") }}</span>
                                 </button>
@@ -93,8 +100,8 @@
             </template>
         </v-tour>
         <transition name="slide-vertical">
-            <div class="tour-control-bar" v-if="showTour && (isSmallScreen || isMediumScreen)">
-                <button @click="endTour()">
+            <div class="tour-control-bar" v-if="showTour && (isSmallScreen || isMediumScreen)" role="toolbar">
+                <button @click="endTour()" tabindex="0">
                     {{ $t("End Tour") }}
                 </button>
                 <span class="progress"> {{ currentStep + 1 }} / {{ nSteps }} </span>
@@ -105,6 +112,7 @@
                         :class="{ hidden: currentStep === 0}"
                         @click="goToPrevStep()"
                         style="transform: rotate(180deg)"
+                        tabindex="0"
                     >
                         <CaretRightSmallIcon />
                     </button>
@@ -113,6 +121,7 @@
                         :class="{ loading: isLoading }"
                         :disabled="disableNextStep"
                         @click="!isLoading && goToNextStep()"
+                        tabindex="0"
                     >
                         <CaretRightSmallIcon v-if="!isLoading" />
                         <CircleSpinner v-else class="circle-spinner" />
@@ -243,8 +252,9 @@ export default defineComponent({
 
             window.addEventListener('keyup', _onKeyDown);
             setTimeout(() => {
-                window.addEventListener('click', _userClicked());
-            }, 1250); // avoid click event to be triggered by the setting button
+                // wait until all the elements that can be clicked by the user are rendered
+                window.addEventListener('click', _userClicked);
+            }, 2000);
 
             // TODO
             // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
@@ -368,7 +378,7 @@ export default defineComponent({
         function _receiveEvents() {
             // events emitted by TourLargeScreenManager
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
-                if (data.type === 'end-tour') endTour();
+                if (data.type === 'end-tour') endTour(false);
             });
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 if (data.type === 'clicked-outside-tour') {
@@ -383,23 +393,21 @@ export default defineComponent({
             });
         }
 
-        function _userClicked() {
+        function _userClicked({ target }: MouseEvent) {
             const userCanClickTourElements = ['.tour', '.tour-manager', '.tooltip']
                 .map((s) => document.querySelector(s) as HTMLElement)
                 .filter((e) => !!e);
 
-            return ({ target }: MouseEvent) => {
-                if (!target) return;
-                const explicitInteractableElements = (steps[currentStep.value]?.ui.explicitInteractableElements
+            if (!target) return;
+            const explicitInteractableElements = (steps[currentStep.value]?.ui.explicitInteractableElements
                     || [] as string[])
-                    .map((s) => document.querySelector(s) as HTMLElement)
-                    .filter((e) => !!e);
-                const interactableElements = [...userCanClickTourElements, ...explicitInteractableElements];
+                .map((s) => document.querySelector(s) as HTMLElement)
+                .filter((e) => !!e);
+            const interactableElements = [...userCanClickTourElements, ...explicitInteractableElements];
 
-                if (!interactableElements.some((el) => el.contains(target as Node))) {
-                    _broadcast({ type: 'clicked-outside-tour' });
-                }
-            };
+            if (interactableElements.every((el) => !el.contains(target as Node))) {
+                _broadcast({ type: 'clicked-outside-tour' });
+            }
         }
 
         // TODO In tablets 'buy nim' in sidebar does not get its original state
@@ -496,9 +504,14 @@ export default defineComponent({
                 });
         }
 
-        async function endTour() {
+        async function endTour(notifyManager = true) {
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
+            }
+
+            if (notifyManager) {
+                _broadcast({ type: 'end-tour' });
+                await context.root.$nextTick();
             }
 
             // If user finalizes tour while it is loading, allow interaction again
@@ -508,7 +521,7 @@ export default defineComponent({
 
             // Remove event listeners
             window.removeEventListener('keyup', _onKeyDown);
-            window.removeEventListener('click', () => _userClicked());
+            window.removeEventListener('click', () => _userClicked);
             window.removeEventListener('resize', () => _OnResize(_OnResizeEnd));
             context.root.$off('nimiq-tour-event');
 
@@ -613,12 +626,13 @@ export default defineComponent({
 
 #app[data-tour-active] [data-non-interactable],
 #app[data-tour-active] [data-non-interactable] *,
+// Select also modals which are not children of #app but siblings
 #app[data-tour-active] ~ div [data-non-interactable],
-#app[data-tour-active] ~ div [data-non-interactable] * // Select also modals which are not children of #app but siblings
+#app[data-tour-active] ~ div [data-non-interactable] *
 {
-  user-select: none !important;
-  pointer-events: none !important;
-  cursor: not-allowed;
+    user-select: none !important;
+    pointer-events: none !important;
+    cursor: not-allowed;
 }
 
 #app[data-tour-active] [data-scroll-locked],
@@ -628,8 +642,9 @@ export default defineComponent({
 
 #app[data-tour-active] [data-explicit-interactable],
 #app[data-tour-active] [data-explicit-interactable] * {
-  pointer-events: initial !important;
-  cursor: pointer;
+    pointer-events: initial !important;
+    cursor: pointer;
+    nav-index: initial;
 }
 
 #app[data-tour-active] button.green-highlight {
@@ -762,6 +777,11 @@ export default defineComponent({
             button {
                 font-weight: 700;
                 font-size: 14px;
+                border: 1px solid transparent;
+
+                &:focus {
+                    border: 1px solid #ffffff55;
+                }
 
                 &.left {
                     display: flex;

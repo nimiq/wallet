@@ -29,7 +29,7 @@
                                 <hr v-if="content === IContentSpecialItem.HR" />
                                 <i18n
                                     v-else-if="new RegExp(
-                                            Object.values(IContentSpecialItem).join('|'), 'gmi').test(content)"
+                                            Object.values(IContentSpecialItem).join('|'), 'gmi').test($t(content))"
                                     :path="content" tag="p">
                                     <template v-slot:network_icon>
                                         <WorldCheckIcon />
@@ -175,7 +175,7 @@ export default defineComponent({
 
         // Initial state
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(7);
+        const currentStep: Ref<TourStepIndex> = ref(0);
         const nSteps: Ref<number> = ref(0);
         const disableNextStep = ref(true);
         const showTour = ref(false);
@@ -244,7 +244,7 @@ export default defineComponent({
             window.addEventListener('keyup', _onKeyDown);
             setTimeout(() => {
                 window.addEventListener('click', _userClicked());
-            }, 100); // avoid click event to be triggered by the setting button
+            }, 1250); // avoid click event to be triggered by the setting button
 
             // TODO
             // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
@@ -327,7 +327,7 @@ export default defineComponent({
             await context.root.$nextTick();
 
             if (futurePath !== currentPath) {
-                await sleep(250);
+                await sleep(500);
             }
 
             _removeAttributes(currentStepIndex);

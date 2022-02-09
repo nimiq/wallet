@@ -87,7 +87,8 @@
                     </label>
                 </div>
 
-                <div class="setting">
+                <!-- Onboarding tour does not support legacy accounts -->
+                <div class="setting" v-if="!isALegacyAccount">
                     <div class="description">
                         <label class="nq-h2" for="product-tour">{{ $t('Product Tour') }}</label>
                         <p class="nq-text">
@@ -275,7 +276,7 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
-import { useAccountStore } from '@/stores/Account';
+import { AccountType, useAccountStore } from '@/stores/Account';
 import { TourName, ITourOrigin } from '@/lib/tour';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -306,6 +307,7 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 export default defineComponent({
     setup(props, context) {
         const settings = useSettingsStore();
+        const isALegacyAccount = useAccountStore().activeAccountInfo.value?.type === AccountType.LEGACY;
 
         const { currency, setCurrency } = useFiatStore();
 
@@ -442,6 +444,7 @@ export default defineComponent({
             $fileInput,
             loadFile,
             goToOnboardingTour,
+            isALegacyAccount,
             showVestingSetting,
             onTrialPassword,
             applyWalletUpdate,

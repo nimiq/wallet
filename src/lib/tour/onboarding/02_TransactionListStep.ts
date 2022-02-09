@@ -1,11 +1,14 @@
-import { useTransactionsStore } from '@/stores/Transactions';
-import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements } from '..';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
+import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements, searchComponentByName } from '..';
+import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
-    { isSmallScreen, toggleHighlightButton }: IOnboardingGetStepFnArgs): ITourStep {
-    const txsLen = () => Object.values(useTransactionsStore().state.transactions).length;
+    { isSmallScreen, toggleHighlightButton, root }: IOnboardingGetStepFnArgs): ITourStep {
+    // Returns the length of the transaction list for the current active account and active address
+    const txsLen = () => {
+        const txs = (searchComponentByName(root, 'transactions-list') as any).transactions || [];
+        return txs.length || 0;
+    };
 
     const ui: ITourStep['ui'] = {
         fadedElements: [

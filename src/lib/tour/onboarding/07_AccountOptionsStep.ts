@@ -60,7 +60,14 @@ export function getAccountOptionsStep({ isSmallScreen, isLargeScreen }: IOnboard
                                 offset: [0, 16],
                             },
                         },
-                        ...defaultTooltipModifiers.filter(({ name }) => name !== 'offset'),
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                altAxis: true,
+                                padding: 8,
+                            },
+                        },
+                        ...defaultTooltipModifiers.filter(({ name }) => !['offset', 'preventOverflow'].includes(name)),
                     ];
                 },
             },

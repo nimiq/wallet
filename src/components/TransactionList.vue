@@ -145,6 +145,7 @@ function getLocaleMonthStringFromDate(
 // }
 
 export default defineComponent({
+    name: 'transactions-list',
     props: {
         searchString: {
             type: String,

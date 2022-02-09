@@ -986,14 +986,14 @@ export default defineComponent({
 }
 
 .slide-vertical-enter-active {
-    animation: slidevertical 0.4s ease-in-out;
+    animation: slidevertical 0.4s var(--nimiq-ease);
     animation-delay: 0.6s;
     bottom: -56px;
     transform: scale(0.8);
 }
 
 .slide-vertical-leave-active {
-    animation: slidevertical 0.4s ease-in-out reverse;
+    animation: slidevertical 0.4s var(--nimiq-ease) reverse;
     animation-delay: 0.75s;
 }
 

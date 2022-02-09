@@ -140,10 +140,7 @@ export default defineComponent({
 
     background-color: rgba(255, 255, 255, 0.12); // TODO This should be var(--text-12) ?
 
-    // TODO Having multiple transitions seems not to work
-    transition: background-color 0.4s ease-in-out;
-    // transition: background-color 0.4s ease-in-out,
-    //              max-height 0.25s ease-in-out 0.4s;
+    transition: background-color 0.4s var(--nimiq-ease);
 
     font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
             Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -204,11 +201,11 @@ export default defineComponent({
 }
 
 .grow-enter-active {
-    transition: max-height 0.4s ease-in-out 1.5s, margin-bottom 0.4s ease-in-out 1.5s;
+    transition: max-height 0.4s  var(--nimiq-ease) 1.5s, margin-bottom 0.4s  var(--nimiq-ease) 1.5s;
 }
 
 .grow-leave-active {
-    transition: max-height 0.4s ease-in-out, margin-bottom 0.4s ease-in-out;
+    transition: max-height 0.4s  var(--nimiq-ease), margin-bottom 0.4s  var(--nimiq-ease);
 }
 
 .grow-enter-to, .grow-leave {

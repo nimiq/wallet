@@ -159,11 +159,15 @@ export default defineComponent({
             display: inline-flex;
             align-items: center;
             gap: 1.5rem;
-            transition: margin 0.2s ease-in-out;
         }
 
-        button:hover svg {
-            left: 10px;
+        .nq-icon {
+            transition: transform 0.25s var(--nimiq-ease);
+        }
+
+        &:hover .nq-icon,
+        &:focus .nq-icon {
+            transform: translateX(0.25rem);
         }
     }
 }

@@ -21,6 +21,7 @@
                         :is-last="tour.isLast"
                         :labels="tour.labels"
                         role="tooltip"
+                        :data-step="tour.currentStep"
                     >
                         <div slot="content" class="content">
                             <div v-for="(content, i) in tour.steps[tour.currentStep].content" :key="i">
@@ -200,7 +201,7 @@ export default defineComponent({
 
         const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-        useEventListener(window, 'click', _userClicked);
+        useEventListener(window, 'click', _onUserClicked);
         useKeys([
             { key: 'ArrowRight', handler: goToNextStep, options: { ignoreIf: disableNextStep } },
             { key: 'ArrowLeft', handler: goToPrevStep },
@@ -266,6 +267,9 @@ export default defineComponent({
             tour = context.root.$tours['nimiq-tour'];
 
             tour.start(`${currentStep.value}`);
+            await context.root.$nextTick();
+            changeArrowAppearance(currentStep.value);
+
             isLoading.value = false;
 
             _receiveEvents();
@@ -333,6 +337,7 @@ export default defineComponent({
 
             tour!.start(futureStepIndex.toString());
             await context.root.$nextTick();
+            changeArrowAppearance(futureStepIndex);
 
             // FIXME Instead of doing tour!.end and tour!.start, we could also use .nextStep() or previsousStep()
             // The problem with this solution is that some animations glitch the UI so it needs further
@@ -381,7 +386,7 @@ export default defineComponent({
             });
         }
 
-        function _userClicked({ target }: MouseEvent) {
+        function _onUserClicked({ target }: MouseEvent) {
             const interactableElements = ['.tour', '.tour-manager', '.tooltip']
                 .concat(steps[currentStep.value]?.ui.explicitInteractableElements || [])
                 .map((s) => document.querySelector(s) as HTMLElement)
@@ -421,10 +426,14 @@ export default defineComponent({
             }
         }
 
-        function _onScrollLockedElement(e: Event, el: Element) {
+        function _onScrollInLockedElement(e: Event) {
             e.preventDefault();
-            el.scrollTop = 0;
+            const target = e.target as HTMLElement;
+            if ((target as HTMLElement).scrollTop) {
+                target.scrollTop = 0;
+            }
         }
+
         function _addAttributes(
             uiConfig: ITourStep['ui'],
             stepIndex: TourStepIndex,
@@ -452,7 +461,7 @@ export default defineComponent({
                 if (!el) return;
                 el.setAttribute('data-scroll-locked', stepIndex.toString());
                 // Avoid scrolling when tooltip is instantiated
-                el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
+                el.addEventListener('scroll', _onScrollInLockedElement);
                 el.scrollTop = 0;
             });
 
@@ -477,7 +486,7 @@ export default defineComponent({
             document.querySelectorAll(`[data-scroll-locked="${stepIndex}"]`)
                 .forEach((el) => {
                     el.removeAttribute('data-scroll-locked');
-                    el.removeEventListener('scroll', (e) => _onScrollLockedElement(e, el));
+                    el.removeEventListener('scroll', _onScrollInLockedElement);
                 });
 
             document.querySelectorAll(`[data-explicit-interactable="${stepIndex}"]`)
@@ -549,6 +558,22 @@ export default defineComponent({
                 .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
             await endTour(false, true);
             tourSetup();
+        }
+
+        const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 9" xml:space="preserve">
+            <path d="M3.3 7.2A4 4 0 0 1 0 9h18a4 4 0 0 1-3.3-1.8L10.3.8c-.6-.9-1.9-.9-2.5 0L3.3 7.2z"/>
+        </svg>`;
+
+        function changeArrowAppearance(stepIndex: TourStepIndex) {
+            setTimeout(() => {
+                const arrow = document.querySelector(
+                    `[data-step="${stepIndex}"] [data-popper-arrow]`) as HTMLDivElement;
+                if (!arrow) return;
+                arrow.innerHTML = svg;
+                arrow.style.visibility = 'initial';
+                arrow.style.width = '2rem';
+            }, 100);
         }
 
         // TODO REMOVE ME - Simulate tx
@@ -794,37 +819,85 @@ export default defineComponent({
                 }
             }
         }
+
         ::v-deep .v-step__arrow {
-            background: var(--nimiq-light-blue);
+            background: transparent;
         }
 
-        &.bottom-start ::v-deep .v-step__arrow, &.right-start ::v-deep .v-step__arrow,
-        &.bottom ::v-deep .v-step__arrow, &.right ::v-deep .v-step__arrow, &.right-end ::v-deep .v-step__arrow {
-            background: #0582ca !important;
+        ::v-deep .v-step__arrow::before {
+            display: none;
         }
 
-        &.bottom-end ::v-deep .v-step__arrow {
-            background: #0681ca !important;
+        &[data-popper-placement^="top"] ::v-deep .v-step__arrow {
+            display: flex;
+            bottom: -9px;
         }
 
-        &.top-start ::v-deep .v-step__arrow {
-            background: #087ecb !important;
+        &[data-popper-placement^="top"] ::v-deep .v-step__arrow svg {
+            transform: rotate(180deg);
         }
 
-        &.left-start ::v-deep .v-step__arrow {
-            background: #0a7ccc !important;
+        &[data-popper-placement^="right"] ::v-deep .v-step__arrow svg {
+            transform: rotate(-90deg);
+            transform-origin: 0 37%;
         }
 
-        &.left ::v-deep .v-step__arrow {
-            background: #1570d0 !important;
+        &[data-popper-placement^="bottom"] ::v-deep .v-step__arrow {
+            display: flex;
+            top: -9px;
         }
 
-        &.top ::v-deep .v-step__arrow {
-            background: #1570d0 !important;
+        &[data-popper-placement^="left"] ::v-deep .v-step__arrow svg {
+            transform: rotate(90deg);
+            transform-origin: 100% 30%;
         }
 
-        &.left-end ::v-deep .v-step__arrow, &.top-end ::v-deep .v-step__arrow {
-            background: #2163d5 !important;
+        &[data-popper-placement="top-start"] ::v-deep .v-step__arrow svg path {
+            fill: #087dcb;
+        }
+
+        &[data-popper-placement="top"] ::v-deep .v-step__arrow svg path {
+            fill: #1570d1;
+        }
+
+        &[data-popper-placement="top-end"] ::v-deep .v-step__arrow svg path {
+            fill: #2163d5;
+        }
+
+        &[data-popper-placement="right-start"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
+        }
+
+        &[data-popper-placement="right"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
+        }
+
+        &[data-popper-placement="right-end"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
+        }
+
+        &[data-popper-placement="bottom-start"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
+        }
+
+        &[data-popper-placement="bottom"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
+        }
+
+        &[data-popper-placement="bottom-end"] ::v-deep .v-step__arrow svg path {
+            fill: #0681ca;
+        }
+
+        &[data-popper-placement="left-start"] ::v-deep .v-step__arrow svg path {
+            fill: #0e78cd;
+        }
+
+        &[data-popper-placement="left"] ::v-deep .v-step__arrow svg path {
+            fill: #1670d0;
+        }
+
+        &[data-popper-placement="left-end"] ::v-deep .v-step__arrow svg path {
+            fill: #0582ca;
         }
     }
 }

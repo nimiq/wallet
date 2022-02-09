@@ -56,8 +56,7 @@ export function getBitcoinAddressStep(
             content: getOnboardingTexts(OnboardingTourStep.BITCOIN_ADDRESS).default,
             params: {
                 get placement() {
-                    // TODO Add margin in large screens
-                    return !isLargeScreen.value ? 'bottom-start' : 'left';
+                    return !isLargeScreen.value ? 'bottom-start' : 'left-end';
                 },
                 get modifiers() {
                     let offset;
@@ -70,7 +69,7 @@ export function getBitcoinAddressStep(
                             name: 'preventOverflow',
                             options: {
                                 altAxis: false,
-                                padding: 24,
+                                padding: 16,
                             },
                         },
                         {

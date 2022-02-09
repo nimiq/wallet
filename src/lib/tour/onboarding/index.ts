@@ -1,4 +1,4 @@
-import { useWindowSize } from '@/composables/useWindowSize';
+import { ScreenTypes } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { SetupContext } from '@vue/composition-api';
 import { ITourOrigin } from '..';
@@ -15,7 +15,8 @@ import { getBackupOptionLargeScreenStep } from './07_2_BackupOptionLargeScreenSt
 import { getAccountOptionsStep } from './07_AccountOptionsStep';
 import { getOnboardingCompletedStep } from './08_OnboardingCompleted';
 
-export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<OnboardingTourStep> {
+export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: ScreenTypes)
+    : ITourSteps<OnboardingTourStep> {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const toggleDisabledAttribute = async (selector: string, disabled: boolean) => {
@@ -33,8 +34,6 @@ export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<Onboa
         receiveNim.classList[highlight ? 'add' : 'remove'](`${color}-highlight`);
     };
 
-    const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
-
     const { state, activeAccountInfo } = useAccountStore();
     const { startedFrom } = (state.tour as { startedFrom: ITourOrigin });
     const { type: accountType, wordsExported } = activeAccountInfo.value || {};
@@ -44,11 +43,9 @@ export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<Onboa
         sleep,
         toggleDisabledAttribute,
         root,
-        isSmallScreen,
-        isMediumScreen,
-        isLargeScreen,
         startedFrom,
         toggleHighlightButton,
+        ...screenTypes,
     };
 
     const steps: ITourSteps<OnboardingTourStep> = {
@@ -58,20 +55,19 @@ export function getOnboardingTourSteps({ root }: SetupContext): ITourSteps<Onboa
         [OnboardingTourStep.BITCOIN_ADDRESS]: getBitcoinAddressStep(args),
         [OnboardingTourStep.WALLET_BALANCE]: getWalletBalanceStep(args),
         [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(args),
+        get [OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS]() {
+            if (!accountIsSecured) return undefined;
+            return (screenTypes.isLargeScreen.value)
+                ? getBackupOptionLargeScreenStep()
+                : getBackupOptionNotLargeScreenStep(args);
+        },
         [OnboardingTourStep.ONBOARDING_COMPLETED]: getOnboardingCompletedStep(args),
     };
     if (!accountIsSecured) {
         steps[OnboardingTourStep.BACKUP_ALERT] = getBackupAlertStep(args);
     }
-    if (!isLargeScreen.value && startedFrom === ITourOrigin.WELCOME_MODAL) {
+    if (!screenTypes.isLargeScreen.value && startedFrom === ITourOrigin.WELCOME_MODAL) {
         steps[OnboardingTourStep.MENU_ICON] = getMenuIconStep();
-    }
-    if (accountIsSecured && isLargeScreen.value) {
-        // TODO KeepmenuopenonBackward
-        steps[OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS] = getBackupOptionLargeScreenStep();
-    }
-    if (accountIsSecured && !isLargeScreen.value) {
-        steps[OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS] = getBackupOptionNotLargeScreenStep(args);
     }
 
     return steps;

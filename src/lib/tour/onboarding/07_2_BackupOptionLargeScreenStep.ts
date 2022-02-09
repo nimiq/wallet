@@ -44,7 +44,7 @@ export function getBackupOptionLargeScreenStep(): ITourStep {
         path: '/',
         tooltip: {
             target: IWalletHTMLElements.SIDEBAR_ACCOUNT_MENU,
-            content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS).default,
+            content: getOnboardingTexts(OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS).default,
             params: {
                 placement: 'right',
                 modifiers: [

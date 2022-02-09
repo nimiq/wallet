@@ -47,7 +47,7 @@ export function getBackupOptionNotLargeScreenStep({ isSmallScreen }: IOnboarding
             target: `${IWalletHTMLElements.MODAL_PAGE} .current-account .item:nth-child(3)
                     ${isSmallScreen.value ? 'svg path:nth-child(2)' : ''}`,
             content: getOnboardingTexts(
-                OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS).default,
+                OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS).default,
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'top-start' : 'right';

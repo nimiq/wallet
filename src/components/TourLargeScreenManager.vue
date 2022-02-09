@@ -26,11 +26,13 @@ export default defineComponent({
         const show: Ref<boolean> = ref(false);
 
         const $originalManager = ref<HTMLDivElement>(null);
+
         onMounted(async () => {
             show.value = true;
 
+            _checkIfModalIsOpen();
+
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
-                // TODO The event should be triggered also when resizing the window
                 if (data.type === 'tour-step-changed') _stepChanged(data.payload);
                 if (data.type === 'clicked-outside-tour') _flash();
                 if (data.type === 'end-tour') endTour(false);

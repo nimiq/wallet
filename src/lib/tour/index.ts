@@ -1,9 +1,10 @@
+import { ScreenTypes } from '@/composables/useWindowSize';
 import { useAddressStore } from '@/stores/Address';
 import { Transaction } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
-import { ITooltipModifier, ITourSteps, NetworkTourStep, OnboardingTourStep, TourName } from './types';
+import { ITooltipModifier, ITourStep, ITourSteps, NetworkTourStep, OnboardingTourStep, TourName } from './types';
 
 export const defaultTooltipModifiers: ITooltipModifier[] = [
     {
@@ -27,20 +28,20 @@ export const defaultTooltipModifiers: ITooltipModifier[] = [
     },
 ];
 
-export function getTour(tour: TourName | undefined, context: SetupContext)
-    : ITourSteps<OnboardingTourStep | NetworkTourStep> {
+export function getTour(tour: TourName | undefined, context: SetupContext, screenTypes: ScreenTypes)
+    : ITourStep[] {
     let steps: ITourSteps<OnboardingTourStep | NetworkTourStep> = {};
     switch (tour) {
         case 'onboarding':
-            steps = getOnboardingTourSteps(context);
+            steps = getOnboardingTourSteps(context, screenTypes);
             break;
         case 'network':
-            steps = getNetworkTourSteps(context);
+            steps = getNetworkTourSteps(context, screenTypes);
             break;
         default:
     }
 
-    return steps;
+    return Object.values(steps).filter((step) => Boolean(step)) as ITourStep[];
 }
 
 // Finds the component instance given its name in the Vue tree

@@ -59,20 +59,14 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
             $t('Tap on the menu icon to access your account and wallet settings.'),
         ],
     },
-
-    // TODO Review these
-    [OnboardingTourStep.BACKUP_OPTION_LARGE_SCREENS]: {
-        default: [
-            $t('You can always create a new backup. Simply click your account and select ‘Create backup’.'),
-        ],
-    },
     [OnboardingTourStep.ACCOUNT_OPTIONS]: {
         default: [
             $t('Create, switch and log out of accounts.'),
             $t('All security relevant actions can be found here too.'),
         ],
     },
-    [OnboardingTourStep.BACKUP_OPTION_NOT_LARGE_SCREENS]: {
+    // TODO Review these
+    [OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS]: {
         default: [
             $t('You can always create a new backup.'),
             $t('Simply click your account and select ‘Create backup’.'),

@@ -149,6 +149,8 @@ import {
 import Vue from 'vue';
 import VueTour from 'vue-tour';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useEventListener } from '../composables/useEventListener';
+import { useKeys } from '../composables/useKeys';
 import {
     IContentSpecialItem,
     getFakeTx,
@@ -180,7 +182,12 @@ export default defineComponent({
             // see example: https://github.com/pulsardev/vue-tour/blob/6ee85afdae3a4cb8689959b3b0c2035e165072fa/src/shared/constants.js
             useKeyboardNavigation: false, // handled by us
         };
-        let steps = Object.values(getTour(accountStore.tour?.name, context));
+
+        let unsortedStepds = getTour(
+                accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
+        let steps = Object.keys(unsortedStepds)
+            .sort((a, b) => (a as unknown as number) - (b as unknown as number))
+            .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
 
         // Initial state
         const isLoading = ref(true);
@@ -192,6 +199,14 @@ export default defineComponent({
         let unmounted: IMountedReturnFn | void;
 
         const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        useEventListener(window, 'click', _userClicked);
+        useKeys([
+            { key: 'ArrowRight', handler: goToNextStep, options: { ignoreIf: disableNextStep } },
+            { key: 'ArrowLeft', handler: goToPrevStep },
+            { key: 'Escape', handler: endTour },
+        ]);
+        useEventListener(window, 'resize', _onResize());
 
         onMounted(async () => {
             await tourSetup();
@@ -247,17 +262,9 @@ export default defineComponent({
             showTour.value = true;
 
             tour = context.root.$tours['nimiq-tour'];
+
             tour.start(`${currentStep.value}`);
             isLoading.value = false;
-
-            window.addEventListener('keyup', _onKeyDown);
-            setTimeout(() => {
-                // wait until all the elements that can be clicked by the user are rendered
-                window.addEventListener('click', _userClicked);
-            }, 2000);
-
-            // TODO
-            // window.addEventListener('resize', _OnResize(_OnResizeEnd)); TODO
 
             _receiveEvents();
             _broadcast({
@@ -298,20 +305,19 @@ export default defineComponent({
 
         function goToPrevStep() {
             if (currentStep.value <= 0 || disconnected.value || isLoading.value) return;
-            _moveToFutureStep(currentStep.value, currentStep.value - 1);
+            _moveToFutureStep(currentStep.value, currentStep.value - 1, false);
         }
 
         function goToNextStep() {
             if (currentStep.value + 1 >= nSteps.value || disconnected.value || isLoading.value) return;
-            _moveToFutureStep(currentStep.value, currentStep.value + 1);
+            _moveToFutureStep(currentStep.value, currentStep.value + 1, true);
         }
 
         async function _moveToFutureStep(
             currentStepIndex: TourStepIndex,
             futureStepIndex: TourStepIndex,
+            goingForward: boolean,
         ) {
-            const goingForward = futureStepIndex > currentStepIndex;
-
             const { path: currentPath, ui: currentUI } = steps[currentStepIndex]!;
             const { path: futurePath, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex]!;
 
@@ -394,24 +400,18 @@ export default defineComponent({
         }
 
         function _userClicked({ target }: MouseEvent) {
-            const userCanClickTourElements = ['.tour', '.tour-manager', '.tooltip']
+            const interactableElements = ['.tour', '.tour-manager', '.tooltip']
+                .concat(steps[currentStep.value]?.ui.explicitInteractableElements || [])
                 .map((s) => document.querySelector(s) as HTMLElement)
                 .filter((e) => !!e);
-
-            if (!target) return;
-            const explicitInteractableElements = (steps[currentStep.value]?.ui.explicitInteractableElements
-                    || [] as string[])
-                .map((s) => document.querySelector(s) as HTMLElement)
-                .filter((e) => !!e);
-            const interactableElements = [...userCanClickTourElements, ...explicitInteractableElements];
 
             if (interactableElements.every((el) => !el.contains(target as Node))) {
                 _broadcast({ type: 'clicked-outside-tour' });
             }
         }
 
-        // TODO In tablets 'buy nim' in sidebar does not get its original state
         let _buttonNimClasses: {[x:string]: string} = {};
+
         function _toggleDisabledButtons(disabledButtons: ITourStep['ui']['disabledButtons'], disabled:boolean) {
             if (!disabledButtons) return;
 
@@ -495,7 +495,7 @@ export default defineComponent({
             document.querySelectorAll(`[data-scroll-locked="${stepIndex}"]`)
                 .forEach((el) => {
                     el.removeAttribute('data-scroll-locked');
-                    el.addEventListener('scroll', (e) => _onScrollLockedElement(e, el));
+                    el.removeEventListener('scroll', (e) => _onScrollLockedElement(e, el));
                 });
 
             document.querySelectorAll(`[data-explicit-interactable="${stepIndex}"]`)
@@ -504,7 +504,7 @@ export default defineComponent({
                 });
         }
 
-        async function endTour(notifyManager = true) {
+        async function endTour(notifyManager = true, soft = false) {
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
             }
@@ -519,55 +519,54 @@ export default defineComponent({
             app.removeAttribute('data-tour-active');
             app.querySelector('main')!.removeAttribute('data-non-interactable');
 
-            // Remove event listeners
-            window.removeEventListener('keyup', _onKeyDown);
-            window.removeEventListener('click', () => _userClicked);
-            window.removeEventListener('resize', () => _OnResize(_OnResizeEnd));
-            context.root.$off('nimiq-tour-event');
-
-            if (tour) {
+            if (tour && !soft) {
                 showTour.value = false; // This way, we can trigger the animation as v-step will be removed
             }
 
-            // wait until longest leave transition finishes
-            await sleep(1150);
+            if (!soft) {
+                // wait until longest leave transition finishes
+                await sleep(1150);
+            }
 
             // Update UI
             _removeAttributes(currentStep.value);
             _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
-            setTour(null);
+
+            if (!soft) {
+                setTour(null);
+            }
         }
 
-        function _OnResize(func: () => void) {
-            tour!.stop();
+        function _onResize() {
             let timer: ReturnType<typeof setTimeout> | null = null;
+
+            // 0: small screen, 1: medium screen, 2: large screen
+            const screenType = () => [isSmallScreen.value, isMediumScreen.value, isLargeScreen.value].indexOf(true);
+            let oldScreen = screenType();
+
             return () => {
+                tour!.stop();
                 if (timer) clearTimeout(timer);
-                timer = setTimeout(func, 100);
+                timer = setTimeout(() => {
+                    // If the type of screen changes, then we count it as resize
+                    const newScreen = screenType();
+
+                    if (oldScreen !== newScreen) {
+                        _screenTypeChanged();
+                        oldScreen = screenType();
+                    }
+                }, 100);
             };
         }
 
-        function _OnResizeEnd() {
-            steps = Object.values(getTour(accountStore.tour?.name, context));
+        async function _screenTypeChanged() {
+            unsortedStepds = getTour(
+                accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
+            steps = Object.keys(unsortedStepds)
+                .sort((a, b) => (a as unknown as number) - (b as unknown as number))
+                .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
+            await endTour(false, true);
             tourSetup();
-        }
-
-        function _onKeyDown(event: KeyboardEvent) {
-            switch (event.key) {
-                case 'ArrowRight':
-                    if (!disableNextStep.value) {
-                        goToNextStep();
-                    }
-                    break;
-                case 'ArrowLeft':
-                    goToPrevStep();
-                    break;
-                case 'Escape':
-                    endTour();
-                    break;
-                default:
-                    break;
-            }
         }
 
         // TODO REMOVE ME - Simulate tx

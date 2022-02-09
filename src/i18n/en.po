@@ -729,7 +729,8 @@ msgstr ""
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
-#: src/components/Tour.vue:98
+#: src/components/Tour.vue:105
+#: src/lib/tour/network/04_NetworkCompletedStep.ts:32
 msgid "End Tour"
 msgstr ""
 
@@ -896,6 +897,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:94
 msgid "Go through the product again"
+msgstr ""
+
+#: src/lib/tour/onboarding/08_OnboardingCompleted.ts:77
+msgid "Go to Network"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:92
@@ -1178,7 +1183,7 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/Tour.vue:84
+#: src/components/Tour.vue:91
 msgid "Next"
 msgstr ""
 
@@ -1352,7 +1357,7 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/Tour.vue:70
+#: src/components/Tour.vue:76
 msgid "Previous"
 msgstr ""
 

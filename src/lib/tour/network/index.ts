@@ -1,16 +1,15 @@
-import { useWindowSize } from '@/composables/useWindowSize';
+import { ScreenTypes } from '@/composables/useWindowSize';
 import { NodeHexagon, NodeType, SCALING_FACTOR, WIDTH } from '@/lib/NetworkMap';
 import { SetupContext } from '@vue/composition-api';
 import { searchComponentByName } from '..';
-import { INetworkGetStepFnArgs, NetworkTourStep, ITourSteps, IWalletHTMLElements } from '../types';
+import { INetworkGetStepFnArgs, ITourSteps, IWalletHTMLElements, NetworkTourStep } from '../types';
 import { getYourLocationStep } from './01_YourLocationStep';
 import { getBackboneNodeStep } from './02_BackboneNodeStep';
 import { getNetworkMetricsStep } from './03_NetworkMetricsStep';
 import { getNetworkCompletedStep } from './04_NetworkCompletedStep';
 
-export function getNetworkTourSteps({ root }: SetupContext): ITourSteps<NetworkTourStep> {
+export function getNetworkTourSteps({ root }: SetupContext, screenTypes: ScreenTypes): ITourSteps<NetworkTourStep> {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-    const { isSmallScreen, isMediumScreen, isLargeScreen } = useWindowSize();
 
     const networkMapInstance = searchComponentByName(root, 'network-map') as any;
     const nodes = () => networkMapInstance?.nodes as NodeHexagon[] || [];
@@ -28,9 +27,7 @@ export function getNetworkTourSteps({ root }: SetupContext): ITourSteps<NetworkT
     const args: INetworkGetStepFnArgs = {
         nodes,
         selfNodeIndex,
-        isSmallScreen,
-        isMediumScreen,
-        isLargeScreen,
+        ...screenTypes,
         scrollIntoView,
         sleep,
         root,

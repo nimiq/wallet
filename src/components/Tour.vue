@@ -34,7 +34,6 @@
                                     :path="content" tag="p">
                                     <template v-slot:network_icon>
                                         <WorldCheckIcon />
-                                        <!-- TODO Add Icon + network in same line as a span -->
                                     </template>
                                     <template v-slot:account_icon>
                                         <svg width="14" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,9 +43,10 @@
                                                 <circle cx="7" cy="7" r="2" fill="#fff"/>
                                             </g>
                                         </svg>
-                                        <!-- TODO Add Icon + Account in same line as a span -->
                                     </template>
-                                    <!-- TODO Add bold template -->
+                                    <template v-slot:back_to_addresses>
+                                        <b>‘{{$t('Back to addresses')}}’</b>
+                                    </template>
                                 </i18n>
                                 <p v-else-if="typeof content === 'string'">{{ $t(content) }}</p>
                                 <ul v-else-if="content.length">
@@ -259,6 +259,8 @@ export default defineComponent({
             // ensures animation ends
             await sleep(1000);
 
+            _addAttributes(step.ui, currentStep.value);
+
             showTour.value = true;
 
             tour = context.root.$tours['nimiq-tour'];
@@ -276,26 +278,7 @@ export default defineComponent({
             });
         }
 
-        // Dont allow user to interact with the page while it is loading
-        // But allow to end it
         watch([isLoading, disconnected], async () => {
-            // TODO
-            // Avoid interaction with any of the elements when loading except tour elements (bar, manager and tooltip)
-            // const elements = Object.values(IWalletHTMLElements).filter((e) => e);
-            // if (isLoading.value || disconnected.value) {
-            //     elements.forEach((element) => {
-            //         const el = document.querySelector(element);
-            //         if (!el) return;
-            //         el.setAttribute('data-non-interactable', 'loading');
-            //     });
-            // } else {
-            //     elements.forEach((element) => {
-            //         const el = document.querySelector(element);
-            //         if (!el) return;
-            //         el.removeAttribute('data-non-interactable');
-            //     });
-            // }
-
             // FIXME we should wait until the buttons are rendered and the we could
             // execute _toggleDisabledButtons but it is kind of random the amount of time
             // it takes to render the button. I don't know how to fix it. Waiting 500ms works.
@@ -356,7 +339,6 @@ export default defineComponent({
             // investigation
             // goingForward ? tour!.nextStep() : tour!.previousStep();
 
-            // mounted
             disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.isNextStepDisabled;
 
             unmounted = await futureLifecycle?.mounted?.({

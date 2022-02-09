@@ -23,7 +23,7 @@ const texts: ITourStepTexts<NetworkTourStep> = {
     [NetworkTourStep.METRICS]: {
         default: [
             $t('Find the network’s key performance metrics below.'),
-            $t(`The ${IContentSpecialItem.ICON_NETWORK_WORLD}-icon indicates that you are connected to the network.`),
+            $t('The {network_icon}-icon indicates that you are connected to the network.'),
         ],
     },
     [NetworkTourStep.NETWORK_COMPLETED]: {
@@ -31,13 +31,13 @@ const texts: ITourStepTexts<NetworkTourStep> = {
             $t('You made it!'),
             IContentSpecialItem.HR,
             $t('Enjoy the decentralized future, and don’t forget to invite your friends and family.'),
-            `Click ${IContentSpecialItem.ICON_ACCOUNT} to get back to your wallet.`,
+            $t('Click {account_icon} to get back to your wallet.'),
         ],
         alternative: [
             $t('You made it!'),
             IContentSpecialItem.HR,
             $t('Enjoy the decentralized future, and don’t forget to invite your friends and family.'),
-            $t('Click <b>‘Back to Addresses’</b> to get back to your wallet.'),
+            $t('Click {back_to_addresses} to get back to your wallet.'),
         ],
     },
 };

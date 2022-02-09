@@ -19,7 +19,7 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
             $t('This is where all your transactions will appear.'),
             $t('Click the green button to receive a free NIM from Team Nimiq.'),
         ],
-        alternative: ['This is where all your transactions will appear.'],
+        alternative: [$t('This is where all your transactions will appear.')],
     },
     [OnboardingTourStep.FIRST_TRANSACTION]: {
         default: [

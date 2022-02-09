@@ -29,8 +29,7 @@ export default defineComponent({
 
         onMounted(async () => {
             show.value = true;
-
-            _checkIfModalIsOpen();
+            setTimeout(() => _checkIfModalIsOpen(), 2000);
 
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 if (data.type === 'tour-step-changed') _stepChanged(data.payload);

@@ -45,6 +45,7 @@ export enum IContentSpecialItem {
     HR = '{HR}',
     ICON_NETWORK_WORLD = '{network_icon}',
     ICON_ACCOUNT = '{account_icon}',
+    BACK_TO_ADDRESSES = '{back_to_addresses}',
 }
 export interface ITooltipModifier {
     name: 'preventOverflow' | 'offset' | 'arrow';

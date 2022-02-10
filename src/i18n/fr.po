@@ -1,15 +1,15 @@
 # 
 # Translators:
 # Talleyrand, 2020
-# Daniel, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2021
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
-# Matheo <matheo@nimiq.com>, 2021
 # Robinson BARAIS, 2022
+# Matheo <matheo@nimiq.com>, 2022
+# Daniel, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Robinson BARAIS, 2022\n"
+"Last-Translator: Daniel, 2022\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Add a public message..."
 msgstr "Ajouter un message public..."
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr "Ajouter un compte"
 
@@ -517,7 +517,7 @@ msgstr "Cashlink en provenance de {address}"
 msgid "Cashlink to {address}"
 msgstr "Cashlink vers {address}"
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr "Changer le mot de passe"
 
@@ -674,7 +674,7 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:19
 msgid "Create a new address for every transaction."
-msgstr ""
+msgstr "Créez une nouvelle adresse pour chaque transaction."
 
 #: src/components/modals/BtcReceiveModal.vue:64
 msgid "Create a new single-use address."
@@ -776,8 +776,8 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en BTC."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:602
+#: src/components/modals/BtcSendModal.vue:441
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -1028,6 +1028,8 @@ msgid ""
 "Improve your privacy by creating a new address for every transaction. Old "
 "addresses still work."
 msgstr ""
+"Améliorez votre confidentialité en créant une nouvelle adresse pour chaque "
+"transaction. Les anciennes adresses fonctionnent toujours."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
@@ -1179,7 +1181,7 @@ msgstr ""
 msgid "Login File"
 msgstr "Fichier de connexion"
 
-#: src/components/AccountMenu.vue:53
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -1533,9 +1535,9 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Notes de mise à jour"
 
-#: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Renommer"
 
@@ -1563,8 +1565,8 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "Résolution du domaine Unstoppable"
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:601
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -1572,7 +1574,7 @@ msgstr "Réessayer"
 msgid "Retrying..."
 msgstr "Nouvelle tentative..."
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr "Enregistrer le Fichier de Connexion"
 
@@ -1680,16 +1682,16 @@ msgstr "Envoyer la Transaction"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
 
-#: src/components/modals/BtcSendModal.vue:436
-#: src/components/modals/SendModal.vue:598
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "Transaction en cours."
 
-#: src/components/modals/BtcSendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC"
 msgstr "{btc} BTC envoyé"
 
-#: src/components/modals/BtcSendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:494
 msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC envoyé à {name}"
 
@@ -1698,11 +1700,11 @@ msgstr "{btc} BTC envoyé à {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Envoyé {fromAsset} – Recu {toAsset}"
 
-#: src/components/modals/SendModal.vue:633
+#: src/components/modals/SendModal.vue:639
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM envoyés"
 
-#: src/components/modals/SendModal.vue:629
+#: src/components/modals/SendModal.vue:635
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
@@ -1777,7 +1779,7 @@ msgstr "Afficher les décimales"
 msgid "Show Link"
 msgstr "Afficher le lien"
 
-#: src/components/AccountMenu.vue:39
+#: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr "Montrer les mots de récupération"
 
@@ -1793,8 +1795,8 @@ msgstr "Simuler le paiement en Euro"
 msgid "Skip for now"
 msgstr "Ignorer pour l'instant"
 
-#: src/components/modals/BtcSendModal.vue:506
-#: src/components/modals/SendModal.vue:645
+#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/SendModal.vue:651
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -2123,7 +2125,7 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
-msgstr ""
+msgstr "Utilisez des étiquettes pour identifier facilement les transactions."
 
 #: src/components/layouts/Settings.vue:33
 msgid "Use the Nimiq Wallet as a web app outside the browser."
@@ -2176,6 +2178,8 @@ msgid ""
 "With Bitcoin, a new address can be used for every transaction to improve "
 "privacy."
 msgstr ""
+"Avec Bitcoin, une nouvelle adresse peut être utilisée pour chaque "
+"transaction afin de renforcer la confidentialité."
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
 msgid ""

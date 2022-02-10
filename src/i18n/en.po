@@ -155,7 +155,7 @@ msgstr ""
 msgid "Add a public message..."
 msgstr ""
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr ""
 
@@ -454,7 +454,7 @@ msgstr ""
 msgid "Cashlink to {address}"
 msgstr ""
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr ""
 
@@ -698,8 +698,8 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:602
+#: src/components/modals/BtcSendModal.vue:441
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr ""
 
@@ -1072,7 +1072,7 @@ msgstr ""
 msgid "Login File"
 msgstr ""
 
-#: src/components/AccountMenu.vue:53
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr ""
 
@@ -1393,9 +1393,9 @@ msgstr ""
 msgid "Release Notes"
 msgstr ""
 
-#: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr ""
 
@@ -1422,8 +1422,8 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:601
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr ""
 
@@ -1431,7 +1431,7 @@ msgstr ""
 msgid "Retrying..."
 msgstr ""
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr ""
 
@@ -1532,16 +1532,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:436
-#: src/components/modals/SendModal.vue:598
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:494
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1550,11 +1550,11 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:633
+#: src/components/modals/SendModal.vue:639
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:629
+#: src/components/modals/SendModal.vue:635
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -1627,7 +1627,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/AccountMenu.vue:39
+#: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr ""
 
@@ -1643,8 +1643,8 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:506
-#: src/components/modals/SendModal.vue:645
+#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/SendModal.vue:651
 msgid "Something went wrong"
 msgstr ""
 

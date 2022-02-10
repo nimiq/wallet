@@ -342,7 +342,6 @@
     "GENODEF1HKB": { "name": "Volksbank, Hankensbüttel" },
     "GENODEF1HMN": { "name": "Volksbank, Südheide" },
     "GENODEF1HO1": { "support": { "sepa": { "outbound": "full" } } },
-    "GENODEF1HPN": { "name": "Raiffeisen - meine Bank, Hilpoltstein" },
     "GENODEF1HTL": { "name": "Raiffeisenbank, Holtland" },
     "GENODEF1HTR": { "name": "Volksbank, Bad Laer-Borgloh-Hilter-Melle" },
     "GENODEF1KOE": { "name": "Volksbank, Köthen" },

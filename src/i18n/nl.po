@@ -1,15 +1,15 @@
 # 
 # Translators:
-# Fons <Fonsdesigns@hotmail.com>, 2020
-# BlockchainShay <Shaylish@live.nl>, 2020
-# Jim <jimvendrig10@gmail.com>, 2021
-# Daniel, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2021
-# Stefan, 2021
+# Daniel, 2022
+# BlockchainShay <Shaylish@live.nl>, 2022
+# Stefan, 2022
+# Fons <Fonsdesigns@hotmail.com>, 2022
+# Jim <jimvendrig10@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Stefan, 2021\n"
+"Last-Translator: Jim <jimvendrig10@gmail.com>, 2022\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -177,7 +177,7 @@ msgstr ""
 msgid "Add a public message..."
 msgstr "Voeg een openbaar bericht toe..."
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr "Account toevoegen"
 
@@ -511,7 +511,7 @@ msgstr "Cashlink van {address}"
 msgid "Cashlink to {address}"
 msgstr "Cashlink naar {address}"
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr "Verander wachtwoord"
 
@@ -767,8 +767,8 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor BTC waarden."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:602
+#: src/components/modals/BtcSendModal.vue:441
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
@@ -1168,7 +1168,7 @@ msgstr ""
 msgid "Login File"
 msgstr ""
 
-#: src/components/AccountMenu.vue:53
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr "Log uit"
 
@@ -1517,9 +1517,9 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Release Notes"
 
-#: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Hernoemen"
 
@@ -1545,8 +1545,8 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:601
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
@@ -1554,7 +1554,7 @@ msgstr "Probeer opnieuw"
 msgid "Retrying..."
 msgstr "Opnieuw proberen..."
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr "Login File opslaan"
 
@@ -1660,16 +1660,16 @@ msgstr "Verstuur transactie"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/modals/BtcSendModal.vue:436
-#: src/components/modals/SendModal.vue:598
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
-#: src/components/modals/BtcSendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC"
 msgstr "Stuur {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:494
 msgid "Sent {btc} BTC to {name}"
 msgstr "Stuur {btc} BTC naar {name}"
 
@@ -1678,11 +1678,11 @@ msgstr "Stuur {btc} BTC naar {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Verzonden {fromAsset} - Ontvangen {toAsset}"
 
-#: src/components/modals/SendModal.vue:633
+#: src/components/modals/SendModal.vue:639
 msgid "Sent {nim} NIM"
 msgstr "Stuur {nim} NIM"
 
-#: src/components/modals/SendModal.vue:629
+#: src/components/modals/SendModal.vue:635
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
@@ -1757,7 +1757,7 @@ msgstr "Laat decimalen zien"
 msgid "Show Link"
 msgstr "Laat de link zien"
 
-#: src/components/AccountMenu.vue:39
+#: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr ""
 
@@ -1773,8 +1773,8 @@ msgstr "Simuleer betaling in EUR"
 msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
-#: src/components/modals/BtcSendModal.vue:506
-#: src/components/modals/SendModal.vue:645
+#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/SendModal.vue:651
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
 

@@ -172,7 +172,7 @@ msgstr "添加标签，在你的历史记录中快速检索交易"
 msgid "Add a public message..."
 msgstr "添加公开信息..."
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr "添加账户"
 
@@ -489,7 +489,7 @@ msgstr "来自{address}的现金链接"
 msgid "Cashlink to {address}"
 msgstr "发送至{address}的现金链接"
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr "更改密码"
 
@@ -742,8 +742,8 @@ msgstr "编辑比特币值可见的小数位数"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数"
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:602
+#: src/components/modals/BtcSendModal.vue:441
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -1130,7 +1130,7 @@ msgstr ""
 msgid "Login File"
 msgstr "登录文件"
 
-#: src/components/AccountMenu.vue:53
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr "登出"
 
@@ -1470,9 +1470,9 @@ msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式
 msgid "Release Notes"
 msgstr "发行说明"
 
-#: src/components/AccountMenu.vue:43
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "重新命名"
 
@@ -1498,8 +1498,8 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:601
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "重试"
 
@@ -1507,7 +1507,7 @@ msgstr "重试"
 msgid "Retrying..."
 msgstr "重试..."
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr "储存登录文件"
 
@@ -1611,16 +1611,16 @@ msgstr "发送交易"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/modals/BtcSendModal.vue:436
-#: src/components/modals/SendModal.vue:598
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/BtcSendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC"
 msgstr "已发送{btc} 比特币"
 
-#: src/components/modals/BtcSendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:494
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
@@ -1629,11 +1629,11 @@ msgstr "已发送{btc} BTC到 {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
-#: src/components/modals/SendModal.vue:633
+#: src/components/modals/SendModal.vue:639
 msgid "Sent {nim} NIM"
 msgstr "发送{nim}NIM"
 
-#: src/components/modals/SendModal.vue:629
+#: src/components/modals/SendModal.vue:635
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
@@ -1708,7 +1708,7 @@ msgstr "显示小数"
 msgid "Show Link"
 msgstr "显示链接"
 
-#: src/components/AccountMenu.vue:39
+#: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr "显示恢复字"
 
@@ -1724,8 +1724,8 @@ msgstr "模拟欧元付款"
 msgid "Skip for now"
 msgstr "暂时跳过"
 
-#: src/components/modals/BtcSendModal.vue:506
-#: src/components/modals/SendModal.vue:645
+#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/SendModal.vue:651
 msgid "Something went wrong"
 msgstr "出了些问题"
 

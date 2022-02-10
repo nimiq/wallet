@@ -1,6 +1,6 @@
 import { ScreenTypes } from '@/composables/useWindowSize';
 import { AccountType, useAccountStore } from '@/stores/Account';
-import { SetupContext } from '@vue/composition-api';
+import { computed, SetupContext } from '@vue/composition-api';
 import { ITourOrigin, searchComponentByName } from '..';
 import { IOnboardingGetStepFnArgs, ITourSteps, OnboardingTourStep } from '../types';
 import { getFirstAddressStep } from './01_FirstAddressStep';
@@ -29,10 +29,10 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
     // Returns the length of the transaction list for the current active account and active address
     // Easier to access component transaction-list which has already been mounted and has the list
     // of valid transactions for the current active account and active address
-    const txsLen = () => {
-        const txs = (searchComponentByName(root, 'transactions-list') as any).transactions || [];
+    const txsLen = computed<number>(() => {
+        const txs = (searchComponentByName(root, 'transactions-list') as any).txsForActiveAddress || [];
         return txs.length || 0;
-    };
+    });
 
     const { state, activeAccountInfo } = useAccountStore();
     const { startedFrom } = (state.tour as { startedFrom: ITourOrigin });

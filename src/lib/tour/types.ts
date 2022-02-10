@@ -1,5 +1,5 @@
 import { ScreenTypes } from '@/composables/useWindowSize';
-import { SetupContext } from '@vue/composition-api';
+import { Ref, SetupContext } from '@vue/composition-api';
 import { NodeHexagon } from '../NetworkMap';
 
 export enum TourName { ONBOARDING = 'onboarding', NETWORK = 'network' }
@@ -133,7 +133,7 @@ export type IOnboardingGetStepFnArgs = ScreenTypes & {
     sleep: (ms: number) => Promise<unknown>,
     startedFrom: ITourOrigin,
     toggleHighlightButton: (selector: string, highlight: boolean, color: 'gray' | 'orange' | 'green') => void,
-    txsLen: () => number,
+    txsLen: Readonly<Ref<number>>,
 };
 
 // Every step is defined in its own file as a function. The function receives this interface as a parameter

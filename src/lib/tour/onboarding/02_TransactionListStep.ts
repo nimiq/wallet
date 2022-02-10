@@ -1,3 +1,4 @@
+import { watch } from '@vue/composition-api';
 import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
@@ -23,7 +24,7 @@ export function getTransactionListStep(
             IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledElements: [
-            ...(txsLen() > 0
+            ...(txsLen.value > 0
                 ? [IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS]
                 : [
                     `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} h2`,
@@ -37,14 +38,14 @@ export function getTransactionListStep(
         disabledButtons: [
             IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
-            txsLen() === 0 ? '' : IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            txsLen.value === 0 ? '' : IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
         scrollLockedElements: [
             `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .vue-recycle-scroller`,
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
         explicitInteractableElements: [
-            txsLen() === 0 ? IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY : '',
+            txsLen.value === 0 ? IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY : '',
         ],
     };
 
@@ -54,7 +55,7 @@ export function getTransactionListStep(
         },
         tooltip: {
             get target() {
-                if (txsLen() > 0) {
+                if (txsLen.value > 0) {
                     return isSmallScreen.value
                         ? `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS}
                                 .vue-recycle-scroller__item-view:nth-child(2)`
@@ -66,21 +67,21 @@ export function getTransactionListStep(
             },
             get content() {
                 return getOnboardingTexts(
-                    OnboardingTourStep.TRANSACTION_LIST)[txsLen() <= 1 ? 'default' : 'alternative'] || [];
+                    OnboardingTourStep.TRANSACTION_LIST)[txsLen.value <= 1 ? 'default' : 'alternative'] || [];
             },
             params: {
                 get placement() {
                     if (!isSmallScreen.value) {
                         return 'left';
                     }
-                    return txsLen() > 0 ? 'bottom' : 'top';
+                    return txsLen.value > 0 ? 'bottom' : 'top';
                 },
                 get modifiers() {
                     return [
                         {
                             name: 'offset',
                             options: {
-                                offset: txsLen() > 0 && isSmallScreen.value ? [0, 32] : [0, 20],
+                                offset: txsLen.value > 0 && isSmallScreen.value ? [0, 32] : [0, 20],
                             },
                         } as ITooltipModifier,
                         ...defaultTooltipModifiers.filter((d) => d.name !== 'offset'),
@@ -90,17 +91,18 @@ export function getTransactionListStep(
         },
         lifecycle: {
             mounted: ({ goToNextStep }) => {
-                if (txsLen() > 0) return undefined;
+                if (txsLen.value > 0) return undefined;
 
-                const freeNimBtnSelector = IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS;
-                const freeNimBtn = document.querySelector(freeNimBtnSelector);
-                if (!freeNimBtn) return undefined;
-
-                freeNimBtn.addEventListener('click', () => goToNextStep(), { once: true });
+                const unwatch = watch(txsLen, (newVal) => {
+                    if (newVal > 0) goToNextStep();
+                });
 
                 // Add hightlight effect to 'Get Free NIM' button
-                toggleHighlightButton(freeNimBtnSelector, true, 'green');
-                return () => toggleHighlightButton(freeNimBtnSelector, false, 'green');
+                toggleHighlightButton(IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS, true, 'green');
+                return () => {
+                    unwatch();
+                    return toggleHighlightButton(IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS, false, 'green');
+                };
             },
         },
         get ui() {
@@ -108,7 +110,7 @@ export function getTransactionListStep(
                 ...ui,
 
                 // User is expected to click on the 'Get Free NIM' button
-                isNextStepDisabled: txsLen() === 0,
+                isNextStepDisabled: txsLen.value === 0,
             };
         },
     };

@@ -1,11 +1,10 @@
 import { ScreenTypes } from '@/composables/useWindowSize';
-import { useAddressStore } from '@/stores/Address';
-import { Transaction } from '@/stores/Transactions';
 import { SetupContext } from '@vue/composition-api';
 import { getNetworkTourSteps } from './network';
 import { getOnboardingTourSteps } from './onboarding';
 import { ITooltipModifier, ITourStep, ITourSteps, NetworkTourStep, OnboardingTourStep, TourName } from './types';
 
+// see more about tooltip modifiers at popper official documentation
 export const defaultTooltipModifiers: ITooltipModifier[] = [
     {
         name: 'arrow',
@@ -45,6 +44,10 @@ export function getTour(tour: TourName | undefined, context: SetupContext, scree
 }
 
 // Finds the component instance given its name in the Vue tree
+// Components in the wallet should not change its logic to fit tour requirements. For example, adding
+// listeners for the tour in AddressList or TransactionList components should be done in the tour
+// and no in each component. In order to access the component instance, we need to find it in the
+// Vue tree.
 export function searchComponentByName(c: Vue, name: string): Vue | undefined {
     if (c.$options.name === name) {
         return c;
@@ -55,36 +58,6 @@ export function searchComponentByName(c: Vue, name: string): Vue | undefined {
     }
 
     return undefined;
-}
-
-// TODO Remove me
-export function getFakeTx(): Transaction {
-    return {
-        transactionHash: '0x123',
-        format: 'basic',
-        timestamp: 1532739000,
-        sender: 'NQ02 YP68 BA76 0KR3 QY9C SF0K LP8Q THB6 LTKU',
-        recipient: useAddressStore().activeAddress.value || 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000',
-        senderType: 'basic',
-        recipientType: 'basic',
-        blockHeight: 1,
-        blockHash: '0x123456789ABCDEF',
-        value: 100_000,
-        fee: 1,
-        feePerByte: 1,
-        validityStartHeight: 1,
-        network: 'testnet',
-        flags: 0,
-        data: {
-            raw: 'My awesome data',
-        },
-        proof: {
-            raw: 'ES256K',
-        },
-        size: 1,
-        valid: true,
-        state: 'confirmed',
-    };
 }
 
 export * from './types';

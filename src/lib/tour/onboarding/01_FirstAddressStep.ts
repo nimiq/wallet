@@ -14,12 +14,6 @@ export function getFirstAddressStep(
     const { setActiveCurrency } = useAccountStore();
     const { addressInfos, selectAddress } = useAddressStore();
 
-    const created = () => {
-        setActiveCurrency(CryptoCurrency.NIM);
-        selectAddress(addressInfos.value[0].address);
-    };
-    const path = '/';
-
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -47,15 +41,7 @@ export function getFirstAddressStep(
             ),
         ],
         disabledElements: [
-            // Disable all active address element except copyable address
-            // to prevent the user from copying the address as it is told in the tooltip
-            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .identicon-wrapper`,
-            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .label`,
-            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .amount`,
-            // `${IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS} .fiat-amount`,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
-
-            // Rest of elements
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
@@ -76,11 +62,12 @@ export function getFirstAddressStep(
         ],
     };
 
+    const path = '/';
+
+    // User must be able to click the first address to open it in the address overview manually
     const mountedFnForSmallScreen = ({ goToNextStep }: ILifecycleArgs) => {
         const button = `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} button:nth-child(2)`;
         toggleHighlightButton(button, true, 'gray');
-
-        // Listener for the first address button only for mobile
 
         const addressButton = document.querySelector(button) as HTMLButtonElement;
 
@@ -96,6 +83,7 @@ export function getFirstAddressStep(
 
         return async (args: Omit<ILifecycleArgs, 'goToNextStep'>) => {
             if (!args?.ending && !addressClicked && root.$route.path === path) {
+                // If user clicked the 'next step' button, then we trigger the click on the first address
                 addressButton!.click();
                 await root.$nextTick();
             }
@@ -144,13 +132,12 @@ export function getFirstAddressStep(
             },
         },
         lifecycle: {
-            created,
-            mounted: (args) => {
-                if (isSmallScreen.value) {
-                    return mountedFnForSmallScreen(args);
-                }
-                return mountedFnForNotSmallScreen();
+            created: () => {
+                // Select first NIM address as active
+                setActiveCurrency(CryptoCurrency.NIM);
+                selectAddress(addressInfos.value[0].address);
             },
+            mounted: (args) => isSmallScreen.value ? mountedFnForSmallScreen(args) : mountedFnForNotSmallScreen(),
         },
         ui,
     } as ITourStep;

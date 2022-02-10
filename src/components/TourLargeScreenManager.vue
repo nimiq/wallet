@@ -27,15 +27,16 @@ export default defineComponent({
 
         const $originalManager = ref<HTMLDivElement>(null);
 
+        // receive events from tour component
+        context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
+            if (data.type === 'tour-step-changed') _stepChanged(data.payload);
+            if (data.type === 'clicked-outside-tour') _flash();
+            if (data.type === 'end-tour') endTour(false);
+        });
+
         onMounted(async () => {
             show.value = true;
             setTimeout(() => _checkIfModalIsOpen(), 2000);
-
-            context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
-                if (data.type === 'tour-step-changed') _stepChanged(data.payload);
-                if (data.type === 'clicked-outside-tour') _flash();
-                if (data.type === 'end-tour') endTour(false);
-            });
         });
 
         onUnmounted(() => _removeClonedManager());
@@ -59,6 +60,8 @@ export default defineComponent({
             }
         }
 
+        // remove the cloned manager if it exists due to a modal not being open anymore
+        // see _duplicateManager()
         function _removeClonedManager() {
             const tourManager = document.querySelector('body > .tour-manager');
             if (tourManager) {
@@ -101,6 +104,7 @@ export default defineComponent({
             _removeClonedManager();
             show.value = false;
             if (emit) {
+                // Notify tour component through root instance event bus
                 context.root.$emit('nimiq-tour-event', { type: 'end-tour' } as ITourBroadcast);
             }
         }

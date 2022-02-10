@@ -22,10 +22,12 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
         alternative: [$t('This is where all your transactions will appear.')],
     },
     [OnboardingTourStep.FIRST_TRANSACTION]: {
+        // If user has 0 or 1 tx
         default: [
             $t('Here’s your first transaction with your first NIM.'),
             $t('Every NIM address comes with an avatar. They help to make sure you got the right one.'),
         ],
+        // If user has more than 1 tx
         alternative: [
             $t('Here are your transactions.'),
             $t('Every NIM address comes with an avatar. They help to make sure you got the right one.'),

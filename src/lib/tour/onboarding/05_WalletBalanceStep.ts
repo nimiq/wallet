@@ -1,9 +1,9 @@
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { defaultTooltipModifiers, searchComponentByName } from '..';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, IWalletHTMLElements } from '../types';
+import { defaultTooltipModifiers } from '..';
+import { IOnboardingGetStepFnArgs, ITourStep, IWalletHTMLElements, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStepFnArgs): ITourStep {
+export function getWalletBalanceStep({ isSmallScreen }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -41,7 +41,7 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
     };
 
     const { accountBalance: btcAccountBalance } = useBtcAddressStore();
-    let hasBitcoin = btcAccountBalance.value > 0;
+    const hasBitcoin = () => btcAccountBalance.value > 0;
 
     return {
         path: '/',
@@ -50,7 +50,7 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
                 return `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution  
                 ${!isSmallScreen.value ? '.btc .tooltip .bar' : ''}`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[!hasBitcoin ? 'default' : 'alternative'],
+            content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[!hasBitcoin() ? 'default' : 'alternative'],
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom' : 'right';
@@ -76,11 +76,5 @@ export function getWalletBalanceStep({ isSmallScreen, root }: IOnboardingGetStep
             },
         },
         ui,
-        lifecycle: {
-            created: () => {
-                const instance = searchComponentByName(root, 'balance-distribution') as any;
-                hasBitcoin = instance.btcAccountBalance > 0;
-            },
-        },
     } as ITourStep;
 }

@@ -1,9 +1,8 @@
-import { useTransactionsStore } from '@/stores/Transactions';
 import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep, ITooltipModifier } from '../types';
+import { IOnboardingGetStepFnArgs, ITooltipModifier, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnArgs): ITourStep {
+export function getFirstTransactionStep({ isSmallScreen, txsLen }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -39,7 +38,6 @@ export function getFirstTransactionStep({ isSmallScreen }: IOnboardingGetStepFnA
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
     };
-    const txsLen = () => Object.values(useTransactionsStore().state.transactions).length;
 
     return {
         get path() {

@@ -61,11 +61,13 @@ export function getBackboneNodeStep(
         },
         lifecycle: {
             created: (async () => {
+                // euclidean distance
                 const distance = ([x1, y1]: number[], [x2, y2]: number[]) => (((x1 - x2) ** 2) + (y1 - y2) ** 2) ** 0.5;
                 const _nodes = nodes();
                 const { position: pSelf } = _nodes[selfNodeIndex];
 
-                // get closest west node minimum distance of 5
+                // get closest west node minimum distance of 5.
+                // we prioritize west nodes so tooltip is shown on the right
                 const node = _nodes
                     // add index
                     .map((n, i) => ({ ...n, i, x: n.x }))
@@ -81,6 +83,7 @@ export function getBackboneNodeStep(
                 // get the index so we can select the correct child in the dom to show the tooltip
                 selectedNode.value = node.i;
 
+                // Scroll to the selected node
                 scrollIntoView(node.x);
 
                 await sleep(500);

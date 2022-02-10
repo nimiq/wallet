@@ -54,6 +54,7 @@ export function getYourLocationStep(
         },
         lifecycle: {
             created: (async ({ goingForward }) => {
+                // Scroll to the user's node
                 scrollIntoView(nodes()[selfNodeIndex].x);
                 if (!goingForward) {
                     await sleep(500);

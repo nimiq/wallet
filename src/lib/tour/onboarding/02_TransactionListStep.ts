@@ -1,15 +1,9 @@
-import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements, searchComponentByName } from '..';
+import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
-    { isSmallScreen, toggleHighlightButton, root }: IOnboardingGetStepFnArgs): ITourStep {
-    // Returns the length of the transaction list for the current active account and active address
-    const txsLen = () => {
-        const txs = (searchComponentByName(root, 'transactions-list') as any).transactions || [];
-        return txs.length || 0;
-    };
-
+    { isSmallScreen, toggleHighlightButton, txsLen }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -29,19 +23,28 @@ export function getTransactionListStep(
             IWalletHTMLElements.ADDRESS_OVERVIEW_MOBILE_ACTION_BAR,
         ],
         disabledElements: [
+            ...(txsLen() > 0
+                ? [IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS]
+                : [
+                    `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} h2`,
+                    `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} span`,
+                ]
+            ),
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS_MOBILE,
-            IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIVE_ADDRESS,
             IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS,
         ],
         disabledButtons: [
             IWalletHTMLElements.BUTTON_SIDEBAR_BUY,
             IWalletHTMLElements.BUTTON_SIDEBAR_SELL,
-            IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
+            txsLen() === 0 ? '' : IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
         scrollLockedElements: [
             `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .vue-recycle-scroller`,
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
+        ],
+        explicitInteractableElements: [
+            txsLen() === 0 ? IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY : '',
         ],
     };
 
@@ -63,14 +66,14 @@ export function getTransactionListStep(
             },
             get content() {
                 return getOnboardingTexts(
-                    OnboardingTourStep.TRANSACTION_LIST)[txsLen() === 0 ? 'default' : 'alternative'] || [];
+                    OnboardingTourStep.TRANSACTION_LIST)[txsLen() <= 1 ? 'default' : 'alternative'] || [];
             },
             params: {
                 get placement() {
-                    if (txsLen() > 0) {
-                        return isSmallScreen.value ? 'bottom' : 'left';
+                    if (!isSmallScreen.value) {
+                        return 'left';
                     }
-                    return isSmallScreen.value ? 'top' : 'left';
+                    return txsLen() > 0 ? 'bottom' : 'top';
                 },
                 get modifiers() {
                     return [
@@ -86,16 +89,25 @@ export function getTransactionListStep(
             },
         },
         lifecycle: {
-            mounted: () => {
+            mounted: ({ goToNextStep }) => {
                 if (txsLen() > 0) return undefined;
-                toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, true, 'green');
-                return () => toggleHighlightButton(
-                    IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, false, 'green');
+
+                const freeNimBtnSelector = IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS;
+                const freeNimBtn = document.querySelector(freeNimBtnSelector);
+                if (!freeNimBtn) return undefined;
+
+                freeNimBtn.addEventListener('click', () => goToNextStep(), { once: true });
+
+                // Add hightlight effect to 'Get Free NIM' button
+                toggleHighlightButton(freeNimBtnSelector, true, 'green');
+                return () => toggleHighlightButton(freeNimBtnSelector, false, 'green');
             },
         },
         get ui() {
             return {
                 ...ui,
+
+                // User is expected to click on the 'Get Free NIM' button
                 isNextStepDisabled: txsLen() === 0,
             };
         },

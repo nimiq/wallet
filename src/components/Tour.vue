@@ -29,6 +29,12 @@
                                         and first paragraph (i === 0) -->
                                 <PartyConfettiIcon class="confetti" v-if="currentStep === nSteps - 1 && i === 0" />
                                 <hr v-if="content === IContentSpecialItem.HR" />
+
+                                <!--
+                                    There are some texts that contains icons within the text or html attribute
+                                    like bold.
+                                    You can see all the types in the interface at lib/tour/types.ts@IContentSpecialItem.
+                                 -->
                                 <i18n
                                     v-else-if="new RegExp(
                                             Object.values(IContentSpecialItem).join('|'), 'gmi').test($t(content))"
@@ -49,6 +55,8 @@
                                         <b>‘{{$t('Back to addresses')}}’</b>
                                     </template>
                                 </i18n>
+
+                                <!-- The content can be a simple string or a list of strings  -->
                                 <p v-else-if="typeof content === 'string'">{{ $t(content) }}</p>
                                 <ul v-else-if="content.length">
                                     <li v-for="(item, i) in content" :key="i">
@@ -57,12 +65,12 @@
                                     </li>
                                 </ul>
                             </div>
-                            <!-- TODO REMOVE ME -->
-                            <div class="remove_me" v-if="currentStep === 1 && disableNextStep" @click="simulate()">
-                                Simulate Receive NIM
-                            </div>
                         </div>
                         <div slot="actions">
+                            <!--
+                                Inside the tooltip and in large screens, users can control the tour state:
+                                Go next, go prev or do custom event
+                            -->
                             <div
                                 v-if="tour.steps[tour.currentStep].button || isLargeScreen"
                                 class="actions"
@@ -136,8 +144,7 @@
 <script lang="ts">
 import { useAccountStore } from '@/stores/Account';
 import { useNetworkStore } from '@/stores/Network';
-import { useTransactionsStore } from '@/stores/Transactions';
-import { CircleSpinner, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { CaretRightSmallIcon, CircleSpinner } from '@nimiq/vue-components';
 import {
     computed,
     defineComponent,
@@ -149,15 +156,11 @@ import {
 } from '@vue/composition-api';
 import Vue from 'vue';
 import VueTour from 'vue-tour';
-import { useWindowSize } from '../composables/useWindowSize';
 import { useEventListener } from '../composables/useEventListener';
 import { useKeys } from '../composables/useKeys';
+import { useWindowSize } from '../composables/useWindowSize';
 import {
-    IContentSpecialItem,
-    getFakeTx,
-    getTour,
-    IMountedReturnFn, ITourBroadcast, ITourStep,
-    TourStepIndex,
+    getTour, IContentSpecialItem, ITourBroadcast, ITourStep, IUnmountedFn, TourStepIndex,
 } from '../lib/tour';
 import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
 import TourPreviousLeftArrowIcon from './icons/TourPreviousLeftArrowIcon.vue';
@@ -166,6 +169,30 @@ import WorldCheckIcon from './icons/WorldCheckIcon.vue';
 Vue.use(VueTour);
 
 require('vue-tour/dist/vue-tour.css');
+
+// Useful functions
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const $ = (s: string) => s ? document.querySelector(s) : undefined;
+const $$ = (s: string) => (s ? document.querySelectorAll(s) : []) as HTMLElement[];
+const selectorsToElements = (selectors: string[]) => selectors.map($).filter(Boolean) as Element[];
+
+/**
+ * Lifecycle of the step in the tour:
+ * Every time the tour changes step the tour logic go through a lifecycle. The lifecycle will be run in two ways:
+ * _moveToFutureStep and _tourSetup. This is the algorithm:
+ * 1. If we are in _moveToFutureStep function, then stop tour and run unmounted function.
+ *      - unmounted(): It will reset the page as it was before the step started. Examples: removing event listeners,
+ *        removing CSS classes, etc. This function is only called in _moveToFutureStep
+ * 2. created(): It will prepare the page for the futureStep. This is mainly, running logic from the stores retrieving
+ *    data or setting the configuration needed. This will run before any DOM manipulation.
+ * 3. Each step needs to be in a specific page. If this condition is not met, then we change the route.
+ * 4. Update UI. This will go through the different selector removing opacity, disabling interaction, disabling
+ *    buttons... See more at lib/tour/types.ts@ITourStep["ui"]. This also includes removing all the UI changes
+ *    from the previous step.
+ * 5. mounted(): It will update the DOM with the custom changes the step needs and custom code that needs to run
+ *    in that step.
+ *
+ */
 
 export default defineComponent({
     name: 'nimiq-tour',
@@ -178,12 +205,17 @@ export default defineComponent({
         const { state: accountStore, setTour } = useAccountStore();
 
         let tour: VueTour.Tour | null = null;
+
+        // see more options at
+        // https://github.com/pulsardev/vue-tour/blob/6ee85afdae3a4cb8689959b3b0c2035e165072fa/src/shared/constants.js
         const tourOptions: any = {
-            // eslint-disable-next-line max-len
-            // see example: https://github.com/pulsardev/vue-tour/blob/6ee85afdae3a4cb8689959b3b0c2035e165072fa/src/shared/constants.js
             useKeyboardNavigation: false, // handled by us
         };
 
+        // `getTour` function returns an object like:
+        // { "1": { /** First step */}, "10": { /** Step */}, "2": { /** Second step */}, ... }
+        // where the key is the step index and the value is the step object that we need to sort
+        // and store it as an array
         let unsortedStepds = getTour(
                 accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
         let steps = Object.keys(unsortedStepds)
@@ -193,36 +225,33 @@ export default defineComponent({
         // Initial state
         const isLoading = ref(true);
         const currentStep: Ref<TourStepIndex> = ref(0);
-        const nSteps: Ref<number> = ref(0);
+        const nSteps: Ref<number> = ref(Object.keys(steps).length);
         const disableNextStep = ref(true);
         const showTour = ref(false);
 
-        let unmounted: IMountedReturnFn | void;
+        let unmounted: IUnmountedFn | void;
 
-        const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
+        // Tour events
         useEventListener(window, 'click', _onUserClicked);
+        useEventListener(window, 'resize', _onResize());
         useKeys([
             { key: 'ArrowRight', handler: goToNextStep, options: { ignoreIf: disableNextStep } },
             { key: 'ArrowLeft', handler: goToPrevStep },
             { key: 'Escape', handler: endTour },
         ]);
-        useEventListener(window, 'resize', _onResize());
+        _receiveEvents();
 
         onMounted(async () => {
-            await tourSetup();
-
-            // REMOVE ME
-            const { removeTransactions } = useTransactionsStore();
-            removeTransactions([getFakeTx()]);
-            // const { addTransactions } = useTransactionsStore();
-            // addTransactions([getFakeTx()]);
+            await _tourSetup();
         });
 
         onUnmounted(() => endTour());
 
-        async function tourSetup() {
-            const app = document.querySelector('#app');
+        // Prepares the tour for the first time. Similar to _moveToFutureStep(). See more details
+        // in the coments after the imports section
+        async function _tourSetup() {
+            // Activates tour mode
+            const app = $('#app');
             app!.setAttribute('data-tour-active', '');
 
             await context.root.$nextTick(); // to ensure DOM is ready
@@ -231,21 +260,20 @@ export default defineComponent({
             if (!step) return;
 
             // Update state
-            nSteps.value = Object.keys(steps).length;
             disableNextStep.value = currentStep.value >= nSteps.value - 1 || !!step.ui.isNextStepDisabled;
 
             if (step.lifecycle?.created) {
                 await step.lifecycle.created({ goToNextStep, goingForward: true });
             }
 
+            // If we are not currently in the correct path then we need to change the route
             if (context.root.$route.fullPath !== step.path) {
                 context.root.$router.push(step.path);
                 await context.root.$nextTick();
             }
 
-            _toggleDisabledButtons(step.ui.disabledButtons, true);
-            _addAttributes(step.ui, currentStep.value);
-
+            // Update UI
+            _updateUI(step.ui, currentStep.value);
             unmounted = await step.lifecycle?.mounted?.({
                 goToNextStep,
                 goingForward: true,
@@ -260,19 +288,18 @@ export default defineComponent({
             // ensures animation ends
             await sleep(1000);
 
-            _addAttributes(step.ui, currentStep.value);
+            // We run this function twice just to make sure we can make the proper changes
+            _updateUI(step.ui, currentStep.value);
 
             showTour.value = true;
-
             tour = context.root.$tours['nimiq-tour'];
-
             tour.start(`${currentStep.value}`);
             await context.root.$nextTick();
-            changeArrowAppearance(currentStep.value);
+            _changeArrowAppearance(currentStep.value);
 
             isLoading.value = false;
 
-            _receiveEvents();
+            // emit changes to large screen tour manager
             _broadcast({
                 type: 'tour-step-changed',
                 payload: {
@@ -283,6 +310,8 @@ export default defineComponent({
         }
 
         watch([isLoading, disconnected], async () => {
+            // After the page is loaded, if the user has not txs, onboarding tour needs to disable
+            // buttons so the user cannot click on them.
             // FIXME we should wait until the buttons are rendered and the we could
             // execute _toggleDisabledButtons but it is kind of random the amount of time
             // it takes to render the button. I don't know how to fix it. Waiting 500ms works.
@@ -300,60 +329,55 @@ export default defineComponent({
             _moveToFutureStep(currentStep.value, currentStep.value + 1, true);
         }
 
+        // for more details, read Lifecycle steps section right below imports of this file
         async function _moveToFutureStep(
             currentStepIndex: TourStepIndex,
-            futureStepIndex: TourStepIndex,
+            newStepIndex: TourStepIndex,
             goingForward: boolean,
         ) {
-            const { path: currentPath, ui: currentUI } = steps[currentStepIndex]!;
-            const { path: futurePath, ui: futureUI, lifecycle: futureLifecycle } = steps[futureStepIndex]!;
+            const { path: currentPath } = steps[currentStepIndex]!;
+            const { path: newPath, ui: newUI, lifecycle: newLifecycle } = steps[newStepIndex]!;
 
             tour!.stop();
-
-            await sleep(500);
+            await sleep(500); // ensures animation ends
 
             if (unmounted) {
                 await unmounted({ goingForward, ending: false });
             }
 
             // created
-            await futureLifecycle?.created?.({ goToNextStep, goingForward });
+            await newLifecycle?.created?.({ goToNextStep, goingForward });
 
-            if (futurePath !== currentPath && context.root.$route.fullPath !== futurePath) {
-                context.root.$router.push(futurePath);
+            if (newPath !== currentPath && context.root.$route.fullPath !== newPath) {
+                context.root.$router.push(newPath);
                 await context.root.$nextTick();
             }
 
-            _toggleDisabledButtons(currentUI.disabledButtons, false);
-            _toggleDisabledButtons(futureUI.disabledButtons, true);
-            _addAttributes(futureUI, futureStepIndex);
+            _updateUI(newUI, newStepIndex);
             await context.root.$nextTick();
 
-            if (futurePath !== currentPath) {
+            if (newPath !== currentPath) {
                 await sleep(500);
             }
 
-            _removeAttributes(currentStepIndex);
+            _removeUIFromOldStep(currentStepIndex);
 
-            tour!.start(futureStepIndex.toString());
+            tour!.start(newStepIndex.toString());
             await context.root.$nextTick();
-            changeArrowAppearance(futureStepIndex);
+            _changeArrowAppearance(newStepIndex);
 
-            // FIXME Instead of doing tour!.end and tour!.start, we could also use .nextStep() or previsousStep()
-            // The problem with this solution is that some animations glitch the UI so it needs further
-            // investigation
-            // goingForward ? tour!.nextStep() : tour!.previousStep();
+            // some steps may not allow the user to go to the next step unless they click on a specific button
+            disableNextStep.value = newStepIndex >= nSteps.value - 1 || !!newUI.isNextStepDisabled;
 
-            disableNextStep.value = futureStepIndex >= nSteps.value - 1 || !!futureUI.isNextStepDisabled;
-
-            unmounted = await futureLifecycle?.mounted?.({
+            unmounted = await newLifecycle?.mounted?.({
                 goToNextStep,
                 goingForward,
                 ending: false,
             });
 
-            currentStep.value = futureStepIndex;
+            currentStep.value = newStepIndex;
 
+            // emit changes to large screen tour manager
             _broadcast({
                 type: 'tour-step-changed',
                 payload: {
@@ -364,61 +388,70 @@ export default defineComponent({
         }
 
         function _broadcast(data: ITourBroadcast) {
-            // Send data to TourLargeScreenManager
+            // Send data to TourLargeScreenManager via root instance
             context.root.$emit('nimiq-tour-event', data);
         }
 
         function _receiveEvents() {
-            // events emitted by TourLargeScreenManager
+            // events emitted by TourLargeScreenManager via root instance
             context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
                 if (data.type === 'end-tour') endTour(false);
             });
-            context.root.$on('nimiq-tour-event', (data: ITourBroadcast) => {
-                if (data.type === 'clicked-outside-tour') {
-                    const tourManager = document.querySelector('.tour-control-bar');
-                    if (tourManager) {
-                        tourManager.classList.add('flash');
-                        setTimeout(() => {
-                            tourManager.classList.remove('flash');
-                        }, 400);
-                    }
-                }
-            });
         }
 
+        // The user is only allow to click in certain elements depending on the current step
+        // If user clicks in an element that is not allowed, we need to flash the tour bar
+        // or tour manager
         function _onUserClicked({ target }: MouseEvent) {
-            const interactableElements = ['.tour', '.tour-manager', '.tooltip']
-                .concat(steps[currentStep.value]?.ui.explicitInteractableElements || [])
-                .map((s) => document.querySelector(s) as HTMLElement)
-                .filter((e) => !!e);
+            // This are the elements that are allowed to be clicked always
+            const tourInteractableElements = ['.tour', '.tour-manager', '.tooltip'];
 
+            // This are the elements that are allowed to be clicked only in current step
+            const stepInteractableElements = steps[currentStep.value]?.ui.explicitInteractableElements || [];
+
+            const interactableElements = tourInteractableElements.concat(stepInteractableElements)
+                .map((s) => $(s)).filter((e) => !!e) as HTMLElement[];
+
+            // If the user clicked on an element that is not in the list of interactable elements nor
+            // is a children of one of the interactable elementsf
             if (interactableElements.every((el) => !el.contains(target as Node))) {
                 _broadcast({ type: 'clicked-outside-tour' });
+
+                const tourManager = $('.tour-control-bar');
+                if (tourManager) {
+                    tourManager.classList.add('flash');
+                    setTimeout(() => {
+                        tourManager.classList.remove('flash');
+                    }, 400);
+                }
             }
         }
 
+        // This function will add or remove disabled attribute to the given selectors.
+        // If the element contains a nimiq-button class with a color, these will be temporally
+        // removed
         let _buttonNimClasses: {[x:string]: string} = {};
-
         function _toggleDisabledButtons(disabledButtons: ITourStep['ui']['disabledButtons'], disabled:boolean) {
             if (!disabledButtons) return;
 
-            // Classes that have to be removed while the tour is shown
+            // Classes that contains these words, have to be removed while the tour is shown
             const btnNimiqClasses = ['light-blue', 'green', 'orange', 'red', 'gold'];
-            disabledButtons.forEach((element) => {
-                const el = document.querySelector(element) as HTMLButtonElement;
-                if (!el) return;
-                el.disabled = disabled;
-
-                for (const className of el.classList.values() ?? []) {
-                    if (disabled && btnNimiqClasses.includes(className)) {
-                        el.classList.remove(className);
-                        _buttonNimClasses[element] = className;
+            (disabledButtons
+                .map((s) => ({ selector: s, el: $(s) }))
+                .filter(({ el }) => Boolean(el)) as { selector: string, el: HTMLButtonElement }[])
+                .forEach(({ selector, el }) => {
+                    el.disabled = disabled;
+                    for (const className of el.classList.values() ?? []) {
+                        if (disabled && btnNimiqClasses.includes(className)) {
+                            el.classList.remove(className);
+                            _buttonNimClasses[selector] = className;
+                        }
                     }
-                }
-            });
+                });
+
             if (!disabled) {
                 Object.keys(_buttonNimClasses).forEach((el) => {
-                    const btn = document.querySelector(el) as HTMLButtonElement;
+                    const btn = $(el) as HTMLButtonElement;
                     if (!btn) return;
                     btn.classList.add(_buttonNimClasses[el]);
                 });
@@ -426,75 +459,59 @@ export default defineComponent({
             }
         }
 
-        function _onScrollInLockedElement(e: Event) {
-            e.preventDefault();
-            const target = e.target as HTMLElement;
-            if ((target as HTMLElement).scrollTop) {
-                target.scrollTop = 0;
-            }
-        }
-
-        function _addAttributes(
+        // Add the specific changes that the new step needs. This will be done with data-attributes
+        // as they allow to use an index which will be used to identify the step so adding and removing
+        // them is easier
+        function _updateUI(
             uiConfig: ITourStep['ui'],
             stepIndex: TourStepIndex,
         ) {
             const fadedElements = uiConfig.fadedElements || [];
             const disabledElements = uiConfig.disabledElements || [];
             const scrollLockedElements = uiConfig.scrollLockedElements || [];
-            const explicitInteractableElements = uiConfig.explicitInteractableElements || [];
+            const interactableElements = uiConfig.explicitInteractableElements || [];
 
-            disabledElements.filter((e) => e).forEach((element) => {
-                const el = document.querySelector(element);
-                if (!el) return;
-                el.setAttribute('data-non-interactable', stepIndex.toString());
+            const setAttribute = (el: Element, name: `data-${string}`) => el.setAttribute(name, `${stepIndex}`);
+
+            selectorsToElements(disabledElements).forEach((el) => setAttribute(el, 'data-non-interactable'));
+            selectorsToElements(interactableElements).forEach((el) => setAttribute(el, 'data-explicit-interactable'));
+            selectorsToElements(fadedElements).forEach((el) => {
+                setAttribute(el, 'data-opacified');
+                setAttribute(el, 'data-non-interactable');
             });
+            selectorsToElements(scrollLockedElements).forEach((el) => {
+                setAttribute(el, 'data-scroll-locked');
 
-            fadedElements.filter((e) => e).forEach((element) => {
-                const el = document.querySelector(element);
-                if (!el) return;
-                el.setAttribute('data-opacified', stepIndex.toString());
-                el.setAttribute('data-non-interactable', stepIndex.toString());
-            });
-
-            scrollLockedElements.filter((e) => e).forEach((element) => {
-                const el = document.querySelector(element);
-                if (!el) return;
-                el.setAttribute('data-scroll-locked', stepIndex.toString());
                 // Avoid scrolling when tooltip is instantiated
                 el.addEventListener('scroll', _onScrollInLockedElement);
                 el.scrollTop = 0;
             });
 
-            explicitInteractableElements.filter((e) => e).forEach((element) => {
-                const el = document.querySelector(element) as HTMLElement;
-                if (!el) return;
-                el.setAttribute('data-explicit-interactable', stepIndex.toString());
+            _toggleDisabledButtons(uiConfig.disabledButtons, true);
+        }
+
+        // remove UI changes from old step using the oldIndex
+        function _removeUIFromOldStep(stepIndex: TourStepIndex) {
+            $$(`[data-non-interactable="${stepIndex}"]`).forEach((el) => el.removeAttribute('data-non-interactable'));
+
+            $$(`[data-opacified="${stepIndex}"]`).forEach((el) => el.removeAttribute('data-opacified'));
+
+            $$(`[data-scroll-locked="${stepIndex}"]`).forEach((el) => {
+                el.removeAttribute('data-scroll-locked');
+                el.removeEventListener('scroll', _onScrollInLockedElement);
             });
+
+            $$(`[data-explicit-interactable="${stepIndex}"]`).forEach((el) => {
+                el.removeAttribute('data-explicit-interactable');
+            });
+
+            _toggleDisabledButtons(steps[stepIndex].ui.disabledButtons, false);
         }
 
-        function _removeAttributes(stepIndex: TourStepIndex) {
-            document.querySelectorAll(`[data-non-interactable="${stepIndex}"]`)
-                .forEach((el) => {
-                    el.removeAttribute('data-non-interactable');
-                });
-
-            document.querySelectorAll(`[data-opacified="${stepIndex}"]`)
-                .forEach((el) => {
-                    el.removeAttribute('data-opacified');
-                });
-
-            document.querySelectorAll(`[data-scroll-locked="${stepIndex}"]`)
-                .forEach((el) => {
-                    el.removeAttribute('data-scroll-locked');
-                    el.removeEventListener('scroll', _onScrollInLockedElement);
-                });
-
-            document.querySelectorAll(`[data-explicit-interactable="${stepIndex}"]`)
-                .forEach((el) => {
-                    el.removeAttribute('data-explicit-interactable');
-                });
-        }
-
+        // nofifyManager - if true will notify the manager that the tour has ended
+        // soft - when user resizes, we are calling endTour() because it is easier to restore
+        // the state of the tour than to recreate it. soft flag will allow us to do that without completely
+        // destroying the tour
         async function endTour(notifyManager = true, soft = false) {
             if (unmounted) {
                 await unmounted({ ending: true, goingForward: false });
@@ -505,8 +522,7 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
-            // If user finalizes tour while it is loading, allow interaction again
-            const app = document.querySelector('#app') as HTMLDivElement;
+            const app = $('#app') as HTMLDivElement;
             app.removeAttribute('data-tour-active');
             app.querySelector('main')!.removeAttribute('data-non-interactable');
 
@@ -520,11 +536,22 @@ export default defineComponent({
             }
 
             // Update UI
-            _removeAttributes(currentStep.value);
-            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, false);
+            _removeUIFromOldStep(currentStep.value);
 
             if (!soft) {
                 setTour(null);
+            }
+        }
+
+        // User will not be allow to scroll due to the pointer-events: none
+        // This function is just a workaround to avoid the scrolling on certain elements
+        // due to popper library. Probably there is a cleaner way to do this using popper
+        // propper config
+        function _onScrollInLockedElement(e: Event) {
+            e.preventDefault();
+            const target = e.target as HTMLElement;
+            if ((target as HTMLElement).scrollTop) {
+                target.scrollTop = 0;
             }
         }
 
@@ -535,8 +562,8 @@ export default defineComponent({
             const screenType = () => [isSmallScreen.value, isMediumScreen.value, isLargeScreen.value].indexOf(true);
             let oldScreen = screenType();
 
+            // We only want to change the state when the type of screen has changed
             return () => {
-                tour!.stop();
                 if (timer) clearTimeout(timer);
                 timer = setTimeout(() => {
                     // If the type of screen changes, then we count it as resize
@@ -550,37 +577,37 @@ export default defineComponent({
             };
         }
 
+        // If the screen type has changed, we need to update the tour. There might be different
+        // steps for different screen sizes, so that is why we need to update the steps as well
         async function _screenTypeChanged() {
+            tour!.stop();
+
             unsortedStepds = getTour(
-                accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
+            accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
             steps = Object.keys(unsortedStepds)
                 .sort((a, b) => (a as unknown as number) - (b as unknown as number))
                 .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
+
+            // end tour sofly and start it again
             await endTour(false, true);
-            tourSetup();
+            _tourSetup();
         }
 
-        const svg = `
+        // vue-tour library does not have an arrow slot for custom arrows, therefore we need to
+        // update it manually with JS
+        const arrowSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 9" xml:space="preserve">
             <path d="M3.3 7.2A4 4 0 0 1 0 9h18a4 4 0 0 1-3.3-1.8L10.3.8c-.6-.9-1.9-.9-2.5 0L3.3 7.2z"/>
         </svg>`;
-
-        function changeArrowAppearance(stepIndex: TourStepIndex) {
+        function _changeArrowAppearance(stepIndex: TourStepIndex) {
             setTimeout(() => {
-                const arrow = document.querySelector(
+                const arrow = $(
                     `[data-step="${stepIndex}"] [data-popper-arrow]`) as HTMLDivElement;
                 if (!arrow) return;
-                arrow.innerHTML = svg;
+                arrow.innerHTML = arrowSvg;
                 arrow.style.visibility = 'initial';
                 arrow.style.width = '2rem';
             }, 100);
-        }
-
-        // TODO REMOVE ME - Simulate tx
-        function simulate() {
-            const { addTransactions } = useTransactionsStore();
-            addTransactions([getFakeTx()]);
-            goToNextStep();
         }
 
         return {
@@ -604,10 +631,6 @@ export default defineComponent({
             goToPrevStep,
             goToNextStep,
             endTour,
-
-            // TODO REMOVE ME
-            simulate,
-            _buttonNimClasses,
         };
     },
     components: {
@@ -622,8 +645,8 @@ export default defineComponent({
 
 <style lang="scss">
 // Using data attribute instead of classes because it is easier to track which elements should be
-// updated with opacity and non-interactivity properties as data attributes allow to use a value like
-// [data-opaified="1"] although the CSS selector that we can use is [data-opacified]. @see _removeAttributes
+// updated as data attributes allow to use a value like [data-opaified="1"] to select ceratain elements
+// as well as [data-opacified] to all elements with this attribute. @see _removeUIFromOldStep
 
 #app[data-tour-active] [data-opacified],
 #app[data-tour-active] ~ div [data-opacified] {
@@ -650,9 +673,9 @@ export default defineComponent({
 #app[data-tour-active] [data-explicit-interactable] * {
     pointer-events: initial !important;
     cursor: pointer;
-    nav-index: initial;
 }
 
+// Custom background colors for ceratin buttons. Made for onboarding tour.
 #app[data-tour-active] button.green-highlight {
     background: linear-gradient(
             274.28deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 27.6%, rgba(255, 255, 255, 0) 53.12%,
@@ -852,6 +875,9 @@ export default defineComponent({
             transform-origin: 100% 30%;
         }
 
+        // Designs use one gradient for tooltip. In the HTML, we are using two different elements
+        // and to achieve the gradient effect in the arrow, we color the arrow with a propper value
+        // depending on the placement of the tooltip
         &[data-popper-placement="top-start"] ::v-deep .v-step__arrow svg path {
             fill: #087dcb;
         }
@@ -947,16 +973,14 @@ export default defineComponent({
                 background: initial;
             }
 
-            &.next {
-                &.loading {
-                    cursor: inherit;
+            &.next.loading {
+                cursor: inherit;
 
-                    & ::v-deep svg path {
-                        stroke: var(--nimiq-white);
+                & ::v-deep svg path {
+                    stroke: var(--nimiq-white);
 
-                        &:nth-child(2) {
-                            opacity: 0.3;
-                        }
+                    &:nth-child(2) {
+                        opacity: 0.3;
                     }
                 }
             }
@@ -1002,15 +1026,5 @@ export default defineComponent({
     60% { bottom: 10px; transform: scale(0.8); }
     75% { bottom: 10px; transform: scale(0.8); }
     to { bottom: 10px; transform: scale(1); }
-}
-
-.remove_me {
-    background: var(--nimiq-green);
-    color: var(--nimiq-white);
-    border-radius: 9999px;
-    padding: 1rem 3rem;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
 }
 </style>

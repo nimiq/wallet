@@ -50,11 +50,14 @@ export default defineComponent({
         const { activeMobileColumn } = useActiveMobileColumn();
 
         const { accountInfos, state: accountState, setTour } = useAccountStore();
-        if (!['/', '/transactions', '/accounts'].includes(context.root.$route.path as string)
-            && accountState.tour?.name === 'onboarding') {
-            setTour(null);
-        } else if (!['/network'].includes(context.root.$route.path as string)
-            && accountState.tour?.name === 'network') {
+        const path = context.root.$route.path as string || '';
+        const tourName = accountState.tour?.name || '';
+        if (
+            // if we are in onboarding tour and the path is NOT one of the path in the onboarding tour
+            // or if we are in network tour and the path is NOT one of the path in the network tour
+            // then remove tour state
+            (!['/', '/transactions', '/accounts'].includes(path) && tourName === 'onboarding')
+            || (!['/network'].includes(path) && tourName === 'network')) {
             setTour(null);
         }
         const showTour = computed(() => !!accountState.tour);

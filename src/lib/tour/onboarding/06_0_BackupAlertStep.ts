@@ -75,6 +75,7 @@ export function getBackupAlertStep(
         ui,
         lifecycle: {
             mounted: () => {
+                // hightlight 'Revover words' button
                 toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, true, 'orange');
                 return () => toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, false, 'orange');
             },

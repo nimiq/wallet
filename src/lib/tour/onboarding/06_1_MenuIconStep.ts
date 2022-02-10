@@ -30,6 +30,7 @@ export function getMenuIconStep(): ITourStep {
         },
         lifecycle: {
             mounted: async ({ goToNextStep }) => {
+                // User is expected to click the hamburguer icon to go to next step
                 const hamburguerIcon = document.querySelector(
                     `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
 

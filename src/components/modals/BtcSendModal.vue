@@ -353,11 +353,12 @@ export default defineComponent({
         const hasHeight = computed(() => !!network$.height);
 
         const canSend = computed(() =>
-            recipientWithLabel.value
-            && recipientWithLabel.value.address
+            network$.consensus === 'established'
+            && !!recipientWithLabel.value
+            && !!recipientWithLabel.value.address
             && hasHeight.value
             && !isFetchingTxHistory.value
-            && amount.value
+            && !!amount.value
             && amount.value <= maxSendableAmount.value,
         );
 
@@ -441,6 +442,8 @@ export default defineComponent({
         const $modal = ref<any | null>(null);
 
         async function sign() {
+            if (!canSend.value) return;
+
             // Show loading screen
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;

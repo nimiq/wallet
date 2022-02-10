@@ -512,7 +512,11 @@ export default defineComponent({
 
         const hasHeight = computed(() => !!network$.height);
 
-        const canSend = computed(() => hasHeight.value && amount.value && amount.value <= maxSendableAmount.value);
+        const canSend = computed(() =>
+            network$.consensus === 'established'
+            && hasHeight.value
+            && !!amount.value
+            && amount.value <= maxSendableAmount.value);
 
         const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
@@ -602,6 +606,8 @@ export default defineComponent({
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
 
         async function sign() {
+            if (!canSend.value) return;
+
             // Show loading screen
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;

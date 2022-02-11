@@ -1,9 +1,11 @@
-import { defaultTooltipModifiers, ITourOrigin, IWalletHTMLElements } from '..';
-import { IOnboardingGetStepFnArgs, OnboardingTourStep, ITourStep } from '../types';
+import { useAccountStore } from '@/stores/Account';
+import { watch } from '@vue/composition-api';
+import { defaultTooltipModifiers, ITourOrigin, IWalletHTMLElements, searchComponentByName } from '..';
+import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getBackupAlertStep(
-    { isSmallScreen, startedFrom, toggleHighlightButton }: IOnboardingGetStepFnArgs): ITourStep {
+    { isSmallScreen, startedFrom, toggleHighlightButton, root }: IOnboardingGetStepFnArgs): ITourStep {
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -75,9 +77,28 @@ export function getBackupAlertStep(
         ui,
         lifecycle: {
             mounted: () => {
+                const unwatch = watch(useAccountStore().activeAccountInfo, async (newVal) => {
+                    if (newVal?.wordsExported) {
+                        // If user clicks "save recover words" and completes the process, we
+                        // no longer need to show the user this step, therefore, we execute
+                        // setTourAsArray again, and go to the next step which in reality will have
+                        // same index
+                        const nimiqTourInstance = searchComponentByName(root, 'nimiq-tour') as any;
+                        if (!nimiqTourInstance) return;
+
+                        nimiqTourInstance.setTourAsArray();
+                        nimiqTourInstance.currentStep -= 1;
+
+                        setTimeout(() => nimiqTourInstance.goToNextStep(), 500);
+                    }
+                });
+
                 // hightlight 'Revover words' button
                 toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, true, 'orange');
-                return () => toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, false, 'orange');
+                return () => {
+                    unwatch();
+                    toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_BACKUP_ALERT, false, 'orange');
+                };
             },
         },
     } as ITourStep;

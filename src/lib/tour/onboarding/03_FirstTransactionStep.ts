@@ -50,7 +50,7 @@ export function getFirstTransactionStep({ isSmallScreen, txsLen }: IOnboardingGe
                     : '.vue-recycle-scroller__item-view:nth-child(2)'}`;
             },
             content: getOnboardingTexts(OnboardingTourStep.FIRST_TRANSACTION)[
-                txsLen.value === 1 ? 'default' : 'alternative'],
+                txsLen.value <= 1 ? 'default' : 'alternative'],
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom-start' : 'left';

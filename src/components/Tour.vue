@@ -1,9 +1,9 @@
 <template>
     <div class="tour">
         <v-tour
-        name="nimiq-tour"
-        :steps="steps.map((s) => s.tooltip)"
-        :options="tourOptions"
+            name="nimiq-tour"
+            :steps="vTourSteps"
+            :options="tourOptions"
         >
             <template v-slot="tour">
                 <transition name="fade">
@@ -92,7 +92,7 @@
                                     {{ tour.steps[tour.currentStep].button.text }}
                                 </button>
                                 <button
-                                    v-else-if="isLargeScreen && !isLoading"
+                                    v-else-if="isLargeScreen && !disableNextStep && !isLoading"
                                     class="right"
                                     @click="goToNextStep()"
                                     tabindex="0"
@@ -212,20 +212,13 @@ export default defineComponent({
             useKeyboardNavigation: false, // handled by us
         };
 
-        // `getTour` function returns an object like:
-        // { "1": { /** First step */}, "10": { /** Step */}, "2": { /** Second step */}, ... }
-        // where the key is the step index and the value is the step object that we need to sort
-        // and store it as an array
-        let unsortedStepds = getTour(
-                accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
-        let steps = Object.keys(unsortedStepds)
-            .sort((a, b) => (a as unknown as number) - (b as unknown as number))
-            .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
-
         // Initial state
+        const steps: Ref<ITourStep[]> = ref([]);
+        setTourAsArray();
+
         const isLoading = ref(true);
         const currentStep: Ref<TourStepIndex> = ref(0);
-        const nSteps: Ref<number> = ref(Object.keys(steps).length);
+        const nSteps: Ref<number> = ref(steps.value.length);
         const disableNextStep = ref(true);
         const showTour = ref(false);
 
@@ -256,7 +249,7 @@ export default defineComponent({
 
             await context.root.$nextTick(); // to ensure DOM is ready
 
-            const step = steps[currentStep.value];
+            const step = steps.value[currentStep.value];
             if (!step) return;
 
             // Update state
@@ -316,7 +309,7 @@ export default defineComponent({
             // execute _toggleDisabledButtons but it is kind of random the amount of time
             // it takes to render the button. I don't know how to fix it. Waiting 500ms works.
             await sleep(500);
-            _toggleDisabledButtons(steps[currentStep.value]?.ui.disabledButtons, true);
+            _toggleDisabledButtons(steps.value[currentStep.value]?.ui.disabledButtons, true);
         });
 
         function goToPrevStep() {
@@ -335,8 +328,8 @@ export default defineComponent({
             newStepIndex: TourStepIndex,
             goingForward: boolean,
         ) {
-            const { path: currentPath } = steps[currentStepIndex]!;
-            const { path: newPath, ui: newUI, lifecycle: newLifecycle } = steps[newStepIndex]!;
+            const { path: currentPath } = steps.value[currentStepIndex]!;
+            const { path: newPath, ui: newUI, lifecycle: newLifecycle } = steps.value[newStepIndex]!;
 
             tour!.stop();
             await sleep(500); // ensures animation ends
@@ -353,6 +346,7 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
+            _toggleDisabledButtons(steps.value[currentStepIndex].ui.disabledButtons, false);
             _updateUI(newUI, newStepIndex);
             await context.root.$nextTick();
 
@@ -407,7 +401,7 @@ export default defineComponent({
             const tourInteractableElements = ['.tour', '.tour-manager', '.tooltip'];
 
             // This are the elements that are allowed to be clicked only in current step
-            const stepInteractableElements = steps[currentStep.value]?.ui.explicitInteractableElements || [];
+            const stepInteractableElements = steps.value[currentStep.value]?.ui.explicitInteractableElements || [];
 
             const interactableElements = tourInteractableElements.concat(stepInteractableElements)
                 .map((s) => $(s)).filter((e) => !!e) as HTMLElement[];
@@ -504,8 +498,6 @@ export default defineComponent({
             $$(`[data-explicit-interactable="${stepIndex}"]`).forEach((el) => {
                 el.removeAttribute('data-explicit-interactable');
             });
-
-            _toggleDisabledButtons(steps[stepIndex].ui.disabledButtons, false);
         }
 
         // nofifyManager - if true will notify the manager that the tour has ended
@@ -582,11 +574,7 @@ export default defineComponent({
         async function _screenTypeChanged() {
             tour!.stop();
 
-            unsortedStepds = getTour(
-            accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
-            steps = Object.keys(unsortedStepds)
-                .sort((a, b) => (a as unknown as number) - (b as unknown as number))
-                .map((key) => unsortedStepds[key as unknown as TourStepIndex]);
+            setTourAsArray();
 
             // end tour sofly and start it again
             await endTour(false, true);
@@ -614,6 +602,10 @@ export default defineComponent({
             });
         }
 
+        function setTourAsArray() {
+            steps.value = getTour(accountStore.tour?.name, context, { isSmallScreen, isMediumScreen, isLargeScreen });
+        }
+
         return {
             isSmallScreen,
             isMediumScreen,
@@ -622,7 +614,7 @@ export default defineComponent({
 
             // tour
             tourOptions,
-            steps,
+            vTourSteps: computed(() => steps.value.map((s) => s.tooltip)),
             showTour,
 
             // control bar
@@ -635,6 +627,10 @@ export default defineComponent({
             goToPrevStep,
             goToNextStep,
             endTour,
+
+            // We need to expose this function so that we can call it from the steps.
+            // In particular /lib/tour/onboarding/06_0_BackupAlertStep.ts
+            setTourAsArray,
         };
     },
     components: {
@@ -812,8 +808,12 @@ export default defineComponent({
                 font-size: 14px;
                 border: 1px solid transparent;
 
-                &:focus {
+                &.right:focus {
                     border: 1px solid #ffffff55;
+                }
+
+                &.left:focus {
+                    opacity: 1;
                 }
 
                 &.left {

@@ -33,8 +33,8 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
 
     const { state, activeAccountInfo } = useAccountStore();
     const { startedFrom } = (state.tour as { startedFrom: ITourOrigin });
-    const { type: accountType, wordsExported } = activeAccountInfo.value || {};
-    const accountIsSecured = accountType === AccountType.BIP39 && !!wordsExported;
+    const accountIsSecured = computed(() =>
+        activeAccountInfo.value?.type === AccountType.BIP39 && activeAccountInfo.value?.wordsExported);
 
     const args: IOnboardingGetStepFnArgs = {
         sleep,
@@ -53,7 +53,7 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
         [OnboardingTourStep.WALLET_BALANCE]: getWalletBalanceStep(args),
         get [OnboardingTourStep.BACKUP_ALERT]() {
             // if the user has already backed up their account, skip this step
-            return !accountIsSecured ? getBackupAlertStep(args) : undefined;
+            return !accountIsSecured.value ? getBackupAlertStep(args) : undefined;
         },
         get [OnboardingTourStep.MENU_ICON]() {
             // show only this step if it is a new user and is not in a large screen
@@ -63,7 +63,7 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
         [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(args),
         get [OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS]() {
             // if the user has already backed up their account, remind the user that he can backup anytime
-            if (!accountIsSecured) return undefined;
+            if (!accountIsSecured.value) return undefined;
             return (screenTypes.isLargeScreen.value)
                 ? getBackupOptionLargeScreenStep()
                 : getBackupOptionNotLargeScreenStep(args);

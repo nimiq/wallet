@@ -1,6 +1,5 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <!-- (?) This could be moved to Groundfloor.vue -->
         <transition v-if="showTour" name="delay">
             <Tour/>
         </transition>

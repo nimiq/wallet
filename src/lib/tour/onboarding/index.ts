@@ -29,10 +29,7 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
     // Returns the length of the transaction list for the current active account and active address
     // Easier to access component transaction-list which has already been mounted and has the list
     // of valid transactions for the current active account and active address
-    const txsLen = computed<number>(() => {
-        const txs = (searchComponentByName(root, 'transactions-list') as any).txsForActiveAddress || [];
-        return txs.length || 0;
-    });
+    const txsLen = computed<number>(() => (searchComponentByName(root, 'transactions-list') as any).txCount || 0);
 
     const { state, activeAccountInfo } = useAccountStore();
     const { startedFrom } = (state.tour as { startedFrom: ITourOrigin });

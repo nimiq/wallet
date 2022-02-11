@@ -92,7 +92,7 @@
                                     {{ tour.steps[tour.currentStep].button.text }}
                                 </button>
                                 <button
-                                    v-else-if="isLargeScreen && !disableNextStep && !isLoading"
+                                    v-else-if="isLargeScreen && !isLoading"
                                     class="right"
                                     @click="goToNextStep()"
                                     tabindex="0"
@@ -600,14 +600,18 @@ export default defineComponent({
             <path d="M3.3 7.2A4 4 0 0 1 0 9h18a4 4 0 0 1-3.3-1.8L10.3.8c-.6-.9-1.9-.9-2.5 0L3.3 7.2z"/>
         </svg>`;
         function _changeArrowAppearance(stepIndex: TourStepIndex) {
-            setTimeout(() => {
-                const arrow = $(
-                    `[data-step="${stepIndex}"] [data-popper-arrow]`) as HTMLDivElement;
-                if (!arrow) return;
-                arrow.innerHTML = arrowSvg;
-                arrow.style.visibility = 'initial';
-                arrow.style.width = '2rem';
-            }, 100);
+            // It has been detected that some slower devices are not able to render the arrow
+            // in time, therefore we need to wait until the arrow is rendered and try a few times
+            Array.from({ length: 10 }).forEach((_, i) => {
+                setTimeout(() => {
+                    const arrow = $(
+                        `[data-step="${stepIndex}"] [data-popper-arrow]`) as HTMLDivElement;
+                    if (!arrow) return;
+                    arrow.innerHTML = arrowSvg;
+                    arrow.style.visibility = 'initial';
+                    arrow.style.width = '2rem';
+                }, 100 * (i + 1));
+            });
         }
 
         return {

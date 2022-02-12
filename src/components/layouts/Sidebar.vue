@@ -16,7 +16,10 @@
             <span class="logo-wordmark">Nimiq</span>
         </header>
 
-        <AnnouncementBox/>
+        <div class="panels">
+            <TourLargeScreenManager v-if="isLargeScreen && isTourActive"/>
+            <AnnouncementBox/>
+        </div>
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
@@ -68,6 +71,7 @@ import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import Config from 'config';
 
 import AnnouncementBox from '../AnnouncementBox.vue';
+import TourLargeScreenManager from '../TourLargeScreenManager.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
@@ -84,10 +88,10 @@ import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 export default defineComponent({
     name: 'sidebar',
     setup(props, context) {
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen, isLargeScreen } = useWindowSize();
 
         function navigateTo(path: string) {
-            if (isMobile.value) {
+            if (isSmallScreen.value) {
                 context.root.$router.replace(path);
             } else {
                 context.root.$router.push(path).catch(() => { /* ignore */ });
@@ -117,11 +121,13 @@ export default defineComponent({
 
         const { updateAvailable, trials, canUseSwaps } = useSettingsStore();
 
-        const { activeAccountInfo } = useAccountStore();
+        const { activeAccountInfo, state: accountState } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
+
+        const isTourActive = computed(() => accountState.tour !== null);
 
         return {
             navigateTo,
@@ -136,10 +142,13 @@ export default defineComponent({
             trials,
             Trial,
             canUseSwaps,
+            isLargeScreen,
+            isTourActive,
         };
     },
     components: {
         AnnouncementBox,
+        TourLargeScreenManager,
         GearIcon,
         PriceChart,
         AccountMenu,
@@ -223,10 +232,15 @@ export default defineComponent({
     cursor: pointer;
 }
 
-.announcement-box {
+.panels {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 2.5rem;
     margin-top: 2rem;
-    align-self: stretch;
+
+    ::v-deep .announcement-box, ::v-deep .tour-manager {
+        align-self: stretch;
+    }
 }
 
 .price-chart-wrapper {

@@ -1,5 +1,9 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
+        <transition v-if="showTour" name="delay">
+            <Tour/>
+        </transition>
+
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
@@ -44,7 +48,19 @@ export default defineComponent({
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        const { accountInfos } = useAccountStore();
+        const { accountInfos, state: accountState, setTour } = useAccountStore();
+        const path = context.root.$route.path as string || '';
+        const tourName = accountState.tour?.name || '';
+        if (
+            // if we are in onboarding tour and the path is NOT one of the path in the onboarding tour
+            // or if we are in network tour and the path is NOT one of the path in the network tour
+            // then remove tour state
+            (!['/', '/transactions', '/accounts'].includes(path) && tourName === 'onboarding')
+            || (!['/network'].includes(path) && tourName === 'network')) {
+            setTour(null);
+        }
+        const showTour = computed(() => !!accountState.tour);
+
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
@@ -53,7 +69,7 @@ export default defineComponent({
         // Swiping
         const $main = ref<HTMLDivElement>(null);
         let $mobileTapArea: HTMLDivElement | null = null;
-        const { width, isMobile } = useWindowSize();
+        const { width, isSmallScreen } = useWindowSize();
 
         async function updateSwipeRestPosition(
             velocityDistance: number,
@@ -122,21 +138,22 @@ export default defineComponent({
             excludeSelector: '.scroller, .scroller *',
         });
 
-        watch([isMobile, swipingEnabled], ([isMobileNow, newSwiping], [wasMobile, oldSwiping]) => {
+        watch([isSmallScreen, swipingEnabled], ([isSmallScreenNow, newSwiping], [wasSmallScreen, oldSwiping]) => {
             if (!$main.value) return;
 
-            if ((isMobileNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
+            if ((isSmallScreenNow && !wasSmallScreen) || (newSwiping === 1 && oldSwiping !== 1)) {
                 attachSwipe();
-            } else if (!isMobileNow || newSwiping !== 1) {
+            } else if (!isSmallScreenNow || newSwiping !== 1) {
                 detachSwipe();
             }
         }, { lazy: true });
 
         onMounted(() => {
-            if (isMobile.value && swipingEnabled.value === 1) attachSwipe();
+            if (isSmallScreen.value && swipingEnabled.value === 1) attachSwipe();
         });
 
         return {
+            showTour,
             activeMobileColumn,
             hasAccounts,
             amountsHidden,
@@ -148,6 +165,9 @@ export default defineComponent({
         SwapNotification,
         UpdateNotification,
         LoadingSpinner,
+
+        // lazy loading
+        Tour: () => import(/* webpackChunkName: "tour" */ './components/Tour.vue'),
     },
 });
 </script>
@@ -157,6 +177,7 @@ export default defineComponent({
 #app {
     @include flex-full-height;
     @include ios-flex;
+
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
     touch-action: pan-y;
 

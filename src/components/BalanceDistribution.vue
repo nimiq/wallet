@@ -362,11 +362,9 @@ export default defineComponent({
             margin-left: -0.375rem;
             margin-right: -0.375rem;
             line-height: 1;
+            width: min-content;
 
-            position: absolute;
             z-index: 3;
-            top: 3rem;
-
             transition: all 200ms var(--nimiq-ease);
 
             &.exchange-is-close {

@@ -37,6 +37,7 @@ import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
+    name: 'account-menu',
     setup(props, context) {
         const { activeAccountInfo } = useAccountStore();
         const { state: addressState } = useAddressStore();

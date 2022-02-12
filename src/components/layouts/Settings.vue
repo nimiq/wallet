@@ -87,6 +87,20 @@
                     </label>
                 </div>
 
+                <!-- Onboarding tour does not support legacy accounts -->
+                <div class="setting" v-if="!isALegacyAccount">
+                    <div class="description">
+                        <label class="nq-h2" for="product-tour">{{ $t('Product Tour') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Go through the product again') }}
+                        </p>
+                    </div>
+
+                    <button class="nq-button-pill light-blue" @click="goToOnboardingTour()">
+                        {{ $t('Start Tour') }}
+                    </button>
+                </div>
+
                 <!-- <div class="setting">
                     <div class="description">
                         <label class="nq-h2" for="theme">{{ $t('Interface Theme') }}</label>
@@ -262,6 +276,8 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
+import { AccountType, useAccountStore } from '@/stores/Account';
+import { TourName, ITourOrigin } from '@/lib/tour';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -291,6 +307,7 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 export default defineComponent({
     setup(props, context) {
         const settings = useSettingsStore();
+        const isALegacyAccount = useAccountStore().activeAccountInfo.value?.type === AccountType.LEGACY;
 
         const { currency, setCurrency } = useFiatStore();
 
@@ -359,6 +376,11 @@ export default defineComponent({
             reader.readAsText(file);
         }
 
+        function goToOnboardingTour() {
+            useAccountStore().setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.SETTINGS });
+            context.root.$router.push('/');
+        }
+
         async function onTrialPassword(el: HTMLInputElement) {
             let hash: string;
             try {
@@ -421,6 +443,8 @@ export default defineComponent({
             ...settings,
             $fileInput,
             loadFile,
+            goToOnboardingTour,
+            isALegacyAccount,
             showVestingSetting,
             onTrialPassword,
             applyWalletUpdate,

@@ -61,8 +61,10 @@
                     >
                         <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
                     </i18n>
-                    <router-link to="buy" class="nq-button light-blue">
-                        {{ $t('Buy NIM') }}
+                    <router-link to="buy">
+                        <button class="nq-button light-blue">
+                            {{ $t('Buy NIM') }}
+                        </button>
                     </router-link>
                 </div>
             </template>
@@ -143,6 +145,7 @@ function getLocaleMonthStringFromDate(
 // }
 
 export default defineComponent({
+    name: 'transactions-list',
     props: {
         searchString: {
             type: String,
@@ -163,8 +166,8 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Height of items in pixel
-        const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const { isSmallScreen } = useWindowSize();
+        const itemSize = computed(() => isSmallScreen.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
@@ -607,11 +610,11 @@ export default defineComponent({
         color: var(--text-60);
         font-weight: 600;
         margin-bottom: 1rem;
+    }
 
-        a {
-            color: inherit;
-            text-decoration: underline;
-        }
+    a {
+        color: inherit;
+        text-decoration: none;
     }
 }
 

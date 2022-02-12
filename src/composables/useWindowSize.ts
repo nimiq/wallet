@@ -1,53 +1,14 @@
-import { ref, onMounted, onUnmounted, Ref, computed } from '@vue/composition-api';
+import { computed, Ref } from '@vue/composition-api';
+import { useMedia } from './useMedia';
 
-let numberOfListeners = 0;
-
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, the width and height variables can be directly instantiated
-//        as refs.
-let width: Ref<number> | null = null;
-let height: Ref<number> | null = null;
-
-let isMobile: Readonly<Ref<boolean>> | null = null;
-let isTablet: Readonly<Ref<boolean>> | null = null;
-let isFullDesktop: Readonly<Ref<boolean>> | null = null;
-
-function listener() {
-    width!.value = window.innerWidth;
-    height!.value = window.innerHeight;
-}
+export type ScreenTypes = Pick<ReturnType<typeof useWindowSize>, 'isSmallScreen' | 'isMediumScreen' | 'isLargeScreen'>
 
 export function useWindowSize() {
-    // First-time setup
-    if (!width || !height || !isMobile || !isTablet || !isFullDesktop) {
-        width = ref(0);
-        height = ref(0);
-        listener();
-        isMobile = computed(() => width!.value <= 700); // Full mobile breakpoint
-        isTablet = computed(() => width!.value <= 960); // Tablet breakpoint
-        isFullDesktop = computed(() => width!.value > 1160); // Desktop breakpoint
-    }
-
-    onMounted(() => {
-        if (numberOfListeners === 0) {
-            window.addEventListener('resize', listener);
-        }
-        numberOfListeners += 1;
-    });
-
-    onUnmounted(() => {
-        numberOfListeners -= 1;
-
-        if (numberOfListeners === 0) {
-            window.removeEventListener('resize', listener);
-        }
-    });
-
     return {
-        width,
-        height,
-        isMobile,
-        isTablet,
-        isFullDesktop,
+        width: computed(() => window.innerWidth) as Readonly<Ref<number>>,
+        height: computed(() => window.innerHeight) as Readonly<Ref<number>>,
+        isSmallScreen: useMedia('(max-width: 700px)'),
+        isMediumScreen: useMedia('(min-width: 700px) and (max-width: 1160px)'),
+        isLargeScreen: useMedia('(min-width: 1160px)'),
     };
 }

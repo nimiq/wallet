@@ -2,6 +2,14 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#: src/lib/tour/network/NetworkTourTexts.ts:18
+msgid "‘Available browsers’ are other user’s browsers, just like yours."
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:19
+msgid "‘Backbone nodes’ provide a fallback to connect to."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -115,7 +123,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:356
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -139,7 +147,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:212
 msgid "Add"
 msgstr ""
 
@@ -163,7 +171,7 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:194
+#: src/components/layouts/Settings.vue:208
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -186,7 +194,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:152
+#: src/components/layouts/Settings.vue:166
 msgid "Advanced"
 msgstr ""
 
@@ -194,7 +202,7 @@ msgstr ""
 msgid "After 72 hours"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:132
+#: src/components/layouts/Settings.vue:146
 #: src/components/layouts/Settings.vue:72
 msgid "all"
 msgstr ""
@@ -203,13 +211,13 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:35
-msgid "All in one easy place."
-msgstr ""
-
 #: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:67
+msgid "All security relevant actions can be found here too."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:149
@@ -230,10 +238,6 @@ msgstr ""
 
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:27
-msgid "And {BTC}, the gold standard of crypto and a sound store of value."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:30
@@ -264,11 +268,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:184
+#: src/components/layouts/Settings.vue:198
 msgid "Auto"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:191
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
@@ -277,6 +281,7 @@ msgid "Awaiting swap secret"
 msgstr ""
 
 #: src/components/layouts/Network.vue:15
+#: src/components/Tour.vue:55
 msgid "Back to addresses"
 msgstr ""
 
@@ -307,7 +312,7 @@ msgstr ""
 #: src/components/BalanceDistribution.vue:77
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:119
+#: src/components/layouts/Settings.vue:133
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
@@ -320,7 +325,7 @@ msgstr ""
 msgid "Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:138
+#: src/components/layouts/Settings.vue:152
 msgid "Bitcoin Unit"
 msgstr ""
 
@@ -348,7 +353,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:33
 msgid "Buy"
 msgstr ""
 
@@ -379,7 +384,7 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:66
 msgid "Buy NIM"
 msgstr ""
 
@@ -436,7 +441,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:336
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -462,6 +467,11 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:43
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:48
+msgid "Check the bar-chart to see how your addresses compose your total balance."
+msgstr ""
+
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:61
 msgid "Choose a Recipient"
@@ -483,12 +493,20 @@ msgstr ""
 msgid "Claiming Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:224
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:218
 msgid "Clear Cache"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:34
+msgid "Click {account_icon} to get back to your wallet."
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:40
+msgid "Click {back_to_addresses} to get back to your wallet."
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:36
@@ -497,6 +515,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:30
 msgid "Click on ‘Troubleshooting’ to learn more."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:20
+msgid "Click the green button to receive a free NIM from Team Nimiq."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:151
@@ -522,12 +544,6 @@ msgstr ""
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:15
-msgid ""
-"Connect directly to the Nimiq blockchain.\n"
-"Be independent from any middleman."
 msgstr ""
 
 #: src/components/NetworkStats.vue:8
@@ -568,7 +584,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/SendModal.vue:87
-#: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr ""
 
@@ -613,6 +628,10 @@ msgstr ""
 msgid "Create request link"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:66
+msgid "Create, switch and log out of accounts."
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:194
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
@@ -641,6 +660,10 @@ msgstr ""
 msgid "Currently under maintenance"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:44
+msgid "Currently you have 100% NIM, and no BTC."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -651,9 +674,13 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:262
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
+msgstr ""
+
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:18
+msgid "Discover the Nimiq Wallet!"
 msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
@@ -690,7 +717,7 @@ msgstr ""
 msgid "Edit contacts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:139
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr ""
 
@@ -703,8 +730,18 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:158
+#: src/components/layouts/Settings.vue:172
 msgid "Enable experimental support for swiping gestures on mobile."
+msgstr ""
+
+#: src/components/Tour.vue:114
+#: src/lib/tour/network/04_NetworkCompletedStep.ts:32
+msgid "End Tour"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:33
+#: src/lib/tour/network/NetworkTourTexts.ts:39
+msgid "Enjoy the decentralized future, and don’t forget to invite your friends and family."
 msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
@@ -730,7 +767,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:218
+#: src/components/layouts/Settings.vue:232
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -751,6 +788,11 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:15
 #: src/components/modals/TransactionModal.vue:27
 msgid "Euro"
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:28
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:33
+msgid "Every NIM address comes with an avatar. They help to make sure you got the right one."
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:44
@@ -813,7 +855,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:325
+#: src/components/layouts/Settings.vue:342
 msgid "File contains no contacts."
 msgstr ""
 
@@ -823,6 +865,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:272
 msgid "Finalizing swap"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:25
+msgid "Find the network’s key performance metrics below."
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:49
@@ -854,6 +900,14 @@ msgstr ""
 msgid "Get NIM"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:95
+msgid "Go through the product again"
+msgstr ""
+
+#: src/lib/tour/onboarding/08_OnboardingCompleted.ts:77
+msgid "Go to Network"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:92
 #: src/components/modals/BtcActivationModal.vue:21
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -864,12 +918,16 @@ msgstr ""
 msgid "Got it!"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:5
-msgid "Great, you’re here!"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:32
+msgid "Here are your transactions."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:27
+msgid "Here’s your first transaction with your first NIM."
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:200
@@ -984,15 +1042,15 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:53
-msgid "It is fast, safe and makes you truly independent."
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:20
+msgid "It's free, does not collect data and is controlled by no one but you."
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:171
+#: src/components/layouts/Settings.vue:185
 msgid "Keyguard Mode"
 msgstr ""
 
@@ -1002,10 +1060,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:48
 msgid "Language"
-msgstr ""
-
-#: src/components/modals/NetworkInfoModal.vue:19
-msgid "Learn more"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
@@ -1019,10 +1073,6 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
 msgid "Let's go"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:64
-msgid "Let's go!"
 msgstr ""
 
 #: src/components/NetworkMap.vue:30
@@ -1130,7 +1180,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr ""
 
@@ -1138,8 +1188,20 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
+#: src/components/Tour.vue:100
+msgid "Next"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:10
+msgid "Nimiq doesn’t collect or store such data."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:80
+msgid "Nimiq is not just any crypto - Click on {network_icon} Network and discover true decentralization."
 msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
@@ -1173,11 +1235,11 @@ msgid "No registration – not even email."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:85
 msgid "No transactions found"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:130
+#: src/components/layouts/Settings.vue:144
 #: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr ""
@@ -1213,11 +1275,11 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:179
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:348
+#: src/components/layouts/Settings.vue:365
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1225,7 +1287,7 @@ msgstr ""
 msgid "Old and new Accounts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:164
+#: src/components/layouts/Settings.vue:178
 msgid "On"
 msgstr ""
 
@@ -1241,7 +1303,7 @@ msgstr ""
 msgid "Or buy BTC directly in the wallet."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:187
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
@@ -1292,12 +1354,16 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:192
 msgid "popups"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:199
 msgid "Popups"
+msgstr ""
+
+#: src/components/Tour.vue:85
+msgid "Previous"
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
@@ -1306,6 +1372,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:269
 msgid "Processing payout"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:93
+msgid "Product Tour"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
@@ -1326,7 +1396,7 @@ msgid "Receive fiat to your bank account."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:79
+#: src/components/TransactionList.vue:81
 msgid "Receive free NIM"
 msgstr ""
 
@@ -1334,7 +1404,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:73
+#: src/components/TransactionList.vue:75
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -1359,19 +1429,19 @@ msgstr ""
 msgid "Recovery Words"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:188
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:192
 msgid "redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:186
+#: src/components/layouts/Settings.vue:200
 msgid "Redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:227
+#: src/components/layouts/Settings.vue:241
 msgid "Reference currency"
 msgstr ""
 
@@ -1388,7 +1458,7 @@ msgstr ""
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:246
+#: src/components/layouts/Settings.vue:260
 #: src/components/UpdateNotification.vue:8
 msgid "Release Notes"
 msgstr ""
@@ -1413,7 +1483,7 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:220
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -1459,11 +1529,11 @@ msgstr ""
 msgid "Select a currency and an amount."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:140
+#: src/components/layouts/Settings.vue:154
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr ""
 
@@ -1501,10 +1571,6 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SendModal.vue:172
 msgid "Send all"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:50
-msgid "Send and receive NIM directly on the blockchain."
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:16
@@ -1575,6 +1641,10 @@ msgstr ""
 msgid "SEPA Instant transaction"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:56
+msgid "Seriously! There is no ‘forgot password’! Create a backup to make sure you stay in control."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:100
 #: src/components/modals/SendModal.vue:88
 msgid "Set Amount"
@@ -1592,7 +1662,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr ""
 
@@ -1618,7 +1688,7 @@ msgstr ""
 msgid "Show all my addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:137
 #: src/components/layouts/Settings.vue:63
 msgid "Show Decimals"
 msgstr ""
@@ -1633,6 +1703,10 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:137
 msgid "Signup"
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:74
+msgid "Simply click your account and select ‘Create backup’."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:240
@@ -1668,8 +1742,16 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:7
-msgid "Store, send and receive NIM."
+#: src/components/modals/NetworkInfoModal.vue:19
+msgid "Start Network Tour"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:100
+msgid "Start Tour"
+msgstr ""
+
+#: src/components/modals/DiscoverTheNimiqWalletModal.vue:25
+msgid "Start Wallet tour"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
@@ -1712,12 +1794,20 @@ msgstr ""
 msgid "Swap to {address}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:156
+#: src/components/layouts/Settings.vue:170
 msgid "Swiping Gestures"
 msgstr ""
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:14
+msgid "Tap it to open the address details."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:61
+msgid "Tap on the menu icon to access your account and wallet settings."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
@@ -1730,6 +1820,10 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:26
+msgid "The {network_icon}-icon indicates that you are connected to the network."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:105
@@ -1761,10 +1855,6 @@ msgstr ""
 msgid "The new Login Files are an easy and convenient way to gain access to your account and its addresses."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:47
-msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
 #: src/components/swap/SwapModal.vue:19
@@ -1791,8 +1881,16 @@ msgstr ""
 msgid "There is no ‘forgot password’"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:53
+msgid "There is no ‘forgot password’. Create a backup to make sure you stay in control."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:16
+msgid "These connections enable you to establish consensus with a sub set of participants directly."
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:202
@@ -1810,6 +1908,10 @@ msgstr ""
 msgid "This is a Legacy Account"
 msgstr ""
 
+#: src/lib/tour/network/NetworkTourTexts.ts:15
+msgid "This is a peer or a backbone node that you are connected to."
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:49
 msgid "This is a single-use address"
 msgstr ""
@@ -1822,6 +1924,24 @@ msgstr ""
 msgid "This is not a valid IBAN"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:19
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:22
+msgid "This is where all your transactions will appear."
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:9
+msgid "This is you. Your location is determined by your IP address."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:38
+msgid "This is your Bitcoin wallet. You get one with every Nimiq account."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:13
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:9
+msgid "This is your first address, represented by your avatar."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:295
 #: src/components/swap/SwapAnimation.vue:72
 #: src/components/swap/SwapSepaFundingInstructions.vue:106
@@ -1830,8 +1950,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:238
 #: src/components/BtcTransactionList.vue:260
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/TransactionList.vue:252
+#: src/components/TransactionList.vue:274
 msgid "This month"
 msgstr ""
 
@@ -1899,7 +2019,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:230
 msgid "Trials"
 msgstr ""
 
@@ -1937,10 +2057,6 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:22
-msgid "Use {NIM}, the super performant and browser- based payment coin."
-msgstr ""
-
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
@@ -1957,7 +2073,11 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/TourLargeScreenManager.vue:5
+msgid "Use the tooltips to navigate your tour."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:206
 msgid "Vesting Contract"
 msgstr ""
 
@@ -1973,6 +2093,10 @@ msgstr ""
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:79
+msgid "Wallet tour completed!"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and decentralized."
 msgstr ""
@@ -1985,7 +2109,7 @@ msgstr ""
 msgid "What is your bank called?"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:163
+#: src/components/layouts/Settings.vue:177
 msgid "When ready"
 msgstr ""
 
@@ -2018,6 +2142,14 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:73
+msgid "You can always create a new backup."
+msgstr ""
+
+#: src/lib/tour/onboarding/OnboardingTourTexts.ts:10
+msgid "You can click on the address to copy and share it."
+msgstr ""
+
 #: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
@@ -2028,6 +2160,11 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:95
 msgid "You have exceeded your OASIS limit."
+msgstr ""
+
+#: src/lib/tour/network/NetworkTourTexts.ts:31
+#: src/lib/tour/network/NetworkTourTexts.ts:37
+msgid "You made it!"
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
@@ -2081,10 +2218,6 @@ msgstr ""
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:13
-msgid "Your browser is a Node"
-msgstr ""
-
 #: src/components/swap/SwapAnimation.vue:98
 #: src/components/TransactionDetailOasisPayoutStatus.vue:20
 msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
@@ -2117,6 +2250,6 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:74
 msgid "Your transactions will appear here"
 msgstr ""

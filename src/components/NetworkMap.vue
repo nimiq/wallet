@@ -60,6 +60,7 @@ import NetworkMap, {
 } from '../lib/NetworkMap';
 
 export default defineComponent({
+    name: 'network-map',
     setup(props, context) {
         const $container = ref<HTMLDivElement|null>(null);
         const $network = ref<HTMLCanvasElement|null>(null);

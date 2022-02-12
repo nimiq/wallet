@@ -250,11 +250,11 @@ export default defineComponent({
             }
         });
 
-        const { isMobile, isFullDesktop } = useWindowSize();
+        const { isSmallScreen, isLargeScreen } = useWindowSize();
 
-        const addressMaskedWidth = computed(() => isFullDesktop.value
+        const addressMaskedWidth = computed(() => isLargeScreen.value
             ? 396
-            : !isMobile.value
+            : !isSmallScreen.value
                 ? 372
                 : 322);
 

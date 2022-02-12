@@ -355,7 +355,7 @@ export default defineComponent({
             bankAccounts,
         } = useBankStore();
 
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
         const currentLimitFiat = useCurrentLimitFiat(limits);
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
@@ -438,7 +438,7 @@ export default defineComponent({
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
-                if (!isMobile.value && $cryptoAmountInput.value) {
+                if (!isSmallScreen.value && $cryptoAmountInput.value) {
                     $cryptoAmountInput.value.focus();
                 }
             }

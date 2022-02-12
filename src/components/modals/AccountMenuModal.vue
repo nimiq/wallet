@@ -63,7 +63,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 export default defineComponent({
     setup(props, context) {
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
-        const { isMobile } = useWindowSize();
+        const { isSmallScreen } = useWindowSize();
 
         const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
         const isNotLedger = computed(() =>
@@ -77,7 +77,7 @@ export default defineComponent({
         function onAccountSelected(id: string) {
             selectAccount(id);
 
-            if (isMobile.value) {
+            if (isSmallScreen.value) {
                 context.root.$router.replace('/');
             } else {
                 context.root.$router.push('/').catch(() => { /* ignore */ });

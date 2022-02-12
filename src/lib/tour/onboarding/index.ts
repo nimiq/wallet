@@ -58,7 +58,7 @@ export function getOnboardingTourSteps({ root }: SetupContext, screenTypes: Scre
         get [OnboardingTourStep.MENU_ICON]() {
             // show only this step if it is a new user and is not in a large screen
             return (!screenTypes.isLargeScreen.value && startedFrom === ITourOrigin.WELCOME_MODAL)
-                ? getMenuIconStep() : undefined;
+                ? getMenuIconStep(args) : undefined;
         },
         [OnboardingTourStep.ACCOUNT_OPTIONS]: getAccountOptionsStep(args),
         get [OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS]() {

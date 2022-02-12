@@ -1,8 +1,8 @@
 import { defaultTooltipModifiers, IWalletHTMLElements } from '..';
-import { ITourStep, OnboardingTourStep } from '../types';
+import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
-export function getMenuIconStep(): ITourStep {
+export function getMenuIconStep({ toggleHighlightButton }: IOnboardingGetStepFnArgs): ITourStep {
     return {
         path: '/',
         tooltip: {
@@ -30,14 +30,17 @@ export function getMenuIconStep(): ITourStep {
         },
         lifecycle: {
             mounted: async ({ goToNextStep }) => {
+                const hamburguerIconSelector = `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`;
                 // User is expected to click the hamburguer icon to go to next step
-                const hamburguerIcon = document.querySelector(
-                    `${IWalletHTMLElements.ACCOUNT_OVERVIEW_TABLET_MENU_BAR} > button.reset`) as HTMLButtonElement;
+                const hamburguerIcon = document.querySelector(hamburguerIconSelector) as HTMLButtonElement;
 
                 const onHamburguerClick = () => goToNextStep();
                 hamburguerIcon!.addEventListener('click', onHamburguerClick, true);
 
+                toggleHighlightButton(hamburguerIconSelector, true, 'gray');
+
                 return () => {
+                    toggleHighlightButton(hamburguerIconSelector, false, 'gray');
                     hamburguerIcon!.removeEventListener('click', onHamburguerClick, true);
                 };
             },

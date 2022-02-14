@@ -2,15 +2,18 @@
     <div class="balance-distribution">
         <div class="currency flex-column nim" :style="{width: Math.max(0.12, balanceDistribution.nim) * 100 + '%'}">
             <div class="distribution" >
-                <div v-for="account of nimBalanceDistribution"
+                <div v-for="(account, i) of nimBalanceDistribution"
                     :key="account.addressInfo.address"
                     :style="{width: (nimPercentageSum < 0.99
                         ? 1 / nimBalanceDistribution.length
                         : account.percentage
-                    ) * 100 + '%'}">
+                    ) * 100 + '%'}"
+                    ref="$nimBalanceDistribution">
                     <Tooltip
                         preferredPosition="top right"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
+                        @show="highlightBar(i)"
+                        @hide="resetBars()"
                     >
                         <div
                             class="bar"
@@ -178,6 +181,34 @@ export default defineComponent({
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
+        // List of NIM addresses bar elements
+        const $nimBalanceDistribution = ref<null | HTMLDivElement[]>(null);
+
+        // When user hovers over a NIM balance distribution bar, we want to highlight it fading the rest of
+        // NIM addresses bars
+        function highlightBar(activeChild: number) {
+            if (!$nimBalanceDistribution.value) return;
+
+            $nimBalanceDistribution.value.forEach((nimAddress, i) => {
+                const bar = nimAddress.querySelector('.bar');
+                if (!bar) return;
+                setTimeout(() => {
+                    bar.classList[i !== activeChild ? 'add' : 'remove']('faded');
+                }, 100 + 1 /** Tooltip takes 100ms to emit hide event */);
+            });
+        }
+
+        // Remove all faded classes from NIM balance distribution bars
+        function resetBars() {
+            if (!$nimBalanceDistribution.value) return;
+
+            $nimBalanceDistribution.value.forEach((nimAddress) => {
+                const bar = nimAddress.querySelector('.bar');
+                if (!bar) return;
+                bar.classList.remove('faded');
+            });
+        }
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -194,6 +225,9 @@ export default defineComponent({
             doElsTouch,
             hasActiveSwap,
             canUseSwaps,
+            $nimBalanceDistribution,
+            highlightBar,
+            resetBars,
         };
     },
     components: {
@@ -276,7 +310,6 @@ export default defineComponent({
             width: 100%;
 
             > div {
-                padding-right: 0.5rem;
                 min-width: 1rem;
 
                 &:last-child {
@@ -292,16 +325,9 @@ export default defineComponent({
                 width: 100%;
 
                 ::v-deep .trigger {
-                    display: block;
-                }
-
-                ::v-deep .trigger::after {
-                    background: white;
-                }
-
-                ::v-deep .tooltip-box {
-                    background: white;
-                    color: var(--nimiq-blue);
+                    display: flex;
+                    height: 8px;
+                    padding: 0 0.25rem;
                 }
 
                 .flex-row {
@@ -337,6 +363,11 @@ export default defineComponent({
                 border-radius: .5rem;
                 height: 0.5rem;
                 min-width: 0.5rem;
+                transition: opacity var(--transition-time) var(--nimiq-ease);
+
+                &.faded {
+                    opacity: 0.5;
+                }
 
                 &.btc {
                     background: var(--bitcoin-orange);

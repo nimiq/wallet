@@ -645,7 +645,7 @@ export default defineComponent({
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
 
-                // If user has has 0 assets in BTC, then only accept negative values
+                // If user has 0 assets in BTC, then only accept negative values
                 if (accountBtcBalance.value === 0 && wantNim.value > 0) {
                     wantNim.value *= -1;
                 }
@@ -662,8 +662,8 @@ export default defineComponent({
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
 
-                // If user has has 0 assets in NIM, then only accept negative values
-                if (activeAddressInfo?.value?.balance === 0 && wantBtc.value > 0) {
+                // If user has 0 assets in NIM, then only accept negative values
+                if (activeAddressInfo.value?.balance === 0 && wantBtc.value > 0) {
                     wantBtc.value *= -1;
                 }
 
@@ -676,20 +676,22 @@ export default defineComponent({
             }
         }
 
-        // If user only has one asset, the we know that there is only available operation,
+        // If user only has one asset, then we know that there is only one available operation,
         // so we show only one icon: '-' or '+' depending on the asset
         function getPlaceholder(asset: SwapAsset) {
             if (asset === SwapAsset.NIM) {
                 if (accountBtcBalance.value === 0) {
                     return '- 0';
-                } if (activeAddressInfo?.value?.balance === 0) {
+                }
+                if (activeAddressInfo.value?.balance === 0) {
                     return '+ 0';
                 }
             }
             if (asset === SwapAsset.BTC) {
-                if (activeAddressInfo?.value?.balance === 0) {
+                if (activeAddressInfo.value?.balance === 0) {
                     return '- 0';
-                } if (accountBtcBalance.value === 0) {
+                }
+                if (accountBtcBalance.value === 0) {
                     return '+ 0';
                 }
             }
@@ -703,16 +705,17 @@ export default defineComponent({
             // If user has already changed the input, do nothing
             if (input.value !== '') return;
 
-            if (asset === SwapAsset.NIM && accountBtcBalance.value === 0) {
-                input.value = '-';
-            }
-            if (asset === SwapAsset.BTC && activeAddressInfo?.value?.balance === 0) {
+            if (
+                // eslint-disable-next-line operator-linebreak
+                (asset === SwapAsset.NIM && accountBtcBalance.value === 0) ||
+                (asset === SwapAsset.BTC && activeAddressInfo.value?.balance === 0)
+            ) {
                 input.value = '-';
             }
         }
 
         function onBlur(input: HTMLInputElement) {
-            if (input?.value === '-') {
+            if (input.value === '-') {
                 input.value = '';
             }
         }

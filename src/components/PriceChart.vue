@@ -227,8 +227,10 @@ export default defineComponent({
             if (history.value.length) {
                 const pathLength = $path.value.getTotalLength();
                 $path.value.style.strokeDasharray = `0 ${pathLength}`;
-                await new Promise((resolve) => requestAnimationFrame(resolve)); // strokeDasharray gets applied
-                await new Promise((resolve) => requestAnimationFrame(resolve)); // ready to update strokeDasharray again
+                // strokeDasharray gets applied
+                await new Promise((resolve) => { requestAnimationFrame(resolve); });
+                // ready to update strokeDasharray again
+                await new Promise((resolve) => { requestAnimationFrame(resolve); });
                 $path.value.style.strokeDasharray = `${pathLength} 0`;
                 switchingTimeRange = false;
             } else {

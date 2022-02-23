@@ -265,9 +265,11 @@ export default defineComponent({
             // Await Nimiq and Bitcoin consensus
             if (swapsNim && useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
-                await new Promise<void>((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                    if (state === 'established') resolve();
-                }));
+                await new Promise<void>((resolve) => {
+                    nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                        if (state === 'established') resolve();
+                    });
+                });
             }
             if (swapsBtc && useBtcNetworkStore().state.consensus !== 'established') {
                 const electrum = await getElectrumClient();
@@ -425,7 +427,7 @@ export default defineComponent({
                 }
                 case SwapState.AWAIT_SECRET: {
                     let interval: number;
-                    const secret = await Promise.race<Promise<string>>([
+                    const secret = await Promise.race<string>([
                         swapHandler.awaitSecret(),
                         new Promise((resolve, reject) => {
                             interval = window.setInterval(async () => {

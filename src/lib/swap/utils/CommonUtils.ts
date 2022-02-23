@@ -130,8 +130,8 @@ export function capDecimals(amount: number, asset: SwapAsset) {
 export function calculateFees(
     { to, from }: { to: FiatCurrency.EUR, from?: CryptoCurrency }
                 | { to?: CryptoCurrency, from: FiatCurrency.EUR },
-    feesPerUnit = { eur: 0, nim: 0, btc: 0 },
     amount?: number,
+    feesPerUnit = { eur: 0, nim: 0, btc: 0 },
 ) {
     let fundingFee: number | null = null;
     let settlementFee: number | null = null;
@@ -235,7 +235,7 @@ export function getFiatSwapParameters({ from, to } : {
 
     if ((from && !('asset' in from) && from.amount)
     || (to && ('asset' in to) && to.asset === SwapAsset.EUR && to.amount)) { // Sell
-        const fees = calculateFees({ to: FiatCurrency.EUR }, undefined, to?.amount);
+        const fees = calculateFees({ to: FiatCurrency.EUR }, to?.amount);
         const fromSwapAsset = activeCurrency.value === CryptoCurrency.BTC
             ? SwapAsset.BTC
             : SwapAsset.NIM;

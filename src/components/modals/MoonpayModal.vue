@@ -13,7 +13,9 @@
         <div class="separator"></div>
         <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
         <!-- Iframe allow list from Moonpay docs -->
-        <iframe v-else :src="url" allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0">
+        <iframe v-else :src="url"
+            allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0" title="Moonpay"
+        >
             <p>Your browser does not support iframes.</p>
         </iframe>
     </Modal>
@@ -21,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { Tooltip, InfoCircleSmallIcon, PageFooter } from '@nimiq/vue-components';
+import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -72,7 +74,6 @@ export default defineComponent({
         };
     },
     components: {
-        PageFooter,
         Modal,
         Tooltip,
         InfoCircleSmallIcon,

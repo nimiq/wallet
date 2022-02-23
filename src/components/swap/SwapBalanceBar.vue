@@ -1,5 +1,5 @@
 <template>
-    <div class="swap-balance-bar flex-column" ref="$el" :class="{ animating: animatingBars }">
+    <div class="swap-balance-bar flex-column" ref="root" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
             <button class="reset nimiq flex-row"
                 :class="{ single: backgroundAddresses.length === 0 }"
@@ -138,7 +138,7 @@ export default defineComponent({
         const { accountBalance } = useBtcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
-        const $el = ref<HTMLDivElement | null>(null);
+        const root = ref<HTMLDivElement | null>(null);
 
         const nimExchangeRate = computed(() =>
             exchangeRates.value?.[CryptoCurrency.NIM][currency.value] || 0);
@@ -234,7 +234,7 @@ export default defineComponent({
 
         function updateSwapBalanceBar(cursorPosition?: number) {
             if ((!isGrabbing && !cursorPosition) || !$activeBar.value || !$bitcoinBar.value || !activeBar.value
-                || !$el.value || !$separator.value) {
+                || !root.value || !$separator.value) {
                 return undefined;
             }
 
@@ -256,7 +256,7 @@ export default defineComponent({
             if (cursorSeparatorPositionDiff > 0 && movingDirection === MovingDirection.LEFT) return undefined;
 
             /* Amounts calculation */
-            const fiatAmount = (Math.abs(cursorSeparatorPositionDiff) / $el.value.clientWidth)
+            const fiatAmount = (Math.abs(cursorSeparatorPositionDiff) / root.value.clientWidth)
                 * totalNewFiatBalance.value;
             const lunaAmount = activeBar.value.balanceChange
                 + (((fiatAmount / nimExchangeRate.value) * 1e5) * movingDirection);
@@ -321,9 +321,9 @@ export default defineComponent({
 
         /* Bars' width */
         const widthToSubstractPercent = computed(() => Math.round(
-            $el.value ? (((0.625 * remSize.value) // separator right margin & width
+            root.value ? (((0.625 * remSize.value) // separator right margin & width
             + ((nimDistributionData.value.length - 1) * (0.875 * remSize.value))) // bar right margin & border width
-            / $el.value.offsetWidth) * 100 : 0,
+            / root.value.offsetWidth) * 100 : 0,
         ) / 100);
 
         const getNimiqBarWidth = (addressInfo: ExtendedAddressInfo) =>
@@ -368,15 +368,15 @@ export default defineComponent({
         const animatingBars = ref(false);
 
         function updateEquiPointVisibility() {
-            if (!$el.value || !$separator.value) {
+            if (!root.value || !$separator.value) {
                 return;
             }
 
             const { offsetLeft } = $separator.value;
 
             /* hide the point if close to the handle/separator */
-            if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / $el.value.offsetWidth) * 100
-                && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / $el.value.offsetWidth) * 100) {
+            if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / root.value.offsetWidth) * 100
+                && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / root.value.offsetWidth) * 100) {
                 equiPointVisible.value = false;
             } else {
                 equiPointVisible.value = true;
@@ -385,7 +385,7 @@ export default defineComponent({
 
         onMounted(() => {
             const { offsetLeft } = $separator.value!;
-            equiPointPositionX.value = (offsetLeft / $el.value!.offsetWidth) * 100;
+            equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
         });
 
         function animatedReset() {
@@ -441,7 +441,7 @@ export default defineComponent({
             selectAddress,
 
             /* HTML elements */
-            $el,
+            root,
             $activeBar,
             $bitcoinBar,
             $btcChangeBar,

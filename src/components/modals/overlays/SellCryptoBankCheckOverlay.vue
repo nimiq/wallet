@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, LabelInput, AlertTriangleIcon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import IBAN from 'iban';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
@@ -185,7 +185,6 @@ export default defineComponent({
         DoubleInput,
         LabelInput,
         BankIcon,
-        AlertTriangleIcon,
     },
 });
 </script>

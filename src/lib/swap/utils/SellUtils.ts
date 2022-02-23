@@ -89,11 +89,11 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
     }
 
     // Update local fees with latest feePerUnit values
-    const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, {
+    const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, newEstimate.from.amount, {
         eur: newEstimate.to.fee || 0,
         nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.from.feePerUnit! : 0,
         btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.from.feePerUnit! : 0,
-    }, newEstimate.from.amount);
+    });
 
     newEstimate.from.fee = fundingFee;
     newEstimate.to.fee = 0; // OASIS' SEPA Instant fees are already included

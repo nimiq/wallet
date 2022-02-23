@@ -82,7 +82,6 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
 export default defineComponent({
-    name: 'sidebar',
     setup(props, context) {
         const { isMobile } = useWindowSize();
 

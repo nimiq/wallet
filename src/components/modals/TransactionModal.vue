@@ -309,7 +309,6 @@ import {
     Tooltip,
     InfoCircleSmallIcon,
     CircleSpinner,
-    LabelInput,
     CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
@@ -327,9 +326,6 @@ import BankIcon from '../icons/BankIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import FastspotIcon from '../icons/FastspotIcon.vue';
-import ShortAddress from '../ShortAddress.vue';
-import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
@@ -680,7 +676,6 @@ export default defineComponent({
         InfoCircleSmallIcon,
         CircleSpinner,
         CrossIcon,
-        LabelInput,
         CashlinkSmallIcon,
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
@@ -689,10 +684,7 @@ export default defineComponent({
         BankIcon,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
-        FastspotIcon,
         SwapMediumIcon,
-        ShortAddress,
-        SwapFeesTooltip,
         InteractiveShortAddress,
         TransactionDetailOasisPayoutStatus,
     },

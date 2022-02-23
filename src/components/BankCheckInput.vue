@@ -18,7 +18,9 @@
                 :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
                 @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
+                @focusin="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
                 @mouseleave="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
+                @focusout="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
@@ -104,7 +106,6 @@ import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountrySelector from './CountrySelector.vue';
-import WorldIcon from './icons/WorldIcon.vue';
 import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 
@@ -428,7 +429,6 @@ export default defineComponent({
         ForbiddenIcon,
         Tooltip,
         CountrySelector,
-        WorldIcon,
         AlertTriangleIcon,
         CrossIcon,
     },

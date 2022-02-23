@@ -191,13 +191,9 @@ import { defineComponent, ref, computed, onMounted, watch } from '@vue/compositi
 import {
     PageHeader,
     PageBody,
-    PageFooter,
     Tooltip,
     FiatAmount,
-    AlertTriangleIcon,
     CircleSpinner,
-    CheckmarkIcon,
-    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -221,15 +217,10 @@ import {
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import Modal from '../modals/Modal.vue';
-import BtcAddressInput from '../BtcAddressInput.vue';
-import BtcLabelInput from '../BtcLabelInput.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
-import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import ShortAddress from '../ShortAddress.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
-import FlameIcon from '../icons/FlameIcon.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
@@ -247,7 +238,6 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
-import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 
@@ -614,7 +604,7 @@ export default defineComponent({
                 }
 
                 estimate.value = newEstimate;
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err); // eslint-disable-line no-console
                 estimateError.value = err.message;
             }
@@ -836,7 +826,7 @@ export default defineComponent({
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error); // eslint-disable-line no-console
                     estimateError.value = error.message;
                     if (swapSuggestion!) cancelSwap(swapSuggestion);
@@ -968,7 +958,7 @@ export default defineComponent({
             try {
                 signedTransactions = await setupSwap(hubRequest);
                 if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
-            } catch (error) {
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
@@ -1197,28 +1187,18 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
-        BtcAddressInput,
-        BtcLabelInput,
         Amount,
         AmountInput,
-        FeeSelector,
         FiatConvertedAmount,
         Tooltip,
         FiatAmount,
-        AlertTriangleIcon,
         CircleSpinner,
-        CheckmarkIcon,
-        ShortAddress,
-        ArrowRightSmallIcon,
         SwapBalanceBar,
-        FlameIcon,
         MinimizeIcon,
         LightningIcon,
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
-        SwapSepaFundingInstructions,
         SwapModalFooter,
     },
 });

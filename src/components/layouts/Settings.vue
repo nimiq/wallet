@@ -363,7 +363,7 @@ export default defineComponent({
             let hash: string;
             try {
                 hash = await window.digestMessage(el.value);
-            } catch (error) {
+            } catch (error: any) {
                 el.value = error.message;
                 return;
             }

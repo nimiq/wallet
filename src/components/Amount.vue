@@ -14,7 +14,6 @@ import { CryptoCurrency } from '../lib/Constants';
 import { calculateDisplayedDecimals } from '../lib/NumberFormatting';
 
 export default defineComponent({
-    name: 'amount',
     props: {
         amount: {
             default: null as number | null,

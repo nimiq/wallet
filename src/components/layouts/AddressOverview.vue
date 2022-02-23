@@ -132,7 +132,7 @@
         </template>
         <template v-else>
             <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
-                + 'illustrations/To_the_stars_qhyy.svg'"/>
+                + 'illustrations/To_the_stars_qhyy.svg'" alt="Welcome!"/>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
             <button class="nq-button" @click="onboard" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
@@ -180,7 +180,6 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
-    CrossIcon,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -205,9 +204,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
-import EventIcon from '../icons/EventIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
-import CrossCloseButton from '../CrossCloseButton.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -321,9 +318,6 @@ export default defineComponent({
         MobileActionBar,
         Portal,
         HighFiveIcon,
-        EventIcon,
-        CrossIcon,
-        CrossCloseButton,
     },
     directives: {
         responsive: ResponsiveDirective,

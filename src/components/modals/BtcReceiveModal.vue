@@ -122,19 +122,16 @@ import { defineComponent, computed, watch, ref, Ref, onUnmounted, onMounted } fr
 import {
     PageBody,
     PageHeader,
-    PageFooter,
     Copyable,
     Tooltip,
     InfoCircleSmallIcon,
     QrCodeIcon,
-    QrCode,
 } from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
-import AmountInput from '../AmountInput.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
 import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
@@ -345,13 +342,10 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
         Copyable,
         Tooltip,
         InfoCircleSmallIcon,
         QrCodeIcon,
-        QrCode,
-        AmountInput,
         RefreshIcon,
         BracketsIcon,
         BtcCopiedAddress,

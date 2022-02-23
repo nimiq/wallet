@@ -21,7 +21,8 @@
                             @input="resetAddress"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
-                            @scan="$router.push('/scan')"/>
+                            @scan="$router.push('/scan')"
+                            ref="addressInputRef"/>
                     </template>
                 </DoubleInput>
 
@@ -136,9 +137,6 @@ import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount 
 import {
     PageHeader,
     PageBody,
-    AlertTriangleIcon,
-    ScanQrCodeIcon,
-    LabelInput,
     Tooltip,
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
@@ -417,7 +415,7 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        async function focus(elementRef: Ref<LabelInput | AmountInput | null>) {
+        async function focus(elementRef: Ref<BtcAddressInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -585,9 +583,6 @@ export default defineComponent({
         PageBody,
         BtcAddressInput,
         BtcLabelInput,
-        AlertTriangleIcon,
-        ScanQrCodeIcon,
-        LabelInput,
         AmountInput,
         AmountMenu,
         FeeSelector,

@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
-import { Tooltip, HexagonIcon } from '@nimiq/vue-components';
+import { Tooltip } from '@nimiq/vue-components';
 import { NetworkClient } from '@nimiq/network-client';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
@@ -176,7 +176,6 @@ export default defineComponent({
     },
     components: {
         Tooltip,
-        HexagonIcon,
     },
 });
 </script>

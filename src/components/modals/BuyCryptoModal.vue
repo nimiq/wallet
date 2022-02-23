@@ -272,13 +272,10 @@ import { defineComponent, ref, computed, watch, onMounted } from '@vue/compositi
 import {
     PageHeader,
     PageBody,
-    PageFooter,
-    Identicon,
     Tooltip,
     FiatAmount,
     Timer,
     CircleSpinner,
-    AlertTriangleIcon,
 } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import {
@@ -324,11 +321,8 @@ import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
-import Amount from '../Amount.vue';
-import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
@@ -503,7 +497,7 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
+                    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, undefined, {
                         eur: swapSuggestion.from.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
@@ -536,9 +530,11 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
                     if (useNetworkStore().state.consensus !== 'established') {
-                        await new Promise<void>((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                            if (state === 'established') res();
-                        }));
+                        await new Promise<void>((res) => {
+                            nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
+                                if (state === 'established') res();
+                            });
+                        });
                     }
                 }
                 if (activeCurrency.value === CryptoCurrency.BTC) {
@@ -893,24 +889,18 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
         Tooltip,
         BuyCryptoBankCheckOverlay,
         AmountInput,
-        Identicon,
         AddressList,
         FiatConvertedAmount,
         SwapAnimation,
-        Amount,
-        FlameIcon,
         FiatAmount,
         SwapFeesTooltip,
         Timer,
         MinimizeIcon,
-        BitcoinIcon,
         SwapSepaFundingInstructions,
         CircleSpinner,
-        AlertTriangleIcon,
         SwapModalFooter,
         IdenticonStack,
         InteractiveShortAddress,

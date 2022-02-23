@@ -69,7 +69,7 @@ export async function updateBuyEstimate({ fiatAmount, cryptoAmount }
     }
 
     // Update local fees with latest feePerUnit values
-    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, {
+    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, undefined, {
         eur: newEstimate.from.fee || 0,
         nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
         btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,

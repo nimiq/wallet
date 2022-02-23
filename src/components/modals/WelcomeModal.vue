@@ -54,7 +54,7 @@
                 </p>
             </div>
             <div class="visual browser-network">
-                <img src="../../assets/slides/browser-network-half.png" key="browser-network">
+                <img src="../../assets/slides/browser-network-half.png" key="browser-network" alt="Browser Network">
             </div>
         </PageBody>
 
@@ -70,7 +70,8 @@
                     @click="setLanguage(lang.code)"
                 >
                     <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
-                        class="flag" :class="{'active': settings$.language === lang.code}">
+                        class="flag" :class="{'active': settings$.language === lang.code}"
+                        :alt="`Flag-${lang.code.toUpperCase()}`">
                     {{ lang.name }}
                 </Tooltip>
             </div>
@@ -80,7 +81,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon, Identicon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, Tooltip, Identicon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
@@ -127,7 +128,6 @@ export default defineComponent({
         PageBody,
         PageFooter,
         Tooltip,
-        CaretRightSmallIcon,
         Identicon,
         BitcoinIcon,
     },

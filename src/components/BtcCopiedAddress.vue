@@ -4,7 +4,7 @@
             <div class="label-input-wrapper flex-row">
                 <Avatar :label="addressInfo.label" />
                 <LabelInput
-                    v-model="addressInfo.label"
+                    v-model="addressInfo.label /* eslint-disable-line vue/no-mutating-props */"
                     ref="$labelInput"
                     :placeholder="$t('Label the sender')"
                     vanishing

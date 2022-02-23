@@ -18,7 +18,7 @@
                 <div class="featured-exchanges flex-row">
                     <div class="exchange kucoin flex-column">
                         <h2 class="nq-h1 flex-row">
-                            <img src="../../assets/exchanges/kucoin.svg">
+                            <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
                             KuCoin
                             <a class="nq-button-pill light-blue flex-row"
                                 href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" target="_blank" rel="noopener"
@@ -38,7 +38,7 @@
                     <div class="separator"></div>
                     <div class="exchange changehero flex-column">
                         <h2 class="nq-h1 flex-row">
-                            <img src="../../assets/exchanges/changehero.svg">
+                            <img src="../../assets/exchanges/changehero.svg" alt="ChangeHero">
                             ChangeHero
                             <a class="nq-button-pill light-blue flex-row"
                                 href="https://changehero.io/?to=nim" target="_blank" rel="noopener"
@@ -58,35 +58,35 @@
                 </div>
                 <div class="exchange-logos flex-row">
                     <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/hitbtc.svg">
+                        <img src="../../assets/exchanges/hitbtc.svg" alt="HitBTC">
                     </a>
                     <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/ascendex.png">
+                        <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
                     </a>
                     <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
                         title="Changelly" target="_blank" rel="noopener"
-                    ><img src="../../assets/exchanges/changelly.svg">
+                    ><img src="../../assets/exchanges/changelly.svg" alt="Changelly">
                     </a>
                     <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/changehero.svg">
+                        <img src="../../assets/exchanges/changehero.svg" alt="Changehero">
                     </a>
                     <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/btcalpha.svg">
+                        <img src="../../assets/exchanges/btcalpha.svg" alt="BTC-Alpha">
                     </a>
                     <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/coinswitch.svg">
+                        <img src="../../assets/exchanges/coinswitch.svg" alt="Coinswitch">
                     </a>
                     <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/coindcx.svg">
+                        <img src="../../assets/exchanges/coindcx.svg" alt="CoinDCX">
                     </a>
                     <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/swapzone.svg">
+                        <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone">
                     </a>
                     <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/swapspace.svg">
+                        <img src="../../assets/exchanges/swapspace.svg" alt="SwapSpace">
                     </a>
                     <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/coinspot.svg">
+                        <img src="../../assets/exchanges/coinspot.svg" alt="CoinSpot">
                     </a>
                 </div>
             </div>

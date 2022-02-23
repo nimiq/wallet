@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction-list flex-row" ref="$el">
+    <div class="transaction-list flex-row" ref="root">
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -108,10 +108,7 @@ function processTimestamp(timestamp: number) {
 function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
-    options: {
-        month?: string,
-        year?: string,
-    },
+    options: Intl.DateTimeFormatOptions,
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
@@ -301,7 +298,7 @@ export default defineComponent({
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
         // only runs on transaction hash change.
-        const $el: Ref<null | HTMLElement> = ref(null);
+        const root: Ref<null | HTMLElement> = ref(null);
         // (() => {
         //     let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
         //     const config = { characterData: true, childList: true, subtree: true };
@@ -345,7 +342,7 @@ export default defineComponent({
         //
         //     const observer = new MutationObserver(callback);
         //
-        //     onMounted(() => observer.observe($el.value!, config));
+        //     onMounted(() => observer.observe(root.value!, config));
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
@@ -365,7 +362,7 @@ export default defineComponent({
             itemSize,
             txCount,
             transactions,
-            $el,
+            root,
             isFetchingTxHistory,
             // isMainnet,
             scroller,

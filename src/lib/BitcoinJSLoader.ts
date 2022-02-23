@@ -7,7 +7,7 @@ export async function loadBitcoinJS(): Promise<boolean> {
             script.addEventListener('load', async () => {
                 // Wait for script to be parsed: check if global 'BitcoinJS' variable is available yet
                 while (typeof BitcoinJS === 'undefined') {
-                    await new Promise((res) => setTimeout(res, 50)); // eslint-disable-line no-await-in-loop
+                    await new Promise((res) => { setTimeout(res, 50); }); // eslint-disable-line no-await-in-loop
                 }
                 resolve(true);
             });

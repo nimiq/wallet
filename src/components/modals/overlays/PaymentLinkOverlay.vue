@@ -72,7 +72,6 @@ import { useSettingsStore } from '@/stores/Settings';
 import AmountInput from '../../AmountInput.vue';
 import AmountMenu from '../../AmountMenu.vue';
 import FiatConvertedAmount from '../../FiatConvertedAmount.vue';
-import Amount from '../../Amount.vue';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../../lib/Constants';
 import { useFiatStore } from '../../../stores/Fiat';
 
@@ -166,7 +165,6 @@ export default defineComponent({
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
-        Amount,
     },
 });
 </script>

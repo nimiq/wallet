@@ -4,8 +4,7 @@ const child_process = require('child_process');
 const createHash = require('crypto').createHash;
 
 const webpack = require('webpack');
-const SriPlugin = require('webpack-subresource-integrity');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
@@ -36,28 +35,32 @@ process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
-    integrity: true,
+    integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
         output: {
             crossOriginLoading: 'anonymous',
         },
         plugins: [
-            new SriPlugin({
-                hashFuncNames: ['sha256'],
-                enabled: process.env.NODE_ENV === 'production',
-            }),
             new PoLoaderOptimizer(),
+            new SubresourceIntegrityPlugin(), // The SRI plugin has to be placed _after_ the PO-Optimizer plugin
             new webpack.DefinePlugin({
-                'process.env': {
-                    SENTRY_RELEASE: `"wallet-${release}"`,
-                },
+                'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
+            }),
+            new webpack.ProvidePlugin({
+                Buffer: ['buffer', 'Buffer'],
+                process: 'process/browser', // Needed by stream-browserify
             }),
         ],
         // Resolve config for yarn build
         resolve: {
             alias: {
                 config: path.join(__dirname, `src/config/config.${buildName}.ts`)
-            }
+            },
+            // In Webpack 5, NodeJS polyfills have to be explicitly configured
+            fallback: {
+                buffer: require.resolve('buffer/'),
+                stream: require.resolve('stream-browserify'), // Needed by bitcoinjs-lib/tiny-secp256k1
+            },
         },
         devtool: 'source-map', // TEMP: only 'source-map' allowed by webpack-i18-tools, will be fixed in future versions.
         // externals: {
@@ -67,31 +70,32 @@ module.exports = {
     },
     chainWebpack(config) {
         config
-            .plugin('copy-webpack-plugin')
-            .use(CopyWebpackPlugin, [[
-                { from: 'node_modules/@nimiq/style/nimiq-style.icons.svg', to: 'img' },
-                {
-                    from: 'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
-                    to: './img/',
-                    flatten: true,
-                },
-                {
-                    from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.*.js',
-                    to: './js/',
-                    flatten: true,
-                },
-                {
-                    from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
-                    to: './js/',
-                    flatten: true,
-                    transformPath(path) {
-                        // The bundled NimiqVueComponents.umd.js tries to load the the non-minified files
-                        return path.replace('.min', '');
-                    },
-                },
-            ]]);
+            .plugin('copy')
+            .tap(([options]) => {
+                return [{
+                    patterns: [...options.patterns, {
+                        from: 'node_modules/@nimiq/style/nimiq-style.icons.svg',
+                        to: 'img',
+                    }, {
+                        from: 'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
+                        to: './img/[name][ext]',
+                    }, {
+                        from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.*.js',
+                        to: './js/[name][ext]',
+                    }, {
+                        from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
+                        to({ absoluteFilename }) {
+                            const segments = absoluteFilename.split('/');
+                            const fileName = segments[segments.length - 1];
+                            // The bundled NimiqVueComponents.umd.js tries to load the the non-minified files
+                            return `./js/${fileName.replace('.min', '')}`;
+                        },
+                    }],
+                }];
+            });
 
-        config
+        // Prefetching is disabled when `integrity: true` is used.
+        if (config.plugins.has('prefetch')) config
             .plugin('prefetch')
             .tap(options => {
                 // Ignore rarely used files.
@@ -108,15 +112,6 @@ module.exports = {
                 ];
                 return options
             });
-
-        config.module
-            .rule('eslint')
-            .use('eslint-loader')
-                .loader('eslint-loader')
-                .tap(options => {
-                    options.emitWarning = process.env.NODE_ENV === 'production' ? false : true;
-                    return options;
-                });
 
         config.module
             .rule('po')
@@ -192,6 +187,15 @@ module.exports = {
                 //     type: "image/png"
                 // },
             ]
+        },
+        iconPaths: {
+            faviconSVG: null,
+            msTileImage: null,
+        },
+        workboxOptions: {
+            // Enable PWA offline mode
+            inlineWorkboxRuntime: true,
+            cacheId: release,
         },
     },
 };

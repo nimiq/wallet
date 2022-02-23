@@ -4,7 +4,7 @@
             <slot name="trigger">
                 <div class="flex-row">
                     <CountryFlag :code="currentCountryCode || 'all'" />
-                    <img src="../assets/arrow-down.svg" />
+                    <img src="../assets/arrow-down.svg" alt="open"/>
                 </div>
             </slot>
         </button>
@@ -29,6 +29,7 @@
                     :class="{ selected: index === selectedIndex }"
                     @click="selectCountry(country)"
                     @mouseenter="selectedIndex = index"
+                    @focusin="selectedIndex = index"
                 >
                     <CountryFlag :code="country.code" />
                     {{ country.name }}

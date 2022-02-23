@@ -92,7 +92,9 @@ export default defineComponent({
                 context.root.$router.back();
 
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+                await new Promise((resolve) => {
+                    window.addEventListener('popstate', resolve, { once: true });
+                });
             }
         }
 

@@ -56,7 +56,7 @@ export default defineComponent({
         }
 
         function goToNetworkTour() {
-            useAccountStore().setTour({ name: TourName.NETWORK });
+            useAccountStore().setTour({ name: TourName.NETWORK, step: 0 });
             context.emit('close');
         }
 

@@ -41,7 +41,7 @@ export function getTransactionListStep(
             txsLen.value === 0 ? '' : IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_BUY,
         ],
         scrollLockedElements: [
-            `${IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST} .vue-recycle-scroller`,
+            IWalletHTMLElements.ACCOUNT_OVERVIEW_ADDRESS_LIST,
             `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} .vue-recycle-scroller`,
         ],
         explicitInteractableElements: [
@@ -98,10 +98,11 @@ export function getTransactionListStep(
                 });
 
                 // Add hightlight effect to 'Get Free NIM' button
-                toggleHighlightButton(IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS, true, 'green');
+                toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, true, 'green');
                 return () => {
                     unwatch();
-                    return toggleHighlightButton(IWalletHTMLElements.ADDRESS_OVERVIEW_ACTIONS, false, 'green');
+                    return toggleHighlightButton(
+                        IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, false, 'green');
                 };
             },
         },

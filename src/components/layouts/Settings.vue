@@ -377,7 +377,7 @@ export default defineComponent({
         }
 
         function goToOnboardingTour() {
-            useAccountStore().setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.SETTINGS });
+            useAccountStore().setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.SETTINGS, step: 0 });
             context.root.$router.push('/');
         }
 

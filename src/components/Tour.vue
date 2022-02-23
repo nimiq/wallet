@@ -217,7 +217,7 @@ export default defineComponent({
         setTourAsArray();
 
         const isLoading = ref(true);
-        const currentStep: Ref<TourStepIndex> = ref(0);
+        const currentStep: Ref<TourStepIndex> = ref(accountStore.tour?.step || 0);
         const nSteps: Ref<number> = ref(steps.value.length);
         const disableNextStep = ref(true);
         const showTour = ref(false);
@@ -379,6 +379,8 @@ export default defineComponent({
                     nSteps: nSteps.value,
                 },
             });
+
+            accountStore.tour!.step = currentStep.value;
         }
 
         function _broadcast(data: ITourBroadcast) {
@@ -522,13 +524,14 @@ export default defineComponent({
                 showTour.value = false; // This way, we can trigger the animation as v-step will be removed
             }
 
+            // Update UI
+            _toggleDisabledButtons(steps.value[currentStep.value].ui.disabledButtons, false);
+            _removeUIFromOldStep(currentStep.value);
+
             if (!soft) {
                 // wait until longest leave transition finishes
                 await sleep(1150);
             }
-
-            // Update UI
-            _removeUIFromOldStep(currentStep.value);
 
             if (!soft) {
                 setTour(null);
@@ -664,8 +667,7 @@ export default defineComponent({
     cursor: not-allowed;
 }
 
-#app[data-tour-active] [data-scroll-locked],
-#app[data-tour-active] [data-scroll-locked] * {
+#app[data-tour-active] [data-scroll-locked] {
     overflow: hidden;
 }
 

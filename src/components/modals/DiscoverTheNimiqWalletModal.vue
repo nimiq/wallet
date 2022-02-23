@@ -49,7 +49,7 @@ export default defineComponent({
         const { setTour } = useAccountStore();
 
         function startTour() {
-            setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.WELCOME_MODAL });
+            setTour({ name: TourName.ONBOARDING, startedFrom: ITourOrigin.WELCOME_MODAL, step: 0 });
             context.root.$router.push('/');
         }
 

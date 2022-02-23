@@ -1,6 +1,6 @@
 <template>
     <Modal class="account-menu-modal menu">
-        <div class="current-account">
+        <div v-if="activeAccountId && activeAccountInfo" class="current-account">
             <AccountMenuItem :id="activeAccountId"/>
             <button v-if="canExportFile" class="item reset flex-row"
                 @click="backup(activeAccountId, { fileOnly: true })">

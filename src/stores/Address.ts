@@ -48,6 +48,7 @@ export const useAddressStore = createStore({
 
             return activeAccountInfo.value.addresses
                 .map((addr) => state.addressInfos[addr])
+                .filter((ai) => Boolean(ai))
                 .map((ai) => {
                     const pendingTxs = pendingTransactionsBySender.value[ai.address] || [];
                     const outgoingPendingAmount = pendingTxs

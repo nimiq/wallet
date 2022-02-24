@@ -192,10 +192,5 @@ module.exports = {
             faviconSVG: null,
             msTileImage: null,
         },
-        workboxOptions: {
-            // Enable PWA offline mode
-            inlineWorkboxRuntime: true,
-            cacheId: release,
-        },
     },
 };

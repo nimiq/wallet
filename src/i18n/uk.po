@@ -457,7 +457,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:179
 #: src/components/modals/SellCryptoModal.vue:177
-#: src/components/swap/SwapModal.vue:135
+#: src/components/swap/SwapModal.vue:141
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -466,7 +466,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:193
 #: src/components/modals/SellCryptoModal.vue:191
-#: src/components/swap/SwapModal.vue:147
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot}."
@@ -527,7 +527,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:262
 #: src/components/modals/SellCryptoModal.vue:243
 #: src/components/modals/SendModal.vue:196
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:187
 msgid "Choose an Address"
 msgstr "Виберіть адресу"
 
@@ -560,8 +560,8 @@ msgstr "Закрити"
 msgid "Coming soon"
 msgstr "Незабаром"
 
-#: src/components/swap/SwapModal.vue:133 src/components/swap/SwapModal.vue:138
-#: src/components/swap/SwapModal.vue:150
+#: src/components/swap/SwapModal.vue:139 src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:156
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Підтвердити"
@@ -1850,7 +1850,7 @@ msgstr "Тестова мережа"
 msgid "The bank is processing your transaction."
 msgstr "Банк обробляє вашу операцію."
 
-#: src/components/swap/SwapModal.vue:596 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:602 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."

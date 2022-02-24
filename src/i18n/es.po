@@ -469,7 +469,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:179
 #: src/components/modals/SellCryptoModal.vue:177
-#: src/components/swap/SwapModal.vue:135
+#: src/components/swap/SwapModal.vue:141
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -478,7 +478,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:193
 #: src/components/modals/SellCryptoModal.vue:191
-#: src/components/swap/SwapModal.vue:147
+#: src/components/swap/SwapModal.vue:153
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Al hacer click en '{text}', usted esta aceptando a los términos de servicio "
@@ -540,7 +540,7 @@ msgstr "Seleccione un Emisor"
 #: src/components/modals/BuyCryptoModal.vue:262
 #: src/components/modals/SellCryptoModal.vue:243
 #: src/components/modals/SendModal.vue:196
-#: src/components/swap/SwapModal.vue:181
+#: src/components/swap/SwapModal.vue:187
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
@@ -573,8 +573,8 @@ msgstr "Cerrar"
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/swap/SwapModal.vue:133 src/components/swap/SwapModal.vue:138
-#: src/components/swap/SwapModal.vue:150
+#: src/components/swap/SwapModal.vue:139 src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:156
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Confirmar"
@@ -1884,7 +1884,7 @@ msgstr "Testnet"
 msgid "The bank is processing your transaction."
 msgstr "El banco esta procesando su transacción."
 
-#: src/components/swap/SwapModal.vue:596 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:602 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."

@@ -86,12 +86,15 @@
                 >
                     <AmountInput
                         :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
+                        @focus="onFocus(SwapAsset.NIM, $event)"
                         @input="onInput(SwapAsset.NIM, $event)"
+                        @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantNim > 0 || capDecimals(getNim, SwapAsset.NIM) > 0,
                             'negative-value': wantNim < 0 || capDecimals(getNim, SwapAsset.NIM) < 0,
                         }"
-                        :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
+                        :placeholder="getPlaceholder(SwapAsset.NIM)"
+                        :maxFontSize="2.5" :decimals="5" preserveSign>
                     </AmountInput>
                     <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
                 </div>
@@ -101,12 +104,15 @@
                 >
                     <AmountInput
                         :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
+                        @focus="onFocus(SwapAsset.BTC, $event)"
                         @input="onInput(SwapAsset.BTC, $event)"
+                        @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantBtc > 0 || capDecimals(getBtc, SwapAsset.BTC) > 0,
                             'negative-value': wantBtc < 0 || capDecimals(getBtc, SwapAsset.BTC) < 0,
                         }"
-                        :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
+                        :placeholder="getPlaceholder(SwapAsset.BTC)"
+                        :maxFontSize="2.5" :decimals="btcUnit.decimals" preserveSign>
                         <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                     </AmountInput>
                     <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
@@ -639,6 +645,11 @@ export default defineComponent({
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
 
+                // If user has 0 assets in BTC, then only accept negative values
+                if (accountBtcBalance.value === 0 && wantNim.value > 0) {
+                    wantNim.value *= -1;
+                }
+
                 isLimitReached.value = Math.abs(originalAmount || wantNim.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
@@ -651,12 +662,61 @@ export default defineComponent({
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
 
+                // If user has 0 assets in NIM, then only accept negative values
+                if (activeAddressInfo.value?.balance === 0 && wantBtc.value > 0) {
+                    wantBtc.value *= -1;
+                }
+
                 isLimitReached.value = Math.abs(originalAmount || wantBtc.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
 
             if (!amount) {
                 updateEstimate(); // Skip debounce and update instantly
+            }
+        }
+
+        // If user only has one asset, then we know that there is only one available operation,
+        // so we show only one icon: '-' or '+' depending on the asset
+        function getPlaceholder(asset: SwapAsset) {
+            if (asset === SwapAsset.NIM) {
+                if (accountBtcBalance.value === 0) {
+                    return '- 0';
+                }
+                if (activeAddressInfo.value?.balance === 0) {
+                    return '+ 0';
+                }
+            }
+            if (asset === SwapAsset.BTC) {
+                if (activeAddressInfo.value?.balance === 0) {
+                    return '- 0';
+                }
+                if (accountBtcBalance.value === 0) {
+                    return '+ 0';
+                }
+            }
+            return '± 0';
+        }
+
+        function onFocus(asset: SwapAsset, input: HTMLInputElement) {
+            // If user has selected NIM and has 0 assets in BTC, then the input should start with a - symbol,
+            // and viceversa
+
+            // If user has already changed the input, do nothing
+            if (input.value !== '') return;
+
+            if (
+                // eslint-disable-next-line operator-linebreak
+                (asset === SwapAsset.NIM && accountBtcBalance.value === 0) ||
+                (asset === SwapAsset.BTC && activeAddressInfo.value?.balance === 0)
+            ) {
+                input.value = '-';
+            }
+        }
+
+        function onBlur(input: HTMLInputElement) {
+            if (input.value === '-') {
+                input.value = '';
             }
         }
 
@@ -1155,7 +1215,10 @@ export default defineComponent({
             serviceSwapFeeFiat,
             serviceSwapFeePercentage,
             isHighRelativeFees,
+            getPlaceholder,
             onInput,
+            onFocus,
+            onBlur,
             onSwapBalanceBarChange,
             newNimBalance,
             newBtcBalance,

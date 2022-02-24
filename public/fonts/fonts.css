@@ -1,0 +1,36 @@
+/* LICENCE Muli: /fonts/LICENCE_MULI.txt */
+@font-face {
+    font-family: 'Muli';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Muli'), local('Mulish'), url('Muli-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Muli';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Muli'), local('Mulish'), url('Muli-SemiBold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Muli';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Muli'), local('Mulish'), url('Muli-Bold.woff') format('woff');
+}
+
+/* LICENCE Muli: /fonts/LICENCE_FIRA.txt */
+@font-face {
+    font-family: 'Fira Mono';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Fira Mono'), url('FiraMono-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Fira Mono';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Fira Mono'), url('FiraMono-Medium.woff') format('woff');
+}

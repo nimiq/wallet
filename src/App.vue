@@ -163,6 +163,7 @@ export default defineComponent({
     /* Default: >= 1500px */
     --sidebar-width: 24rem;
     --account-column-width: 70rem;
+    --settings-width: 131rem;
     --address-column-width: 150rem;
 
     @media (max-width: 1499px) {
@@ -222,7 +223,11 @@ export default defineComponent({
         }
 
         ::v-deep .address-overview {
-            width: var(--address-column-width);
+            width: clamp(
+                        0px,
+                        calc(100vw - var(--sidebar-width) - var(--account-column-width)),
+                        var(--address-column-width)
+                    );
             min-width: 0;
             z-index: 3;
         }
@@ -275,6 +280,14 @@ export default defineComponent({
                 // Account column
                 transform: translateX(calc(-1 * var(--sidebar-width)));
             }
+
+            ::v-deep .address-overview {
+                width: clamp(
+                        0px,
+                        calc(100vw - var(--account-column-width)),
+                        var(--address-column-width)
+                    );
+            }
         }
     }
 
@@ -288,11 +301,50 @@ export default defineComponent({
 
             ::v-deep .address-overview {
                 min-width: unset;
+                width: 100vw;
             }
 
             &.column-address {
                 // Address column
                 transform: translateX(calc(-1 * var(--sidebar-width) - 100vw));
+            }
+        }
+    }
+
+    @media (min-width: 2000px) {
+        ::v-deep .groundfloor {
+            display: flex;
+            justify-content: center;
+
+            // Size of both columns
+            --columns-width: calc(var(--account-column-width) + var(--address-column-width));
+
+            // Margin between columns and edges of the groundfloor
+            --columns-lateral-margin: calc((100% - var(--columns-width)) / 2);
+
+            & > div {
+                position: relative;
+
+                .account-overview {
+                    position: absolute;
+                    width: var(--account-column-width);
+                    right: calc(var(--columns-lateral-margin) + var(--address-column-width));
+                    height: 100%;
+                }
+
+                .settings {
+                    position: absolute;
+                    width: var(--settings-width);
+                    height: 100%;
+                    margin-left: calc(var(--settings-width) / -2);
+                }
+
+                .address-overview {
+                    position: absolute;
+                    width: var(--address-column-width);
+                    left: calc(var(--columns-lateral-margin) + var(--account-column-width));
+                    height: 100%;
+                }
             }
         }
     }

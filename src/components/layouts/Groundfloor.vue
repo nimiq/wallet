@@ -1,20 +1,24 @@
 <template>
     <div class="groundfloor flex-row">
-        <transition name="fade">
-            <keep-alive>
-                <router-view name="accountOverview"/>
-            </keep-alive>
-        </transition>
 
-        <transition name="fade">
-            <router-view name="settings"/>
-        </transition>
+        <div>
+            <transition name="fade">
+                <keep-alive>
+                    <router-view name="accountOverview"/>
+                </keep-alive>
+            </transition>
+            <transition name="fade">
+                <router-view name="settings"/>
+            </transition>
+        </div>
 
-        <transition name="slide-right">
-            <keep-alive>
-                <router-view name="addressOverview"/>
-            </keep-alive>
-        </transition>
+        <div>
+            <transition name="slide-right">
+                <keep-alive>
+                    <router-view name="addressOverview"/>
+                </keep-alive>
+            </transition>
+        </div>
 
         <div class="mobile-tap-area" @click="$router.back()"></div>
     </div>

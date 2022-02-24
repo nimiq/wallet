@@ -426,17 +426,21 @@ body {
     &.slide-right-leave-to {
         transform: translate3d(calc(100vw - var(--sidebar-width)), 0, 0);
     }
-}
 
-.address-overview {
-    &.slide-right-enter,
-    &.slide-right-leave-to {
-        transform: translate3d(calc(100vw - var(--account-column-width) - var(--sidebar-width)), 0, 0);
+    .address-overview {
+        &.slide-right-enter,
+        &.slide-right-leave-to {
+            transform: translate3d(calc(100vw - var(--account-column-width) - var(--sidebar-width)), 0, 0);
+        }
+
+        .slide-right-enter &,
+        .slide-right-leave-to & {
+            transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
+        }
     }
 
-    .slide-right-enter &,
-    .slide-right-leave-to & {
-        transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
+    .settings {
+        width: calc(100vw - var(--sidebar-width));
     }
 }
 
@@ -446,14 +450,19 @@ body {
         &.slide-right-leave-to {
             transform: translate3d(100vw, 0, 0);
         }
-    }
 
-    .address-overview {
-        &.slide-right-enter,
-        &.slide-right-leave-to {
-            transform: translate3d(calc(100vw - var(--account-column-width)), 0, 0);
+        .address-overview {
+            &.slide-right-enter,
+            &.slide-right-leave-to {
+                transform: translate3d(calc(100vw - var(--account-column-width)), 0, 0);
+            }
+        }
+
+        .settings {
+            width: 100vw;
         }
     }
+
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint

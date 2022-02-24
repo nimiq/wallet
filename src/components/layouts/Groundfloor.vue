@@ -2,12 +2,12 @@
     <div class="groundfloor flex-row">
 
         <div>
-            <transition name="fade">
+            <transition name="fade" v-if="$route.path !== '/network'">
                 <keep-alive>
                     <router-view name="accountOverview"/>
                 </keep-alive>
             </transition>
-            <transition name="fade">
+            <transition name="fade" v-if="$route.path !== '/network'">
                 <router-view name="settings"/>
             </transition>
         </div>

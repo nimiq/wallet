@@ -60,6 +60,7 @@ export default defineComponent({
 
     @media (max-width: 450px) {
         padding: 1rem 1.5rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
         border-radius: 1rem 1rem 0 0;
     }
 
@@ -72,6 +73,10 @@ export default defineComponent({
     &.hide-close-button ::v-deep .close-button {
         display: none;
     }
+
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    @media (max-width: 912px) { bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+    @media (max-width: 450px) { bottom: 0; }
 }
 
 .nq-link {

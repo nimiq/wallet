@@ -379,7 +379,7 @@ header {
     align-items: stretch;
     margin: 1rem;
     border-radius: 0.75rem;
-    padding: 2.5rem 3rem;
+    padding: 2.5rem;
     text-decoration: none;
     color: white;
 

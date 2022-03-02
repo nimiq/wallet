@@ -364,18 +364,14 @@ export default defineComponent({
     padding-bottom: 0;
 
     .subheader {
-        display: flex;
         margin-top: 1.5rem;
-        justify-content: center;
-        align-items: center;
         font-size: var(--body-size);
         line-height: 1.4;
         font-weight: 600;
-        text-align: initial;
         color: var(--text-60);
 
         > .info-tooltip {
-            margin-left: 1rem;
+            margin-left: 0.25rem;
             z-index: 4;
 
             ::v-deep .trigger svg {

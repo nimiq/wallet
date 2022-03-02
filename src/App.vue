@@ -311,7 +311,7 @@ export default defineComponent({
         }
     }
 
-    @media (min-width: 2000px) {
+    @media (min-width: 2070px) {
         ::v-deep .groundfloor {
             display: flex;
             justify-content: center;

@@ -30,7 +30,7 @@
 
 @font-face {
     font-family: 'Fira Mono';
-    font-style: normal;
-    font-weight: 500;
+    font-style: normal, bold;
+    font-weight: 500, 700;
     src: local('Fira Mono'), url('FiraMono-Medium.woff') format('woff');
 }

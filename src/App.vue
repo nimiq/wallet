@@ -164,7 +164,7 @@ export default defineComponent({
     --sidebar-width: 24rem;
     --account-column-width: 70rem;
     --settings-width: 131rem;
-    --address-column-width: 140rem;
+    --address-column-width: 150rem;
 
     @media (max-width: 1499px) {
         --account-column-width: 65rem;
@@ -197,10 +197,6 @@ export default defineComponent({
 
     @media (min-width: 2000px) {
         --account-column-width: 85rem;
-    }
-
-    @media (min-width: 2070px) {
-        --address-column-width: 150rem;
     }
 
     main {
@@ -315,7 +311,7 @@ export default defineComponent({
         }
     }
 
-    @media (min-width: 2000px) {
+    @media (min-width: 2070px) {
         ::v-deep .groundfloor {
             display: flex;
             justify-content: center;

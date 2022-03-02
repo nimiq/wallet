@@ -75,7 +75,7 @@
                         <Copyable v-if="activeCurrency === 'nim'"
                             :text="activeAddressInfo.address" :key="activeAddressInfo.address"
                         >
-                            <div class="address" v-responsive="{'masked': el => el.width < addressMaskedWidth}">
+                            <div class="address" ref="$address" :class="{ 'masked': addressMasked  }">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
@@ -172,7 +172,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -183,8 +183,6 @@ import {
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-// @ts-expect-error missing types for this package
-import { ResponsiveDirective } from 'vue-responsive-components';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import Amount from '../Amount.vue';
@@ -200,6 +198,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub';
+import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
@@ -218,6 +217,20 @@ export default defineComponent({
 
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
+
+        const $address = ref<HTMLDivElement>(null);
+        const addressMasked = ref<boolean>(false);
+
+        useElementResize($address, maskAddress);
+
+        const { isMobile, isFullDesktop } = useWindowSize();
+
+        function maskAddress() {
+            let addressMaskedWidth = 322;
+            if (isFullDesktop.value) addressMaskedWidth = 396;
+            if (!isMobile.value) addressMaskedWidth = 372;
+            addressMasked.value = $address.value!.clientWidth < addressMaskedWidth;
+        }
 
         function hideUnclaimedCashlinkList() {
             showUnclaimedCashlinkList.value = false;
@@ -246,14 +259,6 @@ export default defineComponent({
                 setPromoBoxVisible(false);
             }
         });
-
-        const { isMobile, isFullDesktop } = useWindowSize();
-
-        const addressMaskedWidth = computed(() => isFullDesktop.value
-            ? 396
-            : !isMobile.value
-                ? 372
-                : 322);
 
         function rescan() {
             const { addressSet } = useBtcAddressStore();
@@ -292,12 +297,13 @@ export default defineComponent({
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
-            addressMaskedWidth,
             btcAccountBalance,
             CryptoCurrency,
             promoBoxVisible,
             setPromoBoxVisible,
             onTransactionListScroll,
+            $address,
+            addressMasked,
         };
     },
     components: {
@@ -318,9 +324,6 @@ export default defineComponent({
         MobileActionBar,
         Portal,
         HighFiveIcon,
-    },
-    directives: {
-        responsive: ResponsiveDirective,
     },
 });
 </script>

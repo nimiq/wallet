@@ -799,7 +799,6 @@ export default defineComponent({
         justify-content: space-between;
         align-items: center;
         flex-grow: 1;
-        overflow-y: visible; // needed for ios Safari
         position: relative;
     }
 

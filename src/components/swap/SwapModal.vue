@@ -1379,7 +1379,7 @@ export default defineComponent({
 }
 
 .amount-input.has-value {
-    &.positive-value ::v-deep form{
+    &.positive-value ::v-deep form {
         .nq-input {
             color: var(--nimiq-green);
             --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
@@ -1434,26 +1434,33 @@ export default defineComponent({
     }
 }
 
-.amount-input,
-.new-balances .amount {
+.swap-modal {
     --size: var(--h2-size);
-    font-size: var(--size);
-    font-weight: bold;
 
-    ::v-deep .ticker {
-        // Sometimes this class gets lower priority than the ticker's native class, so we need to force these styles
-        font-size: inherit !important;
-        line-height: 1 !important;
-        margin-left: 0.5rem !important;
+    & ::v-deep .amount-input {
+        font-size: var(--size);
+        font-weight: bold;
+
+        .ticker {
+            line-height: 1;
+            margin-left: 0.5rem;
+            font-size: var(--size);
+        }
     }
 
-    .nq-green & {
-        color: var(--nimiq-green);
+    .new-balances ::v-deep .amount {
+        font-size: var(--size);
+        font-weight: bold;
+
+        .nq-green & {
+            color: var(--nimiq-green);
+        }
+
+        .nq-blue & {
+            color: var(--nimiq-blue);
+        }
     }
 
-    .nq-blue & {
-        color: var(--nimiq-blue);
-    }
 }
 
 .new-balances .fiat-amount {

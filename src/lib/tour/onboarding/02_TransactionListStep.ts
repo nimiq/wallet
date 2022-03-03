@@ -67,7 +67,7 @@ export function getTransactionListStep(
             },
             get content() {
                 return getOnboardingTexts(
-                    OnboardingTourStep.TRANSACTION_LIST)[txsLen.value <= 1 ? 'default' : 'alternative'] || [];
+                    OnboardingTourStep.TRANSACTION_LIST)[txsLen.value === 0 ? 'default' : 'alternative'] || [];
             },
             params: {
                 get placement() {

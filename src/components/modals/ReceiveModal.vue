@@ -16,9 +16,7 @@
                 <QrCodeIcon/>
             </button>
             <Identicon :address="activeAddressInfo.address"/>
-            <Copyable :text="activeAddressInfo.address">
-                <AddressDisplay :address="activeAddressInfo.address"/>
-            </Copyable>
+            <AddressDisplay :address="activeAddressInfo.address" copyable/>
             <button
                 v-if="activeAddressInfo.type === AddressType.BASIC"
                 @click="receiveLinkOverlayOpened = true"
@@ -48,7 +46,6 @@ import {
     AddressDisplay,
     QrCodeIcon,
     QrCode,
-    Copyable,
 } from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
@@ -90,7 +87,6 @@ export default defineComponent({
         AddressDisplay,
         QrCodeIcon,
         QrCode,
-        Copyable,
         PaymentLinkOverlay,
         QrCodeOverlay,
     } as any,
@@ -127,31 +123,11 @@ export default defineComponent({
         margin-top: 3rem;
     }
 
-    .copyable {
-        padding: 0.5rem;
+    & ::v-deep .copyable {
         background: var(--nimiq-highlight-bg);
-        border-radius: 0.625rem;
-        margin: 1rem 0 4rem;
-
-        transition:
-            color .3s var(--nimiq-ease),
-            background 0.3s var(--nimiq-ease);
-
-        ::v-deep .background {
-            display: none;
-        }
-
-        .address-display {
-            transition: opacity 0.3s var(--nimiq-ease);
-            font-weight: 500;
-            opacity: 1;
-        }
-
-        &:hover,
-        &:focus,
-        &.copied {
-            background: rgba(5, 130, 202, 0.07); // Based on Nimiq Light Blue
-        }
+        color: var(--nimiq-blue);
+        padding: 1.25rem 1.5rem;
+        font-weight: 500;
     }
 }
 

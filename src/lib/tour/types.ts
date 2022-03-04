@@ -39,13 +39,19 @@ export interface ITooltipModifier {
     options: any;
 }
 
-export interface ILifecycleArgs {
-    goToNextStep: () => void;
-    goingForward: boolean;
-    ending: boolean;
+export interface FutureStepArgs {
+    withDelay: boolean;
 }
 
-export type IUnmountedFn = ((args: Omit<ILifecycleArgs, 'goToNextStep'>) => Promise<void> | void);
+export interface ILifecycleArgs {
+    goToNextStep: (args?: FutureStepArgs) => void;
+    goToPrevStep: (args?: FutureStepArgs) => void;
+    goingForward: boolean;
+    ending: boolean;
+    isNextStepDisabled: Ref<boolean>;
+}
+
+export type IUnmountedFn = ((args: Omit<ILifecycleArgs, 'goToNextStep' | 'goToPrevStep'>) => Promise<void> | void);
 
 // This interface is the main interface for a step in the tour. It consists of:
 //      - path - the route that the step should be shown on
@@ -200,7 +206,9 @@ export enum IWalletHTMLElements {
     BUTTON_SIDEBAR_BUY = '.sidebar .trade-actions button:nth-child(1)',
     BUTTON_SIDEBAR_SELL = '.sidebar .trade-actions button:nth-child(2)',
     BUTTON_ADDRESS_OVERVIEW_BUY = '.address-overview .transaction-list .after-first-tx button',
-    BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM = '.address-overview .transaction-list .empty-state button',
+    BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM = // The comma in document.querySelector works like an OR gate
+    '.address-overview .transaction-list .empty-state a,' // Mainnet uses an a element
+    + '.address-overview .transaction-list .empty-state button', // Devnet uses a button element
     BUTTON_ADDRESS_BACKUP_ALERT = '.account-overview .backup-warning button',
 
     MODAL_CONTAINER = '.modal.backdrop',

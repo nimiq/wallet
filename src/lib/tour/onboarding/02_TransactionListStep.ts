@@ -1,10 +1,13 @@
-import { watch } from '@vue/composition-api';
+import { ref, watch } from '@vue/composition-api';
 import { defaultTooltipModifiers, ITooltipModifier, IWalletHTMLElements } from '..';
 import { IOnboardingGetStepFnArgs, ITourStep, OnboardingTourStep } from '../types';
 import { getOnboardingTexts } from './OnboardingTourTexts';
 
 export function getTransactionListStep(
     { isSmallScreen, toggleHighlightButton, txsLen }: IOnboardingGetStepFnArgs): ITourStep {
+    const freeNimBtn = ref(() =>
+        document.querySelector(IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM) as HTMLDivElement);
+
     const ui: ITourStep['ui'] = {
         fadedElements: [
             IWalletHTMLElements.SIDEBAR_TESTNET,
@@ -66,8 +69,8 @@ export function getTransactionListStep(
                     : '.address-overview';
             },
             get content() {
-                return getOnboardingTexts(
-                    OnboardingTourStep.TRANSACTION_LIST)[txsLen.value === 0 ? 'default' : 'alternative'] || [];
+                const textType = txsLen.value === 0 && freeNimBtn.value ? 'default' : 'alternative';
+                return getOnboardingTexts(OnboardingTourStep.TRANSACTION_LIST)[textType] || [];
             },
             params: {
                 get placement() {
@@ -90,17 +93,41 @@ export function getTransactionListStep(
             },
         },
         lifecycle: {
-            mounted: ({ goToNextStep }) => {
+            mounted: ({ goToNextStep, isNextStepDisabled }) => {
                 if (txsLen.value > 0) return undefined;
+
+                function freeNimBtnClickHandler() {
+                    setTimeout(() => {
+                        // User in the mainnet is expected to click on the 'Get Free NIM' button
+                        // This button opens the faucet page and the user exits the wallet. Once the user finishes, he
+                        // is expected to return to the wallet and automatically the tour will go to the next step.
+                        // There might be a possibility that the user gets an error in the faucet, and therefore, the
+                        // tour will not continue. In those cases we will let the user click 'Next step' but it will
+                        // actually skip the third step and go to the fourth step
+                        // FIXME: In the future, if we integrate the faucet into the wallet, we could improve this
+                        // behaviour
+                        if (txsLen.value > 0) return;
+                        isNextStepDisabled.value = false;
+                    }, 2000);
+                }
+
+                if (freeNimBtn.value() !== null) {
+                    freeNimBtn.value().addEventListener('click', freeNimBtnClickHandler, { once: true });
+                } else {
+                    isNextStepDisabled.value = false;
+                }
 
                 const unwatch = watch(txsLen, (newVal) => {
                     if (newVal > 0) goToNextStep();
                 });
 
-                // Add hightlight effect to 'Get Free NIM' button
+                // Add hightlight effect to 'Get Free NIM' button. This will be ignored if the user have at least one tx
                 toggleHighlightButton(IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, true, 'green');
                 return () => {
                     unwatch();
+                    if (freeNimBtn.value()) {
+                        freeNimBtn.value().removeEventListener('click', freeNimBtnClickHandler);
+                    }
                     return toggleHighlightButton(
                         IWalletHTMLElements.BUTTON_ADDRESS_OVERVIEW_RECEIVE_FREE_NIM, false, 'green');
                 };
@@ -110,7 +137,7 @@ export function getTransactionListStep(
             return {
                 ...ui,
 
-                // User is expected to click on the 'Get Free NIM' button
+                // User is expected to click on the 'Get Free NIM' button if they have not txs
                 isNextStepDisabled: txsLen.value === 0,
             };
         },

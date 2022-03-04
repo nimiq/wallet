@@ -43,6 +43,20 @@ export function getFirstTransactionStep({ isSmallScreen, txsLen }: IOnboardingGe
         get path() {
             return isSmallScreen.value ? '/transactions' : '/';
         },
+        lifecycle: {
+            created: ({ goToNextStep, goToPrevStep, goingForward }) => {
+                // Might be the case that user has no transactions yet and still he reaches this step nonetheless.
+                // This is because if NIM Faucet fails, we let the user continue to the next step. If that happens,
+                // we need to skip this step and go to the next/prev one
+                if (txsLen.value === 0) {
+                    if (goingForward) {
+                        goToNextStep({ withDelay: false });
+                    } else {
+                        goToPrevStep({ withDelay: false });
+                    }
+                }
+            },
+        },
         tooltip: {
             get target() {
                 return `${IWalletHTMLElements.ADDRESS_OVERVIEW_TRANSACTIONS} ${isSmallScreen.value

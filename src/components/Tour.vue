@@ -92,7 +92,7 @@
                                     {{ tour.steps[tour.currentStep].button.text }}
                                 </button>
                                 <button
-                                    v-else-if="isLargeScreen && !disableNextStep && !isLoading"
+                                    v-else-if="isLargeScreen && !isNextStepDisabled && !isLoading"
                                     class="right"
                                     @click="goToNextStep()"
                                     tabindex="0"
@@ -128,7 +128,7 @@
                     <button
                         class="next"
                         :class="{ loading: isLoading }"
-                        :disabled="disableNextStep"
+                        :disabled="isNextStepDisabled"
                         @click="!isLoading && goToNextStep()"
                         tabindex="0"
                     >
@@ -160,6 +160,7 @@ import { useEventListener } from '../composables/useEventListener';
 import { useKeys } from '../composables/useKeys';
 import { useWindowSize } from '../composables/useWindowSize';
 import {
+    FutureStepArgs,
     getTour, IContentSpecialItem, ITourBroadcast, ITourStep, IUnmountedFn, TourStepIndex,
 } from '../lib/tour';
 import PartyConfettiIcon from './icons/PartyConfettiIcon.vue';
@@ -219,7 +220,7 @@ export default defineComponent({
         const isLoading = ref(true);
         const currentStep: Ref<TourStepIndex> = ref(accountStore.tour?.step || 0);
         const nSteps: Ref<number> = ref(steps.value.length);
-        const disableNextStep = ref(true);
+        const isNextStepDisabled = ref(true);
         const showTour = ref(false);
 
         let unmounted: IUnmountedFn | void;
@@ -228,7 +229,7 @@ export default defineComponent({
         useEventListener(window, 'click', _onUserClicked);
         useEventListener(window, 'resize', _onResize());
         useKeys([
-            { key: 'ArrowRight', handler: goToNextStep, options: { ignoreIf: disableNextStep } },
+            { key: 'ArrowRight', handler: goToNextStep, options: { ignoreIf: isNextStepDisabled } },
             { key: 'ArrowLeft', handler: goToPrevStep },
             { key: 'Escape', handler: endTour },
         ]);
@@ -253,10 +254,10 @@ export default defineComponent({
             if (!step) return;
 
             // Update state
-            disableNextStep.value = currentStep.value >= nSteps.value - 1 || !!step.ui.isNextStepDisabled;
+            isNextStepDisabled.value = currentStep.value >= nSteps.value - 1 || !!step.ui.isNextStepDisabled;
 
             if (step.lifecycle?.created) {
-                await step.lifecycle.created({ goToNextStep, goingForward: true });
+                await step.lifecycle.created({ goToNextStep, goToPrevStep, goingForward: true, isNextStepDisabled });
             }
 
             // If we are not currently in the correct path then we need to change the route
@@ -269,8 +270,10 @@ export default defineComponent({
             _updateUI(step.ui, currentStep.value);
             unmounted = await step.lifecycle?.mounted?.({
                 goToNextStep,
+                goToPrevStep,
                 goingForward: true,
                 ending: false,
+                isNextStepDisabled,
             });
 
             if (!context.root.$route.fullPath.endsWith(step.path)) {
@@ -312,14 +315,14 @@ export default defineComponent({
             _toggleDisabledButtons(steps.value[currentStep.value]?.ui.disabledButtons, true);
         });
 
-        function goToPrevStep() {
+        function goToPrevStep(args?: FutureStepArgs) {
             if (currentStep.value <= 0 || disconnected.value || isLoading.value) return;
-            _moveToFutureStep(currentStep.value, currentStep.value - 1, false);
+            _moveToFutureStep(currentStep.value, currentStep.value - 1, false, args);
         }
 
-        function goToNextStep() {
+        function goToNextStep(args?: FutureStepArgs) {
             if (currentStep.value + 1 >= nSteps.value || disconnected.value || isLoading.value) return;
-            _moveToFutureStep(currentStep.value, currentStep.value + 1, true);
+            _moveToFutureStep(currentStep.value, currentStep.value + 1, true, args);
         }
 
         // for more details, read Lifecycle steps section right below imports of this file
@@ -327,19 +330,21 @@ export default defineComponent({
             currentStepIndex: TourStepIndex,
             newStepIndex: TourStepIndex,
             goingForward: boolean,
+            { withDelay }: FutureStepArgs = { withDelay: true },
         ) {
             const { path: currentPath } = steps.value[currentStepIndex]!;
             const { path: newPath, ui: newUI, lifecycle: newLifecycle } = steps.value[newStepIndex]!;
 
             tour!.stop();
-            await sleep(500); // ensures animation ends
+
+            await sleep(withDelay ? 500 : 1); // 500 for making sure animation ends. 1 for avoiding concurrency
 
             if (unmounted) {
-                await unmounted({ goingForward, ending: false });
+                await unmounted({ goingForward, ending: false, isNextStepDisabled });
             }
 
             // created
-            await newLifecycle?.created?.({ goToNextStep, goingForward });
+            await newLifecycle?.created?.({ goToNextStep, goToPrevStep, goingForward, isNextStepDisabled });
 
             if (newPath !== currentPath && context.root.$route.fullPath !== newPath) {
                 context.root.$router.push(newPath);
@@ -350,9 +355,7 @@ export default defineComponent({
             _updateUI(newUI, newStepIndex);
             await context.root.$nextTick();
 
-            if (newPath !== currentPath) {
-                await sleep(500);
-            }
+            if (newPath !== currentPath && withDelay) await sleep(500);
 
             _removeUIFromOldStep(currentStepIndex);
 
@@ -361,12 +364,14 @@ export default defineComponent({
             _changeArrowAppearance(newStepIndex);
 
             // some steps may not allow the user to go to the next step unless they click on a specific button
-            disableNextStep.value = newStepIndex >= nSteps.value - 1 || !!newUI.isNextStepDisabled;
+            isNextStepDisabled.value = newStepIndex >= nSteps.value - 1 || !!newUI.isNextStepDisabled;
 
             unmounted = await newLifecycle?.mounted?.({
                 goToNextStep,
+                goToPrevStep,
                 goingForward,
                 ending: false,
+                isNextStepDisabled,
             });
 
             currentStep.value = newStepIndex;
@@ -508,7 +513,7 @@ export default defineComponent({
         // destroying the tour
         async function endTour(notifyManager = true, soft = false) {
             if (unmounted) {
-                await unmounted({ ending: true, goingForward: false });
+                await unmounted({ ending: true, goingForward: false, isNextStepDisabled });
             }
 
             if (notifyManager) {
@@ -624,7 +629,7 @@ export default defineComponent({
             currentStep,
             nSteps,
             isLoading: computed(() => disconnected.value || isLoading.value),
-            disableNextStep,
+            isNextStepDisabled,
 
             // actions
             goToPrevStep,

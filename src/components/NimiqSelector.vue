@@ -1,15 +1,12 @@
 <template>
-    <div class="country-selector" v-click-outside="() => setOpen(false)" @keydown="onKeyDown">
-        <button class="reset trigger" @click="setOpen(true)">
+    <div class="selector">
+        <button class="reset trigger" @click="setOpen(true)" @focus="setOpen(true)" @blur="setOpen(false)">
             <slot name="trigger">
-                <div class="flex-row">
-                    <CountryFlag :code="currentCountryCode || 'all'" />
-                    <img src="../assets/arrow-down.svg" />
-                </div>
+                <!-- FIXME: Trigger has no default UI for now -->
             </slot>
         </button>
         <div v-if="isOpen" class="dropdown">
-            <div class="search">
+            <div class="search" v-if="searchable">
                 <!-- Search icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
                     <g fill="none" stroke="#FFF" stroke-linecap="round"
@@ -23,17 +20,18 @@
                     v-model="searchTerm"
                     ref="$input"/>
             </div>
-            <ul class="list" ref="$list">
-                <li v-for="(country, index) in sortedCountries"
-                    :key="country.code"
+            <ul class="list" ref="$list" :class="{ 'searchable': searchable }">
+                <li
+                    v-for="(option, index) in sortedOptions"
+                    :key="index"
                     :class="{ selected: index === selectedIndex }"
-                    @click="selectCountry(country)"
+                    @click="selectOption(option)"
                     @mouseenter="selectedIndex = index"
                 >
-                    <CountryFlag :code="country.code" />
-                    {{ country.name }}
+                    <slot name="nimiq-option" :option="option">
+                        {{ option }}
+                    </slot>
                 </li>
-                <slot name="info"/>
             </ul>
         </div>
     </div>
@@ -41,16 +39,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
-// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
-import vClickOutside from 'v-click-outside'; // This is useless, this could be removed and use useOutsideClick instead
-import I18nDisplayNames from '../lib/I18nDisplayNames';
-import CountryFlag from './CountryFlag.vue';
-import { ALL_COUNTRY_CODES } from '../lib/Countries';
-
-type Country = {
-    code: string,
-    name: string,
-}
+import { useKeys } from '../composables/useKeys';
+import { useOutsideClick } from '../composables/useOutsideClick';
 
 function normalize(str: string) {
     return str
@@ -59,23 +49,30 @@ function normalize(str: string) {
         .replace(/ü/ig, 'u');
 }
 
+type NimiqSelectOptions = string[] | any[]
 export default defineComponent({
     props: {
-        countryCodes: {
-            type: Array as () => string[],
-            default: () => ALL_COUNTRY_CODES,
+        options: {
+            type: Array as () => NimiqSelectOptions,
+            default: () => [],
         },
-        includeAllOption: {
+        searchable: {
             type: Boolean,
             default: false,
+        },
+        filterFunction: {
+            type: Function as unknown as () =>
+                (options: Readonly<NimiqSelectOptions>, searchItem: string) => NimiqSelectOptions,
+        },
+        sortFunction: {
+            type: Function as unknown as () => (options: Readonly<NimiqSelectOptions>) => NimiqSelectOptions,
         },
     },
     setup(props, context) {
         const isOpen = ref(false);
+        useOutsideClick(['.selector .dropdown'], () => setOpen(false));
 
         const selectedIndex = ref(0);
-
-        const currentCountryCode = ref(props.includeAllOption ? 'all' : props.countryCodes[0]);
 
         const searchTerm = ref('');
 
@@ -93,75 +90,63 @@ export default defineComponent({
 
             await context.root.$nextTick();
             if (open && $input.value) $input.value.focus();
+            if (open) handleMask();
         }
 
-        function selectCountry(country: Country) {
-            currentCountryCode.value = country.code;
-            context.emit('select', country);
+        function selectOption(option: string | any) {
+            selectedIndex.value = props.options.indexOf(option);
+            context.emit('select', option);
             setOpen(false);
         }
 
-        const i18nCountryName = new I18nDisplayNames('region');
-        const filteredCountries = computed(() => {
-            const rgx = RegExp(normalize(searchTerm.value || ''), 'i');
+        function handleMask() {
+            // Remove mask rule from CSS if user is scroll is not visible
+            const list = document.querySelector('.selector .list') as HTMLDivElement;
+            if (!list) return;
 
-            const countries: Country[] = props.countryCodes.map((code) => ({
-                code,
-                name: i18nCountryName.of(code) || '',
-            }));
+            const mask = list.scrollHeight > list.clientHeight
+                ? `linear-gradient(180deg,
+                    rgba(255, 255, 255, 0) 2%,
+                    white 12%,
+                    white 83%,
+                    rgba(255, 255, 255, 0) 98%
+                )`
+                : 'none';
+            list.style.mask = mask;
+            (list.style as any)['-webkit-mask'] = mask;
+        }
 
-            if (props.includeAllOption) {
-                countries.unshift({
-                    code: 'all',
-                    name: context.root.$t('All countries') as string,
-                });
+        const filteredOptions = computed(() => {
+            if (!props.searchable) {
+                return props.options;
             }
-
-            return countries.filter((country) => country.name && rgx.test(normalize(country.name)));
+            if (!props.filterFunction) {
+                const rgx = RegExp(normalize(searchTerm.value || ''), 'i');
+                return props.options.filter((option) => rgx.test(normalize(option)));
+            }
+            return props.filterFunction(props.options, searchTerm.value);
         });
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
-        const sortedCountries = computed(() => [...filteredCountries.value].sort((a, b) => {
-            if (a.code === 'all') return -1;
-            if (b.code === 'all') return 1;
-            return intlCollator.compare(a.name, b.name);
-        }));
-
-        watch(searchTerm, () => selectedIndex.value = 0);
-
-        function onKeyDown(event: KeyboardEvent) {
-            if (!isOpen.value) return;
-            const oldIndex = selectedIndex.value;
-            const countryCount = sortedCountries.value.length;
-
-            switch (event.key) {
-                case 'ArrowDown':
-                    event.preventDefault();
-                    selectedIndex.value = Math.max(0, Math.min(
-                        countryCount - 1, selectedIndex.value + 1),
-                    );
-                    break;
-
-                case 'ArrowUp':
-                    event.preventDefault();
-                    selectedIndex.value = Math.max(0, Math.min(
-                        countryCount - 1, selectedIndex.value - 1),
-                    );
-                    break;
-
-                case 'Enter':
-                    if (sortedCountries.value[selectedIndex.value]) {
-                        selectCountry(sortedCountries.value[selectedIndex.value]);
-                    } else if (countryCount > 0) {
-                        selectCountry(sortedCountries.value[0]);
-                    }
-                    break;
-
-                default:
-                    break;
+        const sortedOptions = computed(() => {
+            if (props.sortFunction) {
+                return props.sortFunction(filteredOptions.value);
             }
+            return [...filteredOptions.value].sort((a, b) => {
+                if (typeof a === 'string' && typeof b === 'string') {
+                    return normalize(a).localeCompare(normalize(b));
+                }
+                return intlCollator.compare(a, b);
+            });
+        });
 
-            if (selectedIndex.value !== oldIndex && $list.value) {
+        watch(searchTerm, () => {
+            selectedIndex.value = 0;
+            handleMask();
+        });
+
+        function scrollIntoView() {
+            if ($list.value) {
                 $list.value.children[selectedIndex.value].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
@@ -169,24 +154,55 @@ export default defineComponent({
             }
         }
 
+        useKeys([
+            {
+                key: 'ArrowDown',
+                handler: () => {
+                    selectedIndex.value = Math.max(
+                        0, Math.min(sortedOptions.value.length - 1, selectedIndex.value + 1));
+                    scrollIntoView();
+                },
+                options: { onlyIf: isOpen },
+            },
+            {
+                key: 'ArrowUp',
+                handler: () => {
+                    selectedIndex.value = Math.max(0, Math.min(
+                        sortedOptions.value.length - 1, selectedIndex.value - 1));
+                    scrollIntoView();
+                },
+                options: { onlyIf: isOpen },
+            },
+            {
+                key: 'Enter',
+                handler: () => {
+                    if (sortedOptions.value[selectedIndex.value]) {
+                        selectOption(sortedOptions.value[selectedIndex.value]);
+                    } else if (sortedOptions.value.length > 0) {
+                        selectOption(sortedOptions.value[0]);
+                    }
+                },
+                options: { onlyIf: isOpen },
+            },
+            {
+                key: 'Escape',
+                handler: () => setOpen(false),
+                options: { onlyIf: isOpen },
+            },
+        ]);
+
         return {
             isOpen,
             selectedIndex,
-            currentCountryCode,
             searchTerm,
             setOpen,
-            selectCountry,
-            sortedCountries,
-            onKeyDown,
+            selectOption,
+            sortedOptions,
             $input,
             $list,
         };
     },
     components: {
-        CountryFlag,
-    },
-    directives: {
-        ClickOutside: vClickOutside.directive,
     },
 });
 </script>
@@ -194,24 +210,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../scss/mixins.scss';
 
-.country-selector {
+.selector {
     position: relative;
 
     .trigger {
         display: block;
+        width: max-content;
 
         .flex-row {
             justify-content: space-between;
             align-items: center;
-
-            // position: absolute;
-            // right: 1.5rem;
-            // top: 50%;
-            // transform: translateY(-50%);
-
-            .country-flag {
-                margin-right: 0.625rem;
-            }
         }
     }
 
@@ -270,7 +278,7 @@ export default defineComponent({
 
     .list {
         max-height: 25rem;
-        padding: 1.5rem 0.5rem 0.5rem;
+        padding: 0.5rem;
         margin: 0;
         overflow-y: auto;
 
@@ -282,6 +290,10 @@ export default defineComponent({
         );
 
         @extend %custom-scrollbar-inverse;
+
+        &.searchable {
+            padding: 1.5rem 0.5rem 0.5rem;
+        }
 
         li {
             display: flex;
@@ -302,12 +314,11 @@ export default defineComponent({
                     background-color: rgba(white, .12);
                 }
             }
-
-            .country-flag {
-                margin-right: 1rem;
-                flex-shrink: 0;
-            }
         }
     }
 }
 </style>
+
+function scrollIntoView() {
+  throw new Error('Function not implemented.');
+}

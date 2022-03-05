@@ -1,14 +1,22 @@
 <template>
-    <Modal class="discover-nimiq-wallet-modal" :showCloseButton="false">
-        <!-- TODO: Add nimiq SVG logo in the background -->
+    <Modal class="welcome-modal" :showCloseButton="false">
+        <!-- Nimiq SVG logo cropped in the top left corner -->
+        <svg class="nimiq-logo-background" width="128" height="114" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path opacity=".05"
+            d="m125.33 1.34-48.5-83.68A19.42 19.42 0 0 0 60-92h-97.02c-6.79 0-13.26 3.54-16.81 9.66l-48.51 83.68a18.81
+            18.81 0 0 0 0 19.32l48.5 83.68A19.43 19.43 0 0 0-37 114h97.02c6.79 0 13.26-3.54 16.81-9.66l48.51-83.68a18.81
+            18.81 0 0 0 0-19.32Z"
+            fill="#1F2348"/>
+        </svg>
 
         <header>
-            <select @input="setLanguage($event.target.value)">
-                <option
-                    v-for="lang in languages" :key="lang.code"
-                    :value="lang.code" :selected="language === lang.code"
-                >{{ lang.name }}</option>
-            </select>
+            <NimiqSelector :options="languages" @select="setLanguage($event.code)">
+                <template slot="trigger" class="trigger">
+                    <SpeechBubble />
+                    <span>{{ language }}</span>
+                </template>
+                <span slot="nimiq-option" slot-scope="{ option }">{{ option.name }}</span>
+            </NimiqSelector>
             <!-- TODO - Here a switch will be implemented to change themes -->
         </header>
 
@@ -23,10 +31,10 @@
 
             <div class="call-to-action">
                 <button class="nq-button light-blue" @click="() => startTour()">{{ $t('Start Wallet tour') }}</button>
-                <a @click="() => skipTour()" class="skip-tour">
+                <button @click="() => skipTour()" class="reset skip-tour">
                     Skip tour
                     <CaretRightSmallIcon />
-                </a>
+                </button>
             </div>
         </div>
 
@@ -41,7 +49,9 @@ import { defineComponent } from '@vue/composition-api';
 import { TourName, ITourOrigin } from '@/lib/tour';
 import { Languages } from '../../i18n/i18n-setup';
 import NimiqLogoOutlineWithStars from '../icons/NimiqLogoOutlineWithStars.vue';
+import NimiqSelector from '../NimiqSelector.vue';
 import Modal from './Modal.vue';
+import SpeechBubble from '../icons/SpeechBubble.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -69,52 +79,47 @@ export default defineComponent({
     components: {
         Modal,
         PageHeader,
+        NimiqSelector,
         NimiqLogoOutlineWithStars,
         CaretRightSmallIcon,
+        SpeechBubble,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-.discover-nimiq-wallet-modal {
+.welcome-modal {
+    svg.nimiq-logo-background {
+        position: absolute;
+    }
+
     header {
-        padding: 2rem;
+        padding: 3.25rem 2.5rem;
         position: relative;
 
-        select {
-            font-size: inherit;
-            font-family: inherit;
-            font-weight: bold;
-            font-size: var(--body-size);
-            line-height: inherit;
-            color: inherit;
-            border: none;
-            appearance: none;
-            cursor: pointer;
+        & ::v-deep .selector {
+            .dropdown {
+                width: max-content;
+                left: 6rem;
 
-            box-shadow: inset 0 0 0 1.5px var(--text-16);
-            border-radius: 2.5rem;
-            padding: {
-                top: 0.625rem;
-                bottom: 0.875rem;
-                left: 2rem;
-                right: 3.5rem;
+                .list {
+                    max-height: clamp(72px, 50rem, 100vh);
+                }
             }
 
-            background-color: transparent;
-            background-image: url('../../assets/arrow-down.svg');
-            background-size: 1.25rem;
-            background-repeat: no-repeat;
-            background-position-x: calc(100% - 1.75rem);
-            background-position-y: 55%;
+            .trigger {
+                display: flex;
+                align-items: center;
+                column-gap: 1rem;
 
-            &[name="theme"] {
-                text-transform: capitalize;
-            }
-
-            &:disabled {
-                opacity: .5;
-                cursor: default;
+                span {
+                    text-transform: uppercase;
+                    color: var(--dark-blue);
+                    opacity: 0.4;
+                    letter-spacing: 0.095em;
+                    font-weight: bold;
+                    font-size: 14px;
+                }
             }
         }
     }
@@ -160,6 +165,7 @@ export default defineComponent({
                 justify-content: center;
                 gap: 5px;
                 cursor: pointer;
+                margin: 0 auto;
 
                 svg {
                     width: 9px;

@@ -214,6 +214,7 @@ export enum IWalletHTMLElements {
     MODAL_CONTAINER = '.modal.backdrop',
     MODAL_WRAPPER = '.modal .wrapper',
     MODAL_PAGE = '.modal .small-page',
+    MODAL_ACCOUNT_PICTURE = '.modal .small-page .account-menu-item .icon svg',
     MODAL_CLOSE_BUTTON = '.modal .close-button',
 
     NETWORK_STATS = '.network .network-stats',

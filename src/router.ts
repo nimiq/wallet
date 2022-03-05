@@ -16,9 +16,9 @@ const Network = () =>
 // Modals
 const AccountMenuModal = () =>
     import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
-const DiscoverTheNimiqWalletModal = () =>
+const WelcomeModal = () =>
     import(/* webpackChunkName: "discover-the-nimiq-wallet-modal" */
-        './components/modals/DiscoverTheNimiqWalletModal.vue');
+        './components/modals/WelcomeModal.vue');
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
@@ -190,7 +190,7 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/welcome',
             components: {
-                modal: DiscoverTheNimiqWalletModal,
+                modal: WelcomeModal,
             },
             name: 'welcome',
             meta: { column: Columns.ACCOUNT },

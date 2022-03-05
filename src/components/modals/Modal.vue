@@ -30,6 +30,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
+import { useKeys } from '@/composables/useKeys';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
@@ -103,17 +104,13 @@ export default defineComponent({
             }
         }
 
-        const onEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                close();
-            }
-        };
-
-        document.addEventListener('keydown', onEscape);
-
-        onUnmounted(() => {
-            document.removeEventListener('keydown', onEscape);
-        });
+        useKeys([
+            {
+                key: 'Escape',
+                handler: () => close(),
+                options: { onlyIf: ref(props.showCloseButton) },
+            },
+        ]);
 
         // Swiping
         const $main = ref<HTMLDivElement>(null);

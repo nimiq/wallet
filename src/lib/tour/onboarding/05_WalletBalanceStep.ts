@@ -1,3 +1,4 @@
+import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { defaultTooltipModifiers } from '..';
 import { IOnboardingGetStepFnArgs, ITourStep, IWalletHTMLElements, OnboardingTourStep } from '../types';
@@ -41,7 +42,8 @@ export function getWalletBalanceStep({ isSmallScreen }: IOnboardingGetStepFnArgs
     };
 
     const { accountBalance: btcAccountBalance } = useBtcAddressStore();
-    const hasBitcoin = () => btcAccountBalance.value > 0;
+    const { accountBalance: nimAccountBalance } = useAddressStore();
+    const hasOnlyNim = () => nimAccountBalance.value > 0 && btcAccountBalance.value === 0;
 
     return {
         path: '/',
@@ -50,7 +52,7 @@ export function getWalletBalanceStep({ isSmallScreen }: IOnboardingGetStepFnArgs
                 return `${IWalletHTMLElements.ACCOUNT_OVERVIEW_BALANCE} .balance-distribution  
                 ${!isSmallScreen.value ? '.btc .tooltip .bar' : ''}`;
             },
-            content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[!hasBitcoin() ? 'default' : 'alternative'],
+            content: getOnboardingTexts(OnboardingTourStep.WALLET_BALANCE)[hasOnlyNim() ? 'default' : 'alternative'],
             params: {
                 get placement() {
                     return isSmallScreen.value ? 'bottom' : 'right';

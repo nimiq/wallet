@@ -46,18 +46,20 @@ export function getAccountOptionsStep({ isSmallScreen, isLargeScreen }: IOnboard
             return isLargeScreen.value ? '/accounts' : '/accounts?sidebar=true';
         },
         tooltip: {
-            target: IWalletHTMLElements.MODAL_PAGE,
+            get target() {
+                return isSmallScreen.value ? IWalletHTMLElements.MODAL_ACCOUNT_PICTURE : IWalletHTMLElements.MODAL_PAGE;
+            },
             content: getOnboardingTexts(OnboardingTourStep.ACCOUNT_OPTIONS).default,
             params: {
                 get placement() {
-                    return isSmallScreen.value ? 'top' : 'right';
+                    return isSmallScreen.value ? 'bottom-start' : 'right';
                 },
                 get modifiers() {
                     return [
                         {
                             name: 'offset',
                             options: {
-                                offset: [0, 16],
+                                offset: [isSmallScreen.value ? -13.5 : 0, 16],
                             },
                         },
                         {

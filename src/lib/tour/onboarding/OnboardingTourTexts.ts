@@ -44,7 +44,6 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
             $t('Currently you have 100% NIM, and no BTC.'),
         ],
         alternative: [
-            // TODO Implement this
             $t('Check the bar-chart to see how your addresses compose your total balance.'),
         ],
     },
@@ -64,14 +63,12 @@ const texts: ITourStepTexts<OnboardingTourStep> = {
     [OnboardingTourStep.ACCOUNT_OPTIONS]: {
         default: [
             $t('Create, switch and log out of accounts.'),
-            $t('All security relevant actions can be found here too.'),
+            $t('Security options and backup can be found here.'),
         ],
     },
-    // TODO Review these
     [OnboardingTourStep.BACKUP_OPTION_FROM_OPTIONS]: {
         default: [
-            $t('You can always create a new backup.'),
-            $t('Simply click your account and select ‘Create backup’.'),
+            $t('You can always create a new backup. Simply click your account and select ‘Create backup’.'),
         ],
     },
     [OnboardingTourStep.ONBOARDING_COMPLETED]: {

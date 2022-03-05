@@ -43,7 +43,8 @@
                                         <WorldCheckIcon />
                                     </template>
                                     <template v-slot:account_icon>
-                                        <svg width="14" height="21" style="height: inherit; margin-bottom: -3px;" fill="none"
+                                        <svg width="14" height="21" style="height: inherit; margin-bottom: -3px;"
+                                            fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <g opacity=".7">
                                                 <rect x=".75" y=".75" width="12.5" height="19.5"

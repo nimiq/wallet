@@ -658,17 +658,12 @@ export default defineComponent({
 // updated as data attributes allow to use a value like [data-opaified="1"] to select ceratain elements
 // as well as [data-opacified] to all elements with this attribute. @see _removeUIFromOldStep
 
-#app[data-tour-active] [data-opacified],
-#app[data-tour-active] ~ div [data-opacified] {
+#app[data-tour-active] [data-opacified] {
   filter: opacity(0.3);
 }
 
 #app[data-tour-active] [data-non-interactable],
-#app[data-tour-active] [data-non-interactable] *,
-// Select also modals which are not children of #app but siblings
-#app[data-tour-active] ~ div [data-non-interactable],
-#app[data-tour-active] ~ div [data-non-interactable] *
-{
+#app[data-tour-active] [data-non-interactable] *{
     user-select: none !important;
     pointer-events: none !important;
     cursor: not-allowed;

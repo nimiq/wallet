@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { ITourBroadcast, ITourBroadcastStepChanged, TourStepIndex, IWalletHTMLElements } from '@/lib/tour';
-import { defineComponent, onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
+import { ITourBroadcast, ITourBroadcastStepChanged, TourStepIndex } from '@/lib/tour';
+import { defineComponent, onMounted, Ref, ref } from '@vue/composition-api';
 
 export default defineComponent({
     name: 'tour-large-screen-manager',
@@ -36,72 +36,15 @@ export default defineComponent({
 
         onMounted(async () => {
             show.value = true;
-            setTimeout(() => _checkIfModalIsOpen(), 2000);
         });
-
-        onUnmounted(() => _removeClonedManager());
 
         async function _stepChanged(
             { nSteps: newNSteps, currentStep: newCurrentStep }: ITourBroadcastStepChanged['payload']) {
             nSteps.value = newNSteps;
             currentStep.value = newCurrentStep;
-
-            await context.root.$nextTick();
-
-            _checkIfModalIsOpen();
-        }
-
-        function _checkIfModalIsOpen() {
-            const modalIsOpen = document.querySelector(IWalletHTMLElements.MODAL_CONTAINER) !== null;
-            if (modalIsOpen) {
-                _duplicateManager();
-            } else {
-                _removeClonedManager();
-            }
-        }
-
-        // remove the cloned manager if it exists due to a modal not being open anymore
-        // see _duplicateManager()
-        function _removeClonedManager() {
-            const tourManager = document.querySelector('body > .tour-manager');
-            if (tourManager) {
-                tourManager.remove();
-            }
-            const original = $originalManager.value!;
-            if (!original) return;
-            original.style.visibility = 'initial';
-        }
-
-        // at some steps, a modal will be openened in the tour and we still need to show the tour
-        // manager to the user, therefore, we need to duplicate the manager and set it to the body
-        // positionated over the modal
-        function _duplicateManager() {
-            _removeClonedManager();
-            const original = $originalManager.value!;
-            if (!original) return;
-
-            original.style.visibility = 'hidden';
-
-            const manager = original.cloneNode(true) as HTMLDivElement;
-
-            if (!manager) {
-                return;
-            }
-
-            manager.style.position = 'absolute';
-            manager.style.top = `${original.offsetTop}px`;
-            manager.style.left = `${original.offsetLeft}px`;
-            manager.style.width = `${original.offsetWidth}px`;
-            manager.style.height = `${original.offsetHeight}px`;
-            manager.style.visibility = 'inherit';
-            manager.style.zIndex = '10';
-            document.body.appendChild(manager);
-
-            manager.querySelector('button')!.addEventListener('click', () => endTour());
         }
 
         function endTour(emit = true) {
-            _removeClonedManager();
             show.value = false;
             if (emit) {
                 // Notify tour component through root instance event bus
@@ -134,6 +77,7 @@ export default defineComponent({
 .tour-manager {
     width: 100%;
     overflow: hidden;
+    z-index: 10;
 
     margin-bottom: 2rem;
 

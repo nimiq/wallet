@@ -2,7 +2,7 @@
     <Modal class="welcome-modal" :showCloseButton="false">
         <!-- Nimiq SVG logo cropped in the top left corner -->
         <svg class="nimiq-logo-background" width="128" height="114" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path opacity=".05"
+            <path opacity=".04"
             d="m125.33 1.34-48.5-83.68A19.42 19.42 0 0 0 60-92h-97.02c-6.79 0-13.26 3.54-16.81 9.66l-48.51 83.68a18.81
             18.81 0 0 0 0 19.32l48.5 83.68A19.43 19.43 0 0 0-37 114h97.02c6.79 0 13.26-3.54 16.81-9.66l48.51-83.68a18.81
             18.81 0 0 0 0-19.32Z"

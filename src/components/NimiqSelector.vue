@@ -318,7 +318,3 @@ export default defineComponent({
     }
 }
 </style>
-
-function scrollIntoView() {
-  throw new Error('Function not implemented.');
-}

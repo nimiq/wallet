@@ -28,13 +28,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
-import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useKeys } from '@/composables/useKeys';
-import { useWindowSize } from '../../composables/useWindowSize';
+import { CloseButton, SmallPage } from '@nimiq/vue-components';
+import { computed, defineComponent, onMounted, Ref, ref, watch } from '@vue/composition-api';
 import { useSwipes } from '../../composables/useSwipes';
-import { useSettingsStore } from '../../stores/Settings';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { pointerdown } from '../../directives/PointerEvents';
+import { useSettingsStore } from '../../stores/Settings';
 
 export function enableModalTransition() {
     document.body.classList.remove('modal-transition-disabled');

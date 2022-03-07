@@ -5,6 +5,7 @@
         || feeSelectionOpened
         || statusScreenOpened"
         @close-overlay="onCloseOverlay"
+        class="send-modal"
         :class="{'value-masked': amountsHidden}"
         ref="$modal"
     >
@@ -782,6 +783,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.send-modal {
     .page {
         flex-grow: 1;
         font-size: var(--body-size);
@@ -1187,4 +1189,5 @@ export default defineComponent({
             border-top-right-radius: 1.75rem;
         }
     }
+}
 </style>

@@ -2,9 +2,9 @@
 @font-face {
     font-family: 'Muli';
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-display: swap;
-    src: local('Muli'), local('Mulish'), url('Muli-Regular.woff') format('woff');
+    src: url('Muli-Regular.woff') format('woff');
 }
 
 @font-face {
@@ -12,7 +12,7 @@
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: local('Muli'), local('Mulish'), url('Muli-SemiBold.woff') format('woff');
+    src: url('Muli-SemiBold.woff') format('woff');
 }
 
 @font-face {
@@ -20,16 +20,17 @@
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: local('Muli'), local('Mulish'), url('Muli-Bold.woff') format('woff');
+    src: url('Muli-Bold.woff') format('woff');
 }
 
-/* LICENCE Muli: /fonts/LICENCE_FIRA.txt */
+/* LICENCE Fira Mono: /fonts/LICENCE_FIRA_MONO.txt */
+
 @font-face {
     font-family: 'Fira Mono';
     font-style: normal;
     font-weight: normal;
     font-display: swap;
-    src: local('Fira Mono'), url('FiraMono-Regular.woff') format('woff');
+    src: url('FiraMono-Regular.woff') format('woff');
 }
 
 @font-face {
@@ -37,5 +38,5 @@
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: local('Fira Mono'), url('FiraMono-Medium.woff') format('woff');
+    src: url('FiraMono-Medium.woff') format('woff');
 }

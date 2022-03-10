@@ -1495,7 +1495,7 @@ msgstr ""
 "використовувати іншу назву, наприклад, \"операції в режимі реального часу\"."
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr ""
 
@@ -2058,7 +2058,7 @@ msgid "Update Available"
 msgstr "Доступне оновлення"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Оновити зараз"
 

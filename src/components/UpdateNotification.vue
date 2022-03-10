@@ -5,7 +5,9 @@
         @close="isShown = false"
     >
         {{ $t('An update to the Wallet is available.') }}
-        <router-link to="release-notes" class="nq-link">{{ $t('Release Notes') }}</router-link>
+        <router-link :to="{name: `${$route.name}-release-notes`}" class="nq-link">
+            {{ $t('Release Notes') }}
+        </router-link>
         <div class="flex-grow"></div>
         <CircleSpinner v-if="applyingWalletUpdate"/>
         <button v-else

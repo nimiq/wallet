@@ -1525,7 +1525,7 @@ msgstr ""
 "\"Sofortüberweisung\" oder \"Echtzeitüberweisung\"."
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Versionshinweise"
 
@@ -2101,7 +2101,7 @@ msgid "Update Available"
 msgstr "Update verfügbar"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Jetzt aktualisieren"
 

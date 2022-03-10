@@ -243,7 +243,7 @@
         <div class="copyright">
             &copy; 2017-{{ copyrightYear }} Nimiq Foundation
             <strong>&middot;</strong>
-            <router-link to="release-notes">{{ $t('Release Notes') }}</router-link>
+            <router-link :to="{name: 'settings-release-notes'}">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>

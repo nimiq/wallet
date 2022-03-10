@@ -1513,7 +1513,7 @@ msgstr ""
 "использовать другие наименования, например, «перевод в реальном времени»."
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Список изменений"
 
@@ -2086,7 +2086,7 @@ msgid "Update Available"
 msgstr "Доступна новая версия"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Обновить"
 

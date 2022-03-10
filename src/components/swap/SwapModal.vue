@@ -134,6 +134,7 @@
         <SwapModalFooter
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
+            requireBothNetworks
             @click="sign"
         >
             <template v-slot:cta>{{ $t('Confirm') }}</template>

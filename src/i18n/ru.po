@@ -172,7 +172,7 @@ msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 "Добавьте ярлык, чтобы быстро найти нужную транзакцию в истории транзакций."
 
-#: src/components/modals/SendModal.vue:180
+#: src/components/modals/SendModal.vue:181
 msgid "Add a public message..."
 msgstr "Добавить публичное сообщение... "
 
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "Добавить контакт"
 
-#: src/components/modals/SendModal.vue:49
+#: src/components/modals/SendModal.vue:50
 msgid "Address unavailable?"
 msgstr "Адрес недоступен?"
 
@@ -457,7 +457,7 @@ msgstr "Купить банковской картой"
 msgid "Buy with Simplex"
 msgstr "Купить через Simplex"
 
-#: src/components/modals/SendModal.vue:206
+#: src/components/modals/SendModal.vue:207
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -465,14 +465,14 @@ msgstr "Увеличьте размер комиссии, чтобы ускор�
 
 #: src/components/modals/BuyCryptoModal.vue:179
 #: src/components/modals/SellCryptoModal.vue:177
-#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot} и {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:193
 #: src/components/modals/SellCryptoModal.vue:191
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot}."
 
@@ -520,7 +520,7 @@ msgid "Change your language setting."
 msgstr "Изменить язык интерфейса."
 
 #: src/components/modals/AddressSelectorModal.vue:8
-#: src/components/modals/SendModal.vue:61
+#: src/components/modals/SendModal.vue:62
 msgid "Choose a Recipient"
 msgstr "Указать Получателя"
 
@@ -531,8 +531,8 @@ msgstr ""
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:262
 #: src/components/modals/SellCryptoModal.vue:243
-#: src/components/modals/SendModal.vue:196
-#: src/components/swap/SwapModal.vue:187
+#: src/components/modals/SendModal.vue:197
+#: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
@@ -565,8 +565,8 @@ msgstr "Закрыть"
 msgid "Coming soon"
 msgstr "В скором времени"
 
-#: src/components/swap/SwapModal.vue:139 src/components/swap/SwapModal.vue:144
-#: src/components/swap/SwapModal.vue:156
+#: src/components/swap/SwapModal.vue:140 src/components/swap/SwapModal.vue:145
+#: src/components/swap/SwapModal.vue:157
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Подтвердить"
@@ -596,15 +596,11 @@ msgstr "Подключён к"
 msgid "connecting"
 msgstr "подключаемся"
 
-#: src/components/swap/SwapModalFooter.vue:48
+#: src/components/swap/SwapModalFooter.vue:50
 msgid "Connecting to Bitcoin network"
 msgstr "Подключаемся к сети биткоина"
 
-#: src/components/swap/SwapModalFooter.vue:44
-msgid "Connecting to Nimiq & Bitcoin networks"
-msgstr "Подключаемся к сетям биткоина и Nimiq"
-
-#: src/components/swap/SwapModalFooter.vue:46
+#: src/components/swap/SwapModalFooter.vue:58
 msgid "Connecting to Nimiq network"
 msgstr "Подключаемся к сети Nimiq"
 
@@ -626,7 +622,7 @@ msgid "Contacts"
 msgstr "Контакты"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
-#: src/components/modals/SendModal.vue:87
+#: src/components/modals/SendModal.vue:88
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "Продолжить"
@@ -649,7 +645,7 @@ msgstr ""
 "Скопируйте и вставьте свой адрес\n"
 "в окошко интерфейса Simplex ниже."
 
-#: src/components/modals/SendModal.vue:51
+#: src/components/modals/SendModal.vue:52
 msgid "Create a Cashlink"
 msgstr "Создать Cashlink"
 
@@ -724,7 +720,7 @@ msgid "Disclaimer"
 msgstr "Предупреждние"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:355
+#: src/components/modals/SendModal.vue:356
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -770,7 +766,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
 #: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:606
+#: src/components/modals/SendModal.vue:607
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
@@ -783,7 +779,7 @@ msgstr ""
 msgid "Enter account holder name"
 msgstr "Введите имя владельца учетной записи"
 
-#: src/components/modals/SendModal.vue:23
+#: src/components/modals/SendModal.vue:24
 msgid "Enter address"
 msgstr "Укажите адрес"
 
@@ -837,7 +833,7 @@ msgstr "истекла"
 msgid "Expired"
 msgstr "Истекла"
 
-#: src/components/modals/SendModal.vue:454
+#: src/components/modals/SendModal.vue:455
 msgid "express"
 msgstr "экспресс"
 
@@ -866,7 +862,7 @@ msgstr "Кран недоступен"
 msgid "Faucet unavailable (wrong network)"
 msgstr "Кран недоступен (ошибка соединения)"
 
-#: src/components/modals/SendModal.vue:162
+#: src/components/modals/SendModal.vue:163
 msgid "fee"
 msgstr "комиссия"
 
@@ -903,7 +899,7 @@ msgstr "Завершаем обмен"
 msgid "For beginners"
 msgstr "Для начинающих"
 
-#: src/components/modals/SendModal.vue:444
+#: src/components/modals/SendModal.vue:445
 msgid "free"
 msgstr "свободно"
 
@@ -1064,7 +1060,7 @@ msgstr "Установить веб-приложение"
 
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:165
-#: src/components/modals/SendModal.vue:170
+#: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
 
@@ -1218,7 +1214,7 @@ msgstr ""
 "Списки адресов и Файлы Авторизации поддерживаются только аккаунтами нового "
 "типа."
 
-#: src/components/modals/SendModal.vue:75
+#: src/components/modals/SendModal.vue:76
 msgid "Name this contact..."
 msgstr "Назовите этот контакт..."
 
@@ -1545,12 +1541,12 @@ msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
 #: src/components/BtcAddressInput.vue:23
-#: src/components/modals/SendModal.vue:38
+#: src/components/modals/SendModal.vue:39
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:605
+#: src/components/modals/SendModal.vue:606
 msgid "Retry"
 msgstr "Повторить"
 
@@ -1629,7 +1625,7 @@ msgid "Send"
 msgstr "Отправить"
 
 #: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:77
-#: src/components/modals/SendModal.vue:172
+#: src/components/modals/SendModal.vue:173
 msgid "Send all"
 msgstr "Отправить все"
 
@@ -1656,8 +1652,8 @@ msgstr "Отправить максимум"
 
 #: src/components/modals/BtcSendModal.vue:108
 #: src/components/modals/BtcSendModal.vue:5
-#: src/components/modals/SendModal.vue:13
-#: src/components/modals/SendModal.vue:191
+#: src/components/modals/SendModal.vue:14
+#: src/components/modals/SendModal.vue:192
 msgid "Send Transaction"
 msgstr "Отправить транзакцию"
 
@@ -1666,7 +1662,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
 #: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:602
+#: src/components/modals/SendModal.vue:603
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
@@ -1683,11 +1679,11 @@ msgstr "Отправить {btc} BTC на адрес {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Отправлены {fromAsset} — получены {toAsset}"
 
-#: src/components/modals/SendModal.vue:639
+#: src/components/modals/SendModal.vue:640
 msgid "Sent {nim} NIM"
 msgstr "Отправить {nim} NIM"
 
-#: src/components/modals/SendModal.vue:635
+#: src/components/modals/SendModal.vue:636
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
@@ -1708,8 +1704,8 @@ msgstr "Только SEPA Instant"
 msgid "SEPA Instant transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:100
-#: src/components/modals/SendModal.vue:88
+#: src/components/modals/SendModal.vue:101
+#: src/components/modals/SendModal.vue:89
 msgid "Set Amount"
 msgstr "Укажите сумму"
 
@@ -1779,7 +1775,7 @@ msgid "Skip for now"
 msgstr "В данный момент пропустить"
 
 #: src/components/modals/BtcSendModal.vue:507
-#: src/components/modals/SendModal.vue:651
+#: src/components/modals/SendModal.vue:652
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -1787,7 +1783,7 @@ msgstr "Операция не удалась"
 msgid "Something went wrong with your transaction"
 msgstr "С вашей транзакцией что-то не то"
 
-#: src/components/modals/SendModal.vue:204
+#: src/components/modals/SendModal.vue:205
 msgid "Speed up your Transaction"
 msgstr "Ускорьте свою транзакцию"
 
@@ -1800,7 +1796,7 @@ msgstr ""
 msgid "Staking"
 msgstr " Стекинг"
 
-#: src/components/modals/SendModal.vue:449
+#: src/components/modals/SendModal.vue:450
 msgid "standard"
 msgstr "стандартный"
 
@@ -1872,7 +1868,7 @@ msgstr "Тестнет"
 msgid "The bank is processing your transaction."
 msgstr "Банк обрабатывает вашу транзакцию."
 
-#: src/components/swap/SwapModal.vue:602 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:603 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
@@ -1913,7 +1909,7 @@ msgstr ""
 "Ставка комиссии может меняться \n"
 "в зависимости от суммы сделки."
 
-#: src/components/modals/SendModal.vue:123
+#: src/components/modals/SendModal.vue:124
 msgid "The sender and recipient cannot be identical."
 msgstr "Отправитель и получатель не могут совпадать."
 
@@ -2129,7 +2125,7 @@ msgstr "Подождите, пока мы подготавливаем обме�
 msgid "Waiting for {currency}"
 msgstr "Ожидание {currency}"
 
-#: src/components/swap/SwapModalFooter.vue:50
+#: src/components/swap/SwapModalFooter.vue:60
 msgid "Waiting for Nimiq network informations"
 msgstr "Ожидаем информацию от сети Nimiq"
 
@@ -2223,7 +2219,7 @@ msgstr "Вы завершите покупку, сделав банковски�
 msgid "You will send {amount}"
 msgstr "Вы перечисляете {amount}"
 
-#: src/components/modals/SendModal.vue:166
+#: src/components/modals/SendModal.vue:167
 msgid "You will send {amount} NIM"
 msgstr "Вы отправите {amount} NIM "
 

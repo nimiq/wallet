@@ -38,7 +38,7 @@ export default defineComponent({
         padding: 1rem;
         font-size: var(--small-size);
         line-height: 1;
-        font-family: 'Fira Mono', monospace;
+        font-family: 'Fira Code VF', 'Fira Code', monospace;
         font-weight: normal;
         letter-spacing: -0.02em;
         white-space:nowrap;

@@ -482,22 +482,11 @@ export default defineComponent({
 
     .address {
         word-spacing: -0.2em;
-        font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
+        font-family: "Fira Code VF", "Fira Code", monospace;
         transition: opacity .3s var(--nimiq-ease);
 
         &.masked {
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-        }
-
-        &::after {
-            /* Preload the 500 weight by using it, hidden */
-            content: "preload";
-            font-weight: 500;
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            opacity: 0;
-            pointer-events: none;
         }
     }
 

@@ -66,7 +66,7 @@ export default defineComponent({
     border-radius: 5px;
     text-align: center;
     font-size: var(--body-size);
-    font-family: 'Fira Mono', monospace;
+    font-family: 'Fira Code VF', 'Fira Code', monospace;
     background-color: var(--nimiq-highlight-bg);
     font-weight: 500;
     color: var(--text-100);

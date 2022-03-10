@@ -587,7 +587,7 @@ export default defineComponent({
             letter-spacing: 0.0625rem;
             margin-top: 0.5rem;
             font-weight: 500;
-            font-family: 'Fira Mono';
+            font-family: 'Fira Code VF', 'Fira Code';
 
             transition: opacity 200ms cubic-bezier(0.5, 0, 0.15, 1);
         }

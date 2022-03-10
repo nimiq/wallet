@@ -59,7 +59,7 @@ export default defineComponent({
 
     span {
         font-size: 0.95em;
-        font-family: 'Fira Mono', monospace;
+        font-family: 'Fira Code VF', 'Fira Code', monospace;
         word-spacing: -0.15em;
         letter-spacing: -0.005em;
         // opacity: 0.7;

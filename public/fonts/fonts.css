@@ -40,3 +40,30 @@
     font-display: swap;
     src: url('FiraMono-Medium.woff') format('woff');
 }
+
+/* LICENCE Fira Code: /fonts/LICENCE_FIRA_CODE.txt */
+
+@font-face {
+    font-family: 'Fira Code VF';
+    /* font-weight requires a range: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide#Using_a_variable_font_font-face_changes */
+    font-style: normal;
+    font-weight: 400 500;
+    font-display: swap;
+    src: url('FiraCode-VF.woff2') format('woff2-variations');
+}
+
+@font-face {
+    font-family: 'Fira Code';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("FiraCode-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: 'Fira Code';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("FiraCode-Medium.woff") format("woff");
+}

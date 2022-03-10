@@ -216,7 +216,7 @@ export default defineComponent({
     }
 
     .label-input {
-        font-family: 'Fira Mono', monospace;
+        font-family: 'Fira Code VF', 'Fira Code', monospace;
 
         ::v-deep input {
             width: 100% !important;

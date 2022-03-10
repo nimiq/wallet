@@ -437,7 +437,7 @@ svg {
         }
 
         .address {
-            font-family: 'Fira Mono', monospace;
+            font-family: 'Fira Code VF', 'Fira Code', monospace;
             word-spacing: -0.2em;
         }
 

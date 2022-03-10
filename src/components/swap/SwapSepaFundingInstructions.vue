@@ -327,7 +327,7 @@ export default defineComponent({
 }
 
 .reference {
-    font-family: 'Fira Mono', monospace;
+    font-family: 'Fira Code VF', 'Fira Code', monospace;
     font-weight: 500;
     word-spacing: -0.2em;
 }

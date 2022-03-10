@@ -1385,7 +1385,7 @@ msgid "Regular transactions are too slow and will not process. Your bank might u
 msgstr ""
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr ""
 
@@ -1929,7 +1929,7 @@ msgid "Update Available"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr ""
 

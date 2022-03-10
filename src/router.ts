@@ -250,6 +250,14 @@ const routes: RouteConfig[] = [{
             name: 'simplex',
             // props: { modal: true },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/release-notes',
+            components: {
+                modal: ReleaseNotesModal,
+            },
+            name: 'root-release-notes',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
         }],
     }, {
         path: '/settings',
@@ -278,7 +286,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: ReleaseNotesModal,
             },
-            name: 'release-notes',
+            name: 'settings-release-notes',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }],
@@ -296,6 +304,14 @@ const routes: RouteConfig[] = [{
             modal: AccountMenuModal,
         },
         name: 'network-accounts',
+        props: { modal: true },
+        meta: { column: Columns.DYNAMIC },
+    }, {
+        path: '/release-notes',
+        components: {
+            modal: ReleaseNotesModal,
+        },
+        name: 'network-release-notes',
         props: { modal: true },
         meta: { column: Columns.DYNAMIC },
     }],

@@ -1462,7 +1462,7 @@ msgid ""
 msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式称呼即时交易，例如“实时交易”"
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "发行说明"
 
@@ -2018,7 +2018,7 @@ msgid "Update Available"
 msgstr "有可用更新"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "现在更新"
 

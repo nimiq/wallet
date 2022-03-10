@@ -1522,7 +1522,7 @@ msgstr ""
 "utilizar otro nombre, como 'transacciones en tiempo real'"
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Notas de Lanzamiento"
 
@@ -2096,7 +2096,7 @@ msgid "Update Available"
 msgstr "Actualización Disponible"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Actualizar ahora"
 

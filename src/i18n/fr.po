@@ -1527,7 +1527,7 @@ msgstr ""
 "réel\", par exemple."
 
 #: src/components/layouts/Settings.vue:246
-#: src/components/UpdateNotification.vue:8
+#: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Notes de mise à jour"
 
@@ -2103,7 +2103,7 @@ msgid "Update Available"
 msgstr "Mise à jour disponible"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:14
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Mettre à jour"
 

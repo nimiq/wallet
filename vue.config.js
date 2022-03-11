@@ -196,6 +196,7 @@ module.exports = {
             msTileImage: null,
         },
         workboxOptions: {
+            cleanupOutdatedCaches: true,
             manifestTransforms: [
                 (originalManifest, compilation) => {
                     let sriAddedCounter = 0;

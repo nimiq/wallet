@@ -327,6 +327,10 @@ export default defineComponent({
                     padding: 0 0.25rem;
                 }
 
+                ::v-deep .tooltip-box {
+                    padding: 1.5rem;
+                }
+
                 .flex-row {
                     align-items: center;
                 }
@@ -343,13 +347,14 @@ export default defineComponent({
                 .nq-text-s {
                     white-space: nowrap;
                     margin: 0 0 0.25rem;
+                    font-weight: 600;
                 }
 
                 .fiat-amount {
                     --size: var(--small-label-size);
                     font-size: var(--small-label-size);
                     opacity: .6;
-                    font-weight: 600;
+                    font-weight: 500;
                     text-align: left;
                 }
             }

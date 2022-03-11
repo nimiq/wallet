@@ -70,6 +70,12 @@ module.exports = {
         //     'bitcoinjs-lib': 'BitcoinJS',
         //     'buffer': 'BitcoinJS',
         // },
+        optimization: {
+            // Required to correctly cache-bust, as the ServiceWorker omits revision hashes when it detects a hash
+            // in the filename. But that only works when filename hashes are calculated based on the real content
+            // after e.g. i18n optimization.
+            realContentHash: true,
+        },
     },
     chainWebpack(config) {
         config

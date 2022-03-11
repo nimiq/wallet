@@ -42,7 +42,8 @@ process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
-    integrity: process.env.NODE_ENV === 'production',
+    /* Disable built-in integrity until compatible with configureWebpack.optimization.realContentHash, or that is removed. */
+    // integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
         plugins: [
             new PoLoaderOptimizer(),

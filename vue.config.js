@@ -1,10 +1,10 @@
 const path = require('path');
 const fs = require('fs');
 const child_process = require('child_process');
-const createHash = require('crypto').createHash;
+const ssri = require('ssri');
 
 const webpack = require('webpack');
-const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
+// const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
@@ -27,9 +27,10 @@ if (!release) {
 
 // Accesible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = `sha256-${createHash('sha256')
-    .update(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')))
-    .digest('base64')}`;
+process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = ssri.fromData(
+    fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')),
+    { algorithms: ['sha384'] },
+).toString();
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
@@ -37,12 +38,12 @@ console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 module.exports = {
     integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
-        output: {
-            crossOriginLoading: 'anonymous',
-        },
+        // output: {
+        //     crossOriginLoading: 'anonymous',
+        // },
         plugins: [
             new PoLoaderOptimizer(),
-            new SubresourceIntegrityPlugin(), // The SRI plugin has to be placed _after_ the PO-Optimizer plugin
+            // new SubresourceIntegrityPlugin(), // The SRI plugin has to be placed _after_ the PO-Optimizer plugin
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
             }),
@@ -191,6 +192,36 @@ module.exports = {
         iconPaths: {
             faviconSVG: null,
             msTileImage: null,
+        },
+        workboxOptions: {
+            manifestTransforms: [
+                (originalManifest, compilation) => {
+                    let sriAddedCounter = 0;
+                    let sriSkippedCounter = 0;
+
+                    const warnings = [];
+
+                    const manifest = originalManifest.map(entry => {
+                        const assetName = entry.url.substring(1);
+                        const asset = compilation.getAsset(assetName);
+
+                        if (!asset) {
+                            warnings.push(`Could not find asset to add SRI for ${entry.url}`);
+                            sriSkippedCounter++;
+                            return entry;
+                        }
+
+                        entry.integrity = ssri.fromData(asset.source.source(), { algorithms: ['sha384'] }).toString();
+                        sriAddedCounter++;
+
+                        return entry;
+                    });
+
+                    console.log("\nSRI ADDED TO", sriAddedCounter, "FILES,", sriSkippedCounter, "SKIPPED");
+
+                    return { warnings, manifest };
+                },
+            ],
         },
     },
 };

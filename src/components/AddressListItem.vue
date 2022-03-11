@@ -105,14 +105,16 @@ export default defineComponent({
 
 .label {
     font-weight: 600;
-    margin: 0 2rem;
-    flex-grow: 1;
+    padding: 0 2rem;
     text-align: left;
+    flex-shrink: 1;
+    overflow: hidden;
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 }
 
 .balances {
     text-align: right;
-    flex-shrink: 0;
+    flex-grow: 1;
 
     ::v-deep .circle-spinner {
         display: block;

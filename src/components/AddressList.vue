@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onActivated } from '@vue/composition-api';
 
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
@@ -45,6 +45,7 @@ import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -66,6 +67,7 @@ export default defineComponent({
         const { availableExternalAddresses, accountBalance } = useBtcAddressStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
+        const { amountsHidden } = useSettingsStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
@@ -122,15 +124,16 @@ export default defineComponent({
             /* context.root.$nextTick works here except for Opera browser. Using setTimeout instead fix it. */
             /* TODO: find a better way to do it. */
             setTimeout(() => {
-                if (activeAddress.value) {
-                    adjustBackgroundOffsetAndScale(activeAddress.value);
-                }
+                if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);
             }, 0);
 
             watch(addressInfos, () => {
                 scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
             });
         });
+
+        onActivated(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+        watch(amountsHidden, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
 
         function selectNimAddress(address: string) {
             adjustBackgroundOffsetAndScale(address);

@@ -5,6 +5,7 @@ const createHash = require('crypto').createHash;
 
 const webpack = require('webpack');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
+const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
 if (!buildName) {
@@ -42,11 +43,10 @@ process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
-    /* Disable built-in integrity until compatible with configureWebpack.optimization.realContentHash, or that is removed. */
-    // integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
         plugins: [
             new PoLoaderOptimizer(),
+            new SubresourceIntegrityPlugin(),
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
             }),
@@ -71,6 +71,9 @@ module.exports = {
         //     'bitcoinjs-lib': 'BitcoinJS',
         //     'buffer': 'BitcoinJS',
         // },
+        output: {
+            crossOriginLoading: "anonymous", // Required for SRI to work
+        },
         optimization: {
             // Required to correctly cache-bust, as the ServiceWorker omits revision hashes when it detects a hash
             // in the filename. But that only works when filename hashes are calculated based on the real content

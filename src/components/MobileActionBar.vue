@@ -93,6 +93,7 @@ export default defineComponent({
 .mobile-action-bar {
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
     padding: 2rem;
     padding-bottom: max(2rem, env(safe-area-inset-bottom));
     background: white;

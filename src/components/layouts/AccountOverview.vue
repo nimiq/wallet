@@ -293,6 +293,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    flex-shrink: 0;
     padding: 0.625rem 1rem;
     border-radius: 0.75rem;
     font-size: var(--body-size);

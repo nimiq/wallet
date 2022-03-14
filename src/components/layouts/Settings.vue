@@ -456,7 +456,6 @@ export default defineComponent({
     overflow-y: auto;
 
     @extend %custom-scrollbar;
-    @include ios-flex;
 
     section:first-child {
         padding-top: 2rem;

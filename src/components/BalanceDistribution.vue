@@ -13,7 +13,7 @@
                         preferredPosition="top right"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
                         @show="highlightBar(i)"
-                        @hide="resetBars()"
+                        @hide="resetBar(i)"
                     >
                         <div
                             class="bar"
@@ -189,15 +189,15 @@ export default defineComponent({
 
         // When user hovers over a NIM balance distribution bar, we want to highlight it fading the rest of
         // NIM addresses bars
-        function highlightBar(activeChild: number) {
-            setTimeout(() => {
-                highlightedBar.value = activeChild;
-            }, 100 + 1 /* Tooltip takes 100ms to emit hide event */);
+        function highlightBar(index: number) {
+            highlightedBar.value = index;
         }
 
         // Remove all faded classes from NIM balance distribution bars
-        function resetBars() {
-            highlightedBar.value = null;
+        function resetBar(index: number) {
+            if (highlightedBar.value === index) {
+                highlightedBar.value = null;
+            }
         }
 
         return {
@@ -217,7 +217,7 @@ export default defineComponent({
             hasActiveSwap,
             canUseSwaps,
             highlightBar,
-            resetBars,
+            resetBar,
             highlightedBar,
         };
     },

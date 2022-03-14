@@ -2,23 +2,30 @@
     <div class="balance-distribution">
         <div class="currency flex-column nim" :style="{width: Math.max(0.12, balanceDistribution.nim) * 100 + '%'}">
             <div class="distribution" >
-                <div v-for="account of nimBalanceDistribution"
+                <div v-for="(account, i) of nimBalanceDistribution"
                     :key="account.addressInfo.address"
                     :style="{width: (nimPercentageSum < 0.99
                         ? 1 / nimBalanceDistribution.length
                         : account.percentage
                     ) * 100 + '%'}">
                     <Tooltip
+                        class="nim"
                         preferredPosition="top right"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
+                        @show="highlightBar(i)"
+                        @hide="resetBar(i)"
                     >
                         <div
                             class="bar"
                             :class="[
                                 getBackgroundClass(account.addressInfo.address),
-                                {'empty': !account.addressInfo.balance},
+                                {
+                                    'empty': !account.addressInfo.balance,
+                                    'faded': highlightedBar !== null && i !== highlightedBar,
+                                },
                             ]"
-                            slot="trigger"></div>
+                            slot="trigger"
+                        ></div>
                         <div class="flex-row">
                             <Identicon :address="account.addressInfo.address"/>
                             <div class="flex-column">
@@ -44,7 +51,7 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
+            <Tooltip class="btc" preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
                     :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
                     @focus.stop="$refs.swapTooltip.show()"
@@ -178,6 +185,21 @@ export default defineComponent({
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
+        const highlightedBar = ref<number>(null);
+
+        // When user hovers over a NIM balance distribution bar, we want to highlight it fading the rest of
+        // NIM addresses bars
+        function highlightBar(index: number) {
+            highlightedBar.value = index;
+        }
+
+        // Remove all faded classes from NIM balance distribution bars
+        function resetBar(index: number) {
+            if (highlightedBar.value === index) {
+                highlightedBar.value = null;
+            }
+        }
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -194,6 +216,9 @@ export default defineComponent({
             doElsTouch,
             hasActiveSwap,
             canUseSwaps,
+            highlightBar,
+            resetBar,
+            highlightedBar,
         };
     },
     components: {
@@ -276,7 +301,6 @@ export default defineComponent({
             width: 100%;
 
             > div {
-                padding-right: 0.5rem;
                 min-width: 1rem;
 
                 &:last-child {
@@ -292,16 +316,17 @@ export default defineComponent({
                 width: 100%;
 
                 ::v-deep .trigger {
-                    display: block;
+                    display: flex;
+                    height: 8px;
+                    padding: 0 0.25rem;
                 }
 
-                ::v-deep .trigger::after {
-                    background: white;
+                &.nim ::v-deep .trigger::after {
+                    background: #1F2046; // Color at the bottom left of the tooltip
                 }
 
                 ::v-deep .tooltip-box {
-                    background: white;
-                    color: var(--nimiq-blue);
+                    padding: 1.5rem;
                 }
 
                 .flex-row {
@@ -326,7 +351,6 @@ export default defineComponent({
                     --size: var(--small-label-size);
                     font-size: var(--small-label-size);
                     opacity: .6;
-                    font-weight: 600;
                     text-align: left;
                 }
             }
@@ -337,6 +361,11 @@ export default defineComponent({
                 border-radius: .5rem;
                 height: 0.5rem;
                 min-width: 0.5rem;
+                transition: opacity var(--transition-time) var(--nimiq-ease);
+
+                &.faded {
+                    opacity: 0.4;
+                }
 
                 &.btc {
                     background: var(--bitcoin-orange);

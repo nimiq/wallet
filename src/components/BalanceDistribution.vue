@@ -19,10 +19,12 @@
                             class="bar"
                             :class="[
                                 getBackgroundClass(account.addressInfo.address),
-                                {'empty': !account.addressInfo.balance},
+                                {
+                                    'empty': !account.addressInfo.balance,
+                                    'faded': highlightedBar !== null && i !== highlightedBar,
+                                },
                             ]"
                             slot="trigger"
-                            ref="$nimBalanceDistributionBars"
                         ></div>
                         <div class="flex-row">
                             <Identicon :address="account.addressInfo.address"/>
@@ -183,28 +185,19 @@ export default defineComponent({
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
-        // List of NIM addresses bar elements
-        const $nimBalanceDistributionBars = ref<null | HTMLDivElement[]>(null);
+        const highlightedBar = ref<number>(null);
 
         // When user hovers over a NIM balance distribution bar, we want to highlight it fading the rest of
         // NIM addresses bars
         function highlightBar(activeChild: number) {
-            if (!$nimBalanceDistributionBars.value) return;
-
-            $nimBalanceDistributionBars.value.forEach((bar, i) => {
-                setTimeout(() => {
-                    bar.classList[i !== activeChild ? 'add' : 'remove']('faded');
-                }, 100 + 1 /** Tooltip takes 100ms to emit hide event */);
-            });
+            setTimeout(() => {
+                highlightedBar.value = activeChild;
+            }, 100 + 1 /* Tooltip takes 100ms to emit hide event */);
         }
 
         // Remove all faded classes from NIM balance distribution bars
         function resetBars() {
-            if (!$nimBalanceDistributionBars.value) return;
-
-            $nimBalanceDistributionBars.value.forEach((bar) => {
-                bar.classList.remove('faded');
-            });
+            highlightedBar.value = null;
         }
 
         return {
@@ -223,9 +216,9 @@ export default defineComponent({
             doElsTouch,
             hasActiveSwap,
             canUseSwaps,
-            $nimBalanceDistributionBars,
             highlightBar,
             resetBars,
+            highlightedBar,
         };
     },
     components: {

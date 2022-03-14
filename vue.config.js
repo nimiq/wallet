@@ -49,6 +49,7 @@ module.exports = {
             new PoLoaderOptimizer(),
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
+                'process.env.VERSION': `"${release}"`,
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],

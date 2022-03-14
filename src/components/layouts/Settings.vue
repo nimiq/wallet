@@ -233,7 +233,7 @@
                         class="reset currency"
                         @click="setCurrency(currencyOption)"
                     >
-                        <CountryFlag :code="currencyOption.substr(0, 2)"/>
+                        <CountryFlag :code="currencyOption.substring(0, 2)"/>
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
@@ -241,7 +241,9 @@
         </div>
 
         <div class="copyright">
-            &copy; 2017-{{ copyrightYear }} Nimiq Foundation
+            <span>&copy; 2017-{{ copyrightYear }} Nimiq Foundation</span>
+            <strong>&middot;</strong>
+            <span>{{ VERSION }}</span>
             <strong>&middot;</strong>
             <router-link :to="{name: 'settings-release-notes'}">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
@@ -429,6 +431,7 @@ export default defineComponent({
             promptInstall,
             shouldUseRedirects,
             copyrightYear,
+            VERSION: process.env.VERSION,
         };
     },
     components: {
@@ -653,8 +656,7 @@ input[type="file"] {
     opacity: 0.6;
 
     strong {
-        margin-left: 0.5rem;
-        margin-right: 1rem;
+        margin: 0 0.75rem;
     }
 
     a {

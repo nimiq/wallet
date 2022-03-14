@@ -304,7 +304,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:77
+#: src/components/BalanceDistribution.vue:82
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -1691,7 +1691,7 @@ msgstr ""
 msgid "Swap has expired"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:54
+#: src/components/BalanceDistribution.vue:59
 msgid "Swap NIM {arrow} BTC"
 msgstr ""
 

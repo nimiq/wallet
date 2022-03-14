@@ -9,6 +9,7 @@
                         : account.percentage
                     ) * 100 + '%'}">
                     <Tooltip
+                        class="nim"
                         preferredPosition="top right"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
                         @show="highlightBar(i)"
@@ -48,7 +49,7 @@
                 value-mask/>
         </div>
         <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
+            <Tooltip class="btc" preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
                     :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
                     @focus.stop="$refs.swapTooltip.show()"
@@ -325,6 +326,10 @@ export default defineComponent({
                     display: flex;
                     height: 8px;
                     padding: 0 0.25rem;
+                }
+
+                &.nim ::v-deep .trigger::after {
+                    background: #1F2046; // Color at the bottom left of the tooltip
                 }
 
                 ::v-deep .tooltip-box {

@@ -4,12 +4,13 @@ export function useElementResize(
     target: Ref<HTMLElement | null>,
     callback: () => void,
 ) {
-    const isSupported = window && 'ResizeObserver' in window;
+    const isSupported = 'ResizeObserver' in window;
 
     if (!isSupported) {
         // This is just a fallback for browsers that don't support ResizeObserver
-        window.addEventListener('resize', () => callback());
-        onUnmounted(() => window.removeEventListener('resize', () => callback));
+        window.addEventListener('resize', callback);
+        onUnmounted(() => window.removeEventListener('resize', callback));
+        return;
     }
 
     let observer: ResizeObserver | undefined;
@@ -25,9 +26,9 @@ export function useElementResize(
         (el) => {
             unobserve();
 
-            if (window && el && el) {
-                observer = new window.ResizeObserver(callback);
-                observer!.observe(el);
+            if (el) {
+                observer = new ResizeObserver(callback);
+                observer.observe(el);
             }
         },
         { flush: 'post' },

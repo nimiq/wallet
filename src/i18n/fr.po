@@ -130,7 +130,7 @@ msgstr ""
 "72 heures après votre premier achat, votre limite sera augmentée "
 "automatiquement."
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:341
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -352,7 +352,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "Le BIC fonctionne aussi."
 
-#: src/components/BalanceDistribution.vue:77
+#: src/components/BalanceDistribution.vue:84
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -499,7 +499,7 @@ msgstr "Annuler le Swap"
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:321
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -721,7 +721,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Ressources pour les développeurs"
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:250
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
@@ -891,7 +891,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Valeur du FIAT indisponible"
 
-#: src/components/layouts/Settings.vue:325
+#: src/components/layouts/Settings.vue:327
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -1336,7 +1336,7 @@ msgstr "frais de service OASIS"
 msgid "Off"
 msgstr "Inactif"
 
-#: src/components/layouts/Settings.vue:348
+#: src/components/layouts/Settings.vue:350
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -1526,7 +1526,7 @@ msgstr ""
 "Votre banque utilise peut-être un autre nom, comme \"transactions en temps "
 "réel\", par exemple."
 
-#: src/components/layouts/Settings.vue:246
+#: src/components/layouts/Settings.vue:248
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Notes de mise à jour"
@@ -1843,7 +1843,7 @@ msgstr "Swap depuis {address}"
 msgid "Swap has expired"
 msgstr "Le Swap a expiré"
 
-#: src/components/BalanceDistribution.vue:54
+#: src/components/BalanceDistribution.vue:61
 msgid "Swap NIM {arrow} BTC"
 msgstr "Swap NIM {arrow} BTC"
 

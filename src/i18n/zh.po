@@ -126,7 +126,7 @@ msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr "首次购买后的72 小时，你的限额将自动更新。"
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:341
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -332,7 +332,7 @@ msgstr "仅支持欧盟SEPA区域的银行转账"
 msgid "BIC works, too."
 msgstr "BIC适用"
 
-#: src/components/BalanceDistribution.vue:77
+#: src/components/BalanceDistribution.vue:84
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -471,7 +471,7 @@ msgstr "取消交换"
 msgid "Cancelled Swap"
 msgstr "取消交换"
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:321
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
@@ -689,7 +689,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr "开发者资源"
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:250
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -853,7 +853,7 @@ msgstr "正在取得更新"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:325
+#: src/components/layouts/Settings.vue:327
 msgid "File contains no contacts."
 msgstr "文件中没有任何联系人"
 
@@ -1279,7 +1279,7 @@ msgstr "OASIS服务费"
 msgid "Off"
 msgstr "关"
 
-#: src/components/layouts/Settings.vue:348
+#: src/components/layouts/Settings.vue:350
 msgid "OK! Contacts imported successfully."
 msgstr "好的，联系人已成功导入"
 
@@ -1461,7 +1461,7 @@ msgid ""
 "another name, like ‘real-time transactions’ i.a."
 msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式称呼即时交易，例如“实时交易”"
 
-#: src/components/layouts/Settings.vue:246
+#: src/components/layouts/Settings.vue:248
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "发行说明"
@@ -1772,7 +1772,7 @@ msgstr "从 {address} 交换"
 msgid "Swap has expired"
 msgstr "交换已过期"
 
-#: src/components/BalanceDistribution.vue:54
+#: src/components/BalanceDistribution.vue:61
 msgid "Swap NIM {arrow} BTC"
 msgstr "交换NIM{arrow}BTC"
 

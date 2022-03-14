@@ -129,7 +129,7 @@ msgstr ""
 "Después de 72 horas tras tu primera compra, tu límite será aumentado "
 "automáticamente."
 
-#: src/components/layouts/Settings.vue:339
+#: src/components/layouts/Settings.vue:341
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -351,7 +351,7 @@ msgstr "Transferencias Bancarias son solo soportadas en el area SEPA de UE."
 msgid "BIC works, too."
 msgstr "BIC también funciona."
 
-#: src/components/BalanceDistribution.vue:77
+#: src/components/BalanceDistribution.vue:84
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -501,7 +501,7 @@ msgstr "Cancelar Intercambio"
 msgid "Cancelled Swap"
 msgstr "Intercambio Cancelado"
 
-#: src/components/layouts/Settings.vue:319
+#: src/components/layouts/Settings.vue:321
 msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
@@ -721,7 +721,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Recursos de desarrolladores"
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:250
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Aviso legal"
@@ -888,7 +888,7 @@ msgstr "Recolectando"
 msgid "Fiat value unavailable"
 msgstr "Valor en moneda fiduciaria no disponible"
 
-#: src/components/layouts/Settings.vue:325
+#: src/components/layouts/Settings.vue:327
 msgid "File contains no contacts."
 msgstr "El archivo no contiene contactos."
 
@@ -1330,7 +1330,7 @@ msgstr "Cuota de servicio de OASIS"
 msgid "Off"
 msgstr "Apagado"
 
-#: src/components/layouts/Settings.vue:348
+#: src/components/layouts/Settings.vue:350
 msgid "OK! Contacts imported successfully."
 msgstr "¡OK! Los Contactos fueron importados exitosamente."
 
@@ -1521,7 +1521,7 @@ msgstr ""
 "Transacciones regulares son lentas y no serán procesadas. Su banco puede "
 "utilizar otro nombre, como 'transacciones en tiempo real'"
 
-#: src/components/layouts/Settings.vue:246
+#: src/components/layouts/Settings.vue:248
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Notas de Lanzamiento"
@@ -1838,7 +1838,7 @@ msgstr "Intercambiar desde {address}"
 msgid "Swap has expired"
 msgstr "El intercambio ha expirado"
 
-#: src/components/BalanceDistribution.vue:54
+#: src/components/BalanceDistribution.vue:61
 msgid "Swap NIM {arrow} BTC"
 msgstr "Intercambiar NIM {arrow} BTC"
 

@@ -221,16 +221,19 @@ export default defineComponent({
         const $address = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
 
-        useElementResize($address, maskAddress);
-
         const { isMobile, isFullDesktop } = useWindowSize();
 
-        function maskAddress() {
-            let addressMaskedWidth = 322;
-            if (isFullDesktop.value) addressMaskedWidth = 396;
-            if (!isMobile.value) addressMaskedWidth = 372;
-            addressMasked.value = $address.value!.clientWidth < addressMaskedWidth;
-        }
+        useElementResize($address, () => {
+            let addressWidth: number;
+            if (isMobile.value) {
+                addressWidth = 322;
+            } else if (isFullDesktop.value) {
+                addressWidth = 396;
+            } else {
+                addressWidth = 372; // Tablet
+            }
+            addressMasked.value = $address.value!.clientWidth < addressWidth;
+        });
 
         function hideUnclaimedCashlinkList() {
             showUnclaimedCashlinkList.value = false;

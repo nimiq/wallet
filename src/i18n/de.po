@@ -4,12 +4,12 @@
 # Matheo <matheo@nimiq.com>, 2021
 # Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
-# Sven <sven@nimiq.com>, 2022
 # Redexe <timo.niehoff@yahoo.de>, 2022
+# Sven <sven@nimiq.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Redexe <timo.niehoff@yahoo.de>, 2022\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2022\n"
 "Language-Team: German (https://www.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -2116,7 +2116,7 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
-msgstr "Benutze Beschriftungen um Transaktionen einfach zu identifizieren."
+msgstr "Benutze Beschriftungen um Transaktionen leicht wiederzufinden."
 
 #: src/components/layouts/Settings.vue:33
 msgid "Use the Nimiq Wallet as a web app outside the browser."

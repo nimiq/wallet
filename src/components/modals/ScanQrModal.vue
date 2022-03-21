@@ -88,7 +88,7 @@ export default defineComponent({
                 try {
                     parseBitcoinUrl(result);
                     // If the above does not throw, we have a valid BTC request link
-                    router.replace(`/${result}}`);
+                    router.replace(`/${result}`);
                     return; // eslint-disable-line no-useless-return
                 } catch (error) {
                     // Ignore

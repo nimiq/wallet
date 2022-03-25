@@ -46,7 +46,7 @@ import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@
 import { Tooltip } from '@nimiq/vue-components';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
-import { getNetworkClient, onPeersUpdated } from '../network';
+import { getNetworkClient, onPeersUpdated, offPeersUpdated } from '../network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -87,6 +87,8 @@ export default defineComponent({
             }
         };
 
+        let updateKnownAddresses: () => Promise<void>;
+
         onMounted(async () => {
             const client = await getNetworkClient();
 
@@ -94,7 +96,7 @@ export default defineComponent({
 
             let askForAddressesTimeout = 0;
 
-            const updateKnownAddresses = async () => {
+            updateKnownAddresses = async () => {
                 if (!askForAddressesTimeout) {
                     askForAddressesTimeout = window.setTimeout(async () => {
                         const peerAddressInfos = await client.network.getAddresses();
@@ -115,7 +117,10 @@ export default defineComponent({
             requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting
         });
 
-        onUnmounted(() => window.removeEventListener('resize', setDimensions));
+        onUnmounted(() => {
+            offPeersUpdated(updateKnownAddresses);
+            window.removeEventListener('resize', setDimensions);
+        });
 
         // Emit own X coordinate so the parent can scroll the map to the correct horizontal position
         const ownNode = computed(() =>

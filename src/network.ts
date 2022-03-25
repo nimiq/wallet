@@ -29,13 +29,85 @@ export async function getNetworkClient() {
     return clientPromise;
 }
 
-export async function onPeersUpdated(callback: () => any) {
+async function reconnectNetwork() {
+    const client = await getNetworkClient();
+
+    // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
+    await client.resetConsensus();
+
+    // Re-add deep listeners to new consensus
+    subscribeToPeerCount();
+    for (const [callback] of onPeersUpdatedCallbacks) {
+        const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
+            onNetworkPeersChanged(callback),
+            onNetworkAddressAdded(callback),
+        ]);
+        onPeersUpdatedCallbacks.set(callback, {
+            peersChangedId,
+            addressAddedId,
+        });
+    }
+}
+
+async function disconnectNetwork() {
     const client = await getNetworkClient();
     // @ts-expect-error Private property access
     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+    consensus.network.disconnect('Client offline');
+}
 
-    consensus.network.on('peers-changed', callback);
-    consensus.network.addresses.on('added', callback);
+const onPeersUpdatedCallbacks = new Map<() => any, {
+    peersChangedId: number,
+    addressAddedId: number,
+}>();
+
+export async function onPeersUpdated(callback: () => any) {
+    const [peersChangedId, addressAddedId] = await Promise.all([
+        onNetworkPeersChanged(callback),
+        onNetworkAddressAdded(callback),
+    ]);
+    onPeersUpdatedCallbacks.set(callback, {
+        peersChangedId,
+        addressAddedId,
+    });
+}
+
+export async function offPeersUpdated(callback: () => any) {
+    const ids = onPeersUpdatedCallbacks.get(callback);
+    if (!ids) return;
+
+    const client = await getNetworkClient();
+
+    // @ts-expect-error Private property access
+    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+    consensus.network.off('peers-changed', ids.peersChangedId);
+    consensus.network.addresses.off('added', ids.addressAddedId);
+    onPeersUpdatedCallbacks.delete(callback);
+}
+
+async function onNetworkPeersChanged(callback: () => any) {
+    const client = await getNetworkClient();
+
+    // @ts-expect-error Private property access
+    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+    return consensus.network.on('peers-changed', callback);
+}
+
+async function onNetworkAddressAdded(callback: () => any) {
+    const client = await getNetworkClient();
+
+    // @ts-expect-error Private property access
+    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+    return consensus.network.addresses.on('added', callback);
+}
+
+async function subscribeToPeerCount() {
+    return onNetworkPeersChanged(async () => {
+        const client = await getNetworkClient();
+        const statistics = await client.network.getStatistics();
+        const peerCount = statistics.totalPeerCount;
+        useNetworkStore().state.peerCount = peerCount;
+    });
 }
 
 export async function launchNetwork() {
@@ -80,37 +152,17 @@ export async function launchNetwork() {
         }
     }
 
-    let consensusConnectingTimeout: number | undefined;
-    function startConnectingTimeout() {
-        consensusConnectingTimeout = window.setTimeout(() => {
-            network$.consensus = 'connecting';
-            consensusConnectingTimeout = undefined;
-        }, 5e3); // Show disconnected state after 5 seconds
-    }
-    function stopConnectingTimeout() {
-        window.clearTimeout(consensusConnectingTimeout);
-        consensusConnectingTimeout = undefined;
-    }
-
-    client.addConsensusChangedListener((consensus) => {
+    client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
-
-        if (consensus === 'syncing' && !consensusConnectingTimeout) {
-            startConnectingTimeout();
-        } else {
-            stopConnectingTimeout();
-        }
     });
 
-    window.addEventListener('offline', () => {
+    window.addEventListener('offline', async () => {
         console.warn('Browser is OFFLINE');
-        startConnectingTimeout();
+        disconnectNetwork();
     });
     window.addEventListener('online', () => {
         console.info('Browser is ONLINE');
-        stopConnectingTimeout();
-        // @ts-expect-error This method is part of Nimiq 1.5.8, but the types were not updated
-        client.resetConsensus();
+        reconnectNetwork();
     });
 
     client.addHeadChangedListener(async (hash) => {
@@ -124,15 +176,7 @@ export async function launchNetwork() {
         // directly.
     });
 
-    (async () => {
-        // @ts-expect-error Private property access
-        const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-
-        consensus.network.on('peers-changed', async () => {
-            const statistics = await client.network.getStatistics();
-            network$.peerCount = statistics.totalPeerCount;
-        });
-    })();
+    subscribeToPeerCount();
 
     function transactionListener(tx: Nimiq.Client.TransactionDetails) {
         const plain = tx.toPlain();

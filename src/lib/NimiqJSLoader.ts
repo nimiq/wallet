@@ -16,7 +16,9 @@ async function loadLib(globalName: string, src: string, integrityHash?: string) 
                 // Wait for script to be parsed: check if global variable is available yet
                 // @ts-expect-error Window has no index signature
                 while (typeof window[globalName] === 'undefined') {
-                    await new Promise((res) => setTimeout(res, 50)); // eslint-disable-line no-await-in-loop
+                    await new Promise((res) => { // eslint-disable-line no-await-in-loop
+                        setTimeout(res, 50);
+                    });
                 }
                 resolve(true);
             });

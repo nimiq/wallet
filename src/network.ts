@@ -175,18 +175,18 @@ export async function launchNetwork() {
         }
     }
 
-    // Start as true, since at app start everything is already invalidated
+    // Start as true, since at app start everything is already invalidated and unconnected
     let txHistoryWasInvalidatedSinceLastConsensus = true;
+    let networkWasReconnectedSinceLastConsensus = true;
     client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
 
-        if (consensus !== 'established') {
-            if (!txHistoryWasInvalidatedSinceLastConsensus) {
-                invalidateTransationHistory(true);
-                txHistoryWasInvalidatedSinceLastConsensus = true;
-            }
-        } else {
+        if (consensus === 'established') {
             txHistoryWasInvalidatedSinceLastConsensus = false;
+            networkWasReconnectedSinceLastConsensus = false;
+        } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
+            invalidateTransationHistory(true);
+            txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
 
@@ -194,6 +194,12 @@ export async function launchNetwork() {
         if (document.visibilityState === 'visible') {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransationHistory();
+            }
+
+            // If network is disconnected when going back to app, trigger reconnect
+            if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
+                disconnectNetwork().then(reconnectNetwork);
+                networkWasReconnectedSinceLastConsensus = true;
             }
         }
     });

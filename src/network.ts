@@ -51,9 +51,12 @@ async function reconnectNetwork() {
 
 async function disconnectNetwork() {
     const client = await getNetworkClient();
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    consensus.network.disconnect('Client offline');
+
+    const peers = await client.network.getPeers();
+    await Promise.all(peers.map(
+        ({ peerAddress }) => client.network.disconnect(peerAddress),
+    ));
+    return peers;
 }
 
 const onPeersUpdatedCallbacks = new Map<() => any, {

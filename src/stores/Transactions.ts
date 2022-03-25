@@ -8,6 +8,7 @@ import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/P
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
+import { AddressInfo, useAddressStore } from './Address';
 
 export type Transaction = ReturnType<import('@nimiq/core-web').Client.TransactionDetails['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
@@ -53,8 +54,9 @@ export const useTransactionsStore = createStore({
                 const knownTx = this.state.transactions[tx.transactionHash];
                 if (!knownTx) continue;
                 if (knownTx.timestamp) {
-                    // Keep original timestamp instead of timestamp at confirmation after 10 blocks.
+                    // Keep original timestamp and blockHeight instead of values at confirmation after 10 blocks.
                     tx.timestamp = knownTx.timestamp;
+                    tx.blockHeight = knownTx.blockHeight;
                 }
                 if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
                     tx.relatedTransactionHash = knownTx.relatedTransactionHash;
@@ -207,6 +209,17 @@ export const useTransactionsStore = createStore({
                                 }
                             }).catch(() => undefined);
                         }
+                    }
+                }
+
+                // Prevent received tx from displaying as "not sent"
+                if (plain.state === TransactionState.NEW) {
+                    const addressStore = useAddressStore();
+                    const ourSender = addressStore.state.addressInfos[plain.sender] as AddressInfo | undefined;
+                    const ourRecipient = addressStore.state.addressInfos[plain.recipient] as AddressInfo | undefined;
+
+                    if (!ourSender && ourRecipient) {
+                        plain.state = TransactionState.PENDING;
                     }
                 }
             }

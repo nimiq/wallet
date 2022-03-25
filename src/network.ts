@@ -29,7 +29,7 @@ export async function getNetworkClient() {
     return clientPromise;
 }
 
-async function reconnectNetwork() {
+async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
     const client = await getNetworkClient();
 
     // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
@@ -46,6 +46,14 @@ async function reconnectNetwork() {
             peersChangedId,
             addressAddedId,
         });
+    }
+
+    if (peerSuggestions && peerSuggestions.length > 0) {
+        const interval = window.setInterval(() => {
+            peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
+        }, 1000);
+        await client.waitForConsensusEstablished();
+        window.clearInterval(interval);
     }
 }
 

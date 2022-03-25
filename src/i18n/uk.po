@@ -979,7 +979,7 @@ msgstr ""
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:204
+#: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1246,7 +1246,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Гаманець Німік не підтримує повідомлень у переказах."
 
-#: src/components/swap/SwapNotification.vue:203
+#: src/components/swap/SwapNotification.vue:202
 msgid "No connection to {chain} network."
 msgstr "Немає підключення до мережі {chain}."
 

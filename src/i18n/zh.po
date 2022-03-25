@@ -956,7 +956,7 @@ msgstr "我知道我必须发送一个{sepaInstantLink}。"
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:204
+#: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1218,7 +1218,7 @@ msgstr "Nimiq正在开发PRO功能，用户在注册后可提高金额限制"
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
-#: src/components/swap/SwapNotification.vue:203
+#: src/components/swap/SwapNotification.vue:202
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 

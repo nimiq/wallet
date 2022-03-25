@@ -994,7 +994,7 @@ msgstr "Ich verstehe dass ich eine {sepaInstantLink} senden muss."
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:204
+#: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1272,7 +1272,7 @@ msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 "Die Nimiq-Wallet unterstützt keine Transaktionsnachrichten für Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:203
+#: src/components/swap/SwapNotification.vue:202
 msgid "No connection to {chain} network."
 msgstr "Keine Verbindung zum {chain}-Netzwerk"
 

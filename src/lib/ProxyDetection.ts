@@ -170,8 +170,7 @@ export function detectProxyTransactions(
         }
     }
 
-    if (!needToTriggerNetwork) return;
-    triggerNetwork();
+    if (needToTriggerNetwork) triggerNetwork();
 }
 
 function isHtlcTransaction(tx: Transaction): boolean {

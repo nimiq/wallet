@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { watch } from '@vue/composition-api';
+import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
@@ -120,6 +120,12 @@ export async function launchNetwork() {
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
 
+    const subscribedAddresses = new Set<string>();
+    const fetchedAddresses = new Set<string>();
+
+    const subscribedProxies = new Set<string>();
+    const seenProxies = new Set<string>();
+
     async function updateBalances(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
@@ -152,17 +158,55 @@ export async function launchNetwork() {
         }
     }
 
+    const txFetchTrigger = ref(0);
+    function invalidateTransationHistory(includeProxies = false) {
+        // Invalidate fetched addresses
+        fetchedAddresses.clear();
+        // Trigger watcher
+        txFetchTrigger.value += 1;
+
+        // Do the same for proxies if requested
+        if (includeProxies) {
+            seenProxies.clear();
+            proxyStore.triggerNetwork();
+        }
+    }
+
+    // Start as true, since at app start everything is already invalidated
+    let txHistoryWasInvalidatedSinceLastConsensus = true;
     client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
+
+        if (consensus !== 'established') {
+            if (!txHistoryWasInvalidatedSinceLastConsensus) {
+                invalidateTransationHistory(true);
+                txHistoryWasInvalidatedSinceLastConsensus = true;
+            }
+        } else {
+            txHistoryWasInvalidatedSinceLastConsensus = false;
+        }
     });
 
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            if (!txHistoryWasInvalidatedSinceLastConsensus) {
+                invalidateTransationHistory();
+            }
+        }
+    });
+
+    let reconnectTimeout: number | undefined;
     window.addEventListener('offline', async () => {
         console.warn('Browser is OFFLINE');
+        if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
         disconnectNetwork();
     });
     window.addEventListener('online', () => {
         console.info('Browser is ONLINE');
-        reconnectNetwork();
+        reconnectTimeout = window.setTimeout(() => {
+            reconnectNetwork();
+            reconnectTimeout = undefined;
+        }, 1000);
     });
 
     client.addHeadChangedListener(async (hash) => {
@@ -200,9 +244,6 @@ export async function launchNetwork() {
         return true;
     }
 
-    const subscribedAddresses = new Set<string>();
-    const fetchedAddresses = new Set<string>();
-
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
@@ -236,9 +277,12 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    watch(addressStore.activeAddress, (address) => {
+    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress]) => {
+        const address = activeAddress as string | null;
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
+
+        console.debug('Scheduling transaction fetch for', address);
 
         const knownTxDetails = Object.values(transactionsStore.state.transactions)
             .filter((tx) => tx.sender === address || tx.recipient === address);
@@ -265,8 +309,6 @@ export async function launchNetwork() {
 
     // Fetch transactions for proxies
     const proxyStore = useProxyStore();
-    const seenProxies = new Set<string>();
-    const subscribedProxies = new Set<string>();
     watch(proxyStore.networkTrigger, () => {
         const newProxies: string[] = [];
         const addressesToSubscribe: string[] = [];
@@ -346,3 +388,9 @@ export async function sendTransaction(tx: SignedTransaction | string) {
 
     return plain;
 }
+
+// @ts-expect-error debugging
+window.gimmeclient = async function gimmeclient() {
+    // @ts-expect-error debugging
+    window.client = await getNetworkClient();
+};

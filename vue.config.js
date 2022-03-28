@@ -205,6 +205,7 @@ module.exports = {
         },
         workboxOptions: {
             cleanupOutdatedCaches: true,
+            clientsClaim: true, // Start controlling all clients when activated (should prevent stale secondary tabs)
             manifestTransforms: [
                 (originalManifest, compilation) => {
                     let sriAddedCounter = 0;

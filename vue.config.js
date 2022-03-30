@@ -142,7 +142,11 @@ module.exports = {
                 });
     },
     pwa: {
-        name: 'Nimiq Wallet',
+        name: {
+            mainnet: 'Nimiq Wallet',
+            testnet: 'Nimiq Testnet',
+            local: 'Nimiq Local',
+        }[buildName],
         msTileColor: '#1F2348',
         manifestOptions: {
             start_url: '/',

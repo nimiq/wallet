@@ -10,7 +10,7 @@ export type FiatState = {
     exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
 };
 
-function guessUserCurrency() {
+export function guessUserCurrency(regionOverwrite?: string) {
     const currencies = Object.values(FiatCurrency);
 
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1
@@ -23,7 +23,11 @@ function guessUserCurrency() {
     );
     const match = navigator.language.match(languageRegex);
     if (!match) return FiatCurrency.USD;
-    const [, language, region] = match;
+    let [, language, region] = match;
+
+    if (regionOverwrite) {
+        region = regionOverwrite;
+    }
 
     // Find currency by region
     if (region) {

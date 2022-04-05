@@ -18,8 +18,9 @@ import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
-import { useFiatStore } from './stores/Fiat';
+import { guessUserCurrency, useFiatStore } from './stores/Fiat';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { useGeoIp } from './composables/useGeoIp';
 
 export function shouldUseRedirects(): boolean {
     // When not in PWA, don't use redirects
@@ -58,6 +59,16 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
 
     if (!welcomeModalAlreadyShown) {
         welcomeRoute = '/welcome';
+
+        // Get location from GeoIP service to set fiat currency
+        useGeoIp().locate().then((location) => {
+            if (location.country) {
+                useFiatStore().state.currency = guessUserCurrency(location.country);
+            }
+        }).catch((error: Error) => {
+            // eslint-disable-next-line no-console
+            console.debug(`Failed to locate user for fiat currency: ${error.message}`);
+        });
     }
 });
 

@@ -190,7 +190,7 @@ export async function launchNetwork() {
         network$.consensus = consensus;
 
         if (consensus === 'established') {
-            const stop = watch(() => network$.fetchingTxHistory, fetching => {
+            const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
                 if (fetching === 0) {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();

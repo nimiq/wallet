@@ -198,7 +198,7 @@ export async function launchElectrum() {
         btcNetwork$.consensus = state;
 
         if (state === 'established') {
-            const stop = watch(() => btcNetwork$.fetchingTxHistory, fetching => {
+            const stop = watch(() => btcNetwork$.fetchingTxHistory, (fetching) => {
                 if (fetching === 0) {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();
@@ -219,16 +219,16 @@ export async function launchElectrum() {
     });
 
     // Fetch transactions for active account
-    watch([activeAccountInfo, txFetchTrigger], async ([activeAccountInfo]) => {
-        const accountInfo = activeAccountInfo as AccountInfo | null
-        if (!accountInfo) return;
+    watch([activeAccountInfo, txFetchTrigger], async ([accountInfo]) => {
+        const account = accountInfo as AccountInfo | null;
+        if (!account) return;
 
         const { addressSet, activeAddresses } = btcAddressStore;
 
         // If this account does't have any Bitcoin addresses, there's nothing to check.
         if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
 
-        const accountId = accountInfo.id;
+        const accountId = account.id;
         if (fetchedAccounts.has(accountId)) return;
         fetchedAccounts.add(accountId);
 

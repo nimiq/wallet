@@ -31,8 +31,7 @@
     ]
   },
   "include": [
-    "types/BitcoinJS.d.ts",
-    "types/svg.d.ts",
+    "types/*",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

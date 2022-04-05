@@ -5,14 +5,14 @@
             <div v-if="!releases" class="nq-label flex-column">{{ $t('Loading...') }}</div>
 
             <details
-                v-for="(release, index) of releases" :key="`${release.app}-${release.version}`"
+                v-else v-for="(release, index) of releases" :key="`${release.app}-${release.version}`"
                 :open="index === 0"
             >
                 <summary>
                     {{ new Date(release.date).toLocaleDateString() }} - {{ release.app }} {{ release.version }}
                 </summary>
                 <!-- <p class="nq-text">{{ release.message }}</p> -->
-                <SimpleMarkdown class="nq-text" :source="release.message"/>
+                <VueMarkdown class="nq-text" :source="release.message" :breaks="false"/>
             </details>
         </PageBody>
     </Modal>
@@ -21,8 +21,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-// @ts-expect-error Missing types
-import { VueSimpleMarkdown as SimpleMarkdown } from 'vue-simple-markdown';
+import VueMarkdown from '@adapttive/vue-markdown';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { ENV_MAIN } from '../../lib/Constants';
@@ -54,7 +53,7 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        SimpleMarkdown,
+        VueMarkdown,
     },
 });
 </script>
@@ -108,7 +107,7 @@ details[open] summary {
 }
 
 details .nq-text {
-    padding: 2rem 2rem 0 2rem;
+    padding: 2rem 2rem 1px 2rem;
     margin: 0;
     background: var(--nimiq-highlight-bg);
     border-radius: 0 0 0.5rem 0.5rem;
@@ -116,11 +115,17 @@ details .nq-text {
     line-height: 1.5;
 
     ::v-deep ul {
-        padding: 2rem 0 2rem 3rem;
-        margin: 0;
+        margin: 2rem 0 2rem 3rem;
+        padding: 0;
 
         &:first-child {
-            margin-top: -2rem;
+            margin-top: 0;
+        }
+    }
+
+    ::v-deep p {
+        &:first-child {
+            margin-top: 0;
         }
     }
 }

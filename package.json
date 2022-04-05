@@ -20,6 +20,7 @@
   },
   "main": "src/main.ts",
   "dependencies": {
+    "@adapttive/vue-markdown": "^4.0.1",
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
@@ -44,7 +45,6 @@
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.5",
     "vue-router": "^3.1.6",
-    "vue-simple-markdown": "^1.1.4",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",
     "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools#webpack-5"
   },

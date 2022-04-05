@@ -190,7 +190,12 @@ export async function launchNetwork() {
         network$.consensus = consensus;
 
         if (consensus === 'established') {
-            txHistoryWasInvalidatedSinceLastConsensus = false;
+            const stop = watch(() => network$.fetchingTxHistory, fetching => {
+                if (fetching === 0) {
+                    txHistoryWasInvalidatedSinceLastConsensus = false;
+                    stop();
+                }
+            }, { lazy: true });
             networkWasReconnectedSinceLastConsensus = false;
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransationHistory(true);

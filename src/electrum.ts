@@ -198,7 +198,12 @@ export async function launchElectrum() {
         btcNetwork$.consensus = state;
 
         if (state === 'established') {
-            txHistoryWasInvalidatedSinceLastConsensus = false;
+            const stop = watch(() => btcNetwork$.fetchingTxHistory, fetching => {
+                if (fetching === 0) {
+                    txHistoryWasInvalidatedSinceLastConsensus = false;
+                    stop();
+                }
+            }, { lazy: true });
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransationHistory();
             txHistoryWasInvalidatedSinceLastConsensus = true;

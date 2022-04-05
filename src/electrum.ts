@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import { watch, computed } from '@vue/composition-api';
+import { watch, computed, ref } from '@vue/composition-api';
 import { ElectrumClient, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
-import { useAccountStore } from './stores/Account';
+import { AccountInfo, useAccountStore } from './stores/Account';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
@@ -174,6 +174,16 @@ export async function launchElectrum() {
     const btcTransactionsStore = useBtcTransactionsStore();
     const btcAddressStore = useBtcAddressStore();
 
+    const fetchedAccounts = new Set<string>();
+
+    const txFetchTrigger = ref(0);
+    function invalidateTransationHistory() {
+        // Invalidate fetched addresses
+        fetchedAccounts.clear();
+        // Trigger watcher
+        txFetchTrigger.value += 1;
+    }
+
     client.addHeadChangedListener((header) => {
         console.debug('BTC Head is now at', header.blockHeight);
         useBtcNetworkStore().patch({
@@ -182,23 +192,38 @@ export async function launchElectrum() {
         });
     });
 
+    let txHistoryWasInvalidatedSinceLastConsensus = true;
     client.addConsensusChangedListener((state) => {
         console.log('BTC Consensus', state);
         btcNetwork$.consensus = state;
+
+        if (state === 'established') {
+            txHistoryWasInvalidatedSinceLastConsensus = false;
+        } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
+            invalidateTransationHistory();
+            txHistoryWasInvalidatedSinceLastConsensus = true;
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            if (!txHistoryWasInvalidatedSinceLastConsensus) {
+                invalidateTransationHistory();
+            }
+        }
     });
 
     // Fetch transactions for active account
-    const fetchedAccounts = new Set<string>();
-    // const fetchedAddresses = new Set<string>();
-    watch(activeAccountInfo, async () => {
-        if (!activeAccountInfo.value) return;
+    watch([activeAccountInfo, txFetchTrigger], async ([activeAccountInfo]) => {
+        const accountInfo = activeAccountInfo as AccountInfo | null
+        if (!accountInfo) return;
 
         const { addressSet, activeAddresses } = btcAddressStore;
 
         // If this account does't have any Bitcoin addresses, there's nothing to check.
         if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
 
-        const accountId = activeAccountInfo.value.id;
+        const accountId = accountInfo.id;
         if (fetchedAccounts.has(accountId)) return;
         fetchedAccounts.add(accountId);
 

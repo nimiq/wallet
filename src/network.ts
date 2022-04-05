@@ -203,17 +203,21 @@ export async function launchNetwork() {
         }
     });
 
+    let lastVisibilityFetch = Date.now();
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
+        if (document.visibilityState !== 'visible') return;
+
+        if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransationHistory();
+                lastVisibilityFetch = Date.now();
             }
+        }
 
-            // If network is disconnected when going back to app, trigger reconnect
-            if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
-                disconnectNetwork().then(reconnectNetwork);
-                networkWasReconnectedSinceLastConsensus = true;
-            }
+        // If network is disconnected when going back to app, trigger reconnect
+        if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
+            disconnectNetwork().then(reconnectNetwork);
+            networkWasReconnectedSinceLastConsensus = true;
         }
     });
 

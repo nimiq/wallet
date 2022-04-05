@@ -6,6 +6,7 @@ export default {
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: true,
     enableBitcoin: true,
+    pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     fastspot: {
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',

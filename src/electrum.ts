@@ -210,10 +210,14 @@ export async function launchElectrum() {
         }
     });
 
+    let lastVisibilityFetch = Date.now();
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
+        if (document.visibilityState !== 'visible') return;
+
+        if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransationHistory();
+                lastVisibilityFetch = Date.now();
             }
         }
     });

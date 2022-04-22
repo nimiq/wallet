@@ -121,6 +121,69 @@ async function subscribeToPeerCount() {
     });
 }
 
+export async function updateBalances(addresses: string[] = [...balances.keys()]) {
+    if (!addresses.length) return;
+    const client = await getNetworkClient();
+    await client.waitForConsensusEstablished();
+    const accounts = await client.getAccounts(addresses);
+    console.debug('Got accounts:', accounts);
+    const newBalances: Balances = new Map(
+        accounts.map((account, i) => [addresses[i], account.balance]),
+    );
+
+    for (const [address, newBalance] of newBalances) {
+        if (balances.get(address) === newBalance) {
+            // Balance did not change since last check.
+            // Remove from newBalances Map to not update the store.
+            newBalances.delete(address);
+        } else {
+            // Update balances cache
+            balances.set(address, newBalance);
+        }
+    }
+
+    if (!newBalances.size) return;
+    console.debug('Got new balances for', [...newBalances.keys()]);
+    for (const [address, balance] of newBalances) {
+        useAddressStore().patchAddress(address, { balance });
+    }
+}
+
+export async function checkHistory(address: string) {
+    console.debug('Scheduling transaction fetch for', address);
+
+    const knownTxDetails = Object.values(useTransactionsStore().state.transactions)
+        .filter((tx) => tx.sender === address || tx.recipient === address);
+
+    // const lastConfirmedHeight = knownTxDetails
+    //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
+    //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+
+    useNetworkStore().state.fetchingTxHistory++;
+
+    updateBalances([address]);
+
+    // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
+    //        (even when cross-account transactions are already present)
+    const client = await getNetworkClient();
+    client.waitForConsensusEstablished()
+        .then(() => {
+            console.debug('Fetching transaction history for', address, knownTxDetails);
+            return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
+        })
+        .then((txDetails) => {
+            useTransactionsStore().addTransactions(txDetails.map((tx) => tx.toPlain()));
+        })
+        .catch(() => fetchedAddresses.delete(address))
+        .then(() => useNetworkStore().state.fetchingTxHistory--);
+}
+
+const subscribedAddresses = new Set<string>();
+const fetchedAddresses = new Set<string>();
+
+const subscribedProxies = new Set<string>();
+const seenProxies = new Set<string>();
+
 export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
@@ -130,38 +193,6 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
-
-    const subscribedAddresses = new Set<string>();
-    const fetchedAddresses = new Set<string>();
-
-    const subscribedProxies = new Set<string>();
-    const seenProxies = new Set<string>();
-
-    async function updateBalances(addresses: string[] = [...balances.keys()]) {
-        if (!addresses.length) return;
-        await client.waitForConsensusEstablished();
-        const accounts = await client.getAccounts(addresses);
-        const newBalances: Balances = new Map(
-            accounts.map((account, i) => [addresses[i], account.balance]),
-        );
-
-        for (const [address, newBalance] of newBalances) {
-            if (balances.get(address) === newBalance) {
-                // Balance did not change since last check.
-                // Remove from newBalances Map to not update the store.
-                newBalances.delete(address);
-            } else {
-                // Update balances cache
-                balances.set(address, newBalance);
-            }
-        }
-
-        if (!newBalances.size) return;
-        console.debug('Got new balances for', [...newBalances.keys()]);
-        for (const [address, balance] of newBalances) {
-            addressStore.patchAddress(address, { balance });
-        }
-    }
 
     function forgetBalances(addresses: string[]) {
         for (const address of addresses) {
@@ -309,31 +340,7 @@ export async function launchNetwork() {
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
 
-        console.debug('Scheduling transaction fetch for', address);
-
-        const knownTxDetails = Object.values(transactionsStore.state.transactions)
-            .filter((tx) => tx.sender === address || tx.recipient === address);
-
-        // const lastConfirmedHeight = knownTxDetails
-        //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
-        //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-
-        network$.fetchingTxHistory++;
-
-        updateBalances([address]);
-
-        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
-        //        (even when cross-account transactions are already present)
-        client.waitForConsensusEstablished()
-            .then(() => {
-                console.debug('Fetching transaction history for', address, knownTxDetails);
-                return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
-            })
-            .then((txDetails) => {
-                transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
-            })
-            .catch(() => fetchedAddresses.delete(address))
-            .then(() => network$.fetchingTxHistory--);
+        checkHistory(address);
     });
 
     // Fetch transactions for proxies

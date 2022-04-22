@@ -7,6 +7,8 @@
             key-field="transactionHash"
             :buffer="scrollerBuffer"
             ref="scroller"
+            :style="`transform: translateY(${pulledDistance / 2}px)`"
+            :class="{'smooth': !pulledDistance}"
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
@@ -86,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onBeforeUnmount, reactive } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
@@ -102,6 +104,7 @@ import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useWindowSize } from '../composables/useWindowSize';
+import { checkHistory, updateBalances } from '../network';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -390,15 +393,61 @@ export default defineComponent({
             context.emit('scroll');
         }
 
+        const P2R = reactive({
+            start: null as number | null,
+            current: null as number | null,
+        });
+
+        function startP2R(event: TouchEvent) {
+            if (!scroller.value || scroller.value.$el.scrollTop > 0) return;
+            P2R.start = event.touches[0].clientY;
+            (event.target as HTMLElement).addEventListener('touchmove', moveP2R);
+        }
+
+        function moveP2R(event: TouchEvent) {
+            if (!P2R.start) return;
+            P2R.current = event.touches[0].clientY;
+            const distance = P2R.current - P2R.start;
+            if (distance > 200) {
+                console.log('REFRESH!'); // eslint-disable-line no-console
+                if (activeAddress.value) {
+                    checkHistory(activeAddress.value);
+                    updateBalances([activeAddress.value]);
+                }
+                cancelP2R(event);
+            }
+        }
+
+        function cancelP2R(event: TouchEvent) {
+            P2R.start = null;
+            P2R.current = null;
+            (event.target as HTMLElement).removeEventListener('touchmove', moveP2R);
+            // console.log('Pull canceled'); // eslint-disable-line no-console
+        }
+
+        const pulledDistance = computed(() => {
+            if (!P2R.start || !P2R.current) return 0;
+            const distance = P2R.current - P2R.start;
+            return Math.max(0, distance);
+        });
+
         // @scroll / @scroll.native doesn't seem to work, so using standard event system
         onMounted(() => {
             if (!scroller.value) return;
             scroller.value.$el.addEventListener('scroll', onScroll);
+
+            scroller.value.$el.addEventListener('touchstart', startP2R);
+            scroller.value.$el.addEventListener('touchend', cancelP2R);
+            scroller.value.$el.addEventListener('touchcancel', cancelP2R);
         });
 
-        onUnmounted(() => {
+        onBeforeUnmount(() => {
             if (!scroller.value) return;
             scroller.value.$el.removeEventListener('scroll', onScroll);
+
+            scroller.value.$el.removeEventListener('touchstart', startP2R);
+            scroller.value.$el.removeEventListener('touchend', cancelP2R);
+            scroller.value.$el.removeEventListener('touchcancel', cancelP2R);
         });
 
         return {
@@ -413,6 +462,7 @@ export default defineComponent({
             unclaimedCashlinkTxs,
             onCreateCashlink,
             scroller,
+            pulledDistance,
         };
     },
     components: {
@@ -460,6 +510,10 @@ export default defineComponent({
     touch-action: pan-y;
 
     @extend %custom-scrollbar;
+
+    &.smooth {
+        transition: transform var(--transition-time) var(--nimiq-ease);
+    }
 }
 
 .unclaimed-cashlink-list {

@@ -54,13 +54,16 @@ async function getBankListUrl() {
 }
 
 async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
+    // console.log("Reading xlsx file");
     const workbook = xlsx.readFile(xlsxFilePath);
     const jsonFile = {};
 
+    // console.log("Converting to JSON");
     xlsx.utils
         .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
         .slice(2)
         .forEach((bank) => {
+            // console.log("Converting", bank);
             let { BIC } = bank;
 
             if (BIC.length > 8 && BIC.endsWith('XXX')) {
@@ -76,7 +79,7 @@ async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
                     .filter((word) => word)
                     .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
                     .join(' '),
-                country: bank.BIC.slice(4, 6),
+                country: bank.BIC.substring(4, 6),
                 support: {
                     sepa: {
                         // We assume that banks at least fully support inbound sepa instant if they are part of the list

@@ -61,7 +61,7 @@ export const useAccountStore = createStore({
                 [accountInfo.id]: accountInfo,
             };
 
-            if (selectIt) this.state.activeAccountId = accountInfo.id;
+            if (selectIt) this.selectAccount(accountInfo.id);
         },
         setAccountInfos(accountInfos: AccountInfo[]) {
             const newAccountInfos: {[id: string]: AccountInfo} = {};
@@ -73,9 +73,12 @@ export const useAccountStore = createStore({
             this.state.accountInfos = newAccountInfos;
 
             // If no account selected yet, or selected account does not exist anymore, select the first available.
-            // TODO: Replace with account selection screen?
             if (!this.state.activeAccountId || !this.state.accountInfos[this.state.activeAccountId]) {
-                this.state.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
+                if (accountInfos[0]) {
+                    this.selectAccount(accountInfos[0].id);
+                } else {
+                    this.state.activeAccountId = null;
+                }
             }
         },
         patchAccount(accountId, patch: Partial<AccountInfo>) {

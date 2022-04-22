@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { watch, computed, ref } from '@vue/composition-api';
-import { ElectrumClient, TransactionDetails } from '@nimiq/electrum-client';
+import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
 
@@ -33,9 +33,9 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
 
     GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
 
-    const options = Config.environment === ENV_MAIN ? {
+    const options: Partial<ElectrumClientOptions> = Config.environment === ENV_MAIN ? {
         extraSeedPeers: [{
-            host: 'electrumx.nimiq.network',
+            host: 'electrumx.nimiq.com',
             wssPath: 'electrumx',
             ports: { wss: 443, ssl: 50002, tcp: 50001 },
             ip: '',
@@ -47,6 +47,10 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
             ip: '',
             version: '',
         }],
+        websocketProxy: {
+            tcp: 'wss://electrum.nimiq.com:50001',
+            ssl: 'wss://electrum.nimiq.com:50002',
+        },
     } : {};
 
     const client = new Client(options);

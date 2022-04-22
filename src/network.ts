@@ -170,7 +170,7 @@ export async function launchNetwork() {
     }
 
     const txFetchTrigger = ref(0);
-    function invalidateTransationHistory(includeProxies = false) {
+    function invalidateTransactionHistory(includeProxies = false) {
         // Invalidate fetched addresses
         fetchedAddresses.clear();
         // Trigger watcher
@@ -198,7 +198,7 @@ export async function launchNetwork() {
             }, { lazy: true });
             networkWasReconnectedSinceLastConsensus = false;
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
-            invalidateTransationHistory(true);
+            invalidateTransactionHistory(true);
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -209,7 +209,8 @@ export async function launchNetwork() {
 
         if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
-                invalidateTransationHistory();
+                invalidateTransactionHistory();
+                updateBalances();
                 lastVisibilityFetch = Date.now();
             }
         }
@@ -252,16 +253,14 @@ export async function launchNetwork() {
         const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
 
-        if (plain.state === TransactionState.MINED) {
-            const addresses: string[] = [];
-            if (balances.has(plain.sender)) {
-                addresses.push(plain.sender);
-            }
-            if (balances.has(plain.recipient)) {
-                addresses.push(plain.recipient);
-            }
-            updateBalances(addresses);
+        const addresses: string[] = [];
+        if (balances.has(plain.sender)) {
+            addresses.push(plain.sender);
         }
+        if (balances.has(plain.recipient)) {
+            addresses.push(plain.recipient);
+        }
+        updateBalances(addresses);
     }
 
     function subscribe(addresses: string[]) {

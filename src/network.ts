@@ -199,6 +199,7 @@ export async function launchNetwork() {
             networkWasReconnectedSinceLastConsensus = false;
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
+            updateBalances();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -210,7 +211,6 @@ export async function launchNetwork() {
         if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransactionHistory();
-                updateBalances();
                 lastVisibilityFetch = Date.now();
             }
         }
@@ -253,14 +253,16 @@ export async function launchNetwork() {
         const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
 
-        const addresses: string[] = [];
-        if (balances.has(plain.sender)) {
-            addresses.push(plain.sender);
+        if (plain.state === TransactionState.MINED) {
+            const addresses: string[] = [];
+            if (balances.has(plain.sender)) {
+                addresses.push(plain.sender);
+            }
+            if (balances.has(plain.recipient)) {
+                addresses.push(plain.recipient);
+            }
+            updateBalances(addresses);
         }
-        if (balances.has(plain.recipient)) {
-            addresses.push(plain.recipient);
-        }
-        updateBalances(addresses);
     }
 
     function subscribe(addresses: string[]) {
@@ -317,6 +319,8 @@ export async function launchNetwork() {
         //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
 
         network$.fetchingTxHistory++;
+
+        updateBalances([address]);
 
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)

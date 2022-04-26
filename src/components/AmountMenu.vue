@@ -21,7 +21,7 @@
                     @click="$emit('currency', currency)"
                 >{{ currency.toUpperCase() }}</button>
                 <button
-                    v-for="fiatCurrency of [fiatCurrency, ...otherFiatCurrencies]" :key="fiatCurrency"
+                    v-for="fiatCurrency of [fiatCurrency, ...[...otherFiatCurrencies].sort()]" :key="fiatCurrency"
                     class="reset" :class="{'active': activeCurrency === fiatCurrency}"
                     @click="$emit('currency', fiatCurrency)"
                 >{{ fiatCurrency.toUpperCase() }}</button>

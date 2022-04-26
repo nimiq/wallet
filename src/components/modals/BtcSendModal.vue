@@ -191,8 +191,7 @@ export default defineComponent({
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
         function saveRecipientLabel() {
-            if (recipientWithLabel.value === null) return;
-            if (recipientWithLabel.value.type !== RecipientType.NEW_CONTACT) return;
+            if (!recipientWithLabel.value || recipientWithLabel.value.type !== RecipientType.NEW_CONTACT) return;
             setRecipientLabel(recipientWithLabel.value.address, recipientWithLabel.value.label);
         }
 

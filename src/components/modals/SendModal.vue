@@ -302,11 +302,10 @@ export default defineComponent({
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
-        watch(recipientWithLabel, (newVal, oldVal) => {
-            if (newVal === null || oldVal === null) return;
-            if (newVal.type !== RecipientType.CONTACT) return;
-            setContact(newVal.address, newVal.label);
-        }, { deep: true });
+        function saveRecipientLabel() {
+            if (!recipientWithLabel.value || recipientWithLabel.value.type !== RecipientType.CONTACT) return;
+            setContact(recipientWithLabel.value.address, recipientWithLabel.value.label);
+        }
 
         const recentContacts = computed(() => contacts.value.slice(0, 3));
         const hasOwnAddresses = computed(() => addressInfos.value.length - 1 > 0);
@@ -629,6 +628,8 @@ export default defineComponent({
                     statusScreenOpened.value = false;
                     return;
                 }
+
+                saveRecipientLabel();
 
                 // Show success screen
                 statusState.value = State.SUCCESS;

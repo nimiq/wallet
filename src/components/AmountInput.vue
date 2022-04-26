@@ -86,6 +86,17 @@ export default defineComponent({
         watch(liveValue, updateWidth);
 
         function formatValue(val: string) {
+            // Handle exponential decimal notation
+            if (val.includes('e-')) {
+                val = parseFloat(val).toFixed(props.decimals);
+                while (val.length > 1 && val.endsWith('0')) {
+                    val = val.substring(0, val.length - 1);
+                }
+                if (val.endsWith('.')) {
+                    val = val.substring(0, val.length - 1);
+                }
+            }
+
             const regExp = new RegExp(`([-+])?(\\d*)(\\.\\d{0,${props.decimals}})?`, 'g'); // Backslashes are escaped
             const regExpResult = regExp.exec(val)!;
             if (regExpResult[1] || regExpResult[2] || regExpResult[3]) {

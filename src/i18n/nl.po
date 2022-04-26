@@ -718,7 +718,7 @@ msgid "Disclaimer"
 msgstr "Disclaimer"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:356
+#: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -763,8 +763,8 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor BTC waarden."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:607
+#: src/components/modals/BtcSendModal.vue:438
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
@@ -830,7 +830,7 @@ msgstr "verlopen"
 msgid "Expired"
 msgstr "Verlopen"
 
-#: src/components/modals/SendModal.vue:455
+#: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "express"
 
@@ -896,7 +896,7 @@ msgstr "Swap afronden"
 msgid "For beginners"
 msgstr "Voor beginners"
 
-#: src/components/modals/SendModal.vue:445
+#: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "gratis"
 
@@ -1541,8 +1541,8 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:606
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
@@ -1656,16 +1656,16 @@ msgstr "Verstuur transactie"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:603
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
-#: src/components/modals/BtcSendModal.vue:496
+#: src/components/modals/BtcSendModal.vue:495
 msgid "Sent {btc} BTC"
 msgstr "Stuur {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:492
+#: src/components/modals/BtcSendModal.vue:491
 msgid "Sent {btc} BTC to {name}"
 msgstr "Stuur {btc} BTC naar {name}"
 
@@ -1674,11 +1674,11 @@ msgstr "Stuur {btc} BTC naar {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Verzonden {fromAsset} - Ontvangen {toAsset}"
 
-#: src/components/modals/SendModal.vue:640
+#: src/components/modals/SendModal.vue:641
 msgid "Sent {nim} NIM"
 msgstr "Stuur {nim} NIM"
 
-#: src/components/modals/SendModal.vue:636
+#: src/components/modals/SendModal.vue:637
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
@@ -1769,8 +1769,8 @@ msgstr "Simuleer betaling in EUR"
 msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
-#: src/components/modals/BtcSendModal.vue:507
-#: src/components/modals/SendModal.vue:652
+#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/SendModal.vue:653
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
 
@@ -1791,7 +1791,7 @@ msgstr ""
 msgid "Staking"
 msgstr "Inzetten"
 
-#: src/components/modals/SendModal.vue:450
+#: src/components/modals/SendModal.vue:449
 msgid "standard"
 msgstr "Standaard"
 

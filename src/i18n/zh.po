@@ -695,7 +695,7 @@ msgid "Disclaimer"
 msgstr "免责声明"
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:356
+#: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr "域名不能解析为有效地址"
 
@@ -738,8 +738,8 @@ msgstr "编辑比特币值可见的小数位数"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数"
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:607
+#: src/components/modals/BtcSendModal.vue:438
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -803,7 +803,7 @@ msgstr "已过期"
 msgid "Expired"
 msgstr "已过期"
 
-#: src/components/modals/SendModal.vue:455
+#: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "快速"
 
@@ -869,7 +869,7 @@ msgstr "最后确认互换"
 msgid "For beginners"
 msgstr "初学者友好"
 
-#: src/components/modals/SendModal.vue:445
+#: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "免费"
 
@@ -1494,8 +1494,8 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:606
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "重试"
 
@@ -1607,16 +1607,16 @@ msgstr "发送交易"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:603
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/BtcSendModal.vue:496
+#: src/components/modals/BtcSendModal.vue:495
 msgid "Sent {btc} BTC"
 msgstr "已发送{btc} 比特币"
 
-#: src/components/modals/BtcSendModal.vue:492
+#: src/components/modals/BtcSendModal.vue:491
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
@@ -1625,11 +1625,11 @@ msgstr "已发送{btc} BTC到 {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
-#: src/components/modals/SendModal.vue:640
+#: src/components/modals/SendModal.vue:641
 msgid "Sent {nim} NIM"
 msgstr "发送{nim}NIM"
 
-#: src/components/modals/SendModal.vue:636
+#: src/components/modals/SendModal.vue:637
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
@@ -1720,8 +1720,8 @@ msgstr "模拟欧元付款"
 msgid "Skip for now"
 msgstr "暂时跳过"
 
-#: src/components/modals/BtcSendModal.vue:507
-#: src/components/modals/SendModal.vue:652
+#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/SendModal.vue:653
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -1741,7 +1741,7 @@ msgstr "质押NIM取得奖励，并确保网络安全"
 msgid "Staking"
 msgstr "质押"
 
-#: src/components/modals/SendModal.vue:450
+#: src/components/modals/SendModal.vue:449
 msgid "standard"
 msgstr "标准"
 

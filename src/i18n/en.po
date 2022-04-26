@@ -653,7 +653,7 @@ msgid "Disclaimer"
 msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:356
+#: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -694,8 +694,8 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:439
-#: src/components/modals/SendModal.vue:607
+#: src/components/modals/BtcSendModal.vue:438
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr ""
 
@@ -759,7 +759,7 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:455
+#: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr ""
 
@@ -825,7 +825,7 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:445
+#: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr ""
 
@@ -1418,8 +1418,8 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:606
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr ""
 
@@ -1528,16 +1528,16 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:603
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:496
+#: src/components/modals/BtcSendModal.vue:495
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:492
+#: src/components/modals/BtcSendModal.vue:491
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1546,11 +1546,11 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:640
+#: src/components/modals/SendModal.vue:641
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:636
+#: src/components/modals/SendModal.vue:637
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -1639,8 +1639,8 @@ msgstr ""
 msgid "Skip for now"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:507
-#: src/components/modals/SendModal.vue:652
+#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/SendModal.vue:653
 msgid "Something went wrong"
 msgstr ""
 
@@ -1660,7 +1660,7 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:450
+#: src/components/modals/SendModal.vue:449
 msgid "standard"
 msgstr ""
 

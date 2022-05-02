@@ -1,5 +1,13 @@
 <template>
     <div class="transaction-list flex-row" ref="root">
+        <div class="pull2refresh"
+            :style="{
+                transform: `translateY(${(pulledDistance / 4) - 5}px)`,
+                opacity: pulledDistance / 200,
+            }"
+        >
+            {{ $t('Pull to refresh') }} <GroundedArrowDownIconVue />
+        </div>
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -105,6 +113,7 @@ import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyD
 import { createCashlink } from '../hub';
 import { useWindowSize } from '../composables/useWindowSize';
 import { checkHistory, updateBalances } from '../network';
+import GroundedArrowDownIconVue from './icons/GroundedArrowDownIcon.vue';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -471,6 +480,7 @@ export default defineComponent({
         CrossCloseButton,
         CircleSpinner,
         HexagonIcon,
+        GroundedArrowDownIconVue,
     },
 });
 </script>
@@ -480,6 +490,16 @@ export default defineComponent({
 
 .transaction-list {
     position: relative;
+}
+
+.pull2refresh {
+    margin: 0 auto;
+    height: fit-content;
+    color: var(--text-60);
+
+    svg {
+        margin-left: 1rem;
+    }
 }
 
 .month-label {

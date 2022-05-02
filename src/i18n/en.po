@@ -379,7 +379,7 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:541
-#: src/components/TransactionList.vue:62
+#: src/components/TransactionList.vue:72
 #: src/components/TransactionListItem.vue:245
 msgid "Cashlink"
 msgstr ""
@@ -520,7 +520,7 @@ msgid "Confirm account"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:57
+#: src/components/TransactionList.vue:67
 msgid "Congrats"
 msgstr ""
 
@@ -799,7 +799,7 @@ msgid "fees"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
-#: src/components/TransactionList.vue:48
+#: src/components/TransactionList.vue:58
 msgid "Fetching"
 msgstr ""
 
@@ -972,7 +972,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/TransactionList.vue:59
+#: src/components/TransactionList.vue:69
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1169,7 +1169,7 @@ msgid "No registration – not even email."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:93
 msgid "No transactions found"
 msgstr ""
 
@@ -1246,7 +1246,7 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
-#: src/components/TransactionList.vue:14
+#: src/components/TransactionList.vue:24
 msgid "Pending Cashlinks"
 msgstr ""
 
@@ -1304,6 +1304,10 @@ msgstr ""
 msgid "Processing payout"
 msgstr ""
 
+#: src/components/TransactionList.vue:9
+msgid "Pull to refresh"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
 msgid "Purpose"
 msgstr ""
@@ -1322,7 +1326,7 @@ msgid "Receive fiat to your bank account."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:79
+#: src/components/TransactionList.vue:89
 msgid "Receive free NIM"
 msgstr ""
 
@@ -1330,7 +1334,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:73
+#: src/components/TransactionList.vue:83
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -1826,8 +1830,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:235
 #: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:249
-#: src/components/TransactionList.vue:271
+#: src/components/TransactionList.vue:261
+#: src/components/TransactionList.vue:283
 msgid "This month"
 msgstr ""
 
@@ -2031,7 +2035,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:58
+#: src/components/TransactionList.vue:68
 msgid "You now own crypto!"
 msgstr ""
 
@@ -2113,6 +2117,6 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:82
 msgid "Your transactions will appear here"
 msgstr ""

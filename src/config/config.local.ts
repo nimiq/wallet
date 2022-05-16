@@ -3,7 +3,7 @@ import { ENV_DEV } from '../lib/Constants';
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
-    networkEndpoint: 'http://seed1.nimiq.local:8648',
+    networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
     reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute

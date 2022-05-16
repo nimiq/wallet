@@ -21,98 +21,6 @@ export async function getNetworkClient() {
     return clientPromise;
 }
 
-async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
-    const client = await getNetworkClient();
-
-    // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
-    await client.resetConsensus();
-
-    // Re-add deep listeners to new consensus
-    subscribeToPeerCount();
-    for (const [callback] of onPeersUpdatedCallbacks) {
-        const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
-            onNetworkPeersChanged(callback),
-            onNetworkAddressAdded(callback),
-        ]);
-        onPeersUpdatedCallbacks.set(callback, {
-            peersChangedId,
-            addressAddedId,
-        });
-    }
-
-    if (peerSuggestions && peerSuggestions.length > 0) {
-        const interval = window.setInterval(() => {
-            peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
-        }, 1000);
-        await client.waitForConsensusEstablished();
-        window.clearInterval(interval);
-    }
-}
-
-async function disconnectNetwork() {
-    const client = await getNetworkClient();
-
-    const peers = await client.network.getPeers();
-    await Promise.all(peers.map(
-        ({ peerAddress }) => client.network.disconnect(peerAddress),
-    ));
-    return peers;
-}
-
-const onPeersUpdatedCallbacks = new Map<() => any, {
-    peersChangedId: number,
-    addressAddedId: number,
-}>();
-
-export async function onPeersUpdated(callback: () => any) {
-    const [peersChangedId, addressAddedId] = await Promise.all([
-        onNetworkPeersChanged(callback),
-        onNetworkAddressAdded(callback),
-    ]);
-    onPeersUpdatedCallbacks.set(callback, {
-        peersChangedId,
-        addressAddedId,
-    });
-}
-
-export async function offPeersUpdated(callback: () => any) {
-    const ids = onPeersUpdatedCallbacks.get(callback);
-    if (!ids) return;
-
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    consensus.network.off('peers-changed', ids.peersChangedId);
-    consensus.network.addresses.off('added', ids.addressAddedId);
-    onPeersUpdatedCallbacks.delete(callback);
-}
-
-async function onNetworkPeersChanged(callback: () => any) {
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.on('peers-changed', callback);
-}
-
-async function onNetworkAddressAdded(callback: () => any) {
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.addresses.on('added', callback);
-}
-
-async function subscribeToPeerCount() {
-    return onNetworkPeersChanged(async () => {
-        const client = await getNetworkClient();
-        const statistics = await client.network.getStatistics();
-        const peerCount = statistics.totalPeerCount;
-        useNetworkStore().state.peerCount = peerCount;
-    });
-}
-
 export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
@@ -176,8 +84,7 @@ export async function launchNetwork() {
 
     // client.on(NetworkClient.Events.PEER_COUNT, (peerCount) => network$.peerCount = peerCount);
 
-    function transactionListener(tx: Nimiq.Client.TransactionDetails) {
-        const plain = tx.toPlain();
+    function transactionListener(plain: Transaction) {
         transactionsStore.addTransactions([plain]);
 
         // Update affected address balances
@@ -275,12 +182,9 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress]) => {
-        const address = activeAddress as string | null;
+    watch(addressStore.activeAddress, (address) => {
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
-
-        console.debug('Scheduling transaction fetch for', address);
 
         const knownTxDetails = Object.values(transactionsStore.state.transactions)
             .filter((tx) => tx.sender === address || tx.recipient === address);
@@ -291,17 +195,12 @@ export async function launchNetwork() {
 
         network$.fetchingTxHistory++;
 
-        updateBalances([address]);
-
+        console.debug('Fetching transaction history for', address, knownTxDetails);
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
-        client.waitForConsensusEstablished()
-            .then(() => {
-                console.debug('Fetching transaction history for', address, knownTxDetails);
-                return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
-            })
+        client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails)
             .then((txDetails) => {
-                transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
+                transactionsStore.addTransactions(txDetails);
             })
             .catch(() => fetchedAddresses.delete(address))
             .then(() => network$.fetchingTxHistory--);
@@ -382,8 +281,7 @@ export async function launchNetwork() {
 
 export async function sendTransaction(tx: SignedTransaction | string) {
     const client = await getNetworkClient();
-    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx)
-        .then((details) => details.toPlain());
+    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 
     // if (plain.state !== TransactionState.PENDING) {
     //     // Overwrite transaction status in the transactionStore,
@@ -393,9 +291,3 @@ export async function sendTransaction(tx: SignedTransaction | string) {
 
     return plain;
 }
-
-// @ts-expect-error debugging
-window.gimmeclient = async function gimmeclient() {
-    // @ts-expect-error debugging
-    window.client = await getNetworkClient();
-};

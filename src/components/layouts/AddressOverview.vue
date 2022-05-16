@@ -336,7 +336,6 @@ export default defineComponent({
         Portal,
         HighFiveIcon,
         Tooltip,
-        DevBar,
         StakePreviewPartial,
         StakeButtonPartial,
     },
@@ -655,11 +654,11 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
-    /deep/ .trigger::after {
+    ::v-deep .trigger::after {
         background-color: var(--nimiq-green);
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         background: radial-gradient(100% 100% at 100% 100%, #41A38E 0%, #21BCA5 100%);
         white-space: nowrap;
         box-shadow:

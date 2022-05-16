@@ -208,7 +208,7 @@ export default defineComponent({
             left: 1.5rem;
             z-index: 900;
 
-            /deep/ .trigger {
+            ::v-deep .trigger {
                 line-height: 1.2;
                 font-size: var(--small-size);
                 font-weight: 600;
@@ -235,7 +235,7 @@ export default defineComponent({
             font-size: 3.25rem;
             margin: -0.5rem 0.25rem 0 -0.75rem;
 
-            /deep/ path {
+            ::v-deep path {
                 stroke-width: 1;
             }
         }
@@ -266,7 +266,7 @@ export default defineComponent({
         font-weight: 600;
         margin-top: 2rem;
 
-        /deep/ .circle-spinner {
+        ::v-deep .circle-spinner {
             margin-right: 1rem;
         }
     }

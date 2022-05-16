@@ -208,7 +208,7 @@ export default defineComponent({
             left: 1.5rem;
             z-index: 900;
 
-            /deep/ .trigger {
+            ::v-deep .trigger {
                 line-height: 1.2;
                 font-size: var(--small-size);
                 font-weight: 600;

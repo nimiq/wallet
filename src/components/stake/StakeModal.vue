@@ -87,12 +87,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    // .modal /deep/ .small-page {
+    // .modal ::v-deep .small-page {
     //     height: auto;
     //     overflow-y: auto;
     // }
     .modal {
-        /deep/ .wrapper {
+        ::v-deep .wrapper {
             .small-page {
                 overflow: hidden;
                 min-width: 52.5rem;
@@ -103,7 +103,7 @@ export default defineComponent({
             }
         }
         &.fat-modal {
-            /deep/ .small-page {
+            ::v-deep .small-page {
                 width: 63.5rem;
                 height: 74.875rem;
                 // transition: width 1.5s ease-out;
@@ -111,7 +111,7 @@ export default defineComponent({
             // transition: width 0.75s ease-out;
         }
         &.bluetailed-modal {
-            /deep/ .small-page {
+            ::v-deep .small-page {
                 background: linear-gradient(180deg, #FFF 0%, #FFF 96%, rgb(248, 248, 248) 96%, #FFF 100%);
             }
         }
@@ -122,7 +122,7 @@ export default defineComponent({
 
     @media (max-width: 700px) { // Full mobile breakpoint
         .modal {
-            /deep/ .wrapper {
+            ::v-deep .wrapper {
                 .small-page {
                     overflow: hidden;
                     min-width: 45rem;

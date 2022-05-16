@@ -35,7 +35,7 @@ export const useTransactionsStore = createStore({
     getters: {
         // activeAccount: state => state.accounts[state.activeAccountId],
         pendingTransactionsBySender: (state) => {
-            const pendingTxs = Object.values(state.transactions).filter((tx) => tx.state === 'pending');
+            const pendingTxs = Object.values(state.transactions).filter((tx) => !tx.confirmations);
             const txsBySender: {[address: string]: Transaction[] | undefined} = {};
             for (const tx of pendingTxs) {
                 const array = txsBySender[tx.sender] || [];
@@ -214,13 +214,13 @@ export const useTransactionsStore = createStore({
             //             }
             //         }
             //     }
-            // 
+            //
             //     // Prevent received tx from displaying as "not sent"
             //     if (plain.state === TransactionState.NEW) {
             //         const addressStore = useAddressStore();
             //         const ourSender = addressStore.state.addressInfos[plain.sender] as AddressInfo | undefined;
             //         const ourRecipient = addressStore.state.addressInfos[plain.recipient] as AddressInfo | undefined;
-            // 
+            //
             //         if (!ourSender && ourRecipient) {
             //             plain.state = TransactionState.PENDING;
             //         }

@@ -79,7 +79,7 @@ export default defineComponent({
         padding-top: 3rem;
         line-height: 1;
 
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             font-size: var(--h1-size);
         }
         .staking-icon {
@@ -97,7 +97,7 @@ export default defineComponent({
         flex-grow: 1;
 
         .staking-rounded-background {
-            background-image: url('/img/staking/background-collar.svg');
+            // background-image: url('/img/staking/background-collar.svg');
             background-size: cover;
             background-position: 0rem -1rem;
             background-repeat: no-repeat;

@@ -132,7 +132,7 @@ export class AlbatrossRpcClient {
 
     public async sendTransaction(tx: string | Transaction) {
         if (typeof tx === 'string') {
-            const hash = await this.rpc<string>('pushTransaction', [tx]);
+            const hash = await this.rpc<string>('sendRawTransaction', [tx]);
             do {
                 // eslint-disable-next-line no-await-in-loop
                 await new Promise((res) => setTimeout(res, 500));
@@ -140,7 +140,7 @@ export class AlbatrossRpcClient {
                     // eslint-disable-next-line no-await-in-loop
                     return await this.rpc<AlbatrossTransaction>('getTransactionByHash', [hash, false])
                         .then(convertTransaction);
-                } catch (error) {
+                } catch (error: any) {
                     if (error.data && error.data.includes('Transaction not found')) continue;
                     console.error(error); // eslint-disable-line no-console
                 }
@@ -164,7 +164,7 @@ export class AlbatrossRpcClient {
 
     private async getRemote(): Promise<any> {
         return this.remote || (this.remote = new Promise((resolve) => {
-            const ws = new WebSocket(`${this.url.replace('http', 'ws')}/ws`);
+            const ws = new WebSocket(this.url.replace('http', 'ws'));
             createRemote(ws).then((remote: any) => {
                 const proxy = new Proxy(
                     remote,

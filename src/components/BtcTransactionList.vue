@@ -1,5 +1,6 @@
 <template>
     <div class="transaction-list flex-row" ref="root">
+        <Pull2RefreshIndicator :pulledDistance="pulledDistance" />
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -7,6 +8,8 @@
             key-field="transactionHash"
             :buffer="scrollerBuffer"
             ref="scroller"
+            :style="`transform: translateY(${pulledDistance / 2}px)`"
+            :class="{'smooth': !pulledDistance}"
         >
             <template v-slot:default="{ item, index }">
                 <div
@@ -94,6 +97,9 @@ import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountStore } from '../stores/Account';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 // import { ENV_MAIN } from '../lib/Constants';
+import Pull2RefreshIndicator from './Pull2RefreshIndicator.vue';
+import { usePull2Refresh } from '../composables/usePull2Refresh';
+import { refetchActiveAccount } from '../electrum';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -350,12 +356,19 @@ export default defineComponent({
 
         // Scroll to top when
         // - Active address changes
-        const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
+        const scroller = ref<{
+            scrollToPosition(position: number, smooth?: boolean): void,
+            $el: HTMLDivElement,
+                } | null>(null);
         // watch(activeAccountId, () => {
         //     if (scroller.value) {
         //         scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
         //     }
         // });
+
+        const { pulledDistance } = usePull2Refresh(scroller, () => {
+            refetchActiveAccount();
+        });
 
         return {
             scrollerBuffer,
@@ -367,12 +380,14 @@ export default defineComponent({
             // isMainnet,
             scroller,
             consensus,
+            pulledDistance,
         };
     },
     components: {
         BtcTransactionListItem,
         CircleSpinner,
         AlertTriangleIcon,
+        Pull2RefreshIndicator,
     },
 });
 </script>

@@ -50,6 +50,7 @@ export enum ConsensusState {
 export type Handle = number;
 export type ConsensusChangedListener = (consensusState: ConsensusState) => any;
 export type HeadChangedListener = (block: Block) => any;
+export type BatchChangedListener = (batchNumber: number) => any;
 export type TransactionListener = (transaction: Transaction) => any;
 
 export class AlbatrossRpcClient {
@@ -58,10 +59,15 @@ export class AlbatrossRpcClient {
     private blockSubscriptions: {
         [handle: number]: HeadChangedListener,
     } = {};
+    private batchSubscriptions: {
+        [handle: number]: BatchChangedListener,
+    } = {};
 
     private transactionSubscriptions: {
         [address: string]: TransactionListener[],
     } = {};
+
+    private currentBatch = 0;
 
     constructor(url: string) {
         this.url = url;
@@ -82,23 +88,35 @@ export class AlbatrossRpcClient {
                     listener(block);
                 }
 
-                // Trigger transaction listeners
-                const addresses = Object.keys(this.transactionSubscriptions);
-                for (const tx of block.transactions || []) {
-                    // Even if the transaction is between two of our own (and thus subscribed) addresses,
-                    // we only need to trigger one tx listener, as the tx is then added for both addresses
-                    // and the handler also updates the balances of both addresses.
-                    const address = addresses.includes(tx.sender)
-                        ? tx.sender
-                        : addresses.includes(tx.recipient)
-                            ? tx.recipient
-                            : null;
+                if (block.batch > this.currentBatch) {
+                    this.currentBatch = block.batch;
 
-                    if (address) {
-                        for (const listener of this.transactionSubscriptions[address]) {
-                            listener(tx);
-                        }
+                    // Trigger batch listeners
+                    for (const listener of Object.values(this.batchSubscriptions)) {
+                        listener(this.currentBatch);
                     }
+
+                    // Fetch transactions for last batch
+                    this.getTransactionsByBatchNumber(this.currentBatch - 1).then((batchTransactions) => {
+                        // Trigger transaction listeners
+                        const addresses = Object.keys(this.transactionSubscriptions);
+                        for (const tx of batchTransactions || []) {
+                            // Even if the transaction is between two of our own (and thus subscribed) addresses,
+                            // we only need to trigger one tx listener, as the tx is then added for both addresses
+                            // and the handler also updates the balances of both addresses.
+                            const address = addresses.includes(tx.sender)
+                                ? tx.sender
+                                : addresses.includes(tx.recipient)
+                                    ? tx.recipient
+                                    : null;
+
+                            if (address) {
+                                for (const listener of this.transactionSubscriptions[address]) {
+                                    listener(tx);
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -112,6 +130,21 @@ export class AlbatrossRpcClient {
 
         this.blockSubscriptions[handle] = listener;
         return handle;
+    }
+
+    public addBatchChangedListener(listener: BatchChangedListener): Handle {
+        let handle: Handle;
+        do {
+            handle = Math.round(Math.random() * 1000);
+        } while (this.batchSubscriptions[handle]);
+
+        this.batchSubscriptions[handle] = listener;
+        return handle;
+    }
+
+    public getTransactionsByBatchNumber(batchNumber: number) {
+        return this.rpc<AlbatrossTransaction[]>('getTransactionsByBatchNumber', [batchNumber])
+            .then((txs) => txs.map(convertTransaction));
     }
 
     public addTransactionListener(listener: TransactionListener, address: string) {

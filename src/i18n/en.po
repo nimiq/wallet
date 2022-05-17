@@ -356,7 +356,7 @@ msgstr ""
 msgid "Buy and sell crypto for EUR. Simply by bank transfer and from inside your wallet."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:61
 msgid "Buy BTC"
 msgstr ""
 
@@ -375,11 +375,11 @@ msgstr ""
 msgid "Buy max"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:56
+#: src/components/BtcTransactionList.vue:59
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:68
 msgid "Buy NIM"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:541
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:65
 #: src/components/TransactionListItem.vue:245
 msgid "Cashlink"
 msgstr ""
@@ -519,8 +519,8 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:67
+#: src/components/BtcTransactionList.vue:57
+#: src/components/TransactionList.vue:60
 msgid "Congrats"
 msgstr ""
 
@@ -546,7 +546,7 @@ msgstr ""
 msgid "Connecting to Nimiq network"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:45
+#: src/components/BtcTransactionList.vue:48
 msgid "Connection lost"
 msgstr ""
 
@@ -798,8 +798,8 @@ msgstr ""
 msgid "fees"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:38
-#: src/components/TransactionList.vue:58
+#: src/components/BtcTransactionList.vue:41
+#: src/components/TransactionList.vue:51
 msgid "Fetching"
 msgstr ""
 
@@ -972,7 +972,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/TransactionList.vue:69
+#: src/components/TransactionList.vue:62
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1168,8 +1168,8 @@ msgstr ""
 msgid "No registration – not even email."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:93
+#: src/components/BtcTransactionList.vue:83
+#: src/components/TransactionList.vue:86
 msgid "No transactions found"
 msgstr ""
 
@@ -1246,7 +1246,7 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
-#: src/components/TransactionList.vue:24
+#: src/components/TransactionList.vue:17
 msgid "Pending Cashlinks"
 msgstr ""
 
@@ -1304,7 +1304,7 @@ msgstr ""
 msgid "Processing payout"
 msgstr ""
 
-#: src/components/TransactionList.vue:9
+#: src/components/Pull2RefreshIndicator.vue:8
 msgid "Pull to refresh"
 msgstr ""
 
@@ -1326,7 +1326,7 @@ msgid "Receive fiat to your bank account."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:89
+#: src/components/TransactionList.vue:82
 msgid "Receive free NIM"
 msgstr ""
 
@@ -1334,7 +1334,7 @@ msgstr ""
 msgid "Receive NIM"
 msgstr ""
 
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:76
 msgid "Receive some free NIM to get started."
 msgstr ""
 
@@ -1828,10 +1828,10 @@ msgstr ""
 msgid "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:261
-#: src/components/TransactionList.vue:283
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:255
+#: src/components/TransactionList.vue:277
 msgid "This month"
 msgstr ""
 
@@ -2034,8 +2034,8 @@ msgstr ""
 msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:68
+#: src/components/BtcTransactionList.vue:58
+#: src/components/TransactionList.vue:61
 msgid "You now own crypto!"
 msgstr ""
 
@@ -2116,7 +2116,7 @@ msgstr ""
 msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:82
+#: src/components/BtcTransactionList.vue:68
+#: src/components/TransactionList.vue:75
 msgid "Your transactions will appear here"
 msgstr ""

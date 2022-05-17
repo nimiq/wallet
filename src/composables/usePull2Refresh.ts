@@ -36,7 +36,6 @@ export function usePull2Refresh(scroller: Ref<{$el: HTMLDivElement} | null>, onR
         return Math.max(0, distance);
     });
 
-    // @scroll / @scroll.native doesn't seem to work, so using standard event system
     onMounted(() => {
         if (!scroller.value) return;
         scroller.value.$el.addEventListener('touchstart', startP2R);

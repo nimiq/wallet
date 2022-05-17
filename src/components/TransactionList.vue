@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
@@ -409,7 +409,7 @@ export default defineComponent({
             scroller.value.$el.addEventListener('scroll', onScroll);
         });
 
-        onBeforeUnmount(() => {
+        onUnmounted(() => {
             if (!scroller.value) return;
             scroller.value.$el.removeEventListener('scroll', onScroll);
         });

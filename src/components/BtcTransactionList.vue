@@ -427,6 +427,10 @@ export default defineComponent({
     touch-action: pan-y;
 
     @extend %custom-scrollbar;
+
+    &.smooth {
+        transition: transform var(--transition-time) var(--nimiq-ease);
+    }
 }
 
 .list-element {

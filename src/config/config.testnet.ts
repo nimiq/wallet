@@ -24,12 +24,14 @@ export default {
     },
 
     moonpay: {
+        enabled: true,
         // This is a publishable key
         widgetUrl: 'https://buy-staging.moonpay.com?apiKey=pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://mun.soerenschwert.de',
     },
 
     simplex: {
+        enabled: true,
         formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
         splxScriptUrl: null,

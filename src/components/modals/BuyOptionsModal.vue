@@ -232,6 +232,7 @@ export default defineComponent({
 
         const isOasisUnderMaintenance = ref(false);
         const isOasisAvailable = computed(() => {
+            if (!Config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
             if (isOasisUnderMaintenance.value) return false;
             if (!country.value) return true;

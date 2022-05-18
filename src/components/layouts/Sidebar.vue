@@ -25,12 +25,14 @@
         </div>
 
         <div class="trade-actions" v-show="!isLegacyAccount">
-            <button class="nq-button-pill light-blue inverse"
+            <button v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
+                class="nq-button-pill light-blue inverse"
                 @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
 
-            <button class="nq-button-s inverse"
+            <button v-if="$config.fastspot.enabled"
+                class="nq-button-s inverse"
                 @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
             >{{ $t('Sell') }}</button>

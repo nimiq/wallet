@@ -50,7 +50,10 @@
                     : false }"
                 value-mask/>
         </div>
-        <div v-if="hasBitcoinAddresses && $config.enableBitcoin" class="exchange" ref="$exchange">
+
+        <div v-if="hasBitcoinAddresses && $config.enableBitcoin && $config.fastspot.enabled"
+            class="exchange" ref="$exchange"
+        >
             <Tooltip class="btc" preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
                     :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
@@ -67,6 +70,8 @@
                 </i18n>
             </Tooltip>
         </div>
+        <div v-else-if="hasBitcoinAddresses && $config.enableBitcoin" class="separator"></div>
+
         <div v-if="hasBitcoinAddresses && $config.enableBitcoin"
             class="currency flex-column btc"
             :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
@@ -290,6 +295,15 @@ export default defineComponent({
             transform: translate(calc(26px - 50%), -2rem);
             white-space: nowrap;
         }
+    }
+
+    .separator {
+        width: 0.25rem;
+        background: var(--nimiq-highlight-bg);
+        margin: 0.5rem 0.75rem 0 1rem;
+        height: 4rem;
+        border-radius: 1rem;
+        flex-shrink: 0;
     }
 
     .currency {

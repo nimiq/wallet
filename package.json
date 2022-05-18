@@ -25,7 +25,7 @@
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.5.2",
-    "@nimiq/hub-api": "link:../hub/client",
+    "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.0.1",
     "@nimiq/oasis-api": "^1.0.1",

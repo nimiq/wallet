@@ -1418,9 +1418,15 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
   integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
 
-"@nimiq/hub-api@link:../hub/client":
-  version "0.0.0"
-  uid ""
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc":
+  version "1.6.0-albatross.0"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc#dbaa25f832ef5b3d4952ccc53d56281617d796d2"
+  dependencies:
+    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/fastspot-api" "^1.5.2"
+    "@nimiq/rpc" "^0.4.0"
+    "@nimiq/utils" "^0.5.0"
+    big-integer "^1.6.48"
 
 "@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":
   version "1.6.0"
@@ -2988,15 +2994,10 @@ bech32@^1.1.2:
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"
   integrity sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==
 
-big-integer@^1.6.44:
-  version "1.6.49"
-  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.49.tgz#f6817d3ea5d4f3fb19e24df9f4b1b4471a8328ce"
-  integrity sha512-KJ7VhqH+f/BOt9a3yMwJNmcZjG53ijWMTjSAGMveQWyLwqIiwkjNP5PFgDob3Snnx86SjDj6I89fIbv0dkQeNw==
-
-big-integer@^1.6.48:
-  version "1.6.48"
-  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
-  integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
+big-integer@^1.6.44, big-integer@^1.6.48:
+  version "1.6.51"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
 big.js@^5.2.2:
   version "5.2.2"

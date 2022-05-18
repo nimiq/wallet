@@ -68,6 +68,9 @@ async function start() {
         initOasisApi(Config.oasis.apiEndpoint);
     }
 
+    // Make config accessible in components
+    Vue.prototype.$config = Config;
+
     const app = new Vue({
         router,
         i18n,
@@ -105,6 +108,12 @@ async function start() {
     });
 }
 start();
+
+declare module 'vue/types/vue' {
+    interface Vue {
+        $config: typeof Config;
+    }
+}
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {

@@ -261,7 +261,8 @@
         <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false" :showBitcoin="true"/>
+                <AddressList embedded @address-selected="addressListOpened = false"
+                    :showBitcoin="$config.enableBitcoin"/>
             </PageBody>
         </div>
     </Modal>

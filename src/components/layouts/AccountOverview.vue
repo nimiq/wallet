@@ -51,7 +51,7 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-column">
+            <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" class="bitcoin-account flex-column">
                 <button
                     class="bitcoin-account-item reset flex-row"
                     :class="{
@@ -85,7 +85,7 @@
                     <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
                 </button>
             </div>
-            <div v-else>
+            <div v-else-if="!canHaveMultipleAddresses">
                 <LegacyAccountUpgradeButton/>
                 <p class="future-notice">
                     {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}

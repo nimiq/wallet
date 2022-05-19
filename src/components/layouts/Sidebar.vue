@@ -20,7 +20,8 @@
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
-            <PriceChart currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
+            <PriceChart v-if="$config.enableBitcoin"
+                currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
         <div class="trade-actions" v-show="!isLegacyAccount">

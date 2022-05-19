@@ -50,7 +50,7 @@
                     : false }"
                 value-mask/>
         </div>
-        <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
+        <div v-if="hasBitcoinAddresses && $config.enableBitcoin" class="exchange" ref="$exchange">
             <Tooltip class="btc" preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
                 <button
                     :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
@@ -67,7 +67,7 @@
                 </i18n>
             </Tooltip>
         </div>
-        <div v-if="hasBitcoinAddresses"
+        <div v-if="hasBitcoinAddresses && $config.enableBitcoin"
             class="currency flex-column btc"
             :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
         >
@@ -108,6 +108,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
+import Config from 'config';
 import { getBackgroundClass } from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
@@ -136,10 +137,13 @@ export default defineComponent({
             ? (accountBalance.value / 1e5) * nimExchangeRate.value
             : undefined,
         );
-        const btcFiatAccountBalance = computed(() => btcExchangeRate.value !== undefined
-            ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
-            : undefined,
-        );
+        const btcFiatAccountBalance = computed(() => {
+            if (!Config.enableBitcoin) return 0;
+
+            return btcExchangeRate.value !== undefined
+                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                : undefined;
+        });
 
         const totalFiatAccountBalance = computed(() => {
             if (nimFiatAccountBalance.value === undefined || btcFiatAccountBalance.value === undefined) {
@@ -151,7 +155,7 @@ export default defineComponent({
         const balanceDistribution = computed((): { btc: number, nim: number } => ({
             nim: totalFiatAccountBalance.value
                 ? (nimFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
-                : 0.5,
+                : (Config.enableBitcoin ? 0.5 : 1),
             btc: totalFiatAccountBalance.value
                 ? (btcFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
                 : 0.5,

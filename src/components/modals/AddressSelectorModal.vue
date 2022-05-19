@@ -14,7 +14,7 @@
         <PageBody>
             <AddressList
                 embedded
-                :showBitcoin="hasBitcoinAddresses"
+                :showBitcoin="hasBitcoinAddresses && $config.enableBitcoin"
                 @address-selected="addressSelected"
             />
         </PageBody>

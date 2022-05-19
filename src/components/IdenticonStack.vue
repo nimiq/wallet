@@ -9,7 +9,7 @@
             v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
 
         <BitcoinIcon class="secondary"
-            v-if="hasBitcoinAddresses && activeCurrency !== CryptoCurrency.BTC" />
+            v-if="hasBitcoinAddresses && $config.enableBitcoin && activeCurrency !== CryptoCurrency.BTC" />
 
         <Identicon class="secondary"
             v-else-if="backgroundAddresses[1]"

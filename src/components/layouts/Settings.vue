@@ -115,7 +115,7 @@
                 </div> -->
             </section>
 
-            <section>
+            <section v-if="$config.enableBitcoin">
                 <h2 class="nq-label">{{ $t('Bitcoin') }}</h2>
 
                 <div class="setting">

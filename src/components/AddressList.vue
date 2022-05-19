@@ -6,7 +6,8 @@
             :addressInfo="addressInfo"
             :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
-            :ref="`address-button-${addressInfo.address}`"/>
+            :ref="`address-button-${addressInfo.address}`"
+            :disabled="requiredBalance > (addressInfo.balance || 0)"/>
         <button
             v-if="showAddAddressButton"
             class="address-button add-address-button reset flex-row"
@@ -60,6 +61,10 @@ export default defineComponent({
         showBitcoin: {
             type: Boolean,
             default: false,
+        },
+        requiredBalance: {
+            type: Number,
+            default: 0, // enables all addresses
         },
     },
     setup(props, context) {

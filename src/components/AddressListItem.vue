@@ -74,6 +74,10 @@ export default defineComponent({
     align-items: center;
     padding: 2rem;
     border-radius: 0.75rem;
+
+    &:disabled {
+        opacity: 0.4;
+    }
 }
 
 .identicon,

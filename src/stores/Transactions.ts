@@ -9,8 +9,9 @@ import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/P
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { AddressInfo, useAddressStore } from './Address';
+import { Transaction as AlbatrossTransaction } from '../albatross';
 
-export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
+export type Transaction = ReturnType<AlbatrossTransaction['toPlain']> & {
     fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
     relatedTransactionHash?: string,
 };

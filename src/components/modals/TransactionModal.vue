@@ -364,6 +364,7 @@ import { explorerTxLink } from '../../lib/ExplorerUtils';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import { getStakingTransactionMeaning } from '../../lib/StakingUtils';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
 
 export default defineComponent({
@@ -504,6 +505,9 @@ export default defineComponent({
                 || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
                 return context.root.$t('HTLC Refund');
             }
+
+            const stakingData = getStakingTransactionMeaning(transaction.value, false);
+            if (stakingData) return stakingData;
 
             return parseData(transaction.value.data.raw);
         });

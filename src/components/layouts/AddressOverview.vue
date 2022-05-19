@@ -30,6 +30,12 @@
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
+                                @mousedown="$router.push('/staking')"
+                            >
+                                <StakingIcon/>{{ $t('Staking') }}
+                            </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
                                 @mousedown="rescan"
@@ -121,6 +127,9 @@
                     </div>
                 </div>
             </div>
+            <div class="staking flex-row">
+                <StakingPreview v-if="activeCurrency === 'nim'"/>
+            </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -136,6 +145,8 @@
                         <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
                         <PrestakingButton v-else />
                     </template>
+
+                <StakingButton />
 
                     <button class="send nq-button-pill light-blue flex-row"
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
@@ -263,6 +274,9 @@ import UsdcTransactionList from '../UsdcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import StakingPreview from '../staking/StakingPreview.vue';
+import StakingButton from '../staking/StakingButton.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
 import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
@@ -575,6 +589,9 @@ export default defineComponent({
         HighFiveIcon,
         BoxedArrowUpIcon,
         UsdcIcon,
+        StakingPreview,
+        StakingButton,
+        StakingIcon,
         CashlinkButton,
         PrestakingButton,
         HeroIcon,
@@ -811,6 +828,14 @@ export default defineComponent({
             opacity: 1;
         }
     }
+}
+
+.staking {
+    padding-top: 0;
+    padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: 3rem;
+    padding-left: calc(var(--padding) + 2rem);
+    margin-top: calc(-1 * var(--padding-bottom) / 2);
 }
 
 .actions,
@@ -1226,6 +1251,11 @@ export default defineComponent({
         .fiat-amount {
             font-size: var(--small-size);
         }
+    }
+
+    .staking {
+        padding: 0 2rem;
+        margin-top: 0;
     }
 
     .native-usdc-notice {

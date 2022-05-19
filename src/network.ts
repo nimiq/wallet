@@ -285,10 +285,20 @@ export async function launchNetwork() {
         const totalStake = Object.values(stakes)
             .reduce((sum, stake) => sum + stake, 0);
 
-        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => ({
-            address,
-            dominance: balance / totalStake,
-        }));
+        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => {
+            const dominance = balance / totalStake;
+
+            // This is just an approximation of a trust score
+            // TODO: Formalize trust score calculation
+            const trustPenalty = Math.min((dominance * 10) ** 2 / 10, 1);
+            const trust = (1 - trustPenalty) * 5;
+
+            return {
+                address,
+                trust,
+                dominance,
+            };
+        });
 
         stakingStore.setValidators(validators);
     }

@@ -9,8 +9,9 @@ import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
+import { Transaction as AlbatrossTransaction } from '../albatross';
 
-export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
+export type Transaction = ReturnType<AlbatrossTransaction['toPlain']> & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     relatedTransactionHash?: string,
 };

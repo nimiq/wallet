@@ -2,7 +2,7 @@
     <div class="sidebar padding flex-column">
         <div v-if="isTestnet" class="testnet-notice flex-row">
             <StreetconeIcon/>
-            <span class="nq-label">{{ $t('Testnet') }}</span>
+            <span class="nq-label">{{ $t('Devnet') }}</span>
             <div class="flex-grow"></div>
             <Tooltip preferredPosition="bottom left"
                 :container="$parent"
@@ -14,11 +14,13 @@
                     <InfoCircleIcon/>
                 </template>
                 <template #default>
-                    <p>{{ $t('You are connecting to the Nimiq, Bitcoin and Polygon (USDC) Testnets.') }}</p>
+                    <p>{{ $t('You are connecting to the Nimiq, Bitcoin, Polygon (USDC) Testnets,\
+                        and Nimiq Albatross Devnet.') }}</p>
                     <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
                 </template>
             </Tooltip>
         </div>
+
 
         <header class="logo" @click="resetState">
             <span class="nq-icon nimiq-logo"></span>

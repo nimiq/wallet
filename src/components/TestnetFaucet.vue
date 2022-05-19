@@ -20,7 +20,7 @@
 import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
-import { MAINNET_ORIGIN } from '../lib/Constants';
+import { MAINNET_ORIGIN, TESTNET_ORIGIN } from '../lib/Constants';
 
 type FaucetInfoResponse = {
     network: 'test' | 'main',
@@ -70,7 +70,10 @@ export default defineComponent({
         const faucetInfoPromise = fetch(`${FAUCET_URL}/info`)
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
             .then((faucet) => {
-                const expectedNetwork = window.location.origin === MAINNET_ORIGIN ? 'main' : 'test';
+                const expectedNetwork = {
+                    [MAINNET_ORIGIN]: 'main',
+                    [TESTNET_ORIGIN]: 'test',
+                }[window.location.origin];
 
                 if (faucet.network !== expectedNetwork) {
                     unavailableMsg.value = context.root.$t('Faucet unavailable (wrong network)');

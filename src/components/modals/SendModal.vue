@@ -651,7 +651,7 @@ export default defineComponent({
                 // Show error screen
                 statusState.value = State.WARNING;
                 statusTitle.value = context.root.$t('Something went wrong');
-                statusMessage.value = error.message;
+                statusMessage.value = `${error.message} - ${error.data}`;
             }
         }
 

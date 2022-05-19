@@ -1,6 +1,7 @@
 import HubApi, {
     Account,
     SignTransactionRequest,
+    SignStakingRequest,
     SignBtcTransactionRequest,
     SetupSwapRequest,
     RefundSwapRequest,
@@ -333,6 +334,16 @@ export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'
         appName: APP_NAME,
         ...tx,
     }, getBehavior()).catch(onError);
+    if (!signedTransaction) return null;
+
+    return sendTx(signedTransaction);
+}
+
+export async function sendStaking(tx: Omit<SignStakingRequest, 'appName'>) {
+    const signedTransaction = await hubApi.signStaking({
+        appName: APP_NAME,
+        ...tx,
+    }).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);

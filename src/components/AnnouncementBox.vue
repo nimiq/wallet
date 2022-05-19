@@ -24,10 +24,11 @@ export default defineComponent({
         let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
-        text = () => context.root.$t('Buy NIM & BTC with OASIS!');
-        cta = () => context.root.$t('Try it now');
-        action = () => context.root.$router.push('buy');
-        storageKey = 'buy-with-oasis-1';
+        text = () => context.root.$t('Hi there! You are seeing a very early preview of the Wallet for the Albatross '
+            + 'Community Devnet. Things are missing and things will change until Albatross launch!');
+        cta = () => context.root.$t('Start exploring');
+        action = () => close();
+        storageKey = 'start-staking-1';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 

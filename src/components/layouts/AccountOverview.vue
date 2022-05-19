@@ -45,6 +45,8 @@
         <template v-else>
             <AccountBalance />
 
+            <StakingSummaryMobile v-if="isMobile" />
+
             <AddressList
                 :showAddAddressButton="canHaveMultipleAddresses"
                 @address-selected="onAddressSelected"
@@ -129,6 +131,7 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 // import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
+import StakingSummaryMobile from '../staking/StakingSummaryMobile.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -211,6 +214,7 @@ export default defineComponent({
             hasBitcoinAddresses,
             btcConsensus,
             updateAvailable,
+            isMobile,
         };
     },
     components: {
@@ -230,6 +234,7 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         AttentionDot,
+        StakingSummaryMobile,
     },
 });
 </script>

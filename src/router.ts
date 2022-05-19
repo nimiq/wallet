@@ -57,6 +57,10 @@ const MoonpayModal = () =>
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
+// Staking Modals
+const StakingModal = () =>
+    import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
+
 Vue.use(VueRouter);
 
 export enum Columns {
@@ -256,6 +260,14 @@ const routes: RouteConfig[] = [{
                 modal: ReleaseNotesModal,
             },
             name: 'root-release-notes',
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/staking',
+            components: {
+                modal: StakingModal,
+            },
+            name: 'staking',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }],

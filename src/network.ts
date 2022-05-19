@@ -7,11 +7,14 @@ import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
-import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { ENV_MAIN } from './lib/Constants';
+import { RawValidator, useStakingStore } from './stores/Staking';
+// import { loadNimiqJS } from './lib/NimiqJSLoader';
+// import { ENV_MAIN } from './lib/Constants';
+import { AlbatrossRpcClient, Transaction } from './albatross';
+import { STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 
 let isLaunched = false;
-let clientPromise: Promise<Nimiq.Client>;
+let clientPromise: Promise<AlbatrossRpcClient>;
 
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
@@ -19,107 +22,109 @@ const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 export async function getNetworkClient() {
     // eslint-disable-next-line no-async-promise-executor
     clientPromise = clientPromise || new Promise(async (resolve) => {
-        await loadNimiqJS();
-        Nimiq.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
-        await Nimiq.WasmHelper.doImport();
-        const client = Nimiq.Client.Configuration.builder().instantiateClient();
+        // await loadNimiqJS();
+        // Nimiq.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+        // await Nimiq.WasmHelper.doImport();
+        // const client = Nimiq.Client.Configuration.builder().instantiateClient();
+        const client = new AlbatrossRpcClient(Config.networkEndpoint);
         resolve(client);
     });
 
     return clientPromise;
 }
 
-async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
-    const client = await getNetworkClient();
+// async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
+//     const client = await getNetworkClient();
 
-    // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
-    await client.resetConsensus();
+//     // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
+//     await client.resetConsensus();
 
-    // Re-add deep listeners to new consensus
-    subscribeToPeerCount();
-    for (const [callback] of onPeersUpdatedCallbacks) {
-        const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
-            onNetworkPeersChanged(callback),
-            onNetworkAddressAdded(callback),
-        ]);
-        onPeersUpdatedCallbacks.set(callback, {
-            peersChangedId,
-            addressAddedId,
-        });
-    }
+//     // Re-add deep listeners to new consensus
+//     subscribeToPeerCount();
+//     for (const [callback] of onPeersUpdatedCallbacks) {
+//         const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
+//             onNetworkPeersChanged(callback),
+//             onNetworkAddressAdded(callback),
+//         ]);
+//         onPeersUpdatedCallbacks.set(callback, {
+//             peersChangedId,
+//             addressAddedId,
+//         });
+//     }
 
-    if (peerSuggestions && peerSuggestions.length > 0) {
-        const interval = window.setInterval(() => {
-            peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
-        }, 1000);
-        await client.waitForConsensusEstablished();
-        window.clearInterval(interval);
-    }
-}
+//     if (peerSuggestions && peerSuggestions.length > 0) {
+//         const interval = window.setInterval(() => {
+//             peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
+//         }, 1000);
+//         await client.waitForConsensusEstablished();
+//         window.clearInterval(interval);
+//     }
+// }
 
-async function disconnectNetwork() {
-    const client = await getNetworkClient();
+// async function disconnectNetwork() {
+//     const client = await getNetworkClient();
 
-    const peers = await client.network.getPeers();
-    await Promise.all(peers.map(
-        ({ peerAddress }) => client.network.disconnect(peerAddress),
-    ));
-    return peers;
-}
+//     const peers = await client.network.getPeers();
+//     await Promise.all(peers.map(
+//         ({ peerAddress }) => client.network.disconnect(peerAddress),
+//     ));
+//     return peers;
+// }
 
-const onPeersUpdatedCallbacks = new Map<() => any, {
-    peersChangedId: number,
-    addressAddedId: number,
-}>();
+// const onPeersUpdatedCallbacks = new Map<() => any, {
+//     peersChangedId: number,
+//     addressAddedId: number,
+// }>();
 
-export async function onPeersUpdated(callback: () => any) {
-    const [peersChangedId, addressAddedId] = await Promise.all([
-        onNetworkPeersChanged(callback),
-        onNetworkAddressAdded(callback),
-    ]);
-    onPeersUpdatedCallbacks.set(callback, {
-        peersChangedId,
-        addressAddedId,
-    });
-}
+// export async function onPeersUpdated(callback: () => any) {
+//     const [peersChangedId, addressAddedId] = await Promise.all([
+//         onNetworkPeersChanged(callback),
+//         onNetworkAddressAdded(callback),
+//     ]);
+//     onPeersUpdatedCallbacks.set(callback, {
+//         peersChangedId,
+//         addressAddedId,
+//     });
+// }
 
-export async function offPeersUpdated(callback: () => any) {
-    const ids = onPeersUpdatedCallbacks.get(callback);
-    if (!ids) return;
+// export async function offPeersUpdated(callback: () => any) {
+//     const ids = onPeersUpdatedCallbacks.get(callback);
+//     if (!ids) return;
 
-    const client = await getNetworkClient();
+//     const client = await getNetworkClient();
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    consensus.network.off('peers-changed', ids.peersChangedId);
-    consensus.network.addresses.off('added', ids.addressAddedId);
-    onPeersUpdatedCallbacks.delete(callback);
-}
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     consensus.network.off('peers-changed', ids.peersChangedId);
+//     consensus.network.addresses.off('added', ids.addressAddedId);
+//     onPeersUpdatedCallbacks.delete(callback);
+// }
 
-async function onNetworkPeersChanged(callback: () => any) {
-    const client = await getNetworkClient();
+// async function onNetworkPeersChanged(callback: () => any) {
+//     const client = await getNetworkClient();
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.on('peers-changed', callback);
-}
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     return consensus.network.on('peers-changed', callback);
+// }
 
-async function onNetworkAddressAdded(callback: () => any) {
-    const client = await getNetworkClient();
+// async function onNetworkAddressAdded(callback: () => any) {
+//     const client = await getNetworkClient();
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.addresses.on('added', callback);
-}
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     return consensus.network.addresses.on('added', callback);
+// }
 
-async function subscribeToPeerCount() {
-    return onNetworkPeersChanged(async () => {
-        const client = await getNetworkClient();
-        const statistics = await client.network.getStatistics();
-        const peerCount = statistics.totalPeerCount;
-        useNetworkStore().state.peerCount = peerCount;
-    });
-}
+// async function subscribeToPeerCount() {
+//     return onNetworkPeersChanged(async () => {
+//         // const client = await getNetworkClient();
+//         // const statistics = await client.network.getStatistics();
+//         // const peerCount = statistics.totalPeerCount;
+//         const peerCount = 1;
+//         useNetworkStore().state.peerCount = peerCount;
+//     });
+// }
 
 export async function launchNetwork() {
     if (isLaunched) return;
@@ -130,6 +135,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -141,6 +147,7 @@ export async function launchNetwork() {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
         const accounts = await client.getAccounts(addresses);
+        updateStakes(addresses);
         const newBalances: Balances = new Map(
             accounts.map((account, i) => [addresses[i], account.balance]),
         );
@@ -161,6 +168,22 @@ export async function launchNetwork() {
         for (const [address, balance] of newBalances) {
             addressStore.patchAddress(address, { balance });
         }
+    }
+
+    async function updateStakes(addresses: string[] = [...balances.keys()]) {
+        return Promise.all(addresses.map(async (address) => {
+            try {
+                const staker = await client.getStaker(address);
+                stakingStore.setStake({
+                    address,
+                    balance: staker.balance,
+                    validator: staker.delegation,
+                });
+            } catch (error: any) {
+                // Staker not found
+                stakingStore.removeStake(address);
+            }
+        }));
     }
 
     function forgetBalances(addresses: string[]) {
@@ -217,7 +240,7 @@ export async function launchNetwork() {
 
         // If network is disconnected when going back to app, trigger reconnect
         if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
-            disconnectNetwork().then(reconnectNetwork);
+            // disconnectNetwork().then(reconnectNetwork);
             networkWasReconnectedSinceLastConsensus = true;
         }
     });
@@ -226,18 +249,21 @@ export async function launchNetwork() {
     window.addEventListener('offline', async () => {
         console.warn('Browser is OFFLINE');
         if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
-        disconnectNetwork();
+        // disconnectNetwork();
     });
     window.addEventListener('online', () => {
         console.info('Browser is ONLINE');
         reconnectTimeout = window.setTimeout(() => {
-            reconnectNetwork();
+            // reconnectNetwork();
             reconnectTimeout = undefined;
         }, 1000);
     });
 
+    let currentEpoch = 0;
+
     client.addHeadChangedListener(async (hash) => {
-        const { height } = await client.getBlock(hash, false);
+        // const { height } = await client.getBlock(hash, false);
+        const { height } = hash;
         console.debug('Head is now at', height);
         network$.height = height;
 
@@ -245,11 +271,30 @@ export async function launchNetwork() {
         // I don't think we need to do this here, as wallet addresses are only expected to
         // change in balance when sending or receiving a transaction, as they should not be mining
         // directly.
+
+        if (hash.epoch > currentEpoch) {
+            currentEpoch = hash.epoch;
+            updateValidators();
+        }
     });
 
-    subscribeToPeerCount();
+    // subscribeToPeerCount();
 
-    function transactionListener(tx: Nimiq.Client.TransactionDetails) {
+    async function updateValidators() {
+        const stakes = await client.listStakes();
+        const totalStake = Object.values(stakes)
+            .reduce((sum, stake) => sum + stake, 0);
+
+        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => ({
+            address,
+            dominance: balance / totalStake,
+        }));
+
+        stakingStore.setValidators(validators);
+    }
+    updateValidators();
+
+    function transactionListener(tx: Transaction) {
         const plain = tx.toPlain();
         transactionsStore.addTransactions([plain]);
 
@@ -262,6 +307,21 @@ export async function launchNetwork() {
                 addresses.push(plain.recipient);
             }
             updateBalances(addresses);
+        }
+
+        // If the transaction touched the staking contract, update address's staking data
+        if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
+            const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
+            client.getStaker(address).then((staker) => {
+                stakingStore.setStake({
+                    address,
+                    balance: staker.balance,
+                    validator: staker.delegation,
+                });
+            }).catch(() => {
+                // Staker not found
+                stakingStore.removeStake(address);
+            });
         }
     }
 

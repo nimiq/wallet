@@ -236,7 +236,7 @@ export default defineComponent({
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
-                case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
+                case SwapAsset.NIM: return getNetworkClient() as any as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
                 case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
@@ -424,7 +424,7 @@ export default defineComponent({
                     let interval: number;
                     const secret = await Promise.race<string>([
                         swapHandler.awaitSecret(),
-                        new Promise((resolve, reject) => {
+                        new Promise<string>((resolve, reject) => {
                             interval = window.setInterval(async () => {
                                 if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
                                     window.clearInterval(interval);

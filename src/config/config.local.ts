@@ -4,8 +4,9 @@ export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
+    networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     fastspot: {

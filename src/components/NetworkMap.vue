@@ -46,7 +46,7 @@ import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@
 import { Tooltip } from '@nimiq/vue-components';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
-import { getNetworkClient, onPeersUpdated, offPeersUpdated } from '../network';
+// import { /* getNetworkClient, */ onPeersUpdated, offPeersUpdated } from '../network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -90,7 +90,7 @@ export default defineComponent({
         let updateKnownAddresses: () => Promise<void>;
 
         onMounted(async () => {
-            const client = await getNetworkClient();
+            // const client = await getNetworkClient();
 
             const networkMap = new NetworkMap($network.value!, $overlay.value!, (n) => nodes.value = n);
 
@@ -99,8 +99,16 @@ export default defineComponent({
             updateKnownAddresses = async () => {
                 if (!askForAddressesTimeout) {
                     askForAddressesTimeout = window.setTimeout(async () => {
-                        const peerAddressInfos = await client.network.getAddresses();
-                        const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
+                        // const peerAddressInfos = await client.network.getAddresses();
+                        // const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
+                        const newKnownAddresses = [{
+                            peerAddress: context.root.$config.networkEndpoint,
+                            peerId: '',
+                            services: [],
+                            netAddress: null,
+                            banned: false,
+                            connected: true,
+                        }];
                         if (networkMap.updateNodes(newKnownAddresses)) {
                             networkMap.draw();
                         }
@@ -109,7 +117,7 @@ export default defineComponent({
                 }
             };
 
-            onPeersUpdated(updateKnownAddresses);
+            // onPeersUpdated(updateKnownAddresses);
 
             updateKnownAddresses();
 
@@ -118,7 +126,7 @@ export default defineComponent({
         });
 
         onUnmounted(() => {
-            offPeersUpdated(updateKnownAddresses);
+            // offPeersUpdated(updateKnownAddresses);
             window.removeEventListener('resize', setDimensions);
         });
 

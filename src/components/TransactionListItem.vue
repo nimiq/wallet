@@ -104,6 +104,7 @@ import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
 import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
+import { getStakingTransactionMeaning } from '../lib/StakingUtils';
 
 export default defineComponent({
     props: {
@@ -196,6 +197,9 @@ export default defineComponent({
                 || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
                 return context.root.$t('HTLC Refund') as string;
             }
+
+            const stakingData = getStakingTransactionMeaning(props.transaction, false);
+            if (stakingData) return stakingData;
 
             return parseData(props.transaction.data.raw);
         });

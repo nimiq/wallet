@@ -45,6 +45,8 @@
         <template v-else>
             <AccountBalance />
 
+            <StakingSummaryMobile v-if="isMobile" />
+
             <div class=account-grid>
                 <div class="nimiq-account" ref="nimiqAccount$"
                     :class="{ scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight }">
@@ -261,6 +263,7 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 // import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
+import StakingSummaryMobile from '../staking/StakingSummaryMobile.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -496,6 +499,7 @@ export default defineComponent({
             accountBgPosition,
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
+            isMobile,
         };
     },
     components: {
@@ -522,6 +526,7 @@ export default defineComponent({
         Tooltip,
         LinkedDoubleArrowIcon,
         AddressListBackgroundSvg,
+        StakingSummaryMobile,
     },
 });
 </script>

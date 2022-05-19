@@ -20,7 +20,7 @@
 import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
-import { MAINNET_ORIGIN, TESTNET_ORIGIN } from '../lib/Constants';
+import { DEVNET_ORIGIN, MAINNET_ORIGIN, TESTNET_ORIGIN } from '../lib/Constants';
 
 type FaucetInfoResponse = {
     network: 'test' | 'main',
@@ -65,7 +65,7 @@ export default defineComponent({
         const loading = ref(false);
 
         // Only the testnet faucet is supported, because this component does not implement RECAPTCHA/VAPTCHA
-        const FAUCET_URL = 'https://faucet.nimiq-testnet.com';
+        const FAUCET_URL = 'https://faucet.v2.nimiq-testnet.com';
 
         const faucetInfoPromise = fetch(`${FAUCET_URL}/info`)
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
@@ -73,6 +73,7 @@ export default defineComponent({
                 const expectedNetwork = {
                     [MAINNET_ORIGIN]: 'main',
                     [TESTNET_ORIGIN]: 'test',
+                    [DEVNET_ORIGIN]: 'dev',
                 }[window.location.origin];
 
                 if (faucet.network !== expectedNetwork) {

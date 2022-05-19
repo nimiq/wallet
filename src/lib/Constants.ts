@@ -15,6 +15,9 @@ export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';
 export const TESTNET_ORIGIN = window.location.hostname === 'localhost'
     ? 'http://localhost:8081'
     : 'https://wallet.nimiq-testnet.com';
+export const DEVNET_ORIGIN = window.location.hostname === 'localhost'
+    ? 'http://localhost:8082'
+    : 'https://wallet.v2.nimiq-testnet.com';
 
 export const FIAT_CURRENCY_DENYLIST = [
     'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'SAR',

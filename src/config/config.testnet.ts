@@ -1,7 +1,7 @@
 import { ENV_TEST } from '../lib/Constants';
 
 export default {
-    hubEndpoint: 'https://hub.nimiq-testnet.com',
+    hubEndpoint: 'https://hub.v2.nimiq-testnet.com',
     environment: ENV_TEST,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',

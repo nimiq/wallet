@@ -8,22 +8,16 @@ export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
+    networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
-    prestaking: {
+    staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.
-        startBlock: 3_392_200, // 2024-10-06T02:53:18Z
-        endBlock: 3_456_000, // ~2024-11-19T07:00:00Z
-        // The dates determining the display of the pre-staking UI in the Wallet. This window is deliberately smaller
-        // than the on-chain window to allow for grace periods for the UI to be updated.
-        // The UI is still shown for address who have pre-staked even after the `endDate`.
-        startDate: new Date('2024-10-07T00:00:00Z'),
-        endDate: new Date('2024-11-11T00:00:00Z'),
-        totalPrestakeEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/total-prestake',
-        validatorsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/validators',
+        prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
+        prestakingEndBlock: 3_456_000, // ~2024-11-19T07:00:00Z
     },
 
     polygon: {

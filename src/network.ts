@@ -1,128 +1,133 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-import { ValidationUtils } from '@nimiq/utils';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { BURNER_ADDRESS, ENV_MAIN, MIN_PRESTAKE } from './lib/Constants';
-import { usePrestakingStore } from './stores/Prestaking';
-import { parseData } from './lib/DataFormatting';
+// import { loadNimiqJS } from './lib/NimiqJSLoader';
+// import { ENV_MAIN } from './lib/Constants';
+import { RawValidator, useStakingStore } from './stores/Staking';
+import { AlbatrossRpcClient, Transaction } from './albatross';
+import { STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 
 let isLaunched = false;
-let clientPromise: Promise<Nimiq.Client>;
+let clientPromise: Promise<AlbatrossRpcClient>;
 
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
 export async function getNetworkClient() {
     const { config } = useConfig();
-    clientPromise = clientPromise || (async () => {
-        // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
-        // which never changes at runtime. Changing config.nimiqScript at runtime is not supported.
-        await loadNimiqJS();
-        Nimiq.GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
-        await Nimiq.WasmHelper.doImport();
-        return Nimiq.Client.Configuration.builder().instantiateClient();
-    })();
+
+    // eslint-disable-next-line no-async-promise-executor
+    clientPromise = clientPromise || new Promise(async (resolve) => {
+        // await loadNimiqJS();
+        // Nimiq.GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
+        // await Nimiq.WasmHelper.doImport();
+        // const client = Nimiq.Client.Configuration.builder().instantiateClient();
+        const client = new AlbatrossRpcClient(config.networkEndpoint);
+        resolve(client);
+    });
 
     return clientPromise;
 }
 
-async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
-    const client = await getNetworkClient();
 
-    await client.resetConsensus();
+// async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
+//     const client = await getNetworkClient();
 
-    // Re-add deep listeners to new consensus
-    subscribeToPeerCount();
-    for (const [callback] of onPeersUpdatedCallbacks) {
-        const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
-            onNetworkPeersChanged(callback),
-            onNetworkAddressAdded(callback),
-        ]);
-        onPeersUpdatedCallbacks.set(callback, {
-            peersChangedId,
-            addressAddedId,
-        });
-    }
+//     // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
+//     await client.resetConsensus();
 
-    if (peerSuggestions && peerSuggestions.length > 0) {
-        const interval = window.setInterval(() => {
-            peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
-        }, 1000);
-        await client.waitForConsensusEstablished();
-        window.clearInterval(interval);
-    }
-}
+//     // Re-add deep listeners to new consensus
+//     subscribeToPeerCount();
+//     for (const [callback] of onPeersUpdatedCallbacks) {
+//         const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
+//             onNetworkPeersChanged(callback),
+//             onNetworkAddressAdded(callback),
+//         ]);
+//         onPeersUpdatedCallbacks.set(callback, {
+//             peersChangedId,
+//             addressAddedId,
+//         });
+//     }
 
-async function disconnectNetwork() {
-    const client = await getNetworkClient();
+//     if (peerSuggestions && peerSuggestions.length > 0) {
+//         const interval = window.setInterval(() => {
+//             peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
+//         }, 1000);
+//         await client.waitForConsensusEstablished();
+//         window.clearInterval(interval);
+//     }
+// }
 
-    const peers = await client.network.getPeers();
-    await Promise.all(peers.map(
-        ({ peerAddress }) => client.network.disconnect(peerAddress),
-    ));
-    return peers;
-}
+// async function disconnectNetwork() {
+//     const client = await getNetworkClient();
 
-const onPeersUpdatedCallbacks = new Map<() => any, {
-    peersChangedId: number,
-    addressAddedId: number,
-}>();
+//     const peers = await client.network.getPeers();
+//     await Promise.all(peers.map(
+//         ({ peerAddress }) => client.network.disconnect(peerAddress),
+//     ));
+//     return peers;
+// }
 
-export async function onPeersUpdated(callback: () => any) {
-    const [peersChangedId, addressAddedId] = await Promise.all([
-        onNetworkPeersChanged(callback),
-        onNetworkAddressAdded(callback),
-    ]);
-    onPeersUpdatedCallbacks.set(callback, {
-        peersChangedId,
-        addressAddedId,
-    });
-}
+// const onPeersUpdatedCallbacks = new Map<() => any, {
+//     peersChangedId: number,
+//     addressAddedId: number,
+// }>();
 
-export async function offPeersUpdated(callback: () => any) {
-    const ids = onPeersUpdatedCallbacks.get(callback);
-    if (!ids) return;
+// export async function onPeersUpdated(callback: () => any) {
+//     const [peersChangedId, addressAddedId] = await Promise.all([
+//         onNetworkPeersChanged(callback),
+//         onNetworkAddressAdded(callback),
+//     ]);
+//     onPeersUpdatedCallbacks.set(callback, {
+//         peersChangedId,
+//         addressAddedId,
+//     });
+// }
 
-    const client = await getNetworkClient();
+// export async function offPeersUpdated(callback: () => any) {
+//     const ids = onPeersUpdatedCallbacks.get(callback);
+//     if (!ids) return;
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    consensus.network.off('peers-changed', ids.peersChangedId);
-    consensus.network.addresses.off('added', ids.addressAddedId);
-    onPeersUpdatedCallbacks.delete(callback);
-}
+//     const client = await getNetworkClient();
 
-async function onNetworkPeersChanged(callback: () => any) {
-    const client = await getNetworkClient();
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     consensus.network.off('peers-changed', ids.peersChangedId);
+//     consensus.network.addresses.off('added', ids.addressAddedId);
+//     onPeersUpdatedCallbacks.delete(callback);
+// }
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.on('peers-changed', callback);
-}
+// async function onNetworkPeersChanged(callback: () => any) {
+//     const client = await getNetworkClient();
 
-async function onNetworkAddressAdded(callback: () => any) {
-    const client = await getNetworkClient();
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     return consensus.network.on('peers-changed', callback);
+// }
 
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.addresses.on('added', callback);
-}
+// async function onNetworkAddressAdded(callback: () => any) {
+//     const client = await getNetworkClient();
 
-async function subscribeToPeerCount() {
-    return onNetworkPeersChanged(async () => {
-        const client = await getNetworkClient();
-        const statistics = await client.network.getStatistics();
-        const peerCount = statistics.totalPeerCount;
-        useNetworkStore().state.peerCount = peerCount;
-    });
-}
+//     // @ts-expect-error Private property access
+//     const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
+//     return consensus.network.addresses.on('added', callback);
+// }
+
+// async function subscribeToPeerCount() {
+//     return onNetworkPeersChanged(async () => {
+//         // const client = await getNetworkClient();
+//         // const statistics = await client.network.getStatistics();
+//         // const peerCount = statistics.totalPeerCount;
+//         const peerCount = 1;
+//         useNetworkStore().state.peerCount = peerCount;
+//     });
+// }
 
 export async function launchNetwork() {
     if (isLaunched) return;
@@ -133,7 +138,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
-    const prestakingStore = usePrestakingStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -145,6 +150,7 @@ export async function launchNetwork() {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
         const accounts = await client.getAccounts(addresses);
+        updateStakes(addresses);
         const newBalances: Balances = new Map(
             accounts.map((account, i) => [addresses[i], account.balance]),
         );
@@ -167,62 +173,20 @@ export async function launchNetwork() {
         }
     }
 
-    async function updatePrestakes(addresses: string[] = [...balances.keys()]) {
-        if (!addresses.length) return;
-        await client.waitForConsensusEstablished();
-        const { state: transactions$ } = useTransactionsStore();
-
-        const height = await client.getHeadHeight();
-
-        const { config } = useConfig();
-
-        addresses.forEach((address) => {
-            let prestakingTxs = Object.values(transactions$.transactions)
-                .filter((tx) =>
-                    tx.sender === address
-                    && tx.recipient === BURNER_ADDRESS
-                    // Only consider txs within the pre-staking window
-                    && ((
-                        tx.blockHeight
-                        && tx.blockHeight >= config.prestaking.startBlock
-                        && tx.blockHeight < config.prestaking.endBlock
-                    ) || (
-                        tx.state === 'pending'
-                        && height >= config.prestaking.startBlock
-                        && height < config.prestaking.endBlock - 1
-                    ))
-                    && tx.data.raw
-                    && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
-                );
-
-            // Sort transactions by timestamp in ascending order
-            prestakingTxs.sort((a, b) => (a.blockHeight || Infinity) - (b.blockHeight || Infinity));
-
-            // Prestaking transactions only count once a transaction had a value of at least MIN_PRESTAKE luna
-            let stakedMinimum = false;
-            prestakingTxs = prestakingTxs.filter((tx) => {
-                if (tx.value >= MIN_PRESTAKE) {
-                    stakedMinimum = true;
-                }
-                return stakedMinimum;
-            });
-
-            if (prestakingTxs.length === 0) {
-                prestakingStore.removePrestake(address);
-                return;
+    async function updateStakes(addresses: string[] = [...balances.keys()]) {
+        return Promise.all(addresses.map(async (address) => {
+            try {
+                const staker = await client.getStaker(address);
+                stakingStore.setStake({
+                    address,
+                    balance: staker.balance,
+                    validator: staker.delegation,
+                });
+            } catch (error: any) {
+                // Staker not found
+                stakingStore.removeStake(address);
             }
-
-            // Sort transactions by timestamp in descending order
-            prestakingTxs.reverse();
-
-            // The current delegation is determined by the latest transaction
-            const delegation = ValidationUtils.normalizeAddress(parseData(prestakingTxs[0].data.raw));
-
-            // Calculate the prestake from all pre-prestaking transactions
-            const balance = prestakingTxs.reduce((acc, tx) => acc + tx.value, 0);
-
-            prestakingStore.setPrestake({ address, balance, validator: delegation });
-        });
+        }));
     }
 
     function forgetBalances(addresses: string[]) {
@@ -280,7 +244,7 @@ export async function launchNetwork() {
 
         // If network is disconnected when going back to app, trigger reconnect
         if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
-            disconnectNetwork().then(reconnectNetwork);
+            // disconnectNetwork().then(reconnectNetwork);
             networkWasReconnectedSinceLastConsensus = true;
         }
     });
@@ -289,18 +253,21 @@ export async function launchNetwork() {
     window.addEventListener('offline', async () => {
         console.warn('Browser is OFFLINE');
         if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
-        disconnectNetwork();
+        // disconnectNetwork();
     });
     window.addEventListener('online', () => {
         console.info('Browser is ONLINE');
         reconnectTimeout = window.setTimeout(() => {
-            reconnectNetwork();
+            // reconnectNetwork();
             reconnectTimeout = undefined;
         }, 1000);
     });
 
+    let currentEpoch = 0;
+
     client.addHeadChangedListener(async (hash) => {
-        const { height } = await client.getBlock(hash, false);
+        // const { height } = await client.getBlock(hash, false);
+        const { height } = hash;
         console.debug('Head is now at', height);
         network$.height = height;
 
@@ -308,11 +275,30 @@ export async function launchNetwork() {
         // I don't think we need to do this here, as wallet addresses are only expected to
         // change in balance when sending or receiving a transaction, as they should not be mining
         // directly.
+
+        if (hash.epoch > currentEpoch) {
+            currentEpoch = hash.epoch;
+            updateValidators();
+        }
     });
 
-    subscribeToPeerCount();
+    // subscribeToPeerCount();
 
-    function transactionListener(tx: Nimiq.Client.TransactionDetails) {
+    async function updateValidators() {
+        const stakes = await client.listStakes();
+        const totalStake = Object.values(stakes)
+            .reduce((sum, stake) => sum + stake, 0);
+
+        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => ({
+            address,
+            dominance: balance / totalStake,
+        }));
+
+        stakingStore.setValidators(validators);
+    }
+    updateValidators();
+
+    function transactionListener(tx: Transaction) {
         const plain = tx.toPlain();
 
         if (plain.recipient === BURNER_ADDRESS) {
@@ -330,6 +316,21 @@ export async function launchNetwork() {
                 addresses.push(plain.recipient);
             }
             updateBalances(addresses);
+        }
+
+        // If the transaction touched the staking contract, update address's staking data
+        if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
+            const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
+            client.getStaker(address).then((staker) => {
+                stakingStore.setStake({
+                    address,
+                    balance: staker.balance,
+                    validator: staker.delegation,
+                });
+            }).catch(() => {
+                // Staker not found
+                stakingStore.removeStake(address);
+            });
         }
     }
 

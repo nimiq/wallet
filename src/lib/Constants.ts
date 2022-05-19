@@ -44,9 +44,24 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 // original welcome screen was already shown.
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 
-// Pre-Staking
-export const MIN_PRESTAKE = 100e5;
-export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
+// Albatross
+// export const BATCH_LENGTH = 32;
+// export const BATCHES_PER_EPOCH = 4;
+// export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
 
-// Add the WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY
-export const WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY = 'nimiq-welcome-pre-staking-modal-shown';
+// export function nextElectionBlock(height: number): number {
+//     return Math.floor(height / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+// }
+
+export const STAKING_CONTRACT_ADDRESS = 'NQ38 STAK 1NG0 0000 0000 C0NT RACT 0000 0000';
+export const STAKING_ACCOUNT_TYPE = 3;
+export const StakingTransactionType = {
+    UNSTAKE: 1,
+
+    CREATE_STAKER: 5,
+    STAKE: 6,
+    UPDATE_STAKER: 7,
+};
+
+// Pre-Staking
+export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';

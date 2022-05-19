@@ -106,12 +106,12 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             if (
                 ((
                     transaction.value.blockHeight
-                    && transaction.value.blockHeight >= Config.prestaking.startBlock
-                    && transaction.value.blockHeight < Config.prestaking.endBlock
+                    && transaction.value.blockHeight >= Config.staking.prestakingStartBlock
+                    && transaction.value.blockHeight < Config.staking.prestakingEndBlock
                 ) || (
                     transaction.value.state === 'pending'
-                    && height.value >= Config.prestaking.startBlock
-                    && height.value < Config.prestaking.endBlock - 1
+                    && height.value >= Config.staking.prestakingStartBlock
+                    && height.value < Config.staking.prestakingEndBlock - 1
                 ))
                 && transaction.value.data.raw
                 && ValidationUtils.isValidAddress(parseData(transaction.value.data.raw))

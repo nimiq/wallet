@@ -108,10 +108,7 @@
                         <div class="features-description">
                             <p class="first">{{ $t('Super low fees, super fast payments') }}</p>
                             <p class="second">{{ $t('Censorship-resistant network connection') }}</p>
-                            <p class="third">
-                                {{ $t('Creates prestaking rewards') }}
-                                <span class="coming-soon">{{ $t('COMING SOON') }}</span>
-                            </p>
+                            <p class="third">{{ $t('Creates staking rewards') }}</p>
                         </div>
                     </div>
                 </div>
@@ -386,7 +383,6 @@ import {
     CryptoCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     FIAT_CURRENCIES_OFFERED,
-    WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
@@ -401,12 +397,6 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
         const { currency, setCurrency, state: fiat$ } = useFiatStore();
         const { config } = useConfig();
-
-        const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
-            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
-        );
-
-        const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
         const currencies = [
             CryptoCurrency.NIM,
@@ -551,11 +541,6 @@ export default defineComponent({
             } else {
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
                 await modal$.value!.forceClose();
-                // open welcome pre staking modal
-                if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
-                    // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
-                    router.push('/welcome-prestaking');
-                }
             }
         }
 

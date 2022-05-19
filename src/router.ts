@@ -81,11 +81,9 @@ const MoonpaySellInfoModal = () =>
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
-// Prestaking Modals
-const PrestakingModal = () =>
-    import(/* webpackChunkName: "prestaking-modal" */ './components/prestaking/PrestakingModal.vue');
-const WelcomePreStakingModal = () =>
-    import(/* webpackChunkName: "welcome-prestaking-modal" */ './components/modals/WelcomePreStakingModal.vue');
+// Staking Modals
+const StakingModal = () =>
+    import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
 
 Vue.use(VueRouter);
 
@@ -372,19 +370,12 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/prestaking',
+            path: '/staking',
             components: {
-                modal: PrestakingModal,
+                modal: StakingModal,
             },
-            name: 'prestaking',
+            name: 'staking',
             props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/welcome-prestaking',
-            name: 'welcome-prestaking',
-            components: {
-                modal: WelcomePreStakingModal,
-            },
             meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {

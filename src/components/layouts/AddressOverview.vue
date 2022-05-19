@@ -20,7 +20,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <PrestakingButton v-if="showPrestakingButton" />
+                    <StakingButton v-if="showStakingButton" />
                     <button
                         class="reset icon-button"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -32,6 +32,12 @@
                                 @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
+                                @mousedown="$router.push('/staking')"
+                            >
+                                <StakingIcon/>{{ $t('Staking') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
@@ -156,6 +162,9 @@
                     </div>
                 </div>
             </div>
+            <div class="staking flex-row">
+                <StakingPreview v-if="activeCurrency === 'nim'"/>
+            </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -167,9 +176,9 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
-                        <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
-                        <PrestakingButton v-else-if="showPrestakingButton" />
+                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if staking-->
+                        <StakingPreview v-if="activeStake && windowWidth > 860" />
+                        <StakingButton v-else-if="showStakingButton" />
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -188,7 +197,7 @@
                     </button>
                 </div>
             </div>
-            <!-- <PrestakingPreview v-if="prestake" class="prestaking-preview-mobile" /> -->
+
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -305,8 +314,10 @@ import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import StakingPreview from '../staking/StakingPreview.vue';
+import StakingButton from '../staking/StakingButton.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
-import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -331,9 +342,8 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
-import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
-import { usePrestakingStore } from '../../stores/Prestaking';
+import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
@@ -350,7 +360,7 @@ export default defineComponent({
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
-        const { activePrestake, accountPrestake } = usePrestakingStore();
+        const { activeStake, accountStake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -575,12 +585,12 @@ export default defineComponent({
             useAccountStore().setActiveCurrency(stablecoin);
         }
 
-        const showPrestakingButton = computed(() => {
-            // Hide button for legacy accounts except if they're already prestaking
+        const showStakingButton = computed(() => {
+            // Hide button for legacy accounts except if they're already staking
             if (activeCurrency.value !== CryptoCurrency.NIM) return false;
             if (!activeAccountInfo.value) return false;
             if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
-            return accountPrestake.value > 0;
+            return accountStake.value > 0;
         });
 
         return {
@@ -610,9 +620,9 @@ export default defineComponent({
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
-            activePrestake,
+            activeStake,
             windowWidth,
-            showPrestakingButton,
+            showStakingButton,
         };
     },
     components: {
@@ -639,10 +649,11 @@ export default defineComponent({
         BoxedArrowUpIcon,
         UsdcIcon,
         UsdtIcon,
+        StakingPreview,
+        StakingButton,
+        StakingIcon,
         CashlinkButton,
-        PrestakingButton,
         HeroIcon,
-        PrestakingPreview,
     },
 });
 </script>
@@ -883,6 +894,14 @@ export default defineComponent({
     }
 }
 
+.staking {
+    padding-top: 0;
+    padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: 3rem;
+    padding-left: calc(var(--padding) + 2rem);
+    margin-top: calc(-1 * var(--padding-bottom) / 2);
+}
+
 .actions,
 .actions-mobile {
     position: relative;
@@ -1024,7 +1043,7 @@ export default defineComponent({
     }
 }
 
-.prestaking-button {
+.staking-button {
     margin-left: 1rem;
 }
 
@@ -1312,6 +1331,11 @@ export default defineComponent({
         .fiat-amount {
             font-size: var(--small-size);
         }
+    }
+
+    .staking {
+        padding: 0 2rem;
+        margin-top: 0;
     }
 
     .native-usdc-notice {

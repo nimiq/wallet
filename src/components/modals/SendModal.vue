@@ -824,7 +824,7 @@ export default defineComponent({
                 statusType.value = 'signing';
                 statusState.value = State.WARNING;
                 statusTitle.value = context.root.$t('Something went wrong') as string;
-                statusMessage.value = error.message;
+                statusMessage.value = `${error.message} - ${error.data}`;
             }
         }
 

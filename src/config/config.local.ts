@@ -44,7 +44,7 @@ export default {
     },
 
     fastspot: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
@@ -93,14 +93,14 @@ export default {
     },
 
     moonpay: {
-        enabled: true,
+        enabled: false,
         // This is a publishable key
         clientApiKey: 'pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://moosign.nimiq.network',
     },
 
     simplex: {
-        enabled: true,
+        enabled: false,
         formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
         splxScriptUrl: null as string | null,

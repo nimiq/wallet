@@ -73,7 +73,7 @@ export default {
     },
 
     fastspot: {
-        enabled: true, // Set to false to hide the swap feature.
+        enabled: false, // Set to false to hide the swap feature.
         enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
@@ -123,14 +123,14 @@ export default {
     },
 
     moonpay: {
-        enabled: true,
+        enabled: false,
         // This is a publishable key
         clientApiKey: 'pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://moosign.nimiq.network',
     },
 
     simplex: {
-        enabled: true,
+        enabled: false,
         formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
         splxScriptUrl: null as string | null,

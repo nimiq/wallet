@@ -159,7 +159,7 @@ msgstr ""
 msgid "Add account"
 msgstr ""
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -348,7 +348,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr ""
 
@@ -768,23 +768,23 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1126,7 +1126,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr ""
 
@@ -1395,8 +1395,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:142
-#: src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr ""
 
@@ -1459,7 +1459,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr ""
 
@@ -1588,7 +1588,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr ""
 
@@ -1691,7 +1691,7 @@ msgstr ""
 msgid "Swap has expired"
 msgstr ""
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr ""
 
@@ -1775,7 +1775,7 @@ msgstr ""
 msgid "The swap expired"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -1835,7 +1835,7 @@ msgstr ""
 msgid "This rate includes the swap fee."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2014,7 +2014,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 

@@ -176,7 +176,7 @@ msgstr "添加公开信息..."
 msgid "Add account"
 msgstr "添加账户"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "添加地址"
 
@@ -332,7 +332,7 @@ msgstr "仅支持欧盟SEPA区域的银行转账"
 msgid "BIC works, too."
 msgstr "BIC适用"
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -378,7 +378,7 @@ msgstr "浏览器"
 msgid "BTC network fee"
 msgstr "BTC网络费"
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "买入"
 
@@ -812,23 +812,23 @@ msgstr "快速"
 msgid "Failed"
 msgstr "失败"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "水龙头错误－请重试"
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "水龙头是空的"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "你所在的位置无法使用水龙头"
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "水龙头无法使用"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "水龙头无法使用（网络错误）"
 
@@ -1185,7 +1185,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr "网络"
 
@@ -1472,7 +1472,7 @@ msgstr "发行说明"
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "请求失败"
 
@@ -1536,7 +1536,7 @@ msgstr "请选择货币和金额"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr "卖出"
 
@@ -1667,7 +1667,7 @@ msgstr "设置原子交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr "设置"
 
@@ -1772,7 +1772,7 @@ msgstr "从 {address} 交换"
 msgid "Swap has expired"
 msgstr "交换已过期"
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr "交换NIM{arrow}BTC"
 
@@ -1858,7 +1858,7 @@ msgstr "发件人和收件人不能相同"
 msgid "The swap expired"
 msgstr "交换已过期"
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "目前没有免费的NIM"
 
@@ -1922,7 +1922,7 @@ msgstr "本月份"
 msgid "This rate includes the swap fee."
 msgstr "此汇率已将交换费用纳入计算"
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "你所在的地区目前尚未提供这项服务"
 
@@ -2109,7 +2109,7 @@ msgstr "你正在连接Nimiq和比特币测试网"
 msgid "You are using a Legacy Account "
 msgstr "你正在使用传统账户"
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 

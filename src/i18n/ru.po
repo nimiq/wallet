@@ -180,7 +180,7 @@ msgstr "Добавить публичное сообщение... "
 msgid "Add account"
 msgstr "Добавить аккаунт"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "Добавить адрес"
 
@@ -349,7 +349,7 @@ msgstr "Банковский перевод поддерживается тол�
 msgid "BIC works, too."
 msgstr "Можно указать BIC"
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -398,7 +398,7 @@ msgstr "Браузер"
 msgid "BTC network fee"
 msgstr "Комиссия сети биткоина"
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "Купить"
 
@@ -842,23 +842,23 @@ msgstr "экспресс"
 msgid "Failed"
 msgstr "Не удалось"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "Кран сломан. Пожалуйста, попробуйте еще раз."
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "В Кране нет воды"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "К сожалению, Кран не работает в вашем регионе"
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "Кран недоступен"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "Кран недоступен (ошибка соединения)"
 
@@ -1226,7 +1226,7 @@ msgstr "Назовите этого отправителя..."
 msgid "Name your contact"
 msgstr "Укажите имя контакта"
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr "Сеть"
 
@@ -1523,7 +1523,7 @@ msgstr "Список изменений"
 msgid "Rename"
 msgstr "Переименовать"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "Запрос не удался"
 
@@ -1588,7 +1588,7 @@ msgstr "Выберите валюту и сумму"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Выберите в каких единицах будет отображаться сумма в биткойнах."
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr "Продать"
 
@@ -1721,7 +1721,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr "Настройка сторон свопа {currency}"
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr "Настройки"
 
@@ -1827,7 +1827,7 @@ msgstr "Обменять с {address}"
 msgid "Swap has expired"
 msgstr "Время обмена истекло"
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr "Обмен NIM {arrow} BTC"
 
@@ -1917,7 +1917,7 @@ msgstr "Отправитель и получатель не могут совп�
 msgid "The swap expired"
 msgstr "Срок ожидания свопа закончился"
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "В настоящее время бесплатные NIM не доступны."
 
@@ -1986,7 +1986,7 @@ msgstr ""
 "Эта ставка включает в себя \n"
 "комиссию за обмен."
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "Данный сервис не доступен в Вашем регионе."
 
@@ -2185,7 +2185,7 @@ msgstr "Вы подключаетесь к тестовой среде Nimiq и 
 msgid "You are using a Legacy Account "
 msgstr "Вы используете аккаунт \"старого\" типа "
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Вы можете получить еще немного бесплатных NIM через {waitTime} часов."
 

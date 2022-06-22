@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
@@ -184,7 +184,7 @@ msgstr "Ajouter un message public..."
 msgid "Add account"
 msgstr "Ajouter un compte"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "Ajouter une adresse"
 
@@ -352,7 +352,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "Le BIC fonctionne aussi."
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -401,7 +401,7 @@ msgstr "Navigateur"
 msgid "BTC network fee"
 msgstr "frais de réseau BTC"
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "Acheter"
 
@@ -850,23 +850,23 @@ msgstr "express"
 msgid "Failed"
 msgstr "Échoué"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "Erreur du Faucet - veuillez réessayer."
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "Le Faucet est vide"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "Faucet non disponible depuis votre localisation"
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "Faucet indisponible"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet indisponible (mauvais réseau)"
 
@@ -1236,7 +1236,7 @@ msgstr "Nommez ce destinataire..."
 msgid "Name your contact"
 msgstr "Nommez votre contact"
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr "Réseau"
 
@@ -1537,7 +1537,7 @@ msgstr "Notes de mise à jour"
 msgid "Rename"
 msgstr "Renommer"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "Requête échouée"
 
@@ -1603,7 +1603,7 @@ msgstr "Sélectionnez une devise et un montant."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr "Vendre"
 
@@ -1738,7 +1738,7 @@ msgstr "Configuration du Swap atomique"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Configuration de la partie {currency} du Swap."
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr "Réglages"
 
@@ -1843,7 +1843,7 @@ msgstr "Swap depuis {address}"
 msgid "Swap has expired"
 msgstr "Le Swap a expiré"
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr "Swap NIM {arrow} BTC"
 
@@ -1934,7 +1934,7 @@ msgstr "L'expéditeur et le bénéficiaire ne peuvent pas être identiques."
 msgid "The swap expired"
 msgstr "Le Swap a expiré"
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "Il n'y a actuellement aucun NIM gratuit disponible."
 
@@ -2003,7 +2003,7 @@ msgstr "Ce mois-ci"
 msgid "This rate includes the swap fee."
 msgstr "Ce taux inclut les frais de Swap."
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
@@ -2208,7 +2208,7 @@ msgstr "Vous êtes en train de vous connecter aux Testnets Nimiq et Bitcoin."
 msgid "You are using a Legacy Account "
 msgstr "Vous utilisez un ancien type de compte."
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Vous pourrez recevoir plus de NIM gratuits dans {waitTime} heures."
 

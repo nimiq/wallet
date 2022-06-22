@@ -180,7 +180,7 @@ msgstr "Öffentliche Nachricht hinzufügen..."
 msgid "Add account"
 msgstr "Konto hinzufügen"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "Adresse hinzufügen"
 
@@ -347,7 +347,7 @@ msgstr "Banküberweisung wird nur in der SEPA-Region der EU unterstützt."
 msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -396,7 +396,7 @@ msgstr "Browser"
 msgid "BTC network fee"
 msgstr "BTC-Netzwerkgebühr"
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "Kaufen"
 
@@ -848,23 +848,23 @@ msgstr "Express"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "Problem mit der Faucet, probiere es noch einmal."
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "Faucet ist leer"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "Die Faucet ist in deiner Region leider nicht verfügbar."
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "Faucet nicht verfügbar"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet nicht verfügbar (falsches Netzwerk)"
 
@@ -1236,7 +1236,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1535,7 +1535,7 @@ msgstr "Versionshinweise"
 msgid "Rename"
 msgstr "Umbenennen"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "Anfrage fehlgeschlagen"
 
@@ -1601,7 +1601,7 @@ msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -1735,7 +1735,7 @@ msgstr "Sicherer Tausch wird vorbereitet"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Die {currency}-Seite des Tauschs wird vorbereitet."
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -1840,7 +1840,7 @@ msgstr "Tausch von {address}"
 msgid "Swap has expired"
 msgstr "Tausch ist abgelaufen"
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr "Tausche NIM {arrow} BTC"
 
@@ -1932,7 +1932,7 @@ msgstr "Der Sender und Empfänger dürfen nicht identisch sein."
 msgid "The swap expired"
 msgstr "Der Tausch ist abgelaufen"
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "Aktuell sind keine kostenlosen NIM mehr verfügbar."
 
@@ -2001,7 +2001,7 @@ msgstr "Diesen Monat"
 msgid "This rate includes the swap fee."
 msgstr "Dieser Betrag enthält die Tauschgebühr."
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "Dieser Service ist aktuell in deiner Region nicht verfügbar."
 
@@ -2202,7 +2202,7 @@ msgstr "Du verbindest dich mit den Nimiq- und Bitcoin-Testnetzwerken."
 msgid "You are using a Legacy Account "
 msgstr "Du nutzt ein Legacy-Konto"
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "In {waitTime} Stunden kannst du erneut kostenlose NIM erhalten."
 

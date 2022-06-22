@@ -181,7 +181,7 @@ msgstr "Voeg een openbaar bericht toe..."
 msgid "Add account"
 msgstr "Account toevoegen"
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "Adres toevoegen"
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "BIC werkt ook."
 
-#: src/components/BalanceDistribution.vue:84
+#: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -396,7 +396,7 @@ msgstr "Browser"
 msgid "BTC network fee"
 msgstr "BTC netwerk fee"
 
-#: src/components/layouts/Sidebar.vue:30
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "Kopen"
 
@@ -839,23 +839,23 @@ msgstr "express"
 msgid "Failed"
 msgstr "Mislukt"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "Faucet fout - probeer het opnieuw."
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "Faucet is leeg"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "Faucet is niet beschikbaar vanaf je locatie"
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "Faucet niet beschikbaar"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet niet beschikbaar (fout netwerk)"
 
@@ -1223,7 +1223,7 @@ msgstr "Geef deze ontvanger een naam..."
 msgid "Name your contact"
 msgstr "Geef je contact een naam"
 
-#: src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:53
 msgid "Network"
 msgstr "Netwerk"
 
@@ -1519,7 +1519,7 @@ msgstr "Release Notes"
 msgid "Rename"
 msgstr "Hernoemen"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "Verzoek mislukt"
 
@@ -1583,7 +1583,7 @@ msgstr "Selecteer een valuta en een bedrag."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:38
 msgid "Sell"
 msgstr "Verkopen"
 
@@ -1716,7 +1716,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr "De {currency} kant van de swap instellen."
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:61
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -1822,7 +1822,7 @@ msgstr "Swap van {address}"
 msgid "Swap has expired"
 msgstr "Swap is verlopen"
 
-#: src/components/BalanceDistribution.vue:61
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr "Swap NIM {arrow} BTC"
 
@@ -1911,7 +1911,7 @@ msgstr "De afzender en ontvanger kunnen niet identiek zijn."
 msgid "The swap expired"
 msgstr "De swap is verlopen"
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "Er is momenteel geen gratis NIM beschikbaar."
 
@@ -1977,7 +1977,7 @@ msgstr "Deze maand"
 msgid "This rate includes the swap fee."
 msgstr "Dit tarief is inclusief de swap vergoeding."
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "Deze service is momenteel niet beschikbaar in jouw regio."
 
@@ -2176,7 +2176,7 @@ msgstr "Je bent verbonden met de Nimiq en Bitcoin Testnets."
 msgid "You are using a Legacy Account "
 msgstr "Je gebruikt een Legacy Account"
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 

@@ -16,7 +16,8 @@
     "pre": "yarn i18n:extract && test -e public/bitcoin/BitcoinJS.min.js || yarn build:bitcoinjs",
     "release": "./release.sh",
     "test": "echo 'No tests'",
-    "utils:getBankList": "node ./scripts/getBankList.js"
+    "utils:getBankList": "node ./scripts/getBankList.js",
+    "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js"
   },
   "main": "src/main.ts",
   "dependencies": {
@@ -73,6 +74,7 @@
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
     "node-fetch": "^2.6.7",
+    "path-to-regexp": "^6.2.1",
     "sass": "^1.46.0",
     "sass-loader": "^8.0.2",
     "typescript": "~4.5.5",

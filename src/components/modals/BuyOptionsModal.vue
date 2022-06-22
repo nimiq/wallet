@@ -211,7 +211,7 @@ import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { FiatCurrency } from '../../lib/Constants';
+import { ENV_TEST, FiatCurrency } from '../../lib/Constants';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
@@ -236,6 +236,7 @@ export default defineComponent({
             if (!canUseSwaps.value) return false;
             if (isOasisUnderMaintenance.value) return false;
             if (!country.value) return true;
+            if (Config.environment === ENV_TEST) return true;
             return SEPA_COUNTRY_CODES.includes(country.value.code);
         });
 

@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened"
+        :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <PageHeader>
@@ -40,7 +40,7 @@
                         </div>
                     </SwapFeesTooltip>
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        ref="$limitsTooltip">
+                        class="limits-tooltip" ref="$limitsTooltip">
                         <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
                             <span v-if="limits">
                                 {{ $t('Max.') }}
@@ -61,11 +61,7 @@
                             <FiatConvertedAmount slot="value"
                                 :amount="limits.remaining.luna" currency="nim" roundDown/>
                         </i18n>
-                        <div></div>
-                        <p class="explainer">
-                            {{ $t('Nimiq is working on a PRO feature with '
-                                + 'increased limits after user registration.') }}
-                        </p>
+                        <KycPrompt v-if="!kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
             </div>
@@ -190,6 +186,8 @@
                 <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
             </PageBody>
         </div>
+
+        <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
     </Modal>
 </template>
 
@@ -241,6 +239,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
+import { useKycStore } from '../../stores/Kyc';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
@@ -250,6 +249,8 @@ import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import { init as initTEN31Pass } from '../../lib/TEN31Pass';
+import KycPrompt from '../kyc/KycPrompt.vue';
+import KycOverlay from '../kyc/KycOverlay.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -270,6 +271,7 @@ export default defineComponent({
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
+        const { connectedUser: kycUser } = useKycStore();
 
         initTEN31Pass(Config.TEN31Pass.apiEndpoint, Config.TEN31Pass.appId);
 
@@ -831,6 +833,8 @@ export default defineComponent({
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
+            } else if (kycOverlayOpened.value === true) {
+                kycOverlayOpened.value = false;
             } else {
                 context.root.$router.back();
             }
@@ -1218,6 +1222,8 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        const kycOverlayOpened = ref(false);
+
         return {
             onClose,
             satsPerNim,
@@ -1264,6 +1270,8 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             activeAddressInfo,
+            kycUser,
+            kycOverlayOpened,
         };
     },
     components: {
@@ -1283,6 +1291,8 @@ export default defineComponent({
         AddressList,
         SwapAnimation,
         SwapModalFooter,
+        KycPrompt,
+        KycOverlay,
     },
 });
 </script>
@@ -1364,6 +1374,12 @@ export default defineComponent({
     &.limit-reached {
         color: var(--nimiq-red);
         box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
+    }
+}
+
+.limits-tooltip {
+    .kyc-prompt {
+        margin: 0 -1.25rem -1rem;
     }
 }
 

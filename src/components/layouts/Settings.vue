@@ -149,6 +149,33 @@
             </section>
 
             <section>
+                <h2 class="nq-label">{{ $t('Limits') }}</h2>
+
+                <div class="setting kyc-connection">
+                    <div class="kyc-container">
+                        <div class="description">
+                            <label class="nq-h2">{{ $t('KYC Connection') }}</label>
+                            <p class="nq-text">
+                                {{ $t('Connect to TEN31 Pass for higher swap limits.') }}
+                            </p>
+                        </div>
+
+                        <div v-if="kycUser" class="flex-row connected-user">
+                            <strong class="display-name">{{ kycUser.name }}</strong>
+                            <KycIcon />
+                            <button class="nq-button-s" @click="disconnectKyc">{{ $t('Disconnect') }}</button>
+                        </div>
+                    </div>
+
+                    <button
+                        v-if="!kycUser"
+                        class="nq-button-pill light-blue"
+                        @click="() => connectKyc()" @mousedown.prevent
+                    >{{ $t('Connect') }}</button>
+                </div>
+            </section>
+
+            <section>
                 <h2 class="nq-label">{{ $t('Advanced') }}</h2>
 
                 <div class="setting swiping-setting">
@@ -276,6 +303,9 @@ import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
 import { updateServiceWorker } from '../../registerServiceWorker';
+import { connectKyc, disconnectKyc } from '../../lib/KycConnection';
+import { useKycStore } from '../../stores/Kyc';
+import KycIcon from '../icons/KycIcon.vue';
 
 declare global {
     function digestMessage(message: string): Promise<string>;
@@ -294,6 +324,7 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 export default defineComponent({
     setup(props, context) {
         const settings = useSettingsStore();
+        const { connectedUser: kycUser } = useKycStore();
 
         const { currency, setCurrency } = useFiatStore();
 
@@ -419,6 +450,9 @@ export default defineComponent({
             callAndConsumePwaInstallPrompt,
             pwaInstallationChoice,
             shouldUseRedirects,
+            kycUser,
+            connectKyc,
+            disconnectKyc,
             copyrightYear,
             VERSION: process.env.VERSION,
         };
@@ -429,6 +463,7 @@ export default defineComponent({
         CrossCloseButton,
         CircleSpinner,
         CountryFlag,
+        KycIcon,
     },
 });
 </script>
@@ -533,6 +568,34 @@ section {
             margin-top: 0.75rem;
             margin-bottom: 0;
         }
+    }
+}
+
+.kyc-connection {
+    .kyc-container {
+        max-width: 100%;
+    }
+
+    .display-name {
+        font-size: 2rem;
+    }
+
+    .nq-icon {
+        margin: 0 2rem 0 0.75rem;
+        flex-shrink: 0;
+        color: var(--nimiq-purple);
+    }
+
+    .connected-user {
+        margin-top: 3rem;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .nq-button-s {
+        padding: 0.5rem 2rem;
+        border-radius: 3.75rem;
+        font-size: var(--body-size);
     }
 }
 

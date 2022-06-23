@@ -404,6 +404,10 @@ msgstr ""
 msgid "Buy with Simplex"
 msgstr ""
 
+#: src/components/kyc/KycPrompt.vue:8
+msgid "Buy, and sell up to {limit} per month."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:207
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
@@ -476,7 +480,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:282
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:184
 msgid "Choose an Address"
 msgstr ""
 
@@ -509,9 +513,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:140
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:136
+#: src/components/swap/SwapModal.vue:141
+#: src/components/swap/SwapModal.vue:153
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -523,6 +527,10 @@ msgstr ""
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
 msgid "Congrats"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:23
+msgid "Connect {provider}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:15
@@ -853,6 +861,18 @@ msgstr ""
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
+msgstr ""
+
+#: src/components/kyc/KycPrompt.vue:13
+msgid "Get started"
+msgstr ""
+
+#: src/components/kyc/KycPrompt.vue:5
+msgid "Get verified for higher limits"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:7
+msgid "Get verified for higher limits with Nimiq, SuperSimpleSwap and TEN31 products."
 msgstr ""
 
 #: src/components/BankCheckInput.vue:94
@@ -1332,6 +1352,10 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:53
 msgid "Purpose"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:5
+msgid "Raise your limits"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:116

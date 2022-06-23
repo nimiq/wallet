@@ -45,6 +45,7 @@ export default defineComponent({
 h3 {
     font-size: 2rem;
     margin: 0;
+    line-height: 1.2;
 }
 
 .nq-button-pill.nq-purple {

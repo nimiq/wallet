@@ -72,34 +72,7 @@ export async function requestAppGrant(): Promise<string> {
 
 export async function getAppGrantDetails(grant: string): Promise<AppGrantDetails> {
     return fetch(`${API_URL}/api/public/grant/app/${grant}`)
-        .then((res) => res.json())
-        .catch((error) => {
-            console.error(error); // eslint-disable-line no-console
-
-            // TODO: Dummy data, remove when CORS works for public API!
-            return {
-                id: '8f9386a5-9b86-4e6a-977a-a69748c57b18',
-                timestamp: '2022-06-23T09:47:57.924158Z',
-                app: {
-                    id: '1a37384f-7d3a-4ac9-a887-ea1bd35dca16',
-                    displayName: 'Dev App 8081',
-                    hasLogo: false,
-                    redirect: 'http://localhost:8081/',
-                    fragment: false,
-                },
-                user: {
-                    id: '3ff70bcd-545d-4860-b34d-34783a14d945',
-                    email: 'soeren@nimiq.com',
-                    displayName: 'Sören X-MANUALTEST-HAPPYPATH',
-                    identifications: [
-                        {
-                            provider: 'idnow',
-                            expiry: '2027-06-24T08:37:52.525834Z',
-                        },
-                    ],
-                },
-            };
-        });
+        .then((res) => res.json());
 }
 
 function postRequest(url: string, fields: Record<string, any>, openPopup = true): void {

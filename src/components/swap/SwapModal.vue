@@ -248,7 +248,6 @@ import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
-import { init as initTEN31Pass } from '../../lib/TEN31Pass';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
 
@@ -272,8 +271,6 @@ export default defineComponent({
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
-
-        initTEN31Pass(Config.TEN31Pass.apiEndpoint, Config.TEN31Pass.appId);
 
         onMounted(() => {
             if (!swap.value) {

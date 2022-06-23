@@ -30,8 +30,8 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
-import { KycProvider, useKycStore } from '../../stores/Kyc';
-import { getAppGrantDetails, requestAppGrant } from '../../lib/TEN31Pass';
+import { KycProvider } from '../../stores/Kyc';
+import { connectKyc } from '../../lib/KycConnection';
 
 export default defineComponent({
     setup(props, { emit }) {
@@ -39,16 +39,7 @@ export default defineComponent({
         const provider = KycProvider.TEN31PASS;
 
         async function connect() {
-            const appGrant = await requestAppGrant();
-            const grantDetails = await getAppGrantDetails(appGrant);
-
-            useKycStore().connect({
-                provider,
-                appGrant,
-                id: grantDetails.user.id,
-                name: grantDetails.user.displayName,
-            });
-
+            await connectKyc(provider);
             emit('connected');
         }
 

@@ -40,12 +40,16 @@
                         </div>
                     </SwapFeesTooltip>
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        class="limits-tooltip" ref="$limitsTooltip">
-                        <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
-                            <span v-if="limits">
-                                {{ $t('Max.') }}
+                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
+                        <div slot="trigger" class="pill limits flex-row" :class="{
+                            'limit-reached': isLimitReached,
+                            'kyc-connected': kycUser,
+                        }">
+                            <template v-if="limits">
+                                <GroundedArrowDownIcon />
                                 <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                            </span>
+                                <KycIcon v-if="kycUser" />
+                            </template>
                             <template v-else>
                                 {{ $t('Max.') }}
                                 <CircleSpinner/>
@@ -61,6 +65,9 @@
                             <FiatConvertedAmount slot="value"
                                 :amount="limits.remaining.luna" currency="nim" roundDown/>
                         </i18n>
+                        <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
+                            {{ $t('Settings') }}
+                        </router-link> -->
                         <KycPrompt v-if="!kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
@@ -128,6 +135,7 @@
         </PageBody>
 
         <SwapModalFooter
+            v-if="!isLimitReached || kycUser"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
             requireBothNetworks
@@ -156,6 +164,7 @@
                 >Fastspot</a>
             </i18n>
         </SwapModalFooter>
+        <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
@@ -227,6 +236,8 @@ import AmountInput from '../AmountInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import KycIcon from '../icons/KycIcon.vue';
 import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -1283,6 +1294,8 @@ export default defineComponent({
         CircleSpinner,
         SwapBalanceBar,
         MinimizeIcon,
+        GroundedArrowDownIcon,
+        KycIcon,
         LightningIcon,
         SwapFeesTooltip,
         AddressList,
@@ -1299,6 +1312,10 @@ export default defineComponent({
     width: 63.5rem;
     // height: 74.5rem;
     font-size: var(--body-size);
+
+    > .kyc-prompt {
+        margin: 0.5rem 0.75rem 0.75rem;
+    }
 }
 
 .page-header {
@@ -1360,10 +1377,25 @@ export default defineComponent({
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-        ::v-deep svg {
+        &.kyc-connected {
+            color: var(--nimiq-purple);
+            box-shadow: inset 0 0 0 1.5px rgba(95, 75, 139, 0.7);
+        }
+
+        ::v-deep .circle-spinner {
             margin-left: 0.75rem;
             height: 1.75rem;
             width: 1.75rem;
+        }
+
+        .grounded-arrow-down-icon {
+            transform: rotate(180deg);
+            margin-right: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .kyc-icon {
+            margin: 0 -0.75rem 0 0.75rem;
         }
     }
 
@@ -1375,6 +1407,16 @@ export default defineComponent({
 }
 
 .limits-tooltip {
+    &.kyc-connected {
+        ::v-deep .trigger::after {
+            background: #5f4b8b;
+        }
+
+        ::v-deep .tooltip-box {
+            background: var(--nimiq-purple-bg);
+        }
+    }
+
     .kyc-prompt {
         margin: 0 -1.25rem -1rem;
     }

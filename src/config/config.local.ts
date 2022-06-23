@@ -27,6 +27,11 @@ export default {
         maxFreeAmount: 999, // Euro
     },
 
+    TEN31Pass: {
+        apiEndpoint: 'https://test.pass.ten31.com',
+        appId: '1a37384f-7d3a-4ac9-a887-ea1bd35dca16',
+    },
+
     moonpay: {
         enabled: true,
         // This is a publishable key

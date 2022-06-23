@@ -9,10 +9,12 @@ import { HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useKycStore } from '../stores/Kyc';
 
 const { activeCurrency } = useAccountStore();
 const { activeAddress } = useAddressStore();
 const { exchangeRates } = useFiatStore();
+const { connectedUser: kycUser } = useKycStore();
 
 export type SwapLimits = {
     current: { usd: number, luna: number, sat: number, eur: number },
@@ -32,16 +34,22 @@ watch(async () => {
     // We are using this statement to trigger a re-evaluation (re-run) of the watcher
     trigger.value; // eslint-disable-line no-unused-expressions
 
-    const uid = useAccountStore().activeAccountInfo.value?.uid;
+    const uid = kycUser.value
+        // If user is KYC-connected, there is no need to query limits by UID,
+        // because the KYC UID limits are included in the asset limit requests.
+        ? undefined
+        : useAccountStore().activeAccountInfo.value?.uid;
     const userLimitsPromise = uid ? getUserLimits(uid) : Promise.resolve(undefined);
 
     const nimAddressLimitsPromise = getLimits(
         SwapAsset.NIM,
         nimAddress.value || 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000',
+        kycUser.value?.id,
     );
     const btcAddressLimitsPromise = getLimits(
         SwapAsset.BTC,
         btcAddress.value || '1111111111111111111114oLvT2', // Burn address
+        kycUser.value?.id,
     );
 
     // Find historic tx values in USD
@@ -235,8 +243,8 @@ watch([activeCurrency, activeAddress], ([currency, address]) => {
     }
 }, { lazy: true });
 
-// Re-run limit calculation when exchange rates change
-watch(exchangeRates, () => {
+// Re-run limit calculation when exchange rates or KYC-connected user change
+watch([exchangeRates, kycUser], () => {
     if (limits.value) recalculate();
 }, { lazy: true, deep: true });
 

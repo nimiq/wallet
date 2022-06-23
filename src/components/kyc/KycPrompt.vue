@@ -1,5 +1,5 @@
 <template>
-    <div class="kyc-prompt nq-purple-bg">
+    <div class="kyc-prompt nq-purple-bg" :class="`layout-${layout}`">
         <div class="flex-row">
             <KycIcon />
             <h3>{{ $t('Get verified for higher limits') }}</h3>
@@ -19,6 +19,12 @@ import { defineComponent } from '@vue/composition-api';
 import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({
+    props: {
+        layout: {
+            type: String,
+            default: 'normal',
+        },
+    },
     components: {
         KycIcon,
     },
@@ -29,7 +35,6 @@ export default defineComponent({
 .kyc-prompt {
     padding: 2rem;
     border-radius: 0.5rem;
-    margin: 0 -1.25rem -1rem;
 }
 
 .flex-row {
@@ -54,6 +59,30 @@ h3 {
     &:hover,
     &:focus {
         background: var(--nimiq-gray);
+    }
+}
+
+.layout-wide {
+    display: grid;
+    color: var(--nimiq-white);
+    padding: 3rem;
+
+    .kyc-icon {
+        font-size: 2.25rem;
+    }
+
+    .explainer {
+        font-size: var(--small-size);
+        opacity: 0.6;
+        margin: 0.5em 0 0;
+    }
+
+    .nq-button-pill.nq-purple {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+        justify-self: end;
+        margin-right: 1rem;
     }
 }
 </style>

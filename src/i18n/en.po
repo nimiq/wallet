@@ -54,7 +54,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:107
 #: src/components/modals/BuyCryptoModal.vue:82
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:60
+#: src/components/swap/SwapModal.vue:64
 msgid "{value} remaining"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:101
 #: src/components/modals/SellCryptoModal.vue:78
-#: src/components/swap/SwapModal.vue:55
+#: src/components/swap/SwapModal.vue:59
 msgid "30-day Limit"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:341
+#: src/components/layouts/Settings.vue:372
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:225
 msgid "Add"
 msgstr ""
 
@@ -163,7 +163,7 @@ msgstr ""
 msgid "Add address"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:194
+#: src/components/layouts/Settings.vue:221
 msgid "Add an existing vesting contract to your wallet."
 msgstr ""
 
@@ -186,7 +186,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:152
+#: src/components/layouts/Settings.vue:179
 msgid "Advanced"
 msgstr ""
 
@@ -264,11 +264,11 @@ msgstr ""
 msgid "Atomic swaps require two BTC transactions."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:184
+#: src/components/layouts/Settings.vue:211
 msgid "Auto"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:177
+#: src/components/layouts/Settings.vue:204
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
@@ -440,7 +440,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:321
+#: src/components/layouts/Settings.vue:352
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -479,7 +479,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:279
 #: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:184
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr ""
 
@@ -487,11 +487,11 @@ msgstr ""
 msgid "Claiming Cashlink"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:210
+#: src/components/layouts/Settings.vue:237
 msgid "Clear"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:231
 msgid "Clear Cache"
 msgstr ""
 
@@ -512,9 +512,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:136
-#: src/components/swap/SwapModal.vue:141
-#: src/components/swap/SwapModal.vue:153
+#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:149
+#: src/components/swap/SwapModal.vue:161
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -528,6 +528,10 @@ msgstr ""
 msgid "Congrats"
 msgstr ""
 
+#: src/components/layouts/Settings.vue:174
+msgid "Connect"
+msgstr ""
+
 #: src/components/kyc/KycOverlay.vue:23
 msgid "Connect {provider}"
 msgstr ""
@@ -536,6 +540,10 @@ msgstr ""
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:159
+msgid "Connect to TEN31 Pass for higher swap limits."
 msgstr ""
 
 #: src/components/NetworkStats.vue:8
@@ -655,9 +663,13 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:250
+#: src/components/layouts/Settings.vue:277
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:166
+msgid "Disconnect"
 msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
@@ -707,7 +719,7 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:158
+#: src/components/layouts/Settings.vue:185
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 
@@ -734,7 +746,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:218
+#: src/components/layouts/Settings.vue:245
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
@@ -817,7 +829,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:327
+#: src/components/layouts/Settings.vue:358
 msgid "File contains no contacts."
 msgstr ""
 
@@ -1008,8 +1020,12 @@ msgstr ""
 msgid "It's safe to close your wallet now"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:171
+#: src/components/layouts/Settings.vue:198
 msgid "Keyguard Mode"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:157
+msgid "KYC Connection"
 msgstr ""
 
 #: src/components/BtcCopiedAddress.vue:9
@@ -1049,6 +1065,10 @@ msgstr ""
 msgid "Limit of copied addresses reached."
 msgstr ""
 
+#: src/components/layouts/Settings.vue:152
+msgid "Limits"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:171
 msgid "Link not available in this browser"
 msgstr ""
@@ -1064,7 +1084,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:105
 #: src/components/modals/BuyCryptoModal.vue:90
 #: src/components/modals/SellCryptoModal.vue:82
-#: src/components/swap/SwapModal.vue:58
+#: src/components/swap/SwapModal.vue:62
 msgid "loading..."
 msgstr ""
 
@@ -1105,8 +1125,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:73
 #: src/components/modals/SellCryptoModal.vue:68
 #: src/components/modals/SellCryptoModal.vue:73
-#: src/components/swap/SwapModal.vue:46
-#: src/components/swap/SwapModal.vue:50
+#: src/components/swap/SwapModal.vue:54
 msgid "Max."
 msgstr ""
 
@@ -1229,11 +1248,11 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:192
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:350
+#: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1241,7 +1260,7 @@ msgstr ""
 msgid "Old and new Accounts"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:164
+#: src/components/layouts/Settings.vue:191
 msgid "On"
 msgstr ""
 
@@ -1257,7 +1276,7 @@ msgstr ""
 msgid "Or buy BTC directly in the wallet."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:173
+#: src/components/layouts/Settings.vue:200
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
@@ -1308,11 +1327,11 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:205
 msgid "popups"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:212
 msgid "Popups"
 msgstr ""
 
@@ -1379,19 +1398,19 @@ msgstr ""
 msgid "Recovery Words"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:201
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:205
 msgid "redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:186
+#: src/components/layouts/Settings.vue:213
 msgid "Redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:227
+#: src/components/layouts/Settings.vue:254
 msgid "Reference currency"
 msgstr ""
 
@@ -1408,7 +1427,7 @@ msgstr ""
 msgid "Regular transactions are too slow and will not process. Your bank might use another name, like ‘real-time transactions’ i.a."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:248
+#: src/components/layouts/Settings.vue:275
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr ""
@@ -1433,7 +1452,7 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:206
+#: src/components/layouts/Settings.vue:233
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
@@ -1736,7 +1755,7 @@ msgstr ""
 msgid "Swap to {address}"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:156
+#: src/components/layouts/Settings.vue:183
 msgid "Swiping Gestures"
 msgstr ""
 
@@ -1923,7 +1942,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:216
+#: src/components/layouts/Settings.vue:243
 msgid "Trials"
 msgstr ""
 
@@ -1981,7 +2000,7 @@ msgstr ""
 msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/layouts/Settings.vue:219
 msgid "Vesting Contract"
 msgstr ""
 
@@ -2009,7 +2028,7 @@ msgstr ""
 msgid "What is your bank called?"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:163
+#: src/components/layouts/Settings.vue:190
 msgid "When ready"
 msgstr ""
 

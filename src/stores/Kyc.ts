@@ -6,6 +6,7 @@ export enum KycProvider {
 
 export type TEN31PassUser = {
     provider: KycProvider.TEN31PASS,
+    appGrant: string,
     id: string,
     name: string,
 }

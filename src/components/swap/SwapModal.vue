@@ -249,6 +249,7 @@ import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
+import { init as initTEN31Pass } from '../../lib/TEN31Pass';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -269,6 +270,8 @@ export default defineComponent({
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
+
+        initTEN31Pass(Config.TEN31Pass.apiEndpoint, Config.TEN31Pass.appId);
 
         onMounted(() => {
             if (!swap.value) {

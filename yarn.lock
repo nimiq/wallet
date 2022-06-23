@@ -1441,6 +1441,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
   integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
 
+"@nimiq/fastspot-api@nimiq/fastspot-api#build/kyc":
+  version "1.6.1"
+  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/6855ba23beeaea5033d7fcfe7a3f7827a29a7f69"
+
 "@nimiq/hub-api@^1.5.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.5.1.tgz#81000be5d17fc3c668f1cf2a1902bc07ced2d184"

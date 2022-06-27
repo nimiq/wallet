@@ -277,7 +277,10 @@ export class AlbatrossRpcClient {
     }
 
     private async getRemote(): Promise<any> {
-        return this.remote || (this.remote = new Promise((resolve) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return this.remote || (this.remote = new Promise(async (resolve) => {
+            await new Promise((res) => { window.setTimeout(res, 2000); });
+
             const ws = new WebSocket(this.url.replace('http', 'ws'));
             ws.addEventListener('close', () => {
                 for (const listener of Object.values(this.consensusSubscriptions)) {
@@ -285,9 +288,9 @@ export class AlbatrossRpcClient {
                 }
             });
             createRemote(ws).then((remote: any) => {
-                const proxy = new Proxy(
-                    remote,
-                    wsProxyHandler,
+                    const proxy = new Proxy(
+                        remote,
+                        wsProxyHandler,
                     );
                     useNetworkStore().state.peerCount = 1;
                     resolve(proxy);

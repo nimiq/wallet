@@ -1,11 +1,11 @@
 <template>
     <div class="validator-reward-bubble"
         :class="{
-            'validator-warning': reward < 2.5,
+            'validator-warning': (reward * 100) < 2.5,
             'dry': dry,
         }"
     >
-        {{ reward.toFixed(1) }}% {{ $t("p.a.") }}
+        {{ (reward * 100).toFixed(1) }}% {{ $t("p.a.") }}
     </div>
 </template>
 
@@ -30,7 +30,7 @@ export default defineComponent({
     padding: 0 .875rem;
 
     --border-color: var(--nimiq-green);
-    box-shadow: inset 0 0 0 1.5px var(--border-color);
+    box-shadow: 0 0 0 1.5px var(--border-color);
     border-radius: 5rem;
     white-space: nowrap;
     color: var(--nimiq-green);

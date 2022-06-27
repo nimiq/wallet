@@ -18,8 +18,8 @@
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
                     <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
-                    <img v-if="'trust' in validator" class="dot" src="/img/staking/dot.svg" alt="" />
-                    <div class="validator-payout">{{ payoutText }}</div>
+                    <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
+                    <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
                 </div>
             </div>
             <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
@@ -45,8 +45,10 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const payoutText = computed(() => 'payout' in props.validator
-            ? getPayoutText(props.validator.payout)
+        const payoutText = computed(() => 'label' in props.validator
+            ? props.validator.payoutIntervalMinutes
+                ? getPayoutText(props.validator.payoutIntervalMinutes)
+                : ''
             : context.root.$t('Unregistered validator'));
 
         return {

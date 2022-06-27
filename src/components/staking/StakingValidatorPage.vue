@@ -66,7 +66,8 @@ export default defineComponent({
                 case FilterState.PAYOUT:
                     return validatorsList.value.slice()
                         .sort((a, b) => {
-                            const cmp = ('payout' in b ? b.payout : 0) - ('payout' in a ? a.payout : 0);
+                            const cmp = ('payoutIntervalMinutes' in a ? a.payoutIntervalMinutes || Infinity : Infinity)
+                                - ('payoutIntervalMinutes' in b ? b.payoutIntervalMinutes || Infinity : Infinity);
                             if (cmp) return cmp;
                             return a.address < b.address ? -1 : 1;
                         });

@@ -86,8 +86,8 @@
                         </div>
                         <div class="validator-bottom flex-row">
                             <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
-                            <img v-if="'trust' in validator" class="dot" src="/img/staking/dot.svg" alt="">
-                            <div class="validator-payout">{{ payoutText }}</div>
+                            <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
+                            <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
                         </div>
                     </div>
                     <button class="nq-button-s switch-validator" @click="$emit('switch-validator')">
@@ -145,8 +145,10 @@ export default defineComponent({
             : 0,
         );
 
-        const payoutText = computed(() => validator.value && 'payout' in validator.value
-            ? getPayoutText(validator.value.payout)
+        const payoutText = computed(() => validator.value && 'label' in validator.value
+            ? validator.value.payoutIntervalMinutes
+                ? getPayoutText(validator.value.payoutIntervalMinutes)
+                : ''
             : context.root.$t('Unregistered validator'));
 
         async function unstakeAll() {
@@ -308,7 +310,7 @@ export default defineComponent({
             }
 
             .validator-reward-bubble {
-                margin-left: 0.75rem;
+                margin-left: 2rem;
             }
         }
 

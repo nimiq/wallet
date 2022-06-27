@@ -83,7 +83,7 @@ export default defineComponent({
                         // const peerAddressInfos = await client.network.getAddresses();
                         // const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
                         const newKnownAddresses = [{
-                            peerAddress: context.root.$config.networkEndpoint,
+                            peerAddress: new URL(context.root.$config.networkEndpoint).origin,
                             peerId: '',
                             services: [],
                             netAddress: null,

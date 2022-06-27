@@ -5,7 +5,7 @@ import { ENV_MAIN } from './Constants';
 export function explorerTxLink(asset: SwapAsset, hash: string) {
     switch (asset) {
         case SwapAsset.NIM:
-            return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
+            return `https://${Config.environment === ENV_MAIN ? '' : 'albatross.'}nimiq.watch/#${hash}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
         default: throw new Error('Invalid asset');
@@ -15,7 +15,7 @@ export function explorerTxLink(asset: SwapAsset, hash: string) {
 export function explorerAddrLink(asset: SwapAsset, address: string) {
     switch (asset) {
         case SwapAsset.NIM:
-            return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/`
+            return `https://${Config.environment === ENV_MAIN ? '' : 'albatross.'}nimiq.watch/`
                 + `#${address}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`

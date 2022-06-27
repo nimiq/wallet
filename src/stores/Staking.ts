@@ -22,14 +22,17 @@ export type RawValidator = {
 export type RegisteredValidator = {
     address: string,
     label: string,
-    icon: string,
+    icon?: string,
+    payoutIntervalMinutes?: number,
+    fee: number,
+    // description: string,
+    // link?: string,
+    // uptime: number, // Percentage
+    // monthsOld: number,
+
+    // Calculated fields
     trust: number,
-    payout: number,
     reward: number,
-    description: string,
-    link: string | null,
-    uptime: number, // Percentage
-    monthsOld: number,
     dominance: number, // Percentage
 }
 

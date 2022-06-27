@@ -1,7 +1,7 @@
 <template>
     <Tooltip class="validator-label-tip"
         preferredPosition="bottom right"
-        :styles="{width: 'description' in validator ? '40rem' : '25rem', 'text-align': 'left'}"
+        :styles="{width: 'description' in validator ? '40rem' : '55.25rem', 'text-align': 'left'}"
     >
         <div slot="trigger" class="validator-label-trigger flex-row">
             <img v-if="'icon' in validator" :src="`/img/staking/providers/${validator.icon}`" :alt="validator.label" />
@@ -23,7 +23,7 @@
                 {{ $t('{poolName} Website', { poolName: validator.label }) }}
             </BlueLink>
         </template>
-        <p v-else>{{ $t('Unregistered validator') }}</p>
+        <p v-else>{{ validator.address }}</p>
     </Tooltip>
 </template>
 

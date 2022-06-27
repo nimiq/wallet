@@ -1,21 +1,21 @@
 <template>
     <div class="stake-validator-filter">
-        <div class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH">
+        <div class="validator-filter-wrapper flex-row" v-if="state !== FilterState.SEARCH">
             <button class="validator-switch" :class="{ selected: state === FilterState.TRUST }"
                 @click="state = FilterState.TRUST">
                 {{ $t('TrustScore') }}
             </button>
-            <button class="validator-switch" :class="{ selected: state === FilterState.PAYOUT }"
-                @click="state = FilterState.PAYOUT">
-                {{ $t('Payout Time') }}
-            </button>
+                <!-- <button class="validator-switch" :class="{ selected: state === FilterState.PAYOUT }"
+                    @click="state = FilterState.PAYOUT">
+                    {{ $t('Payout Time') }}
+                </button> -->
             <button class="validator-switch" :class="{ selected: state === FilterState.REWARD }"
                 @click="state = FilterState.REWARD">
                 {{ $t('Reward') }}
             </button>
-            <button class="validator-search-icon" @click="enableSearch">
+            <!-- <button class="validator-search-icon" @click="enableSearch">
                 <FatSearchIcon />
-            </button>
+            </button> -->
         </div>
         <div class="validator-filter-search-wrapper" v-else>
             <span class="validator-search-icon">
@@ -64,7 +64,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .stake-validator-filter {
-    width: 38rem;
+    // width: 38rem;
+    width: fit-content;
     height: 3.75rem;
     margin: auto;
     margin-bottom: 1.5rem;
@@ -74,14 +75,15 @@ export default defineComponent({
         background-color: var(--text-6);
         height: 3.75rem;
         border-radius: 2rem;
-        padding: 0;
-        padding-left: .25rem;
+        padding: 0 0.25rem;
         white-space: nowrap;
         overflow: hidden;
+        align-items: center;
 
         .validator-switch {
-            font-family: Muli, Helvetica, serif;
-            padding: .75rem 1.25rem;
+            font-family: inherit;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             height: 3.25rem;
 
             border: 0;
@@ -116,7 +118,6 @@ export default defineComponent({
                 box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07),
                             0px 1.875px 3.75px rgba(0, 0, 0, 0.05),
                             0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
-                border-radius: 22rem;
             }
         }
 

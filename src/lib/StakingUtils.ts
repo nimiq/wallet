@@ -16,11 +16,11 @@ export enum FilterState {
 
 export function getPayoutText(payout: number) {
     const periods = {
-        year: (((3600 * 1000) * 24) * 30) * 12,
-        month: ((3600 * 1000) * 24) * 30,
-        week: ((3600 * 1000) * 24) * 7,
-        day: (3600 * 1000) * 24,
-        h: 3600 * 1000,
+        year: 60 * 24 * 30 * 12,
+        month: 60 * 24 * 30,
+        week: 60 * 24 * 7,
+        day: 60 * 24,
+        h: 60,
     };
     let index = 0;
     let value = 0;

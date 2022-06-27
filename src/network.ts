@@ -7,11 +7,13 @@ import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
-import { RawValidator, useStakingStore } from './stores/Staking';
+import { useStakingStore, Validator } from './stores/Staking';
 // import { loadNimiqJS } from './lib/NimiqJSLoader';
 // import { ENV_MAIN } from './lib/Constants';
 import { AlbatrossRpcClient, Transaction } from './albatross';
 import { STAKING_CONTRACT_ADDRESS } from './lib/Constants';
+import { validatorData } from './lib/Validators';
+import { calculateReward } from './lib/AlbatrossMath';
 
 let isLaunched = false;
 let clientPromise: Promise<AlbatrossRpcClient>;
@@ -285,7 +287,7 @@ export async function launchNetwork() {
         const totalStake = Object.values(stakes)
             .reduce((sum, stake) => sum + stake, 0);
 
-        const validators: RawValidator[] = Object.entries(stakes).map(([address, balance]) => {
+        const validators: Validator[] = Object.entries(stakes).map(([address, balance]) => {
             const dominance = balance / totalStake;
 
             // This is just an approximation of a trust score
@@ -293,11 +295,24 @@ export async function launchNetwork() {
             const trustPenalty = Math.min((dominance * 10) ** 2 / 10, 1);
             const trust = (1 - trustPenalty) * 5;
 
-            return {
+            let validator: Validator = {
                 address,
                 trust,
                 dominance,
             };
+
+            const data = validatorData[address];
+            if (data) {
+                const reward = calculateReward(data.fee, totalStake);
+
+                validator = {
+                    ...validator,
+                    ...data,
+                    reward,
+                };
+            }
+
+            return validator;
         });
 
         stakingStore.setValidators(validators);

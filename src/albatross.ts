@@ -110,6 +110,10 @@ export class AlbatrossRpcClient {
         [address: string]: TransactionListener[],
     } = {};
 
+    private consensusSubscriptions: {
+        [handle: number]: ConsensusChangedListener,
+    } = {};
+
     constructor(url: string) {
         this.url = url;
 
@@ -157,11 +161,16 @@ export class AlbatrossRpcClient {
         await this.getRemote();
     }
 
-    public addConsensusChangedListener(callback: ConsensusChangedListener) {
-        // TODO: Maybe detect websocket interruptions
+    public addConsensusChangedListener(listener: ConsensusChangedListener) {
+        let handle: Handle;
+        do {
+            handle = Math.round(Math.random() * 1000);
+        } while (this.consensusSubscriptions[handle]);
+
+        this.consensusSubscriptions[handle] = listener;
 
         this.getRemote().then(() => {
-            callback(ConsensusState.ESTABLISHED);
+            listener(ConsensusState.ESTABLISHED);
         });
     }
 
@@ -239,6 +248,11 @@ export class AlbatrossRpcClient {
     private async getRemote(): Promise<any> {
         return this.remote || (this.remote = new Promise((resolve) => {
             const ws = new WebSocket(this.url.replace('http', 'ws'));
+            ws.addEventListener('close', () => {
+                for (const listener of Object.values(this.consensusSubscriptions)) {
+                    listener(ConsensusState.CONNECTING);
+                }
+            });
             createRemote(ws).then((remote: any) => {
                 const proxy = new Proxy(
                     remote,

@@ -25,7 +25,7 @@ function convertBlock(block: AlbatrossBlock): Block {
     };
 }
 
-export type Transaction = Omit<AlbatrossTransaction, 'sender' | 'data' | 'proof'> & {
+export type Transaction = Omit<AlbatrossTransaction, 'hash' | 'blockNumber' | 'from' | 'to' | 'data' | 'proof'> & {
     transactionHash: string,
     state: TransactionState,
     blockHeight: number,
@@ -81,6 +81,21 @@ function convertTransaction(transaction: AlbatrossTransaction): Transaction {
         data: { raw: transaction.data },
         proof: {
             raw: transaction.proof,
+        },
+        toPlain() {
+            return plain;
+        },
+    };
+}
+
+function transactionFromPlain(plain: ReturnType<Transaction['toPlain']>) {
+    return {
+        ...plain,
+        sender: {
+            toUserFriendlyAddress() { return plain.sender; },
+        },
+        recipient: {
+            toUserFriendlyAddress() { return plain.recipient; },
         },
         toPlain() {
             return plain;
@@ -200,11 +215,27 @@ export class AlbatrossRpcClient {
     public async getTransactionsByAddress(
         address: string,
         _fromHeight?: number,
-        _knownTxs?: Transaction[] | ReturnType<Transaction['toPlain']>[],
+        knownTxs?: ReturnType<Transaction['toPlain']>[],
         max?: number,
     ) {
-        return this.rpc<AlbatrossTransaction[]>('getTransactionsByAddress', [address, max || null])
-            .then((txs) => txs.map(convertTransaction));
+        const rawTxs = await this.rpc<AlbatrossTransaction[]>('getTransactionsByAddress', [address, max || null]);
+        const transactions = rawTxs.map(convertTransaction);
+
+        const onlineHashes = transactions.map((tx) => tx.transactionHash);
+
+        if (knownTxs) {
+            // Mark outdated transactions as INVALIDATED
+            for (const knownTx of knownTxs) {
+                if (onlineHashes.includes(knownTx.transactionHash)) continue;
+
+                transactions.push(transactionFromPlain({
+                    ...knownTx,
+                    state: TransactionState.INVALIDATED,
+                }));
+            }
+        }
+
+        return transactions;
     }
 
     public async sendTransaction(tx: string | Transaction) {
@@ -257,10 +288,10 @@ export class AlbatrossRpcClient {
                 const proxy = new Proxy(
                     remote,
                     wsProxyHandler,
-                );
-                useNetworkStore().state.peerCount = 1;
-                resolve(proxy);
-            });
+                    );
+                    useNetworkStore().state.peerCount = 1;
+                    resolve(proxy);
+                });
         }));
     }
 

@@ -288,13 +288,14 @@ export class AlbatrossRpcClient {
                 }
             });
             createRemote(ws).then((remote: any) => {
-                    const proxy = new Proxy(
-                        remote,
-                        wsProxyHandler,
-                    );
-                    useNetworkStore().state.peerCount = 1;
-                    resolve(proxy);
-                });
+                const proxy = new Proxy(
+                    remote,
+                    wsProxyHandler,
+                );
+                this.rpc<number>('getPeerCount')
+                    .then((peerCount) => useNetworkStore().state.peerCount = peerCount);
+                resolve(proxy);
+            });
         }));
     }
 

@@ -24,7 +24,7 @@ msgstr ""
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:103
+#: src/components/layouts/AddressOverview.vue:108
 #: src/components/layouts/AddressOverview.vue:15
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
@@ -46,14 +46,6 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:122
-msgid "{hi} {lo}"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:114
-msgid "{number} {magnitude}"
-msgstr ""
-
 #: src/lib/StakingUtils.ts:139
 msgid "{number} times"
 msgstr ""
@@ -67,7 +59,7 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:55
+#: src/components/staking/StakingAlreadyPage.vue:60
 msgid "{percentage}% of address's balance"
 msgstr ""
 
@@ -183,7 +175,7 @@ msgstr ""
 msgid "Add account"
 msgstr ""
 
-#: src/components/AddressList.vue:18
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr ""
 
@@ -214,7 +206,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:58
+#: src/components/staking/StakingAlreadyPage.vue:63
 msgid "Adjust Stake"
 msgstr ""
 
@@ -244,7 +236,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:152
+#: src/components/layouts/AddressOverview.vue:163
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -318,8 +310,8 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:256
 #: src/components/modals/BtcTransactionModal.vue:494
-#: src/components/modals/TransactionModal.vue:532
-#: src/components/TransactionListItem.vue:236
+#: src/components/modals/TransactionModal.vue:536
+#: src/components/TransactionListItem.vue:240
 msgid "Bank Account"
 msgstr ""
 
@@ -338,13 +330,13 @@ msgstr ""
 
 #: src/components/BalanceDistribution.vue:89
 #: src/components/layouts/AccountOverview.vue:66
-#: src/components/layouts/AddressOverview.vue:68
+#: src/components/layouts/AddressOverview.vue:75
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
 #: src/components/modals/BtcTransactionModal.vue:135
-#: src/components/modals/TransactionModal.vue:528
-#: src/components/TransactionListItem.vue:232
+#: src/components/modals/TransactionModal.vue:532
+#: src/components/TransactionListItem.vue:236
 msgid "Bitcoin"
 msgstr ""
 
@@ -419,10 +411,6 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:27
-msgid "Buy NIM & BTC with OASIS!"
-msgstr ""
-
 #: src/components/modals/BuyOptionsModal.vue:161
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
@@ -463,8 +451,8 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:484
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
-#: src/components/modals/TransactionModal.vue:523
-#: src/components/TransactionListItem.vue:227
+#: src/components/modals/TransactionModal.vue:527
+#: src/components/TransactionListItem.vue:231
 msgid "Cancelled Swap"
 msgstr ""
 
@@ -472,9 +460,9 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:541
+#: src/components/modals/TransactionModal.vue:545
 #: src/components/TransactionList.vue:62
-#: src/components/TransactionListItem.vue:245
+#: src/components/TransactionListItem.vue:249
 msgid "Cashlink"
 msgstr ""
 
@@ -488,10 +476,6 @@ msgstr ""
 
 #: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:70
-msgid "Change validator"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:50
@@ -515,6 +499,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:262
 #: src/components/modals/SellCryptoModal.vue:243
 #: src/components/modals/SendModal.vue:197
+#: src/components/staking/SelectAccountOverlay.vue:4
 #: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
 msgstr ""
@@ -539,7 +524,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:154
+#: src/components/layouts/AddressOverview.vue:165
 #: src/components/swap/SwapAnimation.vue:90
 msgid "Close"
 msgstr ""
@@ -559,7 +544,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:55
+#: src/components/staking/StakingGraphPage.vue:60
 msgid "Confirm stake"
 msgstr ""
 
@@ -726,11 +711,8 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/staking/StakingSummaryMobile.vue:5
-msgid "Earn ~304 NIM a month by staking your NIM"
-msgstr ""
-
 #: src/components/staking/StakingButton.vue:21
+#: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr ""
 
@@ -832,23 +814,23 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:141
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:88
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:95
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -944,6 +926,10 @@ msgstr ""
 msgid "Help secure the network by locking up NIM and get a percentage as a reward."
 msgstr ""
 
+#: src/components/AnnouncementBox.vue:27
+msgid "Hi there! You are seeing a very early preview of the Wallet for the Albatross Community Devnet. Things are missing and things will change until Albatross launch!"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:200
 #: src/components/modals/BtcTransactionModal.vue:226
 #: src/components/modals/TransactionModal.vue:196
@@ -953,21 +939,21 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:206
 #: src/components/modals/BtcTransactionModal.vue:448
-#: src/components/modals/TransactionModal.vue:471
-#: src/components/TransactionListItem.vue:184
+#: src/components/modals/TransactionModal.vue:472
+#: src/components/TransactionListItem.vue:185
 #: src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:206
 #: src/components/modals/BtcTransactionModal.vue:448
-#: src/components/modals/TransactionModal.vue:482
-#: src/components/TransactionListItem.vue:195
+#: src/components/modals/TransactionModal.vue:483
+#: src/components/TransactionListItem.vue:196
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:475
-#: src/components/TransactionListItem.vue:188
+#: src/components/modals/TransactionModal.vue:476
+#: src/components/TransactionListItem.vue:189
 msgid "HTLC Settlement"
 msgstr ""
 
@@ -1084,7 +1070,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:139
+#: src/components/layouts/AddressOverview.vue:150
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1310,10 +1296,6 @@ msgstr ""
 msgid "once"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:96
-msgid "one"
-msgstr ""
-
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
 msgstr ""
@@ -1330,12 +1312,9 @@ msgstr ""
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
+#: src/components/staking/StakingPreview.vue:14
 #: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
 msgid "p.a."
-msgstr ""
-
-#: src/components/staking/ValidatorFilter.vue:10
-msgid "Payout Time"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:41
@@ -1413,7 +1392,7 @@ msgstr ""
 msgid "Purpose"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:121
+#: src/components/layouts/AddressOverview.vue:129
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -1495,13 +1474,13 @@ msgid "Release Notes"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:30
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:61
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:142
-#: src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:146
+#: src/components/TestnetFaucet.vue:152
 msgid "Request failed"
 msgstr ""
 
@@ -1509,8 +1488,8 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:36
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:42
+#: src/components/layouts/AddressOverview.vue:67
 msgid "Rescan"
 msgstr ""
 
@@ -1597,7 +1576,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:124
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -1651,7 +1630,7 @@ msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:191
-#: src/components/TransactionListItem.vue:167
+#: src/components/TransactionListItem.vue:168
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
@@ -1744,7 +1723,7 @@ msgstr ""
 msgid "Show Recovery Words"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:140
+#: src/components/layouts/AddressOverview.vue:151
 msgid "Signup"
 msgstr ""
 
@@ -1789,19 +1768,19 @@ msgstr ""
 msgid "Stake now"
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:47
-#: src/components/staking/StakingPreview.vue:10
+#: src/components/staking/StakingAlreadyPage.vue:52
 msgid "Staked"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:36
 #: src/components/LegacyAccountNotice.vue:28
 #: src/components/staking/StakingAlreadyPage.vue:11
 msgid "Staking"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:116
-#: src/components/staking/StakingGraphPage.vue:128
-#: src/components/staking/StakingValidatorPage.vue:93
+#: src/components/staking/StakingGraphPage.vue:121
+#: src/components/staking/StakingGraphPage.vue:133
+#: src/components/staking/StakingValidatorPage.vue:106
 msgid "Staking Contract"
 msgstr ""
 
@@ -1811,6 +1790,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:449
 msgid "standard"
+msgstr ""
+
+#: src/components/AnnouncementBox.vue:29
+msgid "Start exploring"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:57
@@ -1825,9 +1808,9 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:252
 #: src/components/modals/BtcTransactionModal.vue:490
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:519
+#: src/components/modals/TransactionModal.vue:523
 #: src/components/modals/TransactionModal.vue:7
-#: src/components/TransactionListItem.vue:223
+#: src/components/TransactionListItem.vue:227
 msgid "Swap"
 msgstr ""
 
@@ -1865,7 +1848,11 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:89
+#: src/lib/StakingUtils.ts:70
+msgid "Switch validator"
+msgstr ""
+
+#: src/components/staking/StakingAlreadyPage.vue:94
 msgid "Switch Validator"
 msgstr ""
 
@@ -1932,7 +1919,7 @@ msgstr ""
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:137
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -1992,7 +1979,7 @@ msgstr ""
 msgid "This rate includes the swap fee."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:132
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2069,10 +2056,6 @@ msgstr ""
 msgid "TrustScore"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:28
-msgid "Try it now"
-msgstr ""
-
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr ""
@@ -2085,8 +2068,8 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:542
-#: src/components/TransactionListItem.vue:246
+#: src/components/modals/TransactionModal.vue:546
+#: src/components/TransactionListItem.vue:250
 msgid "Unclaimed Cashlink"
 msgstr ""
 
@@ -2097,13 +2080,12 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:59
+#: src/components/staking/StakingGraphPage.vue:64
 msgid "Unlock at any time. Your NIM will be available instantly."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:145
-#: src/components/staking/tooltips/LabelTooltip.vue:26
-#: src/components/staking/ValidatorListItem.vue:50
+#: src/components/staking/StakingAlreadyPage.vue:152
+#: src/components/staking/ValidatorListItem.vue:52
 msgid "Unregistered validator"
 msgstr ""
 
@@ -2111,7 +2093,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:59
+#: src/components/staking/StakingAlreadyPage.vue:64
 msgid "Unstake All"
 msgstr ""
 
@@ -2148,7 +2130,7 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:67
+#: src/components/staking/StakingAlreadyPage.vue:72
 msgid "Validator"
 msgstr ""
 
@@ -2184,7 +2166,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:63
+#: src/components/staking/StakingGraphPage.vue:68
 msgid "will be available instantly."
 msgstr ""
 
@@ -2210,14 +2192,14 @@ msgid "You are a part of the Nimiq Blockchain."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:9
-msgid "You are connecting to the Nimiq and Bitcoin Testnets."
+msgid "You are connecting to the Nimiq Albatross Devnet."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:126
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
@@ -2307,7 +2289,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:148
+#: src/components/layouts/AddressOverview.vue:159
 msgid "Your swap was successful!"
 msgstr ""
 
@@ -2318,10 +2300,6 @@ msgstr ""
 #: src/components/BtcTransactionList.vue:65
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:110
-msgid "zero"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:133

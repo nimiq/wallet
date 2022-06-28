@@ -2,7 +2,7 @@
     <div class="staking-summary">
         <StakingButton :asButton="false" :inversePalette="true" />
         <span class="staking-projection-text">
-            {{ $t('Earn ~304 NIM a month by staking your NIM') }}
+            {{ $t('Earn NIM every month by staking your NIM') }}
         </span>
         <button @click="$router.push('/staking')" class="nq-button-s inverse staking-action">
             {{ $t('Stake now') }}

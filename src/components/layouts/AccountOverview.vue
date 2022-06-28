@@ -45,7 +45,7 @@
         <template v-else>
             <AccountBalance />
 
-            <StakingSummaryMobile v-if="isMobile" />
+            <StakingSummaryMobile v-if="isMobile && !accountHasStakes && nimAccountBalance" />
 
             <AddressList
                 :showAddAddressButton="canHaveMultipleAddresses"
@@ -139,6 +139,8 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
+import { useStakingStore } from '../../stores/Staking';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     name: 'account-overview',
@@ -150,6 +152,7 @@ export default defineComponent({
             activeCurrency,
             hasBitcoinAddresses,
         } = useAccountStore();
+        const { accountBalance: nimAccountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -197,6 +200,8 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
+        const { accountHasStakes } = useStakingStore();
+
         return {
             activeAccountInfo,
             AccountType,
@@ -205,6 +210,7 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            nimAccountBalance,
             btcAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
@@ -215,6 +221,7 @@ export default defineComponent({
             btcConsensus,
             updateAvailable,
             isMobile,
+            accountHasStakes,
         };
     },
     components: {

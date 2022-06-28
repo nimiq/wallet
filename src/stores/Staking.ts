@@ -2,8 +2,8 @@ import { createStore } from 'pinia';
 import { useAddressStore } from './Address';
 
 export type StakingState = {
-    validators: {[address: string]: Validator},
-    stakeByAddress: {[address: string]: Stake},
+    validators: Record<string, Validator>,
+    stakeByAddress: Record<string, Stake>,
 }
 
 export type Stake = {
@@ -51,6 +51,11 @@ export const useStakingStore = createStore({
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
             return state.stakeByAddress[activeAddress.value] || null;
+        },
+        stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
+        accountHasStakes: (state) => {
+            const { accountAddresses } = useAddressStore();
+            return accountAddresses.value.some((address) => Boolean(state.stakeByAddress[address]));
         },
         activeValidator: (state, { activeStake }): Validator | null => {
             const stake = activeStake.value as Stake | null;

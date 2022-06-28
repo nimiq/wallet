@@ -44,6 +44,7 @@
                     </div>
                 </button>
             </div>
+
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
@@ -93,9 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="staking flex-row">
-                <StakingPreview v-if="activeCurrency === 'nim'"/>
-            </div>
+
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -112,7 +111,10 @@
                     ) }}
                 </button>
 
-                <StakingButton />
+                <template v-if="activeCurrency === 'nim'">
+                    <StakingPreview v-if="stake" />
+                    <StakingButton v-else />
+                </template>
 
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
@@ -127,6 +129,9 @@
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
             </div>
+
+            <StakingPreview v-if="stake" class="staking-preview-mobile" />
+
             <div class="scroll-mask top"></div>
             <TransactionList
                 v-if="activeCurrency === CryptoCurrency.NIM"
@@ -216,6 +221,7 @@ import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
+import { useStakingStore } from '../../stores/Staking';
 
 export default defineComponent({
     name: 'address-overview',
@@ -224,6 +230,7 @@ export default defineComponent({
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
+        const { activeStake: stake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -319,6 +326,7 @@ export default defineComponent({
             onTransactionListScroll,
             $address,
             addressMasked,
+            stake,
         };
     },
     components: {
@@ -562,14 +570,6 @@ export default defineComponent({
     }
 }
 
-.staking {
-    padding-top: 0;
-    padding-right: calc(var(--padding) + 4rem);
-    padding-bottom: 3rem;
-    padding-left: calc(var(--padding) + 2rem);
-    margin-top: calc(-1 * var(--padding-bottom) / 2);
-}
-
 .actions,
 .actions-mobile {
     justify-content: space-between;
@@ -670,8 +670,12 @@ export default defineComponent({
     }
 }
 
+.staking-preview {
+    margin-left: 1.5rem;
+}
+
 .send {
-    margin-left: 1rem;
+    margin-left: 1.5rem;
 
     .nq-icon {
         transform: rotateZ(-90deg);
@@ -715,7 +719,8 @@ export default defineComponent({
     }
 }
 
-.actions-mobile {
+.actions-mobile,
+.staking-preview-mobile {
     display: none;
 }
 
@@ -858,6 +863,13 @@ export default defineComponent({
         display: none;
     }
 
+    .staking-preview-mobile {
+        display: flex;
+        margin: 1rem 2rem -0.5rem 2rem;
+        position: relative;
+        z-index: 1000;
+    }
+
     .actions-mobile {
         display: flex;
         padding: 0;
@@ -924,11 +936,6 @@ export default defineComponent({
         .fiat-amount {
             font-size: var(--small-size);
         }
-    }
-
-    .staking {
-        padding: 0 2rem;
-        margin-top: 0;
     }
 
     .mobile-action-bar {

@@ -1829,7 +1829,7 @@
 
 "@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc":
   version "1.6.0-albatross.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc#dbaa25f832ef5b3d4952ccc53d56281617d796d2"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc#0cd1328fa335dc2a0af8ea0f45fa597919592cc4"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.5.2"

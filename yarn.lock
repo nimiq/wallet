@@ -1605,6 +1605,9 @@
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.7.2.tgz#90588af97289fce6fbe75fd9af2d045b84548de7"
   integrity sha512-JT4XqhlCIQwlJhwMa1H3g8MS6kgI7IGaYLd4bNsv0XZOMF+mN8OrQdL6ln2uM8ujyGOPYlGJsDGAAhZ5Ou7mSA==
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc":
+  version "1.6.0-albatross.0"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc#0cd1328fa335dc2a0af8ea0f45fa597919592cc4"
   dependencies:
     "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "^1.7.0"

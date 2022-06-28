@@ -45,7 +45,7 @@
         <template v-else>
             <AccountBalance />
 
-            <StakingSummaryMobile v-if="isMobile" />
+            <StakingSummaryMobile v-if="isMobile && !accountHasStakes && nimAccountBalance" />
 
             <div class=account-grid>
                 <div class="nimiq-account" ref="nimiqAccount$"
@@ -365,6 +365,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useStakingStore } from '../../stores/Staking';
 
 export default defineComponent({
     name: 'account-overview',
@@ -562,6 +563,8 @@ export default defineComponent({
             }, 100);
         }
 
+        const { accountHasStakes } = useStakingStore();
+
         return {
             stablecoin,
             activeAccountInfo,
@@ -599,6 +602,7 @@ export default defineComponent({
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
+            accountHasStakes,
         };
     },
     components: {

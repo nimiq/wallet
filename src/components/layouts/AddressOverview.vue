@@ -67,6 +67,7 @@
                     </button>
                 </div>
             </div>
+
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
@@ -162,9 +163,7 @@
                     </div>
                 </div>
             </div>
-            <div class="staking flex-row">
-                <StakingPreview v-if="activeCurrency === 'nim'"/>
-            </div>
+
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
@@ -197,7 +196,7 @@
                     </button>
                 </div>
             </div>
-
+            <StakingPreview v-if="stake" class="staking-preview-mobile" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -284,7 +283,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -345,6 +344,7 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useNetworkStore } from '@/stores/Network';
 
 export default defineComponent({
     name: 'address-overview',
@@ -359,6 +359,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
+        const { activeStake: stake } = useStakingStore();
 
         const { activeStake, accountStake } = useStakingStore();
 
@@ -369,6 +370,8 @@ export default defineComponent({
 
         const address$ = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
+
+        const { height } = useNetworkStore();
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
 
@@ -616,6 +619,7 @@ export default defineComponent({
             onTransactionListScroll,
             address$,
             addressMasked,
+            stake,
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
@@ -894,14 +898,6 @@ export default defineComponent({
     }
 }
 
-.staking {
-    padding-top: 0;
-    padding-right: calc(var(--padding) + 4rem);
-    padding-bottom: 3rem;
-    padding-left: calc(var(--padding) + 2rem);
-    margin-top: calc(-1 * var(--padding-bottom) / 2);
-}
-
 .actions,
 .actions-mobile {
     position: relative;
@@ -1070,8 +1066,12 @@ export default defineComponent({
     }
 }
 
+.staking-preview {
+    margin-left: 1.5rem;
+}
+
 .send {
-    margin-left: 1rem;
+    margin-left: 1.5rem;
 
     .nq-icon {
         transform: rotateZ(-90deg);
@@ -1115,7 +1115,8 @@ export default defineComponent({
     }
 }
 
-.actions-mobile {
+.actions-mobile,
+.staking-preview-mobile {
     display: none;
 }
 
@@ -1258,6 +1259,13 @@ export default defineComponent({
         display: none;
     }
 
+    .staking-preview-mobile {
+        display: flex;
+        margin: 1rem 2rem -0.5rem 2rem;
+        position: relative;
+        z-index: 1000;
+    }
+
     .actions-mobile {
         display: flex;
         padding: 0;
@@ -1331,11 +1339,6 @@ export default defineComponent({
         .fiat-amount {
             font-size: var(--small-size);
         }
-    }
-
-    .staking {
-        padding: 0 2rem;
-        margin-top: 0;
     }
 
     .native-usdc-notice {

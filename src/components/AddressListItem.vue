@@ -5,7 +5,9 @@
             <UsdcIcon v-else-if="addressInfo.type === CryptoCurrency.USDC"/>
             <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
             <Identicon v-else :address="addressInfo.address"/>
-            <VestingIcon v-if="addressInfo.type === AddressType.VESTING"/>
+
+            <StakingIcon v-if="stakesByAddress[addressInfo.address]" />
+            <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
         <div v-if="addressInfo.balance !== null" class="balances">
@@ -36,10 +38,12 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import VestingIcon from './icons/VestingIcon.vue';
 import { AddressInfo, AddressType } from '../stores/Address';
+import { useStakingStore } from '../stores/Staking';
 import { CryptoCurrency } from '../lib/Constants';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
+import StakingIcon from './icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     props: {
@@ -61,10 +65,13 @@ export default defineComponent({
             }
         });
 
+        const { stakesByAddress } = useStakingStore();
+
         return {
             AddressType,
             CryptoCurrency,
             currentCurrency,
+            stakesByAddress,
         };
     },
     components: {
@@ -76,6 +83,7 @@ export default defineComponent({
         BitcoinIcon,
         UsdcIcon,
         UsdtIcon,
+        StakingIcon,
         CircleSpinner,
     },
 });
@@ -123,13 +131,24 @@ export default defineComponent({
 
     > svg:not(.bitcoin):not(.usdc):not(.usdt) {
         position: absolute;
-        right: -1rem;
-        bottom: -0.5rem;
-        padding: 0.375rem;
+        right: 0;
+        bottom: -0.75rem;
+        padding: 0.25rem;
         background: white;
         border-radius: 50%;
         box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
         color: rgba(31, 35, 72, 0.7);
+    }
+
+    > svg.staking-icon {
+        font-size: 2.25rem;
+        padding: 0;
+        background: var(--nimiq-green-bg);
+        color: var(--nimiq-white);
+
+        ::v-deep path {
+            stroke-width: 1.25px;
+        }
     }
 }
 

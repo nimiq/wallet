@@ -62,7 +62,7 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:139
+#: src/lib/StakingUtils.ts:102
 msgid "{number} times"
 msgstr ""
 
@@ -920,7 +920,7 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:135
+#: src/lib/StakingUtils.ts:98
 msgid "eight times"
 msgstr ""
 
@@ -1089,7 +1089,7 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:134
+#: src/lib/StakingUtils.ts:97
 msgid "five times"
 msgstr ""
 
@@ -1525,7 +1525,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:135
+#: src/lib/StakingUtils.ts:98
 msgid "nine times"
 msgstr ""
 
@@ -1616,7 +1616,7 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:133
+#: src/lib/StakingUtils.ts:96
 msgid "once"
 msgstr ""
 
@@ -2157,7 +2157,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:134
+#: src/lib/StakingUtils.ts:97
 msgid "seven times"
 msgstr ""
 
@@ -2556,7 +2556,7 @@ msgstr ""
 msgid "This value is based on the historic exchange rate of the USD and your reference currency."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:133
+#: src/lib/StakingUtils.ts:96
 msgid "thrice"
 msgstr ""
 
@@ -2930,6 +2930,6 @@ msgstr ""
 msgid "Your transactions will appear here"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:133
+#: src/lib/StakingUtils.ts:96
 msgid "zero times"
 msgstr ""

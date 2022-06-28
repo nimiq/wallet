@@ -8,6 +8,7 @@ export default {
     environment: ENV_MAIN,
     nimiqScript: 'https://cdn.nimiq.com/v1.5.8/web.js',
     networkEndpoint: '',
+    faucetEndpoint: '',
     reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes

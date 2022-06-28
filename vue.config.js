@@ -217,7 +217,9 @@ module.exports = {
 
                     const warnings = [];
 
-                    const manifest = originalManifest.map(entry => {
+                    const manifest = originalManifest.filter(entry => {
+                        return entry.url.substring(1) !== '_redirects';
+                    }).map(entry => {
                         const assetName = entry.url.substring(1);
                         const asset = compilation.getAsset(assetName);
 

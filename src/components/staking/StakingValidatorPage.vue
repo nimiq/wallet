@@ -6,7 +6,7 @@
             </template>
             <template #more>
                 <p class="nq-text nq-blue">
-                    {{ $t('Earn rewards by locking NIM in a validator. Locked NIM stay in your wallet.') }}
+                    {{ $t('Earn rewards by locking NIM with a validator. Locked NIM stay under your control.') }}
                 </p>
             </template>
         </PageHeader>

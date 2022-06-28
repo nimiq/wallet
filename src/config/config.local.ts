@@ -9,6 +9,7 @@ export default {
     environment: ENV_DEV,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
+    faucetEndpoint: 'https://faucet.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute

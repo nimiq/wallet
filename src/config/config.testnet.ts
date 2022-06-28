@@ -5,10 +5,11 @@ import { ENV_TEST } from '../lib/Constants';
 // in component templates (where the reactive config is also available as $config), computed props and watchers. Use of
 // the reactive config is not possible in Vue 2 before the composition-api plugin has been registered.
 export default {
-    hubEndpoint: 'https://hub.v2.nimiq-testnet.com',
+    hubEndpoint: process.env.VUE_APP_HUB_URL,
     environment: ENV_TEST,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
-    networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
+    networkEndpoint: process.env.VUE_APP_RPC_URL,
+    faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes

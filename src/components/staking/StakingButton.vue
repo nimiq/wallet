@@ -1,7 +1,7 @@
 <template>
     <div class="staking-button">
         <Tooltip
-            v-if="asButton && visible && activeCurrency === 'nim'"
+            v-if="asButton && visible"
             class="staking-feature-tip"
             :styles="{width: '25rem'}"
             preferredPosition="bottom left"
@@ -35,7 +35,6 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
-import { useAccountStore } from '../../stores/Account';
 import { useStakingStore } from '../../stores/Staking';
 
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
@@ -43,13 +42,11 @@ import HeroIcon from '../icons/Staking/HeroIcon.vue';
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeCurrency } = useAccountStore();
         const { activeStake } = useStakingStore();
         const visible = computed(() => !activeStake.value?.balance);
 
         return {
             visible,
-            activeCurrency,
             activeAddressInfo,
         };
     },

@@ -290,7 +290,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:203
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -621,7 +621,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:205
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr ""
@@ -998,19 +998,19 @@ msgstr ""
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:83
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:88
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:94
+#: src/components/TestnetFaucet.vue:95
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:79
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1590,10 +1590,6 @@ msgstr ""
 msgid "Payments, got it"
 msgstr ""
 
-#: src/components/staking/ValidatorFilter.vue:10
-msgid "Payout Time"
-msgstr ""
-
 #: src/lib/StakingUtils.ts:41
 msgid "pays out {numberOfTimes} a {period}"
 msgstr ""
@@ -1796,8 +1792,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:145
-#: src/components/TestnetFaucet.vue:151
+#: src/components/TestnetFaucet.vue:146
+#: src/components/TestnetFaucet.vue:152
 msgid "Request failed"
 msgstr ""
 
@@ -2095,7 +2091,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Signup"
 msgstr ""
 
@@ -2148,7 +2144,6 @@ msgid "Stake now"
 msgstr ""
 
 #: src/components/staking/StakingAlreadyPage.vue:52
-#: src/components/staking/StakingPreview.vue:9
 msgid "Staked"
 msgstr ""
 
@@ -2347,7 +2342,7 @@ msgstr ""
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:136
+#: src/components/TestnetFaucet.vue:137
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2410,7 +2405,7 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:131
+#: src/components/TestnetFaucet.vue:132
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2537,9 +2532,8 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available instantly."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:150
-#: src/components/staking/tooltips/LabelTooltip.vue:26
-#: src/components/staking/ValidatorListItem.vue:50
+#: src/components/staking/StakingAlreadyPage.vue:152
+#: src/components/staking/ValidatorListItem.vue:52
 msgid "Unregistered validator"
 msgstr ""
 
@@ -2679,7 +2673,7 @@ msgstr ""
 msgid "You can receive from Polygon USDC addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:126
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
@@ -2790,7 +2784,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:194
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Your swap was successful!"
 msgstr ""
 

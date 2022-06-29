@@ -144,62 +144,7 @@ export class AlbatrossRpcClient {
             const { generator } = remote.headSubscribe.listen();
             for await (const params of generator) {
                 if (!params || params.subscription !== id) continue;
-
-                const blockHash = params.result as string;
-                // eslint-disable-next-line no-await-in-loop
-                const block = await remote.getBlockByHash([blockHash, true]).then(convertBlock) as Block;
-                if (!block) continue;
-
-                // Trigger block listeners
-                for (const listener of Object.values(this.blockSubscriptions)) {
-                    listener(block);
-                }
-
-                // Trigger transaction listeners
-                const txSubscribedAddresses = Object.keys(this.transactionSubscriptions);
-                for (const tx of block.transactions || []) {
-                    const plain = tx.toPlain();
-
-                    // Even if the transaction is between two of our own (and thus subscribed) addresses,
-                    // we only need to trigger one tx listener, as the tx is then added for both addresses
-                    // and the handler also updates the balances of both addresses.
-                    const txAddress = txSubscribedAddresses.includes(plain.sender)
-                        ? plain.sender
-                        : txSubscribedAddresses.includes(plain.recipient)
-                            ? plain.recipient
-                            : null;
-
-                    if (txAddress) {
-                        for (const listener of this.transactionSubscriptions[txAddress]) {
-                            listener(tx);
-                        }
-                    }
-
-                    // Detect staking-contract touching txs
-                    if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
-                        const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
-                        const listeners = this.stakingSubscriptions[address];
-                        if (listeners) {
-                            for (const listener of listeners) {
-                                listener(address, tx);
-                            }
-                        }
-                    }
-
-                    // Detect restaking payouts from pools
-                    if (
-                        plain.recipient === STAKING_CONTRACT_ADDRESS
-                        && plain.data.raw.startsWith(StakingTransactionType.STAKE.toString(16).padStart(2, '0'))
-                    ) {
-                        const stakerAddress = unserializeAddress(plain.data.raw.substring(2));
-                        const listeners = this.stakingSubscriptions[stakerAddress];
-                        if (listeners) {
-                            for (const listener of listeners) {
-                                listener(stakerAddress, tx);
-                            }
-                        }
-                    }
-                }
+                this.onHeadChange(params.result as string);
             }
         });
     }
@@ -314,6 +259,63 @@ export class AlbatrossRpcClient {
 
     public async listStakes(): Promise<Stakes> {
         return this.rpc<Stakes>('getActiveValidators');
+    }
+
+    private async onHeadChange(blockHash: string) {
+        const remote = await this.getRemote();
+        const block = await remote.getBlockByHash([blockHash, true]).then(convertBlock) as Block;
+        if (!block) return;
+
+        // Trigger block listeners
+        for (const listener of Object.values(this.blockSubscriptions)) {
+            listener(block);
+        }
+
+        // Trigger transaction listeners
+        const txSubscribedAddresses = Object.keys(this.transactionSubscriptions);
+        for (const tx of block.transactions || []) {
+            const plain = tx.toPlain();
+
+            // Even if the transaction is between two of our own (and thus subscribed) addresses,
+            // we only need to trigger one tx listener, as the tx is then added for both addresses
+            // and the handler also updates the balances of both addresses.
+            const txAddress = txSubscribedAddresses.includes(plain.sender)
+                ? plain.sender
+                : txSubscribedAddresses.includes(plain.recipient)
+                    ? plain.recipient
+                    : null;
+
+            if (txAddress) {
+                for (const listener of this.transactionSubscriptions[txAddress]) {
+                    listener(tx);
+                }
+            }
+
+            // Detect staking-contract touching txs
+            if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
+                const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
+                const listeners = this.stakingSubscriptions[address];
+                if (listeners) {
+                    for (const listener of listeners) {
+                        listener(address, tx);
+                    }
+                }
+            }
+
+            // Detect restaking payouts from pools
+            if (
+                plain.recipient === STAKING_CONTRACT_ADDRESS
+                && plain.data.raw.startsWith(StakingTransactionType.STAKE.toString(16).padStart(2, '0'))
+            ) {
+                const stakerAddress = unserializeAddress(plain.data.raw.substring(2));
+                const listeners = this.stakingSubscriptions[stakerAddress];
+                if (listeners) {
+                    for (const listener of listeners) {
+                        listener(stakerAddress, tx);
+                    }
+                }
+            }
+        }
     }
 
     private async getRemote(): Promise<any> {

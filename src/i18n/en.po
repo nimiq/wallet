@@ -50,7 +50,7 @@ msgstr ""
 msgid "{number} times"
 msgstr ""
 
-#: src/components/staking/graph/StakingGraph.vue:86
+#: src/components/staking/graph/StakingGraph.vue:87
 msgid "{number}M"
 msgstr ""
 
@@ -814,23 +814,23 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:141
+#: src/components/TestnetFaucet.vue:139
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:82
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:86
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:95
+#: src/components/TestnetFaucet.vue:93
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:78
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1474,8 +1474,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:146
-#: src/components/TestnetFaucet.vue:152
+#: src/components/TestnetFaucet.vue:144
+#: src/components/TestnetFaucet.vue:150
 msgid "Request failed"
 msgstr ""
 
@@ -1914,7 +1914,7 @@ msgstr ""
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:135
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -1974,7 +1974,7 @@ msgstr ""
 msgid "This rate includes the swap fee."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:132
+#: src/components/TestnetFaucet.vue:130
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2194,7 +2194,7 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:126
+#: src/components/TestnetFaucet.vue:124
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 

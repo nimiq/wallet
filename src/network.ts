@@ -11,7 +11,6 @@ import { useStakingStore, Validator } from './stores/Staking';
 // import { loadNimiqJS } from './lib/NimiqJSLoader';
 // import { ENV_MAIN } from './lib/Constants';
 import { AlbatrossRpcClient, Transaction } from './albatross';
-import { STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { validatorData } from './lib/Validators';
 import { calculateReward } from './lib/AlbatrossMath';
 
@@ -336,25 +335,24 @@ export async function launchNetwork() {
             }
             updateBalances(addresses);
         }
+    }
 
-        // If the transaction touched the staking contract, update address's staking data
-        if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
-            const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
-            client.getStaker(address).then((staker) => {
-                stakingStore.setStake({
-                    address,
-                    balance: staker.balance,
-                    validator: staker.delegation,
-                });
-            }).catch(() => {
-                // Staker not found
-                stakingStore.removeStake(address);
+    function stakingListener(address: string) {
+        client.getStaker(address).then((staker) => {
+            stakingStore.setStake({
+                address,
+                balance: staker.balance,
+                validator: staker.delegation,
             });
-        }
+        }).catch(() => {
+            // Staker not found
+            stakingStore.removeStake(address);
+        });
     }
 
     function subscribe(addresses: string[]) {
         client.addTransactionListener(transactionListener, addresses);
+        client.addStakingListener(stakingListener, addresses);
         updateBalances(addresses);
         return true;
     }

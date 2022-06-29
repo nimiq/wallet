@@ -11,6 +11,8 @@ import { createRemote } from './lib/gentle_rpc/remote';
 import { wsProxyHandler } from './lib/gentle_rpc/proxy';
 import { TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
+import { StakingTransactionType, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
+import { unserializeAddress } from './lib/Address';
 
 export type Block = Omit<AlbatrossBlock, 'transactions'> & {
     height: number,
@@ -113,6 +115,7 @@ export type Handle = number;
 export type ConsensusChangedListener = (consensusState: ConsensusState) => any;
 export type HeadChangedListener = (hash: Block) => any;
 export type TransactionListener = (transaction: Transaction) => any;
+export type StakingListener = (address: string, transaction: Transaction) => any;
 
 export class AlbatrossRpcClient {
     private url: string;
@@ -123,6 +126,10 @@ export class AlbatrossRpcClient {
 
     private transactionSubscriptions: {
         [address: string]: TransactionListener[],
+    } = {};
+
+    private stakingSubscriptions: {
+        [address: string]: StakingListener[],
     } = {};
 
     private consensusSubscriptions: {
@@ -149,22 +156,47 @@ export class AlbatrossRpcClient {
                 }
 
                 // Trigger transaction listeners
-                const addresses = Object.keys(this.transactionSubscriptions);
+                const txSubscribedAddresses = Object.keys(this.transactionSubscriptions);
                 for (const tx of block.transactions || []) {
                     const plain = tx.toPlain();
 
                     // Even if the transaction is between two of our own (and thus subscribed) addresses,
                     // we only need to trigger one tx listener, as the tx is then added for both addresses
                     // and the handler also updates the balances of both addresses.
-                    const address = addresses.includes(plain.sender)
+                    const txAddress = txSubscribedAddresses.includes(plain.sender)
                         ? plain.sender
-                        : addresses.includes(plain.recipient)
+                        : txSubscribedAddresses.includes(plain.recipient)
                             ? plain.recipient
                             : null;
 
-                    if (address) {
-                        for (const listener of this.transactionSubscriptions[address]) {
+                    if (txAddress) {
+                        for (const listener of this.transactionSubscriptions[txAddress]) {
                             listener(tx);
+                        }
+                    }
+
+                    // Detect staking-contract touching txs
+                    if (plain.sender === STAKING_CONTRACT_ADDRESS || plain.recipient === STAKING_CONTRACT_ADDRESS) {
+                        const address = plain.sender === STAKING_CONTRACT_ADDRESS ? plain.recipient : plain.sender;
+                        const listeners = this.stakingSubscriptions[address];
+                        if (listeners) {
+                            for (const listener of listeners) {
+                                listener(address, tx);
+                            }
+                        }
+                    }
+
+                    // Detect restaking payouts from pools
+                    if (
+                        plain.recipient === STAKING_CONTRACT_ADDRESS
+                        && plain.data.raw.startsWith(StakingTransactionType.STAKE.toString(16).padStart(2, '0'))
+                    ) {
+                        const stakerAddress = unserializeAddress(plain.data.raw.substring(2));
+                        const listeners = this.stakingSubscriptions[stakerAddress];
+                        if (listeners) {
+                            for (const listener of listeners) {
+                                listener(stakerAddress, tx);
+                            }
                         }
                     }
                 }
@@ -209,6 +241,14 @@ export class AlbatrossRpcClient {
             const listeners = this.transactionSubscriptions[address] || [];
             listeners.push(listener);
             this.transactionSubscriptions[address] = listeners;
+        }
+    }
+
+    public addStakingListener(listener: StakingListener, addresses: string[]) {
+        for (const address of addresses) {
+            const listeners = this.stakingSubscriptions[address] || [];
+            listeners.push(listener);
+            this.stakingSubscriptions[address] = listeners;
         }
     }
 

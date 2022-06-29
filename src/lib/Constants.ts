@@ -16,7 +16,7 @@ export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window
     : 'https://wallet.nimiq-testnet.com';
 export const DEVNET_ORIGIN = window.location.hostname === 'localhost'
     ? 'http://localhost:8082'
-    : 'https://wallet.v2.nimiq-testnet.com';
+    : process.env.VUE_APP_HUB_URL!.replace('hub', 'wallet');
 
 // Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
 export const FIAT_CURRENCIES_OFFERED = ([

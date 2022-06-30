@@ -222,4 +222,11 @@ export default defineComponent({
         line-height: 5.5rem;
     }
 }
+
+@media (max-width: 700px) { // Full mobile breakpoint
+    .account-balance-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
 </style>

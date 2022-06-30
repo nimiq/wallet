@@ -641,6 +641,11 @@ export default defineComponent({
     display: none;
 }
 
+.staking-summary-mobile {
+    margin-top: calc(var(--item-margin) * 5);
+    margin-bottom: calc(var(--item-margin) * -1);
+}
+
 .address-list {
     height: auto;
     padding-bottom: .5rem;
@@ -1140,8 +1145,7 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .address-list {
-        margin-top: 0;
-        padding-bottom: 0;
+        margin-top: var(--item-margin);
     }
 
     .account-grid {

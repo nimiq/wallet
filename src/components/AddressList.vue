@@ -1,6 +1,7 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root$">
         <div class="scroll-mask top" v-if="embedded"></div>
+        <AccountStake v-if="accountStake" />
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
@@ -46,6 +47,7 @@ import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmoun
 
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
+import AccountStake from './staking/AccountStake.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
@@ -55,6 +57,7 @@ import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     props: {
@@ -92,6 +95,7 @@ export default defineComponent({
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
+        const { accountStake } = useStakingStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
@@ -235,11 +239,13 @@ export default defineComponent({
             stablecoinInfo,
             selectBtcAddress,
             selectStablecoinAddress,
+            accountStake,
         };
     },
     components: {
         AddressListItem,
         AddIcon,
+        AccountStake,
     },
 });
 </script>
@@ -252,6 +258,10 @@ export default defineComponent({
     .scroll-mask {
         width: calc(100% + 2 * var(--padding-sides));
         margin-left: calc(-1 * var(--padding-sides));
+    }
+
+    .account-stake {
+        margin-bottom: calc(var(--item-margin) / 2 - 0.5rem);
     }
 
     .address-list {
@@ -407,6 +417,10 @@ export default defineComponent({
     }
 
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+        .account-stake {
+            margin-right: 1.75rem;
+        }
+
         .active-box {
             display: none;
         }

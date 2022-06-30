@@ -45,7 +45,7 @@
         <template v-else>
             <AccountBalance />
 
-            <StakingSummaryMobile v-if="isMobile && !accountHasStakes && nimAccountBalance" />
+            <StakingSummaryMobile v-if="isMobile && !accountStake && nimAccountBalance" />
 
             <div class=account-grid>
                 <div class="nimiq-account" ref="nimiqAccount$"
@@ -477,7 +477,7 @@ export default defineComponent({
             }, 100);
         }
 
-        const { accountHasStakes } = useStakingStore();
+        const { accountStake } = useStakingStore();
 
         return {
             activeAccountInfo,
@@ -513,7 +513,7 @@ export default defineComponent({
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
-            accountHasStakes,
+            accountStake,
         };
     },
     components: {

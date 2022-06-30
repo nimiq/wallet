@@ -68,8 +68,6 @@ export const useAddressStore = createStore({
             : null,
         accountBalance: (state, { addressInfos }) =>
             (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + ((!!acc && acc.balance) || 0), 0),
-        accountAddresses: (state, { addressInfos }) =>
-            (addressInfos.value as AddressInfo[]).map((ai) => ai.address),
         transactionsForActiveAddress: (state, { activeAddress }) => {
             if (!activeAddress.value) return [];
             const { state: transactionsState } = useTransactionsStore();

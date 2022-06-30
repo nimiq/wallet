@@ -351,6 +351,11 @@ export default defineComponent({
     display: none;
 }
 
+.staking-summary-mobile {
+    margin-top: calc(var(--item-margin) * 5);
+    margin-bottom: calc(var(--item-margin) * -1);
+}
+
 .address-list {
     margin-top: calc(var(--item-margin) - 2.5rem);
     flex-grow: 1;
@@ -575,7 +580,7 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .address-list {
-        margin-top: 0;
+        margin-top: var(--item-margin);
     }
 
     .bitcoin-account {

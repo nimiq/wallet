@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useAddressStore } from '../../stores/Address';
 import { formatAmount } from '../../lib/StakingUtils';
 
@@ -88,8 +88,8 @@ type Point = {
     y: number,
 } | null
 
-const extractEventPosition = (e: MouseEvent | TouchEvent):Point => {
-    if (e.type === 'touchstart') {
+const extractEventPosition = (e: MouseEvent | TouchEvent):Point | null => {
+    if (e.type === 'touchstart' || e.type === 'touchmove') {
         e = e as TouchEvent;
         if (e.touches.length > 1) return null;
         const t = e.touches[0];
@@ -120,13 +120,13 @@ export default defineComponent({
         const alreadyStakedAmount = ref(props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.stakedAmount);
-        const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value!);
+        const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
         const currentFormattedAmount = computed(() =>
             formatAmount(currentAmount.value, 1e5));
         const availableFormattedAmount = computed(() =>
-            formatAmount(availableAmount.value!, 1e5));
+            formatAmount(availableAmount.value, 1e5));
 
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);
@@ -150,7 +150,7 @@ export default defineComponent({
         let sliderBox:DOMRect;
         let knobBox:DOMRect;
         let amountBox:DOMRect;
-        let pivotPoint:Point = null;
+        let pivotPoint: Point;
         let startSelection = 0;
         let endSelection = 0;
 
@@ -171,40 +171,47 @@ export default defineComponent({
             e.preventDefault();
 
             pivotPoint = extractEventPosition(e);
-            pivotPoint!.x -= $knob.value!.getBoundingClientRect().x;
-            window.addEventListener('mousemove', onMove);
-            window.addEventListener('touchmove', onMove);
-            window.addEventListener('mouseup', atEnd);
-            window.addEventListener('touchend', atEnd);
+            if (!pivotPoint) return;
+            pivotPoint.x -= $knob.value!.getBoundingClientRect().x;
+            if (e.type === 'touchstart') {
+                window.addEventListener('touchmove', onMove);
+                window.addEventListener('touchend', atEndTouch);
+            } else {
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', atEndMouse);
+            }
         };
 
         const updateAmount = (e: MouseEvent | TouchEvent) => {
-            startSelection = ((e!.target! as HTMLInputElement).selectionStart as number);
-            endSelection = (e!.target! as HTMLInputElement).selectionEnd as number;
+            startSelection = ((e.target as HTMLInputElement).selectionStart as number);
+            endSelection = (e.target as HTMLInputElement).selectionEnd as number;
 
-            const value = parseFloat((e!.target! as HTMLInputElement).value.replace(/[^\d.]/g, ''));
+            const value = parseFloat((e.target as HTMLInputElement).value.replace(/[^\d.]/g, ''));
             const amount = Math.max(
                 0,
-                Math.min(availableAmount.value!, (value || 0) * 1e5),
+                Math.min(availableAmount.value, (value || 0) * 1e5),
             );
-            const percent = (100 * amount) / availableAmount.value!;
+            const percent = (100 * amount) / availableAmount.value;
             currentAmount.value = amount;
 
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
             setTimeout(() => {
-                (e!.target! as HTMLInputElement).setSelectionRange(startSelection, endSelection);
+                (e.target as HTMLInputElement).setSelectionRange(startSelection, endSelection);
             }, 0);
             context.emit('amount-staked', currentAmount.value);
             onMove(e, true, true, percent);
         };
 
-        const atEnd = () => {
-            window.removeEventListener('mousemove', onMove);
+        const atEndTouch = () => {
             window.removeEventListener('touchmove', onMove);
-            window.removeEventListener('mouseup', atEnd);
-            window.removeEventListener('touchend', atEnd);
+            window.removeEventListener('touchend', atEndTouch);
+            context.emit('amount-chosen', 0);
+        };
 
+        const atEndMouse = () => {
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mouseup', atEndMouse);
             context.emit('amount-chosen', 0);
         };
 
@@ -237,13 +244,16 @@ export default defineComponent({
         const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false, _percent = NaN) => {
             // if (execute !== true) return;
             const position = extractEventPosition(e);
+            if (!position || !pivotPoint) return;
+
+            position.x += $container.value?.closest('.small-page')?.scrollLeft || 0;
 
             const percent = (!Number.isNaN(_percent)) ? _percent : Math.min(100, Math.max(0,
-                (100 * (position!.x - pivotPoint!.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
+                (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
             const offsetX = getPointAtPercent(percent);
             currentAmount.value = Math.floor(
-                ((percent / 100) * availableAmount.value!) / 1e5,
+                ((percent / 100) * availableAmount.value) / 1e5,
             ) * 1e5;
 
             if (alreadyStaked.value) {
@@ -291,7 +301,7 @@ export default defineComponent({
                     endOffset = getPointAtPercent(Math.min(map[i][1] as number, hi))
                         - getPointAtPercent(startPoint as number);
                 } else {
-                    endOffset = (map[i][2] as Ref<HTMLElement>).value!.getBoundingClientRect().width;
+                    endOffset = (map[i][2] as Ref<HTMLElement>).value.getBoundingClientRect().width;
                 }
 
                 if (startOffset >= endOffset) {
@@ -313,24 +323,33 @@ export default defineComponent({
                     }]],
                 ) as string;
                 (
-                    (map[i][2] as Ref<HTMLElement>).value!.style as { [key: string]: any }
+                    (map[i][2] as Ref<HTMLElement>).value.style as { [key: string]: any }
                 )['background-image'] = `url(${svg})`;
             }
         };
 
-        onMounted(() => {
+        function updateBoundingBoxes() {
             containerBox = $container.value!.getBoundingClientRect();
             sliderBox = $slide.value!.getBoundingClientRect();
             knobBox = $knob.value!.getBoundingClientRect();
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
-            updatePosition(getPointAtPercent(currentPercentage.value!));
+            updatePosition(getPointAtPercent(currentPercentage.value));
             pivotPoint = { x: 0, y: knobBox.y } as Point;
+        }
+
+        onMounted(() => {
+            updateBoundingBoxes();
+            window.addEventListener('resize', updateBoundingBoxes);
 
             if (alreadyStaked.value) {
-                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value!)
+                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
                         + (knobBox.width / 2) - 5}px`;
                 fillBackground(0, alreadyStakedPercentage.value);
             }
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('resize', updateBoundingBoxes);
         });
 
         return {

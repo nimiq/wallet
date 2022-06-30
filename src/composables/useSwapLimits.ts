@@ -48,7 +48,7 @@ watch(async () => {
     await useTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
     await useBtcTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
 
-    const { accountAddresses } = useAddressStore();
+    const { accountNimAddresses } = useAccountStore();
     const { activeAddresses } = useBtcAddressStore();
 
     let newUserLimitEur = Infinity;
@@ -66,7 +66,7 @@ watch(async () => {
         const nimSwaps = Object.values(useTransactionsStore().state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
-                if (!accountAddresses.value.includes(tx.recipient)) return false;
+                if (!accountNimAddresses.value.includes(tx.recipient)) return false;
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
                 // Ignore all swaps that are not from EUR
@@ -120,7 +120,7 @@ watch(async () => {
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].some((address) => accountAddresses.value.includes(address))) return null;
+        if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;
 
         const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap

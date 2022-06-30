@@ -45,7 +45,7 @@
         <template v-else>
             <AccountBalance />
 
-            <StakingSummaryMobile v-if="isMobile && !accountHasStakes && nimAccountBalance" />
+            <StakingSummaryMobile v-if="isMobile && !accountStake && nimAccountBalance" />
 
             <AddressList
                 :showAddAddressButton="canHaveMultipleAddresses"
@@ -200,7 +200,7 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
-        const { accountHasStakes } = useStakingStore();
+        const { accountStake } = useStakingStore();
 
         return {
             activeAccountInfo,
@@ -221,7 +221,7 @@ export default defineComponent({
             btcConsensus,
             updateAvailable,
             isMobile,
-            accountHasStakes,
+            accountStake,
         };
     },
     components: {

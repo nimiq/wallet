@@ -1,4 +1,5 @@
 import { createStore } from 'pinia';
+import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
 
 export type StakingState = {
@@ -53,9 +54,24 @@ export const useStakingStore = createStore({
             return state.stakeByAddress[activeAddress.value] || null;
         },
         stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
-        accountHasStakes: (state) => {
-            const { accountAddresses } = useAddressStore();
-            return accountAddresses.value.some((address) => Boolean(state.stakeByAddress[address]));
+        stakesByAccount: (state): Readonly<Record<string, number>> => {
+            const { accountInfos } = useAccountStore();
+
+            const stakeByAccount: Record<string, number> = {};
+            for (const accountInfo of Object.values(accountInfos.value)) {
+                let sum = 0;
+                for (const address of accountInfo.addresses) {
+                    sum += state.stakeByAddress[address]?.balance ?? 0;
+                }
+                stakeByAccount[accountInfo.id] = sum;
+            }
+
+            return stakeByAccount;
+        },
+        accountStake: (state, { stakesByAccount }) => {
+            const { activeAccountId } = useAccountStore();
+            if (!activeAccountId.value) return 0;
+            return (stakesByAccount.value as Record<string, number>)[activeAccountId.value] ?? 0;
         },
         activeValidator: (state, { activeStake }): Validator | null => {
             const stake = activeStake.value as Stake | null;

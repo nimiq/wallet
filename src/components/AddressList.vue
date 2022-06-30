@@ -1,7 +1,7 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root$">
         <div class="scroll-mask top" v-if="embedded"></div>
-        <AccountStake v-if="accountStake" />
+        <AccountStake v-if="!embedded && accountStake" />
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"

@@ -2424,6 +2424,8 @@ export default defineComponent({
 }
 
 .address-list-overlay {
+    max-height: 100%;
+
     .page-header {
         padding-bottom: 1rem;
     }
@@ -2433,9 +2435,6 @@ export default defineComponent({
         padding: 1rem 0 2rem;
 
         .address-list {
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
             padding: 0 2rem;
         }
     }

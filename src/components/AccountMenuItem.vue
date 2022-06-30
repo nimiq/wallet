@@ -38,6 +38,7 @@ import { useStakingStore } from '../stores/Staking';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
+import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     props: {
@@ -55,6 +56,7 @@ export default defineComponent({
         const { accountInfos } = useAccountStore();
         const { stakeByAccount } = useStakingStore();
         const { state: addressState } = useAddressStore();
+        const { stakesByAccount } = useStakingStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
 
         const accountInfo = computed(() => accountInfos.value[props.id]);
@@ -75,7 +77,7 @@ export default defineComponent({
                 .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
         });
         const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
-            sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0));
+            sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0) + stakesByAccount.value[props.id]);
 
         const btcAddressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return null;

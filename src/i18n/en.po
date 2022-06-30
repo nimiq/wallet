@@ -175,7 +175,7 @@ msgstr ""
 msgid "Add account"
 msgstr ""
 
-#: src/components/AddressList.vue:19
+#: src/components/AddressList.vue:20
 msgid "Add address"
 msgstr ""
 
@@ -1763,6 +1763,7 @@ msgstr ""
 msgid "Stake now"
 msgstr ""
 
+#: src/components/staking/AccountStake.vue:4
 #: src/components/staking/StakingAlreadyPage.vue:52
 msgid "Staked"
 msgstr ""

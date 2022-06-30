@@ -1,5 +1,5 @@
 <template>
-    <div class="select-account-overlay">
+    <div class="select-account-overlay flex-column">
         <PageHeader>
             {{ $t("Choose an Address")}}
         </PageHeader>
@@ -55,8 +55,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    .select-account-overlay {
+        max-height: 100%;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+    }
+
     .page-body {
-        padding: 0.375rem 2rem 1.5rem;
+        overflow-y: auto;
+        padding: 1rem 0 2rem;
+
+        .address-list {
+            padding: 0 2rem;
+        }
     }
 
     // @import '../../scss/mixins.scss';

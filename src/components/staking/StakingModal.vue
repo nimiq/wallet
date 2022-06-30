@@ -48,7 +48,7 @@ export default defineComponent({
         const page = ref(activeValidator.value ? 4 : 1);
 
         const invalidAccount = computed(() => activeAddressInfo.value
-            ? !activeAddressInfo.value.balance
+            ? !activeAddressInfo.value.balance && !activeStake.value?.balance
             : false);
 
         const adjustStake = () => {

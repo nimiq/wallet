@@ -2,13 +2,13 @@
     <button class="staking-preview nq-button-pill green flex-row"
         @click="$router.push('/staking')" @mousedown.prevent>
         <StakingIcon />
-        <Amount :amount="stake && stake.balance || 0"/>
+        <Amount :amount="stake && stake.balance || 0" value-mask />
 
         <div class="flex-grow"></div>
 
         <div class="gain flex-row">
             <template v-if="gain">
-                +<Amount :amount="gain"/>
+                +<Amount :amount="gain" value-mask />
             </template>
             <template v-else-if="validator && 'reward' in validator">
                 {{ (validator.reward * 100).toFixed(1) }}% {{ $t("p.a.") }}
@@ -47,7 +47,8 @@ export default defineComponent({
 .staking-preview {
     align-items: center;
     padding: 0.75rem;
-    font-size: var(--large-button-size);
+    --size: var(--large-button-size);
+    font-size: var(--size);
     line-height: 1;
     height: unset;
     border-radius: 5rem;
@@ -65,7 +66,8 @@ export default defineComponent({
 .gain {
     align-items: center;
     background: var(--nimiq-white);
-    font-size: 1.625rem;
+    --size: 1.625rem;
+    font-size: var(--size);
     color: var(--nimiq-green);
     height: 2.75rem;
     border-radius: 5rem;

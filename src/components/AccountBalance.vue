@@ -37,12 +37,15 @@ import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';
+import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const { accountStake } = useStakingStore();
+
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { config } = useConfig();
 
@@ -53,7 +56,7 @@ export default defineComponent({
             let amount = 0;
 
             const nimFiatAmount = nimExchangeRate.value !== undefined
-                ? (accountBalance.value / 1e5) * nimExchangeRate.value
+                ? ((accountBalance.value + accountStake.value) / 1e5) * nimExchangeRate.value
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

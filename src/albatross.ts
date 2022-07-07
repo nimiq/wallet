@@ -90,7 +90,7 @@ function convertTransaction(transaction: AlbatrossTransaction): Transaction {
     };
 }
 
-function transactionFromPlain(plain: ReturnType<Transaction['toPlain']>) {
+function transactionFromPlain(plain: ReturnType<Transaction['toPlain']>): Transaction {
     return {
         ...plain,
         sender: {
@@ -140,11 +140,20 @@ export class AlbatrossRpcClient {
         this.url = url;
 
         this.getRemote().then(async (remote) => {
-            const id = await remote.headSubscribe([]);
-            const { generator } = remote.headSubscribe.listen();
-            for await (const params of generator) {
-                if (!params || params.subscription !== id) continue;
-                this.onHeadChange(params.result as string);
+            if (process.env.VUE_APP_RPC_VERSION === '2') {
+                const id = await remote.subscribeForHeadBlock([true]);
+                const { generator } = remote.subscribeForHeadBlock.listen();
+                for await (const params of generator) {
+                    if (!params || params.subscription !== id) continue;
+                    this.onHeadChange(params.result as AlbatrossBlock);
+                }
+            } else {
+                const id = await remote.headSubscribe([]);
+                const { generator } = remote.headSubscribe.listen();
+                for await (const params of generator) {
+                    if (!params || params.subscription !== id) continue;
+                    this.onHeadChange(params.result as string);
+                }
             }
         });
     }
@@ -261,10 +270,17 @@ export class AlbatrossRpcClient {
         return this.rpc<Stakes>('getActiveValidators');
     }
 
-    private async onHeadChange(blockHash: string) {
+    private async onHeadChange(blockOrHash: string | AlbatrossBlock) {
         const remote = await this.getRemote();
-        const block = await remote.getBlockByHash([blockHash, true]).then(convertBlock) as Block;
-        if (!block) return;
+
+        let block: Block | undefined;
+
+        if (typeof blockOrHash === 'string') {
+            block = await remote.getBlockByHash([blockOrHash, true]).then(convertBlock) as Block;
+            if (!block) return;
+        } else {
+            block = convertBlock(blockOrHash);
+        }
 
         // Trigger block listeners
         for (const listener of Object.values(this.blockSubscriptions)) {

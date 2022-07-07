@@ -22,6 +22,9 @@ import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { initPWA } from './pwa';
 
+// Side-effects
+import './lib/AddressBook';
+
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';

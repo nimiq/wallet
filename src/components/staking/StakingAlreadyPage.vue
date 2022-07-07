@@ -140,10 +140,7 @@ export default defineComponent({
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
         const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
 
-        const percentage = computed(() => availableBalance.value > 0
-            ? ((stake.value?.balance || 0) / (availableBalance.value + stakedBalance.value)) * 100
-            : 0,
-        );
+        const percentage = computed(() => (stakedBalance.value / (availableBalance.value + stakedBalance.value)) * 100);
 
         const payoutText = computed(() => validator.value && 'label' in validator.value
             ? validator.value.payoutIntervalMinutes

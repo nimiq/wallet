@@ -25,6 +25,9 @@ import { initPwa } from './composables/usePwaInstallPrompt';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
 
+// Side-effects
+import './lib/AddressBook';
+
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';

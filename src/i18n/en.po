@@ -67,10 +67,6 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:102
-msgid "{number} times"
-msgstr ""
-
 #: src/components/staking/graph/StakingGraph.vue:87
 msgid "{number}M"
 msgstr ""
@@ -254,7 +250,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:83
+#: src/lib/StakingUtils.ts:60
 msgid "Add stake"
 msgstr ""
 
@@ -870,10 +866,6 @@ msgstr ""
 msgid "Edit transaction"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:98
-msgid "eight times"
-msgstr ""
-
 #: src/components/layouts/Settings.vue:189
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
@@ -1025,10 +1017,6 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:295
 msgid "Finalizing swap"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:97
-msgid "five times"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:124
@@ -1451,10 +1439,6 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:98
-msgid "nine times"
-msgstr ""
-
 #: src/components/swap/SwapNotification.vue:215
 msgid "No connection to {chain} network."
 msgstr ""
@@ -1540,10 +1524,6 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:96
-msgid "once"
-msgstr ""
-
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
 msgstr ""
@@ -1567,14 +1547,6 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:41
-msgid "pays out {numberOfTimes} a {period}"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:38
-msgid "pays out every {hourCount}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:244
@@ -2003,10 +1975,6 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:97
-msgid "seven times"
-msgstr ""
-
 #: src/components/modals/BtcReceiveModal.vue:9
 msgid "Share a single-use address with the sender."
 msgstr ""
@@ -2118,7 +2086,7 @@ msgstr ""
 msgid "Start exploring"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:57
+#: src/lib/StakingUtils.ts:34
 msgid "Start staking"
 msgstr ""
 
@@ -2210,7 +2178,7 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:70
+#: src/lib/StakingUtils.ts:47
 msgid "Switch validator"
 msgstr ""
 
@@ -2387,10 +2355,6 @@ msgstr ""
 msgid "This value is based on the historic exchange rate of the USD and your reference currency."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:96
-msgid "thrice"
-msgstr ""
-
 #: src/components/modals/HistoryExportModal.vue:15
 msgid "Timeframe"
 msgstr ""
@@ -2445,10 +2409,6 @@ msgstr ""
 msgid "TrustScore"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:96
-msgid "twice"
-msgstr ""
-
 #: src/components/NetworkStats.vue:21
 msgid "Tx time"
 msgstr ""
@@ -2485,12 +2445,12 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available instantly."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:149
-#: src/components/staking/ValidatorListItem.vue:52
+#: src/components/staking/StakingAlreadyPage.vue:147
+#: src/components/staking/ValidatorListItem.vue:50
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:49
+#: src/lib/StakingUtils.ts:26
 msgid "Unstake"
 msgstr ""
 
@@ -2516,7 +2476,7 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: src/components/AddressList.vue:179
+#: src/components/AddressList.vue:183
 #: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:158
 #: src/components/layouts/AddressOverview.vue:84
@@ -2565,6 +2525,10 @@ msgstr ""
 
 #: src/components/SendModalFooter.vue:75
 msgid "Waiting for Nimiq network information"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:18
+msgid "Wallet Payout"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14
@@ -2732,8 +2696,4 @@ msgstr ""
 #: src/components/TransactionList.vue:72
 #: src/components/UsdcTransactionList.vue:55
 msgid "Your transactions will appear here"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:96
-msgid "zero times"
 msgstr ""

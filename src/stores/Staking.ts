@@ -23,7 +23,7 @@ export type RegisteredValidator = {
     address: string,
     label: string,
     icon?: string,
-    payoutIntervalMinutes?: number,
+    payoutType: 'direct' | 'restake',
     fee: number,
     // description: string,
     // link?: string,

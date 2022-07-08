@@ -6,7 +6,6 @@ import { StakingTransactionType, STAKING_CONTRACT_ADDRESS } from './Constants';
 
 export enum FilterState {
     TRUST,
-    PAYOUT,
     REWARD,
     SEARCH,
 }
@@ -14,34 +13,12 @@ export enum FilterState {
 // export const NOW = DateTime.now();
 // export const MONTH = DateTime.fromObject({ months: 1 });
 
-export function getPayoutText(payout: number) {
-    const periods = {
-        year: 60 * 24 * 30 * 12,
-        month: 60 * 24 * 30,
-        week: 60 * 24 * 7,
-        day: 60 * 24,
-        h: 60,
-    };
-    let index = 0;
-    let value = 0;
-    const periodNames = Object.keys(periods);
-
-    for (const [, period] of Object.entries(periods)) {
-        value = payout / period;
-        if (value >= 1) {
-            break;
-        }
-        index += 1;
+export function getPayoutText(payoutType: 'direct' | 'restake') {
+    switch (payoutType) {
+        case 'direct': return i18n.t('Wallet Payout');
+        case 'restake': return i18n.t('Restake Rewards');
+        default: throw new Error('Invalid payout type');
     }
-
-    if (index === periodNames.length - 1) {
-        return i18n.t('pays out every {hourCount}', { hourCount: `${value}${periodNames[index]}` }) as string;
-    }
-
-    return i18n.t('pays out {numberOfTimes} a {period}', {
-        numberOfTimes: numberToLiteralTimes(Math.floor(value)),
-        period: periodNames[index],
-    }) as string;
 }
 
 export function getStakingTransactionMeaning(transaction: Transaction, verbose: boolean): string | null {
@@ -89,17 +66,6 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
         }
         default: throw new Error('Unknown staking data type');
     }
-}
-
-function numberToLiteralTimes(n: number): string {
-    const timesTable = [
-        i18n.t('zero times'), i18n.t('once'), i18n.t('twice'), i18n.t('thrice'), i18n.t('four times'),
-        i18n.t('five times'), i18n.t('six times'), i18n.t('seven times'),
-        i18n.t('eight times'), i18n.t('nine times'),
-    ];
-
-    if (timesTable[n]) return timesTable[n].toString();
-    return i18n.t('{number} times', { number: n }).toString();
 }
 
 // function formatNumber(number: number, fractionDigits = 0): string {

@@ -1736,10 +1736,10 @@
   resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
-"@sisou/albatross-remote@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@sisou/albatross-remote/-/albatross-remote-0.7.2.tgz#af29adef51f35483d404b3d55278114361e49abd"
-  integrity sha512-IeccrzCGtpxjOnPYU5mi7e3+FTSn4f7MAIX1aY2R//sKuCjHIg9M60l3HMnb0pnJGiajTP207VLjHmK/qpqR9g==
+"@sisou/albatross-remote@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@sisou/albatross-remote/-/albatross-remote-0.8.0.tgz#605882bb7d0d7a2eebf07b38878f493a34a6902e"
+  integrity sha512-+K2ISMCSsgyilkIPD/gA2k3i08oe+DxTknr3Av05CU7KWpmP1aVxSgaseOIHs7evpLBK7wQoXMYs5s9Q2KJpZQ==
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"

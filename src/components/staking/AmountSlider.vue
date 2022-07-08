@@ -56,7 +56,6 @@
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useAddressStore } from '../../stores/Address';
-import { formatAmount } from '../../lib/StakingUtils';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
@@ -123,10 +122,8 @@ export default defineComponent({
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
-        const currentFormattedAmount = computed(() =>
-            formatAmount(currentAmount.value, 1e5));
-        const availableFormattedAmount = computed(() =>
-            formatAmount(availableAmount.value, 1e5));
+        const currentFormattedAmount = computed(() => Math.round(currentAmount.value / 1e5).toString());
+        const availableFormattedAmount = computed(() => Math.round(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
             (percent / 100.0) * (sliderBox.width - knobBox.width);
@@ -183,13 +180,15 @@ export default defineComponent({
         };
 
         const updateAmount = (e: MouseEvent | TouchEvent) => {
-            startSelection = ((e.target as HTMLInputElement).selectionStart as number);
-            endSelection = (e.target as HTMLInputElement).selectionEnd as number;
+            const target = e.target as HTMLInputElement;
 
-            const value = parseFloat((e.target as HTMLInputElement).value.replace(/[^\d.]/g, ''));
+            startSelection = target.selectionStart as number;
+            endSelection = target.selectionEnd as number;
+
+            const valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
             const amount = Math.max(
                 0,
-                Math.min(availableAmount.value, (value || 0) * 1e5),
+                Math.min(availableAmount.value, valueNim),
             );
             const percent = (100 * amount) / availableAmount.value;
             currentAmount.value = amount;
@@ -197,10 +196,9 @@ export default defineComponent({
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
             setTimeout(() => {
-                (e.target as HTMLInputElement).setSelectionRange(startSelection, endSelection);
+                target.setSelectionRange(startSelection, endSelection);
             }, 0);
             context.emit('amount-staked', currentAmount.value);
-            onMove(e, true, true, percent);
         };
 
         const atEndTouch = () => {

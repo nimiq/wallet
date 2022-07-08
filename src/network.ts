@@ -151,7 +151,6 @@ export async function launchNetwork() {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
         const accounts = await client.getAccounts(addresses);
-        updateStakes(addresses);
         const newBalances: Balances = new Map(
             accounts.map((account, i) => [addresses[i], account.balance]),
         );
@@ -227,6 +226,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
+            updateStakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -354,6 +354,7 @@ export async function launchNetwork() {
         client.addTransactionListener(transactionListener, addresses);
         client.addStakingListener(stakingListener, addresses);
         updateBalances(addresses);
+        updateStakes(addresses);
         return true;
     }
 

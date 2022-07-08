@@ -256,7 +256,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:60
+#: src/lib/StakingUtils.ts:59
 msgid "Add stake"
 msgstr ""
 
@@ -2243,7 +2243,7 @@ msgstr ""
 msgid "Start exploring"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:34
+#: src/lib/StakingUtils.ts:33
 msgid "Start staking"
 msgstr ""
 
@@ -2623,7 +2623,7 @@ msgstr ""
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:26
+#: src/lib/StakingUtils.ts:25
 msgid "Unstake"
 msgstr ""
 

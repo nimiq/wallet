@@ -46,9 +46,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const payoutText = computed(() => 'label' in props.validator
-            ? props.validator.payoutIntervalMinutes
-                ? getPayoutText(props.validator.payoutIntervalMinutes)
-                : ''
+            ? getPayoutText(props.validator.payoutType)
             : context.root.$t('Unregistered validator'));
 
         return {

@@ -1,6 +1,8 @@
 import type {
     Account,
+    AppliedBlockLog,
     Block as AlbatrossBlock,
+    RevertedBlockLog,
     Staker,
     Stakes,
     Transaction as AlbatrossTransaction,
@@ -9,7 +11,7 @@ import type {
 import { createRemote } from './lib/gentle_rpc/remote';
 // @ts-expect-error no types
 import { wsProxyHandler } from './lib/gentle_rpc/proxy';
-import { TransactionState } from './stores/Transactions';
+import { TransactionState, useTransactionsStore } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { StakingTransactionType, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { unserializeAddress } from './lib/Address';
@@ -115,7 +117,12 @@ export type Handle = number;
 export type ConsensusChangedListener = (consensusState: ConsensusState) => any;
 export type HeadChangedListener = (hash: Block) => any;
 export type TransactionListener = (transaction: Transaction) => any;
-export type StakingListener = (address: string, transaction: Transaction) => any;
+export type StakingListener = (address: string) => any;
+type LogListener = (block: AppliedBlockLog | RevertedBlockLog) => any;
+
+// Version 1 is before Iicruz/rpc got merged (#906)
+// Version 2 is after Iicruz/rpc got merged (#906)
+const VERSION = parseInt(process.env.VUE_APP_RPC_VERSION || '1', 10);
 
 export class AlbatrossRpcClient {
     private url: string;
@@ -123,6 +130,8 @@ export class AlbatrossRpcClient {
     private blockSubscriptions: {
         [handle: number]: HeadChangedListener,
     } = {};
+
+    private logSubscriptions: Record<Handle, LogListener> = {};
 
     private transactionSubscriptions: {
         [address: string]: TransactionListener[],
@@ -139,23 +148,42 @@ export class AlbatrossRpcClient {
     constructor(url: string) {
         this.url = url;
 
+        // Start block listener
         this.getRemote().then(async (remote) => {
-            if (process.env.VUE_APP_RPC_VERSION === '2') {
-                const id = await remote.subscribeForHeadBlock([true]);
-                const { generator } = remote.subscribeForHeadBlock.listen();
-                for await (const params of generator) {
-                    if (!params || params.subscription !== id) continue;
-                    this.onHeadChange(params.result as AlbatrossBlock);
+            if (VERSION >= 2) {
+                const id = await remote.subscribeForHeadBlock([false]);
+                const { generator } = remote.subscribeForHeadBlock.listen() as {
+                    generator: Generator<{ subscription: number, result: AlbatrossBlock }>,
+                };
+                for await (const { subscription, result: block } of generator) {
+                    if (subscription !== id) continue;
+                    this.onHeadChange(block);
                 }
             } else {
                 const id = await remote.headSubscribe([]);
-                const { generator } = remote.headSubscribe.listen();
-                for await (const params of generator) {
-                    if (!params || params.subscription !== id) continue;
-                    this.onHeadChange(params.result as string);
+                const { generator } = remote.headSubscribe.listen() as {
+                    generator: Generator<{ subscription: number, result: string }>,
+                };
+                for await (const { subscription, result: hash } of generator) {
+                    if (subscription !== id) continue;
+                    this.onHeadChange(hash);
                 }
             }
         });
+
+        // Start log listener
+        if (VERSION >= 2) {
+            this.getRemote().then(async (remote) => {
+                const { generator } = remote.subscribeForLogsByAddressesAndTypes.listen() as {
+                    generator: Generator<{ subscription: number, result: AppliedBlockLog | RevertedBlockLog }>,
+                };
+                for await (const { subscription, result: block } of generator) {
+                    const listener = this.logSubscriptions[subscription];
+                    if (!listener) continue;
+                    listener(block);
+                }
+            });
+        }
     }
 
     public async waitForConsensusEstablished() {
@@ -190,7 +218,15 @@ export class AlbatrossRpcClient {
     //         .then((txs) => txs.map(convertTransaction));
     // }
 
-    public addTransactionListener(listener: TransactionListener, addresses: string[]) {
+    public async addTransactionListener(listener: TransactionListener, addresses: string[]) {
+        if (VERSION >= 2) {
+            const id = await this.rpc<number>('subscribeForLogsByAddressesAndTypes', [
+                addresses,
+                ['transfer'],
+            ]);
+            this.logSubscriptions[id] = this.transactionLogListener.bind(this);
+        }
+
         for (const address of addresses) {
             const listeners = this.transactionSubscriptions[address] || [];
             listeners.push(listener);
@@ -198,7 +234,15 @@ export class AlbatrossRpcClient {
         }
     }
 
-    public addStakingListener(listener: StakingListener, addresses: string[]) {
+    public async addStakingListener(listener: StakingListener, addresses: string[]) {
+        if (VERSION >= 2) {
+            const id = await this.rpc<number>('subscribeForLogsByAddressesAndTypes', [
+                addresses,
+                [/* 'create-staker', */'stake'/* , 'update-staker', 'unstake' */],
+            ]);
+            this.logSubscriptions[id] = this.stakingLogListener.bind(this);
+        }
+
         for (const address of addresses) {
             const listeners = this.stakingSubscriptions[address] || [];
             listeners.push(listener);
@@ -271,12 +315,11 @@ export class AlbatrossRpcClient {
     }
 
     private async onHeadChange(blockOrHash: string | AlbatrossBlock) {
-        const remote = await this.getRemote();
-
         let block: Block | undefined;
 
         if (typeof blockOrHash === 'string') {
-            block = await remote.getBlockByHash([blockOrHash, true]).then(convertBlock) as Block;
+            // RPC version 1
+            block = await this.rpc<AlbatrossBlock>('getBlockByHash', [blockOrHash, true]).then(convertBlock);
             if (!block) return;
         } else {
             block = convertBlock(blockOrHash);
@@ -286,6 +329,8 @@ export class AlbatrossRpcClient {
         for (const listener of Object.values(this.blockSubscriptions)) {
             listener(block);
         }
+
+        if (VERSION >= 2) return;
 
         // Trigger transaction listeners
         const txSubscribedAddresses = Object.keys(this.transactionSubscriptions);
@@ -313,7 +358,7 @@ export class AlbatrossRpcClient {
                 const listeners = this.stakingSubscriptions[address];
                 if (listeners) {
                     for (const listener of listeners) {
-                        listener(address, tx);
+                        listener(address);
                     }
                 }
             }
@@ -327,7 +372,7 @@ export class AlbatrossRpcClient {
                 const listeners = this.stakingSubscriptions[stakerAddress];
                 if (listeners) {
                     for (const listener of listeners) {
-                        listener(stakerAddress, tx);
+                        listener(stakerAddress);
                     }
                 }
             }
@@ -355,6 +400,65 @@ export class AlbatrossRpcClient {
                 resolve(proxy);
             });
         }));
+    }
+
+    private async transactionLogListener(block: AppliedBlockLog | RevertedBlockLog) {
+        if (block.type === 'reverted-block') {
+            console.debug(`Reverting ${block.transactions.length} transactions`); // eslint-disable-line no-console
+
+            for (const { hash } of block.transactions) {
+                const tx = useTransactionsStore().state.transactions[hash];
+                if (!tx) continue;
+                useTransactionsStore().addTransactions([{
+                    ...tx,
+                    state: TransactionState.NEW,
+                }]);
+            }
+            return;
+        }
+
+        const transactions = await Promise.all(block.transactions.map(
+            ({ hash }) => this.rpc<AlbatrossTransaction>('getTransactionByHash', [hash])
+                .then(convertTransaction),
+        ));
+
+        // Trigger transaction listeners
+        for (const tx of transactions) {
+            const plain = tx.toPlain();
+
+            const listeners = new Set([
+                ...(this.transactionSubscriptions[plain.sender] || []),
+                ...(this.transactionSubscriptions[plain.recipient] || []),
+            ]);
+
+            for (const listener of listeners) {
+                listener(tx);
+            }
+        }
+    }
+
+    private stakingLogListener(block: AppliedBlockLog | RevertedBlockLog) {
+        for (const transaction of block.transactions) {
+            for (const log of transaction.logs) {
+                switch (log.type) {
+                    case 'create-staker':
+                    case 'stake':
+                    case 'update-staker':
+                    case 'unstake': {
+                        const address = log.stakerAddress;
+                        const listeners = this.stakingSubscriptions[address];
+                        if (listeners) {
+                            for (const listener of listeners) {
+                                listener(address);
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                        console.warn('Unhandled log:', log); // eslint-disable-line no-console
+                }
+            }
+        }
     }
 
     private async rpc<T>(method: string, params: any[] = []): Promise<T> {

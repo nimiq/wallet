@@ -63,14 +63,6 @@ export default defineComponent({
 
         const sortedList = computed(() => {
             switch (filter.value) {
-                case FilterState.PAYOUT:
-                    return validatorsList.value.slice()
-                        .sort((a, b) => {
-                            const cmp = ('payoutIntervalMinutes' in a ? a.payoutIntervalMinutes || Infinity : Infinity)
-                                - ('payoutIntervalMinutes' in b ? b.payoutIntervalMinutes || Infinity : Infinity);
-                            if (cmp) return cmp;
-                            return a.address < b.address ? -1 : 1;
-                        });
                 case FilterState.REWARD:
                     return validatorsList.value.slice()
                         .sort((a, b) => {

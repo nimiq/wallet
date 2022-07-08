@@ -143,9 +143,7 @@ export default defineComponent({
         const percentage = computed(() => (stakedBalance.value / (availableBalance.value + stakedBalance.value)) * 100);
 
         const payoutText = computed(() => validator.value && 'label' in validator.value
-            ? validator.value.payoutIntervalMinutes
-                ? getPayoutText(validator.value.payoutIntervalMinutes)
-                : ''
+            ? getPayoutText(validator.value.payoutType)
             : context.root.$t('Unregistered validator'));
 
         async function unstakeAll() {

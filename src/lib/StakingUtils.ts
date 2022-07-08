@@ -1,4 +1,3 @@
-import { FormattableNumber } from '@nimiq/utils';
 // import { DateTime } from 'luxon';
 import { i18n } from '../i18n/i18n-setup';
 import { Transaction } from '../stores/Transactions';
@@ -66,23 +65,4 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
         }
         default: throw new Error('Unknown staking data type');
     }
-}
-
-// function formatNumber(number: number, fractionDigits = 0): string {
-//     return number.toFixed(fractionDigits); // .replace(/\B(?=(\d{3})+(?!\d))/g, '\'').trim();
-// }
-
-// function formatAsNim(nim: number, fractionDigits = 0): string {
-//     return `${formatNumber(nim, fractionDigits)} NIM`;
-// }
-
-// function formatLunaAsNim(luna: number, fractionDigits = 0): string {
-//     return formatAsNim(Math.round(luna / 100000), fractionDigits);
-// }
-
-export function formatAmount(value = 0, magnitude = 1): string {
-    return new FormattableNumber(Math.round(value / magnitude)).toString({
-        maxDecimals: 0,
-        useGrouping: true,
-    });
 }

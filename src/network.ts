@@ -148,7 +148,6 @@ export async function launchNetwork() {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
         const accounts = await client.getAccounts(addresses);
-        updateStakes(addresses);
         const newBalances: Balances = new Map(
             accounts.map((account, i) => [addresses[i], account.balance]),
         );
@@ -224,6 +223,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
+            updateStakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -351,6 +351,7 @@ export async function launchNetwork() {
         client.addTransactionListener(transactionListener, addresses);
         client.addStakingListener(stakingListener, addresses);
         updateBalances(addresses);
+        updateStakes(addresses);
         return true;
     }
 
@@ -402,8 +403,6 @@ export async function launchNetwork() {
         //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
 
         network$.fetchingTxHistory++;
-
-        updateBalances([address]);
 
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)

@@ -238,7 +238,7 @@ export class AlbatrossRpcClient {
         if (VERSION >= 2) {
             const id = await this.rpc<number>('subscribeForLogsByAddressesAndTypes', [
                 addresses,
-                [/* 'create-staker', */'stake'/* , 'update-staker', 'unstake' */],
+                ['create-staker', 'stake', 'update-staker', 'unstake'],
             ]);
             this.logSubscriptions[id] = this.stakingLogListener.bind(this);
         }

@@ -201,6 +201,12 @@ export default defineComponent({
             }, 0);
         }
 
+        watch(accountStake, (newStake, oldStake) => {
+            if (Boolean(newStake) !== Boolean(oldStake) && activeAddress.value) {
+                adjustBackgroundOffsetAndScale(activeAddress.value);
+            }
+        }, { lazy: true });
+
         return {
             root$,
             scrollbarVisible,

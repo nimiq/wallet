@@ -122,7 +122,7 @@ type LogListener = (block: AppliedBlockLog | RevertedBlockLog) => any;
 
 // Version 1 is before Iicruz/rpc got merged (#906)
 // Version 2 is after Iicruz/rpc got merged (#906)
-const VERSION = parseInt(process.env.VUE_APP_RPC_VERSION || '1', 10);
+const VERSION = parseInt(process.env.VUE_APP_RPC_VERSION || '2', 10);
 
 export class AlbatrossRpcClient {
     private url: string;

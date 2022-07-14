@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-const ALBATROSS_GENESIS_DATE = new Date('2022-06-24T00:00:00.000Z');
+const ALBATROSS_GENESIS_DATE = new Date('2022-07-13T00:00:00.000Z');
 
 export function calculateReward(fee: number, currentlyStaked: number) {
     // The values here represent a trade-off between the actual values in the devnet and real-life values
@@ -19,8 +19,9 @@ export function calculateReward(fee: number, currentlyStaked: number) {
     // This is a devnet number
     // 8 Validators with 10k NIM deposit
     // 8 Stakers with 10 NIM stake
-    // 1 Faucet address with 10M NIM
-    const supplyinDevnetGenesisBlock = 8 * 10_000e5 + 8 * 10e5 + 10_000_000e5;
+    // 1 Faucet address with 250M NIM
+    // 1 Marketing address with 750M NIM
+    const supplyinDevnetGenesisBlock = 8 * 10_000e5 + 8 * 10e5 + 250_000_000e5 + 750_000_000e5;
     // This is a devnet number
     // TODO: Remove 25% minimum
     const stakingRatio = Math.max(0.25, currentlyStaked / supplyinDevnetGenesisBlock);

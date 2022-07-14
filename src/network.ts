@@ -291,6 +291,9 @@ export async function launchNetwork() {
 
         const validators: Validator[] = Object.entries(stakes).map(([address, balance]) => {
             const dominance = balance / totalStake;
+            if (dominance > 0.3) {
+                console.warn('High-stake validator:', { dominance: Math.round(dominance * 1e3) / 10, address });
+            }
 
             // This is just an approximation of a trust score
             // TODO: Formalize trust score calculation

@@ -184,23 +184,28 @@ export class AlbatrossRpcClient {
                 }
             });
         }
+
+        this.waitForConsensusEstablished().then(() => {
+            for (const listener of Object.values(this.consensusSubscriptions)) {
+                listener(ConsensusState.ESTABLISHED);
+            }
+        });
+
+        this.rpc<AlbatrossBlock>('getLatestBlock', [false]).then((block) => this.onHeadChange(block));
     }
 
     public async waitForConsensusEstablished() {
         await this.getRemote();
     }
 
-    public addConsensusChangedListener(listener: ConsensusChangedListener) {
+    public addConsensusChangedListener(listener: ConsensusChangedListener): Handle {
         let handle: Handle;
         do {
             handle = Math.round(Math.random() * 1000);
         } while (this.consensusSubscriptions[handle]);
 
         this.consensusSubscriptions[handle] = listener;
-
-        this.getRemote().then(() => {
-            listener(ConsensusState.ESTABLISHED);
-        });
+        return handle;
     }
 
     public addHeadChangedListener(listener: HeadChangedListener): Handle {

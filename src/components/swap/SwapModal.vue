@@ -247,6 +247,8 @@ import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
+import { getNetworkClient } from '../../network';
+import { getElectrumClient } from '../../electrum';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -844,6 +846,8 @@ export default defineComponent({
          */
 
         async function sign() {
+            if (!canSign.value) return;
+
             currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -900,7 +904,19 @@ export default defineComponent({
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
 
-                const validityStartHeight = useNetworkStore().height.value;
+                const nimiqClient = await getNetworkClient();
+                await nimiqClient.waitForConsensusEstablished();
+                const headHeight = await nimiqClient.getHeadHeight();
+                if (headHeight > 100) {
+                    useNetworkStore().state.height = headHeight;
+                } else {
+                    throw new Error('Invalid network state, try please reloading the app');
+                }
+
+                const electrumClient = await getElectrumClient();
+                await electrumClient.waitForConsensusEstablished();
+
+                const validityStartHeight = useNetworkStore().state.height;
 
                 if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {

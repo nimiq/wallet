@@ -474,6 +474,8 @@ export default defineComponent({
         }
 
         async function sign() {
+            if (!canSign.value) return;
+
             // currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -528,9 +530,17 @@ export default defineComponent({
 
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
+                    const nimiqClient = await getNetworkClient();
+
                     if (useNetworkStore().state.consensus !== 'established') {
-                        const nimiqClient = await getNetworkClient();
                         await nimiqClient.waitForConsensusEstablished();
+                    }
+
+                    const headHeight = await nimiqClient.getHeadHeight();
+                    if (headHeight > 100) {
+                        useNetworkStore().state.height = headHeight;
+                    } else {
+                        throw new Error('Invalid network state, try please reloading the app');
                     }
                 }
                 if (activeCurrency.value === CryptoCurrency.BTC) {

@@ -410,9 +410,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Koop BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:177
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:194
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Koop Crypto"
@@ -421,7 +421,7 @@ msgstr "Koop Crypto"
 msgid "Buy Crypto with Fiat"
 msgstr "Koop Crypto met Fiat"
 
-#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr "Koop maximaal"
 
@@ -461,8 +461,8 @@ msgstr ""
 "Door transactiekosten toe te voegen, kan je bepalen hoe snel je transactie "
 "wordt verwerkt."
 
-#: src/components/modals/BuyCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/SellCryptoModal.vue:179
 #: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -470,8 +470,8 @@ msgstr ""
 "Door op '{text}' te klikken, ga je akkoord met de servicevoorwaarden van "
 "{Fastspot} en {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/BuyCryptoModal.vue:210
+#: src/components/modals/SellCryptoModal.vue:193
 #: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Door op '{text}' te klikken, ga je akkoord met de ToS van {Fastspot}."
@@ -529,8 +529,8 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:262
-#: src/components/modals/SellCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:279
+#: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
@@ -1056,7 +1056,7 @@ msgid "Install Web App"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:165
+#: src/components/modals/SellCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Onvoldoende balans."
@@ -1172,13 +1172,10 @@ msgstr "Log uit"
 msgid "lost"
 msgstr "verloren"
 
-#: src/components/modals/SellCryptoModal.vue:157
-msgid "Max swappable amount is {amount} {ticker}"
-msgstr "De maximale om te wisselen hoeveelheid is {amount} {ticker}"
-
 #: src/components/modals/BuyCryptoModal.vue:166
-msgid "Max swappable amount is {amount} EUR"
-msgstr "De maximale om te wisselen hoeveelheid is {amount} EUR"
+#: src/components/modals/SellCryptoModal.vue:157
+msgid "Max swappable amount is {amount}"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:68
 #: src/components/modals/BuyCryptoModal.vue:73
@@ -1194,6 +1191,10 @@ msgstr "Max."
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
+
+#: src/components/modals/BuyCryptoModal.vue:177
+msgid "Minimum buy amount is {amount}"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1587,9 +1588,9 @@ msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 msgid "Sell"
 msgstr "Verkopen"
 
-#: src/components/modals/SellCryptoModal.vue:175
-#: src/components/modals/SellCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:194
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:182
+#: src/components/modals/SellCryptoModal.vue:196
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Crypto verkopen"
@@ -1597,6 +1598,12 @@ msgstr "Crypto verkopen"
 #: src/components/modals/SellCryptoModal.vue:11
 msgid "Sell Crypto for Fiat"
 msgstr "Verkoop Crypto voor Fiat"
+
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:167
+msgid "Sell max"
+msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1638,12 +1645,6 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Send crypto to a smart contract."
 msgstr "Stuur crypto naar een smart contract."
-
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:162
-#: src/components/modals/SellCryptoModal.vue:165
-msgid "Send max"
-msgstr "Verstuur max."
 
 #: src/components/modals/BtcSendModal.vue:108
 #: src/components/modals/BtcSendModal.vue:5
@@ -1708,6 +1709,10 @@ msgstr "Bedrag ingeven"
 msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
+#: src/components/modals/BuyCryptoModal.vue:184
+msgid "Set minimum"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
 msgstr ""
@@ -1761,7 +1766,7 @@ msgstr ""
 msgid "Signup"
 msgstr "Aanmelden"
 
-#: src/components/modals/BuyCryptoModal.vue:240
+#: src/components/modals/BuyCryptoModal.vue:257
 msgid "Simulate EUR payment"
 msgstr "Simuleer betaling in EUR"
 
@@ -1863,7 +1868,7 @@ msgstr "Testnet"
 msgid "The bank is processing your transaction."
 msgstr "De bank verwerkt je transactie."
 
-#: src/components/swap/SwapModal.vue:603 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:605 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."

@@ -1,14 +1,14 @@
 # 
 # Translators:
-# Sören Schwert <hello@soerenschwert.de>, 2021
 # Oscar_6, 2022
 # Пётр Павлович, 2022
 # Vad <vjuruss@gmail.com>, 2022
 # Daniel, 2022
+# Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2022\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -414,9 +414,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Купить BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:177
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:194
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Купить криптовалюту"
@@ -425,7 +425,7 @@ msgstr "Купить криптовалюту"
 msgid "Buy Crypto with Fiat"
 msgstr "Купить криптовалюту за фиат"
 
-#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr "Купить максимум"
 
@@ -463,15 +463,15 @@ msgid ""
 "will be processed."
 msgstr "Увеличьте размер комиссии, чтобы ускорить исполнение транзакции."
 
-#: src/components/modals/BuyCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/SellCryptoModal.vue:179
 #: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot} и {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/BuyCryptoModal.vue:210
+#: src/components/modals/SellCryptoModal.vue:193
 #: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot}."
@@ -529,8 +529,8 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:262
-#: src/components/modals/SellCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:279
+#: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
@@ -1059,7 +1059,7 @@ msgid "Install Web App"
 msgstr "Установить веб-приложение"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:165
+#: src/components/modals/SellCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
@@ -1175,13 +1175,10 @@ msgstr "Выйти"
 msgid "lost"
 msgstr "потерян"
 
-#: src/components/modals/SellCryptoModal.vue:157
-msgid "Max swappable amount is {amount} {ticker}"
-msgstr "Максимальная сумма свопа: {amount} {ticker}"
-
 #: src/components/modals/BuyCryptoModal.vue:166
-msgid "Max swappable amount is {amount} EUR"
-msgstr "Максимальная сумма свопа: {amount} EUR."
+#: src/components/modals/SellCryptoModal.vue:157
+msgid "Max swappable amount is {amount}"
+msgstr "Максимальная сумма свопа: {amount}"
 
 #: src/components/modals/BuyCryptoModal.vue:68
 #: src/components/modals/BuyCryptoModal.vue:73
@@ -1197,6 +1194,10 @@ msgstr "Макс."
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "мин. {amount}"
+
+#: src/components/modals/BuyCryptoModal.vue:177
+msgid "Minimum buy amount is {amount}"
+msgstr "Минимальная сумма обмена {amount}"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1592,9 +1593,9 @@ msgstr "Выберите в каких единицах будет отобра�
 msgid "Sell"
 msgstr "Продать"
 
-#: src/components/modals/SellCryptoModal.vue:175
-#: src/components/modals/SellCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:194
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:182
+#: src/components/modals/SellCryptoModal.vue:196
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Продать криптовалюту"
@@ -1602,6 +1603,12 @@ msgstr "Продать криптовалюту"
 #: src/components/modals/SellCryptoModal.vue:11
 msgid "Sell Crypto for Fiat"
 msgstr "Продать криптовалюту за фиат"
+
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:167
+msgid "Sell max"
+msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1643,12 +1650,6 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Send crypto to a smart contract."
 msgstr "Отправить криптовалюту на смарт-контракт."
-
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:162
-#: src/components/modals/SellCryptoModal.vue:165
-msgid "Send max"
-msgstr "Отправить максимум"
 
 #: src/components/modals/BtcSendModal.vue:108
 #: src/components/modals/BtcSendModal.vue:5
@@ -1713,6 +1714,10 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
+#: src/components/modals/BuyCryptoModal.vue:184
+msgid "Set minimum"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
 msgstr ""
@@ -1766,7 +1771,7 @@ msgstr ""
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
-#: src/components/modals/BuyCryptoModal.vue:240
+#: src/components/modals/BuyCryptoModal.vue:257
 msgid "Simulate EUR payment"
 msgstr "Симулировать платёж в евро"
 
@@ -1868,7 +1873,7 @@ msgstr "Тестнет"
 msgid "The bank is processing your transaction."
 msgstr "Банк обрабатывает вашу транзакцию."
 
-#: src/components/swap/SwapModal.vue:603 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:605 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."

@@ -2,13 +2,13 @@
 # Translators:
 # Rhody Lugo, 2021
 # Max, 2022
-# Sören Schwert <hello@soerenschwert.de>, 2022
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2022
 # Daniel, 2022
+# Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Daniel, 2022\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -416,9 +416,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Comprar BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:177
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:194
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Comprar Cripto"
@@ -427,7 +427,7 @@ msgstr "Comprar Cripto"
 msgid "Buy Crypto with Fiat"
 msgstr "Comprar Cripto con Fiat"
 
-#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr "Compre el máximo"
 
@@ -467,8 +467,8 @@ msgstr ""
 "Al agregar una cuota a la transacción, puede influenciar que tan rápidamente"
 " será procesada."
 
-#: src/components/modals/BuyCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/SellCryptoModal.vue:179
 #: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -476,8 +476,8 @@ msgstr ""
 "Al hacer click en '{text}', usted esta aceptando a los términos de servicio "
 "de {Fastspot} y {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:193
-#: src/components/modals/SellCryptoModal.vue:191
+#: src/components/modals/BuyCryptoModal.vue:210
+#: src/components/modals/SellCryptoModal.vue:193
 #: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -537,8 +537,8 @@ msgid "Choose a Sender"
 msgstr "Seleccione un Emisor"
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:262
-#: src/components/modals/SellCryptoModal.vue:243
+#: src/components/modals/BuyCryptoModal.vue:279
+#: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
@@ -1063,7 +1063,7 @@ msgid "Install Web App"
 msgstr "Instalar la Aplicación Web"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:165
+#: src/components/modals/SellCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Balance insuficiente."
@@ -1180,13 +1180,10 @@ msgstr "Cerrar Sesión"
 msgid "lost"
 msgstr "perdida"
 
-#: src/components/modals/SellCryptoModal.vue:157
-msgid "Max swappable amount is {amount} {ticker}"
-msgstr "El monto máximo intercambiable es {amount} {ticker}"
-
 #: src/components/modals/BuyCryptoModal.vue:166
-msgid "Max swappable amount is {amount} EUR"
-msgstr "El monto máximo intercambiable es {amount} EUR"
+#: src/components/modals/SellCryptoModal.vue:157
+msgid "Max swappable amount is {amount}"
+msgstr "El monto máximo intercambiable es {amount}"
 
 #: src/components/modals/BuyCryptoModal.vue:68
 #: src/components/modals/BuyCryptoModal.vue:73
@@ -1202,6 +1199,10 @@ msgstr "Max."
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
+
+#: src/components/modals/BuyCryptoModal.vue:177
+msgid "Minimum buy amount is {amount}"
+msgstr "El monto mínimo de intercambio es {amount}"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1602,9 +1603,9 @@ msgstr "Seleccione en que unidad desea mostrar montos en Bitcoin"
 msgid "Sell"
 msgstr "Vender"
 
-#: src/components/modals/SellCryptoModal.vue:175
-#: src/components/modals/SellCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:194
+#: src/components/modals/SellCryptoModal.vue:177
+#: src/components/modals/SellCryptoModal.vue:182
+#: src/components/modals/SellCryptoModal.vue:196
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Vender Cripto"
@@ -1612,6 +1613,12 @@ msgstr "Vender Cripto"
 #: src/components/modals/SellCryptoModal.vue:11
 msgid "Sell Crypto for Fiat"
 msgstr "Vender Cripto por Fiat"
+
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:167
+msgid "Sell max"
+msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1653,12 +1660,6 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Send crypto to a smart contract."
 msgstr "Vender cripto a un contrato inteligente."
-
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:162
-#: src/components/modals/SellCryptoModal.vue:165
-msgid "Send max"
-msgstr "Enviar el máximo"
 
 #: src/components/modals/BtcSendModal.vue:108
 #: src/components/modals/BtcSendModal.vue:5
@@ -1723,6 +1724,10 @@ msgstr "Ingrese el Monto"
 msgid "Set fee"
 msgstr "Ingrese la cuota"
 
+#: src/components/modals/BuyCryptoModal.vue:184
+msgid "Set minimum"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
 msgstr "Configurando intercambio atómico"
@@ -1776,7 +1781,7 @@ msgstr "Mostrar Palabras de Recuperación"
 msgid "Signup"
 msgstr "Regístrate"
 
-#: src/components/modals/BuyCryptoModal.vue:240
+#: src/components/modals/BuyCryptoModal.vue:257
 msgid "Simulate EUR payment"
 msgstr "Simular pago en EUR"
 
@@ -1880,7 +1885,7 @@ msgstr "Testnet"
 msgid "The bank is processing your transaction."
 msgstr "El banco esta procesando su transacción."
 
-#: src/components/swap/SwapModal.vue:603 src/lib/swap/utils/BuyUtils.ts:90
+#: src/components/swap/SwapModal.vue:605 src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."

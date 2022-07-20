@@ -475,7 +475,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:279
 #: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:233
 msgid "Choose an Address"
 msgstr ""
 
@@ -508,9 +508,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:140
-#: src/components/swap/SwapModal.vue:145
-#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:160
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""

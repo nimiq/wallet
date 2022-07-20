@@ -45,6 +45,10 @@
                         <div class="line flex-row">
                             <strong>{{ iban | formatIntoGroups(4, ' ') }}</strong>
                         </div>
+                        <div class="line flex-row iban-change">
+                            <!-- <InfoCircleSmallIcon /> -->
+                            The IBAN was updated
+                        </div>
                     </Copyable>
                 </div>
                 <div class="row flex-row purpose">
@@ -324,6 +328,19 @@ export default defineComponent({
     color: rgba(255, 255, 255, 0.3);
     font-weight: 600;
     letter-spacing: .06em;
+}
+
+.iban-change {
+    margin-top: 0.5rem;
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--nimiq-light-blue-on-dark);
+    justify-content: flex-start;
+    align-items: center;
+
+    .nq-icon {
+        margin-right: 0.75rem;
+    }
 }
 
 .reference {

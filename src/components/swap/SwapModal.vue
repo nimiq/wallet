@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened"
+        :showOverlay="!!swap || addressListOverlayOpened || swapAnimationOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <PageHeader>
@@ -67,6 +67,9 @@
                                 + 'increased limits after user registration.') }}
                         </p>
                     </Tooltip>
+                    <button class="pill flex-row nq-button-s" @click="swapAnimationOverlayOpened = true">
+                        svg test
+                    </button>
                 </div>
             </div>
         </PageHeader>
@@ -184,6 +187,47 @@
             </button>
         </div>
 
+        <div v-else-if="swapAnimationOverlayOpened" slot="overlay" class="page flex-column animation-overlay">
+            <PageBody style="padding: 0.75rem;" class="flex-column">
+                <SwapAnimation
+                    swapId="75228cd5-c054-408b-8ad0-df32b65a7153"
+                    :swapState="SwapState.SIGN_SWAP"
+                    :fromAsset="SwapAsset.EUR"
+                    :fromAmount="345"
+                    fromAddress="H6FZQVVJUMFA4MUMWBUNF6J4H"
+                    :toAsset="SwapAsset.NIM"
+                    :toAmount="432100"
+                    :nimAddress="activeAddressInfo.address"
+                    :error="''"
+                    :switchSides="false"
+                    :toFundingDurationMins="0"
+                    :manualFunding="true"
+                    :oasisLimitExceeded="false"
+                    @finished="finishSwap"
+                    @cancel="finishSwap"
+                >
+                    <SwapSepaFundingInstructions
+                        slot="manual-funding-instructions"
+                        :amount="345"
+                        :name="'TEN31 Bank'"
+                        :iban="'DE75512108001245126199'"
+                        :bic="'WEGBDE77'"
+                        :reference="'HLCAZRQWYLDH4WTH22HEO2FCO'"
+                        :stateEnteredAt="Date.now()"
+                        @cancel="finishSwap"
+                    />
+                </SwapAnimation>
+            </PageBody>
+            <button v-if="false" class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
+                <MinimizeIcon/>
+            </button>
+            <Timer v-else :startTime="Date.now()" :endTime="Date.now() + 80 * 60 * 1000"
+                theme="white" maxUnit="minute" :tooltipProps="{
+                    preferredPosition: 'bottom left',
+                }"
+            />
+        </div>
+
         <div v-else-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
             <PageBody>
@@ -201,6 +245,7 @@ import {
     Tooltip,
     FiatAmount,
     CircleSpinner,
+    Timer,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -246,6 +291,7 @@ import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapModalFooter from './SwapModalFooter.vue';
+import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -828,6 +874,8 @@ export default defineComponent({
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
+            } else if (swapAnimationOverlayOpened.value === true) {
+                swapAnimationOverlayOpened.value = false;
             } else {
                 context.root.$router.back();
             }
@@ -1215,6 +1263,9 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        // TEMP
+        const swapAnimationOverlayOpened = ref(false);
+
         return {
             onClose,
             satsPerNim,
@@ -1260,6 +1311,7 @@ export default defineComponent({
             addressListOverlayOpened,
             onAddressSelected,
             isMainnet,
+            swapAnimationOverlayOpened,
             activeAddressInfo,
         };
     },
@@ -1280,6 +1332,8 @@ export default defineComponent({
         AddressList,
         SwapAnimation,
         SwapModalFooter,
+        SwapSepaFundingInstructions,
+        Timer,
     },
 });
 </script>
@@ -1557,6 +1611,17 @@ export default defineComponent({
 
 .animation-overlay {
     flex-grow: 1;
+
+    .timer {
+        position: absolute;
+        top: 2.5rem;
+        right: 2.5rem;
+
+        ::v-deep .tooltip-box {
+            font-size: var(--small-size);
+            padding: 1.25rem 1.5rem;
+        }
+    }
 }
 
 .address-list-overlay {

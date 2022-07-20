@@ -133,7 +133,7 @@
                         </div>
                     </section>
 
-                    <section class="amount-section" :class="{ orange: insufficientLimit }">
+                    <section class="amount-section" :class="{ orange: insufficientLimit || isBelowOasisMinimum }">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="fiatAmount"
                                 :decimals="fiatCurrencyInfo.decimals"
@@ -163,8 +163,25 @@
                     <MessageTransition class="message-section">
                         <template v-if="insufficientLimit">
                             <!-- TEMP: wording TBD -->
-                            {{ $t('Max swappable amount is {amount} EUR', { amount: currentLimitFiat }) }}<br />
+                            <i18n path="Max swappable amount is {amount}">
+                                <FiatAmount slot="amount"
+                                    :amount="currentLimitFiat"
+                                    currency="eur"
+                                    hideDecimals
+                                />
+                            </i18n><br />
                             <a @click="buyMax">{{ $t('Buy max') }}</a>
+                        </template>
+                        <template v-else-if="isBelowOasisMinimum">
+                            <!-- TEMP: wording TBD -->
+                            <i18n path="Minimum buy amount is {amount}">
+                                <FiatAmount slot="amount"
+                                    :amount="$config.oasis.minBuyAmount"
+                                    currency="eur"
+                                    hideDecimals
+                                />
+                            </i18n><br />
+                            <a @click="buyMin">{{ $t('Set minimum') }}</a>
                         </template>
                     </MessageTransition>
                 </PageBody>
@@ -420,6 +437,10 @@ export default defineComponent({
             || (_fiatAmount.value > (currentLimitFiat.value || 0) * 1e2)
         ));
 
+        const isBelowOasisMinimum = computed(() => (
+            _fiatAmount.value > 0 && _fiatAmount.value < Config.oasis.minBuyAmount * 1e2
+        ));
+
         const canSign = computed(() =>
             fiatAmount.value
             && !estimateError.value && !swapError.value
@@ -427,7 +448,8 @@ export default defineComponent({
             && banks.value.sepa
             && limits.value?.current.usd
             && !fetchingEstimate.value
-            && !insufficientLimit.value,
+            && !insufficientLimit.value
+            && !isBelowOasisMinimum.value,
         );
 
         onMounted(() => {
@@ -852,6 +874,10 @@ export default defineComponent({
             fiatAmount.value = (currentLimitFiat.value || 0) * 1e2;
         }
 
+        function buyMin() {
+            fiatAmount.value = Config.oasis.minBuyAmount * 1e2;
+        }
+
         return {
             $eurAmountInput,
             addressListOpened,
@@ -888,7 +914,9 @@ export default defineComponent({
             onPaid,
             oasisBuyLimitExceeded,
             insufficientLimit,
+            isBelowOasisMinimum,
             buyMax,
+            buyMin,
         };
     },
     components: {

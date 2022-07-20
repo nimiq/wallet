@@ -360,9 +360,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:177
-#: src/components/modals/BuyCryptoModal.vue:182
-#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:194
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr ""
@@ -371,7 +371,7 @@ msgstr ""
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr ""
 
@@ -407,13 +407,13 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:179
+#: src/components/modals/BuyCryptoModal.vue:196
 #: src/components/modals/SellCryptoModal.vue:177
 #: src/components/swap/SwapModal.vue:142
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:193
+#: src/components/modals/BuyCryptoModal.vue:210
 #: src/components/modals/SellCryptoModal.vue:191
 #: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
@@ -472,7 +472,7 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:262
+#: src/components/modals/BuyCryptoModal.vue:279
 #: src/components/modals/SellCryptoModal.vue:243
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:188
@@ -1076,12 +1076,12 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:157
-msgid "Max swappable amount is {amount} {ticker}"
+#: src/components/modals/BuyCryptoModal.vue:166
+msgid "Max swappable amount is {amount}"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:166
-msgid "Max swappable amount is {amount} EUR"
+#: src/components/modals/SellCryptoModal.vue:157
+msgid "Max swappable amount is {amount} {ticker}"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:68
@@ -1098,6 +1098,10 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:177
+msgid "Minimum buy amount is {amount}"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:9
@@ -1580,6 +1584,10 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
+#: src/components/modals/BuyCryptoModal.vue:184
+msgid "Set minimum"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
 msgstr ""
@@ -1631,7 +1639,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:240
+#: src/components/modals/BuyCryptoModal.vue:257
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -1732,7 +1740,7 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:603
+#: src/components/swap/SwapModal.vue:605
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."

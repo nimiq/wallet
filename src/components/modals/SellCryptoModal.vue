@@ -129,10 +129,10 @@
                                             : activeCurrency.toUpperCase()
                                     }}</button>
                                     <div v-if="amountMenuOpened" class="menu flex-column">
-                                        <button class="reset flex-row" @click="sendMax">
+                                        <button class="reset flex-row" @click="sellMax">
                                             <!-- eslint-disable-next-line max-len -->
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25"/><path class="cls-1" d="M12.25,9.3l-4-4-4,4"/><line class="cls-1" x1="3.25" y1="1.25" x2="13.25" y2="1.25"/></g></svg>
-                                            {{ $t('Send max') }}
+                                            {{ $t('Sell max') }}
                                         </button>
                                     </div>
                                 </div>
@@ -154,15 +154,17 @@
                     <MessageTransition class="message-section">
                         <template v-if="insufficientLimit">
                             <!-- TEMP: wording TBD -->
-                            {{ $t('Max swappable amount is {amount} {ticker}', {
-                                amount: currentLimitCrypto / (activeCurrency === CryptoCurrency.BTC ? 1e8 : 1e5),
-                                ticker: activeCurrency === CryptoCurrency.BTC
-                                    ? btcUnit.ticker
-                                    : activeCurrency.toUpperCase(),
-                            }) }}<br /><a @click="sendMax">{{ $t('Send max') }}</a>
+                            <i18n path="Max swappable amount is {amount}">
+                                <Amount slot="amount"
+                                    :amount="currentLimitCrypto"
+                                    :currency="activeCurrency"
+                                    hideDecimals
+                                />
+                            </i18n><br />
+                            <a @click="sellMax">{{ $t('Sell max') }}</a>
                         </template>
                         <template v-else-if="insufficientBalance">
-                            {{ $t('Insufficient balance.') }} <a @click="sendMax">{{ $t('Send max') }}</a>
+                            {{ $t('Insufficient balance.') }} <a @click="sellMax">{{ $t('Sell max') }}</a>
                         </template>
                     </MessageTransition>
                 </PageBody>
@@ -296,6 +298,7 @@ import Modal from './Modal.vue';
 import SellCryptoBankCheckOverlay from './overlays/SellCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
 import BankIconButton from '../BankIconButton.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
@@ -883,7 +886,7 @@ export default defineComponent({
 
         const amountMenuOpened = ref(false);
 
-        function sendMax() {
+        function sellMax() {
             if (activeCurrency.value === CryptoCurrency.NIM) {
                 if (!currentLimitCrypto.value) {
                     cryptoAmount.value = activeAddressInfo.value?.balance || 0;
@@ -941,7 +944,7 @@ export default defineComponent({
             onBankDetailsEntered,
             bankAccounts,
             amountMenuOpened,
-            sendMax,
+            sellMax,
             OASIS_EUR_DETECTION_DELAY,
             insufficientBalance,
             insufficientLimit,
@@ -953,6 +956,7 @@ export default defineComponent({
         PageBody,
         Tooltip,
         SellCryptoBankCheckOverlay,
+        Amount,
         AmountInput,
         AddressList,
         FiatConvertedAmount,

@@ -22,6 +22,7 @@ export default {
         apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
         feePercentage: 0.01, // 1%
         minFee: 0.50, // Euro
+        minBuyAmount: 0, // Euro
     },
 
     moonpay: {

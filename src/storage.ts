@@ -30,7 +30,7 @@ const StorageKeys = {
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
-    KYC: 'wallet_kyc_v01',
+    KYC: 'wallet_kyc_v00',
 };
 
 const PersistentStorageKeys = {
@@ -313,7 +313,10 @@ export async function initStorage() {
     const kycStore = useKycStore();
     const storedKycState = await Storage.get<KycState>(StorageKeys.KYC);
     if (storedKycState) {
-        kycStore.patch(storedKycState);
+        kycStore.patch({
+            ...storedKycState,
+            kycLimits: null,
+        });
     }
 
     unsubscriptions.push(

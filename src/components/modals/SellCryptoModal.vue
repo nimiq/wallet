@@ -170,6 +170,7 @@
 
                 <SwapModalFooter
                     v-if="!insufficientLimit || kycUser"
+                    :isKycConnected="Boolean(kycUser)"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
                     @click="sign"

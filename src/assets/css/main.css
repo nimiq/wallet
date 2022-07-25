@@ -78,6 +78,26 @@ button.reset:disabled {
     margin-bottom: 0;
 }
 
+.nq-button.purple:not(:disabled) {
+    background: var(--nimiq-purple);
+    background-image: var(--nimiq-purple-bg);
+}
+
+.nq-button.purple:not(:disabled)::before {
+    /* background-image: var(--nimiq-purple-bg-darkened); */
+    background-image: var(--nimiq-purple-bg);
+}
+
+/* .nq-button.purple.inverse {
+    color: var(--nimiq-purple);
+}
+
+.nq-button.purple.inverse:hover,
+.nq-button.purple.inverse:active,
+.nq-button.purple.inverse:focus {
+    color: var(--nimiq-purple-darkened);
+} */
+
 
 /* Font Sizes */
 

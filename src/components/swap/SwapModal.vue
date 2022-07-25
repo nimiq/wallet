@@ -135,6 +135,7 @@
 
         <SwapModalFooter
             v-if="!isLimitReached || kycUser"
+            :isKycConnected="Boolean(kycUser)"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
             requireBothNetworks

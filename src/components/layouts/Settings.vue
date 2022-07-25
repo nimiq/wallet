@@ -148,7 +148,7 @@
                 </div>
             </section>
 
-            <section v-if="$config.TEN31Pass.enabled">
+            <section v-if="showAccountLimitsSection">
                 <h2 class="nq-label">{{ $t('Account Limits') }}</h2>
 
                 <div class="setting kyc-connection">
@@ -291,10 +291,11 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
+import Config from 'config';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
-import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings';
+import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract, shouldUseRedirects } from '../../hub';
@@ -304,22 +305,9 @@ import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
 import { updateServiceWorker } from '../../registerServiceWorker';
 import { connectKyc, disconnectKyc } from '../../lib/KycConnection';
+import { enableTrial } from '../../lib/Trials';
 import { useKycStore } from '../../stores/Kyc';
 import KycIcon from '../icons/KycIcon.vue';
-
-declare global {
-    function digestMessage(message: string): Promise<string>;
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#Converting_a_digest_to_a_hex_string
-// Exposed globally to create passwords for new trials.
-window.digestMessage = async function (message: string): Promise<string> { // eslint-disable-line func-names
-    const msgUint8 = new TextEncoder().encode(message.toLowerCase()); // encode as (utf-8) Uint8Array
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-    return hashHex;
-};
 
 export default defineComponent({
     setup(props, context) {
@@ -396,19 +384,14 @@ export default defineComponent({
         }
 
         async function onTrialPassword(el: HTMLInputElement) {
-            let hash: string;
-            try {
-                hash = await window.digestMessage(el.value);
-            } catch (error: any) {
-                el.value = error.message;
-                return;
-            }
+            if (await enableTrial(el.value)) {
+                el.value = 'OK, trial enabled!';
 
-            switch (hash) {
-                default: el.value = 'Nope, no cookie for you'; // return;
+                // Ensure UI is shown after trial was enabled
+                showAccountLimitsSection.value = Config.TEN31Pass.enabled;
+            } else {
+                el.value = 'Nope, no cookie for you';
             }
-
-            // el.value = 'OK, trial enabled!';
         }
 
         const applyingWalletUpdate = ref(false);
@@ -430,6 +413,8 @@ export default defineComponent({
             Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
             new Date().getFullYear(), // user year
         );
+
+        const showAccountLimitsSection = ref(Config.TEN31Pass.enabled);
 
         return {
             addVestingContract,
@@ -455,6 +440,7 @@ export default defineComponent({
             disconnectKyc,
             copyrightYear,
             VERSION: process.env.VERSION,
+            showAccountLimitsSection,
         };
     },
     components: {

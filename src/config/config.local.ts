@@ -26,6 +26,7 @@ export default {
     },
 
     TEN31Pass: {
+        enabled: true,
         apiEndpoint: 'https://test.pass.ten31.com',
         appId: '1a37384f-7d3a-4ac9-a887-ea1bd35dca16',
     },

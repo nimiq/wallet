@@ -148,7 +148,7 @@
                 </div>
             </section>
 
-            <section>
+            <section v-if="$config.TEN31Pass.enabled">
                 <h2 class="nq-label">{{ $t('Account Limits') }}</h2>
 
                 <div class="setting kyc-connection">

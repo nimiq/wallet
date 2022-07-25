@@ -1,5 +1,6 @@
 import { UserLimits } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
+import Config from 'config';
 import { useAccountStore } from './Account';
 
 export enum KycProvider {
@@ -31,8 +32,11 @@ export const useKycStore = createStore({
     }),
     getters: {
         connectedUser: (state): Readonly<KycUser | null> => {
+            if (!Config.TEN31Pass.enabled) return null;
+
             const { activeAccountId } = useAccountStore();
             if (!activeAccountId.value) return null;
+
             return state.connectedUsers[activeAccountId.value] || null;
         },
         kycLimits: (state): Readonly<UserLimits | null> => state.kycLimits,

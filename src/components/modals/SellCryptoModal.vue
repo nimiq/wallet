@@ -89,7 +89,7 @@
                                     currency="nim" :fiat="selectedFiatCurrency"
                                     :max="oasisMaxFreeAmount"/>
                             </i18n>
-                            <KycPrompt v-if="!kycUser" @click="kycOverlayOpened = true" />
+                            <KycPrompt v-if="$config.TEN31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                         </Tooltip>
                     </div>
                 </PageHeader>
@@ -169,7 +169,7 @@
                 </PageBody>
 
                 <SwapModalFooter
-                    v-if="!insufficientLimit || kycUser"
+                    v-if="!insufficientLimit || !$config.TEN31Pass.enabled || kycUser"
                     :isKycConnected="Boolean(kycUser)"
                     :disabled="!canSign"
                     :error="estimateError || swapError"

@@ -67,7 +67,7 @@
                         <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
                             {{ $t('Settings') }}
                         </router-link> -->
-                        <KycPrompt v-if="!kycUser" @click="kycOverlayOpened = true" />
+                        <KycPrompt v-if="$config.TEN31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
             </div>
@@ -134,7 +134,7 @@
         </PageBody>
 
         <SwapModalFooter
-            v-if="!isLimitReached || kycUser"
+            v-if="!isLimitReached || !$config.TEN31Pass.enabled || kycUser"
             :isKycConnected="Boolean(kycUser)"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"

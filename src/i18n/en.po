@@ -51,10 +51,10 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:107
-#: src/components/modals/BuyCryptoModal.vue:82
-#: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:64
+#: src/components/modals/BuyCryptoModal.vue:108
+#: src/components/modals/BuyCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:85
+#: src/components/swap/SwapModal.vue:63
 msgid "{value} remaining"
 msgstr ""
 
@@ -102,9 +102,9 @@ msgstr ""
 msgid "3"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:101
-#: src/components/modals/SellCryptoModal.vue:78
-#: src/components/swap/SwapModal.vue:59
+#: src/components/modals/BuyCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:79
+#: src/components/swap/SwapModal.vue:58
 msgid "30-day Limit"
 msgstr ""
 
@@ -112,7 +112,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:94
+#: src/components/modals/BuyCryptoModal.vue:95
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
@@ -195,7 +195,7 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:86
+#: src/components/modals/BuyCryptoModal.vue:87
 msgid "After 72 hours"
 msgstr ""
 
@@ -480,7 +480,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:279
 #: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:193
+#: src/components/swap/SwapModal.vue:192
 msgid "Choose an Address"
 msgstr ""
 
@@ -513,9 +513,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:144
-#: src/components/swap/SwapModal.vue:149
-#: src/components/swap/SwapModal.vue:161
+#: src/components/swap/SwapModal.vue:143
+#: src/components/swap/SwapModal.vue:148
+#: src/components/swap/SwapModal.vue:160
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -976,7 +976,7 @@ msgstr ""
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:79
+#: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr ""
 
@@ -1074,10 +1074,10 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:105
-#: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:82
-#: src/components/swap/SwapModal.vue:62
+#: src/components/modals/BuyCryptoModal.vue:106
+#: src/components/modals/BuyCryptoModal.vue:91
+#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/swap/SwapModal.vue:61
 msgid "loading..."
 msgstr ""
 
@@ -1173,11 +1173,6 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:115
-#: src/components/modals/SellCryptoModal.vue:91
-msgid "Nimiq is working on a PRO feature with increased limits after user registration."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:114
@@ -1341,6 +1336,7 @@ msgid "Purpose"
 msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:5
+#: src/components/kyc/KycPrompt.vue:5
 msgid "Raise your limits"
 msgstr ""
 
@@ -1535,7 +1531,7 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:23
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 msgid "Send all"
@@ -1612,7 +1608,7 @@ msgstr ""
 msgid "Set Amount"
 msgstr ""
 
-#: src/components/AmountMenu.vue:8
+#: src/components/AmountMenu.vue:13
 msgid "Set fee"
 msgstr ""
 

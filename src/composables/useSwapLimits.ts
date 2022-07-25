@@ -61,7 +61,7 @@ watch(async () => {
 
     let newUserLimitEur = Infinity;
 
-    if (isFiatToCrypto.value) {
+    if (!kycUser.value && isFiatToCrypto.value) {
         const { getSwapByTransactionHash } = useSwapsStore();
 
         // For fiat-to-crypto swaps, there is a limit of 100€ in the first three days after first use (of the IBAN).

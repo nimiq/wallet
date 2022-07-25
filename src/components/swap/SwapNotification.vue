@@ -424,7 +424,7 @@ export default defineComponent({
                     let interval: number;
                     const secret = await Promise.race<string>([
                         swapHandler.awaitSecret(),
-                        new Promise((resolve, reject) => {
+                        new Promise<string>((resolve, reject) => {
                             interval = window.setInterval(async () => {
                                 if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
                                     window.clearInterval(interval);

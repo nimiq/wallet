@@ -1443,7 +1443,7 @@
 
 "@nimiq/fastspot-api@nimiq/fastspot-api#build/kyc":
   version "1.6.1"
-  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/6855ba23beeaea5033d7fcfe7a3f7827a29a7f69"
+  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/3583c53769215f20cd3b1156456e678a6e882e7a"
 
 "@nimiq/hub-api@^1.5.2":
   version "1.5.2"
@@ -1475,6 +1475,11 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.0.1.tgz#f7037c361a74c3d715e2ae0a0dfe40a591a52f44"
   integrity sha512-4wSGlnyROsaVCpVWMiJWTX3HUQD4/JEZA++qmJ9Ju3mhq92gbcmVzDUWa91dqe3j7acp2yajeFgNmJsNA3Mxlw==
+
+"@nimiq/oasis-api@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.1.1.tgz#d1aa3d0f9afabf9116205809a0fc72d2e392bafa"
+  integrity sha512-jXNO7nvE0mzAyDCrucByv5AcyDWZjyqb9810YctysxqUtOxNG27hPkhomL+WW6nrnTVgvriJo3yaTFPTfLphKw==
 
 "@nimiq/rpc@^0.4.0":
   version "0.4.1"

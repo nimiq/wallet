@@ -32,12 +32,17 @@ export const useKycStore = createStore({
     }),
     getters: {
         connectedUser: (state): Readonly<KycUser | null> => {
-            if (!Config.TEN31Pass.enabled) return null;
-
             const { activeAccountId } = useAccountStore();
             if (!activeAccountId.value) return null;
 
-            return state.connectedUsers[activeAccountId.value] || null;
+            // We need to fetch the user from the state here first, to register it as a reactive dependency
+            // for this getter. Otherwise, if TEN31Pass is disabled when this getter is first accessed,
+            // execution stops at the config check and dependencies that come later are not registered for
+            // reactivity.
+            const user = state.connectedUsers[activeAccountId.value] || null;
+            if (!Config.TEN31Pass.enabled) return null;
+
+            return user;
         },
         kycLimits: (state): Readonly<UserLimits | null> => state.kycLimits,
     },

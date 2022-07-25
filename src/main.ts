@@ -21,6 +21,7 @@ import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { initPWA } from './pwa';
+import { init as initKycConnection } from './lib/KycConnection';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -68,6 +69,10 @@ async function start() {
 
     if (Config.oasis.apiEndpoint) {
         initOasisApi(Config.oasis.apiEndpoint);
+    }
+
+    if (Config.TEN31Pass.enabled) {
+        initKycConnection();
     }
 
     // Make config accessible in components

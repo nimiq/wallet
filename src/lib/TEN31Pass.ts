@@ -22,6 +22,15 @@ export type AppGrantDetails = {
     },
 }
 
+export type ApiError = {
+    error: string,
+    message: string | null,
+    path: string,
+    requestId: string,
+    status: number,
+    timestamp: string,
+}
+
 export function init(endpoint: string, appId: string) {
     API_URL = endpoint;
     APP_ID = appId;
@@ -70,7 +79,7 @@ export async function requestAppGrant(): Promise<string> {
     return promise;
 }
 
-export async function getAppGrantDetails(grant: string): Promise<AppGrantDetails> {
+export async function getAppGrantDetails(grant: string): Promise<AppGrantDetails | ApiError> {
     return fetch(`${API_URL}/api/public/grant/app/${grant}`)
         .then((res) => res.json());
 }

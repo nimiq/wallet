@@ -1,4 +1,5 @@
 import Config from 'config';
+import { useAccountStore } from '../stores/Account';
 import { KycProvider, useKycStore } from '../stores/Kyc';
 import { getAppGrantDetails, init, requestAppGrant } from './TEN31Pass';
 
@@ -7,10 +8,13 @@ export async function connectKyc(provider = KycProvider.TEN31PASS) {
 
     init(Config.TEN31Pass.apiEndpoint, Config.TEN31Pass.appId);
 
+    const accountId = useAccountStore().activeAccountId.value;
+    if (!accountId) return;
+
     const appGrant = await requestAppGrant();
     const grantDetails = await getAppGrantDetails(appGrant);
 
-    useKycStore().connect({
+    useKycStore().connect(accountId, {
         provider,
         appGrant,
         id: grantDetails.user.id,
@@ -19,5 +23,8 @@ export async function connectKyc(provider = KycProvider.TEN31PASS) {
 }
 
 export function disconnectKyc() {
-    useKycStore().disconnect();
+    const accountId = useAccountStore().activeAccountId.value;
+    if (!accountId) return;
+
+    useKycStore().disconnect(accountId);
 }

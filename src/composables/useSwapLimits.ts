@@ -30,6 +30,8 @@ const isFiatToCrypto = ref(false);
 
 const trigger = ref(0);
 
+let debouncing = false;
+
 watch(async () => {
     // We are using this statement to trigger a re-evaluation (re-run) of the watcher
     trigger.value; // eslint-disable-line no-unused-expressions
@@ -39,6 +41,11 @@ watch(async () => {
         // because the KYC UID limits are included in the asset limit requests.
         ? undefined
         : useAccountStore().activeAccountInfo.value?.uid;
+
+    if (debouncing) return;
+    debouncing = true;
+    window.setTimeout(() => debouncing = false, 100);
+
     const userLimitsPromise = uid ? getUserLimits(uid) : Promise.resolve(undefined);
 
     const nimAddressLimitsPromise = getLimits(
@@ -243,8 +250,8 @@ watch([activeCurrency, activeAddress], ([currency, address]) => {
     }
 }, { lazy: true });
 
-// Re-run limit calculation when exchange rates or KYC-connected user change
-watch([exchangeRates, kycUser], () => {
+// Re-run limit calculation when exchange rates change
+watch(exchangeRates, () => {
     if (limits.value) recalculate();
 }, { lazy: true, deep: true });
 

@@ -149,7 +149,7 @@
             </section>
 
             <section>
-                <h2 class="nq-label">{{ $t('Limits') }}</h2>
+                <h2 class="nq-label">{{ $t('Account Limits') }}</h2>
 
                 <div class="setting kyc-connection">
                     <div class="kyc-container">

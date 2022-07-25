@@ -45,13 +45,12 @@
                             'limit-reached': isLimitReached,
                             'kyc-connected': kycUser,
                         }">
+                            <LimitIcon />
                             <template v-if="limits">
-                                <GroundedArrowDownIcon />
                                 <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                                 <KycIcon v-if="kycUser" />
                             </template>
                             <template v-else>
-                                {{ $t('Max.') }}
                                 <CircleSpinner/>
                             </template>
                         </div>
@@ -236,7 +235,7 @@ import AmountInput from '../AmountInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
-import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
@@ -1294,7 +1293,7 @@ export default defineComponent({
         CircleSpinner,
         SwapBalanceBar,
         MinimizeIcon,
-        GroundedArrowDownIcon,
+        LimitIcon,
         KycIcon,
         LightningIcon,
         SwapFeesTooltip,
@@ -1388,8 +1387,7 @@ export default defineComponent({
             width: 1.75rem;
         }
 
-        .grounded-arrow-down-icon {
-            transform: rotate(180deg);
+        .limit-icon {
             margin-right: 0.75rem;
             opacity: 0.8;
         }

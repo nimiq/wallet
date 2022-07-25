@@ -2,11 +2,17 @@
     <div class="kyc-prompt nq-purple-bg" :class="`layout-${layout}`">
         <div class="flex-row">
             <KycIcon />
-            <h3>{{ $t('Get verified for higher limits') }}</h3>
+            <h3 v-if="layout === 'wide'">{{ $t('Raise your limits') }}</h3>
+            <h3 v-else>{{ $t('Get TEN31-verified for higher limits') }}</h3>
         </div>
-        <p class="explainer">
-            {{ $t('Buy, and sell up to {limit} per month.', { limit: '$5000'}) }}
+        <p v-if="!kycLimits" class="explainer">
+            {{ $t('Swap more per 30 days.') }}
         </p>
+        <i18n v-else tag="p" path="Swap up to {limit} per 30 days." class="explainer">
+            <template slot="limit">
+                <FiatAmount :amount="kycLimits.monthly / 1e2" :currency="kycLimits.asset" hideDecimals />
+            </template>
+        </i18n>
         <button
             class="nq-button-pill inverse nq-purple"
             @mousedown.prevent @click="$emit('click')"
@@ -16,7 +22,10 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import { getUserLimits } from '@nimiq/fastspot-api';
+import { FiatAmount } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
+import { useKycStore } from '../../stores/Kyc';
 
 export default defineComponent({
     props: {
@@ -25,7 +34,22 @@ export default defineComponent({
             default: 'normal',
         },
     },
+    setup() {
+        const { kycLimits, setKycLimits } = useKycStore();
+
+        if (!kycLimits.value) {
+            getUserLimits(
+                '00000000-0000-0000-0000-000000000000',
+                '00000000-0000-0000-0000-000000000000',
+            ).then(setKycLimits);
+        }
+
+        return {
+            kycLimits,
+        };
+    },
     components: {
+        FiatAmount,
         KycIcon,
     },
 });
@@ -53,6 +77,19 @@ h3 {
     line-height: 1.2;
 }
 
+::v-deep .circle-spinner {
+    display: block;
+    margin: 2rem 0 3rem;
+
+    path {
+        stroke: white;
+    }
+}
+
+.explainer {
+    font-weight: 600;
+}
+
 .nq-button-pill.nq-purple {
     background: white;
 
@@ -69,6 +106,10 @@ h3 {
 
     .kyc-icon {
         font-size: 2.25rem;
+    }
+
+    ::v-deep .circle-spinner {
+        margin: 1rem 0 -1px;
     }
 
     .explainer {

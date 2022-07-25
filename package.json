@@ -29,7 +29,7 @@
     "@nimiq/hub-api": "^1.5.1",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.0.1",
-    "@nimiq/oasis-api": "^1.0.1",
+    "@nimiq/oasis-api": "^1.1.1",
     "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.6.0",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",

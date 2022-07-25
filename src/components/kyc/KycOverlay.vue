@@ -4,7 +4,8 @@
         <PageHeader>
             {{ $t('Raise your limits') }}
             <span slot="more" class="intro">
-                {{ $t('Get verified for higher limits with Nimiq, SuperSimpleSwap and TEN31 products.') }}
+                {{ $t('Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot'
+                    + ' and TEN31-related products and services.') }}
             </span>
         </PageHeader>
         <PageBody>
@@ -20,7 +21,7 @@
         </PageBody>
         <PageFooter>
             <button class="nq-button light-blue" @click="connect">
-                {{ $t('Connect {provider}', { provider }) }}
+                {{ $t('Connect to {provider}', { provider }) }}
             </button>
         </PageFooter>
     </div>

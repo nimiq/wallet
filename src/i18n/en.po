@@ -127,6 +127,10 @@ msgid ""
 "it a try and experience all new Nimiq features."
 msgstr ""
 
+#: src/components/layouts/Settings.vue:152
+msgid "Account Limits"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
 msgstr ""
@@ -403,10 +407,6 @@ msgstr ""
 msgid "Buy with Simplex"
 msgstr ""
 
-#: src/components/kyc/KycPrompt.vue:8
-msgid "Buy, and sell up to {limit} per month."
-msgstr ""
-
 #: src/components/modals/SendModal.vue:207
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
@@ -532,14 +532,14 @@ msgstr ""
 msgid "Connect"
 msgstr ""
 
-#: src/components/kyc/KycOverlay.vue:23
-msgid "Connect {provider}"
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:15
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:24
+msgid "Connect to {provider}"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:159
@@ -870,16 +870,16 @@ msgstr ""
 msgid "Get NIM"
 msgstr ""
 
-#: src/components/kyc/KycPrompt.vue:13
+#: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
 msgstr ""
 
-#: src/components/kyc/KycPrompt.vue:5
-msgid "Get verified for higher limits"
+#: src/components/kyc/KycPrompt.vue:6
+msgid "Get TEN31-verified for higher limits"
 msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:7
-msgid "Get verified for higher limits with Nimiq, SuperSimpleSwap and TEN31 products."
+msgid "Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and TEN31-related products and services."
 msgstr ""
 
 #: src/components/BankCheckInput.vue:94
@@ -1024,10 +1024,6 @@ msgstr ""
 msgid "Keyguard Mode"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:157
-msgid "KYC Connection"
-msgstr ""
-
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
 msgstr ""
@@ -1063,10 +1059,6 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:67
 msgid "Limit of copied addresses reached."
-msgstr ""
-
-#: src/components/layouts/Settings.vue:152
-msgid "Limits"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:171
@@ -1738,6 +1730,10 @@ msgstr ""
 msgid "Swap has expired"
 msgstr ""
 
+#: src/components/kyc/KycPrompt.vue:9
+msgid "Swap more per 30 days."
+msgstr ""
+
 #: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
 msgstr ""
@@ -1755,6 +1751,10 @@ msgstr ""
 msgid "Swap to {address}"
 msgstr ""
 
+#: src/components/kyc/KycPrompt.vue:11
+msgid "Swap up to {limit} per 30 days."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:183
 msgid "Swiping Gestures"
 msgstr ""
@@ -1765,6 +1765,10 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:157
+msgid "TEN31 Verification"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:69

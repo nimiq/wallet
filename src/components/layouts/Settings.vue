@@ -154,7 +154,7 @@
                 <div class="setting kyc-connection">
                     <div class="kyc-container">
                         <div class="description">
-                            <label class="nq-h2">{{ $t('KYC Connection') }}</label>
+                            <label class="nq-h2">{{ $t('TEN31 Verification') }}</label>
                             <p class="nq-text">
                                 {{ $t('Connect to TEN31 Pass for higher swap limits.') }}
                             </p>

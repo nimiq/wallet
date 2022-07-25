@@ -78,7 +78,7 @@ import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
-import { useSettingsStore, Trial } from '../../stores/Settings';
+import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -117,7 +117,7 @@ export default defineComponent({
             }
         }
 
-        const { updateAvailable, trials, canUseSwaps } = useSettingsStore();
+        const { updateAvailable, canUseSwaps } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -135,8 +135,6 @@ export default defineComponent({
             isLegacyAccount,
             updateAvailable,
             hasActiveSwap,
-            trials,
-            Trial,
             canUseSwaps,
         };
     },

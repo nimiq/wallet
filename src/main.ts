@@ -22,6 +22,7 @@ import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { initPWA } from './pwa';
 import { init as initKycConnection } from './lib/KycConnection';
+import { init as initTrials } from './lib/Trials';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -41,6 +42,7 @@ Vue.use(VueVirtualScroller);
 async function start() {
     initPWA(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
+    initTrials(); // Must be called after storage was initialized, can affect Config
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization
 

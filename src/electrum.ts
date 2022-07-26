@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { watch, computed, ref } from '@vue/composition-api';
+import { watch, computed, ref, Ref } from '@vue/composition-api';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import Config from 'config';
@@ -167,6 +167,22 @@ export async function checkHistory(
     return gap;
 }
 
+const fetchedAccounts = new Set<string>();
+
+let txFetchTrigger: Ref<number> | undefined;
+export function useTxFetchTrigger() {
+    txFetchTrigger = txFetchTrigger || ref(0);
+    return txFetchTrigger;
+}
+
+export function refetchActiveAccount() {
+    const { activeAccountInfo } = useAccountStore();
+    if (!activeAccountInfo.value) return;
+
+    fetchedAccounts.delete(activeAccountInfo.value.id);
+    useTxFetchTrigger().value += 1;
+}
+
 export async function launchElectrum() {
     if (isLaunched) return;
     isLaunched = true;
@@ -178,14 +194,11 @@ export async function launchElectrum() {
     const btcTransactionsStore = useBtcTransactionsStore();
     const btcAddressStore = useBtcAddressStore();
 
-    const fetchedAccounts = new Set<string>();
-
-    const txFetchTrigger = ref(0);
     function invalidateTransationHistory() {
         // Invalidate fetched addresses
         fetchedAccounts.clear();
         // Trigger watcher
-        txFetchTrigger.value += 1;
+        useTxFetchTrigger().value += 1;
     }
 
     client.addHeadChangedListener((header) => {
@@ -227,7 +240,7 @@ export async function launchElectrum() {
     });
 
     // Fetch transactions for active account
-    watch([activeAccountInfo, txFetchTrigger], async ([accountInfo]) => {
+    watch([activeAccountInfo, useTxFetchTrigger()], async ([accountInfo]) => {
         const account = accountInfo as AccountInfo | null;
         if (!account) return;
 

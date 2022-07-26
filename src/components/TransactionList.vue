@@ -1,5 +1,6 @@
 <template>
     <div class="transaction-list flex-row" ref="root">
+        <Pull2RefreshIndicator :pulledDistance="pulledDistance" />
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -7,6 +8,8 @@
             key-field="transactionHash"
             :buffer="scrollerBuffer"
             ref="scroller"
+            :style="`transform: translateY(${pulledDistance / 2}px)`"
+            :class="{'smooth': !pulledDistance}"
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
@@ -102,6 +105,9 @@ import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useWindowSize } from '../composables/useWindowSize';
+import { checkHistory, updateBalances } from '../network';
+import Pull2RefreshIndicator from './Pull2RefreshIndicator.vue';
+import { usePull2Refresh } from '../composables/usePull2Refresh';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -390,6 +396,13 @@ export default defineComponent({
             context.emit('scroll');
         }
 
+        const { pulledDistance } = usePull2Refresh(scroller, () => {
+            if (activeAddress.value) {
+                checkHistory(activeAddress.value);
+                updateBalances([activeAddress.value]);
+            }
+        });
+
         // @scroll / @scroll.native doesn't seem to work, so using standard event system
         onMounted(() => {
             if (!scroller.value) return;
@@ -413,6 +426,7 @@ export default defineComponent({
             unclaimedCashlinkTxs,
             onCreateCashlink,
             scroller,
+            pulledDistance,
         };
     },
     components: {
@@ -421,6 +435,7 @@ export default defineComponent({
         CrossCloseButton,
         CircleSpinner,
         HexagonIcon,
+        Pull2RefreshIndicator,
     },
 });
 </script>
@@ -460,6 +475,10 @@ export default defineComponent({
     touch-action: pan-y;
 
     @extend %custom-scrollbar;
+
+    &.smooth {
+        transition: transform var(--transition-time) var(--nimiq-ease);
+    }
 }
 
 .unclaimed-cashlink-list {

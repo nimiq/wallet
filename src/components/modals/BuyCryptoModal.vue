@@ -859,7 +859,10 @@ export default defineComponent({
         }, { lazy: true });
 
         function onPaid() {
-            if (!isMainnet) sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+            if (!swap.value!.fundingInstructions || swap.value!.fundingInstructions.type !== 'sepa') {
+                // We are in a test environment
+                sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+            }
 
             if (!swap.value!.stateEnteredAt) {
                 const { setActiveSwap } = useSwapsStore();

@@ -94,8 +94,8 @@ button.reset:disabled {
     applying the changes between light-blue normal and darkened, deriving purple darkened variation:
     purple-bg-darkened: from hsl(241, 33%, 39%) to hsl(262, 35%, 39%)
     */
-    --nimiq-purple-darkened: hsl(262, 35%, 39%);
-    --nimiq-purple-bg-darkened: radial-gradient(100% 100% at bottom right, hsl(241, 33%, 39%), var(--nimiq-purple-darkened));
+    --nimiq-purple-darkened: hsl(262, 35%, 37%);
+    --nimiq-purple-bg-darkened: radial-gradient(100% 100% at bottom right, hsl(241, 33%, 37%), var(--nimiq-purple-darkened));
     background-image: var(--nimiq-purple-bg-darkened);
 }
 

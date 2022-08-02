@@ -26,8 +26,8 @@ export function init() {
     for (const trial of trials.value) {
         switch (trial) { // eslint-disable-line default-case
             case Trial.TEN31Pass:
-                if (Config.TEN31Pass.enabled) break;
-                Config.TEN31Pass.enabled = true;
+                if (Config.ten31Pass.enabled) break;
+                Config.ten31Pass.enabled = true;
                 initKycConnection();
                 break;
         }

@@ -25,10 +25,33 @@ export default {
         minBuyAmount: 35, // Euro
     },
 
-    TEN31Pass: {
+    ten31Pass: {
         enabled: true,
-        apiEndpoint: 'https://test.pass.ten31.com',
-        appId: '1a37384f-7d3a-4ac9-a887-ea1bd35dca16',
+        apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
+            // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
+            // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.
+            ? 'http://localhost:8082'
+            : 'https://test.pass.ten31.com',
+        appId: window.location.protocol === 'https:'
+            ? 'ecf6f03e-7af0-4af8-a4a8-c3a8cc16e168'
+            : 'acd38dfa-f77b-4c40-b6b1-f461bf47f9d4',
+        services: {
+            s3: {
+                // Fastspot test instance
+                serviceId: '6cc93627-6b35-4c3f-9763-f03fe749631c',
+                usageIds: {
+                    swap: '2b099ff4-6ab8-45f4-a872-af8a321790a8',
+                },
+            },
+            oasis: {
+                // OASIS sandbox
+                serviceId: '1bb1475f-4535-4019-b0a8-7e07486e9b6a',
+                usageIds: {
+                    clearing: 'fb4f315c-15d0-4b78-8f63-6838de698e96',
+                    settling: '016db75e-b86e-4a8d-83aa-74cc7d80dc03',
+                },
+            },
+        },
     },
 
     moonpay: {

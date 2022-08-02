@@ -457,6 +457,7 @@ export default defineComponent({
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
+                            activeSwap.value!.settlementAuthorizationToken,
                         );
 
                         if (activeSwap.value!.to.asset === SwapAsset.BTC) {

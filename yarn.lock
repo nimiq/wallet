@@ -1436,19 +1436,14 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
-  integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
-
-"@nimiq/fastspot-api@nimiq/fastspot-api#build/kyc":
+"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@nimiq/fastspot-api#build/kyc":
   version "1.6.1"
   resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/3583c53769215f20cd3b1156456e678a6e882e7a"
 
-"@nimiq/hub-api@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.5.1.tgz#81000be5d17fc3c668f1cf2a1902bc07ced2d184"
-  integrity sha512-ay42DEZQ+N2jsrsgUTbz3jdLmy3deM9cjReiOK8HzxMTRBFH3wKExpGhgji4Sl9Ktx98vjY8I9ocHUvOAGsbiw==
+"@nimiq/hub-api@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.6.0.tgz#77f7108cbccb82001944bedf5a3d9f3796c5bbdf"
+  integrity sha512-UAkdw6RiLejSrCOLtu2cQrANUZIec+jQgJwzpdsiN37rnsd5FMWW02crXlwWSxNGDz2s0X9YnEEo9Rzgp4RWnQ==
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.5.2"
@@ -1463,10 +1458,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.0.1.tgz#fd11114f1dda4506c4d71716e796f3fb022e1df4"
-  integrity sha512-fBH3MYdCawn5IjAh7/Sh+BXd60lIaWgtaXQDyG+WahU8I4v1ouyKCI5rDsFKR2iibk/FTmZaj3arSwJf3CYA9g==
+"@nimiq/libswap@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.1.0.tgz#f2c75f43e75fff7129536ce2cf908e2a5b8c8b3f"
+  integrity sha512-v0nX0mTHdUCA0/uK/faBe4ryJEIvQ1t5EbOdjqWl+RtcoVmwn3yURlefBRy+lTuci2I6UuAmy3wJ9IZU7hw+0g==
   dependencies:
     "@nimiq/oasis-api" "^1.0.1"
     promise.prototype.finally "^3.1.3"
@@ -1481,7 +1476,7 @@
   resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.1.1.tgz#d1aa3d0f9afabf9116205809a0fc72d2e392bafa"
   integrity sha512-jXNO7nvE0mzAyDCrucByv5AcyDWZjyqb9810YctysxqUtOxNG27hPkhomL+WW6nrnTVgvriJo3yaTFPTfLphKw==
 
-"@nimiq/rpc@^0.4.0":
+"@nimiq/rpc@^0.4.0", "@nimiq/rpc@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@nimiq/rpc/-/rpc-0.4.1.tgz#d5df1e426793afcdd8c407a2968442bbee874dbd"
   integrity sha512-aQigD21o7S1+J9kfWBA9sDPjtQ+K1keL02eahc6UjSL/+9SVMY+zetSDdjq6d4zNBLRnVayjw0G2hc/yKUMZ0Q==
@@ -1490,6 +1485,11 @@
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.3.tgz#a360c7aa13f1f18d801d7461a32bb28a6bc61c38"
   integrity sha512-NL/JeQ3f3koGqE0c6Q/ZyupAXvJfXGoZTkiCVnTGwgCN3lvUMHCJtp7qQPnvDldBLMORDA4Ck7wGgktKA9Fa9Q==
+
+"@nimiq/ten31-pass-api@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.0.0.tgz#6a26bfa1b51efa18dc60c51f99381ea15bf1c18d"
+  integrity sha512-+KF5Npj5bIymGKT25mTDLboFoMmBgf/BbqqBE/xq4NYp8/PkFm3/6JfbnRw48/DnO12SqDttOksvLXNw9/EnOQ==
 
 "@nimiq/utils@^0.5.0":
   version "0.5.1"
@@ -2891,15 +2891,10 @@ bech32@^1.1.2:
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"
   integrity sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==
 
-big-integer@^1.6.44:
-  version "1.6.49"
-  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.49.tgz#f6817d3ea5d4f3fb19e24df9f4b1b4471a8328ce"
-  integrity sha512-KJ7VhqH+f/BOt9a3yMwJNmcZjG53ijWMTjSAGMveQWyLwqIiwkjNP5PFgDob3Snnx86SjDj6I89fIbv0dkQeNw==
-
-big-integer@^1.6.48:
-  version "1.6.48"
-  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
-  integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
+big-integer@^1.6.44, big-integer@^1.6.48:
+  version "1.6.51"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
 big.js@^5.2.2:
   version "5.2.2"

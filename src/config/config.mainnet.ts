@@ -25,7 +25,7 @@ export default {
         minBuyAmount: 35, // Euro
     },
 
-    TEN31Pass: {
+    ten31Pass: {
         enabled: false,
         apiEndpoint: 'https://pass.ten31.com',
         appId: '',

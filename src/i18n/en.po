@@ -115,7 +115,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:372
+#: src/components/layouts/Settings.vue:360
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -364,9 +364,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:194
-#: src/components/modals/BuyCryptoModal.vue:199
-#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/BuyCryptoModal.vue:193
+#: src/components/modals/BuyCryptoModal.vue:198
+#: src/components/modals/BuyCryptoModal.vue:212
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr ""
@@ -375,7 +375,7 @@ msgstr ""
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:173
+#: src/components/modals/BuyCryptoModal.vue:170
 msgid "Buy max"
 msgstr ""
 
@@ -411,15 +411,15 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/modals/SellCryptoModal.vue:179
-#: src/components/swap/SwapModal.vue:142
+#: src/components/modals/BuyCryptoModal.vue:195
+#: src/components/modals/SellCryptoModal.vue:178
+#: src/components/swap/SwapModal.vue:146
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:210
-#: src/components/modals/SellCryptoModal.vue:193
-#: src/components/swap/SwapModal.vue:154
+#: src/components/modals/BuyCryptoModal.vue:209
+#: src/components/modals/SellCryptoModal.vue:192
+#: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -440,7 +440,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:352
+#: src/components/layouts/Settings.vue:340
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -479,7 +479,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:279
 #: src/components/modals/SellCryptoModal.vue:245
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:192
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr ""
 
@@ -512,9 +512,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:143
-#: src/components/swap/SwapModal.vue:148
-#: src/components/swap/SwapModal.vue:160
+#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:149
+#: src/components/swap/SwapModal.vue:161
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -554,11 +554,11 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:50
+#: src/components/swap/SwapModalFooter.vue:51
 msgid "Connecting to Bitcoin network"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:58
+#: src/components/swap/SwapModalFooter.vue:59
 msgid "Connecting to Nimiq network"
 msgstr ""
 
@@ -829,7 +829,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:358
+#: src/components/layouts/Settings.vue:346
 msgid "File contains no contacts."
 msgstr ""
 
@@ -994,7 +994,7 @@ msgid "Install Web App"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:164
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr ""
@@ -1108,17 +1108,9 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:157
+#: src/components/modals/BuyCryptoModal.vue:163
+#: src/components/modals/SellCryptoModal.vue:154
 msgid "Max swappable amount is {amount}"
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:68
-#: src/components/modals/BuyCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:68
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/swap/SwapModal.vue:54
-msgid "Max."
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
@@ -1128,7 +1120,7 @@ msgstr ""
 msgid "min {amount}"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:174
 msgid "Minimum buy amount is {amount}"
 msgstr ""
 
@@ -1239,7 +1231,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:381
+#: src/components/layouts/Settings.vue:369
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1494,9 +1486,9 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:177
-#: src/components/modals/SellCryptoModal.vue:182
-#: src/components/modals/SellCryptoModal.vue:196
+#: src/components/modals/SellCryptoModal.vue:176
+#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/modals/SellCryptoModal.vue:195
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr ""
@@ -1505,9 +1497,9 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:132
+#: src/components/modals/SellCryptoModal.vue:161
 #: src/components/modals/SellCryptoModal.vue:164
-#: src/components/modals/SellCryptoModal.vue:167
 msgid "Sell max"
 msgstr ""
 
@@ -1611,7 +1603,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/modals/BuyCryptoModal.vue:181
 msgid "Set minimum"
 msgstr ""
 
@@ -1779,7 +1771,7 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:605
+#: src/components/swap/SwapModal.vue:618
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
@@ -2012,7 +2004,7 @@ msgstr ""
 msgid "Waiting for {currency}"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:60
+#: src/components/swap/SwapModalFooter.vue:61
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 

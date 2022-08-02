@@ -27,7 +27,7 @@ export default {
         maxFreeAmount: 999, // Euro
     },
 
-    TEN31Pass: {
+    ten31Pass: {
         enabled: false,
         apiEndpoint: 'https://pass.ten31.com',
         appId: '',

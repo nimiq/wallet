@@ -388,7 +388,7 @@ export default defineComponent({
                 el.value = 'OK, trial enabled!';
 
                 // Ensure UI is shown after trial was enabled
-                showAccountLimitsSection.value = Config.TEN31Pass.enabled;
+                showAccountLimitsSection.value = Config.ten31Pass.enabled;
             } else {
                 el.value = 'Nope, no cookie for you';
             }
@@ -414,7 +414,7 @@ export default defineComponent({
             new Date().getFullYear(), // user year
         );
 
-        const showAccountLimitsSection = ref(Config.TEN31Pass.enabled);
+        const showAccountLimitsSection = ref(Config.ten31Pass.enabled);
 
         return {
             addVestingContract,

@@ -5,7 +5,7 @@ import { KycProvider, useKycStore } from '../stores/Kyc';
 import { getAppGrantDetails, init as initTEN31Pass, requestAppGrant } from './TEN31Pass';
 
 export function init() {
-    initTEN31Pass(Config.TEN31Pass.apiEndpoint, Config.TEN31Pass.appId);
+    initTEN31Pass(Config.ten31Pass.apiEndpoint, Config.ten31Pass.appId);
 
     const { connectedUser } = useKycStore();
 

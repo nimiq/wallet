@@ -3,6 +3,7 @@ import HubApi, {
     SignTransactionRequest,
     SignBtcTransactionRequest,
     SetupSwapRequest,
+    SetupSwapResult,
     RefundSwapRequest,
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
@@ -19,8 +20,10 @@ import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { guessUserCurrency, useFiatStore } from './stores/Fiat';
+import { useKycStore } from './stores/Kyc';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
+import type { SetupSwapWithKycResult } from './swap-kyc-handler';
 import { useGeoIp } from './composables/useGeoIp';
 
 export function shouldUseRedirects(): boolean {
@@ -575,20 +578,38 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
     return btcAddressInfos;
 }
 
-export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName'>>) {
-    return hubApi.setupSwap(new Promise((resolve, reject) => {
-        requestPromise.then((request) => resolve({
-            ...request,
-            appName: APP_NAME,
-        })).catch(reject);
-    }), getBehavior()).catch(onError);
+export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName' | 'kyc'>>)
+    : Promise<SetupSwapResult | SetupSwapWithKycResult | null | /* for redirect requests */ void> {
+    const { connectedUser: { value: kycUser } } = useKycStore();
+    const requestWithAppNamePromise = requestPromise.then((request) => ({
+        ...request,
+        appName: APP_NAME,
+    }));
+    if (kycUser) {
+        // Use special flow that handles TEN31 Pass and Hub in one single popup via redirects. It uses the same request
+        // and result types as the Hub's regular setupSwap call, just extended by a kyc entry. To imitate the same
+        // behavior as for a regular Hub call, including the Hub overlay, we use the Hub's RequestBehaviors.
+        const requestBehavior = getBehavior()
+            // @ts-expect-error: _defaultBehavior is private
+            || hubApi._defaultBehavior;
+        return requestBehavior.request(
+            `${window.location.origin}/swap-kyc-handler`,
+            HubApi.RequestType.SETUP_SWAP,
+            [requestWithAppNamePromise.then((request) => ({
+                ...request,
+                kyc: {
+                    provider: kycUser.provider,
+                    userId: kycUser.id,
+                },
+            }))],
+        ).catch(onError);
+    }
+    return hubApi.setupSwap(requestWithAppNamePromise, getBehavior()).catch(onError);
 }
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
-    return hubApi.refundSwap(new Promise((resolve, reject) => {
-        requestPromise.then((request) => resolve({
-            ...request,
-            appName: APP_NAME,
-        })).catch(reject);
-    }), getBehavior()).catch(onError);
+    return hubApi.refundSwap(
+        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
+        getBehavior(),
+    ).catch(onError);
 }

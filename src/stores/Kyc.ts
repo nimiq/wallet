@@ -36,11 +36,11 @@ export const useKycStore = createStore({
             if (!activeAccountId.value) return null;
 
             // We need to fetch the user from the state here first, to register it as a reactive dependency
-            // for this getter. Otherwise, if TEN31Pass is disabled when this getter is first accessed,
+            // for this getter. Otherwise, if ten31Pass is disabled when this getter is first accessed,
             // execution stops at the config check and dependencies that come later are not registered for
             // reactivity.
             const user = state.connectedUsers[activeAccountId.value] || null;
-            if (!Config.TEN31Pass.enabled) return null;
+            if (!Config.ten31Pass.enabled) return null;
 
             return user;
         },

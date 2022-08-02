@@ -50,6 +50,15 @@ process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 
 module.exports = {
+    pages: {
+        index: 'src/main.ts',
+        'swap-kyc-handler': {
+            // Unfortunately this includes the complete chunk-vendors and chunk-common, and even their css. Can we
+            // improve this? The `chunks` option doesn't seem to be too useful here. At least the chunks should be
+            // cached already, so maybe it's not that much of an overhead actually.
+            entry: 'src/swap-kyc-handler.ts',
+        },
+    },
     /* Disable built-in integrity until compatible with configureWebpack.optimization.realContentHash, or that is removed. */
     // integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {

@@ -480,7 +480,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:282
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:192
+#: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
 msgstr ""
 
@@ -513,9 +513,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:143
-#: src/components/swap/SwapModal.vue:148
-#: src/components/swap/SwapModal.vue:160
+#: src/components/swap/SwapModal.vue:144
+#: src/components/swap/SwapModal.vue:149
+#: src/components/swap/SwapModal.vue:161
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -555,11 +555,11 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:50
+#: src/components/swap/SwapModalFooter.vue:51
 msgid "Connecting to Bitcoin network"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:58
+#: src/components/swap/SwapModalFooter.vue:59
 msgid "Connecting to Nimiq network"
 msgstr ""
 
@@ -1798,7 +1798,7 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:605
+#: src/components/swap/SwapModal.vue:618
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
@@ -2031,7 +2031,7 @@ msgstr ""
 msgid "Waiting for {currency}"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:60
+#: src/components/swap/SwapModalFooter.vue:61
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 

@@ -78,6 +78,10 @@ export type ActiveSwap = SwapObject & {
     watchtowerNotified: boolean,
     fundingInstructions?: SepaClearingInstruction,
     fundingSerializedTx?: string,
+    // Authorization token for KYC enabled OASIS settlements (when selling crypto for fiat).
+    // S3 KYC grant tokens and KYC enabled OASIS clearing authorization tokens (buying crypto), don't have to be handled
+    // during the swap process in wallet, as those tokens are passed to S3 already in the Hub during swap confirmation.
+    settlementAuthorizationToken?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,

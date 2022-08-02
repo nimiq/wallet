@@ -67,7 +67,7 @@
                         <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
                             {{ $t('Settings') }}
                         </router-link> -->
-                        <KycPrompt v-if="$config.TEN31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
+                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
             </div>
@@ -134,7 +134,7 @@
         </PageBody>
 
         <SwapModalFooter
-            v-if="!isLimitReached || !$config.TEN31Pass.enabled || kycUser"
+            v-if="!isLimitReached || !$config.ten31Pass.enabled || kycUser"
             :isKycConnected="Boolean(kycUser)"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
@@ -1049,7 +1049,7 @@ export default defineComponent({
             let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
-                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+                if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

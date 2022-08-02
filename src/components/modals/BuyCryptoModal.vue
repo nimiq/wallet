@@ -111,7 +111,7 @@
                                         currency="nim" :fiat="selectedFiatCurrency"/>
                                 </i18n>
                             </template>
-                            <KycPrompt v-if="$config.TEN31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
+                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                         </Tooltip>
                     </div>
                 </PageHeader>
@@ -184,7 +184,7 @@
                 </PageBody>
 
                 <SwapModalFooter
-                    v-if="!insufficientLimit || !$config.TEN31Pass.enabled || kycUser"
+                    v-if="!insufficientLimit || !$config.ten31Pass.enabled || kycUser"
                     :isKycConnected="Boolean(kycUser)"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
@@ -649,7 +649,7 @@ export default defineComponent({
             let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
-                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+                if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

@@ -73,7 +73,7 @@ async function start() {
         initOasisApi(Config.oasis.apiEndpoint);
     }
 
-    if (Config.TEN31Pass.enabled) {
+    if (Config.ten31Pass.enabled) {
         initKycConnection();
     }
 

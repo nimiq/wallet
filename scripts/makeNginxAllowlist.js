@@ -4,7 +4,7 @@ const { pathToRegexp } = require('path-to-regexp')
 const data = fs.readFileSync('src/router.ts', 'utf8')
 
 const paths = data.split('\n')
-    .filter(line => line.trim().startsWith('path:')) // Only process lines that define a path
+    .filter(line => /^\s*(?:path|alias):/.test(line)) // Only process lines that define a path
     .map(line => line.split('\'')[1]) // Take the string between the single quotation marks
     .filter(Boolean) // Remove empty lines
     .map(path => `${pathToRegexp(path.replace('\\\\', '\\'), [])}`)

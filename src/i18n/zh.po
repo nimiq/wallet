@@ -81,6 +81,7 @@ msgstr "+网络费用"
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+另外{n}个"
 
@@ -370,9 +371,9 @@ msgstr "区块链浏览器"
 msgid "Block height"
 msgstr "区块高度"
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
-msgstr "浏览器"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "浏览器 | {count} 浏览器"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
@@ -877,7 +878,7 @@ msgstr "免费"
 msgid "Full KYC required, high availability."
 msgstr "需要完整的KYC，可用性高"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "完整节点"
 
@@ -1077,7 +1078,7 @@ msgstr "开始吧"
 msgid "Let's go!"
 msgstr "开始吧！"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "轻节点"
 
@@ -2171,7 +2172,7 @@ msgstr "你的账户是传统账户，使用新的账户选择器让你轻松切
 msgid "Your bank is not eligible?"
 msgstr "你的银行不符合条件？"
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "你的浏览器"
 

@@ -1,9 +1,9 @@
 # 
 # Translators:
 # Oscar_6, 2022
+# Daniel, 2022
 # Пётр Павлович, 2022
 # Vad <vjuruss@gmail.com>, 2022
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -82,6 +82,7 @@ msgstr "+ комиссия сети"
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+{n} больше"
 
@@ -390,9 +391,9 @@ msgstr "Обозреватель блоков"
 msgid "Block height"
 msgstr "Номер блока"
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
-msgstr "Браузер"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "Браузер | {count} Браузер"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
@@ -907,7 +908,7 @@ msgstr "свободно"
 msgid "Full KYC required, high availability."
 msgstr "Необходима полная идентификация. Высокая доступность сервиса."
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Full Node"
 
@@ -1120,7 +1121,7 @@ msgstr "Поехали"
 msgid "Let's go!"
 msgstr "Поехали!"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "Light Node"
 
@@ -2253,7 +2254,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Ваш банк не удовлетворяет условиям?"
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "Ваш браузер"
 

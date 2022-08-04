@@ -1,8 +1,8 @@
 # 
 # Translators:
-# Petro M <petro.matsyburka@outlook.com>, 2022
 # Daniel, 2022
 # Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022
+# Petro M <petro.matsyburka@outlook.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -81,6 +81,7 @@ msgstr "+ комісія мережі"
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+{n} більше"
 
@@ -385,9 +386,9 @@ msgstr "Оглядач блоків"
 msgid "Block height"
 msgstr "Висота блоку"
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
-msgstr "Веб-оглядач"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "Веб-оглядач | {count} Веб-оглядач"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
@@ -908,7 +909,7 @@ msgstr "комісія"
 msgid "Full KYC required, high availability."
 msgstr "Потрібна повна ідентифікація, висока доступність."
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Повноцінний вузол"
 
@@ -1121,7 +1122,7 @@ msgstr "Вперед!"
 msgid "Let's go!"
 msgstr "Вперед!"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "Денний режим"
 
@@ -1609,7 +1610,7 @@ msgstr "Продати криптовалюту за фіат"
 #: src/components/modals/SellCryptoModal.vue:164
 #: src/components/modals/SellCryptoModal.vue:167
 msgid "Sell max"
-msgstr ""
+msgstr "Продати максимум"
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1717,7 +1718,7 @@ msgstr "Задати комісію"
 
 #: src/components/modals/BuyCryptoModal.vue:184
 msgid "Set minimum"
-msgstr ""
+msgstr "Встановити мінімум"
 
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
@@ -2250,7 +2251,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Ваш банк не відповідає вимогам?"
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "Ваш веб-оглядач"
 

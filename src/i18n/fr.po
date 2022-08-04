@@ -2,9 +2,9 @@
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
+# Daniel, 2022
 # Robinson BARAIS, 2022
 # Matheo <matheo@nimiq.com>, 2022
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -83,6 +83,7 @@ msgstr "+ frais de réseau"
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+{n} de plus"
 
@@ -393,9 +394,9 @@ msgstr "Explorateur de blocs"
 msgid "Block height"
 msgstr "Hauteur de bloc"
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
-msgstr "Navigateur"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "Navigateur | {count} Navigateurs"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
@@ -915,7 +916,7 @@ msgstr "gratuit"
 msgid "Full KYC required, high availability."
 msgstr "KYC requis pour les montants importants."
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Noeud Complet"
 
@@ -1128,7 +1129,7 @@ msgstr "Allons-y"
 msgid "Let's go!"
 msgstr "C'est parti !"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "Light Node"
 
@@ -1623,7 +1624,7 @@ msgstr "Vendre de la Crypto pour du Fiat"
 #: src/components/modals/SellCryptoModal.vue:164
 #: src/components/modals/SellCryptoModal.vue:167
 msgid "Sell max"
-msgstr ""
+msgstr "Vendre le maximum"
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1733,7 +1734,7 @@ msgstr "Définir les frais"
 
 #: src/components/modals/BuyCryptoModal.vue:184
 msgid "Set minimum"
-msgstr ""
+msgstr "Vendre le minimum"
 
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
@@ -2276,7 +2277,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Votre banque n'est pas éligible ?"
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "Votre navigateur"
 

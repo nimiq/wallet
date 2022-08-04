@@ -1,15 +1,15 @@
 # 
 # Translators:
-# Sören Schwert <hello@soerenschwert.de>, 2021
 # Daniel, 2022
 # BlockchainShay <Shaylish@live.nl>, 2022
 # Stefan, 2022
 # Fons <Fonsdesigns@hotmail.com>, 2022
 # Jim <jimvendrig10@gmail.com>, 2022
+# Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Jim <jimvendrig10@gmail.com>, 2022\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
 "Language-Team: Dutch (https://www.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -83,6 +83,7 @@ msgstr "+ netwerkkosten"
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+{n} meer"
 
@@ -388,9 +389,9 @@ msgstr "Block verkenner"
 msgid "Block height"
 msgstr "Block hoogte"
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
-msgstr "Browser"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "Browser | {count} Browser"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
@@ -904,7 +905,7 @@ msgstr "gratis"
 msgid "Full KYC required, high availability."
 msgstr "Volledige verificatie vereist, hoge beschikbaarheid."
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Full Node"
 
@@ -1115,7 +1116,7 @@ msgstr "Aan de slag"
 msgid "Let's go!"
 msgstr "Start!"
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "Light Node"
 
@@ -2243,7 +2244,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr "Komt je bank niet in aanmerking?"
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "Je browser"
 

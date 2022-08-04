@@ -18,24 +18,7 @@
                 <template v-slot:trigger>
                     <div :style="`padding: ${scale}em;`"></div>
                 </template>
-                <template v-slot:default>
-                    <div v-for="peer in node.peers" :key="peer.peerId">
-                        <h3 v-if="peer.type === 0 /* SELF */">{{ $t('Your browser') }}</h3>
-                        <!-- <h3 v-else>
-                            {{ peer.connected ? $t('Connected') : $t('Available') }}
-                            {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}
-                        </h3> -->
-                        <h3 v-else-if="peer.host">{{ peer.host }}</h3>
-                        <h3 v-else>
-                            {{ peer.type === 1 ? $t('Full Node') : peer.type === 2 ? $t('Light Node') : $t('Browser') }}
-                        </h3>
-                        <p v-if="peer.locationData.country"
-                           :class="{'self': peer.type === 0 /* SELF */, 'connected': peer.connected}">
-                            {{ getPeerCity(peer) ? `${getPeerCity(peer)},` : '' }}
-                            {{ getPeerCountry(peer) }}
-                        </p>
-                    </div>
-                </template>
+                <NetworkMapPeerList :peers="node.peers" />
             </Tooltip>
         </div>
     </div>
@@ -44,8 +27,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import I18nDisplayNames from '@/lib/I18nDisplayNames';
-import { useSettingsStore } from '@/stores/Settings';
 import { getNetworkClient, onPeersUpdated, offPeersUpdated } from '../network';
 import NetworkMap, {
     NodeHexagon,
@@ -54,9 +35,9 @@ import NetworkMap, {
     NETWORK_MAP_HEIGHT,
     HEIGHT,
     SCALING_FACTOR,
-    Node,
     NodeType,
 } from '../lib/NetworkMap';
+import NetworkMapPeerList from './NetworkMapPeerList.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -128,26 +109,6 @@ export default defineComponent({
         const ownXCoordinate = computed(() => ownNode.value ? ownNode.value.x : null);
         watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * SCALING_FACTOR));
 
-        const i18nCountryName = new I18nDisplayNames('region');
-        const { language } = useSettingsStore();
-
-        function getPeerCity(peer: Node) {
-            const fallbackCityName = peer.locationData.city;
-            const { i18nCityNames } = peer.locationData;
-            if (!i18nCityNames) return fallbackCityName;
-            // Try to find a translation for current language
-            const availableLanguage = i18nCityNames[language.value]
-                ? language.value
-                : Object.keys(i18nCityNames).find((locale) => locale.startsWith(language.value)); // accept zh-CH for zh
-            return availableLanguage ? i18nCityNames[availableLanguage] : fallbackCityName;
-        }
-
-        function getPeerCountry(peer: Node) {
-            return i18nCountryName && peer.locationData.country
-                ? i18nCountryName.of(peer.locationData.country)
-                : peer.locationData.country;
-        }
-
         function getPreferredTooltipPosition(hexagon: NodeHexagon): string {
             let verticalPosition = 'top';
             let horizontalPosition = 'right';
@@ -170,13 +131,12 @@ export default defineComponent({
             scale,
             width,
             height,
-            getPeerCity,
-            getPeerCountry,
             getPreferredTooltipPosition,
         };
     },
     components: {
         Tooltip,
+        NetworkMapPeerList,
     },
 });
 </script>
@@ -204,31 +164,5 @@ export default defineComponent({
     top: -1px;
     line-height: 0;
     font-size: 1.125rem;
-
-    div + div {
-        margin-top: 1.5rem;
-    }
-
-    h3 {
-        opacity: .5;
-        font-size: var(--small-label-size);
-        line-height: 1;
-        margin: 0;
-    }
-
-    p {
-        font-size: var(--body-size);
-        line-height: 1;
-        margin: .75rem 0 0;
-
-        &.self {
-            color: var(--nimiq-gold-darkened);
-        }
-
-        &.connected {
-            --nimiq-light-blue: #0582CA; // Real light blue, not the "on-dark" version
-            color: var(--nimiq-light-blue);
-        }
-    }
 }
 </style>

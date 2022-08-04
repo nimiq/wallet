@@ -71,6 +71,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:129
 #: src/components/modals/BtcTransactionModal.vue:144
 #: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr ""
 
@@ -340,8 +341,8 @@ msgstr ""
 msgid "Block height"
 msgstr ""
 
-#: src/components/NetworkMap.vue:30
-msgid "Browser"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:8
@@ -833,7 +834,7 @@ msgstr ""
 msgid "Full KYC required, high availability."
 msgstr ""
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr ""
 
@@ -1021,7 +1022,7 @@ msgstr ""
 msgid "Let's go!"
 msgstr ""
 
-#: src/components/NetworkMap.vue:30
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr ""
 
@@ -2070,7 +2071,7 @@ msgstr ""
 msgid "Your bank is not eligible?"
 msgstr ""
 
-#: src/components/NetworkMap.vue:23
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr ""
 

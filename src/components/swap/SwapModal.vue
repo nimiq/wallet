@@ -914,11 +914,6 @@ export default defineComponent({
                     return;
                 }
 
-                // TODO: Validate swap data against estimate
-
-                let fund: HtlcCreationInstructions | null = null;
-                let redeem: HtlcSettlementInstructions | null = null;
-
                 const nimiqClient = await getNetworkClient();
                 await nimiqClient.waitForConsensusEstablished();
                 const headHeight = await nimiqClient.getHeadHeight();
@@ -932,6 +927,15 @@ export default defineComponent({
                 await electrumClient.waitForConsensusEstablished();
 
                 const validityStartHeight = useNetworkStore().state.height;
+
+                // Convert the swapSuggestion to the Hub request.
+                // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
+                // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: HtlcSettlementInstructions | null = null;
 
                 if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {

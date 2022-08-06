@@ -229,7 +229,7 @@ msgstr ""
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:274
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
 msgstr ""
 
@@ -1191,7 +1191,7 @@ msgstr ""
 msgid "No registration – not even email."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:116
+#: src/swap-kyc-handler.ts:121
 msgid "No request received."
 msgstr ""
 
@@ -1764,8 +1764,8 @@ msgstr ""
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:203
-#: src/swap-kyc-handler.ts:220
+#: src/swap-kyc-handler.ts:208
+#: src/swap-kyc-handler.ts:225
 msgid "TEN31 Pass didn't return expected grants."
 msgstr ""
 
@@ -1970,7 +1970,7 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:209
+#: src/swap-kyc-handler.ts:214
 msgid "Unexpected user. The Wallet is currently connected to the TEN31 Pass of {userName}."
 msgstr ""
 
@@ -1981,12 +1981,12 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:145
-#: src/swap-kyc-handler.ts:154
+#: src/swap-kyc-handler.ts:150
+#: src/swap-kyc-handler.ts:159
 msgid "Unsupported currency"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:237
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 

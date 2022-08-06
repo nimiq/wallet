@@ -3,7 +3,8 @@
 // popups for TEN31 Pass and the Hub.
 // As sessionStorage is sand-boxed for separate windows, we use it here for storing the request and intermediary results
 // to still be available on reloads and after returning from redirects, without affecting the Wallet main window and
-// potential other Wallet windows or swaps.
+// potential other Wallet windows or swaps. However, for the case that the wallet is configured to use redirects, we
+// still clear the swap kyc handler storage after requests.
 
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
@@ -40,7 +41,8 @@ interface SwapKycHandlerStorage {
     kycResponse?: KycResponse;
 }
 
-const SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
+export type SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
+const SWAP_KYC_HANDLER_STORAGE_KEY: SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
 
 function readSwapKycHandlerStorage(): [RpcServerState?, SetupSwapRequest?, KycUser?, KycResponse?] {
     try {
@@ -74,7 +76,11 @@ function writeSwapKycHandlerStorage(
     sessionStorage[SWAP_KYC_HANDLER_STORAGE_KEY] = JSON.stringify(swapKycHandlerStorage);
 }
 
-function toDecimalString(amount: number, decimals: number) {
+function clearSwapKycHandlerStorage() {
+    sessionStorage.removeItem(SWAP_KYC_HANDLER_STORAGE_KEY);
+}
+
+function toDecimalString(amount: number, decimals: number): string {
     // Convert to decimal string without the risk of potential floating division imprecision occurring
     return new FormattableNumber(amount).moveDecimalSeparator(-1 * decimals).toString();
 }
@@ -265,8 +271,10 @@ async function run() {
             ...setupSwapResult,
             kyc: kycResponse,
         };
+        clearSwapKycHandlerStorage();
         rpcServerState.reply(ResponseStatus.OK, setupSwapWithKycResult);
     } catch (e: any) {
+        clearSwapKycHandlerStorage();
         if (rpcServerState) {
             rpcServerState.reply(ResponseStatus.ERROR, e);
         } else if (window.opener) {

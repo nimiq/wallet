@@ -22,7 +22,7 @@ import { useSettingsStore } from './stores/Settings';
 import { guessUserCurrency, useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
-import type { SetupSwapWithKycResult } from './swap-kyc-handler';
+import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import { useGeoIp } from './composables/useGeoIp';
 
 export function shouldUseRedirects(): boolean {
@@ -581,6 +581,13 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
         // Use special flow that handles TEN31 Pass and Hub in one single popup via redirects. It uses the same request
         // and result types as the Hub's regular setupSwap call, just extended by a kyc entry. To imitate the same
         // behavior as for a regular Hub call, including the Hub overlay, we use the Hub's RequestBehaviors.
+
+        // For the case that the wallet is configured to use redirects, clear the swap kyc handler storage. Only using
+        // types imported from swap kyc handler and no code or constants to avoid bundling of the swap kyc handler into
+        // the common bundle.
+        const SWAP_KYC_HANDLER_STORAGE_KEY: SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
+        window.sessionStorage.removeItem(SWAP_KYC_HANDLER_STORAGE_KEY);
+
         const requestBehavior = getBehavior()
             // @ts-expect-error: _defaultBehavior is private
             || hubApi._defaultBehavior;

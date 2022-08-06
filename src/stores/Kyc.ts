@@ -12,17 +12,17 @@ export type TEN31PassUser = {
     appGrant: string,
     id: string,
     name: string,
-}
+};
 
 // Union of provider user types
-type KycUser = TEN31PassUser
+export type KycUser = TEN31PassUser;
 
 export type KycState = {
     connectedUsers: Record<string, KycUser | null>,
     // kycLimits stores the general KYC limits of Fastspot.
     // It has nothing to do with any currently connected user.
     kycLimits: UserLimits | null,
-}
+};
 
 export const useKycStore = createStore({
     id: 'kyc',

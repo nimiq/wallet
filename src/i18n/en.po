@@ -229,6 +229,10 @@ msgstr ""
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 
+#: src/swap-kyc-handler.ts:274
+msgid "An error occurred: {message}"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
 msgstr ""
@@ -1187,6 +1191,10 @@ msgstr ""
 msgid "No registration – not even email."
 msgstr ""
 
+#: src/swap-kyc-handler.ts:116
+msgid "No request received."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1756,6 +1764,11 @@ msgstr ""
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
+#: src/swap-kyc-handler.ts:203
+#: src/swap-kyc-handler.ts:220
+msgid "TEN31 Pass didn't return expected grants."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr ""
@@ -1957,11 +1970,24 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
+#: src/swap-kyc-handler.ts:209
+msgid "Unexpected user. The Wallet is currently connected to the TEN31 Pass of {userName}."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 #: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:145
+#: src/swap-kyc-handler.ts:154
+msgid "Unsupported currency"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:237
+msgid "Unsupported KYC provider {provider}."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:15

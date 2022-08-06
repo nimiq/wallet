@@ -5,6 +5,9 @@
 // to still be available on reloads and after returning from redirects, without affecting the Wallet main window and
 // potential other Wallet windows or swaps.
 
+import Vue from 'vue';
+import VueCompositionApi from '@vue/composition-api';
+import type VueI18n from 'vue-i18n';
 import HubApi, { SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
 import { BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
@@ -12,6 +15,8 @@ import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
 import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config';
 import { KycProvider, KycUser } from './stores/Kyc';
+import { useSettingsStore } from './stores/Settings';
+import { i18n, loadLanguage } from './i18n/i18n-setup';
 
 export interface SetupSwapWithKycResult extends SetupSwapResult {
     kyc: {
@@ -74,6 +79,22 @@ function toDecimalString(amount: number, decimals: number) {
     return new FormattableNumber(amount).moveDecimalSeparator(-1 * decimals).toString();
 }
 
+// For translating error messages which get displayed in the UI.
+// Translate on a best effort basis; if language file has not been loaded yet, return a fallback. The method is called
+// $t such that source strings in calls to it get detected by our webpack-i18n-tools extractor. It's essentially the
+// same as VueI18n's $t but extended by the fallback string which will be returned if the language file has not been
+// loaded yet. Note that we're not just using the key as fallback because in production, webpack-i18n-tools optimizes
+// these away to be just simple index numbers.
+Vue.use(VueCompositionApi); // to be able to use the settings store
+loadLanguage(useSettingsStore().language.value);
+function $t(key: VueI18n.Path, fallback: string): string;
+function $t(key: VueI18n.Path, values: VueI18n.Values, fallback: string): string;
+function $t(key: VueI18n.Path, valuesOrFallback: VueI18n.Values | string, fallback?: string): string {
+    return i18n.t(key, typeof valuesOrFallback !== 'string' ? valuesOrFallback : undefined) as string
+        // The translation was missing and i18n.t returned an empty string as configured by `missing` in i18n-setup.ts.
+        || (typeof valuesOrFallback === 'string' ? valuesOrFallback : fallback!);
+}
+
 async function run() {
     let rpcServerState: RpcServerState | undefined;
     let request: SetupSwapRequest | undefined;
@@ -91,7 +112,8 @@ async function run() {
                 const rpcServer = new RpcServer(/* allowed origins */ window.location.origin);
                 // no need to parse/validate the request as we are the only allowed origin
                 rpcServer.onRequest(HubApi.RequestType.SETUP_SWAP, (state, req, user) => resolve([state, req, user]));
-                rpcServer.init(/* onClientTimeout */ () => reject(new Error('No request received.')));
+                rpcServer.init(/* onClientTimeout */ () =>
+                    reject(new Error($t('No request received.', 'No request received.'))));
             });
             writeSwapKycHandlerStorage(rpcServerState, request, kycUser, kycResponse);
         }
@@ -120,7 +142,7 @@ async function run() {
                                     case 'NIM': return toDecimalString(request.fund.value, 5);
                                     case 'BTC': return toDecimalString(request.fund.output.value, 8);
                                     case 'EUR': return toDecimalString(request.fund.value + request.fund.fee, 2);
-                                    default: throw new Error('Unsupported currency');
+                                    default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
                                 }
                             })(),
                             from_asset: request.fund.type,
@@ -129,7 +151,7 @@ async function run() {
                                     case 'NIM': return toDecimalString(request.redeem.value + request.redeem.fee, 5);
                                     case 'BTC': return toDecimalString(request.redeem.input.value, 8);
                                     case 'EUR': return toDecimalString(request.redeem.value, 2);
-                                    default: throw new Error('Unsupported currency');
+                                    default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
                                 }
                             })(),
                             to_asset: request.redeem.type,
@@ -178,18 +200,27 @@ async function run() {
                 const oasisGrant = grantResponse.services[oasisServiceId];
                 const isOasisSwap = request.fund.type === 'EUR' || request.redeem.type === 'EUR';
                 if (!s3Grant || (isOasisSwap && !oasisGrant)) {
-                    throw new Error('TEN31 Pass didn\'t return expected grants.');
+                    throw new Error($t(
+                        'TEN31 Pass didn\'t return expected grants.',
+                        'TEN31 Pass didn\'t return expected grants.',
+                    ));
                 }
                 if (grantResponse.app !== kycUser.appGrant) {
-                    throw new Error('Unexpected user. The Wallet is currently connected to TEN31 Pass of '
-                        + `${kycUser.name}.`);
+                    throw new Error($t(
+                        'Unexpected user. The Wallet is currently connected to the TEN31 Pass of {userName}.',
+                        { userName: kycUser.name },
+                        `Unexpected user. The Wallet is currently connected to the TEN31 Pass of ${kycUser.name}.`,
+                    ));
                 }
                 const [s3GrantToken, oasisGrantToken] = await Promise.all([
                     ten31PassApi.getServiceGrantInfo(s3Grant),
                     oasisGrant ? ten31PassApi.getServiceGrantInfo(oasisGrant) : Promise.resolve(null),
                 ].map((serviveGrantPromise) => serviveGrantPromise.then((serviceGrant) => serviceGrant?.token)));
                 if (!s3GrantToken || (isOasisSwap && !oasisGrantToken)) {
-                    throw new Error('TEN31 Pass didn\'t return expected grants.');
+                    throw new Error($t(
+                        'TEN31 Pass didn\'t return expected grants.',
+                        'TEN31 Pass didn\'t return expected grants.',
+                    ));
                 }
                 kycResponse = {
                     provider: KycProvider.TEN31PASS,
@@ -203,7 +234,11 @@ async function run() {
                 throw new Error('Unexpected');
             }
         } else {
-            throw new Error(`Unsupported KYC provider ${kycUser.provider}`);
+            throw new Error($t(
+                'Unsupported KYC provider {provider}.',
+                { provider: kycUser.provider },
+                `Unsupported KYC provider ${kycUser.provider}.`,
+            ));
         }
 
         // Launch Hub swap creation flow or check for Hub redirect response.
@@ -236,7 +271,11 @@ async function run() {
             rpcServerState.reply(ResponseStatus.ERROR, e);
         } else if (window.opener) {
             // Can't report error as we don't know the request id. Display a good old alert.
-            alert(`An error occurred: ${e.message || e}.`); // eslint-disable-line no-alert
+            alert($t( // eslint-disable-line no-alert
+                'An error occurred: {message}',
+                { message: e.message || e },
+                `An error occurred: ${e.message || e}`,
+            ));
             window.close();
         } else {
             // We're in fact not a popup but were opened by hub.ts as redirect. Go back to Wallet main UI.

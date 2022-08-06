@@ -11,14 +11,7 @@ import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimi
 import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
 import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config';
-import { KycProvider } from './stores/Kyc';
-
-export interface SetupSwapWithKycRequest extends Omit<SetupSwapRequest, 'kyc'> {
-    kyc: {
-        provider: KycProvider.TEN31PASS,
-        userId: string,
-    };
-}
+import { KycProvider, KycUser } from './stores/Kyc';
 
 export interface SetupSwapWithKycResult extends SetupSwapResult {
     kyc: {
@@ -37,13 +30,14 @@ interface KycResponse {
 
 interface SwapKycHandlerStorage {
     rpcServerState?: string;
-    request?: SetupSwapWithKycRequest;
+    request?: SetupSwapRequest;
+    kycUser?: KycUser;
     kycResponse?: KycResponse;
 }
 
 const SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
 
-function readSwapKycHandlerStorage(): [RpcServerState?, SetupSwapWithKycRequest?, KycResponse?] {
+function readSwapKycHandlerStorage(): [RpcServerState?, SetupSwapRequest?, KycUser?, KycResponse?] {
     try {
         const swapKycHandlerStorageJson = sessionStorage[SWAP_KYC_HANDLER_STORAGE_KEY] || '{}';
         const swapKycHandlerStorage: SwapKycHandlerStorage = JSON.parse(swapKycHandlerStorageJson);
@@ -52,6 +46,7 @@ function readSwapKycHandlerStorage(): [RpcServerState?, SetupSwapWithKycRequest?
                 ? RpcServerState.fromJSON(swapKycHandlerStorage.rpcServerState)
                 : undefined,
             swapKycHandlerStorage.request,
+            swapKycHandlerStorage.kycUser,
             swapKycHandlerStorage.kycResponse,
         ];
     } catch (e) {
@@ -61,12 +56,14 @@ function readSwapKycHandlerStorage(): [RpcServerState?, SetupSwapWithKycRequest?
 
 function writeSwapKycHandlerStorage(
     rpcServerState?: RpcServerState,
-    request?: SetupSwapWithKycRequest,
+    request?: SetupSwapRequest,
+    kycUser?: KycUser,
     kycResponse?: KycResponse,
 ) {
     const swapKycHandlerStorage: SwapKycHandlerStorage = {
         rpcServerState: rpcServerState ? rpcServerState.toJSON() : undefined,
         request,
+        kycUser,
         kycResponse,
     };
     sessionStorage[SWAP_KYC_HANDLER_STORAGE_KEY] = JSON.stringify(swapKycHandlerStorage);
@@ -79,24 +76,28 @@ function toDecimalString(amount: number, decimals: number) {
 
 async function run() {
     let rpcServerState: RpcServerState | undefined;
-    let request: SetupSwapWithKycRequest | undefined;
+    let request: SetupSwapRequest | undefined;
+    let kycUser: KycUser | undefined;
     let kycResponse: KycResponse | undefined;
     try {
-        [rpcServerState, request, kycResponse] = readSwapKycHandlerStorage();
+        [rpcServerState, request, kycUser, kycResponse] = readSwapKycHandlerStorage();
 
         // Listen for initial request if not known yet.
-        if (!rpcServerState || !request) {
-            [rpcServerState, request] = await new Promise<[RpcServerState, SetupSwapWithKycRequest]>((res, rej) => {
+        if (!rpcServerState || !request || !kycUser) {
+            [rpcServerState, request, kycUser] = await new Promise<[RpcServerState, SetupSwapRequest, KycUser]>((
+                resolve,
+                reject,
+            ) => {
                 const rpcServer = new RpcServer(/* allowed origins */ window.location.origin);
                 // no need to parse/validate the request as we are the only allowed origin
-                rpcServer.onRequest(HubApi.RequestType.SETUP_SWAP, (state, req) => res([state, req]));
-                rpcServer.init(/* onClientTimeout */ () => rej(new Error('No request received.')));
+                rpcServer.onRequest(HubApi.RequestType.SETUP_SWAP, (state, req, user) => resolve([state, req, user]));
+                rpcServer.init(/* onClientTimeout */ () => reject(new Error('No request received.')));
             });
-            writeSwapKycHandlerStorage(rpcServerState, request, kycResponse);
+            writeSwapKycHandlerStorage(rpcServerState, request, kycUser, kycResponse);
         }
 
         // Request TEN31 Pass grants or check for TEN31 Pass redirect response.
-        if (request.kyc.provider === KycProvider.TEN31PASS) {
+        if (kycUser.provider === KycProvider.TEN31PASS) {
             const ten31PassApi = new Ten31PassApi(Config.ten31Pass.apiEndpoint);
             const grantResponse = ten31PassApi.getRedirectGrantResponse()?.response;
             const s3ServiceId = Config.ten31Pass.services.s3.serviceId;
@@ -179,18 +180,16 @@ async function run() {
                 if (!s3Grant || (isOasisSwap && !oasisGrant)) {
                     throw new Error('TEN31 Pass didn\'t return expected grants.');
                 }
-                const [appGrant, s3GrantToken, oasisGrantToken] = await Promise.all([
-                    ten31PassApi.getAppGrantInfo(grantResponse.app),
-                    ...[
-                        ten31PassApi.getServiceGrantInfo(s3Grant),
-                        oasisGrant ? ten31PassApi.getServiceGrantInfo(oasisGrant) : Promise.resolve(null),
-                    ].map((serviveGrantPromise) => serviveGrantPromise.then((serviceGrant) => serviceGrant?.token)),
-                ]);
-                if (!appGrant || !s3GrantToken || (isOasisSwap && !oasisGrantToken)) {
-                    throw new Error('TEN31 Pass didn\'t return expected grants.');
+                if (grantResponse.app !== kycUser.appGrant) {
+                    throw new Error('Unexpected user. The Wallet is currently connected to TEN31 Pass of '
+                        + `${kycUser.name}.`);
                 }
-                if (appGrant.user.id !== request.kyc.userId) {
-                    throw new Error(`Unexpected TEN31 Pass user ${appGrant.user.displayName}.`);
+                const [s3GrantToken, oasisGrantToken] = await Promise.all([
+                    ten31PassApi.getServiceGrantInfo(s3Grant),
+                    oasisGrant ? ten31PassApi.getServiceGrantInfo(oasisGrant) : Promise.resolve(null),
+                ].map((serviveGrantPromise) => serviveGrantPromise.then((serviceGrant) => serviceGrant?.token)));
+                if (!s3GrantToken || (isOasisSwap && !oasisGrantToken)) {
+                    throw new Error('TEN31 Pass didn\'t return expected grants.');
                 }
                 kycResponse = {
                     provider: KycProvider.TEN31PASS,
@@ -198,13 +197,13 @@ async function run() {
                     s3GrantToken,
                     oasisGrantToken,
                 };
-                writeSwapKycHandlerStorage(rpcServerState, request, kycResponse);
+                writeSwapKycHandlerStorage(rpcServerState, request, kycUser, kycResponse);
             } else if (!kycResponse) {
                 // This can't happen based on the checks above. This is just a type guard for typescript.
                 throw new Error('Unexpected');
             }
         } else {
-            throw new Error(`Unsupported KYC provider ${request.kyc.provider}`);
+            throw new Error(`Unsupported KYC provider ${kycUser.provider}`);
         }
 
         // Launch Hub swap creation flow or check for Hub redirect response.
@@ -220,7 +219,7 @@ async function run() {
                 ...request,
                 kyc: {
                     ...kycResponse,
-                    userId: request.kyc.userId,
+                    userId: kycUser.id,
                 },
             }, new HubApi.RedirectRequestBehavior());
             return;

@@ -587,13 +587,7 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
         return requestBehavior.request(
             `${window.location.origin}/swap-kyc-handler`,
             HubApi.RequestType.SETUP_SWAP,
-            [requestWithAppNamePromise.then((request) => ({
-                ...request,
-                kyc: {
-                    provider: kycUser.provider,
-                    userId: kycUser.id,
-                },
-            }))],
+            [requestWithAppNamePromise, kycUser],
         ).catch(onError);
     }
     return hubApi.setupSwap(requestWithAppNamePromise, getBehavior()).catch(onError);

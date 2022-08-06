@@ -543,11 +543,6 @@ export default defineComponent({
                     return;
                 }
 
-                // TODO: Validate swap data against estimate
-
-                let fund: HtlcCreationInstructions | null = null;
-                let redeem: EuroHtlcSettlementInstructions | null = null;
-
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
@@ -569,6 +564,15 @@ export default defineComponent({
                 }
 
                 const validityStartHeight = useNetworkStore().height.value;
+
+                // Convert the swapSuggestion to the Hub request.
+                // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
+                // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: EuroHtlcSettlementInstructions | null = null;
 
                 if (swapSuggestion.from.asset === SwapAsset.NIM) {
                     fund = {

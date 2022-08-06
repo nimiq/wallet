@@ -9,6 +9,7 @@ import HubApi, { SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
 import { BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
 import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
+import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config';
 import { KycProvider } from './stores/Kyc';
 
@@ -71,6 +72,11 @@ function writeSwapKycHandlerStorage(
     sessionStorage[SWAP_KYC_HANDLER_STORAGE_KEY] = JSON.stringify(swapKycHandlerStorage);
 }
 
+function toDecimalString(amount: number, decimals: number) {
+    // Convert to decimal string without the risk of potential floating division imprecision occurring
+    return new FormattableNumber(amount).moveDecimalSeparator(-1 * decimals).toString();
+}
+
 async function run() {
     let rpcServerState: RpcServerState | undefined;
     let request: SetupSwapWithKycRequest | undefined;
@@ -97,20 +103,34 @@ async function run() {
             const oasisServiceId = Config.ten31Pass.services.oasis.serviceId;
             // console.log('Swap kyc handler TEN31 Pass response referrer', document.referrer); // eslint-disable-line
 
+            // Request grants if we didn't get them yet.
             if (!kycResponse && !grantResponse) {
-                // Request grants.
+                // Note that all amounts in the grants refer to the values S3 initially gave us on createSwap. As the
+                // Hub partially operates on different values, we need to revert this preprocessing here that the Wallet
+                // did on the original values. More specifically, we want to get the original swapSuggestion values back
+                // that were modified in the hubRequest in SwapModal, BuyCryptoModal and SellCryptoModal.
                 const serviceRequests: ServiceRequest[] = [{
                     serviceId: s3ServiceId,
                     usages: [{
                         usageId: Config.ten31Pass.services.s3.usageIds.swap,
                         parameters: {
-                            from_amount: request.fund.type === 'NIM' ? request.fund.value
-                                : request.fund.type === 'BTC' ? request.fund.output.value
-                                    : request.fund.value,
+                            from_amount: (() => {
+                                switch (request.fund.type) {
+                                    case 'NIM': return toDecimalString(request.fund.value, 5);
+                                    case 'BTC': return toDecimalString(request.fund.output.value, 8);
+                                    case 'EUR': return toDecimalString(request.fund.value + request.fund.fee, 2);
+                                    default: throw new Error('Unsupported currency');
+                                }
+                            })(),
                             from_asset: request.fund.type,
-                            to_amount: request.redeem.type === 'NIM' ? request.redeem.value
-                                : request.redeem.type === 'BTC' ? request.redeem.output.value
-                                    : request.redeem.value,
+                            to_amount: (() => {
+                                switch (request.redeem.type) {
+                                    case 'NIM': return toDecimalString(request.redeem.value + request.redeem.fee, 5);
+                                    case 'BTC': return toDecimalString(request.redeem.input.value, 8);
+                                    case 'EUR': return toDecimalString(request.redeem.value, 2);
+                                    default: throw new Error('Unsupported currency');
+                                }
+                            })(),
                             to_asset: request.redeem.type,
                             id: request.swapId,
                         },
@@ -122,7 +142,7 @@ async function run() {
                         usages: [{
                             usageId: Config.ten31Pass.services.oasis.usageIds.clearing,
                             parameters: {
-                                amount: request.fund.value,
+                                amount: request.fund.value + request.fund.fee,
                             },
                         }],
                     });
@@ -147,12 +167,12 @@ async function run() {
                 return;
             }
 
+            // Process and store new or changed grantResponse (for the case that the user navigated back and gave grants
+            // again). If we just got the same grantResponse we already know, we don't want to process it again. We can
+            // simply base the equality check on the json representation, as for same grant responses also the order of
+            // object entries should be the same.
             const isChangedGrantResponse = JSON.stringify(grantResponse) !== JSON.stringify(kycResponse?.grantResponse);
             if (grantResponse && (!kycResponse || isChangedGrantResponse)) {
-                // Process and store new or changed grantResponse (for the case that the user navigated back and gave
-                // grants again). If we just got the same grantResponse we already know, we don't want to process it
-                // again. We can simply base the equality check on the json representation, as for same grant responses
-                // also the order of object entries should be the same.
                 const s3Grant = grantResponse.services[s3ServiceId];
                 const oasisGrant = grantResponse.services[oasisServiceId];
                 const isOasisSwap = request.fund.type === 'EUR' || request.redeem.type === 'EUR';
@@ -194,8 +214,8 @@ async function run() {
             hubApi.on(HubApi.RequestType.SETUP_SWAP, resolve, reject);
             hubApi.checkRedirectResponse().then(() => resolve(undefined));
         });
+        // Redirect to Hub if we didn't get the hub response yet.
         if (!setupSwapResult) {
-            // Redirect to Hub.
             await hubApi.setupSwap<BehaviorType.REDIRECT>({
                 ...request,
                 kyc: {

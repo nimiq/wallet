@@ -555,11 +555,6 @@ export default defineComponent({
                     return;
                 }
 
-                // TODO: Validate swap data against estimate
-
-                let fund: HtlcCreationInstructions | null = null;
-                let redeem: HtlcSettlementInstructions | null = null;
-
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
@@ -580,11 +575,20 @@ export default defineComponent({
                     await electrumClient.waitForConsensusEstablished();
                 }
 
+                // Convert the swapSuggestion to the Hub request.
+                // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
+                // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: HtlcSettlementInstructions | null = null;
+
                 if (swapSuggestion.from.asset === SwapAsset.EUR) {
                     fund = {
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
-                        fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
+                        fee: /* set to 0 above */ swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
                         bankLabel: banks.value.sepa!.name,
                     };
                 }

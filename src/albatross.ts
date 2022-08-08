@@ -2,10 +2,11 @@ import type {
     Account,
     AppliedBlockLog,
     Block as AlbatrossBlock,
+    BlockchainState,
     RevertedBlockLog,
     Staker,
-    Stakes,
     Transaction as AlbatrossTransaction,
+    Validator,
 } from '@sisou/albatross-remote/lib/lib/server-types';
 // @ts-expect-error no types
 import { createRemote } from './lib/gentle_rpc/remote';
@@ -311,12 +312,12 @@ export class AlbatrossRpcClient {
         );
     }
 
-    public async getStaker(address: string): Promise<Staker> {
-        return this.rpc<Staker>('getStakerByAddress', [address]);
+    public async getStaker(address: string): Promise<BlockchainState<Staker>> {
+        return this.rpc<BlockchainState<Staker>>('getStakerByAddress', [address]);
     }
 
-    public async listStakes(): Promise<Stakes> {
-        return this.rpc<Stakes>('getActiveValidators');
+    public async listStakes(): Promise<Validator[]> {
+        return this.rpc<Validator[]>('getActiveValidators');
     }
 
     private async onHeadChange(blockOrHash: string | AlbatrossBlock) {

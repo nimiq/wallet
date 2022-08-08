@@ -287,10 +287,9 @@ export async function launchNetwork() {
 
     async function updateValidators() {
         const stakes = await client.listStakes();
-        const totalStake = Object.values(stakes)
-            .reduce((sum, stake) => sum + stake, 0);
+        const totalStake = stakes.reduce((sum, stake) => sum + stake.balance, 0);
 
-        const validators: Validator[] = Object.entries(stakes).map(([address, balance]) => {
+        const validators: Validator[] = stakes.map(({ address, balance }) => {
             const dominance = balance / totalStake;
             if (dominance > 0.3) {
                 console.warn('High-stake validator:', { dominance: Math.round(dominance * 1e3) / 10, address });

@@ -30,3 +30,4 @@
 ^\/network[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/release-notes[\/#\?]?$
+^\/swap-kyc-handler[\/#\?]?$

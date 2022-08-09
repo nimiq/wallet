@@ -1458,10 +1458,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.1.0.tgz#f2c75f43e75fff7129536ce2cf908e2a5b8c8b3f"
-  integrity sha512-v0nX0mTHdUCA0/uK/faBe4ryJEIvQ1t5EbOdjqWl+RtcoVmwn3yURlefBRy+lTuci2I6UuAmy3wJ9IZU7hw+0g==
+"@nimiq/libswap@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.1.1.tgz#b781558c9f94fcde85144cab749bf790aa1b1ebb"
+  integrity sha512-odhR2PqnfuzvmSpVIwNIftXoCHgCfHmxOyKHsq/jkUpeiU7M5Z3pZflyKPI5gUxYBS9CEL1Sss3eebFVQk2vdw==
   dependencies:
     "@nimiq/oasis-api" "^1.0.1"
     promise.prototype.finally "^3.1.3"

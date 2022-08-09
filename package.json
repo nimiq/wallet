@@ -28,7 +28,7 @@
     "@nimiq/fastspot-api": "nimiq/fastspot-api#build/kyc",
     "@nimiq/hub-api": "^1.6.0",
     "@nimiq/iqons": "^1.5.2",
-    "@nimiq/libswap": "^1.1.0",
+    "@nimiq/libswap": "^1.1.1",
     "@nimiq/oasis-api": "^1.1.1",
     "@nimiq/rpc": "^0.4.1",
     "@nimiq/style": "^0.8.2",

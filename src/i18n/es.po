@@ -3,12 +3,12 @@
 # Rhody Lugo, 2021
 # Max, 2022
 # Daniel, 2022
-# Ricardo Barquero Carranza <richy@nimiq.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Ricardo Barquero Carranza <richy@nimiq.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
+"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -671,7 +671,7 @@ msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:19
 msgid "Create a new address for every transaction."
-msgstr ""
+msgstr "Crear una nueva dirección para cada transacción"
 
 #: src/components/modals/BtcReceiveModal.vue:64
 msgid "Create a new single-use address."
@@ -1022,6 +1022,8 @@ msgid ""
 "Improve your privacy by creating a new address for every transaction. Old "
 "addresses still work."
 msgstr ""
+"Mejore la privacidad al crear una nueva dirección para cada transacción. "
+"Direcciones antiguas aún funcionan."
 
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
@@ -1619,7 +1621,7 @@ msgstr "Vender Cripto por Fiat"
 #: src/components/modals/SellCryptoModal.vue:164
 #: src/components/modals/SellCryptoModal.vue:167
 msgid "Sell max"
-msgstr ""
+msgstr "Vender el máximo"
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -1727,7 +1729,7 @@ msgstr "Ingrese la cuota"
 
 #: src/components/modals/BuyCryptoModal.vue:184
 msgid "Set minimum"
-msgstr ""
+msgstr "Configurar el mínimo"
 
 #: src/components/swap/SwapAnimation.vue:256
 msgid "Setting up atomic swap"
@@ -2116,7 +2118,7 @@ msgstr "Use una cuenta SEPA-Instantáneo para obtener pagos en minutos."
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
-msgstr ""
+msgstr "Utilice etiquetas para identificar transacciones fácilmente."
 
 #: src/components/layouts/Settings.vue:33
 msgid "Use the Nimiq Wallet as a web app outside the browser."
@@ -2167,6 +2169,8 @@ msgid ""
 "With Bitcoin, a new address can be used for every transaction to improve "
 "privacy."
 msgstr ""
+"En Bitcoin, es posible usar una nueva dirección en cada transacción para "
+"incrementar la privacidad."
 
 #: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:21
 msgid ""

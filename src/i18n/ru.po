@@ -1,9 +1,9 @@
 # 
 # Translators:
 # Oscar_6, 2022
-# Daniel, 2022
 # Пётр Павлович, 2022
 # Vad <vjuruss@gmail.com>, 2022
+# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -265,6 +265,10 @@ msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 "Всегда сохраняйте резервную копию своего Пароля, Защитной Фразы и Файла "
 "Авторизации. "
+
+#: src/swap-kyc-handler.ts:282
+msgid "An error occurred: {message}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -1296,6 +1300,10 @@ msgstr "Без регистрации"
 msgid "No registration – not even email."
 msgstr "Без регистрации, даже без указания почты."
 
+#: src/swap-kyc-handler.ts:122
+msgid "No request received."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1890,6 +1898,10 @@ msgstr "синхронизируется"
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 предоставляет банковский счёт для заморозки вашего платежа."
 
+#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+msgid "TEN31 Pass didn't return expected grants."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr ""
@@ -2112,12 +2124,26 @@ msgstr "Твитни свою точку на карте!"
 msgid "Unclaimed Cashlink"
 msgstr "Активный Cashlink"
 
+#: src/swap-kyc-handler.ts:215
+msgid ""
+"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"{userName}."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 #: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
 msgstr "Неизвестно"
+
+#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+msgid "Unsupported currency"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:243
+msgid "Unsupported KYC provider {provider}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"

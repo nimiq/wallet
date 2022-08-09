@@ -1,13 +1,13 @@
-#
+# 
 # Translators:
-# Daniel, 2022
 # Petro M <petro.matsyburka@outlook.com>, 2022
-# Sören Schwert <hello@soerenschwert.de>, 2022
+# Daniel, 2022
 # Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022
-#
+# Sören Schwert <hello@soerenschwert.de>, 2022
+# 
 msgid ""
 msgstr ""
-"Last-Translator: Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022\n"
+"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
 "Language-Team: Ukrainian (https://www.transifex.com/nimiq-foundation/teams/110181/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: uk\n"
@@ -263,6 +263,10 @@ msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 "Завжди створюйте резервні копії ваших секретних слів, паролів та файлів для "
 "входу."
+
+#: src/swap-kyc-handler.ts:282
+msgid "An error occurred: {message}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -1299,6 +1303,10 @@ msgstr "Без реєстрації"
 msgid "No registration – not even email."
 msgstr "Без реєстрації – навіть без електронної пошти."
 
+#: src/swap-kyc-handler.ts:122
+msgid "No request received."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1890,6 +1898,10 @@ msgstr "синхронізую"
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 Bank надає банківський рахунок для блокування платежу."
 
+#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+msgid "TEN31 Pass didn't return expected grants."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr ""
@@ -2109,12 +2121,26 @@ msgstr "Поширте карту у Твітері!"
 msgid "Unclaimed Cashlink"
 msgstr "Активний чек"
 
+#: src/swap-kyc-handler.ts:215
+msgid ""
+"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"{userName}."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 #: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
 msgstr "Невідомо"
+
+#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+msgid "Unsupported currency"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:243
+msgid "Unsupported KYC provider {provider}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"

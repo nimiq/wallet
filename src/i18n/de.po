@@ -3,8 +3,8 @@
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Matheo <matheo@nimiq.com>, 2021
 # Daniel, 2022
-# Sven <sven@nimiq.com>, 2022
 # Redexe <timo.niehoff@yahoo.de>, 2022
+# Sven <sven@nimiq.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -265,6 +265,10 @@ msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 "Sichere immer deine Wiederherstellungswörter, dein Password und deine Login-"
 "Datei."
+
+#: src/swap-kyc-handler.ts:282
+msgid "An error occurred: {message}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -1307,6 +1311,10 @@ msgstr "Keine Registrierung"
 msgid "No registration – not even email."
 msgstr "Keine Anmeldung, nicht einmal E-Mail."
 
+#: src/swap-kyc-handler.ts:122
+msgid "No request received."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1906,6 +1914,10 @@ msgstr ""
 "Die TEN31 Bank stellt ein Bankkonto zur Verfügung, um deine Zahlung "
 "kurzzeitig zu verwahren."
 
+#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+msgid "TEN31 Pass didn't return expected grants."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr ""
@@ -2128,12 +2140,26 @@ msgstr "Teile deine Karte auf Twitter!"
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
 
+#: src/swap-kyc-handler.ts:215
+msgid ""
+"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"{userName}."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 #: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
 msgstr "Unbekannt"
+
+#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+msgid "Unsupported currency"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:243
+msgid "Unsupported KYC provider {provider}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"

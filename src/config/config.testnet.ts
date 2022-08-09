@@ -4,7 +4,7 @@ export default {
     hubEndpoint: 'https://hub.nimiq-testnet.com',
     environment: ENV_TEST,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
-    reportToSentry: true,
+    reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 

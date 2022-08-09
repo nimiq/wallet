@@ -6,6 +6,14 @@ const createHash = require('crypto').createHash;
 const webpack = require('webpack');
 const PoLoaderOptimizer = require('webpack-i18n-tools')();
 
+const crypto = require('crypto');
+
+// Fix build for Node version with OpenSSL 3
+const origCreateHash = crypto.createHash;
+crypto.createHash = (alg, opts) => {
+    return origCreateHash(alg === 'md4' ? 'md5' : alg, opts);
+};
+
 const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
 if (!buildName) {
     throw new Error('Please specify the build config with the `build` environment variable');

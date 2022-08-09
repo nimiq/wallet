@@ -1,4 +1,4 @@
-#
+# 
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
@@ -149,7 +149,7 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:152
 msgid "Account Limits"
-msgstr ""
+msgstr "Limites du compte"
 
 #: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
@@ -269,6 +269,10 @@ msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 "Sauvegardez toujours vos mots de récupération, votre mot de passe et vos "
 "fichiers de connexion."
+
+#: src/swap-kyc-handler.ts:282
+msgid "An error occurred: {message}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -605,11 +609,11 @@ msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:24
 msgid "Connect to {provider}"
-msgstr ""
+msgstr "Se connecter à {provider}"
 
 #: src/components/layouts/Settings.vue:159
 msgid "Connect to TEN31 Pass for higher swap limits."
-msgstr ""
+msgstr "Connectez-vous à TEN31 Pass pour des limites de swap plus élevées."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
@@ -955,17 +959,19 @@ msgstr "Y aller"
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
-msgstr ""
+msgstr "Commencer"
 
 #: src/components/kyc/KycPrompt.vue:6
 msgid "Get TEN31-verified for higher limits"
-msgstr ""
+msgstr "Obtenez la vérification TEN31 pour des limites plus élevées"
 
 #: src/components/kyc/KycOverlay.vue:7
 msgid ""
 "Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and"
 " TEN31-related products and services."
 msgstr ""
+"Faites-vous vérifier par TEN31 pour obtenir des limites plus élevées avec "
+"SuperSimpleSwap, Fastspot et les produits et services liés à TEN31."
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
@@ -1330,6 +1336,10 @@ msgstr "Pas d'enregistrement"
 msgid "No registration – not even email."
 msgstr "Aucune inscription et aucun mail requis."
 
+#: src/swap-kyc-handler.ts:122
+msgid "No request received."
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
@@ -1506,7 +1516,7 @@ msgstr "Motif"
 
 #: src/components/kyc/KycOverlay.vue:5 src/components/kyc/KycPrompt.vue:5
 msgid "Raise your limits"
-msgstr ""
+msgstr "Augmentez vos limites"
 
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
@@ -1914,7 +1924,7 @@ msgstr "Le Swap a expiré"
 
 #: src/components/kyc/KycPrompt.vue:9
 msgid "Swap more per 30 days."
-msgstr ""
+msgstr "Swappez-en plus par période de 30 jours."
 
 #: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
@@ -1935,7 +1945,7 @@ msgstr "Swap vers {address}"
 
 #: src/components/kyc/KycPrompt.vue:11
 msgid "Swap up to {limit} per 30 days."
-msgstr ""
+msgstr "Swappez jusqu'à {limit} par période de 30 jours."
 
 #: src/components/layouts/Settings.vue:183
 msgid "Swiping Gestures"
@@ -2162,12 +2172,26 @@ msgstr "Tweetez votre carte !"
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
 
+#: src/swap-kyc-handler.ts:215
+msgid ""
+"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"{userName}."
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 #: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
 msgstr "Inconnu "
+
+#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+msgid "Unsupported currency"
+msgstr ""
+
+#: src/swap-kyc-handler.ts:243
+msgid "Unsupported KYC provider {provider}."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"

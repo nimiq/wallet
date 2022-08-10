@@ -6,8 +6,6 @@
 // potential other Wallet windows or swaps. However, for the case that the wallet is configured to use redirects, we
 // still clear the swap kyc handler storage after requests.
 
-import Vue from 'vue';
-import VueCompositionApi from '@vue/composition-api';
 import type VueI18n from 'vue-i18n';
 import HubApi, { SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
 import { BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
@@ -16,8 +14,7 @@ import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
 import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config';
 import { KycProvider, KycUser } from './stores/Kyc';
-import { useSettingsStore } from './stores/Settings';
-import { i18n, loadLanguage } from './i18n/i18n-setup';
+import { i18n, detectLanguage, loadLanguage } from './i18n/i18n-setup';
 
 export interface SetupSwapWithKycResult extends SetupSwapResult {
     kyc: {
@@ -89,15 +86,15 @@ function toDecimalString(amount: number, decimals: number): string {
 // Translate on a best effort basis; if language file has not been loaded yet, return a fallback. The method is called
 // $t such that source strings in calls to it get detected by our webpack-i18n-tools extractor. It's essentially the
 // same as VueI18n's $t but extended by the fallback string which will be returned if the language file has not been
-// loaded yet. Note that we're not just using the key as fallback because in production, webpack-i18n-tools optimizes
-// these away to be just simple index numbers.
-Vue.use(VueCompositionApi); // to be able to use the settings store
-loadLanguage(useSettingsStore().language.value);
+// loaded yet. Note that we're not just using the key as fallback because, webpack-i18n-tools optimizes these away to be
+// just simple index numbers.
+loadLanguage(detectLanguage());
+i18n.missing = () => ''; // don't return index numbers before language loaded; same as set in i18n-setup for production
 function $t(key: VueI18n.Path, fallback: string): string;
 function $t(key: VueI18n.Path, values: VueI18n.Values, fallback: string): string;
 function $t(key: VueI18n.Path, valuesOrFallback: VueI18n.Values | string, fallback?: string): string {
     return i18n.t(key, typeof valuesOrFallback !== 'string' ? valuesOrFallback : undefined) as string
-        // The translation was missing and i18n.t returned an empty string as configured by `missing` in i18n-setup.ts.
+        // The translation was missing and i18n.t returned an empty string as configured by i18n.missing
         || (typeof valuesOrFallback === 'string' ? valuesOrFallback : fallback!);
 }
 
@@ -213,9 +210,9 @@ async function run() {
                 }
                 if (grantResponse.app !== kycUser.appGrant) {
                     throw new Error($t(
-                        'Unexpected user. The Wallet is currently connected to the TEN31 Pass of {userName}.',
+                        'Unexpected user. This account is currently connected to the TEN31 Pass of {userName}.',
                         { userName: kycUser.name },
-                        `Unexpected user. The Wallet is currently connected to the TEN31 Pass of ${kycUser.name}.`,
+                        `Unexpected user. This account is currently connected to the TEN31 Pass of ${kycUser.name}.`,
                     ));
                 }
                 const [s3GrantToken, oasisGrantToken] = await Promise.all([

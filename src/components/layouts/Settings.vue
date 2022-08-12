@@ -75,7 +75,7 @@
 
                 <div class="setting">
                     <div class="description">
-                        <label class="nq-h2" for="contact-import">{{ $t('Import Contacts') }}</label>
+                        <label class="nq-h2">{{ $t('Import Contacts') }}</label>
                         <p class="nq-text">
                             {{ $t('Import contacts that you exported from the Safe.') }}
                         </p>
@@ -161,8 +161,12 @@
                         </div>
 
                         <div v-if="kycUser" class="flex-row connected-user">
-                            <strong class="display-name">{{ kycUser.name }}</strong>
-                            <KycIcon />
+                            <div class="display-name-container">
+                                <strong class="display-name">
+                                    {{ kycUser.name }}
+                                    <KycIcon />
+                                </strong>
+                            </div>
                             <button class="nq-button-s" @click="disconnectKyc">{{ $t('Disconnect') }}</button>
                         </div>
                     </div>
@@ -476,7 +480,7 @@ export default defineComponent({
 
 .column {
     justify-content: flex-start;
-    max-height: 100%;
+    max-height: calc(100% - 4rem); // for Copyright / Disclamer link
     overflow-y: auto;
 
     @extend %custom-scrollbar;
@@ -492,7 +496,6 @@ export default defineComponent({
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
-        max-height: calc(100% - 4rem); // for Copyright / Disclamer link
 
         section {
             padding-left: 3rem;
@@ -530,7 +533,7 @@ section {
 
     &:disabled {
         filter: grayscale(100%);
-        cursor: normal;
+        cursor: default;
         pointer-events: none;
     }
 }
@@ -571,36 +574,43 @@ section {
 .kyc-connection {
     .kyc-container {
         max-width: 100%;
-    }
-
-    .display-name {
-        font-size: 2rem;
-    }
-
-    .nq-icon {
-        margin: 0 2rem 0 0.75rem;
-        flex-shrink: 0;
-        color: var(--nimiq-purple);
+        flex-shrink: 1;
     }
 
     .connected-user {
         margin-top: 3rem;
-        gap: 1rem;
+        gap: 3rem;
         align-items: center;
+    }
+
+    .display-name-container {
+        padding-right: 2.75rem; // kyc-icon size + left space
+    }
+
+    .display-name {
+        position: relative;
+        font-size: 2rem;
+
+        .kyc-icon {
+            position: absolute; // position at the end of the last line; avoiding it breaking alone into a new line
+            left: calc(100% + .75rem); // .display-name is an inline element, thus 100% refers to length of last line
+            bottom: .125rem;
+            color: var(--nimiq-purple);
+        }
     }
 
     .nq-button-s {
         padding: 0.5rem 2rem;
         border-radius: 3.75rem;
         font-size: var(--body-size);
+        white-space: nowrap;
     }
 }
 
 select {
-    font-size: inherit;
+    font-size: var(--body-size);
     font-family: inherit;
     font-weight: bold;
-    font-size: var(--body-size);
     line-height: inherit;
     color: inherit;
     border: none;
@@ -696,9 +706,11 @@ input[type="file"] {
 }
 
 .copyright {
+    display: flex;
     position: absolute;
     left: 3.25rem;
     bottom: 3.25rem;
+    flex-wrap: wrap;
 
     font-size: var(--small-size);
     font-weight: 600;

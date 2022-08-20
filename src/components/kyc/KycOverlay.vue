@@ -14,7 +14,7 @@
         </PageHeader>
         <PageBody>
             <ul class="requirements">
-                <li>
+                <li class="requirement-mobile-phone">
                     <img class="icon-mobile-phone" alt="Mobile phone icon" />
                     <div>{{ $t('Mobile phone') }}</div>
                 </li>
@@ -111,12 +111,23 @@ export default defineComponent({
         display: flex;
         position: relative;
         width: calc((100% - 2 * /* gap + box-shadow */ 2.125rem) / 3); // 3 columns
+        max-width: 17rem;
         padding: 0 1rem 4rem;
         border-radius: 0.75rem;
         flex-direction: column;
         align-items: center;
         box-shadow: 0 0 0 1.5px var(--text-20);
         list-style: none;
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            & {
+                width: calc((100% - 1 * /* gap + box-shadow */ 2.125rem) / 2); // 2 columns
+            }
+
+            &.requirement-mobile-phone {
+                display: none;
+            }
+        }
     }
 
     img {

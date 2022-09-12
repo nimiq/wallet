@@ -3,12 +3,12 @@
 # Oscar_6, 2022
 # Пётр Павлович, 2022
 # Vad <vjuruss@gmail.com>, 2022
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Daniel, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
+"Last-Translator: Daniel, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -61,6 +61,10 @@ msgstr "{fee} комиссия "
 #: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% от суммы сделки."
+
+#: src/components/kyc/KycOverlay.vue:35
+msgid "{provider} is provided by {companyLogo}"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:83
@@ -128,13 +132,21 @@ msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:360
+#: src/components/layouts/Settings.vue:364
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
 "Адрес \"{адрес}\" уже сохранен в Контактах под другим именем.\n"
 "Хотите его заменить? "
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Открыто всплывающее окно.\n"
+"Нажмите где-нибудь, чтобы вернуть его на передний план."
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -160,7 +172,7 @@ msgstr "Активировать"
 msgid "Activate Bitcoin"
 msgstr "Активировать Биткоин"
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:229
 msgid "Add"
 msgstr "Добавить"
 
@@ -189,7 +201,7 @@ msgstr "Добавить аккаунт"
 msgid "Add address"
 msgstr "Добавить адрес"
 
-#: src/components/layouts/Settings.vue:221
+#: src/components/layouts/Settings.vue:225
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Добавить существующий вестинговый контракт в ваш кошелёк."
 
@@ -214,7 +226,7 @@ msgstr "Адрес недоступен?"
 msgid "Addresses"
 msgstr "Адреса"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:183
 msgid "Advanced"
 msgstr "Расширенные"
 
@@ -266,7 +278,7 @@ msgstr ""
 "Всегда сохраняйте резервную копию своего Пароля, Защитной Фразы и Файла "
 "Авторизации. "
 
-#: src/swap-kyc-handler.ts:282
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
 msgstr ""
 
@@ -318,11 +330,15 @@ msgstr ""
 "Обмен проводится двумя \n"
 "транзакциями BTC."
 
-#: src/components/layouts/Settings.vue:211
+#: src/components/kyc/KycOverlay.vue:27
+msgid "Authenticator app"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:215
 msgid "Auto"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:208
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
@@ -502,7 +518,7 @@ msgstr "Отменить обмен"
 msgid "Cancelled Swap"
 msgstr "Обмен отменён"
 
-#: src/components/layouts/Settings.vue:340
+#: src/components/layouts/Settings.vue:344
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не удалось импортировать список контактов, некорректный формат файла!"
 
@@ -549,11 +565,11 @@ msgstr "Выбрать Адрес"
 msgid "Claiming Cashlink"
 msgstr "Получаем Cashlink"
 
-#: src/components/layouts/Settings.vue:237
+#: src/components/layouts/Settings.vue:241
 msgid "Clear"
 msgstr "Сброс"
 
-#: src/components/layouts/Settings.vue:231
+#: src/components/layouts/Settings.vue:235
 msgid "Clear Cache"
 msgstr "Очистить Кэш"
 
@@ -589,7 +605,7 @@ msgstr "Подтвердить аккаунт"
 msgid "Congrats"
 msgstr "Поздравляем"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:178
 msgid "Connect"
 msgstr ""
 
@@ -600,10 +616,6 @@ msgid ""
 msgstr ""
 "Подключяйтесь напрямую к блокчейну Nimiq. \n"
 "Будьте независимы от любых посредников. "
-
-#: src/components/kyc/KycOverlay.vue:24
-msgid "Connect to {provider}"
-msgstr ""
 
 #: src/components/layouts/Settings.vue:159
 msgid "Connect to TEN31 Pass for higher swap limits."
@@ -735,12 +747,12 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Ресурсы для разработчиков"
 
-#: src/components/layouts/Settings.vue:277
+#: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Предупреждние"
 
-#: src/components/layouts/Settings.vue:166
+#: src/components/layouts/Settings.vue:170
 msgid "Disconnect"
 msgstr ""
 
@@ -795,7 +807,7 @@ msgstr "Изменить количество знаков после запят
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:189
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 "Включить экспериментальную поддержку свайп-жестов на мобильных устройствах."
@@ -823,7 +835,7 @@ msgstr "Введите IBAN"
 msgid "Enter recipient address..."
 msgstr "Введите адрес получателя..."
 
-#: src/components/layouts/Settings.vue:245
+#: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Введите пароль пробного доступа, который вы хотите активировать, и нажмите "
@@ -908,7 +920,7 @@ msgstr "Загрузка"
 msgid "Fiat value unavailable"
 msgstr "Значение в фиатной валюте не доступно"
 
-#: src/components/layouts/Settings.vue:346
+#: src/components/layouts/Settings.vue:350
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
@@ -957,10 +969,14 @@ msgstr ""
 msgid "Get TEN31-verified for higher limits"
 msgstr ""
 
-#: src/components/kyc/KycOverlay.vue:7
+#: src/components/kyc/KycOverlay.vue:8
 msgid ""
-"Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and"
-" TEN31-related products and services."
+"Get verified for higher limits by authenticating with {provider}. These are "
+"the requirements:"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:33
+msgid "Go to {provider}"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:94
@@ -1026,6 +1042,10 @@ msgstr ""
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
 msgstr "IBAN"
+
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
@@ -1126,7 +1146,7 @@ msgstr "Это быстро, безопасно и делает вас по-на
 msgid "It's safe to close your wallet now"
 msgstr "Теперь можно закрыть кошелек"
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr ""
 
@@ -1230,6 +1250,10 @@ msgstr "мин. {amount}"
 msgid "Minimum buy amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
 msgstr "В будущем будет поддерживаться больше мест."
@@ -1300,7 +1324,7 @@ msgstr "Без регистрации"
 msgid "No registration – not even email."
 msgstr "Без регистрации, даже без указания почты."
 
-#: src/swap-kyc-handler.ts:122
+#: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr ""
 
@@ -1345,11 +1369,11 @@ msgstr "Превышен лимит OASIS"
 msgid "OASIS service fee"
 msgstr "Комиссия сервиса OASIS"
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Выкл"
 
-#: src/components/layouts/Settings.vue:369
+#: src/components/layouts/Settings.vue:373
 msgid "OK! Contacts imported successfully."
 msgstr "Импорт контактов выполнен успешно."
 
@@ -1357,7 +1381,7 @@ msgstr "Импорт контактов выполнен успешно."
 msgid "Old and new Accounts"
 msgstr "Старые и новые Аккаунты"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:195
 msgid "On"
 msgstr "Вкл"
 
@@ -1373,7 +1397,7 @@ msgstr "Один Аккаунт, много Адресов"
 msgid "Or buy BTC directly in the wallet."
 msgstr "Или покупайте BTC прямо здесь, в кошельке."
 
-#: src/components/layouts/Settings.vue:200
+#: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
@@ -1435,11 +1459,11 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Переведите"
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "popups"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:216
 msgid "Popups"
 msgstr ""
 
@@ -1509,19 +1533,19 @@ msgstr "Получатель"
 msgid "Recovery Words"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:217
 msgid "Redirects"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:254
+#: src/components/layouts/Settings.vue:258
 msgid "Reference currency"
 msgstr "Базовая валюта"
 
@@ -1542,7 +1566,7 @@ msgstr ""
 "Обычные транзакции слишком медленные и не будут обработаны. Ваш банк может "
 "использовать другие наименования, например, «перевод в реальном времени»."
 
-#: src/components/layouts/Settings.vue:275
+#: src/components/layouts/Settings.vue:279
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Список изменений"
@@ -1566,7 +1590,7 @@ msgstr ""
 msgid "Rescan"
 msgstr "Сканировать ещё раз"
 
-#: src/components/layouts/Settings.vue:233
+#: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Сбросить настройки кошелька и перезагрузить данные блокчейна."
 
@@ -1886,7 +1910,7 @@ msgstr "Обменять на  {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
 msgstr "Свайп-жесты"
 
@@ -1898,7 +1922,7 @@ msgstr "синхронизируется"
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 предоставляет банковский счёт для заморозки вашего платежа."
 
-#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+#: src/swap-kyc-handler.ts:208 src/swap-kyc-handler.ts:225
 msgid "TEN31 Pass didn't return expected grants."
 msgstr ""
 
@@ -2102,7 +2126,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Перевести средства"
 
-#: src/components/layouts/Settings.vue:243
+#: src/components/layouts/Settings.vue:247
 msgid "Trials"
 msgstr "Пробные доступы"
 
@@ -2124,9 +2148,9 @@ msgstr "Твитни свою точку на карте!"
 msgid "Unclaimed Cashlink"
 msgstr "Активный Cashlink"
 
-#: src/swap-kyc-handler.ts:215
+#: src/swap-kyc-handler.ts:214
 msgid ""
-"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"Unexpected user. This account is currently connected to the TEN31 Pass of "
 "{userName}."
 msgstr ""
 
@@ -2137,11 +2161,11 @@ msgstr ""
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+#: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:243
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 
@@ -2177,7 +2201,7 @@ msgstr "Пользуйтесь кошельком Nimiq Wallet вне брауз
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Используйте ползунок или укажите сумму обмена."
 
-#: src/components/layouts/Settings.vue:219
+#: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Вестинговый контракт"
 
@@ -2209,7 +2233,7 @@ msgstr "Что-то еще?"
 msgid "What is your bank called?"
 msgstr "Как называется ваш банк?"
 
-#: src/components/layouts/Settings.vue:190
+#: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr "Когда готово"
 

@@ -2,9 +2,9 @@
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # Matheo <matheo@nimiq.com>, 2022
+# Daniel, 2022
 # Robinson BARAIS, 2022
 # 
 msgid ""
@@ -62,6 +62,10 @@ msgstr "{fee} frais"
 #: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% de la valeur du swap."
+
+#: src/components/kyc/KycOverlay.vue:35
+msgid "{provider} is provided by {companyLogo}"
+msgstr "{provider} est fourni par {companyLogo}"
 
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:83
@@ -131,13 +135,21 @@ msgstr ""
 "72 heures après votre premier achat, votre limite sera augmentée "
 "automatiquement."
 
-#: src/components/layouts/Settings.vue:360
+#: src/components/layouts/Settings.vue:364
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
 "Un contact avec l'adresse \"{address}\", mais un nom différent existe déjà.\n"
 "                            Voulez-vous le remplacer ?"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Une popup a été ouverte,\n"
+"cliquez n'importe où pour la ramener au premier plan."
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -163,7 +175,7 @@ msgstr "Activer"
 msgid "Activate Bitcoin"
 msgstr "Activer Bitcoin"
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:229
 msgid "Add"
 msgstr "Ajouter"
 
@@ -193,7 +205,7 @@ msgstr "Ajouter un compte"
 msgid "Add address"
 msgstr "Ajouter une adresse"
 
-#: src/components/layouts/Settings.vue:221
+#: src/components/layouts/Settings.vue:225
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Ajouter un contrat d'acquisition existant à votre Wallet."
 
@@ -218,7 +230,7 @@ msgstr "Adresse indisponible ?"
 msgid "Addresses"
 msgstr "Adresses"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:183
 msgid "Advanced"
 msgstr "Avancé"
 
@@ -270,9 +282,9 @@ msgstr ""
 "Sauvegardez toujours vos mots de récupération, votre mot de passe et vos "
 "fichiers de connexion."
 
-#: src/swap-kyc-handler.ts:282
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
-msgstr ""
+msgstr "Une erreur s'est produite : {message}"
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -320,11 +332,15 @@ msgstr "Swap atomique réussi !"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Les Swaps atomiques nécessitent 2 transactions BTC."
 
-#: src/components/layouts/Settings.vue:211
+#: src/components/kyc/KycOverlay.vue:27
+msgid "Authenticator app"
+msgstr "App d'authentification"
+
+#: src/components/layouts/Settings.vue:215
 msgid "Auto"
 msgstr "Auto"
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:208
 msgid "Automatic mode uses {behavior}."
 msgstr "Le mode automatique utilise {behavior}."
 
@@ -508,7 +524,7 @@ msgstr "Annuler le Swap"
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
-#: src/components/layouts/Settings.vue:340
+#: src/components/layouts/Settings.vue:344
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -555,11 +571,11 @@ msgstr "Choisissez une adresse"
 msgid "Claiming Cashlink"
 msgstr "Réclamer le Cashlink"
 
-#: src/components/layouts/Settings.vue:237
+#: src/components/layouts/Settings.vue:241
 msgid "Clear"
 msgstr "Vider"
 
-#: src/components/layouts/Settings.vue:231
+#: src/components/layouts/Settings.vue:235
 msgid "Clear Cache"
 msgstr "Vider le cache"
 
@@ -595,7 +611,7 @@ msgstr "Confirmer le compte"
 msgid "Congrats"
 msgstr "Félicitations"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:178
 msgid "Connect"
 msgstr "Se connecter"
 
@@ -606,10 +622,6 @@ msgid ""
 msgstr ""
 "Connectez-vous directement à la Blockchain Nimiq. Soyez indépendant de tout "
 "intermédiaire."
-
-#: src/components/kyc/KycOverlay.vue:24
-msgid "Connect to {provider}"
-msgstr "Se connecter à {provider}"
 
 #: src/components/layouts/Settings.vue:159
 msgid "Connect to TEN31 Pass for higher swap limits."
@@ -742,12 +754,12 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Ressources pour les développeurs"
 
-#: src/components/layouts/Settings.vue:277
+#: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Avertissement"
 
-#: src/components/layouts/Settings.vue:166
+#: src/components/layouts/Settings.vue:170
 msgid "Disconnect"
 msgstr "Déconnexion"
 
@@ -802,7 +814,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:189
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 "Activez la prise en charge expérimentale de la navigation par geste sur les "
@@ -831,7 +843,7 @@ msgstr "Saisir l'IBAN"
 msgid "Enter recipient address..."
 msgstr "Entrez l'adresse du destinataire..."
 
-#: src/components/layouts/Settings.vue:245
+#: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Saisissez le mot de passe du test que vous souhaitez activer, puis appuyez "
@@ -916,7 +928,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Valeur du FIAT indisponible"
 
-#: src/components/layouts/Settings.vue:346
+#: src/components/layouts/Settings.vue:350
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -965,13 +977,17 @@ msgstr "Commencer"
 msgid "Get TEN31-verified for higher limits"
 msgstr "Obtenez la vérification TEN31 pour des limites plus élevées"
 
-#: src/components/kyc/KycOverlay.vue:7
+#: src/components/kyc/KycOverlay.vue:8
 msgid ""
-"Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and"
-" TEN31-related products and services."
+"Get verified for higher limits by authenticating with {provider}. These are "
+"the requirements:"
 msgstr ""
-"Faites-vous vérifier par TEN31 pour obtenir des limites plus élevées avec "
-"SuperSimpleSwap, Fastspot et les produits et services liés à TEN31."
+"Réalisez une vérification pour des limites plus élevées en vous "
+"authentifiant auprès de {provider}. Voici les conditions requises :"
+
+#: src/components/kyc/KycOverlay.vue:33
+msgid "Go to {provider}"
+msgstr "Aller à {provider}"
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
@@ -1036,6 +1052,10 @@ msgstr "Je comprends que je dois envoyer un {sepaInstantLink}."
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
 msgstr "IBAN"
+
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr "Carte d'identité"
 
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
@@ -1136,7 +1156,7 @@ msgstr "Il est rapide, sûr et vous rend vraiment indépendant."
 msgid "It's safe to close your wallet now"
 msgstr "Vous pouvez maintenant fermer votre Wallet en toute sécurité"
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr "Mode Keyguard"
 
@@ -1242,6 +1262,10 @@ msgstr "min {amount}"
 msgid "Minimum buy amount is {amount}"
 msgstr "Le montant minimum à swap est {amount}"
 
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr "Numéro de mobile"
+
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
 msgstr "Plus de pays seront supportés à l'avenir"
@@ -1313,9 +1337,9 @@ msgstr "Pas d'enregistrement"
 msgid "No registration – not even email."
 msgstr "Aucune inscription et aucun mail requis."
 
-#: src/swap-kyc-handler.ts:122
+#: src/swap-kyc-handler.ts:119
 msgid "No request received."
-msgstr ""
+msgstr "Aucune demande reçue."
 
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
@@ -1360,11 +1384,11 @@ msgstr "Limite d'utilisation d'OASIS dépassée "
 msgid "OASIS service fee"
 msgstr "frais de service OASIS"
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Inactif"
 
-#: src/components/layouts/Settings.vue:369
+#: src/components/layouts/Settings.vue:373
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -1372,7 +1396,7 @@ msgstr "OK ! Les contacts ont été importés avec succès."
 msgid "Old and new Accounts"
 msgstr "Anciens et nouveaux Comptes"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:195
 msgid "On"
 msgstr "Actif"
 
@@ -1388,7 +1412,7 @@ msgstr "Un Compte, plusieurs Adresses"
 msgid "Or buy BTC directly in the wallet."
 msgstr "Ou acheter du BTC directement dans le Wallet."
 
-#: src/components/layouts/Settings.vue:200
+#: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Remplace la manière dont le Keyguard s'ouvre."
 
@@ -1451,11 +1475,11 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Veuillez transférer"
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "popups"
 msgstr "pop-ups"
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:216
 msgid "Popups"
 msgstr "Pop-ups"
 
@@ -1524,19 +1548,19 @@ msgstr "Destinataire"
 msgid "Recovery Words"
 msgstr "Mots de récupération"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
 msgstr "Le mode de redirection ne supporte pas encore les swaps."
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "redirects"
 msgstr "redirection"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:217
 msgid "Redirects"
 msgstr "Redirection"
 
-#: src/components/layouts/Settings.vue:254
+#: src/components/layouts/Settings.vue:258
 msgid "Reference currency"
 msgstr "Devise de référence"
 
@@ -1558,7 +1582,7 @@ msgstr ""
 "Votre banque utilise peut-être un autre nom, comme \"transactions en temps "
 "réel\", par exemple."
 
-#: src/components/layouts/Settings.vue:275
+#: src/components/layouts/Settings.vue:279
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Notes de mise à jour"
@@ -1582,7 +1606,7 @@ msgstr "Requis"
 msgid "Rescan"
 msgstr "Re-scanner"
 
-#: src/components/layouts/Settings.vue:233
+#: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Réinitialisez les paramètres de votre Wallet et rechargez les données depuis"
@@ -1904,7 +1928,7 @@ msgstr "Swap vers {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr "Swappez jusqu'à {limit} par période de 30 jours."
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
 msgstr "Navigation par gestes"
 
@@ -1917,9 +1941,9 @@ msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 "La banque TEN31 fournit un compte bancaire pour sécuriser votre paiement."
 
-#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+#: src/swap-kyc-handler.ts:208 src/swap-kyc-handler.ts:225
 msgid "TEN31 Pass didn't return expected grants."
-msgstr ""
+msgstr "ten31 pass ne retourne pas les droits attendus."
 
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
@@ -2121,7 +2145,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Transférer des fonds"
 
-#: src/components/layouts/Settings.vue:243
+#: src/components/layouts/Settings.vue:247
 msgid "Trials"
 msgstr "Tests"
 
@@ -2143,11 +2167,13 @@ msgstr "Tweetez votre carte !"
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
 
-#: src/swap-kyc-handler.ts:215
+#: src/swap-kyc-handler.ts:214
 msgid ""
-"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"Unexpected user. This account is currently connected to the TEN31 Pass of "
 "{userName}."
 msgstr ""
+"Utilisateur inattendu. Ce compte est actuellement connecté au Pass TEN31 de "
+"{userName}."
 
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
@@ -2156,13 +2182,13 @@ msgstr ""
 msgid "Unknown"
 msgstr "Inconnu "
 
-#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+#: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
-msgstr ""
+msgstr "Devise non supportée"
 
-#: src/swap-kyc-handler.ts:243
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
-msgstr ""
+msgstr "Fournisseur {provider} KYC non supporté."
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -2199,7 +2225,7 @@ msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Utilisez le slider ou modifiez les valeurs pour mettre en place un Swap."
 
-#: src/components/layouts/Settings.vue:219
+#: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Contrat d'acquisition"
 
@@ -2231,7 +2257,7 @@ msgstr "Quoi d'autre ?"
 msgid "What is your bank called?"
 msgstr "Quel est le nom de votre banque ?"
 
-#: src/components/layouts/Settings.vue:190
+#: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr "Quand vous êtes prêts"
 

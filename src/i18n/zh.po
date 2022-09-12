@@ -1,13 +1,13 @@
 # 
 # Translators:
-# Daniel, 2020
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Sven <sven@nimiq.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Daniel, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
+"Last-Translator: Daniel, 2022\n"
 "Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -60,6 +60,10 @@ msgstr "{fee} 费用"
 #: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
+
+#: src/components/kyc/KycOverlay.vue:35
+msgid "{provider} is provided by {companyLogo}"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:83
@@ -127,13 +131,21 @@ msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr "首次购买后的72 小时，你的限额将自动更新。"
 
-#: src/components/layouts/Settings.vue:360
+#: src/components/layouts/Settings.vue:364
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
 "该地址“ {address}”的联系人已经存在并使用了其他名称。\n"
 "                            你要更换吗？"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"弹出窗口已打开，\n"
+"单击任意位置即可回到上一页"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -159,7 +171,7 @@ msgstr "激活"
 msgid "Activate Bitcoin"
 msgstr "激活比特币"
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:229
 msgid "Add"
 msgstr "添加"
 
@@ -185,7 +197,7 @@ msgstr "添加账户"
 msgid "Add address"
 msgstr "添加地址"
 
-#: src/components/layouts/Settings.vue:221
+#: src/components/layouts/Settings.vue:225
 msgid "Add an existing vesting contract to your wallet."
 msgstr "将现有的归属合同添加到你的钱包"
 
@@ -210,7 +222,7 @@ msgstr "地址无法使用？"
 msgid "Addresses"
 msgstr "地址"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:183
 msgid "Advanced"
 msgstr "进阶设置"
 
@@ -254,7 +266,7 @@ msgstr "所有翻译仅供参考，英文原文为主要版本"
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "请随时备份你的恢复字，密码和登录文件"
 
-#: src/swap-kyc-handler.ts:282
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
 msgstr ""
 
@@ -301,11 +313,15 @@ msgstr "原子交换成功！"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "原子交换需要两笔比特币交易"
 
-#: src/components/layouts/Settings.vue:211
+#: src/components/kyc/KycOverlay.vue:27
+msgid "Authenticator app"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:215
 msgid "Auto"
 msgstr "自动"
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:208
 msgid "Automatic mode uses {behavior}."
 msgstr "自动模式使用了 {behavior}"
 
@@ -480,7 +496,7 @@ msgstr "取消交换"
 msgid "Cancelled Swap"
 msgstr "取消交换"
 
-#: src/components/layouts/Settings.vue:340
+#: src/components/layouts/Settings.vue:344
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
@@ -527,11 +543,11 @@ msgstr "选择地址"
 msgid "Claiming Cashlink"
 msgstr "认领现金链接"
 
-#: src/components/layouts/Settings.vue:237
+#: src/components/layouts/Settings.vue:241
 msgid "Clear"
 msgstr "清除"
 
-#: src/components/layouts/Settings.vue:231
+#: src/components/layouts/Settings.vue:235
 msgid "Clear Cache"
 msgstr "清除缓存"
 
@@ -567,7 +583,7 @@ msgstr "确认账户"
 msgid "Congrats"
 msgstr "恭喜"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:178
 msgid "Connect"
 msgstr ""
 
@@ -578,10 +594,6 @@ msgid ""
 msgstr ""
 "直接连接到Nimiq区块链，\n"
 "无需通过任何中间人"
-
-#: src/components/kyc/KycOverlay.vue:24
-msgid "Connect to {provider}"
-msgstr ""
 
 #: src/components/layouts/Settings.vue:159
 msgid "Connect to TEN31 Pass for higher swap limits."
@@ -710,12 +722,12 @@ msgstr ""
 msgid "Developer resources"
 msgstr "开发者资源"
 
-#: src/components/layouts/Settings.vue:277
+#: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "免责声明"
 
-#: src/components/layouts/Settings.vue:166
+#: src/components/layouts/Settings.vue:170
 msgid "Disconnect"
 msgstr ""
 
@@ -768,7 +780,7 @@ msgstr "编辑NIM值可见的小数位数"
 msgid "Edit transaction"
 msgstr "修改交易"
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:189
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr "启用移动设备上实验性的滑动手势支持"
 
@@ -795,7 +807,7 @@ msgstr "输入 IBAN"
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
-#: src/components/layouts/Settings.vue:245
+#: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "输入你要启用的试用版的密码后，按下快车键"
 
@@ -878,7 +890,7 @@ msgstr "正在取得更新"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:346
+#: src/components/layouts/Settings.vue:350
 msgid "File contains no contacts."
 msgstr "文件中没有任何联系人"
 
@@ -927,10 +939,14 @@ msgstr ""
 msgid "Get TEN31-verified for higher limits"
 msgstr ""
 
-#: src/components/kyc/KycOverlay.vue:7
+#: src/components/kyc/KycOverlay.vue:8
 msgid ""
-"Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and"
-" TEN31-related products and services."
+"Get verified for higher limits by authenticating with {provider}. These are "
+"the requirements:"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:33
+msgid "Go to {provider}"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:94
@@ -994,6 +1010,10 @@ msgstr "我知道我必须发送一个{sepaInstantLink}。"
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
 msgstr "IBAN"
+
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
@@ -1083,7 +1103,7 @@ msgstr "快速、安全，让你完全独立"
 msgid "It's safe to close your wallet now"
 msgstr "你现在可以安全关闭电子钱包"
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr "密钥模式"
 
@@ -1189,6 +1209,10 @@ msgstr "最低{amount}"
 msgid "Minimum buy amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
 msgstr "未来将在更多地方支持"
@@ -1258,7 +1282,7 @@ msgstr "无需注册"
 msgid "No registration – not even email."
 msgstr "无需注册，甚至无需电子邮件"
 
-#: src/swap-kyc-handler.ts:122
+#: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr ""
 
@@ -1303,11 +1327,11 @@ msgstr "超出OASIS限制"
 msgid "OASIS service fee"
 msgstr "OASIS服务费"
 
-#: src/components/layouts/Settings.vue:192
+#: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "关"
 
-#: src/components/layouts/Settings.vue:369
+#: src/components/layouts/Settings.vue:373
 msgid "OK! Contacts imported successfully."
 msgstr "好的，联系人已成功导入"
 
@@ -1315,7 +1339,7 @@ msgstr "好的，联系人已成功导入"
 msgid "Old and new Accounts"
 msgstr "新旧帐户"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:195
 msgid "On"
 msgstr "开"
 
@@ -1331,7 +1355,7 @@ msgstr "一个帐户，多个地址"
 msgid "Or buy BTC directly in the wallet."
 msgstr "或直接在钱包中购买BTC"
 
-#: src/components/layouts/Settings.vue:200
+#: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr "覆盖Keyguard的打开方式"
 
@@ -1391,11 +1415,11 @@ msgstr ""
 msgid "Please transfer"
 msgstr "请转账"
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "popups"
 msgstr "弹出窗口"
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:216
 msgid "Popups"
 msgstr "弹出窗口"
 
@@ -1462,19 +1486,19 @@ msgstr "接收者"
 msgid "Recovery Words"
 msgstr "复原字"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
 msgstr "重定向模式尚不支持交换"
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "redirects"
 msgstr "重定向"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:217
 msgid "Redirects"
 msgstr "重定向"
 
-#: src/components/layouts/Settings.vue:254
+#: src/components/layouts/Settings.vue:258
 msgid "Reference currency"
 msgstr "参考货币"
 
@@ -1493,7 +1517,7 @@ msgid ""
 "another name, like ‘real-time transactions’ i.a."
 msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式称呼即时交易，例如“实时交易”"
 
-#: src/components/layouts/Settings.vue:275
+#: src/components/layouts/Settings.vue:279
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "发行说明"
@@ -1517,7 +1541,7 @@ msgstr "必要的"
 msgid "Rescan"
 msgstr "重新扫描"
 
-#: src/components/layouts/Settings.vue:233
+#: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "重置你的钱包设置，并从区块链重新加载数据"
 
@@ -1833,7 +1857,7 @@ msgstr "交换到 {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
 msgstr "滑动手势"
 
@@ -1845,7 +1869,7 @@ msgstr "正在同步"
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31银行提供了一个银行帐户锁定你的付款"
 
-#: src/swap-kyc-handler.ts:209 src/swap-kyc-handler.ts:226
+#: src/swap-kyc-handler.ts:208 src/swap-kyc-handler.ts:225
 msgid "TEN31 Pass didn't return expected grants."
 msgstr ""
 
@@ -2036,7 +2060,7 @@ msgstr "由于比特币的出块时间，交易需要10分钟以上"
 msgid "Transfer funds"
 msgstr "转移资金"
 
-#: src/components/layouts/Settings.vue:243
+#: src/components/layouts/Settings.vue:247
 msgid "Trials"
 msgstr "试用版"
 
@@ -2058,9 +2082,9 @@ msgstr "在推特分享你的地图！"
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 
-#: src/swap-kyc-handler.ts:215
+#: src/swap-kyc-handler.ts:214
 msgid ""
-"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"Unexpected user. This account is currently connected to the TEN31 Pass of "
 "{userName}."
 msgstr ""
 
@@ -2071,11 +2095,11 @@ msgstr ""
 msgid "Unknown"
 msgstr "未知"
 
-#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+#: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:243
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 
@@ -2108,7 +2132,7 @@ msgstr "将Nimiq 钱包作为网络应用程序，于浏览器之外使用。"
 msgid "Use the slider or edit values to set up a swap."
 msgstr "使用滑块或编辑值来设置交换"
 
-#: src/components/layouts/Settings.vue:219
+#: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "归属合同"
 
@@ -2138,7 +2162,7 @@ msgstr "还有什么？"
 msgid "What is your bank called?"
 msgstr "你使用哪间银行？"
 
-#: src/components/layouts/Settings.vue:190
+#: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr "准备好时"
 

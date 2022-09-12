@@ -14,13 +14,13 @@ yarn i18n:sync
 # Get up-to-date EBA RT1 bank list
 yarn utils:getBankList
 
+# Build Nginx path allowlist
+yarn utils:makeNginxAllowlist
+
 if [[ `git status --porcelain` ]]; then
     echo "ERROR: The repository has changes. Commit them first, then run again."
     exit 1
 fi
-
-# Build Nginx path allowlist
-yarn utils:makeNginxAllowlist &&
 
 # Tag current commit
 git tag $1 &&

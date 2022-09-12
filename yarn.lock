@@ -1486,10 +1486,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.3.tgz#a360c7aa13f1f18d801d7461a32bb28a6bc61c38"
   integrity sha512-NL/JeQ3f3koGqE0c6Q/ZyupAXvJfXGoZTkiCVnTGwgCN3lvUMHCJtp7qQPnvDldBLMORDA4Ck7wGgktKA9Fa9Q==
 
-"@nimiq/ten31-pass-api@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.0.0.tgz#6a26bfa1b51efa18dc60c51f99381ea15bf1c18d"
-  integrity sha512-+KF5Npj5bIymGKT25mTDLboFoMmBgf/BbqqBE/xq4NYp8/PkFm3/6JfbnRw48/DnO12SqDttOksvLXNw9/EnOQ==
+"@nimiq/ten31-pass-api@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.1.0.tgz#4e013dd23302304965ac032e521d38a25b186a24"
+  integrity sha512-YLxzRyJcg/0xPMMBl+TcIugm8SdSitWZXEhotXK8wIj/wbtRQEbUoo052JCfpWJXVTsGDNS0VbS9oLA+fuFm1A==
 
 "@nimiq/utils@^0.5.0":
   version "0.5.1"

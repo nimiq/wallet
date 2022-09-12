@@ -188,7 +188,9 @@ async function run() {
                     Config.ten31Pass.appId,
                     serviceRequests,
                     /* asPopup */ false,
-                    ResponseType.IMMEDIATE_REDIRECT,
+                    {
+                        preferredResponseType: ResponseType.IMMEDIATE_REDIRECT,
+                    },
                 );
                 return;
             }

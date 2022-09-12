@@ -2,13 +2,13 @@
 # Translators:
 # Rhody Lugo, 2021
 # Max, 2022
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # Ricardo Barquero Carranza <richy@nimiq.com>, 2022
+# Daniel, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2022\n"
+"Last-Translator: Daniel, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -137,6 +137,14 @@ msgid ""
 msgstr ""
 "Ya existe un contacto con la dirección \"{address}\", pero con nombre distinto.\n"
 "                            Do you want to replace it?"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Se ha abierto una ventana emergente.\n"
+"Haga click en cualquier lugar para traer la ventana al primer plano."
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -1032,6 +1040,10 @@ msgstr "Entiendo que tengo que enviar un {sepaInstantLink}."
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1249,6 +1261,10 @@ msgstr "min {amount}"
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "El monto mínimo de intercambio es {amount}"
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."

@@ -1,6 +1,5 @@
 # 
 # Translators:
-# Daniel, 2020
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # Sven <sven@nimiq.com>, 2022
@@ -134,6 +133,14 @@ msgid ""
 msgstr ""
 "该地址“ {address}”的联系人已经存在并使用了其他名称。\n"
 "                            你要更换吗？"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"弹出窗口已打开，\n"
+"单击任意位置即可回到上一页"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -995,6 +1002,10 @@ msgstr "我知道我必须发送一个{sepaInstantLink}。"
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1201,6 +1212,10 @@ msgstr "最低{amount}"
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "最低交换金额为{amount}"
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."

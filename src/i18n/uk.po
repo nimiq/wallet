@@ -136,6 +136,14 @@ msgid ""
 msgstr ""
 "Контакт із адресою \"{address}\" вже існує з іншою назвою. Хочете замінити?"
 
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Відкрито випадаюче вікно.\n"
+"клацніть будь-де щоб перейти до ньго."
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -1029,6 +1037,10 @@ msgstr "Я розумію, що маю надіслати {sepaInstantLink}."
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr "ID документ"
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1246,6 +1258,10 @@ msgstr "мін {amount}"
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "Мінімальна сума обміну {amount}"
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr "Мобільний телефон"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."

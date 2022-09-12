@@ -1,6 +1,5 @@
 # 
 # Translators:
-# Daniel, 2022
 # BlockchainShay <Shaylish@live.nl>, 2022
 # Stefan, 2022
 # Fons <Fonsdesigns@hotmail.com>, 2022
@@ -136,6 +135,14 @@ msgid ""
 msgstr ""
 "Een contactpersoon met het adres \"{address}\" bestaat al, maar onder een andere naam.\n"
 "Wil je het vervangen?"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Er is een pop-up geopend,\n"
+"klik op het scherm om het weer naar voren te brengen."
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -1024,6 +1031,10 @@ msgstr ""
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1238,6 +1249,10 @@ msgstr "min {amount}"
 
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:9

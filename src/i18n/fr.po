@@ -2,6 +2,8 @@
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
+# Sören Schwert <hello@soerenschwert.de>, 2022
+# Matheo <matheo@nimiq.com>, 2022
 # Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # Matheo <matheo@nimiq.com>, 2022
@@ -138,6 +140,14 @@ msgid ""
 msgstr ""
 "Un contact avec l'adresse \"{address}\", mais un nom différent existe déjà.\n"
 "                            Voulez-vous le remplacer ?"
+
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Une popup a été ouverte,\n"
+"cliquez n'importe où pour la ramener au premier plan."
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -1037,6 +1047,10 @@ msgstr "Je comprends que je dois envoyer un {sepaInstantLink}."
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr "Carte d'identité"
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1254,6 +1268,10 @@ msgstr "min {amount}"
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "Le montant minimum à swap est {amount}"
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr "Numéro de mobile"
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."

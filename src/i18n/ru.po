@@ -136,6 +136,14 @@ msgstr ""
 "Адрес \"{адрес}\" уже сохранен в Контактах под другим именем.\n"
 "Хотите его заменить? "
 
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+"Открыто всплывающее окно.\n"
+"Нажмите где-нибудь, чтобы вернуть его на передний план."
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -1027,6 +1035,10 @@ msgstr ""
 msgid "IBAN"
 msgstr "IBAN"
 
+#: src/components/kyc/KycOverlay.vue:23
+msgid "ID document"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1242,6 +1254,10 @@ msgstr "мин. {amount}"
 #: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
+
+#: src/components/kyc/KycOverlay.vue:19
+msgid "Mobile phone"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."

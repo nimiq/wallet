@@ -126,6 +126,12 @@ msgid ""
 "                            Do you want to replace it?"
 msgstr ""
 
+#: src/lib/KycConnection.ts:38
+msgid ""
+"A popup has been opened,\n"
+"click anywhere to bring it back to the front."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -233,7 +239,7 @@ msgstr ""
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:279
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
 msgstr ""
 
@@ -1780,8 +1786,8 @@ msgstr ""
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:206
-#: src/swap-kyc-handler.ts:223
+#: src/swap-kyc-handler.ts:208
+#: src/swap-kyc-handler.ts:225
 msgid "TEN31 Pass didn't return expected grants."
 msgstr ""
 
@@ -1986,7 +1992,7 @@ msgstr ""
 msgid "Unclaimed Cashlink"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:212
+#: src/swap-kyc-handler.ts:214
 msgid "Unexpected user. This account is currently connected to the TEN31 Pass of {userName}."
 msgstr ""
 
@@ -2002,7 +2008,7 @@ msgstr ""
 msgid "Unsupported currency"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:240
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 

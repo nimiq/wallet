@@ -39,4 +39,20 @@ export const validatorData: Record<string, { label: string, fee: number, payoutT
         fee: 0.11,
         payoutType: 'restake',
     },
+    'NQ84 MYXS MUN5 TC2A TNVK V6L5 RG3B 88GF 8J1U': {
+        label: 'Rock&Pool',
+        fee: 0.1,
+        payoutType: 'restake',
+    },
+    'NQ56 7L0M GQPS GNCU VGGT LV4S 4HHN F701 2DEF': {
+        label: 'Poolalicious',
+        fee: 0.1,
+        payoutType: 'restake',
+    },
+    'NQ70 GYT6 KT72 4S7B 426R DKYL VJ3M 0KFS CY89': {
+        label: 'Poolbastic',
+        fee: 0.1,
+        payoutType: 'restake',
+    },
+
 };

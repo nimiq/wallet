@@ -41,7 +41,7 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 
     if (hubBehavior.value === 'popup') return undefined;
     if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
-        return new HubApi.RedirectRequestBehavior(undefined, localState) as RequestBehavior<BehaviorType.REDIRECT>;
+        return new HubApi.RedirectRequestBehavior(window.location.href, localState);
     }
 
     return undefined;
@@ -273,12 +273,12 @@ export async function syncFromHub() {
 }
 
 export async function onboard(asRedirect = false) {
-    if (asRedirect === true) {
-        const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+    if (asRedirect) {
+        const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
         hubApi.onboard({
             appName: APP_NAME,
             disableBack: true,
-        }, behavior);
+        }, behavior as RequestBehavior<BehaviorType.REDIRECT>);
         return null;
     }
 

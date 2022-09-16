@@ -1146,7 +1146,7 @@ msgstr "最大可交换金额为 {amount}"
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "最高"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137
@@ -1214,7 +1214,7 @@ msgstr ""
 msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
-msgstr "Nimiq正在开发PRO功能，用户在注册后可提高金额限制"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."

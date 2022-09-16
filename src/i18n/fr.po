@@ -2,9 +2,9 @@
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
+# Matheo <matheo@nimiq.com>, 2022
 # Daniel, 2022
 # Robinson BARAIS, 2022
-# Matheo <matheo@nimiq.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -1197,7 +1197,7 @@ msgstr "Le montant maximum Swappable est de {amount}"
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "Max."
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137
@@ -1267,8 +1267,6 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
-"Nimiq travaille sur une fonctionnalité Pro avec des limites augmentées après"
-" l'enregistrement de l'utilisateur."
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."

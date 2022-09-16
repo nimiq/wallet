@@ -3,8 +3,8 @@
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Matheo <matheo@nimiq.com>, 2021
 # Daniel, 2022
-# Sven <sven@nimiq.com>, 2022
 # Redexe <timo.niehoff@yahoo.de>, 2022
+# Sven <sven@nimiq.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -1197,7 +1197,7 @@ msgstr "Höchst-Tauschbetrag ist {amount}"
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "Max."
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137
@@ -1267,7 +1267,6 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
-"Nimiq arbeitet an einem PRO-Feature mit höheren Obergrenzen nach Anmeldung."
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."

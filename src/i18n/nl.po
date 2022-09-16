@@ -1184,7 +1184,7 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "Max."
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137

@@ -1194,7 +1194,7 @@ msgstr "El monto máximo intercambiable es {amount}"
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "Max."
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137
@@ -1264,8 +1264,6 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
-"Nimiq esta trabajando en una versión PRO con mayores límites que se pueden "
-"acceder después de registrarse."
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."

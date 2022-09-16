@@ -1,8 +1,8 @@
 # 
 # Translators:
+# Petro M <petro.matsyburka@outlook.com>, 2022
 # Daniel, 2022
 # Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022
-# Petro M <petro.matsyburka@outlook.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # 
 msgid ""
@@ -1190,7 +1190,7 @@ msgstr "Максимальна сума, яку можна обміняти: {am
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr "Макс."
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:123
 #: src/components/modals/BuyOptionsModal.vue:137
@@ -1260,8 +1260,6 @@ msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
-"Nimiq працює над функцією PRO зі збільшеними лімітами після реєстрації "
-"користувача."
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."

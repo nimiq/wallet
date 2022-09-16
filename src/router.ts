@@ -1,5 +1,6 @@
 import VueRouter, { RouteConfig, Route } from 'vue-router';
 import Vue from 'vue';
+import { AsyncComponentPromise } from 'vue/types/options.d';
 
 import { provide, inject } from '@vue/composition-api';
 
@@ -7,6 +8,23 @@ import { provide, inject } from '@vue/composition-api';
 import Groundfloor from './components/layouts/Groundfloor.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
+
+import { AccountType, useAccountStore } from './stores/Account';
+
+function requireActivatedBitcoin(loadView: AsyncComponentPromise): AsyncComponentPromise {
+    return () => {
+        const { activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
+        const isLegacyAccount = activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEGACY;
+        if (isLegacyAccount) return undefined; // legacy accounts don't support Bitcoin; don't return any view / modal
+        if (!hasBitcoinAddresses.value) return BtcActivationModal(); // show activation modal
+        // show original view
+        return new Promise((resolve, reject) => {
+            const viewPromise = loadView(resolve, reject);
+            if (!viewPromise) return;
+            resolve(viewPromise);
+        });
+    };
+}
 
 // Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
@@ -38,15 +56,16 @@ const ReleaseNotesModal = () =>
 // Bitcoin Modals
 const BtcActivationModal = () =>
     import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
-const BtcSendModal = () =>
-    import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
-const BtcReceiveModal = () =>
-    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
+const BtcSendModal = requireActivatedBitcoin(() =>
+    import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue'));
+const BtcReceiveModal = requireActivatedBitcoin(() =>
+    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue'));
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
 // Swap Modals
-const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
+const SwapModal = requireActivatedBitcoin(() =>
+    import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>

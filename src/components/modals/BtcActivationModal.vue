@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { defineComponent, onUnmounted, watch } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -47,7 +47,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAccountId, setActiveCurrency } = useAccountStore();
+        const { activeAccountId, setActiveCurrency, hasBitcoinAddresses } = useAccountStore();
 
         const { isMobile } = useWindowSize();
 
@@ -57,7 +57,19 @@ export default defineComponent({
             activated = await activateBitcoin(activeAccountId.value!);
             if (activated) {
                 setActiveCurrency(CryptoCurrency.BTC);
-                context.root.$router.back(); // Close modal
+                if (!context.root.$route.matched.some(({ name }) => name === 'btc-activation')) {
+                    // BtcActivationModal was not opened by btc-activation route but for another route via
+                    // requireActivatedBitcoin in router.ts. Once Bitcoin addresses were synced, open the initially
+                    // intended route.
+                    const unwatch = watch(() => {
+                        if (!hasBitcoinAddresses.value) return;
+                        unwatch();
+                        // wait some little extra time for store to be persisted
+                        setTimeout(() => window.location.reload(), 1000);
+                    });
+                } else {
+                    context.root.$router.back(); // Close modal
+                }
             }
         }
 

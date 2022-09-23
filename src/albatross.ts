@@ -152,7 +152,7 @@ export class AlbatrossRpcClient {
         // Start block listener
         this.getRemote().then(async (remote) => {
             if (VERSION >= 2) {
-                const id = await remote.subscribeForHeadBlock([false]);
+                const id = await remote.subscribeForHeadBlock([/* include_transactions */false]);
                 const { generator } = remote.subscribeForHeadBlock.listen() as {
                     generator: Generator<{ subscription: number, result: AlbatrossBlock }>,
                 };
@@ -192,7 +192,8 @@ export class AlbatrossRpcClient {
             }
         });
 
-        this.rpc<AlbatrossBlock>('getLatestBlock', [false]).then((block) => this.onHeadChange(block));
+        this.rpc<AlbatrossBlock>('getLatestBlock', [/* include_transactions */false])
+            .then((block) => this.onHeadChange(block));
     }
 
     public async waitForConsensusEstablished() {
@@ -397,12 +398,22 @@ export class AlbatrossRpcClient {
                 }
             });
             createRemote(ws).then((remote: any) => {
+                // Overwrite remote call to discard the returned metadata and just return the response's main data.
+                remote.call = (...args: Parameters<typeof remote['call']>) => {
+                    const originalCall = remote.constructor.prototype.call;
+                    return originalCall.apply(remote, args).then((response: {data: any, metadata: any} | any) =>
+                        // main result has been moved into property 'data' in nimiq/core-rs-albatross#1023
+                        typeof response === 'object' && 'data' in response && 'metadata' in response
+                            ? response.data
+                            : response,
+                    );
+                };
+                // Wrap the remote client into a proxy on which rpc calls can be invoked as direct method calls.
                 const proxy = new Proxy(
                     remote,
                     wsProxyHandler,
                 );
-                this.rpc<number>('getPeerCount')
-                    .then((peerCount) => useNetworkStore().state.peerCount = peerCount);
+                proxy.getPeerCount([]).then((peerCount: number) => useNetworkStore().state.peerCount = peerCount);
                 resolve(proxy);
             });
         }));
@@ -412,10 +423,11 @@ export class AlbatrossRpcClient {
         if (block.type === 'reverted-block') {
             console.debug(`Reverting ${block.transactions.length} transactions`); // eslint-disable-line no-console
 
+            const transactionsStore = useTransactionsStore();
             for (const { hash } of block.transactions) {
-                const tx = useTransactionsStore().state.transactions[hash];
+                const tx = transactionsStore.state.transactions[hash];
                 if (!tx) continue;
-                useTransactionsStore().addTransactions([{
+                transactionsStore.addTransactions([{
                     ...tx,
                     state: TransactionState.NEW,
                 }]);

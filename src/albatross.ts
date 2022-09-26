@@ -398,15 +398,31 @@ export class AlbatrossRpcClient {
                 }
             });
             createRemote(ws).then((remote: any) => {
-                // Overwrite remote call to discard the returned metadata and just return the response's main data.
+                // Overwrite 'call' and 'listen' to discard the returned metadata and just return the response's data
+                function getResponseData(response: {data: unknown, metadata: unknown} | unknown): unknown {
+                    // main result has been moved into property 'data' in nimiq/core-rs-albatross#1023
+                    return response && typeof response === 'object' && 'data' in response && 'metadata' in response
+                        ? (response as any).data
+                        : response;
+                }
                 remote.call = (...args: Parameters<typeof remote['call']>) => {
                     const originalCall = remote.constructor.prototype.call;
-                    return originalCall.apply(remote, args).then((response: {data: any, metadata: any} | any) =>
-                        // main result has been moved into property 'data' in nimiq/core-rs-albatross#1023
-                        typeof response === 'object' && 'data' in response && 'metadata' in response
-                            ? response.data
-                            : response,
-                    );
+                    return originalCall.apply(remote, args).then((response: unknown) => getResponseData(response));
+                };
+                remote.listen = (eventName: string) => {
+                    const originalListen = remote.constructor.prototype.listen;
+                    const originalGenerator: Generator = originalListen.call(remote, eventName).generator;
+                    return {
+                        generator: (async function* responseDataGenerator() {
+                            for await (const response of originalGenerator) {
+                                if (response && typeof response === 'object' && 'result' in response
+                                    && 'subscription' in response) {
+                                    (response as any).result = getResponseData((response as any).result);
+                                }
+                                yield response;
+                            }
+                        }()),
+                    };
                 };
                 // Wrap the remote client into a proxy on which rpc calls can be invoked as direct method calls.
                 const proxy = new Proxy(

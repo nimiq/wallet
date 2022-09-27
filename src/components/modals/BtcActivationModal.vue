@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, onUnmounted } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -45,20 +45,21 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
+        // check for a redirect set by the Bitcoin activation navigation guard in router.ts
+        let redirect: string | undefined;
+        try {
+            const hashParams = new URLSearchParams(context.root.$route.hash.substring(1));
+            redirect = decodeURIComponent(hashParams.get('redirect') || '');
+        } catch (e) {} // eslint-disable-line no-empty
+
         async function enableBitcoin() {
             await activateBitcoin(activeAccountId.value!);
             if (hasBitcoinAddresses.value) {
                 setActiveCurrency(CryptoCurrency.BTC);
-                if (!context.root.$route.matched.some(({ name }) => name === 'btc-activation')) {
-                    // BtcActivationModal was not opened by btc-activation route but for another route via
-                    // requireActivatedBitcoin in router.ts. Once Bitcoin addresses were synced, open the initially
-                    // intended route.
-                    const unwatch = watch(() => {
-                        if (!hasBitcoinAddresses.value) return;
-                        unwatch();
-                        // wait some little extra time for store to be persisted
-                        setTimeout(() => window.location.reload(), 1000);
-                    });
+                if (redirect) {
+                    // The redirect is interpreted as a path and there is no risk of getting redirected to another
+                    // domain by a malicious link.
+                    await context.root.$router.push(redirect);
                 } else {
                     context.root.$router.back(); // Close modal
                 }
@@ -66,7 +67,8 @@ export default defineComponent({
         }
 
         onUnmounted(() => {
-            if (hasBitcoinAddresses.value && isMobile.value) {
+            if (hasBitcoinAddresses.value && isMobile.value && !redirect) {
+                // If Bitcoin got activated, forward to the Bitcoin transactions overview on mobile
                 context.root.$router.push('/transactions');
             }
         });

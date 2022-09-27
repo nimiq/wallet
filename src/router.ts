@@ -1,6 +1,6 @@
 import VueRouter, { RouteConfig, Route } from 'vue-router';
 import Vue from 'vue';
-import { AsyncComponentPromise } from 'vue/types/options.d';
+import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
 
@@ -10,21 +10,6 @@ import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
 
 import { AccountType, useAccountStore } from './stores/Account';
-
-function requireActivatedBitcoin(loadView: AsyncComponentPromise): AsyncComponentPromise {
-    return () => {
-        const { activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
-        const isLegacyAccount = activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEGACY;
-        if (isLegacyAccount) return undefined; // legacy accounts don't support Bitcoin; don't return any view / modal
-        if (!hasBitcoinAddresses.value) return BtcActivationModal(); // show activation modal
-        // show original view
-        return new Promise((resolve, reject) => {
-            const viewPromise = loadView(resolve, reject);
-            if (!viewPromise) return;
-            resolve(viewPromise);
-        });
-    };
-}
 
 // Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
@@ -56,16 +41,14 @@ const ReleaseNotesModal = () =>
 // Bitcoin Modals
 const BtcActivationModal = () =>
     import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
-const BtcSendModal = requireActivatedBitcoin(() =>
-    import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue'));
-const BtcReceiveModal = requireActivatedBitcoin(() =>
-    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue'));
+const BtcSendModal = () => import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
+const BtcReceiveModal = () =>
+    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
 // Swap Modals
-const SwapModal = requireActivatedBitcoin(() =>
-    import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
+const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
@@ -340,6 +323,38 @@ const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes,
+});
+
+// Offer to activate Bitcoin if a route requires it, but it's not activated yet
+const viewsRequiringActivatedBitcoin = new Set<Component>([BtcSendModal, BtcReceiveModal, SwapModal]);
+router.beforeEach((to, from, next) => {
+    const requiresActivatedBitcoin = to.matched.some(({ components }) =>
+        Object.values(components).some((view) => viewsRequiringActivatedBitcoin.has(view)));
+    const {
+        activeAccountInfo: { value: activeAccount },
+        hasBitcoinAddresses: { value: isBitcoinActivated },
+    } = useAccountStore();
+    const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
+    if (!requiresActivatedBitcoin || isBitcoinActivated) {
+        // can continue to the requested view
+        next();
+    } else if (isLegacyAccount) {
+        // legacy accounts don't support Bitcoin; go to main view
+        next({
+            name: 'root',
+            replace: true,
+        });
+    } else {
+        // open Bitcoin activation modal; store original target route in hash
+        next({
+            name: 'btc-activation',
+            // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams in
+            // BtcActivationModal and also by the RPC api in case that the Hub BTC activation request is executed as
+            // redirect.
+            hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
+            replace: true,
+        });
+    }
 });
 
 export default router;

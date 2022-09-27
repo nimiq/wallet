@@ -247,7 +247,7 @@
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
                 <AddressList embedded @address-selected="addressListOpened = false"
-                    :showBitcoin="$config.enableBitcoin"/>
+                    :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"/>
             </PageBody>
         </div>
     </Modal>
@@ -342,7 +342,7 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAccountInfo, activeCurrency } = useAccountStore();
+        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
@@ -916,6 +916,7 @@ export default defineComponent({
             Pages,
             page,
             activeAddressInfo,
+            hasBitcoinAddresses,
             canSign,
             fiatAmount,
             fiatCurrencyInfo,

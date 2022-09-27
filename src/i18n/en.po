@@ -62,7 +62,7 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:141
+#: src/components/modals/BuyOptionsModal.vue:144
 #: src/components/modals/BuyOptionsModal.vue:54
 msgid "+ network fees"
 msgstr ""
@@ -296,7 +296,7 @@ msgstr ""
 msgid "Bank Transfer"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:90
+#: src/components/modals/BuyOptionsModal.vue:93
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
 
@@ -392,7 +392,7 @@ msgstr ""
 msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:161
+#: src/components/modals/BuyOptionsModal.vue:164
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -630,7 +630,7 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:109
+#: src/components/modals/BuyOptionsModal.vue:112
 msgid "Credit Card"
 msgstr ""
 
@@ -830,7 +830,7 @@ msgstr ""
 msgid "free"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:115
 msgid "Full KYC required, high availability."
 msgstr ""
 
@@ -1009,6 +1009,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
+#: src/components/layouts/Sidebar.vue:46
+#: src/components/modals/BuyOptionsModal.vue:74
+msgid "Learn more."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:134
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
@@ -1091,8 +1096,8 @@ msgstr ""
 msgid "Max."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:123
-#: src/components/modals/BuyOptionsModal.vue:137
+#: src/components/modals/BuyOptionsModal.vue:126
+#: src/components/modals/BuyOptionsModal.vue:140
 #: src/components/modals/BuyOptionsModal.vue:50
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1128,7 +1133,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:53
+#: src/components/layouts/Sidebar.vue:62
 msgid "Network"
 msgstr ""
 
@@ -1184,12 +1189,12 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:76
+#: src/components/modals/BuyOptionsModal.vue:79
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:154
-#: src/components/modals/BuyOptionsModal.vue:86
+#: src/components/modals/BuyOptionsModal.vue:157
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Not available in your country"
 msgstr ""
 
@@ -1461,7 +1466,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:39
 msgid "Sell"
 msgstr ""
 
@@ -1594,7 +1599,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:61
+#: src/components/layouts/Sidebar.vue:70
 msgid "Settings"
 msgstr ""
 
@@ -1726,8 +1731,9 @@ msgstr ""
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
+#: src/components/layouts/Sidebar.vue:40
 #: src/components/modals/BuyOptionsModal.vue:69
-msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
+msgid "TEN31’s banking infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5
@@ -2079,7 +2085,7 @@ msgstr ""
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:83
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

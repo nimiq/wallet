@@ -31,11 +31,20 @@
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
 
-            <button v-if="$config.fastspot.enabled"
-                class="nq-button-s inverse"
-                @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
-                :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
-            >{{ $t('Sell') }}</button>
+            <Tooltip preferredPosition="top right" :styles="{width: '25rem'}" theme="inverse">
+                <button v-if="$config.fastspot.enabled" slot="trigger"
+                    class="nq-button-s inverse"
+                    @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
+                    :disabled="true || $route.name !== 'root' || hasActiveSwap || !canUseSwaps"
+                >{{ $t('Sell') }}</button>
+                {{ $t('TEN31’s banking infrastructure is currently being updated.'
+                    + ' This might take some time. Please try again later.') }}
+                <a
+                    href="https://forum.nimiq.community/-announcement-topic-"
+                    target="_blank" rel="noopener"
+                    class="nq-blue"
+                >{{ $t('Learn more.') }}</a>
+            </Tooltip>
         </div>
 
         <div class="flex-grow"></div>
@@ -270,10 +279,10 @@ export default defineComponent({
 
 .trade-actions {
     margin-bottom: 2rem;
-    text-align: center;
-}
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
-.trade-actions {
     button {
         margin: 0.5rem .625rem 1rem;
 
@@ -294,6 +303,10 @@ export default defineComponent({
 
     .nq-button-pill:disabled {
         opacity: 0.5;
+    }
+
+    .tooltip {
+        display: inline;
     }
 }
 

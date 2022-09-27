@@ -66,9 +66,12 @@
                             <div class="flex-grow"></div>
                             <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
                                 <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('TEN31’s banking infrastructure is undergoing scheduled maintenance.') }}
-                                <!-- {{ $t('TEN31’s banking infrastructure is undergoing '
-                                    + 'scheduled maintenance until the 24th of March.') }} -->
+                                {{ $t('TEN31’s banking infrastructure is currently being updated.'
+                                    + ' This might take some time. Please try again later.') }}
+                                <a
+                                    href="https://forum.nimiq.community/-announcement-topic-"
+                                    target="_blank" rel="noopener"
+                                >{{ $t('Learn more.') }}</a>
                             </Tooltip>
                         </footer>
                         <footer v-else-if="!canUseSwaps" class="flex-row">
@@ -230,7 +233,7 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
-        const isOasisUnderMaintenance = ref(false);
+        const isOasisUnderMaintenance = ref(true);
         const isOasisAvailable = computed(() => {
             if (!Config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;

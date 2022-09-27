@@ -220,7 +220,7 @@ const routes: RouteConfig[] = [{
             name: 'migration-welcome',
             meta: { column: Columns.ACCOUNT },
         }, {
-            path: '/btc-activation/:isActivated?',
+            path: '/btc-activation',
             components: {
                 modal: BtcActivationModal,
             },

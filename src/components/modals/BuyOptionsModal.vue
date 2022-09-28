@@ -17,11 +17,10 @@
                 </CountrySelector>
             </header>
             <div class="featured-options flex-row">
-                <router-link :to="{ name: 'buy-crypto', query: $route.query }" replace
+                <Component :is="isOasisAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'buy-crypto', query: $route.query }" replace
                     class="option oasis flex-column"
                     :class="{disabled: !isOasisAvailable}"
-                    :event="isOasisAvailable ? 'click' : ''"
-                    :tabindex="isOasisAvailable ? 0 : -1"
                 >
                     <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
@@ -100,13 +99,12 @@
                             </Tooltip>
                         </footer>
                     </div>
-                </router-link>
+                </Component>
 
-                <router-link :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
+                <Component :is="isCreditCardAvailable ? 'router-link' : 'span'"
+                    :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
                     class="option credit-card flex-column"
                     :class="{disabled: !isCreditCardAvailable}"
-                    :event="isCreditCardAvailable ? 'click' : ''"
-                    :tabindex="isCreditCardAvailable ? 0 : -1"
                 >
                     <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
@@ -157,7 +155,7 @@
                             {{ $t('Not available in your country') }}
                         </footer>
                     </div>
-                </router-link>
+                </Component>
             </div>
 
             <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
@@ -570,7 +568,6 @@ header {
 }
 
 .option.disabled {
-    pointer-events: none;
     transition: none;
     transform: none;
     box-shadow: 0 0 0 1.5px var(--text-10);
@@ -604,7 +601,6 @@ header {
         }
 
         .tooltip {
-            pointer-events: all;
             font-size: 2.25rem;
         }
     }

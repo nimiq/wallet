@@ -337,11 +337,23 @@ const routes: RouteConfig[] = [{
 // to run the injection logic again.
 const initialUrl = window.location.href;
 if (!window.history.state) {
-    // Inject history entry for root route.
-    window.history.replaceState({ injected: true }, '', window.location.origin + process.env.BASE_URL);
-    if (new URL(initialUrl).pathname !== window.location.pathname) {
-        // Open initial route again if it differs from the root route. If initialUrl's path is root but there are params
-        // like ?sidebar, we keep them removed; i.e. on the root route we close the sidebar.
+    // Only return to the initial url if it's not on the root route, i.e. if another view or modal is supposed to be
+    // opened. If it is on the root route, we don't add a second history entry for the root route, we do however close
+    // the sidebar, if it's open, by stripping the sidebar parameter, and keep it closed.
+    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== process.env.BASE_URL;
+    const rootUrl = new URL(initialUrl);
+    rootUrl.pathname = process.env.BASE_URL!;
+    if (shouldReturnToInitialUrl) {
+        // Can clear params and hash entirely as they're preserved in the initialUrl.
+        rootUrl.search = '';
+        rootUrl.hash = '';
+    } else {
+        // Only remove sidebar; preserve other search params and hash, especially rpc responses.
+        rootUrl.searchParams.delete('sidebar');
+    }
+
+    window.history.replaceState({ injected: true }, '', rootUrl); // inject history entry for root route
+    if (shouldReturnToInitialUrl) {
         window.history.pushState({ injected: true }, '', initialUrl);
     }
 }

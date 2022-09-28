@@ -43,7 +43,7 @@
                     class="nq-blue"
                 >{{ $t('Learn more.') }}</a>
             </Tooltip>
-            <button v-else-if="$config.fastspot.enabled" slot="trigger"
+            <button v-else-if="$config.fastspot.enabled"
                 class="nq-button-s inverse"
                 @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
                 :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
@@ -307,10 +307,6 @@ export default defineComponent({
 
     .nq-button-pill:disabled {
         opacity: 0.5;
-    }
-
-    .tooltip {
-        display: inline;
     }
 }
 

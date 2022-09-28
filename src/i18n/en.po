@@ -1216,6 +1216,11 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
+#: src/components/layouts/Sidebar.vue:38
+#: src/components/modals/BuyOptionsModal.vue:68
+msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:165
 msgid "Off"
 msgstr ""
@@ -1729,11 +1734,6 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
-msgstr ""
-
-#: src/components/layouts/Sidebar.vue:40
-#: src/components/modals/BuyOptionsModal.vue:69
-msgid "TEN31’s banking infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5

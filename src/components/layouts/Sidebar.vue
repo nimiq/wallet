@@ -35,10 +35,10 @@
                 preferredPosition="top right" :styles="{width: '25rem'}" theme="inverse"
             >
                 <button slot="trigger" class="nq-button-s inverse" disabled>{{ $t('Sell') }}</button>
-                {{ $t('TEN31’s banking infrastructure is currently being updated.'
+                {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
                     + ' This might take some time. Please try again later.') }}
                 <a
-                    href="https://forum.nimiq.community/-announcement-topic-"
+                    href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
                     target="_blank" rel="noopener"
                     class="nq-blue"
                 >{{ $t('Learn more.') }}</a>

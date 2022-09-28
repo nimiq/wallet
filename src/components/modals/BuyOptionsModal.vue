@@ -231,11 +231,10 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
-        const isOasisUnderMaintenance = ref(true);
         const isOasisAvailable = computed(() => {
             if (!Config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
-            if (isOasisUnderMaintenance.value) return false;
+            if (Config.oasis.underMaintenance) return false;
             if (!country.value) return true;
             if (Config.environment === ENV_TEST) return true;
             return SEPA_COUNTRY_CODES.includes(country.value.code);
@@ -272,7 +271,7 @@ export default defineComponent({
         return {
             country,
             isOasisAvailable,
-            isOasisUnderMaintenance,
+            isOasisUnderMaintenance: Config.oasis.underMaintenance,
             isCreditCardAvailable,
             isMoonpayAvailable,
             isSimplexAvailable,

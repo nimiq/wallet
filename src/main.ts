@@ -73,16 +73,11 @@ async function start() {
     // Make config accessible in components
     Vue.prototype.$config = Config;
 
-    const app = new Vue({
+    new Vue({
         router,
         i18n,
         render: (h) => h(App),
     }).$mount('#app');
-
-    router.afterEach((to, from) => {
-        // console.debug('route-changed', from, to);
-        app.$emit('route-changed', to, from);
-    });
 
     launchNetwork();
 
@@ -91,28 +86,6 @@ async function start() {
     } else {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
-
-    router.onReady(() => {
-        // console.debug(router.currentRoute, window.history.state);
-
-        // Vue-Router sets a history.state. If a state exists, this means this was
-        // a page-reload and we don't need to set up the initial routing anymore.
-        if (window.history.state) return;
-
-        if (router.currentRoute.path !== '/') {
-            const startRoute = router.currentRoute.fullPath;
-
-            // Verify that this route exists in the app
-            if (!router.resolve(startRoute).resolved.matched.length) return;
-
-            app.$once('route-changed', () => Vue.nextTick().then(() => {
-                // Use push, so the user is able to use the OS' back button.
-                // Use fullpath to also capture query params, like used in payment links.
-                router.push(startRoute);
-            }));
-        }
-        router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
-    });
 }
 start();
 

@@ -319,6 +319,33 @@ const routes: RouteConfig[] = [{
     }],
 }];
 
+// If wallet was opened on a path other than root route, for example on a modal, inject a root history entry before the
+// actually requested route, such that a back navigation gets the user to the main wallet view, instead of leaving the
+// wallet. This is especially for mobile, where hitting the back button to close a modal and open the main view feels
+// more natural, like in a native app, and is also needed in general for modals to be closable by simple back navigation
+// in modal.forceClose. Unfortunately though, in newer Chrome versions, hitting the back button skips history entries
+// that have been inserted automatically without user interaction, see https://github.com/whatwg/html/issues/7832 and
+// https://groups.google.com/a/chromium.org/g/blink-dev/c/T8d4_BRb2xQ/m/WSdOiOFcBAAJ. However, Interacting with the page
+// _after_ the injection is also fine for activating the back button for the injected entry and programmatic back
+// navigation via history.back also continues to work.
+// We use the native history methods instead of the router and do the injection before initializing the router to avoid
+// interference with the router's navigation guards which might also want to redirect the route, and to avoid having to
+// wait for the router to initialize with the first view which only happens after the vue app is created in main.ts, for
+// example by waiting for router.onReady, which also waits for the initial view's components to be loaded.
+// If there's already a history state it means that the current history entry was already handled by our injection below
+// or by the router (which adds a history state to all routes) and the page was simply reloaded, such that we don't need
+// to run the injection logic again.
+const initialUrl = window.location.href;
+if (!window.history.state) {
+    // Inject history entry for root route.
+    window.history.replaceState({ injected: true }, '', window.location.origin + process.env.BASE_URL);
+    if (new URL(initialUrl).pathname !== window.location.pathname) {
+        // Open initial route again if it differs from the root route. If initialUrl's path is root but there are params
+        // like ?sidebar, we keep them removed; i.e. on the root route we close the sidebar.
+        window.history.pushState({ injected: true }, '', initialUrl);
+    }
+}
+
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,

@@ -1,6 +1,7 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
 import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
+import Config from 'config';
 import { SwapLimits } from '../../../composables/useSwapLimits';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
@@ -44,7 +45,10 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
         const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
         if (!nimRate) return null;
 
-        const regularLimitFiat = Math.floor((limits.value.current.luna / 1e5) * nimRate);
+        const regularLimitFiat = Math.min(
+            Math.floor((limits.value.current.luna / 1e5) * nimRate),
+            Config.oasis.maxFreeAmount,
+        );
 
         if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {
             return Math.min(regularLimitFiat, limits.value.current.eur);

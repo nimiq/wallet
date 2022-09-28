@@ -23,6 +23,7 @@ export default {
         feePercentage: 0.01, // 1% - only used for estimate creation
         minFee: 0.50, // Euro
         minBuyAmount: 35, // Euro
+        maxFreeAmount: 999, // Euro
     },
 
     moonpay: {

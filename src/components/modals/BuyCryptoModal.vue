@@ -86,7 +86,8 @@
                                     <label>{{ $t('After 72 hours') }}</label>
                                     <FiatConvertedAmount v-if="limits"
                                         :amount="limits.monthly.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <div></div>
@@ -101,13 +102,15 @@
                                     <label>{{ $t('30-day Limit') }}</label>
                                     <FiatConvertedAmount v-if="limits"
                                         :amount="limits.monthly.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                     <FiatConvertedAmount slot="value"
                                         :amount="limits.remaining.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"/>
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
                                 </i18n>
                                 <div></div>
                             </template>
@@ -920,6 +923,7 @@ export default defineComponent({
             isBelowOasisMinimum,
             buyMax,
             buyMin,
+            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
         };
     },
     components: {

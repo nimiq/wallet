@@ -78,13 +78,15 @@
                                 <label>{{ $t('30-day Limit') }}</label>
                                 <FiatConvertedAmount v-if="limits"
                                     :amount="limits.monthly.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
+                                    currency="nim" :fiat="selectedFiatCurrency"
+                                    :max="oasisMaxFreeAmount"/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                 <FiatConvertedAmount slot="value"
                                     :amount="limits.remaining.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
+                                    currency="nim" :fiat="selectedFiatCurrency"
+                                    :max="oasisMaxFreeAmount"/>
                             </i18n>
                             <div></div>
                             <p class="explainer">
@@ -948,6 +950,7 @@ export default defineComponent({
             OASIS_EUR_DETECTION_DELAY,
             insufficientBalance,
             insufficientLimit,
+            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
         };
     },
     components: {

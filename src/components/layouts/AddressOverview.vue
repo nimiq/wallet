@@ -132,7 +132,7 @@
         </template>
         <template v-else>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
-            <button class="nq-button" @click="onboard" @mousedown.prevent>{{ $t('Signup') }}</button>
+            <button class="nq-button" @click="onboard(false)" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
 
         <transition name="fadeY">

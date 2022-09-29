@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="btc-activation-modal">
+    <Modal v-bind="$attrs" v-on="$listeners" class="btc-activation-modal" ref="$modal">
         <PageBody class="flex-column">
             <BitcoinIcon/>
 
@@ -17,20 +17,20 @@
 
             <div class="flex-grow"></div>
 
-            <button v-if="hasBitcoinAddresses" class="nq-button light-blue" @click="$router.back()" @mousedown.prevent>
+            <button v-if="hasBitcoinAddresses" class="nq-button light-blue" @click="close" @mousedown.prevent>
                 {{ $t('Got it') }}
             </button>
             <button v-else class="nq-button light-blue" @click="enableBitcoin" @mousedown.prevent>
                 {{ $t('Activate Bitcoin') }}
             </button>
 
-            <a v-if="!hasBitcoinAddresses" class="nq-link" @click="$router.back()">{{ $t('Skip for now') }}</a>
+            <a v-if="!hasBitcoinAddresses" class="nq-link" @click="close">{{ $t('Skip for now') }}</a>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -45,37 +45,41 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        // check for a redirect set by the Bitcoin activation navigation guard in router.ts
-        let redirect: string | undefined;
-        try {
-            const hashParams = new URLSearchParams(context.root.$route.hash.substring(1));
-            redirect = decodeURIComponent(hashParams.get('redirect') || '');
-        } catch (e) {} // eslint-disable-line no-empty
+        const $modal = ref<any | null>(null);
 
         async function enableBitcoin() {
             await activateBitcoin(activeAccountId.value!);
-            if (hasBitcoinAddresses.value) {
-                setActiveCurrency(CryptoCurrency.BTC);
-                if (redirect) {
-                    // The redirect is interpreted as a path and there is no risk of getting redirected to another
-                    // domain by a malicious link.
-                    await context.root.$router.push(redirect);
-                } else {
-                    context.root.$router.back(); // Close modal
-                }
+            if (!hasBitcoinAddresses.value) return;
+            setActiveCurrency(CryptoCurrency.BTC);
+            await close();
+        }
+
+        async function close() {
+            // check for a redirect set by the Bitcoin activation navigation guard in router.ts
+            let redirect: string | undefined;
+            try {
+                const hashParams = new URLSearchParams(context.root.$route.hash.substring(1));
+                redirect = decodeURIComponent(hashParams.get('redirect') || '');
+            } catch (e) {} // eslint-disable-line no-empty
+
+            if (hasBitcoinAddresses.value && redirect) {
+                // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
+                // a malicious link.
+                await context.root.$router.push(redirect);
+            } else {
+                await $modal.value!.forceClose();
+                if (!isMobile.value || !hasBitcoinAddresses.value) return;
+                // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
+                // redirects by forceClose finished.
+                await context.root.$router.push('/transactions');
             }
         }
 
-        onUnmounted(() => {
-            if (hasBitcoinAddresses.value && isMobile.value && !redirect) {
-                // If Bitcoin got activated, forward to the Bitcoin transactions overview on mobile
-                context.root.$router.push('/transactions');
-            }
-        });
-
         return {
-            enableBitcoin,
             hasBitcoinAddresses,
+            $modal,
+            enableBitcoin,
+            close,
         };
     },
     components: {

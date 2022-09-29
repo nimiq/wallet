@@ -48,8 +48,6 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 }
 const hubApi = new HubApi(Config.hubEndpoint);
 
-let welcomeRoute = '';
-
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
@@ -59,7 +57,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
     if (!welcomeModalAlreadyShown) {
-        welcomeRoute = '/welcome';
+        router.onReady(() => router.push('/welcome'));
 
         // Get location from GeoIP service to set fiat currency
         useGeoIp().locate().then((location) => {
@@ -74,12 +72,12 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
         // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
         // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
-        welcomeRoute = '/btc-activation';
+        router.onReady(() => router.push('/btc-activation'));
     }
 });
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
-    welcomeRoute = '/migration-welcome';
+    router.onReady(() => router.push('/migration-welcome'));
 });
 
 hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
@@ -270,10 +268,6 @@ export async function syncFromHub() {
     if (listedCashlinks.length) {
         const proxyStore = useProxyStore();
         proxyStore.setHubCashlinks(listedCashlinks);
-    }
-
-    if (welcomeRoute) {
-        router.push(welcomeRoute);
     }
 }
 

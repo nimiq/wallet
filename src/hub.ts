@@ -7,7 +7,7 @@ import HubApi, {
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
-import { useAccountStore, AccountInfo } from './stores/Account';
+import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
@@ -51,8 +51,9 @@ const hubApi = new HubApi(Config.hubEndpoint);
 let welcomeRoute = '';
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
-    // Store the returned account(s). For first-time signups on iOS/Safari, this is the only time
-    // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
+    // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
+    // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
+    // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
@@ -69,6 +70,11 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             // eslint-disable-next-line no-console
             console.debug(`Failed to locate user for fiat currency: ${error.message}`);
         });
+    } else if (accounts[0].type !== (AccountType.LEGACY as number) && !accounts[0].btcAddresses?.external.length) {
+        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
+        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
+        // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
+        welcomeRoute = '/btc-activation';
     }
 });
 
@@ -199,8 +205,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         accountInfos.push({
             id: account.accountId,
-            // @ts-expect-error Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
-            type: account.type,
+            type: account.type as number, // casting because Type 'WalletType' is not assignable to type 'AccountType'.
             label: account.label,
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
@@ -285,7 +290,13 @@ export async function onboard(asRedirect = false) {
     const accounts = await hubApi.onboard({ appName: APP_NAME }, getBehavior()).catch(onError);
     if (!accounts) return false;
 
-    processAndStoreAccounts(accounts);
+    processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
+
+    if (accounts[0].type !== (AccountType.LEGACY as number) && !accounts[0].btcAddresses?.external.length) {
+        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
+        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
+        await router.push('/btc-activation');
+    }
 
     return true;
 }

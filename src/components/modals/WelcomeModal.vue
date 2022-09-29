@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false">
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="$modal">
         <PageHeader :backArrow="page > 1" @back="page -= 1">
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}
@@ -87,32 +87,41 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
+        const { state: settings$, setLanguage } = useSettingsStore();
+        const { activeAccountInfo } = useAccountStore();
+        const { activeAddress } = useAddressStore();
+        const { isMobile } = useWindowSize();
+
+        const $modal = ref<any | null>(null);
         const page = ref(1);
 
         async function onButtonClick(event: MouseEvent) {
-            if (page.value === 2) {
-                window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
-                context.root.$router.back();
-            } else {
+            if (page.value < 2) {
                 page.value += 1;
                 const target = (event.target as HTMLButtonElement | null);
                 if (target) target.blur();
+            } else {
+                window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
+                await $modal.value!.forceClose();
+                if (activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEGACY
+                    && !activeAccountInfo.value.btcAddresses?.external.length) {
+                    // After adding an account that supports Bitcoin without it being activated yet, offer to activate
+                    // it. This is especially for Ledger logins where Bitcoin is not automatically activated as it
+                    // requires the Bitcoin app.
+                    await context.root.$router.push('/btc-activation');
+                }
             }
         }
 
-        const { state: settings$, setLanguage } = useSettingsStore();
-
-        const { activeAddress } = useAddressStore();
-
-        const { isMobile } = useWindowSize();
-
         return {
+            $modal,
             page,
             onButtonClick,
             Languages,

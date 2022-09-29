@@ -1,14 +1,14 @@
 # 
 # Translators:
 # Oscar_6, 2022
-# Пётр Павлович, 2022
-# Vad <vjuruss@gmail.com>, 2022
 # Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Пётр Павлович, 2022
+# Vad <vjuruss@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2022\n"
+"Last-Translator: Vad <vjuruss@gmail.com>, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
@@ -62,9 +62,9 @@ msgstr "{fee} комиссия "
 msgid "{perc}% of swap value."
 msgstr "{perc}% от суммы сделки."
 
-#: src/components/modals/BuyCryptoModal.vue:107
+#: src/components/modals/BuyCryptoModal.vue:109
 #: src/components/modals/BuyCryptoModal.vue:82
-#: src/components/modals/SellCryptoModal.vue:84
+#: src/components/modals/SellCryptoModal.vue:85
 #: src/components/swap/SwapModal.vue:60
 msgid "{value} remaining"
 msgstr "Осталось {value}"
@@ -73,8 +73,8 @@ msgstr "Осталось {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+ ещё {count} | + ещё {count} "
 
-#: src/components/modals/BuyOptionsModal.vue:141
-#: src/components/modals/BuyOptionsModal.vue:54
+#: src/components/modals/BuyOptionsModal.vue:142
+#: src/components/modals/BuyOptionsModal.vue:53
 msgid "+ network fees"
 msgstr "+ комиссия сети"
 
@@ -113,7 +113,7 @@ msgstr "Поддержка 24/7"
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:101
+#: src/components/modals/BuyCryptoModal.vue:102
 #: src/components/modals/SellCryptoModal.vue:78
 #: src/components/swap/SwapModal.vue:55
 msgid "30-day Limit"
@@ -123,7 +123,7 @@ msgstr "30-ти дневный лимит"
 msgid "6h+"
 msgstr "6ч+"
 
-#: src/components/modals/BuyCryptoModal.vue:94
+#: src/components/modals/BuyCryptoModal.vue:95
 msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
@@ -337,11 +337,11 @@ msgstr "Назад к банковским реквизитам"
 msgid "Bank Account"
 msgstr "Банковский счёт"
 
-#: src/components/modals/BuyOptionsModal.vue:27
+#: src/components/modals/BuyOptionsModal.vue:26
 msgid "Bank Transfer"
 msgstr "Банковский перевод"
 
-#: src/components/modals/BuyOptionsModal.vue:90
+#: src/components/modals/BuyOptionsModal.vue:92
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr "Банковский перевод поддерживается только в странах Еврозоны SEPA."
 
@@ -415,9 +415,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Купить BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:194
-#: src/components/modals/BuyCryptoModal.vue:199
-#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:216
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Купить криптовалюту"
@@ -426,7 +426,7 @@ msgstr "Купить криптовалюту"
 msgid "Buy Crypto with Fiat"
 msgstr "Купить криптовалюту за фиат"
 
-#: src/components/modals/BuyCryptoModal.vue:173
+#: src/components/modals/BuyCryptoModal.vue:176
 msgid "Buy max"
 msgstr "Купить максимум"
 
@@ -446,7 +446,7 @@ msgstr "Купить NIM и BTC"
 msgid "Buy NIM & BTC with OASIS!"
 msgstr "Покупайте NIM и BTC через OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:161
+#: src/components/modals/BuyOptionsModal.vue:162
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купить NIM на криптовалютной бирже:"
 
@@ -464,15 +464,15 @@ msgid ""
 "will be processed."
 msgstr "Увеличьте размер комиссии, чтобы ускорить исполнение транзакции."
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:181
 #: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot} и {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:210
-#: src/components/modals/SellCryptoModal.vue:193
+#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/SellCryptoModal.vue:195
 #: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot}."
@@ -530,8 +530,8 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:279
-#: src/components/modals/SellCryptoModal.vue:245
+#: src/components/modals/BuyCryptoModal.vue:282
+#: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
@@ -695,11 +695,11 @@ msgstr "Создан только что"
 msgid "Created yesterday"
 msgstr "Создан вчера"
 
-#: src/components/modals/BuyOptionsModal.vue:109
+#: src/components/modals/BuyOptionsModal.vue:110
 msgid "Credit Card"
 msgstr "Банковская карта"
 
-#: src/components/modals/BuyOptionsModal.vue:65
+#: src/components/modals/BuyOptionsModal.vue:64
 msgid "Currently under maintenance"
 msgstr "В настоящий момент на обслуживании"
 
@@ -904,7 +904,7 @@ msgstr "Для начинающих"
 msgid "free"
 msgstr "свободно"
 
-#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:113
 msgid "Full KYC required, high availability."
 msgstr "Необходима полная идентификация. Высокая доступность сервиса."
 
@@ -1043,7 +1043,7 @@ msgstr ""
 msgid "Initial Swap Limit"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:59
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid ""
 "Innovation\n"
 "by Nimiq"
@@ -1060,7 +1060,7 @@ msgid "Install Web App"
 msgstr "Установить веб-приложение"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:169
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
@@ -1108,6 +1108,11 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
+#: src/components/layouts/Sidebar.vue:44
+#: src/components/modals/BuyOptionsModal.vue:73
+msgid "Learn more."
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:134
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
@@ -1141,9 +1146,9 @@ msgstr "Загрузить файл"
 msgid "Loading Moonpay..."
 msgstr "Загружаем Moonpay..."
 
-#: src/components/modals/BuyCryptoModal.vue:105
-#: src/components/modals/BuyCryptoModal.vue:90
-#: src/components/modals/SellCryptoModal.vue:82
+#: src/components/modals/BuyCryptoModal.vue:107
+#: src/components/modals/BuyCryptoModal.vue:91
+#: src/components/modals/SellCryptoModal.vue:83
 #: src/components/swap/SwapModal.vue:58
 msgid "loading..."
 msgstr "загрузка..."
@@ -1176,8 +1181,8 @@ msgstr "Выйти"
 msgid "lost"
 msgstr "потерян"
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:157
+#: src/components/modals/BuyCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:159
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальная сумма свопа: {amount}"
 
@@ -1187,16 +1192,16 @@ msgstr "Максимальная сумма свопа: {amount}"
 #: src/components/modals/SellCryptoModal.vue:73
 #: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
-msgstr ""
+msgstr "Макс."
 
-#: src/components/modals/BuyOptionsModal.vue:123
-#: src/components/modals/BuyOptionsModal.vue:137
-#: src/components/modals/BuyOptionsModal.vue:50
+#: src/components/modals/BuyOptionsModal.vue:124
+#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "мин. {amount}"
 
-#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:180
 msgid "Minimum buy amount is {amount}"
 msgstr "Минимальная сумма обмена {amount}"
 
@@ -1228,7 +1233,7 @@ msgstr "Назовите этого отправителя..."
 msgid "Name your contact"
 msgstr "Укажите имя контакта"
 
-#: src/components/layouts/Sidebar.vue:53
+#: src/components/layouts/Sidebar.vue:65
 msgid "Network"
 msgstr "Сеть"
 
@@ -1250,13 +1255,15 @@ msgstr ""
 "wallet.nimiq.com, hub.nimiq.com и keyguard.nimiq.com, а также некоторые "
 "другие библиотеки находятся в стадии активной разработки. "
 
-#: src/components/modals/BuyCryptoModal.vue:115
-#: src/components/modals/SellCryptoModal.vue:91
+#: src/components/modals/BuyCryptoModal.vue:118
+#: src/components/modals/SellCryptoModal.vue:93
 #: src/components/swap/SwapModal.vue:66
 msgid ""
 "Nimiq is working on a PRO feature with increased limits after user "
 "registration."
 msgstr ""
+"Nimiq работает над функцией PRO, с которой лимиты пользователей после "
+"регистрации будут увеличены."
 
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -1274,7 +1281,7 @@ msgstr "Средства не были получены, и срок обмен�
 msgid "No registration"
 msgstr "Без регистрации"
 
-#: src/components/modals/BuyOptionsModal.vue:39
+#: src/components/modals/BuyOptionsModal.vue:38
 msgid "No registration – not even email."
 msgstr "Без регистрации, даже без указания почты."
 
@@ -1292,12 +1299,12 @@ msgstr "Нет"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не все счета этого банка поддерживают моментальные транзакции."
 
-#: src/components/modals/BuyOptionsModal.vue:76
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:154
-#: src/components/modals/BuyOptionsModal.vue:86
+#: src/components/modals/BuyOptionsModal.vue:155
+#: src/components/modals/BuyOptionsModal.vue:88
 msgid "Not available in your country"
 msgstr "Недоступно в вашей стране"
 
@@ -1318,6 +1325,13 @@ msgstr "Превышен лимит OASIS"
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr "Комиссия сервиса OASIS"
+
+#: src/components/layouts/Sidebar.vue:38
+#: src/components/modals/BuyOptionsModal.vue:68
+msgid ""
+"OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
+" some time. Please try again later."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:165
 msgid "Off"
@@ -1588,13 +1602,13 @@ msgstr "Выберите валюту и сумму"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Выберите в каких единицах будет отображаться сумма в биткойнах."
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
 msgid "Sell"
 msgstr "Продать"
 
-#: src/components/modals/SellCryptoModal.vue:177
-#: src/components/modals/SellCryptoModal.vue:182
-#: src/components/modals/SellCryptoModal.vue:196
+#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:184
+#: src/components/modals/SellCryptoModal.vue:198
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Продать криптовалюту"
@@ -1603,9 +1617,9 @@ msgstr "Продать криптовалюту"
 msgid "Sell Crypto for Fiat"
 msgstr "Продать криптовалюту за фиат"
 
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:164
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:137
+#: src/components/modals/SellCryptoModal.vue:166
+#: src/components/modals/SellCryptoModal.vue:169
 msgid "Sell max"
 msgstr ""
 
@@ -1696,7 +1710,7 @@ msgstr "Отправить {dateAndTime}"
 msgid "SEPA Instant fee"
 msgstr "Комиссия SEPA Instant"
 
-#: src/components/modals/BuyOptionsModal.vue:35
+#: src/components/modals/BuyOptionsModal.vue:34
 msgid "SEPA Instant only"
 msgstr "Только SEPA Instant"
 
@@ -1713,7 +1727,7 @@ msgstr "Укажите сумму"
 msgid "Set fee"
 msgstr "Укажите размер комиссии"
 
-#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/modals/BuyCryptoModal.vue:187
 msgid "Set minimum"
 msgstr ""
 
@@ -1725,7 +1739,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr "Настройка сторон свопа {currency}"
 
-#: src/components/layouts/Sidebar.vue:61
+#: src/components/layouts/Sidebar.vue:73
 msgid "Settings"
 msgstr "Настройки"
 
@@ -1770,7 +1784,7 @@ msgstr ""
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
-#: src/components/modals/BuyCryptoModal.vue:257
+#: src/components/modals/BuyCryptoModal.vue:260
 msgid "Simulate EUR payment"
 msgstr "Симулировать платёж в евро"
 
@@ -1859,10 +1873,6 @@ msgstr "синхронизируется"
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 предоставляет банковский счёт для заморозки вашего платежа."
-
-#: src/components/modals/BuyOptionsModal.vue:69
-msgid "TEN31’s banking infrastructure is undergoing scheduled maintenance."
-msgstr "Банковская инфраструктура TEN31 на плановом обслуживании."
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -2264,7 +2274,7 @@ msgstr ""
 "Ваш браузер напрямую подключается к пирам со всего мира. Вы, таким образом, "
 "являетесь почётным гражданином Блокчейна Nimiq."
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

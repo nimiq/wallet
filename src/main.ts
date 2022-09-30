@@ -20,7 +20,7 @@ import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
-import { initPWA } from './pwa';
+import { initPwa } from './composables/usePwaInstallPrompt';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -38,7 +38,7 @@ Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 
 async function start() {
-    initPWA(); // Must be called as soon as possible to catch early browser events related to PWA
+    initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization

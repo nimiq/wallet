@@ -20,18 +20,21 @@ import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { guessUserCurrency, useFiatStore } from './stores/Fiat';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import { useGeoIp } from './composables/useGeoIp';
 
 export function shouldUseRedirects(): boolean {
-    // When not in PWA, don't use redirects
-    if (window.deferredInstallPrompt !== null) return false;
+    const { canInstallPwa } = usePwaInstallPrompt();
+    // When not in PWA (which we are if PWA can be installed), don't use redirects
+    if (canInstallPwa.value) return false;
 
-    // Samsung Browser
+    // Use redirect in Samsung Browser PWA, because hub popups opened from the PWA don't get the request ("invalid
+    // request" error), while popups opened from the regular Samsung Browser work fine.
     if (navigator.userAgent.includes('SamsungBrowser')) return true;
 
     // Firefox does not reliably provide the beforeinstallprompt event, preventing detection of PWA installed status
     // // Firefox Mobile
-    // if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) useRedirect = true;
+    // if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) return true;
 
     return false;
 }

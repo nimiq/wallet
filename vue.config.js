@@ -149,6 +149,8 @@ module.exports = {
                     return options
                 });
     },
+    // Note: the pwa is only setup on production builds, thus to test this config, a production build has to be built
+    // and manually served, e.g. via python -m SimpleHTTPServer 8081, instead of a simple yarn --serve
     pwa: {
         name: {
             mainnet: 'Nimiq Wallet',

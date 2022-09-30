@@ -25,7 +25,7 @@
                 </div>
             </section>
 
-            <section v-if="deferredPrompt">
+            <section v-if="canInstallPwa && pwaInstallationChoice === 'pending'">
                 <div class="setting pwa-install">
                     <div class="description">
                         <label class="nq-h2">{{ $t('Install Web App') }}</label>
@@ -34,7 +34,7 @@
                         </p>
                     </div>
 
-                    <button class="nq-button-pill green" @click="promptInstall" @mousedown.prevent>
+                    <button class="nq-button-pill green" @click="callAndConsumePwaInstallPrompt" @mousedown.prevent>
                         {{ $t('Install') }}
                     </button>
                 </div>
@@ -271,6 +271,7 @@ import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings'
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract, shouldUseRedirects } from '../../hub';
+import { usePwaInstallPrompt } from '../../composables/usePwaInstallPrompt';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
@@ -295,6 +296,8 @@ export default defineComponent({
         const settings = useSettingsStore();
 
         const { currency, setCurrency } = useFiatStore();
+
+        const { canInstallPwa, callAndConsumePwaInstallPrompt, pwaInstallationChoice } = usePwaInstallPrompt();
 
         async function clearCache() {
             /* eslint-disable-next-line no-restricted-globals, no-alert */
@@ -392,21 +395,6 @@ export default defineComponent({
         // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
-        /* Browser's install prompt */
-        const deferredPrompt = ref(window.deferredInstallPrompt);
-
-        /* Manually show the browser's PWA install prompt if available */
-        function promptInstall() {
-            if (!deferredPrompt.value || typeof deferredPrompt.value === 'boolean') return;
-            // Show the prompt
-            deferredPrompt.value.prompt();
-            // Wait for the user to respond to the prompt
-            deferredPrompt.value.userChoice.then((choice) => {
-                // set deferredPrompt to null since deferredPrompt.prompt is one time use
-                deferredPrompt.value = choice.outcome === 'accepted';
-            });
-        }
-
         const copyrightYear = Math.max(
             Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
             new Date().getFullYear(), // user year
@@ -427,8 +415,9 @@ export default defineComponent({
             onTrialPassword,
             applyWalletUpdate,
             applyingWalletUpdate,
-            deferredPrompt,
-            promptInstall,
+            canInstallPwa,
+            callAndConsumePwaInstallPrompt,
+            pwaInstallationChoice,
             shouldUseRedirects,
             copyrightYear,
             VERSION: process.env.VERSION,

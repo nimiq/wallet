@@ -54,20 +54,29 @@
         <div v-if="hasBitcoinAddresses && $config.enableBitcoin && $config.fastspot.enabled"
             class="exchange" ref="$exchange"
         >
-            <Tooltip class="btc" preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
+            <Tooltip preferredPosition="top right" noFocus ref="swapTooltip">
                 <button
-                    :disabled="!totalFiatAccountBalance || hasActiveSwap || !canUseSwaps"
+                    :disabled="!totalFiatAccountBalance || !canUseSwaps || hasActiveSwap"
                     @focus.stop="$refs.swapTooltip.show()"
                     @blur.stop="$refs.swapTooltip.hide()"
                     class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
                 ><SwapIcon/></button>
-                 <i18n path="Swap NIM {arrow} BTC" tag="span" class="nq-text-s">
-                    <template v-slot:arrow>
+                <i18n path="Swap NIM {arrow} BTC" tag="span" class="swap-tooltip-headline nq-text-s">
+                    <template #arrow>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8" width="12" height="8" fill="none"
                             stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         ><path d="M3.6 6.6l-3-3 3-3M8.4.6l3 3-3 3M1 3.6h10"/></svg>
                     </template>
                 </i18n>
+                <div v-if="!totalFiatAccountBalance || !canUseSwaps || hasActiveSwap"
+                    class="nq-text-s swap-tooltip-help"
+                >{{
+                    !totalFiatAccountBalance ? $t('Fund your Wallet with NIM or BTC first to be able to swap.')
+                        : hasActiveSwap ? $t('Please wait for your current swap to finish before starting a new one.')
+                        /* Re-using existing, translated strings already used by BuyOptionsModal */
+                        : $t('Not available in your browser') + '. '
+                            + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                }}</div>
             </Tooltip>
         </div>
         <div v-else-if="hasBitcoinAddresses && $config.enableBitcoin" class="separator"></div>
@@ -78,7 +87,7 @@
         >
             <div class="distribution">
                 <div style="width: 100%">
-                    <Tooltip
+                    <Tooltip class="btc"
                         preferredPosition="top left"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
                     >
@@ -293,7 +302,13 @@ export default defineComponent({
         .tooltip ::v-deep .tooltip-box {
             padding: 1rem;
             transform: translate(calc(26px - 50%), -2rem);
+        }
+
+        .tooltip .swap-tooltip-headline {
             white-space: nowrap;
+        }
+        .tooltip .swap-tooltip-help {
+            min-width: 40rem;
         }
     }
 

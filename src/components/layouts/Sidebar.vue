@@ -31,23 +31,32 @@
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
 
-            <Tooltip v-if="isOasisUnderMaintenance && $config.fastspot.enabled"
-                preferredPosition="top right" :styles="{width: '25rem'}" theme="inverse"
+            <Tooltip v-if="$config.fastspot.enabled"
+                preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
+                :disabled="!isOasisUnderMaintenance && canUseSwaps && !hasActiveSwap"
             >
-                <button slot="trigger" class="nq-button-s inverse" disabled>{{ $t('Sell') }}</button>
-                {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
-                    + ' This might take some time. Please try again later.') }}
-                <a
-                    href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
-                    target="_blank" rel="noopener"
-                    class="nq-blue"
-                >{{ $t('Learn more.') }}</a>
+                <template #trigger>
+                    <button class="nq-button-s inverse"
+                        @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
+                        :disabled="$route.name !== 'root' || isOasisUnderMaintenance || !canUseSwaps || hasActiveSwap"
+                    >{{ $t('Sell') }}</button>
+                </template>
+                <template v-if="isOasisUnderMaintenance" #default>
+                    {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
+                        + ' This might take some time. Please try again later.') }}
+                    <br>
+                    <a href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
+                        target="_blank" rel="noopener"
+                        class="nq-blue"
+                    >{{ $t('Learn more.') }}</a>
+                </template>
+                <template v-else-if="!canUseSwaps || hasActiveSwap" #default>{{
+                    hasActiveSwap ? $t('Please wait for your current swap to finish before starting a new swap.')
+                        /* Re-using existing, translated strings already used by BuyOptionsModal */
+                        : $t('Not available in your browser') + '. '
+                            + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                }}</template>
             </Tooltip>
-            <button v-else-if="$config.fastspot.enabled"
-                class="nq-button-s inverse"
-                @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
-                :disabled="$route.name !== 'root' || hasActiveSwap || !canUseSwaps"
-            >{{ $t('Sell') }}</button>
         </div>
 
         <div class="flex-grow"></div>

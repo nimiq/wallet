@@ -27,13 +27,14 @@
         <div class="trade-actions" v-show="!isLegacyAccount">
             <button v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
                 class="nq-button-pill light-blue inverse"
-                @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
+                @click="$router.push('/buy?sidebar=true')" @mousedown.prevent="$refs.sellTooltip.hide()"
                 :disabled="$route.name !== 'root' || hasActiveSwap"
             >{{ $t('Buy') }}</button>
 
             <Tooltip v-if="$config.fastspot.enabled"
                 preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
                 :disabled="!isOasisUnderMaintenance && canUseSwaps && !hasActiveSwap"
+                ref="sellTooltip"
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"

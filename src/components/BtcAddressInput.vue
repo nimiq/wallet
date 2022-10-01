@@ -63,8 +63,6 @@ export default defineComponent({
         const address = ref('');
         const invalid = ref(false);
 
-        let checkingAddress = false;
-
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
 
@@ -77,8 +75,8 @@ export default defineComponent({
                 const domain = address.value;
                 const ticker = Config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
                 resolveUnstoppableDomain(domain, ticker)
-                    .then(async (resolvedAddress) => {
-                        await doValidateAddress(resolvedAddress!, () => {
+                    .then((resolvedAddress) => {
+                        doValidateAddress(resolvedAddress!, () => {
                             context.emit('domain-address', domain, resolvedAddress);
                             invalid.value = false;
                         }, () => {
@@ -114,14 +112,11 @@ export default defineComponent({
             });
         }
 
-        async function doValidateAddress(
+        function doValidateAddress(
             addressToCheck: string,
             validCallback: () => void,
             invalidCallback: () => void,
         ) {
-            if (checkingAddress) return;
-            checkingAddress = true;
-
             loadBitcoinJS().then(() => {
                 const isValid = validateAddress(addressToCheck, Config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
                 if (isValid) {
@@ -129,7 +124,7 @@ export default defineComponent({
                 } else {
                     invalidCallback();
                 }
-            }).finally(() => checkingAddress = false);
+            });
         }
 
         async function updateInputFontSize() {
@@ -173,7 +168,7 @@ export default defineComponent({
                 const { recipient } = parseBitcoinUrl(pastedData);
                 event.preventDefault();
                 address.value = recipient;
-                checkAddress();
+                onUpdate();
             } catch (err) {
                 // Ignore
             }

@@ -45,16 +45,21 @@ async function start() {
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
-    // Update exchange rates every 2 minutes. If the last update was
-    // less than 2 minutes ago, wait the remaining time first.
-    const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
-    window.setTimeout(
-        () => {
-            updateExchangeRates();
-            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
-        },
-        Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
-    );
+    // Update exchange rates every 2 minutes. If an update takes longer than 2 minutes due to CoinGecko's rate limit,
+    // wait until the update succeeds before queueing the next update. If the last update before page load was less than
+    // 2 minutes ago, wait the remaining time first.
+    const { timestamp: { value: lastExchangeRateUpdateTime }, updateExchangeRates } = useFiatStore();
+    let exchangeRateUpdateStart = lastExchangeRateUpdateTime;
+    const TWO_MINUTES = 2 * 60 * 1000;
+    function queueExchangeRateUpdate() {
+        setTimeout(async () => {
+            exchangeRateUpdateStart = Date.now(); // in contrast to fiatStore.timestamp set before the update
+            await updateExchangeRates(/* failGracefully */ true); // silently ignores errors
+            queueExchangeRateUpdate();
+        // Also add 2 minutes as upper bound to be immune to the user's system clock being wrong.
+        }, Math.max(0, Math.min(exchangeRateUpdateStart + TWO_MINUTES - Date.now(), TWO_MINUTES)));
+    }
+    queueExchangeRateUpdate();
 
     // Fetch language file
     const { language } = useSettingsStore();

@@ -196,24 +196,52 @@ export const useBtcTransactionsStore = createStore({
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
-        async calculateFiatAmounts(fiat?: FiatCurrency) {
+        async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = fiat || useFiatStore().currency.value;
+            const fiatStore = useFiatStore();
+            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
+            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
                 // BTC transactions don't need to be filtered by age,
                 // as the BTC price is available far enough into the past.
                 tx.timestamp && tx.outputs.some((output) =>
-                    typeof output.fiatValue?.[fiatCurrency] !== 'number',
+                    typeof output.fiatValue?.[fiatCurrency!] !== 'number',
                 ),
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
 
-            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp * 1000);
-            const historicExchangeRates = await getHistoricExchangeRates(CryptoCurrency.BTC, fiatCurrency, timestamps);
+            const exchangeRates = new Map</* timestamp in ms */ number, /* exchange rate */ number | undefined>();
+            const historicTimestamps: number[] = [];
+
+            // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
+            // historic rates, which also only get updated every few minutes and might not include the newest rates yet.
+            // If the user's time is not set correctly, this will gracefully fall back to fetching rates for new
+            // transactions as historic exchange rates; old transactions at the user's system's time might be
+            // interpreted as current though.
+            for (let { timestamp } of transactionsToUpdate) {
+                timestamp *= 1000;
+                if (Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000 && currentRate) {
+                    exchangeRates.set(timestamp, currentRate);
+                } else {
+                    historicTimestamps.push(timestamp);
+                }
+            }
+
+            if (historicTimestamps.length) {
+                const historicExchangeRates = await getHistoricExchangeRates(
+                    CryptoCurrency.BTC,
+                    fiatCurrency,
+                    historicTimestamps,
+                );
+                for (const [timestamp, exchangeRate] of historicExchangeRates) {
+                    exchangeRates.set(timestamp, exchangeRate);
+                }
+            }
 
             for (const tx of transactionsToUpdate) {
-                const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                const exchangeRate = exchangeRates.get(tx.timestamp * 1000);
                 for (const output of tx.outputs) {
                     // Set via Vue.set to let vue setup the reactivity.
                     // TODO this might be not necessary anymore with Vue3

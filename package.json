@@ -10,7 +10,7 @@
     "build:bitcoinjs": "yarn --silent browserify bitcoinjs-parts.js -p common-shakeify -s BitcoinJS | yarn terser --compress --mangle --source-map --output public/bitcoin/BitcoinJS.min.js",
     "build:ci": "yarn pre && build=testnet yarn vue-cli-service build",
     "i18n:extract": "node ./node_modules/webpack-i18n-tools/index.js ./src/i18n/en.po",
-    "i18n:pull": "tx pull -l es,zh,de,fr,nl,ru,uk --force --minimum-perc 50",
+    "i18n:pull": "tx pull -l es,zh,de,fr,nl,pt,ru,uk --force --minimum-perc 50",
     "i18n:push": "tx push --source",
     "i18n:sync": "yarn i18n:extract && yarn i18n:push; yarn i18n:pull",
     "pre": "yarn i18n:extract && test -e public/bitcoin/BitcoinJS.min.js || yarn build:bitcoinjs",
